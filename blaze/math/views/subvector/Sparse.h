@@ -467,11 +467,13 @@ class Subvector<VT,AF,TF,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t size() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
-   inline void   reserve( size_t n );
+   inline Operand operand() const noexcept;
+   inline size_t  offset() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
+   inline void    reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -543,39 +545,6 @@ class Subvector<VT,AF,TF,false>
    const size_t offset_;  //!< The offset of the subvector within the sparse vector.
    const size_t size_;    //!< The size of the subvector.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend const Subvector<VT2,AF1,TF2,DF2>
-      subvector( const Subvector<VT2,AF2,TF2,DF2>& sv, size_t index, size_t size );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isIntact( const Subvector<VT2,AF2,TF2,DF2>& sv ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT2,AF2,TF2,DF2>& a, const Vector<VT2,TF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Vector<VT2,TF2>& a, const Subvector<VT2,AF2,TF2,DF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT2,AF2,TF2,DF2>& a, const Subvector<VT2,AF2,TF2,DF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryAddAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool trySubAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryMultAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend decltype(auto) derestrict( Subvector<VT2,AF2,TF2,DF2>& sv );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1331,6 +1300,41 @@ inline EnableIf_<IsNumeric<Other>, Subvector<VT,AF,TF,false> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline typename Subvector<VT,AF,TF,false>::Operand
+   Subvector<VT,AF,TF,false>::operand() const noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the offset of the subvector within the underlying sparse vector.
+//
+// \return The offset of the subvector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool AF      // Alignment flag
+        , bool TF >    // Transpose flag
+inline size_t Subvector<VT,AF,TF,false>::offset() const noexcept
+{
+   return offset_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

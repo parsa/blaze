@@ -779,7 +779,7 @@ inline const Subvector<VT,AF1,TF,DF>
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
 
-   return Subvector<VT,AF1,TF,DF>( sv.vector_, sv.offset_ + index, size );
+   return Subvector<VT,AF1,TF,DF>( sv.operand(), sv.offset() + index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -997,8 +997,8 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline bool isIntact( const Subvector<VT,AF,TF,DF>& sv ) noexcept
 {
-   return ( sv.offset_ + sv.size_ <= sv.vector_.size() &&
-            isIntact( sv.vector_ ) );
+   return ( sv.offset() + sv.size() <= sv.operand().size() &&
+            isIntact( sv.operand() ) );
 }
 //*************************************************************************************************
 
@@ -1021,7 +1021,7 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline bool isSame( const Subvector<VT,AF,TF,DF>& a, const Vector<VT,TF>& b ) noexcept
 {
-   return ( isSame( a.vector_, ~b ) && ( a.size() == (~b).size() ) );
+   return ( isSame( a.operand(), ~b ) && ( a.size() == (~b).size() ) );
 }
 //*************************************************************************************************
 
@@ -1044,7 +1044,7 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept
 {
-   return ( isSame( ~a, b.vector_ ) && ( (~a).size() == b.size() ) );
+   return ( isSame( ~a, b.operand() ) && ( (~a).size() == b.size() ) );
 }
 //*************************************************************************************************
 
@@ -1067,7 +1067,9 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline bool isSame( const Subvector<VT,AF,TF,DF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept
 {
-   return ( isSame( a.vector_, b.vector_ ) && ( a.offset_ == b.offset_ ) && ( a.size_ == b.size_ ) );
+   return ( isSame( a.operand(), b.operand() ) &&
+            ( a.offset() == b.offset() ) &&
+            ( a.size() == b.size() ) );
 }
 //*************************************************************************************************
 
@@ -1097,7 +1099,7 @@ inline bool tryAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,TF>&
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+   return tryAssign( lhs.operand(), ~rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1128,7 +1130,7 @@ inline bool tryAddAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,T
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryAddAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1159,7 +1161,7 @@ inline bool trySubAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,T
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return trySubAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+   return trySubAssign( lhs.operand(), ~rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1190,7 +1192,7 @@ inline bool tryMultAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryMultAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+   return tryMultAssign( lhs.operand(), ~rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1221,7 +1223,7 @@ inline bool tryDivAssign( const Subvector<VT1,AF,TF,DF>& lhs, const Vector<VT2,T
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryDivAssign( lhs.vector_, ~rhs, lhs.offset_ + index );
+   return tryDivAssign( lhs.operand(), ~rhs, lhs.offset() + index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1248,7 +1250,7 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>& sv )
 {
-   return subvector( derestrict( sv.vector_ ), sv.offset_, sv.size_ );
+   return subvector( derestrict( sv.operand() ), sv.offset(), sv.size() );
 }
 /*! \endcond */
 //*************************************************************************************************

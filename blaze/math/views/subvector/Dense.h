@@ -608,11 +608,13 @@ class Subvector<VT,unaligned,TF,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  offset() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -770,37 +772,6 @@ class Subvector<VT,unaligned,TF,true>
 
    //**Friend declarations*************************************************************************
    template< typename VT2, bool AF2, bool TF2, bool DF2 > friend class Subvector;
-
-   template< bool AF1, typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend const Subvector<VT2,AF1,TF2,DF2>
-      subvector( const Subvector<VT2,AF2,TF2,DF2>& sv, size_t index, size_t size );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isIntact( const Subvector<VT2,AF2,TF2,DF2>& sv ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT2,AF2,TF2,DF2>& a, const Vector<VT2,TF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Vector<VT2,TF2>& a, const Subvector<VT2,AF2,TF2,DF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT2,AF2,TF2,DF2>& a, const Subvector<VT2,AF2,TF2,DF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryAddAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool trySubAssign( const Subvector<VT2,AF2,DF2,TF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryMultAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend decltype(auto) derestrict( Subvector<VT2,AF2,TF2,DF2>& sv );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -828,13 +799,13 @@ class Subvector<VT,unaligned,TF,true>
 /*!\brief The constructor for Subvector.
 //
 // \param vector The dense vector containing the subvector.
-// \param index The first index of the subvector in the given vector.
+// \param index The offset of the subvector within the given vector.
 // \param n The size of the subvector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
-// In case the subvector is not properly specified (i.e. if the specified first index is larger
-// than the size of the given vector or the subvector is specified beyond the size of the vector)
-// a \a std::invalid_argument exception is thrown.
+// In case the subvector is not properly specified (i.e. if the specified offset is larger than
+// the size of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -1624,6 +1595,39 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename Subvector<VT,unaligned,TF,true>::Operand
+   Subvector<VT,unaligned,TF,true>::operand() const noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the offset of the subvector within the underlying dense vector.
+//
+// \return The offset of the subvector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline size_t Subvector<VT,unaligned,TF,true>::offset() const noexcept
+{
+   return offset_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2759,11 +2763,13 @@ class Subvector<VT,aligned,TF,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  offset() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -2914,37 +2920,6 @@ class Subvector<VT,aligned,TF,true>
 
    //**Friend declarations*************************************************************************
    template< typename VT2, bool AF2, bool TF2, bool DF2 > friend class Subvector;
-
-   template< bool AF1, typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend const Subvector<VT2,AF1,TF2,DF2>
-      subvector( const Subvector<VT2,AF2,TF2,DF2>& sv, size_t index, size_t size );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isIntact( const Subvector<VT2,AF2,TF2,DF2>& sv ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT2,AF2,TF2,DF2>& a, const Vector<VT2,TF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Vector<VT2,TF2>& a, const Subvector<VT2,AF2,TF2,DF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT2,AF2,TF2,DF2>& a, const Subvector<VT2,AF2,TF2,DF2>& b ) noexcept;
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryAddAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool trySubAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2, typename VT3 >
-   friend bool tryMultAssign( const Subvector<VT2,AF2,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT2, bool AF2, bool TF2, bool DF2 >
-   friend decltype(auto) derestrict( Subvector<VT2,AF2,TF2,DF2>& sv );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2972,13 +2947,13 @@ class Subvector<VT,aligned,TF,true>
 /*!\brief The constructor for Subvector.
 //
 // \param vector The dense vector containing the subvector.
-// \param index The first index of the subvector in the given vector.
+// \param index The offset of the subvector in the given vector.
 // \param n The size of the subvector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
-// In case the subvector is not properly specified (i.e. if the specified first index is larger
-// than the size of the given vector or the subvector is specified beyond the size of the vector)
-// a \a std::invalid_argument exception is thrown.
+// In case the subvector is not properly specified (i.e. if the specified offset is larger than
+// the size of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown.
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
@@ -3762,6 +3737,39 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline typename Subvector<VT,aligned,TF,true>::Operand
+   Subvector<VT,aligned,TF,true>::operand() const noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the offset of the subvector within the underlying dense vector.
+//
+// \return The offset of the subvector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline size_t Subvector<VT,aligned,TF,true>::offset() const noexcept
+{
+   return offset_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -4816,7 +4824,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The dense vector/dense vector cross product expression.
-   // \param index The first index of the subvector in the given expression.
+   // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
    explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
@@ -4853,10 +4861,30 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    }
    //**********************************************************************************************
 
-   //**Size function*******************************************************************************
-   /*!\brief Returns the current size/dimension of the vector.
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
    //
-   // \return The size of the vector.
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
+   //**********************************************************************************************
+
+   //**Offset function*****************************************************************************
+   /*!\brief Returns the offset of the subvector within the underlying cross product expression.
+   //
+   // \return The offset of the subvector.
+   */
+   inline size_t offset() const noexcept {
+      return offset_;
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the subvector.
+   //
+   // \return The size of the subvector.
    */
    inline size_t size() const noexcept {
       return size_;
@@ -4895,36 +4923,6 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    const size_t offset_;  //!< The offset of the subvector within the cross product expression.
    const size_t size_;    //!< The size of the subvector.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF2, bool DF2 >
-   friend const Subvector<VT,AF1,TF2,DF2>
-      subvector( const Subvector<VT,AF2,TF2,DF2>& sv, size_t index, size_t size );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isIntact( const Subvector<VT3,AF,TF2,DF2>& sv ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Vector<VT3,TF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Vector<VT3,TF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAddAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool trySubAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryMultAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4986,7 +4984,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The dense vector/sparse vector cross product expression.
-   // \param index The first index of the subvector in the given expression.
+   // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
    explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
@@ -5023,10 +5021,30 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    }
    //**********************************************************************************************
 
-   //**Size function*******************************************************************************
-   /*!\brief Returns the current size/dimension of the vector.
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
    //
-   // \return The size of the vector.
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
+   //**********************************************************************************************
+
+   //**Offset function*****************************************************************************
+   /*!\brief Returns the offset of the subvector within the underlying cross product expression.
+   //
+   // \return The offset of the subvector.
+   */
+   inline size_t offset() const noexcept {
+      return offset_;
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the subvector.
+   //
+   // \return The size of the subvector.
    */
    inline size_t size() const noexcept {
       return size_;
@@ -5065,36 +5083,6 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    const size_t offset_;  //!< The offset of the subvector within the cross product expression.
    const size_t size_;    //!< The size of the subvector.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF2, bool DF2 >
-   friend const Subvector<VT,AF1,TF2,DF2>
-      subvector( const Subvector<VT,AF2,TF2,DF2>& sv, size_t index, size_t size );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isIntact( const Subvector<VT3,AF,TF2,DF2>& sv ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Vector<VT3,TF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Vector<VT3,TF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAddAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool trySubAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryMultAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5156,7 +5144,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The sparse vector/dense vector cross product expression.
-   // \param index The first index of the subvector in the given expression.
+   // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
    explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
@@ -5193,10 +5181,30 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    }
    //**********************************************************************************************
 
-   //**Size function*******************************************************************************
-   /*!\brief Returns the current size/dimension of the vector.
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
    //
-   // \return The size of the vector.
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
+   //**********************************************************************************************
+
+   //**Offset function*****************************************************************************
+   /*!\brief Returns the offset of the subvector within the underlying cross product expression.
+   //
+   // \return The offset of the subvector.
+   */
+   inline size_t offset() const noexcept {
+      return offset_;
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the subvector.
+   //
+   // \return The size of the subvector.
    */
    inline size_t size() const noexcept {
       return size_;
@@ -5235,36 +5243,6 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    const size_t offset_;  //!< The offset of the subvector within the cross product expression.
    const size_t size_;    //!< The size of the subvector.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF2, bool DF2 >
-   friend const Subvector<VT,AF1,TF2,DF2>
-      subvector( const Subvector<VT,AF2,TF2,DF2>& sv, size_t index, size_t size );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isIntact( const Subvector<VT3,AF,TF2,DF2>& sv ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Vector<VT3,TF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Vector<VT3,TF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAddAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool trySubAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryMultAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5326,7 +5304,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The sparse vector/sparse vector cross product expression.
-   // \param index The first index of the subvector in the given expression.
+   // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
    explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
@@ -5363,10 +5341,30 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    }
    //**********************************************************************************************
 
-   //**Size function*******************************************************************************
-   /*!\brief Returns the current size/dimension of the vector.
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
    //
-   // \return The size of the vector.
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
+   //**********************************************************************************************
+
+   //**Offset function*****************************************************************************
+   /*!\brief Returns the offset of the subvector within the underlying cross product expression.
+   //
+   // \return The offset of the subvector.
+   */
+   inline size_t offset() const noexcept {
+      return offset_;
+   }
+   //**********************************************************************************************
+
+   //**Size function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the subvector.
+   //
+   // \return The size of the subvector.
    */
    inline size_t size() const noexcept {
       return size_;
@@ -5405,36 +5403,6 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true >
    const size_t offset_;  //!< The offset of the subvector within the cross product expression.
    const size_t size_;    //!< The size of the subvector.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< bool AF1, typename VT, bool AF2, bool TF2, bool DF2 >
-   friend const Subvector<VT,AF1,TF2,DF2>
-      subvector( const Subvector<VT,AF2,TF2,DF2>& sv, size_t index, size_t size );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isIntact( const Subvector<VT3,AF,TF2,DF2>& sv ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Vector<VT3,TF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Vector<VT3,TF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2 >
-   friend bool isSame( const Subvector<VT3,AF,TF2,DF2>& a, const Subvector<VT3,AF,TF2,DF2>& b ) noexcept;
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryAddAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool trySubAssign( const Subvector<VT2,AF,TF2,DF2>& lhs, const Vector<VT3,TF2>& rhs, size_t index );
-
-   template< typename VT3, bool AF, bool TF2, bool DF2, typename VT4 >
-   friend bool tryMultAssign( const Subvector<VT3,AF,TF2,DF2>& lhs, const Vector<VT4,TF2>& rhs, size_t index );
    //**********************************************************************************************
 };
 /*! \endcond */
