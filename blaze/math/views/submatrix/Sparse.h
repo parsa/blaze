@@ -482,20 +482,21 @@ class Submatrix<MT,AF,false,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t row() const noexcept;
-   inline size_t rows() const noexcept;
-   inline size_t column() const noexcept;
-   inline size_t columns() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
-   inline void   reserve( size_t nonzeros );
-          void   reserve( size_t i, size_t nonzeros );
-   inline void   trim();
-   inline void   trim( size_t i );
+   inline Operand operand() const noexcept;
+   inline size_t  row() const noexcept;
+   inline size_t  column() const noexcept;
+   inline size_t  rows() const noexcept;
+   inline size_t  columns() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
+   inline void    reserve( size_t nonzeros );
+          void    reserve( size_t i, size_t nonzeros );
+   inline void    trim();
+   inline void    trim( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -580,59 +581,6 @@ class Submatrix<MT,AF,false,false>
    const size_t m_;       //!< The number of rows of the submatrix.
    const size_t n_;       //!< The number of columns of the submatrix.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< bool AF1, typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend const Submatrix<MT2,AF1,SO2,DF2>
-      submatrix( const Submatrix<MT2,AF2,SO2,DF2>& sm, size_t row, size_t column, size_t m, size_t n );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isIntact( const Submatrix<MT2,AF2,SO2,DF2>& sm ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Matrix<MT2,SO2>& b ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isSame( const Matrix<MT2,SO2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool tryAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
-                          size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
-   friend bool tryAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
-                          size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
-   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
-   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
-                              size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
-   friend bool trySchurAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
-                               size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend decltype(auto) derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1410,6 +1358,23 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false> >&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,false,false>::Operand
+   Submatrix<MT,AF,false,false>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first row of the submatrix in the underlying sparse matrix.
 //
 // \return The index of the first row.
@@ -1426,22 +1391,6 @@ inline size_t Submatrix<MT,AF,false,false>::row() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of rows of the sparse submatrix.
-//
-// \return The number of rows of the sparse submatrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline size_t Submatrix<MT,AF,false,false>::rows() const noexcept
-{
-   return m_;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first column of the submatrix in the underlying sparse matrix.
 //
 // \return The index of the first column.
@@ -1451,6 +1400,22 @@ template< typename MT  // Type of the sparse matrix
 inline size_t Submatrix<MT,AF,false,false>::column() const noexcept
 {
    return column_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of rows of the sparse submatrix.
+//
+// \return The number of rows of the sparse submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,false,false>::rows() const noexcept
+{
+   return m_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3056,20 +3021,21 @@ class Submatrix<MT,AF,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t row() const noexcept;
-   inline size_t rows() const noexcept;
-   inline size_t column() const noexcept;
-   inline size_t columns() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
-   inline void   reserve( size_t nonzeros );
-          void   reserve( size_t i, size_t nonzeros );
-   inline void   trim();
-   inline void   trim( size_t j );
+   inline Operand operand() const noexcept;
+   inline size_t  row() const noexcept;
+   inline size_t  column() const noexcept;
+   inline size_t  rows() const noexcept;
+   inline size_t  columns() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
+   inline void    reserve( size_t nonzeros );
+          void    reserve( size_t i, size_t nonzeros );
+   inline void    trim();
+   inline void    trim( size_t j );
    //@}
    //**********************************************************************************************
 
@@ -3154,55 +3120,6 @@ class Submatrix<MT,AF,true,false>
    const size_t m_;       //!< The number of rows of the submatrix.
    const size_t n_;       //!< The number of columns of the submatrix.
    //@}
-   //**********************************************************************************************
-
-   //**Friend declarations*************************************************************************
-   template< bool AF1, typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend const Submatrix<MT2,AF1,SO2,DF2>
-      submatrix( const Submatrix<MT2,AF2,SO2,DF2>& sm, size_t row, size_t column, size_t m, size_t n );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isIntact( const Submatrix<MT2,AF2,SO2,DF2>& sm ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Matrix<MT2,SO2>& b ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isSame( const Matrix<MT2,SO2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend bool isSame( const Submatrix<MT2,AF2,SO2,DF2>& a, const Submatrix<MT2,AF2,SO2,DF2>& b ) noexcept;
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool tryAssign( const Submatrix<MT2,AF2,SO2>& lhs, const Vector<VT,TF>& rhs,
-                          size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
-   friend bool tryAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
-                          size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
-   friend bool tryAddAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename MT3, bool SO3 >
-   friend bool trySubAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Matrix<MT3,SO3>& rhs,
-                             size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2, typename VT, bool TF >
-   friend bool tryMultAssign( const Submatrix<MT2,AF2,SO2,DF2>& lhs, const Vector<VT,TF>& rhs,
-                              size_t row, size_t column );
-
-   template< typename MT2, bool AF2, bool SO2, bool DF2 >
-   friend decltype(auto) derestrict( Submatrix<MT2,AF2,SO2,DF2>& sm );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3950,6 +3867,23 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false> >&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline typename Submatrix<MT,AF,true,false>::Operand
+   Submatrix<MT,AF,true,false>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first row of the submatrix in the underlying sparse matrix.
 //
 // \return The index of the first row.
@@ -3966,22 +3900,6 @@ inline size_t Submatrix<MT,AF,true,false>::row() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of rows of the sparse submatrix.
-//
-// \return The number of rows of the sparse submatrix.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool AF >    // Alignment flag
-inline size_t Submatrix<MT,AF,true,false>::rows() const noexcept
-{
-   return m_;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first column of the submatrix in the underlying sparse matrix.
 //
 // \return The index of the first column.
@@ -3991,6 +3909,22 @@ template< typename MT  // Type of the sparse matrix
 inline size_t Submatrix<MT,AF,true,false>::column() const noexcept
 {
    return column_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of rows of the sparse submatrix.
+//
+// \return The number of rows of the sparse submatrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool AF >    // Alignment flag
+inline size_t Submatrix<MT,AF,true,false>::rows() const noexcept
+{
+   return m_;
 }
 /*! \endcond */
 //*************************************************************************************************

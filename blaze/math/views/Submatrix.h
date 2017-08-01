@@ -984,7 +984,7 @@ inline const Submatrix<MT,AF1,SO,DF>
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
    }
 
-   return Submatrix<MT,AF1,SO,DF>( sm.matrix_, sm.row_ + row, sm.column_ + column, m, n );
+   return Submatrix<MT,AF1,SO,DF>( sm.operand(), sm.row() + row, sm.column() + column, m, n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1276,9 +1276,9 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isIntact( const Submatrix<MT,AF,SO,DF>& sm ) noexcept
 {
-   return ( sm.row_ + sm.m_ <= sm.matrix_.rows() &&
-            sm.column_ + sm.n_ <= sm.matrix_.columns() &&
-            isIntact( sm.matrix_ ) );
+   return ( sm.row() + sm.rows() <= sm.operand().rows() &&
+            sm.column() + sm.columns() <= sm.operand().columns() &&
+            isIntact( sm.operand() ) );
 }
 //*************************************************************************************************
 
@@ -1653,7 +1653,9 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isSame( const Submatrix<MT,AF,SO,DF>& a, const Matrix<MT,SO>& b ) noexcept
 {
-   return ( isSame( a.matrix_, ~b ) && ( a.rows() == (~b).rows() ) && ( a.columns() == (~b).columns() ) );
+   return ( isSame( a.operand(), ~b ) &&
+            ( a.rows() == (~b).rows() ) &&
+            ( a.columns() == (~b).columns() ) );
 }
 //*************************************************************************************************
 
@@ -1676,7 +1678,9 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isSame( const Matrix<MT,SO>& a, const Submatrix<MT,AF,SO,DF>& b ) noexcept
 {
-   return ( isSame( ~a, b.matrix_ ) && ( (~a).rows() == b.rows() ) && ( (~a).columns() == b.columns() ) );
+   return ( isSame( ~a, b.operand() ) &&
+            ( (~a).rows() == b.rows() ) &&
+            ( (~a).columns() == b.columns() ) );
 }
 //*************************************************************************************************
 
@@ -1699,9 +1703,9 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline bool isSame( const Submatrix<MT,AF,SO,DF>& a, const Submatrix<MT,AF,SO,DF>& b ) noexcept
 {
-   return ( isSame( a.matrix_, b.matrix_ ) &&
-            ( a.row_ == b.row_ ) && ( a.column_ == b.column_ ) &&
-            ( a.m_ == b.m_ ) && ( a.n_ == b.n_ ) );
+   return ( isSame( a.operand(), b.operand() ) &&
+            ( a.row() == b.row() ) && ( a.column() == b.column() ) &&
+            ( a.rows() == b.rows() ) && ( a.columns() == b.columns() ) );
 }
 //*************************************************************************************************
 
@@ -1788,7 +1792,7 @@ inline bool tryAssign( const Submatrix<MT,AF,SO,DF>& lhs, const Vector<VT,TF>& r
    BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
 
-   return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1824,7 +1828,7 @@ inline bool tryAssign( const Submatrix<MT1,AF,SO1,DF>& lhs, const Matrix<MT2,SO2
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
-   return tryAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1860,7 +1864,7 @@ inline bool tryAddAssign( const Submatrix<MT,AF,SO,DF>& lhs, const Vector<VT,TF>
    BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1896,7 +1900,7 @@ inline bool tryAddAssign( const Submatrix<MT1,AF,SO1,DF>& lhs, const Matrix<MT2,
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
-   return tryAddAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1932,7 +1936,7 @@ inline bool trySubAssign( const Submatrix<MT,AF,SO,DF>& lhs, const Vector<VT,TF>
    BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
 
-   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1968,7 +1972,7 @@ inline bool trySubAssign( const Submatrix<MT1,AF,SO1,DF>& lhs, const Matrix<MT2,
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
-   return trySubAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2004,7 +2008,7 @@ inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF>& lhs, const Vector<VT,TF
    BLAZE_INTERNAL_ASSERT( TF || ( (~rhs).size() <= lhs.rows() - row ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= lhs.columns() - column ), "Invalid number of columns" );
 
-   return tryMultAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return tryMultAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2040,7 +2044,7 @@ inline bool trySchurAssign( const Submatrix<MT1,AF,SO1,DF>& lhs, const Matrix<MT
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
 
-   return trySchurAssign( lhs.matrix_, ~rhs, lhs.row_ + row, lhs.column_ + column );
+   return trySchurAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2067,7 +2071,7 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
 {
-   return submatrix( derestrict( dm.matrix_ ), dm.row_, dm.column_, dm.m_, dm.n_ );
+   return submatrix( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
