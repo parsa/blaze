@@ -220,11 +220,13 @@ class Column<MT,true,true,SF>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  column() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -374,30 +376,6 @@ class Column<MT,true,true,SF>
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Column;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isIntact( const Column<MT2,SO2,DF2,SF2>& column ) noexcept;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isSame( const Column<MT2,SO2,DF2,SF2>& a, const Column<MT2,SO2,DF2,SF2>& b ) noexcept;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryAddAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool trySubAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryDivAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend decltype(auto) derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1213,6 +1191,39 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,true,true,SF> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SF >    // Symmetry flag
+inline typename Column<MT,true,true,SF>::Operand
+   Column<MT,true,true,SF>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the column of the underlying dense matrix.
+//
+// \return The index of the column.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SF >    // Symmetry flag
+inline size_t Column<MT,true,true,SF>::column() const noexcept
+{
+   return col_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2608,11 +2619,13 @@ class Column<MT,false,true,false>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  column() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -2665,30 +2678,6 @@ class Column<MT,false,true,false>
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Column;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isIntact( const Column<MT2,SO2,DF2,SF2>& column ) noexcept;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isSame( const Column<MT2,SO2,DF2,SF2>& a, const Column<MT2,SO2,DF2,SF2>& b ) noexcept;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryAddAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool trySubAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryDivAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend decltype(auto) derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3500,6 +3489,37 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,false> >&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename Column<MT,false,true,false>::Operand
+   Column<MT,false,true,false>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the column of the underlying dense matrix.
+//
+// \return The index of the column.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t Column<MT,false,true,false>::column() const noexcept
+{
+   return col_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current size/dimension of the column.
 //
 // \return The size of the column.
@@ -4161,11 +4181,13 @@ class Column<MT,false,true,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  column() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -4315,30 +4337,6 @@ class Column<MT,false,true,true>
 
    //**Friend declarations*************************************************************************
    template< typename MT2, bool SO2, bool DF2, bool SF2 > friend class Column;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isIntact( const Column<MT2,SO2,DF2,SF2>& column ) noexcept;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend bool isSame( const Column<MT2,SO2,DF2,SF2>& a, const Column<MT2,SO2,DF2,SF2>& b ) noexcept;
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryAddAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool trySubAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryMultAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2, typename VT >
-   friend bool tryDivAssign( const Column<MT2,SO2,DF2,SF2>& lhs, const Vector<VT,false>& rhs, size_t index );
-
-   template< typename MT2, bool SO2, bool DF2, bool SF2 >
-   friend decltype(auto) derestrict( Column<MT2,SO2,DF2,SF2>& column );
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -5137,6 +5135,37 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,true> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT >  // Type of the dense matrix
+inline typename Column<MT,false,true,true>::Operand
+   Column<MT,false,true,true>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the column of the underlying dense matrix.
+//
+// \return The index of the column.
+*/
+template< typename MT >  // Type of the dense matrix
+inline size_t Column<MT,false,true,true>::column() const noexcept
+{
+   return col_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
