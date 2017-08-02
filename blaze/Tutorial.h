@@ -109,7 +109,6 @@
 //          </li>
 //       </ul>
 //    </li>
-//    <li> \ref custom_operations </li>
 //    <li> \ref shared_memory_parallelization
 //       <ul>
 //          <li> \ref openmp_parallelization </li>
@@ -124,12 +123,17 @@
 //          <li> \ref matrix_serialization </li>
 //       </ul>
 //    </li>
+//    <li> \ref customization
+//       <ul>
+//          <li> \ref configuration_files </li>
+//          <li> \ref custom_data_types </li>
+//          <li> \ref custom_operations </li>
+//          <li> \ref error_reporting_customization </li>
+//       </ul>
+//    </li>
 //    <li> \ref blas_functions </li>
 //    <li> \ref lapack_functions </li>
-//    <li> \ref configuration_files </li>
 //    <li> \ref block_vectors_and_matrices </li>
-//    <li> \ref custom_data_types </li>
-//    <li> \ref error_reporting_customization </li>
 //    <li> \ref intra_statement_optimization </li>
 // </ul>
 */
@@ -3644,7 +3648,7 @@
 
    blaze::DynamicMatrix< complex<double> > cplx;
 
-   // Creating the vector
+   // Creating the matrix
    //    ( (-2.1,  0.3) (-4.2, -1.4) )
    //    ( ( 1.0,  2.9) ( 0.6, -3.4) )
    cplx = map( real, imag, []( double r, double i ){ return complex( r, i ); } );
@@ -8749,204 +8753,7 @@
 // as symmetric, Hermitian, lower triangular, upper triangular, or diagonal leads to undefined
 // behavior!
 //
-// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref custom_operations
-*/
-//*************************************************************************************************
-
-
-//**Custom Operations******************************************************************************
-/*!\page custom_operations Custom Operations
-//
-// In addition to the provided operations on vectors and matrices it is possible to define custom
-// operations. For this purpose, \b Blaze provides the \c map() function, which allows to pass
-// the required operation via functor or lambda:
-
-   \code
-   blaze::DynamicMatrix<double> A, B;
-
-   B = map( A, []( double d ){ return std::sqrt( d ); } );
-   \endcode
-
-// This example demonstrates the most convenient way of defining a unary custom operation by
-// passing a lambda to the \c map() function. The lambda is executed on each single element of
-// a dense vector or matrix or each non-zero element of a sparse vector or matrix.
-//
-// Alternatively, it is possible to pass a custom functor:
-
-   \code
-   struct Sqrt
-   {
-      double operator()( double a ) const
-      {
-         return std::sqrt( a );
-      }
-   };
-
-   B = map( A, Sqrt() );
-   \endcode
-
-// In order for the functor to work in a call to \c map() it must define a function call operator,
-// which accepts arguments of the type of the according vector or matrix elements.
-//
-// Although the operation is automatically parallelized depending on the size of the vector or
-// matrix, no automatic vectorization is possible. In order to enable vectorization, a \c load()
-// function can be added to the functor, which handles the vectorized computation. Depending on
-// the data type this function is passed one of the following \b Blaze SIMD data types:
-//
-// <ul>
-//    <li>SIMD data types for fundamental data types
-//       <ul>
-//          <li>\c blaze::SIMDint8: Packed SIMD type for 8-bit signed integral data types</li>
-//          <li>\c blaze::SIMDuint8: Packed SIMD type for 8-bit unsigned integral data types</li>
-//          <li>\c blaze::SIMDint16: Packed SIMD type for 16-bit signed integral data types</li>
-//          <li>\c blaze::SIMDuint16: Packed SIMD type for 16-bit unsigned integral data types</li>
-//          <li>\c blaze::SIMDint32: Packed SIMD type for 32-bit signed integral data types</li>
-//          <li>\c blaze::SIMDuint32: Packed SIMD type for 32-bit unsigned integral data types</li>
-//          <li>\c blaze::SIMDint64: Packed SIMD type for 64-bit signed integral data types</li>
-//          <li>\c blaze::SIMDuint64: Packed SIMD type for 64-bit unsigned integral data types</li>
-//          <li>\c blaze::SIMDfloat: Packed SIMD type for single precision floating point data</li>
-//          <li>\c blaze::SIMDdouble: Packed SIMD type for double precision floating point data</li>
-//       </ul>
-//    </li>
-//    <li>SIMD data types for complex data types
-//       <ul>
-//          <li>\c blaze::cint8: Packed SIMD type for complex 8-bit signed integral data types</li>
-//          <li>\c blaze::cuint8: Packed SIMD type for complex 8-bit unsigned integral data types</li>
-//          <li>\c blaze::cint16: Packed SIMD type for complex 16-bit signed integral data types</li>
-//          <li>\c blaze::cuint16: Packed SIMD type for complex 16-bit unsigned integral data types</li>
-//          <li>\c blaze::cint32: Packed SIMD type for complex 32-bit signed integral data types</li>
-//          <li>\c blaze::cuint32: Packed SIMD type for complex 32-bit unsigned integral data types</li>
-//          <li>\c blaze::cint64: Packed SIMD type for complex 64-bit signed integral data types</li>
-//          <li>\c blaze::cuint64: Packed SIMD type for complex 64-bit unsigned integral data types</li>
-//          <li>\c blaze::cfloat: Packed SIMD type for complex single precision floating point data</li>
-//          <li>\c blaze::cdouble: Packed SIMD type for complex double precision floating point data</li>
-//       </ul>
-//    </li>
-// </ul>
-//
-// All SIMD types provide the \c value data member for a direct access to the underlying intrinsic
-// data element. In the following example, this intrinsic element is passed to the AVX function
-// \c _mm256_sqrt_pd():
-
-   \code
-   struct Sqrt
-   {
-      double operator()( double a ) const
-      {
-         return std::sqrt( a );
-      }
-
-      simd_double_t load( simd_double_t a ) const
-      {
-         return _mm256_sqrt_pd( a.value );
-      }
-   };
-   \endcode
-
-// In this example, whenever vectorization is generally applicable, the \c load() function is
-// called instead of the function call operator for as long as the number of remaining elements
-// is larger-or-equal to the width of the packed SIMD type. In all other cases (which also
-// includes peel-off and remainder loops) the scalar operation is used.
-//
-// Please note that this example has two drawbacks: First, it will only compile in case the
-// intrinsic \c _mm256_sqrt_pd() function is available (i.e. when AVX is active). Second, the
-// availability of AVX is not taken into account. The first drawback can be alleviated by making
-// the \c load() function a function template. The second drawback can be dealt with by adding a
-// \c simdEnabled() function template to the functor:
-
-   \code
-   struct Sqrt
-   {
-      double operator()( double a ) const
-      {
-         return std::sqrt( a );
-      }
-
-      template< typename T >
-      T load( T a ) const
-      {
-         return _mm256_sqrt_pd( a.value );
-      }
-
-      template< typename T >
-      static constexpr bool simdEnabled() {
-#if defined(__AVX__)
-         return true;
-#else
-         return false;
-#endif
-      }
-   };
-   \endcode
-
-// The \c simdEnabled() function must be a \c static, \c constexpr function and must return whether
-// or not vectorization is available for the given data type \c T. In case the function returns
-// \c true, the \c load() function is used for a vectorized evaluation, in case the function
-// returns \c false, \c load() is not called.
-//
-// Note that this is a simplified example that is only working when used for dense vectors and
-// matrices with double precision floating point elements. The following code shows the complete
-// implementation of the according functor that is used within the \b Blaze library. The \b Blaze
-// \c Sqrt functor is working for all data types that are providing a square root operation:
-
-   \code
-   namespace blaze {
-
-   struct Sqrt
-   {
-      template< typename T >
-      BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
-      {
-         return sqrt( a );
-      }
-
-      template< typename T >
-      static constexpr bool simdEnabled() { return HasSIMDSqrt<T>::value; }
-
-      template< typename T >
-      BLAZE_ALWAYS_INLINE auto load( const T& a ) const
-      {
-         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
-         return sqrt( a );
-      }
-   };
-
-   } // namespace blaze
-   \endcode
-
-// The same approach can be taken for binary custom operations. The following code demonstrates
-// the \c Min functor of the \b Blaze library, which is working for all data types that provide
-// a \c min() operation:
-
-   \code
-   struct Min
-   {
-      explicit inline Min()
-      {}
-
-      template< typename T1, typename T2 >
-      BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
-      {
-         return min( a, b );
-      }
-
-      template< typename T1, typename T2 >
-      static constexpr bool simdEnabled() { return HasSIMDMin<T1,T2>::value; }
-
-      template< typename T1, typename T2 >
-      BLAZE_ALWAYS_INLINE decltype(auto) load( const T1& a, const T2& b ) const
-      {
-         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T1 );
-         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T2 );
-         return min( a, b );
-      }
-   };
-   \endcode
-
-// For more information on the available \b Blaze SIMD data types and functions, please see the
-// SIMD module in the complete \b Blaze documentation.
-//
-// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref shared_memory_parallelization
+// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref shared_memory_parallelization
 */
 //*************************************************************************************************
 
@@ -8969,7 +8776,7 @@
 //
 //  - \ref serial_execution
 //
-// \n Previous: \ref custom_operations &nbsp; &nbsp; Next: \ref openmp_parallelization
+// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization
 */
 //*************************************************************************************************
 
@@ -9680,7 +9487,698 @@
 // In case an error is encountered during (de-)serialization, a \c std::runtime_exception is
 // thrown.
 //
-// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref blas_functions \n
+// \n Previous: \ref vector_serialization &nbsp; &nbsp; Next: \ref customization \n
+*/
+//*************************************************************************************************
+
+
+//**Customization**********************************************************************************
+/*!\page customization Customization
+//
+// Although \b Blaze tries to work out of the box for every possible setting, still it may be
+// necessary to adapt the library to specific requirements. The following four pages explain
+// how to customize the \b Blaze library to your own needs:
+//
+//  - \ref configuration_files
+//  - \ref custom_data_types
+//  - \ref custom_operations
+//  - \ref error_reporting_customization
+//
+// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files
+*/
+//*************************************************************************************************
+
+
+//**Configuration Files****************************************************************************
+/*!\page configuration_files Configuration Files
+//
+// \tableofcontents
+//
+//
+// Sometimes it is necessary to adapt \b Blaze to specific requirements. For this purpose
+// \b Blaze provides several configuration files in the <tt>./blaze/config/</tt> subdirectory,
+// which provide ample opportunity to customize internal settings, behavior, and thresholds.
+// This chapter explains the most important of these configuration files. For a complete
+// overview of all customization opportunities, please go to the configuration files in the
+// <tt>./blaze/config/</tt> subdirectory or see the complete \b Blaze documentation.
+//
+//
+// \n \section transpose_flag Default Vector Storage
+// <hr>
+//
+// The \b Blaze default is that all vectors are created as column vectors (if not specified
+// explicitly):
+
+   \code
+   blaze::StaticVector<double,3UL> x;  // Creates a 3-dimensional static column vector
+   \endcode
+
+// The header file <tt>./blaze/config/TransposeFlag.h</tt> allows the configuration of the default
+// vector storage (i.e. the default transpose flag) of all vectors within the \b Blaze library.
+// The default transpose flag is specified via the \c BLAZE_DEFAULT_TRANSPOSE_FLAG macro:
+
+   \code
+   #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
+   \endcode
+
+// Alternatively the default transpose flag can be specified via command line or by defining this
+// symbol manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
+   #include <blaze/Blaze.h>
+   \endcode
+
+// Valid settings for \c BLAZE_DEFAULT_TRANSPOSE_FLAG are blaze::rowVector and blaze::columnVector.
+//
+//
+// \n \section storage_order Default Matrix Storage
+// <hr>
+//
+// Matrices are by default created as row-major matrices:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL>  A;  // Creates a 3x3 row-major matrix
+   \endcode
+
+// The header file <tt>./blaze/config/StorageOrder.h</tt> allows the configuration of the default
+// matrix storage order. Via the \c BLAZE_DEFAULT_STORAGE_ORDER macro the default storage order
+// for all matrices of the \b Blaze library can be specified.
+
+   \code
+   #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
+   \endcode
+
+// Alternatively the default storage order can be specified via command line or by defining this
+// symbol manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
+   #include <blaze/Blaze.h>
+   \endcode
+
+// Valid settings for \c BLAZE_DEFAULT_STORAGE_ORDER are blaze::rowMajor and blaze::columnMajor.
+//
+//
+// \n \section blas_mode BLAS Mode
+// <hr>
+//
+// In order to achieve maximum performance for multiplications with dense matrices, \b Blaze can
+// be configured to use a BLAS library. Via the following compilation switch in the configuration
+// file <tt>./blaze/config/BLAS.h</tt> BLAS can be enabled:
+
+   \code
+   #define BLAZE_BLAS_MODE 1
+   \endcode
+
+// In case the selected BLAS library provides parallel execution, the \c BLAZE_BLAS_IS_PARALLEL
+// switch should be activated to prevent \b Blaze from parallelizing on its own:
+
+   \code
+   #define BLAZE_BLAS_IS_PARALLEL 1
+   \endcode
+
+// Alternatively, both settings can be specified via command line or by defining the symbols
+// manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_BLAS_MODE 1
+   #define BLAZE_BLAS_IS_PARALLEL 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// In case no BLAS library is available, \b Blaze will still work and will not be reduced in
+// functionality, but performance may be limited.
+//
+//
+// \n \section cache_size Cache Size
+// <hr>
+//
+// The optimization of several \b Blaze compute kernels depends on the cache size of the target
+// architecture. By default, \b Blaze assumes a cache size of 3 MiByte. However, for optimal
+// speed the exact cache size of the system should be provided via the \c cacheSize value in the
+// <tt>./blaze/config/CacheSize.h</tt> configuration file:
+
+   \code
+   #define BLAZE_CACHE_SIZE 3145728UL;
+   \endcode
+
+// The cache size can also be specified via command line or by defining this symbol manually
+// before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_CACHE_SIZE 3145728UL
+   #include <blaze/Blaze.h>
+   \endcode
+
+// \n \section vectorization Vectorization
+// <hr>
+//
+// In order to achieve maximum performance and to exploit the compute power of a target platform
+// the \b Blaze library attempts to vectorize all linear algebra operations by SSE, AVX, and/or
+// AVX-512 intrinsics, depending on which instruction set is available. However, it is possible
+// to disable the vectorization entirely by the compile time switch in the configuration file
+// <tt>./blaze/config/Vectorization.h</tt>:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   \endcode
+
+// It is also possible to (de-)activate vectorization via command line or by defining this symbol
+// manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// In case the switch is set to 1, vectorization is enabled and the \b Blaze library is allowed
+// to use intrinsics to speed up computations. In case the switch is set to 0, vectorization is
+// disabled entirely and the \b Blaze library chooses default, non-vectorized functionality for
+// the operations. Note that deactivating the vectorization may pose a severe performance
+// limitation for a large number of operations!
+//
+//
+// \n \section thresholds Thresholds
+// <hr>
+//
+// For many computations \b Blaze distinguishes between small and large vectors and matrices.
+// This separation is especially important for the parallel execution of computations, since
+// the use of several threads only pays off for sufficiently large vectors and matrices.
+// Additionally, it also enables \b Blaze to select kernels that are optimized for a specific
+// size.
+//
+// In order to distinguish between small and large data structures \b Blaze provides several
+// thresholds that can be adapted to the characteristics of the target platform. For instance,
+// the \c DMATDVECMULT_THRESHOLD specifies the threshold between the application of the custom
+// \b Blaze kernels for small dense matrix/dense vector multiplications and the BLAS kernels
+// for large multiplications. All thresholds, including the thresholds for the OpenMP- and
+// thread-based parallelization, are contained within the configuration file
+// <tt>./blaze/config/Thresholds.h</tt>.
+//
+//
+// \n \section padding Padding
+// <hr>
+//
+// By default the \b Blaze library uses padding for all dense vectors and matrices in order to
+// achieve maximum performance in all operations. Due to padding, the proper alignment of data
+// elements can be guaranteed and the need for remainder loops is minimized. However, on the
+// downside padding introduces an additional memory overhead, which can be large depending on
+// the used data type.
+//
+// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
+// that can be used to (de-)activate padding:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   \endcode
+
+// Alternatively it is possible to (de-)activate padding via command line or by defining this
+// symbol manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// If \c BLAZE_USE_PADDING is set to 1 padding is enabled for all dense vectors and matrices, if
+// it is set to 0 padding is disabled. Note however that disabling padding can considerably reduce
+// the performance of all dense vector and matrix operations!
+//
+//
+// \n \section streaming Streaming (Non-Temporal Stores)
+// <hr>
+//
+// For vectors and matrices that don't fit into the cache anymore non-temporal stores can provide
+// a significant performance advantage of about 20%. However, this advantage is only in effect in
+// case the memory bandwidth of the target architecture is maxed out. If the target architecture's
+// memory bandwidth cannot be exhausted the use of non-temporal stores can decrease performance
+// instead of increasing it.
+//
+// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
+// that can be used to (de-)activate streaming:
+
+   \code
+   #define BLAZE_USE_STREAMING 1
+   \endcode
+
+// Alternatively streaming can be (de-)activated via command line or by defining this symbol
+// manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_USE_STREAMING 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// If \c BLAZE_USE_STREAMING is set to 1 streaming is enabled, if it is set to 0 streaming is
+// disabled. It is recommended to consult the target architecture's white papers to decide whether
+// streaming is beneficial or hurtful for performance.
+//
+//
+// \n Previous: \ref customization &nbsp; &nbsp; Next: \ref custom_data_types \n
+*/
+//*************************************************************************************************
+
+
+//**Custom Data Types******************************************************************************
+/*!\page custom_data_types Custom Data Types
+//
+//
+// The \b Blaze library tries hard to make the use of custom data types as convenient, easy and
+// intuitive as possible. However, unfortunately it is not possible to meet the requirements of
+// all possible data types. Thus it might be necessary to provide \b Blaze with some additional
+// information about the data type. The following sections give an overview of the necessary steps
+// to enable the use of the hypothetical custom data type \c custom::double_t for vector and
+// matrix operations. For example:
+
+   \code
+   blaze::DynamicVector<custom::double_t> a, b, c;
+   // ... Resizing and initialization
+   c = a + b;
+   \endcode
+
+// The \b Blaze library assumes that the \c custom::double_t data type provides \c operator+()
+// for additions, \c operator-() for subtractions, \c operator*() for multiplications and
+// \c operator/() for divisions. If any of these functions is missing it is necessary to implement
+// the operator to perform the according operation. For this example we assume that the custom
+// data type provides the four following functions instead of operators:
+
+   \code
+   namespace custom {
+
+   double_t add ( const double_t& a, const double_t b );
+   double_t sub ( const double_t& a, const double_t b );
+   double_t mult( const double_t& a, const double_t b );
+   double_t div ( const double_t& a, const double_t b );
+
+   } // namespace custom
+   \endcode
+
+// The following implementations will satisfy the requirements of the \b Blaze library:
+
+   \code
+   inline custom::double_t operator+( const custom::double_t& a, const custom::double_t& b )
+   {
+      return add( a, b );
+   }
+
+   inline custom::double_t operator-( const custom::double_t& a, const custom::double_t& b )
+   {
+      return sub( a, b );
+   }
+
+   inline custom::double_t operator*( const custom::double_t& a, const custom::double_t& b )
+   {
+      return mult( a, b );
+   }
+
+   inline custom::double_t operator/( const custom::double_t& a, const custom::double_t& b )
+   {
+      return div( a, b );
+   }
+   \endcode
+
+// \b Blaze will use all the information provided with these functions (for instance the return
+// type) to properly handle the operations. In the rare case that the return type cannot be
+// automatically determined from the operator it might be additionally necessary to provide a
+// specialization of the following four \b Blaze class templates:
+
+   \code
+   namespace blaze {
+
+   template<>
+   struct AddTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct SubTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct MultTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct DivTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   } // namespace blaze
+   \endcode
+
+// The same steps are necessary if several custom data types need to be combined (as for instance
+// \c custom::double_t and \c custom::float_t). Note that in this case both permutations need to
+// be taken into account:
+
+   \code
+   custom::double_t operator+( const custom::double_t& a, const custom::float_t& b );
+   custom::double_t operator+( const custom::float_t& a, const custom::double_t& b );
+   // ...
+   \endcode
+
+// Please note that only built-in data types apply for vectorization and thus custom data types
+// cannot achieve maximum performance!
+//
+//
+// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref custom_operations \n
+*/
+//*************************************************************************************************
+
+
+//**Custom Operations******************************************************************************
+/*!\page custom_operations Custom Operations
+//
+// In addition to the provided operations on vectors and matrices it is possible to define custom
+// operations. For this purpose, \b Blaze provides the \c map() function, which allows to pass
+// the required operation via functor or lambda:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   B = map( A, []( double d ){ return std::sqrt( d ); } );
+   \endcode
+
+// This example demonstrates the most convenient way of defining a unary custom operation by
+// passing a lambda to the \c map() function. The lambda is executed on each single element of
+// a dense vector or matrix or each non-zero element of a sparse vector or matrix.
+//
+// Alternatively, it is possible to pass a custom functor:
+
+   \code
+   struct Sqrt
+   {
+      double operator()( double a ) const
+      {
+         return std::sqrt( a );
+      }
+   };
+
+   B = map( A, Sqrt() );
+   \endcode
+
+// In order for the functor to work in a call to \c map() it must define a function call operator,
+// which accepts arguments of the type of the according vector or matrix elements.
+//
+// Although the operation is automatically parallelized depending on the size of the vector or
+// matrix, no automatic vectorization is possible. In order to enable vectorization, a \c load()
+// function can be added to the functor, which handles the vectorized computation. Depending on
+// the data type this function is passed one of the following \b Blaze SIMD data types:
+//
+// <ul>
+//    <li>SIMD data types for fundamental data types
+//       <ul>
+//          <li>\c blaze::SIMDint8: Packed SIMD type for 8-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint8: Packed SIMD type for 8-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDint16: Packed SIMD type for 16-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint16: Packed SIMD type for 16-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDint32: Packed SIMD type for 32-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint32: Packed SIMD type for 32-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDint64: Packed SIMD type for 64-bit signed integral data types</li>
+//          <li>\c blaze::SIMDuint64: Packed SIMD type for 64-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDfloat: Packed SIMD type for single precision floating point data</li>
+//          <li>\c blaze::SIMDdouble: Packed SIMD type for double precision floating point data</li>
+//       </ul>
+//    </li>
+//    <li>SIMD data types for complex data types
+//       <ul>
+//          <li>\c blaze::cint8: Packed SIMD type for complex 8-bit signed integral data types</li>
+//          <li>\c blaze::cuint8: Packed SIMD type for complex 8-bit unsigned integral data types</li>
+//          <li>\c blaze::cint16: Packed SIMD type for complex 16-bit signed integral data types</li>
+//          <li>\c blaze::cuint16: Packed SIMD type for complex 16-bit unsigned integral data types</li>
+//          <li>\c blaze::cint32: Packed SIMD type for complex 32-bit signed integral data types</li>
+//          <li>\c blaze::cuint32: Packed SIMD type for complex 32-bit unsigned integral data types</li>
+//          <li>\c blaze::cint64: Packed SIMD type for complex 64-bit signed integral data types</li>
+//          <li>\c blaze::cuint64: Packed SIMD type for complex 64-bit unsigned integral data types</li>
+//          <li>\c blaze::cfloat: Packed SIMD type for complex single precision floating point data</li>
+//          <li>\c blaze::cdouble: Packed SIMD type for complex double precision floating point data</li>
+//       </ul>
+//    </li>
+// </ul>
+//
+// All SIMD types provide the \c value data member for a direct access to the underlying intrinsic
+// data element. In the following example, this intrinsic element is passed to the AVX function
+// \c _mm256_sqrt_pd():
+
+   \code
+   struct Sqrt
+   {
+      double operator()( double a ) const
+      {
+         return std::sqrt( a );
+      }
+
+      simd_double_t load( simd_double_t a ) const
+      {
+         return _mm256_sqrt_pd( a.value );
+      }
+   };
+   \endcode
+
+// In this example, whenever vectorization is generally applicable, the \c load() function is
+// called instead of the function call operator for as long as the number of remaining elements
+// is larger-or-equal to the width of the packed SIMD type. In all other cases (which also
+// includes peel-off and remainder loops) the scalar operation is used.
+//
+// Please note that this example has two drawbacks: First, it will only compile in case the
+// intrinsic \c _mm256_sqrt_pd() function is available (i.e. when AVX is active). Second, the
+// availability of AVX is not taken into account. The first drawback can be alleviated by making
+// the \c load() function a function template. The second drawback can be dealt with by adding a
+// \c simdEnabled() function template to the functor:
+
+   \code
+   struct Sqrt
+   {
+      double operator()( double a ) const
+      {
+         return std::sqrt( a );
+      }
+
+      template< typename T >
+      T load( T a ) const
+      {
+         return _mm256_sqrt_pd( a.value );
+      }
+
+      template< typename T >
+      static constexpr bool simdEnabled() {
+#if defined(__AVX__)
+         return true;
+#else
+         return false;
+#endif
+      }
+   };
+   \endcode
+
+// The \c simdEnabled() function must be a \c static, \c constexpr function and must return whether
+// or not vectorization is available for the given data type \c T. In case the function returns
+// \c true, the \c load() function is used for a vectorized evaluation, in case the function
+// returns \c false, \c load() is not called.
+//
+// Note that this is a simplified example that is only working when used for dense vectors and
+// matrices with double precision floating point elements. The following code shows the complete
+// implementation of the according functor that is used within the \b Blaze library. The \b Blaze
+// \c Sqrt functor is working for all data types that are providing a square root operation:
+
+   \code
+   namespace blaze {
+
+   struct Sqrt
+   {
+      template< typename T >
+      BLAZE_ALWAYS_INLINE auto operator()( const T& a ) const
+      {
+         return sqrt( a );
+      }
+
+      template< typename T >
+      static constexpr bool simdEnabled() { return HasSIMDSqrt<T>::value; }
+
+      template< typename T >
+      BLAZE_ALWAYS_INLINE auto load( const T& a ) const
+      {
+         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
+         return sqrt( a );
+      }
+   };
+
+   } // namespace blaze
+   \endcode
+
+// The same approach can be taken for binary custom operations. The following code demonstrates
+// the \c Min functor of the \b Blaze library, which is working for all data types that provide
+// a \c min() operation:
+
+   \code
+   struct Min
+   {
+      explicit inline Min()
+      {}
+
+      template< typename T1, typename T2 >
+      BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
+      {
+         return min( a, b );
+      }
+
+      template< typename T1, typename T2 >
+      static constexpr bool simdEnabled() { return HasSIMDMin<T1,T2>::value; }
+
+      template< typename T1, typename T2 >
+      BLAZE_ALWAYS_INLINE decltype(auto) load( const T1& a, const T2& b ) const
+      {
+         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T1 );
+         BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T2 );
+         return min( a, b );
+      }
+   };
+   \endcode
+
+// For more information on the available \b Blaze SIMD data types and functions, please see the
+// SIMD module in the complete \b Blaze documentation.
+//
+// \n Previous: \ref custom_data_types &nbsp; &nbsp; Next: \ref error_reporting_customization
+*/
+//*************************************************************************************************
+
+
+//**Customization of the Error Reporting Mechanism*************************************************
+/*!\page error_reporting_customization Customization of the Error Reporting Mechanism
+//
+// \tableofcontents
+//
+//
+// \n \section error_reporting_background Background
+// <hr>
+//
+// The default way of \b Blaze to report errors of any kind is to throw a standard exception.
+// However, although in general this approach works well, in certain environments and under
+// special circumstances exceptions may not be the mechanism of choice and a different error
+// reporting mechanism may be desirable. For this reason, \b Blaze provides several macros,
+// which enable the customization of the error reporting mechanism. Via these macros it is
+// possible to replace the standard exceptions by some other exception type or a completely
+// different approach to report errors.
+//
+//
+// \n \section error_reporting_general_customization Customization of the Reporting Mechanism
+// <hr>
+//
+// In some cases it might be necessary to adapt the entire error reporting mechanism and to
+// replace it by some other means to signal failure. The primary macro for this purpose is the
+// \c BLAZE_THROW macro:
+
+   \code
+   #define BLAZE_THROW( EXCEPTION ) \
+      throw EXCEPTION
+   \endcode
+
+// This macro represents the default mechanism of the \b Blaze library to report errors of any
+// kind. In order to customize the error reporing mechanism all that needs to be done is to
+// define the macro prior to including any \b Blaze header file. This will cause the \b Blaze
+// specific mechanism to be overridden. The following example demonstrates this by replacing
+// exceptions by a call to a \c log() function and a direct call to abort:
+
+   \code
+   #define BLAZE_THROW( EXCEPTION ) \
+      log( "..." ); \
+      abort()
+
+   #include <blaze/Blaze.h>
+   \endcode
+
+// Doing this will trigger a call to \c log() and an abort instead of throwing an exception
+// whenever an error (such as an invalid argument) is detected.
+//
+// \note It is possible to execute several statements instead of executing a single statement to
+// throw an exception. Also note that it is recommended to define the macro such that a subsequent
+// semicolon is required!
+//
+// \warning This macro is provided with the intention to assist in adapting \b Blaze to special
+// conditions and environments. However, the customization of the error reporting mechanism via
+// this macro can have a significant effect on the library. Thus be advised to use the macro
+// with due care!
+//
+//
+// \n \section error_reporting_exception_customization Customization of the Type of Exceptions
+// <hr>
+//
+// In addition to the customization of the entire error reporting mechanism it is also possible
+// to customize the type of exceptions being thrown. This can be achieved by customizing any
+// number of the following macros:
+
+   \code
+   #define BLAZE_THROW_BAD_ALLOC \
+      BLAZE_THROW( std::bad_alloc() )
+
+   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::logic_error( MESSAGE ) )
+
+   #define BLAZE_THROW_INVALID_ARGUMENT( MESSAGE ) \
+      BLAZE_THROW( std::invalid_argument( MESSAGE ) )
+
+   #define BLAZE_THROW_LENGTH_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::length_error( MESSAGE ) )
+
+   #define BLAZE_THROW_OUT_OF_RANGE( MESSAGE ) \
+      BLAZE_THROW( std::out_of_range( MESSAGE ) )
+
+   #define BLAZE_THROW_RUNTIME_ERROR( MESSAGE ) \
+      BLAZE_THROW( std::runtime_error( MESSAGE ) )
+   \endcode
+
+// In order to customize the type of exception the according macro has to be defined prior to
+// including any \b Blaze header file. This will override the \b Blaze default behavior. The
+// following example demonstrates this by replacing \c std::invalid_argument by a custom
+// exception type:
+
+   \code
+   class InvalidArgument
+   {
+    public:
+      InvalidArgument();
+      explicit InvalidArgument( const std::string& message );
+      // ...
+   };
+
+   #define BLAZE_THROW_INVALID_ARGUMENT( MESSAGE ) \
+      BLAZE_THROW( InvalidArgument( MESSAGE ) )
+
+   #include <blaze/Blaze.h>
+   \endcode
+
+// By manually defining the macro, an \c InvalidArgument exception is thrown instead of a
+// \c std::invalid_argument exception. Note that it is recommended to define the macro such
+// that a subsequent semicolon is required!
+//
+// \warning These macros are provided with the intention to assist in adapting \b Blaze to
+// special conditions and environments. However, the customization of the type of an exception
+// via this macro may have an effect on the library. Thus be advised to use the macro with due
+// care!
+//
+//
+// \n \section error_reporting_special_errors Customization of Special Errors
+// <hr>
+//
+// Last but not least it is possible to customize the error reporting for special kinds of errors.
+// This can be achieved by customizing any number of the following macros:
+
+   \code
+   #define BLAZE_THROW_DIVISION_BY_ZERO( MESSAGE ) \
+      BLAZE_THROW_RUNTIME_ERROR( MESSAGE )
+
+   #define BLAZE_THROW_LAPACK_ERROR( MESSAGE ) \
+      BLAZE_THROW_RUNTIME_ERROR( MESSAGE )
+   \endcode
+
+// As explained in the previous sections, in order to customize the handling of special errors
+// the according macro has to be defined prior to including any \b Blaze header file. This will
+// override the \b Blaze default behavior.
+//
+//
+// \n Previous: \ref custom_operations &nbsp; &nbsp; Next: \ref blas_functions \n
 */
 //*************************************************************************************************
 
@@ -9942,7 +10440,7 @@
    } // namespace blaze
    \endcode
 
-// \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref lapack_functions \n
+// \n Previous: \ref error_reporting_customization &nbsp; &nbsp; Next: \ref lapack_functions \n
 */
 //*************************************************************************************************
 
@@ -11536,238 +12034,7 @@
 // an exception in case of an error.
 //
 //
-// \n Previous: \ref blas_functions &nbsp; &nbsp; Next: \ref configuration_files \n
-*/
-//*************************************************************************************************
-
-
-//**Configuration Files****************************************************************************
-/*!\page configuration_files Configuration Files
-//
-// \tableofcontents
-//
-//
-// Sometimes it is necessary to adapt \b Blaze to specific requirements. For this purpose
-// \b Blaze provides several configuration files in the <tt>./blaze/config/</tt> subdirectory,
-// which provide ample opportunity to customize internal settings, behavior, and thresholds.
-// This chapter explains the most important of these configuration files. For a complete
-// overview of all customization opportunities, please go to the configuration files in the
-// <tt>./blaze/config/</tt> subdirectory or see the complete \b Blaze documentation.
-//
-//
-// \n \section transpose_flag Default Vector Storage
-// <hr>
-//
-// The \b Blaze default is that all vectors are created as column vectors (if not specified
-// explicitly):
-
-   \code
-   blaze::StaticVector<double,3UL> x;  // Creates a 3-dimensional static column vector
-   \endcode
-
-// The header file <tt>./blaze/config/TransposeFlag.h</tt> allows the configuration of the default
-// vector storage (i.e. the default transpose flag) of all vectors within the \b Blaze library.
-// The default transpose flag is specified via the \c BLAZE_DEFAULT_TRANSPOSE_FLAG macro:
-
-   \code
-   #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
-   \endcode
-
-// Alternatively the default transpose flag can be specified via command line or by defining this
-// symbol manually before including any Blaze header file:
-
-   \code
-   #define BLAZE_DEFAULT_TRANSPOSE_FLAG blaze::columnVector
-   #include <blaze/Blaze.h>
-   \endcode
-
-// Valid settings for \c BLAZE_DEFAULT_TRANSPOSE_FLAG are blaze::rowVector and blaze::columnVector.
-//
-//
-// \n \section storage_order Default Matrix Storage
-// <hr>
-//
-// Matrices are by default created as row-major matrices:
-
-   \code
-   blaze::StaticMatrix<double,3UL,3UL>  A;  // Creates a 3x3 row-major matrix
-   \endcode
-
-// The header file <tt>./blaze/config/StorageOrder.h</tt> allows the configuration of the default
-// matrix storage order. Via the \c BLAZE_DEFAULT_STORAGE_ORDER macro the default storage order
-// for all matrices of the \b Blaze library can be specified.
-
-   \code
-   #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
-   \endcode
-
-// Alternatively the default storage order can be specified via command line or by defining this
-// symbol manually before including any Blaze header file:
-
-   \code
-   #define BLAZE_DEFAULT_STORAGE_ORDER blaze::rowMajor
-   #include <blaze/Blaze.h>
-   \endcode
-
-// Valid settings for \c BLAZE_DEFAULT_STORAGE_ORDER are blaze::rowMajor and blaze::columnMajor.
-//
-//
-// \n \section blas_mode BLAS Mode
-// <hr>
-//
-// In order to achieve maximum performance for multiplications with dense matrices, \b Blaze can
-// be configured to use a BLAS library. Via the following compilation switch in the configuration
-// file <tt>./blaze/config/BLAS.h</tt> BLAS can be enabled:
-
-   \code
-   #define BLAZE_BLAS_MODE 1
-   \endcode
-
-// In case the selected BLAS library provides parallel execution, the \c BLAZE_BLAS_IS_PARALLEL
-// switch should be activated to prevent \b Blaze from parallelizing on its own:
-
-   \code
-   #define BLAZE_BLAS_IS_PARALLEL 1
-   \endcode
-
-// Alternatively, both settings can be specified via command line or by defining the symbols
-// manually before including any Blaze header file:
-
-   \code
-   #define BLAZE_BLAS_MODE 1
-   #define BLAZE_BLAS_IS_PARALLEL 1
-   #include <blaze/Blaze.h>
-   \endcode
-
-// In case no BLAS library is available, \b Blaze will still work and will not be reduced in
-// functionality, but performance may be limited.
-//
-//
-// \n \section cache_size Cache Size
-// <hr>
-//
-// The optimization of several \b Blaze compute kernels depends on the cache size of the target
-// architecture. By default, \b Blaze assumes a cache size of 3 MiByte. However, for optimal
-// speed the exact cache size of the system should be provided via the \c cacheSize value in the
-// <tt>./blaze/config/CacheSize.h</tt> configuration file:
-
-   \code
-   #define BLAZE_CACHE_SIZE 3145728UL;
-   \endcode
-
-// The cache size can also be specified via command line or by defining this symbol manually
-// before including any Blaze header file:
-
-   \code
-   #define BLAZE_CACHE_SIZE 3145728UL
-   #include <blaze/Blaze.h>
-   \endcode
-
-// \n \section vectorization Vectorization
-// <hr>
-//
-// In order to achieve maximum performance and to exploit the compute power of a target platform
-// the \b Blaze library attempts to vectorize all linear algebra operations by SSE, AVX, and/or
-// AVX-512 intrinsics, depending on which instruction set is available. However, it is possible
-// to disable the vectorization entirely by the compile time switch in the configuration file
-// <tt>./blaze/config/Vectorization.h</tt>:
-
-   \code
-   #define BLAZE_USE_VECTORIZATION 1
-   \endcode
-
-// It is also possible to (de-)activate vectorization via command line or by defining this symbol
-// manually before including any Blaze header file:
-
-   \code
-   #define BLAZE_USE_VECTORIZATION 1
-   #include <blaze/Blaze.h>
-   \endcode
-
-// In case the switch is set to 1, vectorization is enabled and the \b Blaze library is allowed
-// to use intrinsics to speed up computations. In case the switch is set to 0, vectorization is
-// disabled entirely and the \b Blaze library chooses default, non-vectorized functionality for
-// the operations. Note that deactivating the vectorization may pose a severe performance
-// limitation for a large number of operations!
-//
-//
-// \n \section thresholds Thresholds
-// <hr>
-//
-// For many computations \b Blaze distinguishes between small and large vectors and matrices.
-// This separation is especially important for the parallel execution of computations, since
-// the use of several threads only pays off for sufficiently large vectors and matrices.
-// Additionally, it also enables \b Blaze to select kernels that are optimized for a specific
-// size.
-//
-// In order to distinguish between small and large data structures \b Blaze provides several
-// thresholds that can be adapted to the characteristics of the target platform. For instance,
-// the \c DMATDVECMULT_THRESHOLD specifies the threshold between the application of the custom
-// \b Blaze kernels for small dense matrix/dense vector multiplications and the BLAS kernels
-// for large multiplications. All thresholds, including the thresholds for the OpenMP- and
-// thread-based parallelization, are contained within the configuration file
-// <tt>./blaze/config/Thresholds.h</tt>.
-//
-//
-// \n \section padding Padding
-// <hr>
-//
-// By default the \b Blaze library uses padding for all dense vectors and matrices in order to
-// achieve maximum performance in all operations. Due to padding, the proper alignment of data
-// elements can be guaranteed and the need for remainder loops is minimized. However, on the
-// downside padding introduces an additional memory overhead, which can be large depending on
-// the used data type.
-//
-// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
-// that can be used to (de-)activate padding:
-
-   \code
-   #define BLAZE_USE_PADDING 1;
-   \endcode
-
-// Alternatively it is possible to (de-)activate padding via command line or by defining this
-// symbol manually before including any Blaze header file:
-
-   \code
-   #define BLAZE_USE_PADDING 1
-   #include <blaze/Blaze.h>
-   \endcode
-
-// If \c BLAZE_USE_PADDING is set to 1 padding is enabled for all dense vectors and matrices, if
-// it is set to 0 padding is disabled. Note however that disabling padding can considerably reduce
-// the performance of all dense vector and matrix operations!
-//
-//
-// \n \section streaming Streaming (Non-Temporal Stores)
-// <hr>
-//
-// For vectors and matrices that don't fit into the cache anymore non-temporal stores can provide
-// a significant performance advantage of about 20%. However, this advantage is only in effect in
-// case the memory bandwidth of the target architecture is maxed out. If the target architecture's
-// memory bandwidth cannot be exhausted the use of non-temporal stores can decrease performance
-// instead of increasing it.
-//
-// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
-// that can be used to (de-)activate streaming:
-
-   \code
-   #define BLAZE_USE_STREAMING 1
-   \endcode
-
-// Alternatively streaming can be (de-)activated via command line or by defining this symbol
-// manually before including any Blaze header file:
-
-   \code
-   #define BLAZE_USE_STREAMING 1
-   #include <blaze/Blaze.h>
-   \endcode
-
-// If \c useStreaming is set to 1 streaming is enabled, if it is set to 0 streaming is disabled.
-// It is recommended to consult the target architecture's white papers to decide whether streaming
-// is beneficial or hurtful for performance.
-//
-//
-// \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref block_vectors_and_matrices \n
+// \n Previous: \ref blas_functions &nbsp; &nbsp; Next: \ref block_vectors_and_matrices \n
 */
 //*************************************************************************************************
 
@@ -11848,253 +12115,7 @@
    DynamicVector<V2,columnVector> y( A * x );
    \endcode
 
-// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref custom_data_types \n
-*/
-//*************************************************************************************************
-
-
-//**Custom Data Types******************************************************************************
-/*!\page custom_data_types Custom Data Types
-//
-//
-// The \b Blaze library tries hard to make the use of custom data types as convenient, easy and
-// intuitive as possible. However, unfortunately it is not possible to meet the requirements of
-// all possible data types. Thus it might be necessary to provide \b Blaze with some additional
-// information about the data type. The following sections give an overview of the necessary steps
-// to enable the use of the hypothetical custom data type \c custom::double_t for vector and
-// matrix operations. For example:
-
-   \code
-   blaze::DynamicVector<custom::double_t> a, b, c;
-   // ... Resizing and initialization
-   c = a + b;
-   \endcode
-
-// The \b Blaze library assumes that the \c custom::double_t data type provides \c operator+()
-// for additions, \c operator-() for subtractions, \c operator*() for multiplications and
-// \c operator/() for divisions. If any of these functions is missing it is necessary to implement
-// the operator to perform the according operation. For this example we assume that the custom
-// data type provides the four following functions instead of operators:
-
-   \code
-   namespace custom {
-
-   double_t add ( const double_t& a, const double_t b );
-   double_t sub ( const double_t& a, const double_t b );
-   double_t mult( const double_t& a, const double_t b );
-   double_t div ( const double_t& a, const double_t b );
-
-   } // namespace custom
-   \endcode
-
-// The following implementations will satisfy the requirements of the \b Blaze library:
-
-   \code
-   inline custom::double_t operator+( const custom::double_t& a, const custom::double_t& b )
-   {
-      return add( a, b );
-   }
-
-   inline custom::double_t operator-( const custom::double_t& a, const custom::double_t& b )
-   {
-      return sub( a, b );
-   }
-
-   inline custom::double_t operator*( const custom::double_t& a, const custom::double_t& b )
-   {
-      return mult( a, b );
-   }
-
-   inline custom::double_t operator/( const custom::double_t& a, const custom::double_t& b )
-   {
-      return div( a, b );
-   }
-   \endcode
-
-// \b Blaze will use all the information provided with these functions (for instance the return
-// type) to properly handle the operations. In the rare case that the return type cannot be
-// automatically determined from the operator it might be additionally necessary to provide a
-// specialization of the following four \b Blaze class templates:
-
-   \code
-   namespace blaze {
-
-   template<>
-   struct AddTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   template<>
-   struct SubTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   template<>
-   struct MultTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   template<>
-   struct DivTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   } // namespace blaze
-   \endcode
-
-// The same steps are necessary if several custom data types need to be combined (as for instance
-// \c custom::double_t and \c custom::float_t). Note that in this case both permutations need to
-// be taken into account:
-
-   \code
-   custom::double_t operator+( const custom::double_t& a, const custom::float_t& b );
-   custom::double_t operator+( const custom::float_t& a, const custom::double_t& b );
-   // ...
-   \endcode
-
-// Please note that only built-in data types apply for vectorization and thus custom data types
-// cannot achieve maximum performance!
-//
-//
-// \n Previous: \ref block_vectors_and_matrices &nbsp; &nbsp; Next: \ref error_reporting_customization \n
-*/
-//*************************************************************************************************
-
-
-//**Customization of the Error Reporting Mechanism*************************************************
-/*!\page error_reporting_customization Customization of the Error Reporting Mechanism
-//
-// \tableofcontents
-//
-//
-// \n \section error_reporting_background Background
-// <hr>
-//
-// The default way of \b Blaze to report errors of any kind is to throw a standard exception.
-// However, although in general this approach works well, in certain environments and under
-// special circumstances exceptions may not be the mechanism of choice and a different error
-// reporting mechanism may be desirable. For this reason, \b Blaze provides several macros,
-// which enable the customization of the error reporting mechanism. Via these macros it is
-// possible to replace the standard exceptions by some other exception type or a completely
-// different approach to report errors.
-//
-//
-// \n \section error_reporting_general_customization Customization of the Reporting Mechanism
-// <hr>
-//
-// In some cases it might be necessary to adapt the entire error reporting mechanism and to
-// replace it by some other means to signal failure. The primary macro for this purpose is the
-// \c BLAZE_THROW macro:
-
-   \code
-   #define BLAZE_THROW( EXCEPTION ) \
-      throw EXCEPTION
-   \endcode
-
-// This macro represents the default mechanism of the \b Blaze library to report errors of any
-// kind. In order to customize the error reporing mechanism all that needs to be done is to
-// define the macro prior to including any \b Blaze header file. This will cause the \b Blaze
-// specific mechanism to be overridden. The following example demonstrates this by replacing
-// exceptions by a call to a \c log() function and a direct call to abort:
-
-   \code
-   #define BLAZE_THROW( EXCEPTION ) \
-      log( "..." ); \
-      abort()
-
-   #include <blaze/Blaze.h>
-   \endcode
-
-// Doing this will trigger a call to \c log() and an abort instead of throwing an exception
-// whenever an error (such as an invalid argument) is detected.
-//
-// \note It is possible to execute several statements instead of executing a single statement to
-// throw an exception. Also note that it is recommended to define the macro such that a subsequent
-// semicolon is required!
-//
-// \warning This macro is provided with the intention to assist in adapting \b Blaze to special
-// conditions and environments. However, the customization of the error reporting mechanism via
-// this macro can have a significant effect on the library. Thus be advised to use the macro
-// with due care!
-//
-//
-// \n \section error_reporting_exception_customization Customization of the Type of Exceptions
-// <hr>
-//
-// In addition to the customization of the entire error reporting mechanism it is also possible
-// to customize the type of exceptions being thrown. This can be achieved by customizing any
-// number of the following macros:
-
-   \code
-   #define BLAZE_THROW_BAD_ALLOC \
-      BLAZE_THROW( std::bad_alloc() )
-
-   #define BLAZE_THROW_LOGIC_ERROR( MESSAGE ) \
-      BLAZE_THROW( std::logic_error( MESSAGE ) )
-
-   #define BLAZE_THROW_INVALID_ARGUMENT( MESSAGE ) \
-      BLAZE_THROW( std::invalid_argument( MESSAGE ) )
-
-   #define BLAZE_THROW_LENGTH_ERROR( MESSAGE ) \
-      BLAZE_THROW( std::length_error( MESSAGE ) )
-
-   #define BLAZE_THROW_OUT_OF_RANGE( MESSAGE ) \
-      BLAZE_THROW( std::out_of_range( MESSAGE ) )
-
-   #define BLAZE_THROW_RUNTIME_ERROR( MESSAGE ) \
-      BLAZE_THROW( std::runtime_error( MESSAGE ) )
-   \endcode
-
-// In order to customize the type of exception the according macro has to be defined prior to
-// including any \b Blaze header file. This will override the \b Blaze default behavior. The
-// following example demonstrates this by replacing \c std::invalid_argument by a custom
-// exception type:
-
-   \code
-   class InvalidArgument
-   {
-    public:
-      InvalidArgument();
-      explicit InvalidArgument( const std::string& message );
-      // ...
-   };
-
-   #define BLAZE_THROW_INVALID_ARGUMENT( MESSAGE ) \
-      BLAZE_THROW( InvalidArgument( MESSAGE ) )
-
-   #include <blaze/Blaze.h>
-   \endcode
-
-// By manually defining the macro, an \c InvalidArgument exception is thrown instead of a
-// \c std::invalid_argument exception. Note that it is recommended to define the macro such
-// that a subsequent semicolon is required!
-//
-// \warning These macros are provided with the intention to assist in adapting \b Blaze to
-// special conditions and environments. However, the customization of the type of an exception
-// via this macro may have an effect on the library. Thus be advised to use the macro with due
-// care!
-//
-//
-// \n \section error_reporting_special_errors Customization of Special Errors
-// <hr>
-//
-// Last but not least it is possible to customize the error reporting for special kinds of errors.
-// This can be achieved by customizing any number of the following macros:
-
-   \code
-   #define BLAZE_THROW_DIVISION_BY_ZERO( MESSAGE ) \
-      BLAZE_THROW_RUNTIME_ERROR( MESSAGE )
-
-   #define BLAZE_THROW_LAPACK_ERROR( MESSAGE ) \
-      BLAZE_THROW_RUNTIME_ERROR( MESSAGE )
-   \endcode
-
-// As explained in the previous sections, in order to customize the handling of special errors
-// the according macro has to be defined prior to including any \b Blaze header file. This will
-// override the \b Blaze default behavior.
-//
-//
-// \n Previous: \ref custom_data_types &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
+// \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
 */
 //*************************************************************************************************
 
@@ -12197,7 +12218,7 @@
    y = eval( A * B ) * x;
    \endcode
 
-// \n Previous: \ref error_reporting_customization
+// \n Previous: \ref block_vectors_and_matrices
 */
 //*************************************************************************************************
 
