@@ -79,6 +79,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
+#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -159,7 +160,7 @@ class DMatMapExpr
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      enum : bool { value = OP::template simdEnabled<ET>() };
+      enum : bool { value = OP::BLAZE_TEMPLATE simdEnabled<ET>() };
    };
    /*! \endcond */
    //**********************************************************************************************

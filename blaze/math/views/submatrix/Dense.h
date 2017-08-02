@@ -103,6 +103,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -2638,7 +2639,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2675,7 +2676,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template Vectori
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2840,7 +2841,7 @@ inline void Submatrix<MT,unaligned,false,true>::assign( const SparseMatrix<MT2,t
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedAddAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2883,7 +2884,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template Vectori
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedAddAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -3035,7 +3036,7 @@ inline void Submatrix<MT,unaligned,false,true>::addAssign( const SparseMatrix<MT
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedSubAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -3078,7 +3079,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template Vectori
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedSubAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -3230,7 +3231,7 @@ inline void Submatrix<MT,unaligned,false,true>::subAssign( const SparseMatrix<MT
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedSchurAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -3267,7 +3268,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true>::template Vectori
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::template VectorizedSchurAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,unaligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -5914,7 +5915,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5951,7 +5952,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template Vectoriz
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6116,7 +6117,7 @@ inline void Submatrix<MT,unaligned,true,true>::assign( const SparseMatrix<MT2,fa
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedAddAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -6159,7 +6160,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template Vectoriz
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedAddAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6311,7 +6312,7 @@ inline void Submatrix<MT,unaligned,true,true>::addAssign( const SparseMatrix<MT2
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedSubAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -6354,7 +6355,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template Vectoriz
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedSubAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6506,7 +6507,7 @@ inline void Submatrix<MT,unaligned,true,true>::subAssign( const SparseMatrix<MT2
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedSchurAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -6544,7 +6545,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true>::template Vectoriz
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::template VectorizedSchurAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,unaligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -8823,7 +8824,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,aligned,false,true>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -8860,7 +8861,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template Vectorize
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,aligned,false,true>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -9025,7 +9026,7 @@ inline void Submatrix<MT,aligned,false,true>::assign( const SparseMatrix<MT2,tru
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedAddAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,aligned,false,true>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -9068,7 +9069,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template Vectorize
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedAddAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,aligned,false,true>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -9220,7 +9221,7 @@ inline void Submatrix<MT,aligned,false,true>::addAssign( const SparseMatrix<MT2,
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedSubAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,aligned,false,true>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -9263,7 +9264,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template Vectorize
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedSubAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,aligned,false,true>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -9415,7 +9416,7 @@ inline void Submatrix<MT,aligned,false,true>::subAssign( const SparseMatrix<MT2,
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedSchurAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,aligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -9452,7 +9453,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true>::template Vectorize
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true>::template VectorizedSchurAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,false,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,aligned,false,true>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -11683,7 +11684,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,aligned,true,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -11720,7 +11721,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template Vectorized
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
    Submatrix<MT,aligned,true,true>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -11885,7 +11886,7 @@ inline void Submatrix<MT,aligned,true,true>::assign( const SparseMatrix<MT2,fals
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedAddAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,aligned,true,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -11928,7 +11929,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template Vectorized
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedAddAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
    Submatrix<MT,aligned,true,true>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -12080,7 +12081,7 @@ inline void Submatrix<MT,aligned,true,true>::addAssign( const SparseMatrix<MT2,f
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedSubAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,aligned,true,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -12123,7 +12124,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template Vectorized
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedSubAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
    Submatrix<MT,aligned,true,true>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -12275,7 +12276,7 @@ inline void Submatrix<MT,aligned,true,true>::subAssign( const SparseMatrix<MT2,f
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedSchurAssign<MT2> >
+inline DisableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,aligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -12313,7 +12314,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true>::template Vectorized
 */
 template< typename MT >   // Type of the dense matrix
 template< typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true>::template VectorizedSchurAssign<MT2> >
+inline EnableIf_< typename Submatrix<MT,aligned,true,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
    Submatrix<MT,aligned,true,true>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );

@@ -104,6 +104,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Misalignment.h>
+#include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -2433,7 +2434,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2471,7 +2472,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2641,7 +2642,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedAddAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2694,7 +2695,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedAddAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2865,7 +2866,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedSubAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2918,7 +2919,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedSubAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -3089,7 +3090,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedSchurAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -3127,7 +3128,7 @@ template< typename Type  // Data type of the matrix
         , bool PF        // Padding flag
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::template VectorizedSchurAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
    CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5320,7 +5321,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5359,7 +5360,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5533,7 +5534,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedAddAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5587,7 +5588,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedAddAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5762,7 +5763,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedSubAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5817,7 +5818,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedSubAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5992,7 +5993,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedSchurAssign<MT> >
+inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -6032,7 +6033,7 @@ template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF >      // Padding flag
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::template VectorizedSchurAssign<MT> >
+inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
    CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );

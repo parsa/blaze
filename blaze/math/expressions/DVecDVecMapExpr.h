@@ -69,6 +69,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
+#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -153,7 +154,7 @@ class DVecDVecMapExpr
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      enum : bool { value = OP::template simdEnabled<ET1,ET2>() };
+      enum : bool { value = OP::BLAZE_TEMPLATE simdEnabled<ET1,ET2>() };
    };
    /*! \endcond */
    //**********************************************************************************************
