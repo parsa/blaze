@@ -2151,7 +2151,7 @@ inline void SymmetricMatrix<MT,SO,false,false>::append( size_t i, size_t j, cons
    SharedValue<ET> shared( value );
 
    matrix_.append( i, j, shared, check );
-   if( i != j && ( !check || !isDefault( value ) ) )
+   if( i != j && ( !check || !isDefault<strict>( value ) ) )
       matrix_.insert( j, i, shared );
 }
 /*! \endcond */

@@ -2047,7 +2047,7 @@ inline void HermitianMatrix<MT,SO,false>::append( size_t i, size_t j, const Elem
    }
 
    matrix_.append( i, j, value, check );
-   if( !isDiagonal && ( !check || !isDefault( value ) ) )
+   if( !isDiagonal && ( !check || !isDefault<strict>( value ) ) )
       matrix_.insert( j, i, conj( value ) );
 }
 /*! \endcond */

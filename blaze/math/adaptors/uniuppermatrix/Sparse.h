@@ -1910,7 +1910,7 @@ inline void UniUpperMatrix<MT,SO,false>::append( size_t i, size_t j, const Eleme
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid access to diagonal or lower matrix element" );
    }
 
-   if( !check || !isDefault( value ) )
+   if( !check || !isDefault<strict>( value ) )
       matrix_.insert( i, j, value );
 }
 /*! \endcond */

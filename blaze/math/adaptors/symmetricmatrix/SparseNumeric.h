@@ -2021,7 +2021,7 @@ template< typename MT  // Type of the adapted sparse matrix
 inline void SymmetricMatrix<MT,SO,false,true>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
    matrix_.append( i, j, value, check );
-   if( i != j && ( !check || !isDefault( value ) ) )
+   if( i != j && ( !check || !isDefault<strict>( value ) ) )
       matrix_.insert( j, i, value );
 }
 /*! \endcond */
