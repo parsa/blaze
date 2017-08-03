@@ -182,35 +182,6 @@ using HighType_ = typename HighType<T1,T2>::Type;
 
 //=================================================================================================
 //
-//  HIGHTYPE SPECIALIZATION FOR IDENTICAL TYPES
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization for two identical types.
-// \ingroup math_traits
-//
-// This specialization of the HighType class template handles the special case that the two
-// given types are identical. In this case, the nested types \a HighType and \a LowType are
-// set to the given type \a T (ignoring \a const and \a volatile qualifiers and reference
-// modifiers).
-*/
-template< typename T >
-struct HighType<T,T>
-{
-   //**********************************************************************************************
-   using Type = Decay_<T>;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  HIGHTYPE SPECIALIZATION MACRO
 //
 //=================================================================================================
