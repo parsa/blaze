@@ -182,34 +182,6 @@ using LowType_ = typename LowType<T1,T2>::Type;
 
 //=================================================================================================
 //
-//  LOWTYPE SPECIALIZATION FOR IDENTICAL TYPES
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization for two identical types.
-// \ingroup math_traits
-//
-// This specialization of the LowType class template handles the special case that the two
-// given types are identical. In this case, the nested type \a Type is set to the given type
-// \a T (ignoring cv-qualifiers and reference modifiers).
-*/
-template< typename T >
-struct LowType<T,T>
-{
-   //**********************************************************************************************
-   using Type = Decay_<T>;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  LOWTYPE SPECIALIZATION MACRO
 //
 //=================================================================================================
