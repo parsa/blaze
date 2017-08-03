@@ -50,6 +50,18 @@ if( blaze_FOUND )
 endif()
 
 
+Installation via the VC++ Packaging Tool
+----------------------------------------
+
+An alternate way to install Blaze for Windows users is Microsoft's VC++ Packaging Tool (vcpkg;
+https://github.com/Microsoft/vcpkg). Blaze can be installed via the command line:
+
+C:\src\vcpkg> .\vcpkg install blaze
+
+The tool automatically downloads the latest Blaze release and copies the header files to the
+common include directory.
+
+
 Installation on Linux/macOS
 ---------------------------
 
