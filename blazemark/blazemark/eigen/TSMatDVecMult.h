@@ -3,7 +3,7 @@
 //  \file blazemark/eigen/TSMatDVecMult.h
 //  \brief Header file for the Eigen transpose sparse matrix/dense vector multiplication kernel
 //
-//  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

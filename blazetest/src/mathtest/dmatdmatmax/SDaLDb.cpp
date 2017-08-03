@@ -3,7 +3,7 @@
 //  \file src/mathtest/dmatdmatmax/SDaLDb.cpp
 //  \brief Source file for the SDaLDb dense matrix/dense matrix maximum math test
 //
-//  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

@@ -3,7 +3,7 @@
 //  \file blaze/math/dense/HybridVector.h
 //  \brief Header file for the HybridVector class template
 //
-//  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //

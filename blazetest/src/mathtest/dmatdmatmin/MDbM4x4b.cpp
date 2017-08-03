@@ -3,7 +3,7 @@
 //  \file src/mathtest/dmatdmatmin/MDbM4x4b.cpp
 //  \brief Source file for the MDbM4x4b dense matrix/dense matrix minimum math test
 //
-//  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

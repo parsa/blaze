@@ -3,7 +3,7 @@
 //  \file src/mathtest/smatdmatsub/MIbUDa.cpp
 //  \brief Source file for the MIbUDa sparse matrix/dense matrix subtraction math test
 //
-//  Copyright (C) 2013 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
