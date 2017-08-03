@@ -126,8 +126,12 @@
 //    <li> \ref customization
 //       <ul>
 //          <li> \ref configuration_files </li>
-//          <li> \ref custom_data_types </li>
-//          <li> \ref custom_operations </li>
+//          <li> \ref vector_and_matrix_customization
+//             <ul>
+//                <li> \ref custom_operations </li>
+//                <li> \ref custom_data_types </li>
+//             </ul>
+//          </li>
 //          <li> \ref error_reporting_customization </li>
 //       </ul>
 //    </li>
@@ -9496,12 +9500,11 @@
 /*!\page customization Customization
 //
 // Although \b Blaze tries to work out of the box for every possible setting, still it may be
-// necessary to adapt the library to specific requirements. The following four pages explain
+// necessary to adapt the library to specific requirements. The following three pages explain
 // how to customize the \b Blaze library to your own needs:
 //
 //  - \ref configuration_files
-//  - \ref custom_data_types
-//  - \ref custom_operations
+//  - \ref vector_and_matrix_customization
 //  - \ref error_reporting_customization
 //
 // \n Previous: \ref matrix_serialization &nbsp; &nbsp; Next: \ref configuration_files
@@ -9735,132 +9738,25 @@
 // streaming is beneficial or hurtful for performance.
 //
 //
-// \n Previous: \ref customization &nbsp; &nbsp; Next: \ref custom_data_types \n
+// \n Previous: \ref customization &nbsp; &nbsp; Next: \ref vector_and_matrix_customization \n
 */
 //*************************************************************************************************
 
 
-//**Custom Data Types******************************************************************************
-/*!\page custom_data_types Custom Data Types
-//
-//
-// The \b Blaze library tries hard to make the use of custom data types as convenient, easy and
-// intuitive as possible. However, unfortunately it is not possible to meet the requirements of
-// all possible data types. Thus it might be necessary to provide \b Blaze with some additional
-// information about the data type. The following sections give an overview of the necessary steps
-// to enable the use of the hypothetical custom data type \c custom::double_t for vector and
-// matrix operations. For example:
-
-   \code
-   blaze::DynamicVector<custom::double_t> a, b, c;
-   // ... Resizing and initialization
-   c = a + b;
-   \endcode
-
-// The \b Blaze library assumes that the \c custom::double_t data type provides \c operator+()
-// for additions, \c operator-() for subtractions, \c operator*() for multiplications and
-// \c operator/() for divisions. If any of these functions is missing it is necessary to implement
-// the operator to perform the according operation. For this example we assume that the custom
-// data type provides the four following functions instead of operators:
-
-   \code
-   namespace custom {
-
-   double_t add ( const double_t& a, const double_t b );
-   double_t sub ( const double_t& a, const double_t b );
-   double_t mult( const double_t& a, const double_t b );
-   double_t div ( const double_t& a, const double_t b );
-
-   } // namespace custom
-   \endcode
-
-// The following implementations will satisfy the requirements of the \b Blaze library:
-
-   \code
-   inline custom::double_t operator+( const custom::double_t& a, const custom::double_t& b )
-   {
-      return add( a, b );
-   }
-
-   inline custom::double_t operator-( const custom::double_t& a, const custom::double_t& b )
-   {
-      return sub( a, b );
-   }
-
-   inline custom::double_t operator*( const custom::double_t& a, const custom::double_t& b )
-   {
-      return mult( a, b );
-   }
-
-   inline custom::double_t operator/( const custom::double_t& a, const custom::double_t& b )
-   {
-      return div( a, b );
-   }
-   \endcode
-
-// \b Blaze will use all the information provided with these functions (for instance the return
-// type) to properly handle the operations. In the rare case that the return type cannot be
-// automatically determined from the operator it might be additionally necessary to provide a
-// specialization of the following four \b Blaze class templates:
-
-   \code
-   namespace blaze {
-
-   template<>
-   struct AddTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   template<>
-   struct SubTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   template<>
-   struct MultTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   template<>
-   struct DivTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
-   };
-
-   } // namespace blaze
-   \endcode
-
-// The same steps are necessary if several custom data types need to be combined (as for instance
-// \c custom::double_t and \c custom::float_t). Note that in this case both permutations need to
-// be taken into account:
-
-   \code
-   custom::double_t operator+( const custom::double_t& a, const custom::float_t& b );
-   custom::double_t operator+( const custom::float_t& a, const custom::double_t& b );
-   // ...
-   \endcode
-
-// Please note that only built-in data types apply for vectorization and thus custom data types
-// cannot achieve maximum performance!
-//
-//
-// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref custom_operations \n
-*/
-//*************************************************************************************************
-
-
-//**Custom Operations******************************************************************************
-/*!\page custom_operations Custom Operations
+//**Customization of Vectors and Matrices**********************************************************
+/*!\page vector_and_matrix_customization Customization of Vectors and Matrices
 //
 // \tableofcontents
 //
+//
+// \n \section custom_operations Custom Operations
+// <hr>
 //
 // There are two approaches to extend \b Blaze with custom operations. First, the \c map()
 // functions provide the possibility to execute componentwise custom operations on vectors and
 // matrices. Second, it is possible to add customized free functions.
 //
-//
-// \n \section custom_operations_map The map() Functions
-// <hr>
+// \n \subsection custom_operations_map The map() Functions
 //
 // Via the unary and binary \c map() functions it is possible to execute componentwise custom
 // operations on vectors and matrices. The unary \c map() function can be used to apply a custom
@@ -9931,16 +9827,16 @@
 //    </li>
 //    <li>SIMD data types for complex data types
 //       <ul>
-//          <li>\c blaze::cint8: Packed SIMD type for complex 8-bit signed integral data types</li>
-//          <li>\c blaze::cuint8: Packed SIMD type for complex 8-bit unsigned integral data types</li>
-//          <li>\c blaze::cint16: Packed SIMD type for complex 16-bit signed integral data types</li>
-//          <li>\c blaze::cuint16: Packed SIMD type for complex 16-bit unsigned integral data types</li>
-//          <li>\c blaze::cint32: Packed SIMD type for complex 32-bit signed integral data types</li>
-//          <li>\c blaze::cuint32: Packed SIMD type for complex 32-bit unsigned integral data types</li>
-//          <li>\c blaze::cint64: Packed SIMD type for complex 64-bit signed integral data types</li>
-//          <li>\c blaze::cuint64: Packed SIMD type for complex 64-bit unsigned integral data types</li>
-//          <li>\c blaze::cfloat: Packed SIMD type for complex single precision floating point data</li>
-//          <li>\c blaze::cdouble: Packed SIMD type for complex double precision floating point data</li>
+//          <li>\c blaze::SIMDcint8: Packed SIMD type for complex 8-bit signed integral data types</li>
+//          <li>\c blaze::SIMDcuint8: Packed SIMD type for complex 8-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDcint16: Packed SIMD type for complex 16-bit signed integral data types</li>
+//          <li>\c blaze::SIMDcuint16: Packed SIMD type for complex 16-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDcint32: Packed SIMD type for complex 32-bit signed integral data types</li>
+//          <li>\c blaze::SIMDcuint32: Packed SIMD type for complex 32-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDcint64: Packed SIMD type for complex 64-bit signed integral data types</li>
+//          <li>\c blaze::SIMDcuint64: Packed SIMD type for complex 64-bit unsigned integral data types</li>
+//          <li>\c blaze::SIMDcfloat: Packed SIMD type for complex single precision floating point data</li>
+//          <li>\c blaze::SIMDcdouble: Packed SIMD type for complex double precision floating point data</li>
 //       </ul>
 //    </li>
 // </ul>
@@ -10067,9 +9963,7 @@
 // For more information on the available \b Blaze SIMD data types and functions, please see the
 // SIMD module in the complete \b Blaze documentation.
 //
-//
-// \n \section custom_operations_free_functions Free Functions
-// <hr>
+// \n \subsection custom_operations_free_functions Free Functions
 //
 // In order to extend \b Blaze with new functionality it is possible to add free functions. Free
 // functions can be used either as wrappers around calls to the map() function or to implement
@@ -10151,7 +10045,109 @@
    class SparseMatrix;
    \endcode
 
-// \n Previous: \ref custom_data_types &nbsp; &nbsp; Next: \ref error_reporting_customization
+// \n \section custom_data_types Custom Data Types
+// <hr>
+//
+// The \b Blaze library tries hard to make the use of custom data types as convenient, easy and
+// intuitive as possible. However, unfortunately it is not possible to meet the requirements of
+// all possible data types. Thus it might be necessary to provide \b Blaze with some additional
+// information about the data type. The following sections give an overview of the necessary steps
+// to enable the use of the hypothetical custom data type \c custom::double_t for vector and
+// matrix operations. For example:
+
+   \code
+   blaze::DynamicVector<custom::double_t> a, b, c;
+   // ... Resizing and initialization
+   c = a + b;
+   \endcode
+
+// The \b Blaze library assumes that the \c custom::double_t data type provides \c operator+()
+// for additions, \c operator-() for subtractions, \c operator*() for multiplications and
+// \c operator/() for divisions. If any of these functions is missing it is necessary to implement
+// the operator to perform the according operation. For this example we assume that the custom
+// data type provides the four following functions instead of operators:
+
+   \code
+   namespace custom {
+
+   double_t add ( const double_t& a, const double_t b );
+   double_t sub ( const double_t& a, const double_t b );
+   double_t mult( const double_t& a, const double_t b );
+   double_t div ( const double_t& a, const double_t b );
+
+   } // namespace custom
+   \endcode
+
+// The following implementations will satisfy the requirements of the \b Blaze library:
+
+   \code
+   inline custom::double_t operator+( const custom::double_t& a, const custom::double_t& b )
+   {
+      return add( a, b );
+   }
+
+   inline custom::double_t operator-( const custom::double_t& a, const custom::double_t& b )
+   {
+      return sub( a, b );
+   }
+
+   inline custom::double_t operator*( const custom::double_t& a, const custom::double_t& b )
+   {
+      return mult( a, b );
+   }
+
+   inline custom::double_t operator/( const custom::double_t& a, const custom::double_t& b )
+   {
+      return div( a, b );
+   }
+   \endcode
+
+// \b Blaze will use all the information provided with these functions (for instance the return
+// type) to properly handle the operations. In the rare case that the return type cannot be
+// automatically determined from the operator it might be additionally necessary to provide a
+// specialization of the following four \b Blaze class templates:
+
+   \code
+   namespace blaze {
+
+   template<>
+   struct AddTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct SubTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct MultTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   template<>
+   struct DivTrait<custom::double_t,custom::double_t> {
+      typedef custom::double_t  Type;
+   };
+
+   } // namespace blaze
+   \endcode
+
+// The same steps are necessary if several custom data types need to be combined (as for instance
+// \c custom::double_t and \c custom::float_t). Note that in this case both permutations need to
+// be taken into account:
+
+   \code
+   custom::double_t operator+( const custom::double_t& a, const custom::float_t& b );
+   custom::double_t operator+( const custom::float_t& a, const custom::double_t& b );
+   // ...
+   \endcode
+
+// Please note that only built-in data types apply for vectorization and thus custom data types
+// cannot achieve maximum performance!
+//
+//
+// \n Previous: \ref configuration_files &nbsp; &nbsp; Next: \ref custom_operations \n
 */
 //*************************************************************************************************
 
@@ -10289,7 +10285,7 @@
 // override the \b Blaze default behavior.
 //
 //
-// \n Previous: \ref custom_operations &nbsp; &nbsp; Next: \ref blas_functions \n
+// \n Previous: \ref vector_and_matrix_customization &nbsp; &nbsp; Next: \ref blas_functions \n
 */
 //*************************************************************************************************
 
