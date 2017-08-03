@@ -128,6 +128,7 @@
 //          <li> \ref configuration_files </li>
 //          <li> \ref vector_and_matrix_customization
 //             <ul>
+//                <li> \ref custom_data_members </li>
 //                <li> \ref custom_operations </li>
 //                <li> \ref custom_data_types </li>
 //             </ul>
@@ -9747,6 +9748,40 @@
 /*!\page vector_and_matrix_customization Customization of Vectors and Matrices
 //
 // \tableofcontents
+//
+//
+// \n \section custom_data_members Custom Data Members
+// <hr>
+//
+// So far the \b Blaze library does not provide a lot of flexibility to customize the data
+// members of existing \ref vector_types and \ref matrix_types. However, to some extend it is
+// possible to customize vectors and matrices by inheritance. The following example gives an
+// impression on how to create a simple variation of \ref matrix_types_custom_matrix, which
+// automatically takes care of acquiring and releasing custom memory.
+
+   \code
+   template< typename Type                    // Data type of the matrix
+           , bool SO = defaultStorageOrder >  // Storage order
+   class MyCustomMatrix
+      : public CustomMatrix< Type, unaligned, unpadded, SO >
+   {
+    public:
+      explicit inline MyCustomMatrix( size_t m, size_t n )
+         : CustomMatrix<Type,unaligned,unpadded,SO>()
+         , array_( new Type[m*n] )
+      {
+         this->reset( array_.get(), m, n );
+      }
+
+    private:
+      std::unique_ptr<Type[]> array_;
+   };
+   \endcode
+
+// Please note that this is a simplified example with the intent to show the general approach.
+// The number of constructors, the memory acquisition, and the kind of memory management can of
+// course be adapted to specific requirements. Also, please note that since none of the \b Blaze
+// vectors and matrices have virtual destructors polymorphic destruction cannot be used.
 //
 //
 // \n \section custom_operations Custom Operations
