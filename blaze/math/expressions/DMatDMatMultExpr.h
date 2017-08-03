@@ -8898,7 +8898,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return DMatDMatMultExpr<MT1,MT2,false,false,false,false>( ~lhs, ~rhs );
+   using ReturnType = const DMatDMatMultExpr<MT1,MT2,false,false,false,false>;
+   return ReturnType( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -8948,7 +8949,8 @@ inline decltype(auto) declsym( const DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
    }
 
-   return DMatDMatMultExpr<MT1,MT2,true,HF,LF,UF>( dm.leftOperand(), dm.rightOperand() );
+   using ReturnType = const DMatDMatMultExpr<MT1,MT2,true,HF,LF,UF>;
+   return ReturnType( dm.leftOperand(), dm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8991,7 +8993,8 @@ inline decltype(auto) declherm( const DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
    }
 
-   return DMatDMatMultExpr<MT1,MT2,SF,true,LF,UF>( dm.leftOperand(), dm.rightOperand() );
+   using ReturnType = const DMatDMatMultExpr<MT1,MT2,SF,true,LF,UF>;
+   return ReturnType( dm.leftOperand(), dm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -9034,7 +9037,8 @@ inline decltype(auto) decllow( const DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid lower matrix specification" );
    }
 
-   return DMatDMatMultExpr<MT1,MT2,SF,HF,true,UF>( dm.leftOperand(), dm.rightOperand() );
+   using ReturnType = const DMatDMatMultExpr<MT1,MT2,SF,HF,true,UF>;
+   return ReturnType( dm.leftOperand(), dm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -9077,7 +9081,8 @@ inline decltype(auto) declupp( const DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
    }
 
-   return DMatDMatMultExpr<MT1,MT2,SF,HF,LF,true>( dm.leftOperand(), dm.rightOperand() );
+   using ReturnType = const DMatDMatMultExpr<MT1,MT2,SF,HF,LF,true>;
+   return ReturnType( dm.leftOperand(), dm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -9120,7 +9125,8 @@ inline decltype(auto) decldiag( const DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
    }
 
-   return DMatDMatMultExpr<MT1,MT2,SF,HF,true,true>( dm.leftOperand(), dm.rightOperand() );
+   using ReturnType = const DMatDMatMultExpr<MT1,MT2,SF,HF,true,true>;
+   return ReturnType( dm.leftOperand(), dm.rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
