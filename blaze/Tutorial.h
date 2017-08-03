@@ -205,6 +205,19 @@
    endif()
    \endcode
 
+// \n \subsection step_1_vcpkg Installation via the VC++ Packaging Tool
+//
+// An alternate way to install \b Blaze for Windows users is Microsoft's
+// <a href="https://github.com/Microsoft/vcpkg">VC++ Packaging Tool (vcpkg)</a>. Blaze can be
+// installed via the command line:
+
+   \code
+   C:\src\vcpkg> .\vcpkg install blaze
+   \endcode
+
+// The tool automatically downloads the latest Blaze release and copies the header files to the
+// common include directory.
+//
 // \n \subsection step_1_installation_unix Manual Installation on Linux/macOS
 //
 // Since \b Blaze only consists of header files, the <tt>./blaze</tt> subdirectory can be simply
