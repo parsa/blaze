@@ -9851,21 +9851,48 @@
 //**Custom Operations******************************************************************************
 /*!\page custom_operations Custom Operations
 //
-// In addition to the provided operations on vectors and matrices it is possible to define custom
-// operations. For this purpose, \b Blaze provides the \c map() function, which allows to pass
-// the required operation via functor or lambda:
+// \tableofcontents
+//
+//
+// There are two approaches to extend \b Blaze with custom operations. First, the \c map()
+// functions provide the possibility to execute componentwise custom operations on vectors and
+// matrices. Second, it is possible to add customized free functions.
+//
+//
+// \n \section custom_operations_map The map() Functions
+// <hr>
+//
+// Via the unary and binary \c map() functions it is possible to execute componentwise custom
+// operations on vectors and matrices. The unary \c map() function can be used to apply a custom
+// operation on each single element of a dense vector or matrix or each non-zero element of a
+// sparse vector or matrix. For instance, the following example demonstrates a custom square
+// root computation on a dense matrix:
 
    \code
    blaze::DynamicMatrix<double> A, B;
 
-   B = map( A, []( double d ){ return std::sqrt( d ); } );
+   B = map( A, []( double d ) { return std::sqrt( d ); } );
    \endcode
 
-// This example demonstrates the most convenient way of defining a unary custom operation by
-// passing a lambda to the \c map() function. The lambda is executed on each single element of
-// a dense vector or matrix or each non-zero element of a sparse vector or matrix.
-//
-// Alternatively, it is possible to pass a custom functor:
+// The binary \c map() function can be used to apply an operation pairwise to the elements of
+// two dense vectors or two dense matrices. The following example demonstrates the merging of
+// two matrices of double precision values into a matrix of double precision complex numbers:
+
+   \code
+   blaze::DynamicMatrix<double> real{ { 2.1, -4.2 }, { 1.0,  0.6 } };
+   blaze::DynamicMatrix<double> imag{ { 0.3,  1.4 }, { 2.9, -3.4 } };
+
+   blaze::DynamicMatrix< complex<double> > cplx;
+
+   // Creating the matrix
+   //    ( (-2.1,  0.3) (-4.2, -1.4) )
+   //    ( ( 1.0,  2.9) ( 0.6, -3.4) )
+   cplx = map( real, imag, []( double r, double i ){ return complex( r, i ); } );
+   \endcode
+
+// These examples demonstrate the most convenient way of defining a unary custom operation by
+// passing a lambda to the \c map() function. Alternatively, it is possible to pass a custom
+// functor:
 
    \code
    struct Sqrt
@@ -9930,7 +9957,7 @@
          return std::sqrt( a );
       }
 
-      simd_double_t load( simd_double_t a ) const
+      SIMDdouble load( const SIMDdouble& a ) const
       {
          return _mm256_sqrt_pd( a.value );
       }
@@ -9957,7 +9984,7 @@
       }
 
       template< typename T >
-      T load( T a ) const
+      T load( const T& a ) const
       {
          return _mm256_sqrt_pd( a.value );
       }
@@ -10040,6 +10067,90 @@
 // For more information on the available \b Blaze SIMD data types and functions, please see the
 // SIMD module in the complete \b Blaze documentation.
 //
+//
+// \n \section custom_operations_free_functions Free Functions
+// <hr>
+//
+// In order to extend \b Blaze with new functionality it is possible to add free functions. Free
+// functions can be used either as wrappers around calls to the map() function or to implement
+// general, non-componentwise operations. The following two examples will demonstrate both ideas.
+//
+// The first example shows the \c setToZero() function, which resets a sparse matrix to zero
+// without affecting the sparsity pattern. It is implemented as a convenience wrapper around
+// the map() function:
+
+   \code
+   template< typename MT  // Type of the sparse matrix
+           , bool SO >    // Storage order
+   void setToZero( blaze::SparseMatrix<MT,SO>& mat )
+   {
+      (~mat) = blaze::map( ~mat, []( int ){ return 0; } );
+   }
+   \endcode
+
+// The blaze::SparseMatrix class template is the base class for all kinds of sparse matrices and
+// provides an abstraction from the actual type \c MT of the sparse matrix. However, due to the
+// <a href="https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">Curiously Recurring Template Pattern (CRTP)</a>
+// it also enables a conversion back to the actual type. This downcast is performed via the tilde
+// operator (i.e. \c operator~()). The template parameter \c SO represents the storage order
+// (blaze::rowMajor or blaze::columnMajor) of the matrix.
+//
+// The second example shows the \c countZeros() function, which counts the number of values, which
+// are exactly zero, in a dense, row-major matrix:
+
+   \code
+   template< typename MT >
+   size_t countZeros( blaze::DenseMatrix<MT,rowMajor>& mat )
+   {
+      const size_t M( (~mat).rows() );
+      const size_t N( (~mat).columns() );
+      size_t count( 0UL );
+
+      for( size_t i=0UL; i<M; ++i ) {
+         for( size_t j=0UL; j<N; ++j ) {
+            if( blaze::isDefault<strict>( (~mat)(i,j) ) )
+               ++count;
+         }
+      }
+
+      return count;
+   }
+   \endcode
+
+// The blaze::DenseMatrix class template is the base class for all kinds of dense matrices. Again,
+// it is possible to perform the conversion to the actual type via the tilde operator.
+//
+// The following two listings show the declarations of all vector and matrix base classes, which
+// can be used for custom free functions:
+
+   \code
+   template< typename VT  // Concrete type of the dense or sparse vector
+           , bool TF >    // Transpose flag (blaze::columnVector or blaze::rowVector)
+   class Vector;
+
+   template< typename VT  // Concrete type of the dense vector
+           , bool TF >    // Transpose flag (blaze::columnVector or blaze::rowVector)
+   class DenseVector;
+
+   template< typename VT  // Concrete type of the sparse vector
+           , bool TF >    // Transpose flag (blaze::columnVector or blaze::rowVector)
+   class SparseVector;
+   \endcode
+
+   \code
+   template< typename MT  // Concrete type of the dense or sparse matrix
+           , bool SO >    // Storage order (blaze::rowMajor or blaze::columnMajor)
+   class Matrix;
+
+   template< typename MT  // Concrete type of the dense matrix
+           , bool SO >    // Storage order (blaze::rowMajor or blaze::columnMajor)
+   class DenseMatrix;
+
+   template< typename MT  // Concrete type of the sparse matrix
+           , bool SO >    // Storage order (blaze::rowMajor or blaze::columnMajor)
+   class SparseMatrix;
+   \endcode
+
 // \n Previous: \ref custom_data_types &nbsp; &nbsp; Next: \ref error_reporting_customization
 */
 //*************************************************************************************************
