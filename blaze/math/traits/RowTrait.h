@@ -116,11 +116,11 @@ namespace blaze {
 
    // Definition of the row type of a row-major dynamic matrix
    using MatrixType1 = blaze::DynamicMatrix<int,rowMajor>;
-   using RowType1    = typename RowTrait<MatrixType1>::Type;
+   using RowType1    = typename blaze::RowTrait<MatrixType1>::Type;
 
    // Definition of the row type of the column-major static matrix
    using MatrixType2 = blaze::StaticMatrix<int,3UL,3UL,columnMajor>;
-   using RowType2    = typename RowTrait<MatrixType2>::Type;
+   using RowType2    = typename blaze::RowTrait<MatrixType2>::Type;
    \endcode
 */
 template< typename MT >  // Type of the matrix

@@ -117,11 +117,11 @@ namespace blaze {
 
    // Definition of the result type of a row-major dynamic matrix
    using MatrixType1 = blaze::DynamicMatrix<int,rowMajor>;
-   using ResultType1 = typename SubmatrixTrait<MatrixType1>::Type;
+   using ResultType1 = typename blaze::SubmatrixTrait<MatrixType1>::Type;
 
    // Definition of the result type of a column-major static matrix
    using MatrixType2 = blaze::StaticMatrix<int,3UL,3UL,columnMajor>;
-   using ResultType2 = typename SubmatrixTrait<MatrixType2>::Type;
+   using ResultType2 = typename blaze::SubmatrixTrait<MatrixType2>::Type;
    \endcode
 */
 template< typename MT >  // Type of the matrix
