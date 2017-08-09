@@ -2637,7 +2637,6 @@ class Column<MT,false,true,false>
    //@}
    //**********************************************************************************************
 
- public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{

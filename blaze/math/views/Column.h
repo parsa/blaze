@@ -54,6 +54,7 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -508,12 +509,6 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, size_t index )
 
 
 
-
-
-
-
-
-
 //=================================================================================================
 //
 //  COLUMN OPERATORS
@@ -655,6 +650,8 @@ template< bool RF      // Relaxation flag
         , bool SF >    // Symmetry flag
 inline bool isDefault( const Column<MT,SO,DF,SF>& column )
 {
+   using blaze::isDefault;
+
    for( size_t i=0UL; i<column.size(); ++i )
       if( !isDefault<RF>( column[i] ) ) return false;
    return true;
@@ -665,7 +662,7 @@ inline bool isDefault( const Column<MT,SO,DF,SF>& column )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given sparse column is in default state.
-// \ingroup sparse_column
+// \ingroup column
 //
 // \param column The sparse column to be tested for its default state.
 // \return \a true in case the given column is component-wise zero, \a false otherwise.
@@ -687,6 +684,8 @@ template< bool RF      // Relaxation flag
         , bool SF >    // Symmetry flag
 inline bool isDefault( const Column<MT,SO,false,SF>& column )
 {
+   using blaze::isDefault;
+
    using ConstIterator = ConstIterator_< Column<MT,SO,false,SF> >;
 
    const ConstIterator end( column.end() );
@@ -721,7 +720,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept
 {
-   return ( column.column() <= column.operand().columns() &&
+   return ( column.column() < column.operand().columns() &&
             isIntact( column.operand() ) );
 }
 //*************************************************************************************************

@@ -54,6 +54,7 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -506,10 +507,6 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, size_t index )
 
 
 
-
-
-
-
 //=================================================================================================
 //
 //  ROW OPERATORS
@@ -651,6 +648,8 @@ template< bool RF      // Relaxation flag
         , bool SF >    // Symmetry flag
 inline bool isDefault( const Row<MT,SO,DF,SF>& row )
 {
+   using blaze::isDefault;
+
    for( size_t i=0UL; i<row.size(); ++i )
       if( !isDefault<RF>( row[i] ) ) return false;
    return true;
@@ -661,7 +660,7 @@ inline bool isDefault( const Row<MT,SO,DF,SF>& row )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given sparse row is in default state.
-// \ingroup sparse_row
+// \ingroup row
 //
 // \param row The sparse row to be tested for its default state.
 // \return \a true in case the given row is component-wise zero, \a false otherwise.
@@ -683,6 +682,8 @@ template< bool RF      // Relaxation flag
         , bool SF >    // Symmetry flag
 inline bool isDefault( const Row<MT,SO,false,SF>& row )
 {
+   using blaze::isDefault;
+
    using ConstIterator = ConstIterator_< Row<MT,SO,false,SF> >;
 
    const ConstIterator end( row.end() );
@@ -717,7 +718,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept
 {
-   return ( row.row() <= row.operand().rows() &&
+   return ( row.row() < row.operand().rows() &&
             isIntact( row.operand() ) );
 }
 //*************************************************************************************************

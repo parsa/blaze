@@ -931,6 +931,8 @@ template< bool RF      // Relaxation flag
         , bool DF >    // Density flag
 inline bool isDefault( const Subvector<VT,AF,TF,DF>& sv )
 {
+   using blaze::isDefault;
+
    for( size_t i=0UL; i<sv.size(); ++i )
       if( !isDefault<RF>( sv[i] ) ) return false;
    return true;
@@ -963,6 +965,8 @@ template< bool RF      // Relaxation flag
         , bool TF >    // Transpose flag
 inline bool isDefault( const Subvector<VT,AF,TF,false>& sv )
 {
+   using blaze::isDefault;
+
    using ConstIterator = ConstIterator_< Subvector<VT,AF,TF,false> >;
 
    const ConstIterator end( sv.end() );

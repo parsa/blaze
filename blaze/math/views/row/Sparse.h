@@ -2016,7 +2016,7 @@ inline void Row<MT,true,false,SF>::subAssign( const SparseVector<VT,true>& rhs )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of Row for general column-major sparse matrices.
-// \ingroup sparse_row
+// \ingroup row
 //
 // This specialization of Row adapts the class template to the requirements of general
 // column-major sparse matrices.
@@ -3958,7 +3958,7 @@ inline void Row<MT,false,false,false>::subAssign( const Vector<VT,true>& rhs )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of Row for symmetric column-major sparse matrices.
-// \ingroup sparse_row
+// \ingroup row
 //
 // This specialization of Row adapts the class template to the requirements of symmetric
 // column-major sparse matrices.

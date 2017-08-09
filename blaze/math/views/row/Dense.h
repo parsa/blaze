@@ -110,7 +110,7 @@ namespace blaze {
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of Row for rows on row-major dense matrices.
-// \ingroup views
+// \ingroup row
 //
 // This specialization of Row adapts the class template to the requirements of row-major dense
 // matrices.
@@ -2214,7 +2214,7 @@ inline EnableIf_< typename Row<MT,true,true,SF>::BLAZE_TEMPLATE VectorizedDivAss
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of Row for general column-major dense matrices.
-// \ingroup dense_row
+// \ingroup row
 //
 // This specialization of Row adapts the class template to the requirements of general
 // column-major dense matrices.
@@ -2636,7 +2636,6 @@ class Row<MT,false,true,false>
    //@}
    //**********************************************************************************************
 
- public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
    //@{
@@ -4058,7 +4057,7 @@ inline void Row<MT,false,true,false>::divAssign( const DenseVector<VT,true>& rhs
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of Row for symmetric column-major dense matrices.
-// \ingroup dense_row
+// \ingroup row
 //
 // This specialization of Row adapts the class template to the requirements of symmetric
 // column-major dense matrices.
