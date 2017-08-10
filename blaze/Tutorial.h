@@ -8799,9 +8799,11 @@
 //  - \ref cpp_threads_parallelization
 //  - \ref boost_threads_parallelization
 //
-// When any of shared memory parallelization techniques is activated, all arithmetic operations
-// are automatically run in parallel. However, in addition, \b Blaze provides means to enforce
-// the serial execution of specific operations:
+// When any of the shared memory parallelization techniques is activated, all arithmetic
+// operations on dense vectors and matrices (including additions, subtractions, multiplications,
+// divisions, and all componentwise arithmetic operations) and most operations on sparse vectors
+// and matrices are automatically run in parallel. However, in addition, \b Blaze provides means
+// to enforce the serial execution of specific operations:
 //
 //  - \ref serial_execution
 //
