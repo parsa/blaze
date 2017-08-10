@@ -208,15 +208,15 @@
 // \n \subsection step_1_vcpkg Installation via the VC++ Packaging Tool
 //
 // An alternate way to install \b Blaze for Windows users is Microsoft's
-// <a href="https://github.com/Microsoft/vcpkg">VC++ Packaging Tool (vcpkg)</a>. Blaze can be
-// installed via the command line:
+// <a href="https://github.com/Microsoft/vcpkg">VC++ Packaging Tool (vcpkg)</a>. \b Blaze can
+// be installed via the command line:
 
    \code
    C:\src\vcpkg> .\vcpkg install blaze
    \endcode
 
-// The tool automatically downloads the latest Blaze release and copies the header files to the
-// common include directory.
+// The tool automatically downloads the latest \b Blaze release and copies the header files to
+// the common include directory.
 //
 // \n \subsection step_1_installation_unix Manual Installation on Linux/macOS
 //
@@ -1278,7 +1278,7 @@
    // ...
    \endcode
 
-// \n \section vector_operations_member_functions Member Functions
+// \n \section vector_operations_non_modifying_operations Non-Modifying Operations
 // <hr>
 //
 // \subsection vector_operations_size .size()
@@ -1359,7 +1359,164 @@
    nonZeros( A * v1 );  // Estimates the number of non-zero elements in the vector expression
    \endcode
 
-// \n \subsection vector_operations_resize_reserve .resize() / .reserve()
+// \n \subsection vector_operations_isdefault isDefault()
+//
+// The \c isDefault() function returns whether the given dense or sparse vector is in default state:
+
+   \code
+   blaze::HybridVector<int,20UL> a;
+   // ... Resizing and initialization
+   if( isDefault( a ) ) { ... }
+   \endcode
+
+// A vector is in default state if it appears to just have been default constructed. All resizable
+// vectors (\c HybridVector, \c DynamicVector, or \c CompressedVector) and \c CustomVector are
+// in default state if its size is equal to zero. A non-resizable vector (\c StaticVector, all
+// subvectors, rows, and columns) is in default state if all its elements are in default state.
+// For instance, in case the vector is instantiated for a built-in integral or floating point data
+// type, the function returns \c true in case all vector elements are 0 and \c false in case any
+// vector element is not 0.
+//
+//
+// \n \subsection vector_operations_isUniform isUniform()
+//
+// In order to check if all vector elements are identical, the \c isUniform function can be used:
+
+   \code
+   blaze::DynamicVector<int> a;
+   // ... Resizing and initialization
+   if( isUniform( a ) ) { ... }
+   \endcode
+
+// Note that in case of sparse vectors also the zero elements are also taken into account!
+//
+//
+// \n \subsection vector_operations_isnan isnan()
+//
+// The \c isnan() function provides the means to check a dense or sparse vector for non-a-number
+// elements:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
+   \endcode
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
+   \endcode
+
+// If at least one element of the vector is not-a-number, the function returns \c true, otherwise
+// it returns \c false. Please note that this function only works for vectors with floating point
+// elements. The attempt to use it for a vector with a non-floating point element type results in
+// a compile time error.
+//
+//
+// \n \subsection vector_operations_length length() / sqrLength()
+//
+// In order to calculate the length (magnitude) of a dense or sparse vector, both the \c length()
+// and \c sqrLength() function can be used:
+
+   \code
+   blaze::StaticVector<float,3UL,rowVector> v{ -1.2F, 2.7F, -2.3F };
+
+   const float len    = length   ( v );  // Computes the current length of the vector
+   const float sqrlen = sqrLength( v );  // Computes the square length of the vector
+   \endcode
+
+// Note that both functions can only be used for vectors with built-in or complex element type!
+//
+//
+// \n \subsection vector_operations_vector_trans trans()
+//
+// As already mentioned, vectors can either be column vectors (blaze::columnVector) or row vectors
+// (blaze::rowVector). A column vector cannot be assigned to a row vector and vice versa. However,
+// vectors can be transposed via the \c trans() function:
+
+   \code
+   blaze::DynamicVector<int,columnVector> v1( 4UL );
+   blaze::CompressedVector<int,rowVector> v2( 4UL );
+
+   v1 = v2;            // Compilation error: Cannot assign a row vector to a column vector
+   v1 = trans( v2 );   // OK: Transposing the row vector to a column vector and assigning it
+                       //     to the column vector v1
+   v2 = trans( v1 );   // OK: Transposing the column vector v1 and assigning it to the row vector v2
+   v1 += trans( v2 );  // OK: Addition assignment of two column vectors
+   \endcode
+
+// \n \subsection vector_operations_ctrans ctrans()
+//
+// It is also possible to compute the conjugate transpose of a vector. This operation is available
+// via the \c ctrans() function:
+
+   \code
+   blaze::CompressedVector< complex<float>, rowVector > v1( 4UL );
+   blaze::DynamicVector< complex<float>, columnVector > v2( 4UL );
+
+   v1 = ctrans( v2 );  // Compute the conjugate transpose vector
+   \endcode
+
+// Note that the \c ctrans() function has the same effect as manually applying the \c conj() and
+// \c trans() function in any order:
+
+   \code
+   v1 = trans( conj( v2 ) );  // Computing the conjugate transpose vector
+   v1 = conj( trans( v2 ) );  // Computing the conjugate transpose vector
+   \endcode
+
+// \n \subsection vector_operations_evaluate eval() / evaluate()
+//
+// The \c evaluate() function forces an evaluation of the given vector expression and enables
+// an automatic deduction of the correct result type of an operation. The following code example
+// demonstrates its intended use for the multiplication of a dense and a sparse vector:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+
+   blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
+   // ... Resizing and initialization
+
+   auto c = evaluate( a * b );
+   \endcode
+
+// In this scenario, the \c evaluate() function assists in deducing the exact result type of
+// the operation via the \c auto keyword. Please note that if \c evaluate() is used in this
+// way, no temporary vector is created and no copy operation is performed. Instead, the result
+// is directly written to the target vector due to the return value optimization (RVO). However,
+// if \c evaluate() is used in combination with an explicit target type, a temporary will be
+// created and a copy operation will be performed if the used type differs from the type
+// returned from the function:
+
+   \code
+   CompressedVector<double> d( a * b );  // No temporary & no copy operation
+   DynamicVector<double> e( a * b );     // Temporary & copy operation
+   d = evaluate( a * b );                // Temporary & copy operation
+   \endcode
+
+// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
+// expression. However, please note that \c evaluate() is not intended to be used for this
+// purpose. This task is more elegantly and efficiently handled by the \c eval() function:
+
+   \code
+   blaze::DynamicVector<double> a, b, c, d;
+
+   d = a + evaluate( b * c );  // Unnecessary creation of a temporary vector
+   d = a + eval( b * c );      // No creation of a temporary vector
+   \endcode
+
+// In contrast to the \c evaluate() function, \c eval() can take the complete expression
+// into account and therefore can guarantee the most efficient way to evaluate it (see also
+// \ref intra_statement_optimization).
+//
+//
+// \n \section vector_operations_modifying_operations Modifying Operations
+// <hr>
+//
+// \subsection vector_operations_resize_reserve .resize() / .reserve()
 //
 // The size of a \c StaticVector is fixed by the second template parameter and a \c CustomVector
 // cannot be resized. In contrast, the size of \c DynamicVectors, \c HybridVectors as well as
@@ -1411,7 +1568,6 @@
 // Note that the size of the vector remains unchanged, but only the internal capacity is set
 // according to the specified value!
 //
-//
 // \n \subsection vector_operations_shrinkToFit .shrinkToFit()
 //
 // The internal capacity of vectors with dynamic memory is preserved in order to minimize the
@@ -1428,10 +1584,6 @@
 // Please note that due to padding the capacity might not be reduced exactly to \c size(). Please
 // also note that in case a reallocation occurs, all iterators (including \c end() iterators), all
 // pointers and references to elements of the vector are invalidated.
-//
-//
-// \n \section vector_operations_free_functions Free Functions
-// <hr>
 //
 // \subsection vector_operations_reset_clear reset() / clear()
 //
@@ -1462,59 +1614,39 @@
 // of the vectors.
 //
 //
-// \n \subsection vector_operations_isnan isnan()
+// \n \subsection vector_operations_swap swap()
 //
-// The \c isnan() function provides the means to check a dense or sparse vector for non-a-number
-// elements:
+// Via the \c swap() function it is possible to completely swap the contents of two vectors of
+// the same type:
 
    \code
-   blaze::DynamicVector<double> a;
-   // ... Resizing and initialization
-   if( isnan( a ) ) { ... }
+   blaze::DynamicVector<int,columnVector> v1( 10UL );
+   blaze::DynamicVector<int,columnVector> v2( 20UL );
+
+   swap( v1, v2 );  // Swapping the contents of v1 and v2
    \endcode
+
+// \n \section vector_operations_arithmetic_operations Arithmetic Operations
+// <hr>
+//
+// \subsection vector_operations_normalize normalize()
+//
+// The \c normalize() function can be used to scale any non-zero vector to a length of 1. In
+// case the vector does not contain a single non-zero element (i.e. is a zero vector), the
+// \c normalize() function returns a zero vector.
 
    \code
-   blaze::CompressedVector<double> a;
-   // ... Resizing and initialization
-   if( isnan( a ) ) { ... }
+   blaze::DynamicVector<float,columnVector>     v1( 10UL );
+   blaze::CompressedVector<double,columnVector> v2( 12UL );
+
+   v1 = normalize( v1 );  // Normalizing the dense vector v1
+   length( v1 );          // Returns 1 (or 0 in case of a zero vector)
+   v1 = normalize( v2 );  // Assigning v1 the normalized vector v2
+   length( v1 );          // Returns 1 (or 0 in case of a zero vector)
    \endcode
 
-// If at least one element of the vector is not-a-number, the function returns \c true, otherwise
-// it returns \c false. Please note that this function only works for vectors with floating point
-// elements. The attempt to use it for a vector with a non-floating point element type results in
-// a compile time error.
-//
-//
-// \n \subsection vector_operations_isdefault isDefault()
-//
-// The \c isDefault() function returns whether the given dense or sparse vector is in default state:
-
-   \code
-   blaze::HybridVector<int,20UL> a;
-   // ... Resizing and initialization
-   if( isDefault( a ) ) { ... }
-   \endcode
-
-// A vector is in default state if it appears to just have been default constructed. All resizable
-// vectors (\c HybridVector, \c DynamicVector, or \c CompressedVector) and \c CustomVector are
-// in default state if its size is equal to zero. A non-resizable vector (\c StaticVector, all
-// subvectors, rows, and columns) is in default state if all its elements are in default state.
-// For instance, in case the vector is instantiated for a built-in integral or floating point data
-// type, the function returns \c true in case all vector elements are 0 and \c false in case any
-// vector element is not 0.
-//
-//
-// \n \subsection vector_operations_isUniform isUniform()
-//
-// In order to check if all vector elements are identical, the \c isUniform function can be used:
-
-   \code
-   blaze::DynamicVector<int> a;
-   // ... Resizing and initialization
-   if( isUniform( a ) ) { ... }
-   \endcode
-
-// Note that in case of sparse vectors also the zero elements are also taken into account!
+// Note that the \c normalize() function only works for floating point vectors. The attempt to
+// use it for an integral vector results in a compile time error.
 //
 //
 // \n \subsection vector_operations_min_max min() / max()
@@ -1850,136 +1982,6 @@
 // releases of \b Blaze.
 //
 //
-// \n \subsection vector_operations_length length() / sqrLength()
-//
-// In order to calculate the length (magnitude) of a dense or sparse vector, both the \c length()
-// and \c sqrLength() function can be used:
-
-   \code
-   blaze::StaticVector<float,3UL,rowVector> v{ -1.2F, 2.7F, -2.3F };
-
-   const float len    = length   ( v );  // Computes the current length of the vector
-   const float sqrlen = sqrLength( v );  // Computes the square length of the vector
-   \endcode
-
-// Note that both functions can only be used for vectors with built-in or complex element type!
-//
-//
-// \n \subsection vector_operations_vector_transpose trans() / transpose()
-//
-// As already mentioned, vectors can either be column vectors (blaze::columnVector) or row vectors
-// (blaze::rowVector). A column vector cannot be assigned to a row vector and vice versa. However,
-// vectors can be transposed via the \c trans() function:
-
-   \code
-   blaze::DynamicVector<int,columnVector> v1( 4UL );
-   blaze::CompressedVector<int,rowVector> v2( 4UL );
-
-   v1 = v2;            // Compilation error: Cannot assign a row vector to a column vector
-   v1 = trans( v2 );   // OK: Transposing the row vector to a column vector and assigning it
-                       //     to the column vector v1
-   v2 = trans( v1 );   // OK: Transposing the column vector v1 and assigning it to the row vector v2
-   v1 += trans( v2 );  // OK: Addition assignment of two column vectors
-   \endcode
-
-// \n \subsection vector_operations_conjugate_transpose ctrans() / ctranspose()
-//
-// It is also possible to compute the conjugate transpose of a vector. This operation is available
-// via the \c ctrans() function:
-
-   \code
-   blaze::CompressedVector< complex<float>, rowVector > v1( 4UL );
-   blaze::DynamicVector< complex<float>, columnVector > v2( 4UL );
-
-   v1 = ctrans( v2 );  // Compute the conjugate transpose vector
-   \endcode
-
-// Note that the \c ctrans() function has the same effect as manually applying the \c conj() and
-// \c trans() function in any order:
-
-   \code
-   v1 = trans( conj( v2 ) );  // Computing the conjugate transpose vector
-   v1 = conj( trans( v2 ) );  // Computing the conjugate transpose vector
-   \endcode
-
-// \n \subsection vector_operations_evaluate eval() / evaluate()
-//
-// The \c evaluate() function forces an evaluation of the given vector expression and enables
-// an automatic deduction of the correct result type of an operation. The following code example
-// demonstrates its intended use for the multiplication of a dense and a sparse vector:
-
-   \code
-   using blaze::DynamicVector;
-   using blaze::CompressedVector;
-
-   blaze::DynamicVector<double> a;
-   blaze::CompressedVector<double> b;
-   // ... Resizing and initialization
-
-   auto c = evaluate( a * b );
-   \endcode
-
-// In this scenario, the \c evaluate() function assists in deducing the exact result type of
-// the operation via the \c auto keyword. Please note that if \c evaluate() is used in this
-// way, no temporary vector is created and no copy operation is performed. Instead, the result
-// is directly written to the target vector due to the return value optimization (RVO). However,
-// if \c evaluate() is used in combination with an explicit target type, a temporary will be
-// created and a copy operation will be performed if the used type differs from the type
-// returned from the function:
-
-   \code
-   CompressedVector<double> d( a * b );  // No temporary & no copy operation
-   DynamicVector<double> e( a * b );     // Temporary & copy operation
-   d = evaluate( a * b );                // Temporary & copy operation
-   \endcode
-
-// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
-// expression. However, please note that \c evaluate() is not intended to be used for this
-// purpose. This task is more elegantly and efficiently handled by the \c eval() function:
-
-   \code
-   blaze::DynamicVector<double> a, b, c, d;
-
-   d = a + evaluate( b * c );  // Unnecessary creation of a temporary vector
-   d = a + eval( b * c );      // No creation of a temporary vector
-   \endcode
-
-// In contrast to the \c evaluate() function, \c eval() can take the complete expression
-// into account and therefore can guarantee the most efficient way to evaluate it (see also
-// \ref intra_statement_optimization).
-//
-//
-// \n \subsection vector_operations_normalize normalize()
-//
-// The \c normalize() function can be used to scale any non-zero vector to a length of 1. In
-// case the vector does not contain a single non-zero element (i.e. is a zero vector), the
-// \c normalize() function returns a zero vector.
-
-   \code
-   blaze::DynamicVector<float,columnVector>     v1( 10UL );
-   blaze::CompressedVector<double,columnVector> v2( 12UL );
-
-   v1 = normalize( v1 );  // Normalizing the dense vector v1
-   length( v1 );          // Returns 1 (or 0 in case of a zero vector)
-   v1 = normalize( v2 );  // Assigning v1 the normalized vector v2
-   length( v1 );          // Returns 1 (or 0 in case of a zero vector)
-   \endcode
-
-// Note that the \c normalize() function only works for floating point vectors. The attempt to
-// use it for an integral vector results in a compile time error.
-//
-// \n \subsection vector_operations_swap swap()
-//
-// Via the \c swap() function it is possible to completely swap the contents of two vectors of
-// the same type:
-
-   \code
-   blaze::DynamicVector<int,columnVector> v1( 10UL );
-   blaze::DynamicVector<int,columnVector> v2( 20UL );
-
-   swap( v1, v2 );  // Swapping the contents of v1 and v2
-   \endcode
-
 // \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrices
 */
 //*************************************************************************************************
@@ -2916,7 +2918,7 @@
 // returned by the \c end() functions!
 //
 //
-// \n \section matrix_operations_member_functions Member Functions
+// \n \section matrix_operations_non_modifying_operations Non-Modifying Operations
 // <hr>
 //
 // \subsection matrix_operations_rows .rows()
@@ -3033,122 +3035,6 @@
    nonZeros( M2, 3 );  // Has the same effect as the member function
 
    nonZeros( M1 * M2 );  // Estimates the number of non-zero elements in the matrix expression
-   \endcode
-
-// \n \subsection matrix_operations_resize_reserve .resize() / .reserve()
-//
-// The dimensions of a \c StaticMatrix are fixed at compile time by the second and third template
-// parameter and a \c CustomMatrix cannot be resized. In contrast, the number or rows and columns
-// of \c DynamicMatrix, \c HybridMatrix, and \c CompressedMatrix can be changed at runtime:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::CompressedMatrix;
-
-   DynamicMatrix<int,rowMajor> M1;
-   CompressedMatrix<int,columnMajor> M2( 3UL, 2UL );
-
-   // Adapting the number of rows and columns via the resize() function. The (optional)
-   // third parameter specifies whether the existing elements should be preserved. Per
-   // default, the existing elements are preserved.
-   M1.resize( 2UL, 2UL );         // Resizing matrix M1 to 2x2 elements. Elements of built-in type
-                                  // remain uninitialized, elements of class type are default
-                                  // constructed.
-   M1.resize( 3UL, 1UL, false );  // Resizing M1 to 3x1 elements. The old elements are lost, the
-                                  // new elements are NOT initialized!
-   M2.resize( 5UL, 7UL, true );   // Resizing M2 to 5x7 elements. The old elements are preserved.
-   M2.resize( 3UL, 2UL, false );  // Resizing M2 to 3x2 elements. The old elements are lost.
-   \endcode
-
-// Note that resizing a matrix invalidates all existing views (see e.g. \ref views_submatrices)
-// on the matrix:
-
-   \code
-   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>              RowType;
-
-   MatrixType M1( 10UL, 20UL );    // Creating a 10x20 matrix
-   RowType row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
-   M1.resize( 6UL, 20UL );         // Resizing the matrix invalidates the view
-   \endcode
-
-// When the internal capacity of a matrix is no longer sufficient, the allocation of a larger
-// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
-// function can be used up front to set the internal capacity:
-
-   \code
-   blaze::DynamicMatrix<int> M1;
-   M1.reserve( 100 );
-   M1.rows();      // Returns 0
-   M1.capacity();  // Returns at least 100
-   \endcode
-
-// Additionally it is possible to reserve memory in a specific row (for a row-major matrix) or
-// column (for a column-major matrix):
-
-   \code
-   blaze::CompressedMatrix<int> M1( 4UL, 6UL );
-   M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 1
-   \endcode
-
-// \n \subsection matrix_operations_shrinkToFit .shrinkToFit()
-//
-// The internal capacity of matrices with dynamic memory is preserved in order to minimize the
-// number of reallocations. For that reason, the \c resize() and \c reserve() functions can lead
-// to memory overhead. The \c shrinkToFit() member function can be used to minimize the internal
-// capacity:
-
-   \code
-   blaze::DynamicMatrix<int> M1( 100UL, 100UL );  // Create a 100x100 integer matrix
-   M1.resize( 10UL, 10UL );                       // Resize to 10x10, but the capacity is preserved
-   M1.shrinkToFit();                              // Remove the unused capacity
-   \endcode
-
-// Please note that due to padding the capacity might not be reduced exactly to \c rows() times
-// \c columns(). Please also note that in case a reallocation occurs, all iterators (including
-// \c end() iterators), all pointers and references to elements of this matrix are invalidated.
-//
-//
-// \n \section matrix_operations_free_functions Free Functions
-// <hr>
-//
-// \subsection matrix_operations_reset_clear reset() / clear
-//
-// In order to reset all elements of a dense or sparse matrix, the \c reset() function can be
-// used. The number of rows and columns of the matrix are preserved:
-
-   \code
-   // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
-   blaze::DynamicMatrix<float> M1( 4UL, 5UL, 2.0F );
-
-   // Resetting all elements to 0.0F.
-   reset( M1 );  // Resetting all elements
-   M1.rows();    // Returns 4: size and capacity remain unchanged
-   \endcode
-
-// Alternatively, only a single row or column of the matrix can be resetted:
-
-   \code
-   blaze::DynamicMatrix<int,blaze::rowMajor>    M1( 7UL, 6UL, 5 );  // Setup of a row-major matrix
-   blaze::DynamicMatrix<int,blaze::columnMajor> M2( 4UL, 5UL, 4 );  // Setup of a column-major matrix
-
-   reset( M1, 2UL );  // Resetting the 2nd row of the row-major matrix
-   reset( M2, 3UL );  // Resetting the 3rd column of the column-major matrix
-   \endcode
-
-// In order to reset a row of a column-major matrix or a column of a row-major matrix, use a
-// row or column view (see \ref views_rows and views_colums).
-//
-// In order to return a matrix to its default state (i.e. the state of a default constructed
-// matrix), the \c clear() function can be used:
-
-   \code
-   // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
-   blaze::DynamicMatrix<float> M1( 4UL, 5UL, 2.0F );
-
-   // Resetting all elements to 0.0F.
-   clear( M1 );  // Resetting the entire matrix
-   M1.rows();    // Returns 0: size is reset, but capacity remains unchanged
    \endcode
 
 // \n \subsection matrix_operations_isnan isnan()
@@ -3344,7 +3230,283 @@
 // Note that non-square matrices are never considered to be identity matrices!
 //
 //
-// \n \subsection matrix_operations_min_max min() / max()
+// \n \subsection matrix_operations_matrix_determinant det()
+//
+// The determinant of a square dense matrix can be computed by means of the \c det() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+   double d = det( A );  // Compute the determinant of A
+   \endcode
+
+// In case the given dense matrix is not a square matrix, a \c std::invalid_argument exception is
+// thrown.
+//
+// \note The \c det() function can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// fitting LAPACK library is available and linked to the executable. Otherwise a linker error
+// will be created.
+//
+//
+// \n \subsection matrix_operations_matrix_trans trans()
+//
+// Matrices can be transposed via the \c trans() function. Row-major matrices are transposed into
+// a column-major matrix and vice versa:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M1( 5UL, 2UL );
+   blaze::CompressedMatrix<int,columnMajor> M2( 3UL, 7UL );
+
+   M1 = M2;            // Assigning a column-major matrix to a row-major matrix
+   M1 = trans( M2 );   // Assigning the transpose of M2 (i.e. a row-major matrix) to M1
+   M1 += trans( M2 );  // Addition assignment of two row-major matrices
+   \endcode
+
+// \n \subsection matrix_operations_ctrans ctrans()
+//
+// The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermitian
+// conjugate, or transjugate) can be computed via the \c ctrans() function:
+
+   \code
+   blaze::DynamicMatrix< complex<float>, rowMajor > M1( 5UL, 2UL );
+   blaze::CompressedMatrix< complex<float>, columnMajor > M2( 2UL, 5UL );
+
+   M1 = ctrans( M2 );  // Compute the conjugate transpose matrix
+   \endcode
+
+// Note that the \c ctrans() function has the same effect as manually applying the \c conj() and
+// \c trans() function in any order:
+
+   \code
+   M1 = trans( conj( M2 ) );  // Computing the conjugate transpose matrix
+   M1 = conj( trans( M2 ) );  // Computing the conjugate transpose matrix
+   \endcode
+
+// \n \subsection matrix_operations_matrix_evaluate eval() / evaluate()
+//
+// The \c evaluate() function forces an evaluation of the given matrix expression and enables
+// an automatic deduction of the correct result type of an operation. The following code example
+// demonstrates its intended use for the multiplication of a lower and a strictly lower dense
+// matrix:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::LowerMatrix;
+   using blaze::StrictlyLowerMatrix;
+
+   LowerMatrix< DynamicMatrix<double> > A;
+   StrictlyLowerMatrix< DynamicMatrix<double> > B;
+   // ... Resizing and initialization
+
+   auto C = evaluate( A * B );
+   \endcode
+
+// In this scenario, the \c evaluate() function assists in deducing the exact result type of
+// the operation via the \c auto keyword. Please note that if \c evaluate() is used in this
+// way, no temporary matrix is created and no copy operation is performed. Instead, the result
+// is directly written to the target matrix due to the return value optimization (RVO). However,
+// if \c evaluate() is used in combination with an explicit target type, a temporary will be
+// created and a copy operation will be performed if the used type differs from the type
+// returned from the function:
+
+   \code
+   StrictlyLowerMatrix< DynamicMatrix<double> > D( A * B );  // No temporary & no copy operation
+   LowerMatrix< DynamicMatrix<double> > E( A * B );          // Temporary & copy operation
+   DynamicMatrix<double> F( A * B );                         // Temporary & copy operation
+   D = evaluate( A * B );                                    // Temporary & copy operation
+   \endcode
+
+// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
+// expression. However, please note that \c evaluate() is not intended to be used for this
+// purpose. This task is more elegantly and efficiently handled by the \c eval() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C, D;
+
+   D = A + evaluate( B * C );  // Unnecessary creation of a temporary matrix
+   D = A + eval( B * C );      // No creation of a temporary matrix
+   \endcode
+
+// In contrast to the \c evaluate() function, \c eval() can take the complete expression
+// into account and therefore can guarantee the most efficient way to evaluate it (see also
+// \ref intra_statement_optimization).
+//
+//
+// \n \section matrix_operations_modifying_operations Modifying Operations
+// <hr>
+//
+// \subsection matrix_operations_resize_reserve .resize() / .reserve()
+//
+// The dimensions of a \c StaticMatrix are fixed at compile time by the second and third template
+// parameter and a \c CustomMatrix cannot be resized. In contrast, the number or rows and columns
+// of \c DynamicMatrix, \c HybridMatrix, and \c CompressedMatrix can be changed at runtime:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
+
+   DynamicMatrix<int,rowMajor> M1;
+   CompressedMatrix<int,columnMajor> M2( 3UL, 2UL );
+
+   // Adapting the number of rows and columns via the resize() function. The (optional)
+   // third parameter specifies whether the existing elements should be preserved. Per
+   // default, the existing elements are preserved.
+   M1.resize( 2UL, 2UL );         // Resizing matrix M1 to 2x2 elements. Elements of built-in type
+                                  // remain uninitialized, elements of class type are default
+                                  // constructed.
+   M1.resize( 3UL, 1UL, false );  // Resizing M1 to 3x1 elements. The old elements are lost, the
+                                  // new elements are NOT initialized!
+   M2.resize( 5UL, 7UL, true );   // Resizing M2 to 5x7 elements. The old elements are preserved.
+   M2.resize( 3UL, 2UL, false );  // Resizing M2 to 3x2 elements. The old elements are lost.
+   \endcode
+
+// Note that resizing a matrix invalidates all existing views (see e.g. \ref views_submatrices)
+// on the matrix:
+
+   \code
+   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::Row<MatrixType>              RowType;
+
+   MatrixType M1( 10UL, 20UL );    // Creating a 10x20 matrix
+   RowType row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
+   M1.resize( 6UL, 20UL );         // Resizing the matrix invalidates the view
+   \endcode
+
+// When the internal capacity of a matrix is no longer sufficient, the allocation of a larger
+// junk of memory is triggered. In order to avoid frequent reallocations, the \c reserve()
+// function can be used up front to set the internal capacity:
+
+   \code
+   blaze::DynamicMatrix<int> M1;
+   M1.reserve( 100 );
+   M1.rows();      // Returns 0
+   M1.capacity();  // Returns at least 100
+   \endcode
+
+// Additionally it is possible to reserve memory in a specific row (for a row-major matrix) or
+// column (for a column-major matrix):
+
+   \code
+   blaze::CompressedMatrix<int> M1( 4UL, 6UL );
+   M1.reserve( 1, 4 );  // Reserving enough space for four non-zero elements in row 1
+   \endcode
+
+// \n \subsection matrix_operations_shrinkToFit .shrinkToFit()
+//
+// The internal capacity of matrices with dynamic memory is preserved in order to minimize the
+// number of reallocations. For that reason, the \c resize() and \c reserve() functions can lead
+// to memory overhead. The \c shrinkToFit() member function can be used to minimize the internal
+// capacity:
+
+   \code
+   blaze::DynamicMatrix<int> M1( 100UL, 100UL );  // Create a 100x100 integer matrix
+   M1.resize( 10UL, 10UL );                       // Resize to 10x10, but the capacity is preserved
+   M1.shrinkToFit();                              // Remove the unused capacity
+   \endcode
+
+// Please note that due to padding the capacity might not be reduced exactly to \c rows() times
+// \c columns(). Please also note that in case a reallocation occurs, all iterators (including
+// \c end() iterators), all pointers and references to elements of this matrix are invalidated.
+//
+//
+// \subsection matrix_operations_reset_clear reset() / clear
+//
+// In order to reset all elements of a dense or sparse matrix, the \c reset() function can be
+// used. The number of rows and columns of the matrix are preserved:
+
+   \code
+   // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
+   blaze::DynamicMatrix<float> M1( 4UL, 5UL, 2.0F );
+
+   // Resetting all elements to 0.0F.
+   reset( M1 );  // Resetting all elements
+   M1.rows();    // Returns 4: size and capacity remain unchanged
+   \endcode
+
+// Alternatively, only a single row or column of the matrix can be resetted:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor>    M1( 7UL, 6UL, 5 );  // Setup of a row-major matrix
+   blaze::DynamicMatrix<int,blaze::columnMajor> M2( 4UL, 5UL, 4 );  // Setup of a column-major matrix
+
+   reset( M1, 2UL );  // Resetting the 2nd row of the row-major matrix
+   reset( M2, 3UL );  // Resetting the 3rd column of the column-major matrix
+   \endcode
+
+// In order to reset a row of a column-major matrix or a column of a row-major matrix, use a
+// row or column view (see \ref views_rows and views_colums).
+//
+// In order to return a matrix to its default state (i.e. the state of a default constructed
+// matrix), the \c clear() function can be used:
+
+   \code
+   // Setting up a single precision row-major matrix, whose elements are initialized with 2.0F.
+   blaze::DynamicMatrix<float> M1( 4UL, 5UL, 2.0F );
+
+   // Resetting all elements to 0.0F.
+   clear( M1 );  // Resetting the entire matrix
+   M1.rows();    // Returns 0: size is reset, but capacity remains unchanged
+   \endcode
+
+// \n \subsection matrix_operations_matrix_transpose transpose()
+//
+// In addition to the non-modifying \c trans() function, matrices can be transposed in-place via
+// the \c transpose() function:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
+
+   transpose( M );  // In-place transpose operation.
+   M = trans( M );  // Same as above
+   \endcode
+
+// Note however that the transpose operation fails if ...
+//
+//  - ... the given matrix has a fixed size and is non-square;
+//  - ... the given matrix is a triangular matrix;
+//  - ... the given submatrix affects the restricted parts of a triangular matrix;
+//  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
+//
+//
+// \n \subsection matrix_operations_ctranspose ctranspose()
+//
+// The \c ctranspose() function can be used to perform an in-place conjugate transpose operation:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
+
+   ctranspose( M );  // In-place conjugate transpose operation.
+   M = ctrans( M );  // Same as above
+   \endcode
+
+// Note however that the conjugate transpose operation fails if ...
+//
+//  - ... the given matrix has a fixed size and is non-square;
+//  - ... the given matrix is a triangular matrix;
+//  - ... the given submatrix affects the restricted parts of a triangular matrix;
+//  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
+//
+//
+// \n \subsection matrix_operations_swap swap()
+//
+// Via the \c \c swap() function it is possible to completely swap the contents of two matrices
+// of the same type:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> M1( 10UL, 15UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> M2( 20UL, 10UL );
+
+   swap( M1, M2 );  // Swapping the contents of M1 and M2
+   \endcode
+
+// \n \section matrix_operations_arithmetic_operations Arithmetic Operations
+// <hr>
+//
+// \subsection matrix_operations_min_max min() / max()
 //
 // The \c min() and the \c max() functions return the smallest and largest element of the given
 // dense or sparse matrix, respectively:
@@ -3683,158 +3845,6 @@
 // releases of \b Blaze.
 //
 //
-// \n \subsection matrix_operations_matrix_transpose trans() / transpose()
-//
-// Matrices can be transposed via the \c trans() function. Row-major matrices are transposed into
-// a column-major matrix and vice versa:
-
-   \code
-   blaze::DynamicMatrix<int,rowMajor> M1( 5UL, 2UL );
-   blaze::CompressedMatrix<int,columnMajor> M2( 3UL, 7UL );
-
-   M1 = M2;            // Assigning a column-major matrix to a row-major matrix
-   M1 = trans( M2 );   // Assigning the transpose of M2 (i.e. a row-major matrix) to M1
-   M1 += trans( M2 );  // Addition assignment of two row-major matrices
-   \endcode
-
-// Additionally, matrices can be transposed in-place via the \c transpose() function:
-
-   \code
-   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
-
-   transpose( M );  // In-place transpose operation.
-   M = trans( M );  // Same as above
-   \endcode
-
-// Note however that the transpose operation fails if ...
-//
-//  - ... the given matrix has a fixed size and is non-square;
-//  - ... the given matrix is a triangular matrix;
-//  - ... the given submatrix affects the restricted parts of a triangular matrix;
-//  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
-//
-//
-// \n \subsection matrix_operations_conjugate_transpose ctrans() / ctranspose()
-//
-// The conjugate transpose of a dense or sparse matrix (also called adjoint matrix, Hermitian
-// conjugate, or transjugate) can be computed via the \c ctrans() function:
-
-   \code
-   blaze::DynamicMatrix< complex<float>, rowMajor > M1( 5UL, 2UL );
-   blaze::CompressedMatrix< complex<float>, columnMajor > M2( 2UL, 5UL );
-
-   M1 = ctrans( M2 );  // Compute the conjugate transpose matrix
-   \endcode
-
-// Note that the \c ctrans() function has the same effect as manually applying the \c conj() and
-// \c trans() function in any order:
-
-   \code
-   M1 = trans( conj( M2 ) );  // Computing the conjugate transpose matrix
-   M1 = conj( trans( M2 ) );  // Computing the conjugate transpose matrix
-   \endcode
-
-// The \c ctranspose() function can be used to perform an in-place conjugate transpose operation:
-
-   \code
-   blaze::DynamicMatrix<int,rowMajor> M( 5UL, 2UL );
-
-   ctranspose( M );  // In-place conjugate transpose operation.
-   M = ctrans( M );  // Same as above
-   \endcode
-
-// Note however that the conjugate transpose operation fails if ...
-//
-//  - ... the given matrix has a fixed size and is non-square;
-//  - ... the given matrix is a triangular matrix;
-//  - ... the given submatrix affects the restricted parts of a triangular matrix;
-//  - ... the given submatrix would cause non-deterministic results in a symmetric/Hermitian matrix.
-//
-//
-// \n \subsection matrix_operations_matrix_evaluate eval() / evaluate()
-//
-// The \c evaluate() function forces an evaluation of the given matrix expression and enables
-// an automatic deduction of the correct result type of an operation. The following code example
-// demonstrates its intended use for the multiplication of a lower and a strictly lower dense
-// matrix:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::LowerMatrix;
-   using blaze::StrictlyLowerMatrix;
-
-   LowerMatrix< DynamicMatrix<double> > A;
-   StrictlyLowerMatrix< DynamicMatrix<double> > B;
-   // ... Resizing and initialization
-
-   auto C = evaluate( A * B );
-   \endcode
-
-// In this scenario, the \c evaluate() function assists in deducing the exact result type of
-// the operation via the \c auto keyword. Please note that if \c evaluate() is used in this
-// way, no temporary matrix is created and no copy operation is performed. Instead, the result
-// is directly written to the target matrix due to the return value optimization (RVO). However,
-// if \c evaluate() is used in combination with an explicit target type, a temporary will be
-// created and a copy operation will be performed if the used type differs from the type
-// returned from the function:
-
-   \code
-   StrictlyLowerMatrix< DynamicMatrix<double> > D( A * B );  // No temporary & no copy operation
-   LowerMatrix< DynamicMatrix<double> > E( A * B );          // Temporary & copy operation
-   DynamicMatrix<double> F( A * B );                         // Temporary & copy operation
-   D = evaluate( A * B );                                    // Temporary & copy operation
-   \endcode
-
-// Sometimes it might be desirable to explicitly evaluate a sub-expression within a larger
-// expression. However, please note that \c evaluate() is not intended to be used for this
-// purpose. This task is more elegantly and efficiently handled by the \c eval() function:
-
-   \code
-   blaze::DynamicMatrix<double> A, B, C, D;
-
-   D = A + evaluate( B * C );  // Unnecessary creation of a temporary matrix
-   D = A + eval( B * C );      // No creation of a temporary matrix
-   \endcode
-
-// In contrast to the \c evaluate() function, \c eval() can take the complete expression
-// into account and therefore can guarantee the most efficient way to evaluate it (see also
-// \ref intra_statement_optimization).
-//
-//
-// \n \subsection matrix_operations_matrix_determinant det()
-//
-// The determinant of a square dense matrix can be computed by means of the \c det() function:
-
-   \code
-   blaze::DynamicMatrix<double,blaze::rowMajor> A;
-   // ... Resizing and initialization
-   double d = det( A );  // Compute the determinant of A
-   \endcode
-
-// In case the given dense matrix is not a square matrix, a \c std::invalid_argument exception is
-// thrown.
-//
-// \note The \c det() function can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type or with a sparse matrix results in a compile time error!
-//
-// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
-// fitting LAPACK library is available and linked to the executable. Otherwise a linker error
-// will be created.
-//
-//
-// \n \subsection matrix_operations_swap swap()
-//
-// Via the \c \c swap() function it is possible to completely swap the contents of two matrices
-// of the same type:
-
-   \code
-   blaze::DynamicMatrix<int,blaze::rowMajor> M1( 10UL, 15UL );
-   blaze::DynamicMatrix<int,blaze::rowMajor> M2( 20UL, 10UL );
-
-   swap( M1, M2 );  // Swapping the contents of M1 and M2
-   \endcode
-
 // \n \section matrix_operations_declaration_operations Declaration Operations
 // <hr>
 //
@@ -8779,18 +8789,19 @@
 //**Shared Memory Parallelization******************************************************************
 /*!\page shared_memory_parallelization Shared Memory Parallelization
 //
-// One of the main motivations of the \b Blaze 1.x releases was to achieve maximum performance
-// on a single CPU core for all possible operations. However, today's CPUs are not single core
-// anymore, but provide several (homogeneous or heterogeneous) compute cores. In order to fully
-// exploit the performance potential of a multicore CPU, computations have to be parallelized
-// across all available cores of a CPU. For this purpose, \b Blaze provides three different
-// shared memory parallelization techniques:
+// For all possible operations \b Blaze tries to achieve maximum performance on a single CPU
+// core. However, today's CPUs are not single core anymore, but provide several (homogeneous
+// or heterogeneous) compute cores. In order to fully exploit the performance potential of a
+// multicore CPU, computations have to be parallelized across all available cores of a CPU.
+// For this purpose, \b Blaze provides three different shared memory parallelization techniques:
 //
 //  - \ref openmp_parallelization
 //  - \ref cpp_threads_parallelization
 //  - \ref boost_threads_parallelization
 //
-// In addition, \b Blaze provides means to enforce the serial execution of specific operations:
+// When any of shared memory parallelization techniques is activated, all arithmetic operations
+// are automatically run in parallel. However, in addition, \b Blaze provides means to enforce
+// the serial execution of specific operations:
 //
 //  - \ref serial_execution
 //
