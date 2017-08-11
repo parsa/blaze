@@ -73,8 +73,10 @@ namespace blaze {
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-using Or = Bool< !IsSame< Bools< false, T1::value, T2::value, (Ts::value)... >
-                        , Bools< T1::value, T2::value, (Ts::value)..., false > >::value >;
+struct Or
+   : public Bool< !IsSame< Bools< false, T1::value, T2::value, (Ts::value)... >
+                         , Bools< T1::value, T2::value, (Ts::value)..., false > >::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

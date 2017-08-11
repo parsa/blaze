@@ -71,7 +71,9 @@ namespace blaze {
 */
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
-using Xor = Bool< ( T1::value ^ T2::value ) >;
+struct Xor
+   : public Bool< ( T1::value ^ T2::value ) >
+{};
 //*************************************************************************************************
 
 } // namespace blaze

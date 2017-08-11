@@ -129,7 +129,9 @@ using IfTrue_ = typename IfTrue<Condition,T1,T2>::Type;
 template< typename T1    // Type of the condition
         , typename T2    // Type to be selected if T1::value=true
         , typename T3 >  // Type to be selected if T1::value=false
-using If = IfTrue< T1::value, T2, T3 >;
+struct If
+   : public IfTrue< T1::value, T2, T3 >
+{};
 //*************************************************************************************************
 
 

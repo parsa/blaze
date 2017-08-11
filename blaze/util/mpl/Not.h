@@ -67,7 +67,9 @@ namespace blaze {
    \endcode
 */
 template< typename C >  // Condition to be negated
-using Not = Bool< !C::value >;
+struct Not
+   : public Bool< !C::value >
+{};
 //*************************************************************************************************
 
 } // namespace blaze
