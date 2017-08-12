@@ -916,8 +916,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                    , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto dmattsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
-   -> const DMatTSMatSchurExpr<MT1,MT2>
+inline const DMatTSMatSchurExpr<MT1,MT2>
+   dmattsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -947,8 +947,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto dmattsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
-   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+   dmattsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1026,8 +1026,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                    , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto tdmattsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
-   -> const DMatTSMatSchurExpr<MT1,MT2>
+inline const DMatTSMatSchurExpr<MT1,MT2>
+   tdmattsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1056,8 +1056,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto tdmattsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
-   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
+inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
+   tdmattsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -884,8 +884,8 @@ class DMatTDMatAddExpr
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
-inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
-   -> const DMatTDMatAddExpr<MT1,MT2>
+inline const DMatTDMatAddExpr<MT1,MT2>
+   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -914,8 +914,8 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > > > >
-inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
-   -> decltype( trans( ~lhs ) + ~rhs )
+inline decltype( trans( std::declval<MT1>() ) + std::declval<MT2>() )
+   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -944,8 +944,8 @@ inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<M
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< IsSymmetric<MT2> > >
-inline auto dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
-   -> decltype( (~lhs) + trans( ~rhs ) )
+inline decltype( std::declval<MT1>() + trans( std::declval<MT2>() ) )
+   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1019,8 +1019,8 @@ inline decltype(auto)
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
-inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
-   -> const DMatTDMatAddExpr<MT2,MT1>
+inline const DMatTDMatAddExpr<MT2,MT1>
+   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1049,8 +1049,8 @@ inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > > >
-inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
-   -> decltype( trans( ~rhs ) + (~lhs) )
+inline decltype( trans( std::declval<MT2>() ) + std::declval<MT1>() )
+   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1079,8 +1079,8 @@ inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< IsSymmetric<MT1> > >
-inline auto tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
-   -> decltype( (~rhs) + trans( ~lhs ) )
+inline decltype( std::declval<MT2>() + trans( std::declval<MT1>() ) )
+   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

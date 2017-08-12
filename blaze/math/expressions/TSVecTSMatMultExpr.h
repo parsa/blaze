@@ -935,8 +935,8 @@ class TSVecTSMatMultExpr
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side sparse matrix
         , typename = DisableIf_< IsSymmetric<MT> > >
-inline auto tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
-   -> const TSVecTSMatMultExpr<VT,MT>
+inline const TSVecTSMatMultExpr<VT,MT>
+   tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -965,8 +965,8 @@ inline auto tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< IsSymmetric<MT> > >
-inline auto tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
-   -> decltype( (~vec) * trans( ~mat ) )
+inline decltype( std::declval<VT>() * trans( std::declval<MT>() ) )
+   tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 

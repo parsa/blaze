@@ -941,8 +941,7 @@ class DMatDeclHermExpr
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> > > >
-inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
-   -> const DMatDeclHermExpr<MT,SO>
+inline const DMatDeclHermExpr<MT,SO> declherm_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -968,14 +967,13 @@ inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< And< Not< IsHermitian<MT> >, IsUniTriangular<MT> > > >
-inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
+inline const IdentityMatrix<ElementType_<MT>,SO> declherm_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+   return IdentityMatrix<ElementType_<MT>,SO>( (~dm).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -995,8 +993,7 @@ inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< IsHermitian<MT> > >
-inline auto declherm_backend( const DenseMatrix<MT,SO>& dm )
-   -> const MT&
+inline const MT& declherm_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 

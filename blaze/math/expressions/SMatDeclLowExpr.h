@@ -913,8 +913,7 @@ class SMatDeclLowExpr
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename = DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> > > >
-inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
-   -> const SMatDeclLowExpr<MT,SO>
+inline const SMatDeclLowExpr<MT,SO> decllow_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -940,14 +939,13 @@ inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename = EnableIf_< And< Not< IsLower<MT> >, IsUniUpper<MT> > > >
-inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
+inline const IdentityMatrix<ElementType_<MT>,SO> decllow_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
 
-   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+   return IdentityMatrix<ElementType_<MT>,SO>( (~sm).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -967,8 +965,7 @@ inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename = EnableIf_< IsLower<MT> > >
-inline auto decllow_backend( const SparseMatrix<MT,SO>& sm )
-   -> const MT&
+inline const MT& decllow_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

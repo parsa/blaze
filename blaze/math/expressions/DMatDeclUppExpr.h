@@ -940,8 +940,7 @@ class DMatDeclUppExpr
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = DisableIf_< Or< IsUpper<MT>, IsUniLower<MT> > > >
-inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
-   -> const DMatDeclUppExpr<MT,SO>
+inline const DMatDeclUppExpr<MT,SO> declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -967,14 +966,13 @@ inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< And< Not< IsUpper<MT> >, IsUniLower<MT> > > >
-inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
+inline const IdentityMatrix<ElementType_<MT>,SO> declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+   return IdentityMatrix<ElementType_<MT>,SO>( (~dm).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -994,8 +992,7 @@ inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< IsUpper<MT> > >
-inline auto declupp_backend( const DenseMatrix<MT,SO>& dm )
-   -> const MT&
+inline const MT& declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1066,8 +1063,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
         , typename = DisableIf_< IsUpper<MT> > >
-inline auto declupp( const DMatScalarMultExpr<MT,ST,SO>& dm )
-   -> decltype( declupp( dm.leftOperand() ) * dm.rightOperand() )
+inline decltype(auto) declupp( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 

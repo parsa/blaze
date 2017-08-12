@@ -914,8 +914,7 @@ class SMatDeclHermExpr
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename = DisableIf_< Or< IsHermitian<MT>, IsUniTriangular<MT> > > >
-inline auto declherm_backend( const SparseMatrix<MT,SO>& sm )
-   -> const SMatDeclHermExpr<MT,SO>
+inline const SMatDeclHermExpr<MT,SO> declherm_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -941,14 +940,13 @@ inline auto declherm_backend( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename = EnableIf_< And< Not< IsHermitian<MT> >, IsUniTriangular<MT> > > >
-inline auto declherm_backend( const SparseMatrix<MT,SO>& sm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
+inline const IdentityMatrix<ElementType_<MT>,SO> declherm_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~sm ), "Non-square matrix detected" );
 
-   return IdentityMatrix< ElementType_<MT>, SO >( (~sm).rows() );
+   return IdentityMatrix<ElementType_<MT>,SO>( (~sm).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -968,8 +966,7 @@ inline auto declherm_backend( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename = EnableIf_< IsHermitian<MT> > >
-inline auto declherm( const SparseMatrix<MT,SO>& sm )
-   -> const MT&
+inline const MT& declherm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 

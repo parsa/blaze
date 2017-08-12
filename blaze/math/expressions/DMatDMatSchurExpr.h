@@ -1055,8 +1055,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO       // Storage order
         , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                    , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
-   -> const DMatDMatSchurExpr<MT1,MT2,SO>
+inline const DMatDMatSchurExpr<MT1,MT2,SO>
+   dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1087,8 +1087,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO       // Storage order
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
-   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO >
+inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, SO >
+   dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

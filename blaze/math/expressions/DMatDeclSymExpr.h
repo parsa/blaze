@@ -941,8 +941,7 @@ class DMatDeclSymExpr
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = DisableIf_< Or< IsSymmetric<MT>, IsUniTriangular<MT> > > >
-inline auto declsym_backend( const DenseMatrix<MT,SO>& dm )
-   -> const DMatDeclSymExpr<MT,SO>
+inline const DMatDeclSymExpr<MT,SO> declsym_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -968,14 +967,13 @@ inline auto declsym_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< And< Not< IsSymmetric<MT> >, IsUniTriangular<MT> > > >
-inline auto declsym_backend( const DenseMatrix<MT,SO>& dm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
+inline const IdentityMatrix<ElementType_<MT>,SO> declsym_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+   return IdentityMatrix<ElementType_<MT>,SO>( (~dm).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -995,8 +993,7 @@ inline auto declsym_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< IsSymmetric<MT> > >
-inline auto declsym_backend( const DenseMatrix<MT,SO>& dm )
-   -> const MT&
+inline const MT& declsym_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 

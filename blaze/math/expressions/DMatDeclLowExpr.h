@@ -940,8 +940,7 @@ class DMatDeclLowExpr
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = DisableIf_< Or< IsLower<MT>, IsUniUpper<MT> > > >
-inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
-   -> const DMatDeclLowExpr<MT,SO>
+inline const DMatDeclLowExpr<MT,SO> decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -967,14 +966,13 @@ inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< And< Not< IsLower<MT> >, IsUniUpper<MT> > > >
-inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
-   -> const IdentityMatrix< ElementType_<MT>, SO >
+inline const IdentityMatrix<ElementType_<MT>,SO> decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   return IdentityMatrix< ElementType_<MT>, SO >( (~dm).rows() );
+   return IdentityMatrix<ElementType_<MT>,SO>( (~dm).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -994,8 +992,7 @@ inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< IsLower<MT> > >
-inline auto decllow_backend( const DenseMatrix<MT,SO>& dm )
-   -> const MT&
+inline const MT& decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 

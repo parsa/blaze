@@ -870,8 +870,8 @@ class TDVecSMatMultExpr
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
         , typename = DisableIf_< IsSymmetric<MT> > >
-inline auto tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
-   -> const TDVecSMatMultExpr<VT,MT>
+inline const TDVecSMatMultExpr<VT,MT>
+   tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -900,8 +900,8 @@ inline auto tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<M
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< IsSymmetric<MT> > >
-inline auto tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
-   -> decltype( (~vec) * trans( ~mat ) )
+inline decltype( std::declval<VT>() * trans( std::declval<MT>() ) )
+   tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -941,8 +941,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
                                    , Not< IsSymmetric<MT2> >
                                    , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
                                    , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
-inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
-   -> const DMatTDMatSchurExpr<MT1,MT2>
+inline const DMatTDMatSchurExpr<MT1,MT2>
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -974,8 +974,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
                                    , Not< IsSymmetric<MT2> >
                                    , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
                                    , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
-inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
-   -> decltype( trans( ~lhs ) % ~rhs )
+inline decltype( trans( std::declval<MT1>() ) % std::declval<MT2>() )
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1006,8 +1006,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename = EnableIf_< And< IsSymmetric<MT2>
                                    , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
                                    , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
-inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
-   -> decltype( (~lhs) % trans( ~rhs ) )
+inline decltype( std::declval<MT1>() % trans( std::declval<MT2>() ) )
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1037,8 +1037,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
-   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1117,8 +1117,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
                                    , Not< IsSymmetric<MT2> >
                                    , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
                                    , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
-inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
-   -> const DMatTDMatSchurExpr<MT1,MT2>
+inline const DMatTDMatSchurExpr<MT1,MT2>
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1150,8 +1150,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
                                    , IsSymmetric<MT2>
                                    , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
                                    , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
-inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
-   -> decltype( (~lhs) % trans( ~rhs ) )
+inline decltype( std::declval<MT1>() % trans( std::declval<MT2>() ) )
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1182,8 +1182,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename = EnableIf_< And< IsSymmetric<MT1>
                                    , Not< And< IsUniLower<MT1>, IsUniUpper<MT2> > >
                                    , Not< And< IsUniUpper<MT1>, IsUniLower<MT2> > > > > >
-inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
-   -> decltype( trans( ~lhs ) % (~rhs) )
+inline decltype( trans( std::declval<MT1>() ) % std::declval<MT2>() )
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1213,8 +1213,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
-   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
+inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, true >
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

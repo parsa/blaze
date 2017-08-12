@@ -927,8 +927,8 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                    , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto smatsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
-   -> const SMatSMatSchurExpr<MT1,MT2>
+inline const SMatSMatSchurExpr<MT1,MT2>
+   smatsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -958,8 +958,8 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline auto smatsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
-   -> const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+   smatsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
