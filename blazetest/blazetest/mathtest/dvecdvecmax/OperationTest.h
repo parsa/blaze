@@ -54,7 +54,6 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/StaticVector.h>
-#include <blaze/math/traits/BinaryMapExprTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -115,12 +114,6 @@ class OperationTest
 
    typedef blaze::DynamicVector<blaze::ElementType_<DRE>,TF>  RT;   //!< Reference type
    typedef blaze::TransposeType_<RT>                          TRT;  //!< Transpose reference type
-
-   //! Type of the vector/vector maximum expression
-   typedef blaze::BinaryMapExprTrait_<VT1,VT2,blaze::Max>  VecVecMaxExprType;
-
-   //! Type of the transpose vector/transpose vector maximum expression
-   typedef blaze::BinaryMapExprTrait_<TVT1,TVT2,blaze::Max>  TVecTVecMaxExprType;
    //**********************************************************************************************
 
  public:
@@ -230,9 +223,6 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, blaze::TransposeType_<TVT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_<TVT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT , blaze::TransposeType_<TRT>  );
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VecVecMaxExprType  , decltype( max( lhs_ , rhs_  ) ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TVecTVecMaxExprType, decltype( max( tlhs_, trhs_ ) ) );
    /*! \endcond */
    //**********************************************************************************************
 };

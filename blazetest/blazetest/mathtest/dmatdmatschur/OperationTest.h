@@ -54,7 +54,6 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/SchurExprTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -141,18 +140,6 @@ class OperationTest
 
    //! Reference result type
    typedef MatchSymmetry_< DRE, blaze::SchurTrait_<RT1,RT2> >  RRE;
-
-   //! Type of the matrix/matrix Schur product expression
-   typedef blaze::SchurExprTrait_<MT1,MT2>  MatMatSchurExprType;
-
-   //! Type of the matrix/transpose matrix Schur product expression
-   typedef blaze::SchurExprTrait_<MT1,OMT2>  MatTMatSchurExprType;
-
-   //! Type of the transpose matrix/matrix Schur product expression
-   typedef blaze::SchurExprTrait_<OMT1,MT2>  TMatMatSchurExprType;
-
-   //! Type of the transpose matrix/transpose matrix Schur product expression
-   typedef blaze::SchurExprTrait_<OMT1,OMT2>  TMatTMatSchurExprType;
    //**********************************************************************************************
 
  public:
@@ -312,11 +299,6 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_<OSRE>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatMatSchurExprType  , decltype( lhs_  % rhs_  ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatTMatSchurExprType , decltype( lhs_  % orhs_ ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatMatSchurExprType , decltype( olhs_ % rhs_  ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatTMatSchurExprType, decltype( olhs_ % orhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };

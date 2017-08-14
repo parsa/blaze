@@ -54,7 +54,6 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/StaticVector.h>
-#include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -120,12 +119,6 @@ class OperationTest
    typedef blaze::TransposeType_<RT1>   TRT1;  //!< Transpose reference type 1
    typedef blaze::TransposeType_<RT2>   TRT2;  //!< Transpose reference type 2
    typedef blaze::SubTrait_<TRT1,TRT2>  TRRE;  //!< Transpose reference result type
-
-   //! Type of the vector/vector subtraction expression
-   typedef blaze::SubExprTrait_<VT1,VT2>  VecVecSubExprType;
-
-   //! Type of the transpose vector/transpose vector subtraction expression
-   typedef blaze::SubExprTrait_<TVT1,TVT2>  TVecTVecSubExprType;
    //**********************************************************************************************
 
  public:
@@ -248,9 +241,6 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_<TVT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, blaze::TransposeType_<TRT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, blaze::TransposeType_<TRT2> );
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VecVecSubExprType  , decltype( lhs_  - rhs_  ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TVecTVecSubExprType, decltype( tlhs_ - trhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };

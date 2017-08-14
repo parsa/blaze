@@ -54,7 +54,6 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -141,18 +140,6 @@ class OperationTest
 
    //! Reference result type
    typedef MatchSymmetry_< DRE, blaze::SubTrait_<RT1,RT2> >  RRE;
-
-   //! Type of the matrix/matrix subtraction expression
-   typedef blaze::SubExprTrait_<MT1,MT2>  MatMatSubExprType;
-
-   //! Type of the matrix/transpose matrix subtraction expression
-   typedef blaze::SubExprTrait_<MT1,OMT2>  MatTMatSubExprType;
-
-   //! Type of the transpose matrix/matrix subtraction expression
-   typedef blaze::SubExprTrait_<OMT1,MT2>  TMatMatSubExprType;
-
-   //! Type of the transpose matrix/transpose matrix subtraction expression
-   typedef blaze::SubExprTrait_<OMT1,OMT2>  TMatTMatSubExprType;
    //**********************************************************************************************
 
  public:
@@ -312,11 +299,6 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_<OSRE>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatMatSubExprType  , decltype( lhs_  - rhs_  ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatTMatSubExprType , decltype( lhs_  - orhs_ ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatMatSubExprType , decltype( olhs_ - rhs_  ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatTMatSubExprType, decltype( olhs_ - orhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };

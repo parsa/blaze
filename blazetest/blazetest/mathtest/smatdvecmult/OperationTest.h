@@ -59,7 +59,6 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/StaticMatrix.h>
-#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -124,12 +123,6 @@ class OperationTest
    typedef blaze::DynamicVector<VET,false>  VRT;   //!< Vector reference type
    typedef blaze::MultTrait_<MRT,VRT>       RRE;   //!< Reference result type
    typedef blaze::TransposeType_<RRE>       TRRE;  //!< Transpose reference result type
-
-   //! Type of the matrix/vector multiplication expression
-   typedef blaze::MultExprTrait_<MT,VT>  MatVecMultExprType;
-
-   //! Type of the transpose matrix/vector multiplication expression
-   typedef blaze::MultExprTrait_<OMT,VT>  TMatVecMultExprType;
    //**********************************************************************************************
 
  public:
@@ -249,9 +242,6 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT , blaze::TransposeType_<TVT>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatVecMultExprType , decltype( lhs_  * rhs_ ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatVecMultExprType, decltype( olhs_ * rhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };

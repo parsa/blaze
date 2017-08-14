@@ -54,7 +54,6 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/BinaryMapExprTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -137,18 +136,6 @@ class OperationTest
    typedef blaze::TransposeType_<OSRE>  TOSRE;  //!< Transpose sparse result type with opposite storage order
 
    typedef blaze::DynamicMatrix<blaze::ElementType_<DRE>,false>  RT;  //!< Reference type
-
-   //! Type of the matrix/matrix minimum expression
-   typedef blaze::BinaryMapExprTrait_<MT1,MT2,blaze::Min>  MatMatMinExprType;
-
-   //! Type of the matrix/transpose matrix minimum expression
-   typedef blaze::BinaryMapExprTrait_<MT1,OMT2,blaze::Min>  MatTMatMinExprType;
-
-   //! Type of the transpose matrix/matrix minimum expression
-   typedef blaze::BinaryMapExprTrait_<OMT1,MT2,blaze::Min>  TMatMatMinExprType;
-
-   //! Type of the transpose matrix/transpose matrix minimum expression
-   typedef blaze::BinaryMapExprTrait_<OMT1,OMT2,blaze::Min>  TMatTMatMinExprType;
    //**********************************************************************************************
 
  public:
@@ -302,11 +289,6 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_<OSRE>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatMatMinExprType  , decltype( min( lhs_ , rhs_  ) ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MatTMatMinExprType , decltype( min( lhs_ , orhs_ ) ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatMatMinExprType , decltype( min( olhs_, rhs_  ) ) );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( TMatTMatMinExprType, decltype( min( olhs_, orhs_ ) ) );
    /*! \endcond */
    //**********************************************************************************************
 };

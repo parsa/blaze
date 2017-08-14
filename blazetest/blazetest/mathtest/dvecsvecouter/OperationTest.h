@@ -57,7 +57,6 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/StaticVector.h>
-#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -127,9 +126,6 @@ class OperationTest
    typedef blaze::DynamicVector<ET1,false>  RT1;  //!< Reference type 1
    typedef blaze::DynamicVector<ET2,true>   RT2;  //!< Reference type 2
    typedef blaze::MultTrait_<RT1,RT2>       RRE;  //!< Reference result type
-
-   //! Type of the outer product expression
-   typedef blaze::MultExprTrait_<VT1,TVT2>  VecVecOuterExprType;
    //**********************************************************************************************
 
  public:
@@ -272,8 +268,6 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_<OSRE>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
-
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VecVecOuterExprType, decltype( lhs_ * rhs_ ) );
    /*! \endcond */
    //**********************************************************************************************
 };
