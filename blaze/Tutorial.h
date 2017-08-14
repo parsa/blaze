@@ -1359,6 +1359,29 @@
    nonZeros( A * v1 );  // Estimates the number of non-zero elements in the vector expression
    \endcode
 
+// \n \subsection vector_operations_isnan isnan()
+//
+// The \c isnan() function provides the means to check a dense or sparse vector for non-a-number
+// elements:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
+   \endcode
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   if( isnan( a ) ) { ... }
+   \endcode
+
+// If at least one element of the vector is not-a-number, the function returns \c true, otherwise
+// it returns \c false. Please note that this function only works for vectors with floating point
+// elements. The attempt to use it for a vector with a non-floating point element type results in
+// a compile time error.
+//
+//
 // \n \subsection vector_operations_isdefault isDefault()
 //
 // The \c isDefault() function returns whether the given dense or sparse vector is in default state:
@@ -1389,29 +1412,6 @@
    \endcode
 
 // Note that in case of sparse vectors also the zero elements are also taken into account!
-//
-//
-// \n \subsection vector_operations_isnan isnan()
-//
-// The \c isnan() function provides the means to check a dense or sparse vector for non-a-number
-// elements:
-
-   \code
-   blaze::DynamicVector<double> a;
-   // ... Resizing and initialization
-   if( isnan( a ) ) { ... }
-   \endcode
-
-   \code
-   blaze::CompressedVector<double> a;
-   // ... Resizing and initialization
-   if( isnan( a ) ) { ... }
-   \endcode
-
-// If at least one element of the vector is not-a-number, the function returns \c true, otherwise
-// it returns \c false. Please note that this function only works for vectors with floating point
-// elements. The attempt to use it for a vector with a non-floating point element type results in
-// a compile time error.
 //
 //
 // \n \subsection vector_operations_length length() / sqrLength()
