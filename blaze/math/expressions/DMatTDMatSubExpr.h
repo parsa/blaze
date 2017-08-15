@@ -877,11 +877,11 @@ class DMatTDMatSubExpr
 // This function implements a performance optimized treatment of the subtraction of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
 inline const DMatTDMatSubExpr<MT1,MT2>
-   dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+   dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
+                 EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -907,11 +907,11 @@ inline const DMatTDMatSubExpr<MT1,MT2>
 // This function implements a performance optimized treatment of the subtraction of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > > > >
-inline decltype( trans( std::declval<MT1>() ) - std::declval<MT2>() )
-   dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline decltype(auto)
+   dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
+                 EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -937,11 +937,11 @@ inline decltype( trans( std::declval<MT1>() ) - std::declval<MT2>() )
 // This function implements a performance optimized treatment of the subtraction of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< IsSymmetric<MT2> > >
-inline decltype( std::declval<MT1>() - trans( std::declval<MT2>() ) )
-   dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline decltype(auto)
+   dmattdmatsub( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
+                 EnableIf_< IsSymmetric<MT2> >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1012,11 +1012,11 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the subtraction of a column-major
 // dense matrix and a row-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
 inline const DMatTDMatSubExpr<MT1,MT2>
-   tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+   tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
+                 EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1042,11 +1042,11 @@ inline const DMatTDMatSubExpr<MT1,MT2>
 // This function implements a performance optimized treatment of the subtraction of a column-major
 // dense matrix and a symmetric row-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > > >
-inline decltype( std::declval<MT1>() - trans( std::declval<MT2>() ) )
-   tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline decltype(auto)
+   tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
+                 EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1072,11 +1072,11 @@ inline decltype( std::declval<MT1>() - trans( std::declval<MT2>() ) )
 // This function implements a performance optimized treatment of the subtraction of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< IsSymmetric<MT1> > >
-inline decltype( trans( std::declval<MT1>() ) - std::declval<MT2>() )
-   tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline decltype(auto)
+   tdmatdmatsub( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
+                 EnableIf_< IsSymmetric<MT1> >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 

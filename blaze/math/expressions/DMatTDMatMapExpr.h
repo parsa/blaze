@@ -983,12 +983,12 @@ class DMatTDMatMapExpr
 // This function implements a performance optimized treatment for applying the given binary
 // operation to a row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename OP   // Type of the custom operation
-        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
+template< typename MT1   // Type of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side dense matrix
+        , typename OP >  // Type of the custom operation
 inline const DMatTDMatMapExpr<MT1,MT2,OP>
-   map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
+   map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op,
+                EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1015,12 +1015,12 @@ inline const DMatTDMatMapExpr<MT1,MT2,OP>
 // This function implements a performance optimized treatment for applying the given binary
 // operation to a symmetric row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename OP   // Type of the custom operation
-        , typename = EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > > > >
-inline decltype( map( trans( std::declval<MT1>() ), std::declval<MT2>(), std::declval<OP>() ) )
-   map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
+template< typename MT1   // Type of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side dense matrix
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op,
+                EnableIf_< And< IsSymmetric<MT1>, Not< IsSymmetric<MT2> > > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1048,12 +1048,12 @@ inline decltype( map( trans( std::declval<MT1>() ), std::declval<MT2>(), std::de
 // operation to a (potentially symmetric) row-major dense matrix and a symmetric column-major
 // dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename OP   // Type of the custom operation
-        , typename = EnableIf_< IsSymmetric<MT2> > >
-inline decltype( map( std::declval<MT1>(), trans( std::declval<MT2>() ), std::declval<OP>() ) )
-   map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op )
+template< typename MT1   // Type of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side dense matrix
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map_backend( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs, OP op,
+                EnableIf_< IsSymmetric<MT2> >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1122,12 +1122,12 @@ inline decltype(auto)
 // This function implements a performance optimized treatment for applying the given binary
 // operation to a column-major dense matrix and a row-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename OP   // Type of the custom operation
-        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > > >
+template< typename MT1   // Type of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side dense matrix
+        , typename OP >  // Type of the custom operation
 inline const DMatTDMatMapExpr<MT1,MT2,OP>
-   map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
+   map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op,
+                EnableIf_< And< Not< IsSymmetric<MT1> >, Not< IsSymmetric<MT2> > > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1154,12 +1154,12 @@ inline const DMatTDMatMapExpr<MT1,MT2,OP>
 // This function implements a performance optimized treatment for applying the given binary
 // operation to a column-major dense matrix and a symmetric row-major dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename OP   // Type of the custom operation
-        , typename = EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > > >
-inline decltype( map( std::declval<MT1>(), trans( std::declval<MT2>() ), std::declval<OP>() ) )
-   map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
+template< typename MT1   // Type of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side dense matrix
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op,
+                EnableIf_< And< Not< IsSymmetric<MT1> >, IsSymmetric<MT2> > >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1187,12 +1187,12 @@ inline decltype( map( std::declval<MT1>(), trans( std::declval<MT2>() ), std::de
 // operation to a symmetric column-major dense matrix and a (potentially symmetric) row-major
 // dense matrix.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , typename OP   // Type of the custom operation
-        , typename = EnableIf_< IsSymmetric<MT1> > >
-inline decltype( map( trans( std::declval<MT1>() ), std::declval<MT2>(), std::declval<OP>() ) )
-   map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op )
+template< typename MT1   // Type of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side dense matrix
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map_backend( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs, OP op,
+                EnableIf_< IsSymmetric<MT1> >* = nullptr )
 {
    BLAZE_FUNCTION_TRACE;
 
