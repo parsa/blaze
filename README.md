@@ -19,9 +19,9 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.1.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.1.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.1.tar.gz)
+[![blaze-3.2.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.2.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.2.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.1.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.1.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.1.tar.gz)
+[![blaze-docu-3.2.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.2.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.2.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
@@ -34,6 +34,10 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 ----
 
 ## News ##
+
+**18.8.2017**: Today, after nearly six month of hard work, we officially release **Blaze** 3.2! This version is dedicated to several of the most anticipated features: **Blaze** finally provides [CMake support](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration%20and%20Installation) and an [advanced configuration system](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration Files), which allows you to configure each single detail of **Blaze** from the command line. Additionally, **Blaze** finally provides complete support of AVX-512 and introduces the [`IdentityMatrix`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types#!identitymatrix) class. Furthermore, **Blaze** finally features [binary custom operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-operations) and the [componentwise matrix multiplication (Schur Product)](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!componentwise-multiplication-schur-product). Of course we have also spent time on a lot of smaller features and tweaked countless little details. We hope you enjoy this new release and the ton of new features.
+
+We don't want to miss the opportunity to thank our many contributors: Thanks a lot for your efforts to make Blaze a better library!
 
 **3.7.2017**: We are proud to announce the first of hopefully many **Blaze** projects: [BlazeIterative](https://github.com/tjolsen/BlazeIterative). Check out this collection of iterative solves, which neatly integrate with the **Blaze** library.
 
@@ -92,7 +96,8 @@ Along with the upgrade to C++14, **Blaze** 3.0 implements several additional, sm
     * [Vector/Vector Division](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Division)
     * [Matrix/Vector Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Vector Multiplication)
     * [Matrix/Matrix Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication)
-* [Custom Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Custom Operations)
+        * [Schur Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!componentwise-multiplication-schur-product)
+        * [Matrix Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!matrix-product)
 * [Shared-Memory Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Shared Memory Parallelization)
     * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
     * [C++11 Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Cpp Thread Parallelization)
@@ -101,12 +106,16 @@ Along with the upgrade to C++14, **Blaze** 3.0 implements several additional, sm
 * [Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Serialization)
     * [Vector Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Serialization)
     * [Matrix Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Serialization)
+* [Customization](https://bitbucket.org/blaze-lib/blaze/wiki/Customization)
+    * [Configuration Files](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration Files)
+    * [Vector and Matrix Customization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization)
+        * [Custom Data Members](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-data-members)
+        * [Custom Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-operations)
+        * [Custom Data Types](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-data-types)
+    * [Error Reporting Customization](https://bitbucket.org/blaze-lib/blaze/wiki/Error Reporting Customization)
 * [BLAS Functions](https://bitbucket.org/blaze-lib/blaze/wiki/BLAS Functions)
 * [LAPACK Functions](https://bitbucket.org/blaze-lib/blaze/wiki/LAPACK Functions)
-* [Configuration Files](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration Files)
 * [Block Vectors and Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Block Vectors and Matrices)
-* [Custom Data Types](https://bitbucket.org/blaze-lib/blaze/wiki/Custom Data Types)
-* [Error Reporting Customization](https://bitbucket.org/blaze-lib/blaze/wiki/Error Reporting Customization)
 * [Intra-Statement Optimization](https://bitbucket.org/blaze-lib/blaze/wiki/Intra-Statement Optimization)
 * [Blazemark: The Blaze Benchmark Suite](https://bitbucket.org/blaze-lib/blaze/wiki/Blazemark)
 * [Benchmarks/Performance Results](https://bitbucket.org/blaze-lib/blaze/wiki/Benchmarks)
@@ -127,7 +136,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 4.9 through 6.3), the Intel C++ compiler (16.0), the Clang compiler (version 3.7 through 4.0), and Visual C++ 2015 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 4.9 through 7.1), the Intel C++ compiler (16.0), the Clang compiler (version 3.7 through 4.0), and Visual C++ 2015 and 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 If you are looking for a C++98 compatible math library you might consider using an older release of **Blaze**. Until the release 2.6 **Blaze** was written in C++-98 and constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only).
 
@@ -135,14 +144,14 @@ If you are looking for a C++98 compatible math library you might consider using 
 
 ## Publications ##
 
-  * K. Iglberger, G. Hager, J. Treibig, and U. Rüde: **Expression Templates Revisited: A Performance Analysis of Current Methodologies** ([Download](http://epubs.siam.org/sisc/resource/1/sjoce3/v34/i2/pC42_s1)). SIAM Journal on Scientific Computing, 34(2): C42--C69, 2012
-  * K. Iglberger, G. Hager, J. Treibig, and U. Rüde: **High Performance Smart Expression Template Math Libraries** ([Download](http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=06266939)). Proceedings of the 2nd International Workshop on New Algorithms and Programming Models for the Manycore Era (APMM 2012) at HPCS 2012
+* K. Iglberger, G. Hager, J. Treibig, and U. Rüde: **Expression Templates Revisited: A Performance Analysis of Current Methodologies** ([Download](http://epubs.siam.org/sisc/resource/1/sjoce3/v34/i2/pC42_s1)). SIAM Journal on Scientific Computing, 34(2): C42--C69, 2012
+* K. Iglberger, G. Hager, J. Treibig, and U. Rüde: **High Performance Smart Expression Template Math Libraries** ([Download](http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=06266939)). Proceedings of the 2nd International Workshop on New Algorithms and Programming Models for the Manycore Era (APMM 2012) at HPCS 2012
 
 ----
 
 ## Contributions ##
 
-[Klaus Iglberger](http://www.xing.com/profile/Klaus_Iglberger) -- Project initiator and main developer
+[Klaus Iglberger](https://www.linkedin.com/in/klaus-iglberger-2133694/) -- Project initiator and main developer
 
 [Georg Hager](http://www.rrze.uni-erlangen.de/wir-ueber-uns/organigramm/mitarbeiter/index.shtml/georg-hager.shtml) -- Performance analysis and optimization
 
