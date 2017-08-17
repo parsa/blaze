@@ -931,6 +931,33 @@ inline decltype(auto) derestrict( Column<MT,SO,DF,SF>& c )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given temporary column.
+// \ingroup column
+//
+// \param c The temporary column to be derestricted.
+// \return Column without access restrictions.
+//
+// This function removes all restrictions on the data access to the given temporary column. It
+// returns a column object that does provide the same interface but does not have any restrictions
+// on the data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline decltype(auto) derestrict( Column<MT,SO,DF,SF>&& c )
+{
+   return column( derestrict( c.operand() ), c.column() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

@@ -1260,6 +1260,33 @@ inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given temporary subvector.
+// \ingroup subvector
+//
+// \param sv The temporary subvector to be derestricted.
+// \return Subvector without access restrictions.
+//
+// This function removes all restrictions on the data access to the given temporary subvector. It
+// returns a subvector that does provide the same interface but does not have any restrictions on
+// the data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the vector
+        , bool AF      // Alignment flag
+        , bool TF      // Transpose flag
+        , bool DF >    // Density flag
+inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
+{
+   return subvector( derestrict( sv.operand() ), sv.offset(), sv.size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

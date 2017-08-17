@@ -929,6 +929,33 @@ inline decltype(auto) derestrict( Row<MT,SO,DF,SF>& r )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given temporary row.
+// \ingroup row
+//
+// \param r The temporary row to be derestricted.
+// \return Row without access restrictions.
+//
+// This function removes all restrictions on the data access to the given temporary row. It
+// returns a row object that does provide the same interface but does not have any restrictions
+// on the data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
+{
+   return row( derestrict( r.operand() ), r.row() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
