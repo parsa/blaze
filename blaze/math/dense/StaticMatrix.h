@@ -58,6 +58,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
@@ -95,6 +96,8 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/StorageOrder.h>
+#include <blaze/system/TransposeFlag.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
@@ -6830,6 +6833,32 @@ template< typename T, size_t M, size_t N, bool SO >
 struct ColumnTrait< StaticMatrix<T,M,N,SO> >
 {
    using Type = StaticVector<T,M,false>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t M, size_t N, bool SO >
+struct BandTrait< StaticMatrix<T,M,N,SO> >
+{
+   using Type = HybridVector<T,min(M,N),defaultTransposeFlag>;
+};
+
+template< typename T, size_t M, size_t N, bool SO, ptrdiff_t BI >
+struct BandTrait< StaticMatrix<T,M,N,SO>, BI >
+{
+   enum : size_t { Min = min( M - ( BI >= 0L ? 0UL : -BI ), N - ( BI >= 0L ? BI  : 0UL ) ) };
+   using Type = StaticVector<T,Min,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
