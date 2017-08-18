@@ -52,6 +52,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
@@ -77,6 +78,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/StorageOrder.h>
+#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -2595,10 +2597,10 @@ struct LowType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct SubmatrixTrait< IdentityMatrix<T1,SO> >
+template< typename T, bool SO >
+struct SubmatrixTrait< IdentityMatrix<T,SO> >
 {
-   using Type = CompressedMatrix<T1,SO>;
+   using Type = CompressedMatrix<T,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2614,10 +2616,10 @@ struct SubmatrixTrait< IdentityMatrix<T1,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct RowTrait< IdentityMatrix<T1,SO> >
+template< typename T, bool SO >
+struct RowTrait< IdentityMatrix<T,SO> >
 {
-   using Type = CompressedVector<T1,true>;
+   using Type = CompressedVector<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2633,10 +2635,35 @@ struct RowTrait< IdentityMatrix<T1,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO >
-struct ColumnTrait< IdentityMatrix<T1,SO> >
+template< typename T, bool SO >
+struct ColumnTrait< IdentityMatrix<T,SO> >
 {
-   using Type = CompressedVector<T1,false>;
+   using Type = CompressedVector<T,false>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, ptrdiff_t... BIs >
+struct BandTrait< IdentityMatrix<T,SO>, BIs... >
+{
+   using Type = CompressedVector<T,defaultTransposeFlag>;
+};
+
+template< typename T, bool SO >
+struct BandTrait< IdentityMatrix<T,SO>, 0L >
+{
+   using Type = DynamicVector<T,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
