@@ -55,6 +55,7 @@
 #include <blaze/math/sparse/MatrixAccessProxy.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -74,6 +75,7 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/algorithms/Transfer.h>
@@ -6546,6 +6548,25 @@ template< typename T, bool SO >
 struct ColumnTrait< CompressedMatrix<T,SO> >
 {
    using Type = CompressedVector<T,false>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, ptrdiff_t... BIs >
+struct BandTrait< CompressedMatrix<T,SO>, BIs... >
+{
+   using Type = CompressedVector<T,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
