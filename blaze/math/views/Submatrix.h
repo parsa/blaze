@@ -64,6 +64,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -2329,6 +2330,25 @@ template< typename MT, bool AF, bool SO, bool DF >
 struct ColumnTrait< Submatrix<MT,AF,SO,DF> >
 {
    using Type = ColumnTrait_< ResultType_< Submatrix<MT,AF,SO,DF> > >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool AF, bool SO, bool DF, ptrdiff_t... BIs >
+struct BandTrait< Submatrix<MT,AF,SO,DF>, BIs... >
+{
+   using Type = BandTrait_< ResultType_< Submatrix<MT,AF,SO,DF> >, BIs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
