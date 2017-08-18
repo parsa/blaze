@@ -42,6 +42,8 @@
 
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/Inline.h>
@@ -93,8 +95,148 @@ struct DenseMatrix
 /*!\name DenseMatrix global functions */
 //@{
 template< typename MT, bool SO >
+BLAZE_ALWAYS_INLINE typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noexcept;
+
+template< typename MT, bool SO >
+BLAZE_ALWAYS_INLINE typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept;
+
+template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c data() function for matrices without mutable data access.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return Pointer to the internal element storage.
+//
+// This function returns the internal storage of a dense matrix without mutable data access,
+// which is represented by \c nullptr.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE DisableIf_< HasMutableDataAccess<MT>, typename MT::ElementType* >
+   data_backend( DenseMatrix<MT,SO>& dm ) noexcept
+{
+   UNUSED_PARAMETER( dm );
+
+   return nullptr;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c data() function for matrices with mutable data access.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return Pointer to the internal element storage.
+//
+// This function returns the internal storage of a dense matrix with mutable data access.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE EnableIf_< HasMutableDataAccess<MT>, typename MT::ElementType* >
+   data_backend( DenseMatrix<MT,SO>& dm ) noexcept
+{
+   return (~dm).data();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the dense matrix elements.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return Pointer to the internal element storage.
+//
+// This function provides a unified interface to access the given dense matrix's internal
+// element storage. In contrast to the \c data() member function, which is only available
+// in case the matrix has some internal storage, this function can be used on all kinds of
+// dense matrices. In case the given dense matrix does not provide low-level data access,
+// the function returns \c nullptr.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noexcept
+{
+   return data_backend( ~dm );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c data() function for matrices without constant data access.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return Pointer to the internal element storage.
+//
+// This function returns the internal storage of a dense matrix without constant data access,
+// which is represented by \c nullptr.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE DisableIf_< HasConstDataAccess<MT>, typename MT::ElementType* >
+   data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
+{
+   UNUSED_PARAMETER( dm );
+
+   return nullptr;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c data() function for matrices with constant data access.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return Pointer to the internal element storage.
+//
+// This function returns the internal storage of a dense matrix with constant data access.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE EnableIf_< HasConstDataAccess<MT>, typename MT::ElementType* >
+   data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
+{
+   return (~dm).data();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Low-level data access to the dense matrix elements.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return Pointer to the internal element storage.
+//
+// This function provides a unified interface to access the given dense matrix's internal
+// element storage. In contrast to the \c data() member function, which is only available
+// in case the matrix has some internal storage, this function can be used on all kinds of
+// dense matrices. In case the given dense matrix does not provide low-level data access,
+// the function returns \c nullptr.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept
+{
+   return data_backend( ~dm );
+}
 //*************************************************************************************************
 
 
