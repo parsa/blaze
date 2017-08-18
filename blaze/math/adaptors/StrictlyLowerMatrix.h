@@ -47,6 +47,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
@@ -2149,6 +2150,25 @@ template< typename MT, bool SO, bool DF >
 struct ColumnTrait< StrictlyLowerMatrix<MT,SO,DF> >
 {
    using Type = ColumnTrait_<MT>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, ptrdiff_t... BIs >
+struct BandTrait< StrictlyLowerMatrix<MT,SO,DF>, BIs... >
+{
+   using Type = BandTrait_<MT,BIs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
