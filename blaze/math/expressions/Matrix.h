@@ -1294,6 +1294,43 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a vector to the band of a matrix.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side vector to be assigned.
+// \param band The index of the band the right-hand side vector is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side matrix
+        , bool SO      // Storage order of the left-hand side matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
+                                    ptrdiff_t band, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).columns() - column ), "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a matrix to a matrix.
 // \ingroup matrix
 //
@@ -1357,6 +1394,43 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= (~lhs).columns() - column ), "Invalid number of columns" );
 
    UNUSED_PARAMETER( lhs, rhs, row, column );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a vector to the band of a matrix.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side vector to be added.
+// \param band The index of the band the right-hand side vector is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side matrix
+        , bool SO      // Storage order of the left-hand side matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
+                                       ptrdiff_t band, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).columns() - column ), "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column );
 
    return true;
 }
@@ -1438,6 +1512,44 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT,SO>& lhs, const Vector<VT
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to the band of
+//        a matrix.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side vector to be subtracted.
+// \param band The index of the band the right-hand side vector is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side matrix
+        , bool SO      // Storage order of the left-hand side matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
+                                       ptrdiff_t band, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).columns() - column ), "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the subtraction assignment of a matrix to a matrix.
 // \ingroup matrix
 //
@@ -1510,6 +1622,44 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Matrix<MT,SO>& lhs, const Vector<V
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to the band
+//        of a matrix.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side vector to be multiplied.
+// \param band The index of the band the right-hand side vector is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side matrix
+        , bool SO      // Storage order of the left-hand side matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool tryMultAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
+                                        ptrdiff_t band, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).columns() - column ), "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the Schur product assignment of a matrix to a matrix.
 // \ingroup matrix
 //
@@ -1573,6 +1723,44 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( !TF || ( (~rhs).size() <= (~lhs).columns() - column ), "Invalid number of columns" );
 
    UNUSED_PARAMETER( lhs, rhs, row, column );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a vector to the band of
+//        a matrix.
+// \ingroup matrix
+//
+// \param lhs The target left-hand side matrix.
+// \param rhs The right-hand side vector divisor.
+// \param band The index of the band the right-hand side vector is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side matrix
+        , bool SO      // Storage order of the left-hand side matrix
+        , typename VT  // Type of the right-hand side vector
+        , bool TF >    // Transpose flag of the right-hand side vector
+BLAZE_ALWAYS_INLINE bool tryDivAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF>& rhs,
+                                       ptrdiff_t band, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).rows() - row ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( ( (~rhs).size() <= (~lhs).columns() - column ), "Invalid number of columns" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column );
 
    return true;
 }
