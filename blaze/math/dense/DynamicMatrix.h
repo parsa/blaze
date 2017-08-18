@@ -59,6 +59,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
@@ -97,6 +98,7 @@
 #include <blaze/system/Restrict.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/system/TransposeFlag.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/algorithms/Transfer.h>
@@ -7197,6 +7199,25 @@ template< typename T, bool SO >
 struct ColumnTrait< DynamicMatrix<T,SO> >
 {
    using Type = DynamicVector<T,false>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, ptrdiff_t... BIs >
+struct BandTrait< DynamicMatrix<T,SO>, BIs... >
+{
+   using Type = DynamicVector<T,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
