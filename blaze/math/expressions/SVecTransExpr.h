@@ -57,9 +57,12 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -674,6 +677,64 @@ inline decltype(auto) trans( const SparseVector<VT,TF>& sv )
 
    using ReturnType = const SVecTransExpr<VT,!TF>;
    return ReturnType( ~sv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the transTo() function for sparse vectors with different transpose flag.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be transposed.
+// \return The transpose of the sparse vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) transTo_backend( const SparseVector<VT,TF>& sv, FalseType )
+{
+   return trans( ~sv );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the transTo() function for sparse vectors with matching transpose flag.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be transposed.
+// \return The original sparse vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline const VT& transTo_backend( const SparseVector<VT,TF>& sv, TrueType )
+{
+   return ~sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conditional calculation of the transpose of the given sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be transposed.
+// \return The sparse vector with the specified transpose flag.
+//
+// This function transposes the given sparse vector in case the target transpose flag is different
+// from the current transpose flag of the vector and performs no action if the two transpose flags
+// match. It returns an expression representing the the given sparse vector with the specified
+// transpose flag.
+*/
+template< bool TTF     // Target transpose flag
+        , typename VT  // Type of the sparse vector
+        , bool TF >    // Current transpose flag of the sparse vector
+inline decltype(auto) transTo( const SparseVector<VT,TF>& sv )
+{
+   return transTo_backend( ~sv, BoolConstant<TTF == TF>() );
 }
 //*************************************************************************************************
 

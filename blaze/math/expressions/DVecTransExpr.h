@@ -62,10 +62,12 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
 
@@ -737,6 +739,64 @@ inline decltype(auto) trans( const DenseVector<VT,TF>& dv )
 
    using ReturnType = const DVecTransExpr<VT,!TF>;
    return ReturnType( ~dv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the transTo() function for dense vectors with different transpose flag.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be transposed.
+// \return The transpose of the dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) transTo_backend( const DenseVector<VT,TF>& dv, FalseType )
+{
+   return trans( ~dv );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the transTo() function for dense vectors with matching transpose flag.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be transposed.
+// \return The original dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline const VT& transTo_backend( const DenseVector<VT,TF>& dv, TrueType )
+{
+   return ~dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Conditional calculation of the transpose of the given dense vector.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be transposed.
+// \return The dense vector with the specified transpose flag.
+//
+// This function transposes the given dense vector in case the target transpose flag is different
+// from the current transpose flag of the vector and performs no action if the two transpose flags
+// match. It returns an expression representing the the given dense vector with the specified
+// transpose flag.
+*/
+template< bool TTF     // Target transpose flag
+        , typename VT  // Type of the dense vector
+        , bool TF >    // Current transpose flag of the dense vector
+inline decltype(auto) transTo( const DenseVector<VT,TF>& dv )
+{
+   return transTo_backend( ~dv, BoolConstant<TTF == TF>() );
 }
 //*************************************************************************************************
 

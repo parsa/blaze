@@ -481,6 +481,13 @@ template< typename MT, bool SO >
 decltype(auto) trans( const SparseMatrix<MT,SO>& );
 
 
+template< bool TTF, typename VT, bool TF >
+decltype(auto) transTo( const DenseVector<VT,TF>& );
+
+template< bool TTF, typename VT, bool TF >
+decltype(auto) transTo( const SparseVector<VT,TF>& );
+
+
 template< typename VT, bool TF >
 decltype(auto) eval( const DenseVector<VT,TF>& );
 
