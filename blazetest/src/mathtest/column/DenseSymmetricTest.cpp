@@ -349,10 +349,6 @@ void DenseSymmetricTest::testAssignment()
    {
       test_ = "Row-major initializer list assignment (complete list)";
 
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::columnVector;
-
       initialize();
 
       CT col3 = blaze::column( mat_, 3UL );
@@ -394,10 +390,6 @@ void DenseSymmetricTest::testAssignment()
 
    {
       test_ = "Row-major initializer list assignment (incomplete list)";
-
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::columnVector;
 
       initialize();
 
@@ -546,7 +538,7 @@ void DenseSymmetricTest::testAssignment()
 
       CT col1 = blaze::column( mat_, 1UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory.get(), 4UL, 16UL );
       vec1[0] = 0;
@@ -601,7 +593,7 @@ void DenseSymmetricTest::testAssignment()
 
       CT col1 = blaze::column( mat_, 1UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec1( memory.get()+1UL, 4UL );
       vec1[0] = 0;
@@ -751,10 +743,6 @@ void DenseSymmetricTest::testAssignment()
    {
       test_ = "Column-major initializer list assignment (complete list)";
 
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::columnVector;
-
       initialize();
 
       OCT col3 = blaze::column( tmat_, 3UL );
@@ -796,10 +784,6 @@ void DenseSymmetricTest::testAssignment()
 
    {
       test_ = "Column-major initializer list assignment (incomplete list)";
-
-      using blaze::aligned;
-      using blaze::padded;
-      using blaze::columnVector;
 
       initialize();
 
@@ -948,7 +932,7 @@ void DenseSymmetricTest::testAssignment()
 
       OCT col1 = blaze::column( tmat_, 1UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory.get(), 4UL, 16UL );
       vec1[0] = 0;
@@ -1003,7 +987,7 @@ void DenseSymmetricTest::testAssignment()
 
       OCT col1 = blaze::column( tmat_, 1UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec1( memory.get()+1UL, 4UL );
       vec1[0] = 0;
@@ -1219,7 +1203,7 @@ void DenseSymmetricTest::testAddAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -1274,7 +1258,7 @@ void DenseSymmetricTest::testAddAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -1478,7 +1462,7 @@ void DenseSymmetricTest::testAddAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -1533,7 +1517,7 @@ void DenseSymmetricTest::testAddAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -1750,7 +1734,7 @@ void DenseSymmetricTest::testSubAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -1805,7 +1789,7 @@ void DenseSymmetricTest::testSubAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -2009,7 +1993,7 @@ void DenseSymmetricTest::testSubAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -2064,7 +2048,7 @@ void DenseSymmetricTest::testSubAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -2281,7 +2265,7 @@ void DenseSymmetricTest::testMultAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -2336,7 +2320,7 @@ void DenseSymmetricTest::testMultAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -2540,7 +2524,7 @@ void DenseSymmetricTest::testMultAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -2595,7 +2579,7 @@ void DenseSymmetricTest::testMultAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -2765,7 +2749,7 @@ void DenseSymmetricTest::testDivAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  1;
@@ -2820,7 +2804,7 @@ void DenseSymmetricTest::testDivAssign()
 
       CT col2 = blaze::column( mat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  1;
@@ -2925,7 +2909,7 @@ void DenseSymmetricTest::testDivAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  1;
@@ -2980,7 +2964,7 @@ void DenseSymmetricTest::testDivAssign()
 
       OCT col2 = blaze::column( tmat_, 2UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  1;
@@ -3141,7 +3125,7 @@ void DenseSymmetricTest::testCrossAssign()
 
       CT col0 = blaze::column( mat, 0UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 3UL, 16UL );
       vec[0] = -1;
@@ -3193,7 +3177,7 @@ void DenseSymmetricTest::testCrossAssign()
 
       CT col0 = blaze::column( mat, 0UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[4] );
       UnalignedUnpadded vec( memory.get()+1UL, 3UL );
       vec[0] = -1;
@@ -3388,7 +3372,7 @@ void DenseSymmetricTest::testCrossAssign()
 
       OCT col0 = blaze::column( mat, 0UL );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 3UL, 16UL );
       vec[0] = -1;
@@ -3440,7 +3424,7 @@ void DenseSymmetricTest::testCrossAssign()
 
       OCT col0 = blaze::column( mat, 0UL );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[4] );
       UnalignedUnpadded vec( memory.get()+1UL, 3UL );
       vec[0] = -1;
@@ -6151,10 +6135,8 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with column and matching subvector
       {
-         typedef blaze::Subvector<CT>  SubvectorType;
-
-         CT col1 = blaze::column( mat_, 1UL );
-         SubvectorType sv = subvector( col1, 0UL, 4UL );
+         CT   col1 = blaze::column( mat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 4UL );
 
          if( blaze::isSame( col1, sv ) == false ) {
             std::ostringstream oss;
@@ -6179,10 +6161,8 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with column and non-matching subvector (different size)
       {
-         typedef blaze::Subvector<CT>  SubvectorType;
-
-         CT col1 = blaze::column( mat_, 1UL );
-         SubvectorType sv = subvector( col1, 0UL, 3UL );
+         CT   col1 = blaze::column( mat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
             std::ostringstream oss;
@@ -6207,10 +6187,8 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with column and non-matching subvector (different offset)
       {
-         typedef blaze::Subvector<CT>  SubvectorType;
-
-         CT col1 = blaze::column( mat_, 1UL );
-         SubvectorType sv = subvector( col1, 1UL, 3UL );
+         CT   col1 = blaze::column( mat_, 1UL );
+         auto sv   = blaze::subvector( col1, 1UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
             std::ostringstream oss;
@@ -6233,14 +6211,11 @@ void DenseSymmetricTest::testIsSame()
          }
       }
 
-      // isSame with matching columns on submatrices
+      // isSame with matching columns on a common submatrix
       {
-         typedef blaze::Submatrix<MT>          SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-
-         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         ColumnType col2 = blaze::column( sm, 1UL );
+         auto sm   = blaze::submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -6253,14 +6228,11 @@ void DenseSymmetricTest::testIsSame()
          }
       }
 
-      // isSame with non-matching columns on submatrices
+      // isSame with non-matching columns on a common submatrix
       {
-         typedef blaze::Submatrix<MT>          SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-
-         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = blaze::column( sm, 0UL );
-         ColumnType col2 = blaze::column( sm, 1UL );
+         auto sm   = blaze::submatrix( mat_, 1UL, 1UL, 2UL, 3UL );
+         auto col1 = blaze::column( sm, 0UL );
+         auto col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -6273,16 +6245,205 @@ void DenseSymmetricTest::testIsSame()
          }
       }
 
+      // isSame with matching columns on matrix and submatrix
+      {
+         auto sm   = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto col1 = blaze::column( mat_, 2UL );
+         auto col2 = blaze::column( sm  , 1UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on matrix and submatrix (different column)
+      {
+         auto sm   = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto col1 = blaze::column( mat_, 1UL );
+         auto col2 = blaze::column( sm  , 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on matrix and submatrix (different size)
+      {
+         auto sm   = blaze::submatrix( mat_, 0UL, 1UL, 3UL, 3UL );
+         auto col1 = blaze::column( mat_, 2UL );
+         auto col2 = blaze::column( sm  , 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching columns on two submatrices
+      {
+         auto sm1  = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( mat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on two submatrices (different column)
+      {
+         auto sm1  = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( mat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on two submatrices (different size)
+      {
+         auto sm1  = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( mat_, 0UL, 2UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on two submatrices (different offset)
+      {
+         auto sm1  = blaze::submatrix( mat_, 0UL, 1UL, 3UL, 3UL );
+         auto sm2  = blaze::submatrix( mat_, 1UL, 2UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::Submatrix<MT>          SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>  SubvectorType;
-
-         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
-         SubvectorType sv2 = subvector( col1, 0UL, 2UL );
+         auto sm   = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col1, 0UL, 2UL );
 
          if( blaze::isSame( sv1, sv2 ) == false ) {
             std::ostringstream oss;
@@ -6297,14 +6458,10 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<MT>          SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>  SubvectorType;
-
-         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
-         SubvectorType sv2 = subvector( col1, 0UL, 3UL );
+         auto sm   = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( sv1, sv2 ) == true ) {
             std::ostringstream oss;
@@ -6319,14 +6476,70 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<MT>          SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>  SubvectorType;
+         auto sm   = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col1, 1UL, 2UL );
 
-         SubmatrixType sm = submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
-         SubvectorType sv2 = subvector( col1, 1UL, 2UL );
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching column subvectors on two submatrices
+      {
+         auto sm1  = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( mat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col2, 0UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on two submatrices (different size)
+      {
+         auto sm1  = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( mat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col2, 0UL, 3UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on two submatrices (different offset)
+      {
+         auto sm1  = blaze::submatrix( mat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( mat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col2, 1UL, 2UL );
 
          if( blaze::isSame( sv1, sv2 ) == true ) {
             std::ostringstream oss;
@@ -6382,10 +6595,8 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with column and matching subvector
       {
-         typedef blaze::Subvector<OCT>  SubvectorType;
-
-         OCT col1 = blaze::column( tmat_, 1UL );
-         SubvectorType sv = subvector( col1, 0UL, 4UL );
+         OCT  col1 = blaze::column( tmat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 4UL );
 
          if( blaze::isSame( col1, sv ) == false ) {
             std::ostringstream oss;
@@ -6410,10 +6621,8 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with column and non-matching subvector (different size)
       {
-         typedef blaze::Subvector<OCT>  SubvectorType;
-
-         OCT col1 = blaze::column( tmat_, 1UL );
-         SubvectorType sv = subvector( col1, 0UL, 3UL );
+         OCT  col1 = blaze::column( tmat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
             std::ostringstream oss;
@@ -6438,10 +6647,8 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with column and non-matching subvector (different offset)
       {
-         typedef blaze::Subvector<OCT>  SubvectorType;
-
-         OCT col1 = blaze::column( tmat_, 1UL );
-         SubvectorType sv = subvector( col1, 1UL, 3UL );
+         OCT  col1 = blaze::column( tmat_, 1UL );
+         auto sv   = blaze::subvector( col1, 1UL, 3UL );
 
          if( blaze::isSame( col1, sv ) == true ) {
             std::ostringstream oss;
@@ -6464,14 +6671,11 @@ void DenseSymmetricTest::testIsSame()
          }
       }
 
-      // isSame with matching columns on submatrices
+      // isSame with matching columns on a common submatrix
       {
-         typedef blaze::Submatrix<OMT>         SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-
-         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         ColumnType col2 = blaze::column( sm, 1UL );
+         auto sm   = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == false ) {
             std::ostringstream oss;
@@ -6484,14 +6688,11 @@ void DenseSymmetricTest::testIsSame()
          }
       }
 
-      // isSame with non-matching columns on submatrices
+      // isSame with non-matching columns on a common submatrix
       {
-         typedef blaze::Submatrix<OMT>         SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-
-         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
-         ColumnType col1 = blaze::column( sm, 0UL );
-         ColumnType col2 = blaze::column( sm, 1UL );
+         auto sm   = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto col1 = blaze::column( sm, 0UL );
+         auto col2 = blaze::column( sm, 1UL );
 
          if( blaze::isSame( col1, col2 ) == true ) {
             std::ostringstream oss;
@@ -6504,16 +6705,205 @@ void DenseSymmetricTest::testIsSame()
          }
       }
 
+      // isSame with matching columns on matrix and submatrix
+      {
+         auto sm   = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto col1 = blaze::column( tmat_, 2UL );
+         auto col2 = blaze::column( sm   , 1UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on matrix and submatrix (different column)
+      {
+         auto sm   = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto col1 = blaze::column( tmat_, 1UL );
+         auto col2 = blaze::column( sm   , 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on matrix and submatrix (different size)
+      {
+         auto sm   = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+         auto col1 = blaze::column( tmat_, 2UL );
+         auto col2 = blaze::column( sm   , 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching columns on two submatrices
+      {
+         auto sm1  = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( tmat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+
+         if( blaze::isSame( col1, col2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on two submatrices (different column)
+      {
+         auto sm1  = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( tmat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 1UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on two submatrices (different size)
+      {
+         auto sm1  = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( tmat_, 0UL, 2UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching columns on two submatrices (different offset)
+      {
+         auto sm1  = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 3UL );
+         auto sm2  = blaze::submatrix( tmat_, 1UL, 2UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+
+         if( blaze::isSame( col1, col2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( col2, col1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First column:\n" << col1 << "\n"
+                << "   Second column:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
       // isSame with matching column subvectors on submatrices
       {
-         typedef blaze::Submatrix<OMT>         SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>  SubvectorType;
-
-         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
-         SubvectorType sv2 = subvector( col1, 0UL, 2UL );
+         auto sm   = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col1, 0UL, 2UL );
 
          if( blaze::isSame( sv1, sv2 ) == false ) {
             std::ostringstream oss;
@@ -6528,14 +6918,10 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different size)
       {
-         typedef blaze::Submatrix<OMT>         SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>  SubvectorType;
-
-         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
-         SubvectorType sv2 = subvector( col1, 0UL, 3UL );
+         auto sm   = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col1, 0UL, 3UL );
 
          if( blaze::isSame( sv1, sv2 ) == true ) {
             std::ostringstream oss;
@@ -6550,14 +6936,70 @@ void DenseSymmetricTest::testIsSame()
 
       // isSame with non-matching column subvectors on submatrices (different offset)
       {
-         typedef blaze::Submatrix<OMT>         SubmatrixType;
-         typedef blaze::Column<SubmatrixType>  ColumnType;
-         typedef blaze::Subvector<ColumnType>  SubvectorType;
+         auto sm   = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
+         auto col1 = blaze::column( sm, 1UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col1, 1UL, 2UL );
 
-         SubmatrixType sm = submatrix( tmat_, 1UL, 1UL, 3UL, 2UL );
-         ColumnType col1 = blaze::column( sm, 1UL );
-         SubvectorType sv1 = subvector( col1, 0UL, 2UL );
-         SubvectorType sv2 = subvector( col1, 1UL, 2UL );
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching column subvectors on two submatrices
+      {
+         auto sm1  = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( tmat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col2, 0UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on two submatrices (different size)
+      {
+         auto sm1  = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( tmat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col2, 0UL, 3UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subvector:\n" << sv1 << "\n"
+                << "   Second subvector:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching column subvectors on two submatrices (different offset)
+      {
+         auto sm1  = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 3UL );
+         auto sm2  = blaze::submatrix( tmat_, 0UL, 2UL, 4UL, 2UL );
+         auto col1 = blaze::column( sm1, 1UL );
+         auto col2 = blaze::column( sm2, 0UL );
+         auto sv1  = blaze::subvector( col1, 0UL, 2UL );
+         auto sv2  = blaze::subvector( col2, 1UL, 2UL );
 
          if( blaze::isSame( sv1, sv2 ) == true ) {
             std::ostringstream oss;

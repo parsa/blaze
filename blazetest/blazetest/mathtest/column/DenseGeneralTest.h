@@ -43,9 +43,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Column.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -122,7 +122,7 @@ class DenseGeneralTest
    void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& column, size_t index, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -245,7 +245,7 @@ void DenseGeneralTest::checkRows( const Type& matrix, size_t expectedRows ) cons
 /*!\brief Checking the number of columns of the given dynamic matrix.
 //
 // \param matrix The dynamic matrix to be checked.
-// \param expectedRows The expected number of columns of the dynamic matrix.
+// \param expectedColumns The expected number of columns of the dynamic matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //

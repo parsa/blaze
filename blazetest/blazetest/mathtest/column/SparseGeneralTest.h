@@ -43,9 +43,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
-#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/Column.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -130,7 +130,7 @@ class SparseGeneralTest
    void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& column, size_t index, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -253,7 +253,7 @@ void SparseGeneralTest::checkRows( const Type& matrix, size_t expectedRows ) con
 /*!\brief Checking the number of columns of the given compressed matrix.
 //
 // \param matrix The compressed matrix to be checked.
-// \param expectedRows The expected number of columns of the compressed matrix.
+// \param expectedColumns The expected number of columns of the compressed matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
