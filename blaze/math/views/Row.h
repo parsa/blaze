@@ -67,13 +67,17 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/Dense.h>
 #include <blaze/math/views/row/Sparse.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -534,8 +538,8 @@ inline bool isDefault( const Row<MT,SO,DF,SF>& row );
 template< typename MT, bool SO, bool DF, bool SF >
 inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept;
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline bool isSame( const Row<MT,SO,DF,SF>& a, const Row<MT,SO,DF,SF>& b ) noexcept;
+template< typename MT1, bool SO, bool DF, bool SF1, typename MT2, bool SF2 >
+inline bool isSame( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -725,6 +729,121 @@ inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for two regular rows.
+// \ingroup row
+//
+// \param a The first row to be tested for its state.
+// \param b The second row to be tested for its state.
+// \return \a true in case the two rows share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of two regular
+// rows. In case both rows represent the same observable state, the function returns \a true,
+// otherwise it returns \a false.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline DisableIf_< IsSubmatrix<MT>, bool >
+   isSame_backend( const Row<MT,SO,DF,SF>& a, const Row<MT,SO,DF,SF>& b ) noexcept
+{
+   return ( isSame( a.operand(), b.operand() ) && ( a.row() == b.row() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for the left row being a row on a submatrix.
+// \ingroup row
+//
+// \param a The first row to be tested for its state.
+// \param b The second row to be tested for its state.
+// \return \a true in case the two rows share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of the left row
+// being a row on a submatrix. In case both rows represent the same observable state, the function
+// returns \a true, otherwise it returns \a false.
+*/
+template< typename MT1  // Type of the submatrix of the left-hand side row
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side row
+        , typename MT2  // Type of the matrix of the right-hand side row
+        , bool SF2 >    // Symmetry flag of the right-hand side row
+inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
+   isSame_backend( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
+{
+   return ( isSame( a.operand().operand(), b.operand() ) &&
+            ( a.size() == b.size() ) &&
+            ( a.row() + a.operand().row() == b.row() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for the right row being a row on a submatrix.
+// \ingroup row
+//
+// \param a The first row to be tested for its state.
+// \param b The second row to be tested for its state.
+// \return \a true in case the two rows share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of the right row
+// being a row on a submatrix. In case both rows represent the same observable state, the function
+// returns \a true, otherwise it returns \a false.
+*/
+template< typename MT1  // Type of the matrix of the left-hand side row
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side row
+        , typename MT2  // Type of the submatrix of the right-hand side row
+        , bool SF2 >    // Symmetry flag of the right-hand side row
+inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
+   isSame_backend( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
+{
+   return ( isSame( a.operand(), b.operand().operand() ) &&
+            ( a.size() == b.size() ) &&
+            ( a.row() == b.row() + b.operand().row() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for two rows on submatrices.
+// \ingroup row
+//
+// \param a The first row to be tested for its state.
+// \param b The second row to be tested for its state.
+// \return \a true in case the two rows share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of both rows
+// being rows on submatrices. In case both rows represent the same observable state, the function
+// returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the submatrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline EnableIf_< IsSubmatrix<MT>, bool >
+   isSame_backend( const Row<MT,SO,DF,SF>& a, const Row<MT,SO,DF,SF>& b ) noexcept
+{
+   return ( isSame( a.operand().operand(), b.operand().operand() ) &&
+            ( a.size() == b.size() ) &&
+            ( a.row() + a.operand().row() == b.row() + b.operand().row() ) &&
+            ( a.operand().column() == b.operand().column() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns whether the two given rows represent the same observable state.
 // \ingroup row
 //
@@ -732,17 +851,19 @@ inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept
 // \param b The second row to be tested for its state.
 // \return \a true in case the two rows share a state, \a false otherwise.
 //
-// This overload of the isSame function tests if the two given rows refer to exactly the same
+// This overload of the isSame() function tests if the two given rows refer to exactly the same
 // range of the same matrix. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline bool isSame( const Row<MT,SO,DF,SF>& a, const Row<MT,SO,DF,SF>& b ) noexcept
+template< typename MT1  // Type of the matrix of the left-hand side row
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side row
+        , typename MT2  // Type of the matrix of the right-hand side row
+        , bool SF2 >    // Symmetry flag of the right-hand side row
+inline bool isSame( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
 {
-   return ( isSame( a.operand(), b.operand() ) && ( a.row() == b.row() ) );
+   return isSame_backend( a, b );
 }
 //*************************************************************************************************
 
