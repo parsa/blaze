@@ -67,13 +67,17 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
+#include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/math/views/column/Dense.h>
 #include <blaze/math/views/column/Sparse.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -536,8 +540,8 @@ inline bool isDefault( const Column<MT,SO,DF,SF>& column );
 template< typename MT, bool SO, bool DF, bool SF >
 inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept;
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline bool isSame( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept;
+template< typename MT1, bool SO, bool DF, bool SF1, typename MT2, bool SF2 >
+inline bool isSame( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -727,6 +731,121 @@ inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for two regular columns.
+// \ingroup column
+//
+// \param a The first column to be tested for its state.
+// \param b The second column to be tested for its state.
+// \return \a true in case the two columns share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of two
+// regular columns. In case both columns represent the same observable state, the function
+// returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline DisableIf_< IsSubmatrix<MT>, bool >
+   isSame_backend( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept
+{
+   return ( isSame( a.operand(), b.operand() ) && ( a.column() == b.column() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for the left column being a column on a submatrix.
+// \ingroup column
+//
+// \param a The first column to be tested for its state.
+// \param b The second column to be tested for its state.
+// \return \a true in case the two columns share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of the left
+// column being a column on a submatrix. In case both columns represent the same observable
+// state, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT1  // Type of the submatrix of the left-hand side column
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side column
+        , typename MT2  // Type of the matrix of the right-hand side column
+        , bool SF2 >    // Symmetry flag of the right-hand side column
+inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
+   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
+{
+   return ( isSame( a.operand().operand(), b.operand() ) &&
+            ( a.size() == b.size() ) &&
+            ( a.column() + a.operand().column() == b.column() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for the right column being a column on a submatrix.
+// \ingroup column
+//
+// \param a The first column to be tested for its state.
+// \param b The second column to be tested for its state.
+// \return \a true in case the two columns share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of the right
+// column being a column on a submatrix. In case both columns represent the same observable
+// state, the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT1  // Type of the submatrix of the left-hand side column
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side column
+        , typename MT2  // Type of the matrix of the right-hand side column
+        , bool SF2 >    // Symmetry flag of the right-hand side column
+inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
+   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
+{
+   return ( isSame( a.operand(), b.operand().operand() ) &&
+            ( a.size() == b.size() ) &&
+            ( a.column() == b.column() + b.operand().column() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the isSame() function for two columns on submatrices.
+// \ingroup column
+//
+// \param a The first column to be tested for its state.
+// \param b The second column to be tested for its state.
+// \return \a true in case the two columns share a state, \a false otherwise.
+//
+// This backend implementation of the isSame() function handles the special case of both columns
+// being columns on submatrices. In case both columns represent the same observable state, the
+// function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the submatrix
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , bool SF >    // Symmetry flag
+inline EnableIf_< IsSubmatrix<MT>, bool >
+   isSame_backend( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept
+{
+   return ( isSame( a.operand().operand(), b.operand().operand() ) &&
+            ( a.size() == b.size() ) &&
+            ( a.column() + a.operand().column() == b.column() + b.operand().column() ) &&
+            ( a.operand().row() == b.operand().row() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Returns whether the two given columns represent the same observable state.
 // \ingroup column
 //
@@ -738,13 +857,15 @@ inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept
 // same range of the same matrix. In case both columns represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline bool isSame( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept
+template< typename MT1  // Type of the matrix of the left-hand side column
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side column
+        , typename MT2  // Type of the matrix of the right-hand side column
+        , bool SF2 >    // Symmetry flag of the right-hand side column
+inline bool isSame( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
 {
-   return ( isSame( a.operand(), b.operand() ) && ( a.column() == b.column() ) );
+   return isSame_backend( a, b );
 }
 //*************************************************************************************************
 
