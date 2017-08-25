@@ -36,11 +36,14 @@ cmake_minimum_required(VERSION 3.5)
 add_library(blaze INTERFACE)
 target_include_directories(blaze INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
-   $<INSTALL_INTERFACE:install>
+   $<INSTALL_INTERFACE:include>
    )
 
-target_compile_options(blaze INTERFACE
-   $<$<CXX_COMPILER_ID:Clang>:-std=c++14>)
+if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
+    message(STATUS "Blaze requires compiling in mode supporting C++14 features.")
+else()
+    target_compile_features(blaze INTERFACE cxx_std_14)
+endif()
 
 
 #==================================================================================================
