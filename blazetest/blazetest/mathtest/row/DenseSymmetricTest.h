@@ -45,6 +45,7 @@
 #include <string>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Row.h>
 #include <blaze/math/SymmetricMatrix.h>
@@ -122,7 +123,7 @@ class DenseSymmetricTest
    void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& row, size_t index, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -246,7 +247,7 @@ void DenseSymmetricTest::checkRows( const Type& matrix, size_t expectedRows ) co
 /*!\brief Checking the number of columns of the given dynamic matrix.
 //
 // \param matrix The dynamic matrix to be checked.
-// \param expectedRows The expected number of columns of the dynamic matrix.
+// \param expectedColumns The expected number of columns of the dynamic matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
