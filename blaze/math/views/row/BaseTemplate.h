@@ -85,19 +85,35 @@ namespace blaze {
 //
 // \n \section row_setup Setup of Rows
 //
+// \image html row.png
+// \image latex row.eps "Row view" width=250pt
+//
 // A reference to a dense or sparse row can be created very conveniently via the \c row() function.
-// This reference can be treated as any other row vector, i.e. it can be assigned to, it can be
-// copied from, and it can be used in arithmetic operations. The reference can also be used on
-// both sides of an assignment: The row can either be used as an alias to grant write access to a
-// specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
-// to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
-// The following example demonstrates this in detail:
+// The row index must be in the range from \f$[0..M-1]\f$, where \c M is the total number of rows
+// of the matrix:
 
    \code
-   using DenseVectorType  = blaze::DynamicVector<double,rowVector>;
-   using SparseVectorType = blaze::CompressedVector<double,rowVector>;
-   using DenseMatrixType  = blaze::DynamicMatrix<double,rowMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,rowMajor>;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd row of matrix A
+   blaze::Row<DenseMatrixType> row2 = row( A, 2UL );
+   \endcode
+
+// The resulting reference can be treated as any other row vector, i.e. it can be assigned to,
+// it can be copied from, and it can be used in arithmetic operations. The reference can also be
+// used on both sides of an assignment: The row can either be used as an alias to grant write
+// access to a specific row of a matrix primitive on the left-hand side of an assignment or to
+// grant read-access to a specific row of a matrix primitive or expression on the right-hand side
+// of an assignment. The following example demonstrates this in detail:
+
+   \code
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
 
    DenseVectorType  x;
    SparseVectorType y;
