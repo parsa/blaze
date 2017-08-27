@@ -85,8 +85,24 @@ namespace blaze {
 //
 // \n \section column_setup Setup of Columns
 //
+// \image html column.png
+// \image latex column.eps "Column view" width=250pt
+//
 // A reference to a dense or sparse column can be created very conveniently via the \c column()
-// function. This reference can be treated as any other column vector, i.e. it can be assigned to,
+// function. The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total
+// number of column of the matrix:
+
+   \code
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd column of matrix A
+   blaze::Column<DenseMatrixType> col2 = row( A, 2UL );
+   \endcode
+
+// The resulting reference can be treated as any other column vector, i.e. it can be assigned to,
 // it can be copied from, and it can be used in arithmetic operations. The reference can also be
 // used on both sides of an assignment: The column can either be used as an alias to grant write
 // access to a specific column of a matrix primitive on the left-hand side of an assignment or to
@@ -94,10 +110,10 @@ namespace blaze {
 // side of an assignment. The following example demonstrates this in detail:
 
    \code
-   using DenseVectorType  = blaze::DynamicVector<double,columnVector>;
-   using SparseVectorType = blaze::CompressedVector<double,columnVector>;
-   using DenseMatrixType  = blaze::DynamicMatrix<double,columnMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,columnMajor>;
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::columnVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::columnVector>;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::columnMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::columnMajor>;
 
    DenseVectorType  x;
    SparseVectorType y;
