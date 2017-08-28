@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Band.h>
 #include <blaze/math/Column.h>
 #include <blaze/math/Row.h>
 #include <blaze/math/Submatrix.h>
