@@ -253,10 +253,11 @@ namespace blaze {
 
 // \n \section subvector_common_operations Common Operations
 //
-// The current number of subvector elements can be obtained via the \c size() function, the
-// current capacity via the \c capacity() function, and the number of non-zero elements via
-// the \c nonZeros() function. However, since subvector are views on a specific subvector of
-// a vector, several operations are not possible on views, such as resizing and swapping:
+// A subvector view can be used like any other dense or sparse vector. For instance, the current
+// number of subvector elements can be obtained via the \c size() function, the current capacity
+// via the \c capacity() function, and the number of non-zero elements via the \c nonZeros()
+// function. However, since subvector are views on a specific subvector of a vector, several
+// operations are not possible, such as resizing and swapping:
 
    \code
    using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;

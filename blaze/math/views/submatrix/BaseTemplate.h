@@ -247,11 +247,12 @@ namespace blaze {
 
 // \n \section submatrix_common_operations Common Operations
 //
-// The current size of the matrix, i.e. the number of rows or columns can be obtained via the
-// \c rows() and \c columns() functions, the current total capacity via the \c capacity() function,
-// and the number of non-zero elements via the \c nonZeros() function. However, since submatrices
-// are views on a specific submatrix of a matrix, several operations are not possible on views,
-// such as resizing and swapping:
+// A submatrix view can be used like any other dense or sparse matrix. For instance, the current
+// size of the matrix, i.e. the number of rows or columns can be obtained via the \c rows() and
+// \c columns() functions, the current total capacity via the \c capacity() function, and the
+// number of non-zero elements via the \c nonZeros() function. However, since submatrices are
+// views on a specific submatrix of a matrix, several operations are not possible, such as
+// resizing and swapping:
 
    \code
    using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;

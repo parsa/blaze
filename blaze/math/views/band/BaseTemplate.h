@@ -262,11 +262,11 @@ class BandImpl
 
 // \n \section band_common_operations Common Operations
 //
-// The current number of band elements can be obtained via the \c size() function, the current
-// capacity via the \c capacity() function, and the number of non-zero elements via the
-// \c nonZeros() function. However, since bands are references to specific bands of a matrix,
-// several operations are not possible, such as resizing and swapping. The following example
-// shows this by means of a dense band view:
+// A band view can be used like any other column vector. For instance, the current number of band
+// elements can be obtained via the \c size() function, the current capacity via the \c capacity()
+// function, and the number of non-zero elements via the \c nonZeros() function. However, since
+// bands are references to specific bands of a matrix, several operations are not possible, such
+// as resizing and swapping. The following example shows this by means of a dense band view:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;

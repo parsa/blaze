@@ -252,10 +252,11 @@ namespace blaze {
 
 // \n \section column_common_operations Common Operations
 //
-// The current number of column elements can be obtained via the \c size() function, the current
-// capacity via the \c capacity() function, and the number of non-zero elements via the
-// \c nonZeros() function. However, since columns are references to specific columns of a matrix,
-// several operations are not possible on views, such as resizing and swapping:
+// A column view can be used like any other column vector. For instance, the current number of
+// column elements can be obtained via the \c size() function, the current capacity via the
+// \c capacity() function, and the number of non-zero elements via the \c nonZeros() function.
+// However, since columns are references to specific columns of a matrix, several operations
+// are not possible, such as resizing and swapping:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int,blaze::columnMajor>;
