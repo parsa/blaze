@@ -340,11 +340,11 @@ inline Band<MT> band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Diagonal<MT> diagonal( Matrix<MT,SO>& matrix )
+inline decltype(auto) diagonal( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Diagonal<MT>( ~matrix );
+   return band<0L>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -380,11 +380,11 @@ inline Diagonal<MT> diagonal( Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const Diagonal<const MT> diagonal( const Matrix<MT,SO>& matrix )
+inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Diagonal<const MT>( ~matrix );
+   return band<0L>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -403,11 +403,11 @@ inline const Diagonal<const MT> diagonal( const Matrix<MT,SO>& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Diagonal<MT> diagonal( Matrix<MT,SO>&& matrix )
+inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Diagonal<MT>( ~matrix );
+   return band<0L>( ~matrix );
 }
 //*************************************************************************************************
 

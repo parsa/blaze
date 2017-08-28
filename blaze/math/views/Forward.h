@@ -112,13 +112,13 @@ template< typename MT, bool SO >
 Band<MT> band( Matrix<MT,SO>&&, ptrdiff_t );
 
 template< typename MT, bool SO >
-Diagonal<MT> diagonal( Matrix<MT,SO>& );
+decltype(auto) diagonal( Matrix<MT,SO>& );
 
 template< typename MT, bool SO >
-const Diagonal<const MT> diagonal( const Matrix<MT,SO>& );
+decltype(auto) diagonal( const Matrix<MT,SO>& );
 
 template< typename MT, bool SO >
-Diagonal<MT> diagonal( Matrix<MT,SO>&& );
+decltype(auto) diagonal( Matrix<MT,SO>&& );
 
 } // namespace blaze
 
