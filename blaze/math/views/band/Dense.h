@@ -1,0 +1,2041 @@
+//=================================================================================================
+/*!
+//  \file blaze/math/views/band/Dense.h
+//  \brief BandImpl specialization for dense matrices
+//
+//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
+//
+//  This file is part of the Blaze library. You can redistribute it and/or modify it under
+//  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
+//  forms, with or without modification, are permitted provided that the following conditions
+//  are met:
+//
+//  1. Redistributions of source code must retain the above copyright notice, this list of
+//     conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright notice, this list
+//     of conditions and the following disclaimer in the documentation and/or other materials
+//     provided with the distribution.
+//  3. Neither the names of the Blaze development group nor the names of its contributors
+//     may be used to endorse or promote products derived from this software without specific
+//     prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+//  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+//  SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+//  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+//  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+//  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+//  DAMAGE.
+*/
+//=================================================================================================
+
+#ifndef _BLAZE_MATH_VIEWS_BAND_DENSE_H_
+#define _BLAZE_MATH_VIEWS_BAND_DENSE_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <algorithm>
+#include <iterator>
+#include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/TransExpr.h>
+#include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/Exception.h>
+#include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/expressions/View.h>
+#include <blaze/math/InitializerList.h>
+#include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/BandTrait.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSparseMatrix.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/views/band/BandData.h>
+#include <blaze/math/views/band/BaseTemplate.h>
+#include <blaze/system/Thresholds.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Pointer.h>
+#include <blaze/util/constraints/Reference.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/RemoveReference.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR DENSE MATRICES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of BandImpl for dense matrices.
+// \ingroup views
+//
+// This specialization of BandImpl adapts the class template to the requirements of dense matrices.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+class BandImpl<MT,TF,true,false,BIs...>
+   : public View< DenseVector< BandImpl<MT,TF,true,false,BIs...>, TF > >
+   , private BandData<MT,BIs...>
+{
+ private:
+   //**Type definitions****************************************************************************
+   using RT       = ResultType_<MT>;      //!< Result type of the sparse matrix expression.
+   using DataType = BandData<MT,BIs...>;  //!< The type of the BandData base class.
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   //! Type of this BandImpl instance.
+   using This = BandImpl<MT,TF,true,false,BIs...>;
+
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this BandImpl instance.
+   using ResultType    = BandTrait_<RT,BIs...>;       //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the band elements.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+
+   //! Data type for composite expression templates.
+   using CompositeType = IfTrue_< RequiresEvaluation<MT>::value, const ResultType, const BandImpl& >;
+
+   //! Reference to a constant band value.
+   using ConstReference = ConstReference_<MT>;
+
+   //! Reference to a non-constant band value.
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+
+   //! Pointer to a constant band value.
+   using ConstPointer = const ElementType*;
+
+   //! Pointer to a non-constant band value.
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
+
+   //! Composite data type of the dense matrix expression.
+   using Operand = If_< IsExpression<MT>, MT, MT& >;
+   //**********************************************************************************************
+
+   //**BandIterator class definition***************************************************************
+   /*!\brief Iterator over the elements of the dense band.
+   */
+   template< typename MatrixType >  // Type of the dense matrix
+   class BandIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      //! Return type for the access to the value of a dense element.
+      using Reference = If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >;
+
+      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
+      using ValueType        = RemoveReference_<Reference>;      //!< Type of the underlying elements.
+      using PointerType      = ValueType*;                       //!< Pointer return type.
+      using ReferenceType    = Reference;                        //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
+
+      // STL iterator requirements
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Default constructor of the BandIterator class.
+      */
+      inline BandIterator() noexcept
+         : matrix_( nullptr )  // The dense matrix containing the band.
+         , row_   ( 0UL )      // The current row index.
+         , column_( 0UL )      // The current column index.
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the BandIterator class.
+      //
+      // \param matrix The matrix containing the band.
+      // \param rowIndex The initial row index.
+      // \param columnIndex The initial column index.
+      */
+      inline BandIterator( MatrixType& matrix, size_t rowIndex, size_t columnIndex ) noexcept
+         : matrix_( &matrix     )  // The dense matrix containing the band.
+         , row_   ( rowIndex    )  // The current row index.
+         , column_( columnIndex )  // The current column index.
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Conversion constructor from different BandIterator instances.
+      //
+      // \param it The band iterator to be copied.
+      */
+      template< typename MatrixType2 >
+      inline BandIterator( const BandIterator<MatrixType2>& it ) noexcept
+         : matrix_( it.matrix_ )  // The dense matrix containing the band.
+         , row_   ( it.row_    )  // The current row index.
+         , column_( it.column_ )  // The current column index.
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline BandIterator& operator+=( size_t inc ) noexcept {
+         row_    += inc;
+         column_ += inc;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline BandIterator& operator-=( size_t dec ) noexcept {
+         row_    -= dec;
+         column_ -= dec;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline BandIterator& operator++() noexcept {
+         ++row_;
+         ++column_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const BandIterator operator++( int ) noexcept {
+         const BandIterator tmp( *this );
+         ++(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline BandIterator& operator--() noexcept {
+         --row_;
+         --column_;
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const BandIterator operator--( int ) noexcept {
+         const BandIterator tmp( *this );
+         --(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Subscript operator***********************************************************************
+      /*!\brief Direct access to the dense band elements.
+      //
+      // \param index Access index.
+      // \return Reference to the accessed value.
+      */
+      inline ReferenceType operator[]( size_t index ) const {
+         return (*matrix_)(row_+index,column_+index);
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the dense band element at the current iterator position.
+      //
+      // \return Reference to the current value.
+      */
+      inline ReferenceType operator*() const {
+         return (*matrix_)(row_,column_);
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the dense band element at the current iterator position.
+      //
+      // \return Pointer to the dense band element at the current iterator position.
+      */
+      inline PointerType operator->() const {
+         return &(*matrix_)(row_,column_);
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two BandIterator objects.
+      //
+      // \param rhs The right-hand side band iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator==( const BandIterator<MatrixType2>& rhs ) const noexcept {
+         return row_ == rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two BandIterator objects.
+      //
+      // \param rhs The right-hand side band iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      template< typename MatrixType2 >
+      inline bool operator!=( const BandIterator<MatrixType2>& rhs ) const noexcept {
+         return !( *this == rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two BandIterator objects.
+      //
+      // \param rhs The right-hand side band iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator<( const BandIterator<MatrixType2>& rhs ) const noexcept {
+         return row_ < rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two BandIterator objects.
+      //
+      // \param rhs The right-hand side band iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator>( const BandIterator<MatrixType2>& rhs ) const noexcept {
+         return row_ > rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two BandIterator objects.
+      //
+      // \param rhs The right-hand side band iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator<=( const BandIterator<MatrixType2>& rhs ) const noexcept {
+         return row_ <= rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two BandIterator objects.
+      //
+      // \param rhs The right-hand side band iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      template< typename MatrixType2 >
+      inline bool operator>=( const BandIterator<MatrixType2>& rhs ) const noexcept {
+         return row_ >= rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two band iterators.
+      //
+      // \param rhs The right-hand side band iterator.
+      // \return The number of elements between the two band iterators.
+      */
+      inline DifferenceType operator-( const BandIterator& rhs ) const noexcept {
+         return row_ - rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a BandIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const BandIterator operator+( const BandIterator& it, size_t inc ) noexcept {
+         return BandIterator( *it.matrix_, it.row_+inc, it.column_+inc );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a BandIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const BandIterator operator+( size_t inc, const BandIterator& it ) noexcept {
+         return BandIterator( *it.matrix_, it.row_+inc, it.column_+inc );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a BandIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const BandIterator operator-( const BandIterator& it, size_t dec ) noexcept {
+         return BandIterator( *it.matrix_, it.row_-dec, it.column_-dec );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      MatrixType* matrix_;  //!< The dense matrix containing the band.
+      size_t      row_;     //!< The current row index.
+      size_t      column_;  //!< The current column index.
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
+      template< typename MatrixType2 > friend class BandIterator;
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
+   //**Type definitions****************************************************************************
+   //! Iterator over constant elements.
+   using ConstIterator = BandIterator<const MT>;
+
+   //! Iterator over non-constant elements.
+   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator<MT> >;
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   enum : bool { simdEnabled = false };
+
+   //! Compilation switch for the expression template assignment strategy.
+   enum : bool { smpAssignable = MT::smpAssignable };
+   //**********************************************************************************************
+
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline BandImpl( Operand matrix );
+   explicit inline BandImpl( Operand matrix, ptrdiff_t index );
+   // No explicitly declared copy constructor.
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   // No explicitly declared destructor.
+   //**********************************************************************************************
+
+   //**Data access functions***********************************************************************
+   /*!\name Data access functions */
+   //@{
+   inline Reference      operator[]( size_t index );
+   inline ConstReference operator[]( size_t index ) const;
+   inline Reference      at( size_t index );
+   inline ConstReference at( size_t index ) const;
+   inline Pointer        data  () noexcept;
+   inline ConstPointer   data  () const noexcept;
+   inline Iterator       begin ();
+   inline ConstIterator  begin () const;
+   inline ConstIterator  cbegin() const;
+   inline Iterator       end   ();
+   inline ConstIterator  end   () const;
+   inline ConstIterator  cend  () const;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   inline BandImpl& operator=( const ElementType& rhs );
+   inline BandImpl& operator=( initializer_list<ElementType> list );
+   inline BandImpl& operator=( const BandImpl& rhs );
+
+   template< typename VT > inline BandImpl& operator= ( const Vector<VT,TF>& rhs );
+   template< typename VT > inline BandImpl& operator+=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline BandImpl& operator-=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline BandImpl& operator*=( const DenseVector<VT,TF>&  rhs );
+   template< typename VT > inline BandImpl& operator*=( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline BandImpl& operator/=( const DenseVector<VT,TF>&  rhs );
+   template< typename VT > inline BandImpl& operator%=( const Vector<VT,TF>& rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, BandImpl >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, BandImpl >& operator/=( Other rhs );
+   //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   using DataType::operand;
+   using DataType::band;
+   using DataType::row;
+   using DataType::column;
+
+   inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   //@}
+   //**********************************************************************************************
+
+   //**Numeric functions***************************************************************************
+   /*!\name Numeric functions */
+   //@{
+   template< typename Other > inline BandImpl& scale( const Other& scalar );
+   //@}
+   //**********************************************************************************************
+
+   //**Expression template evaluation functions****************************************************
+   /*!\name Expression template evaluation functions */
+   //@{
+   template< typename Other >
+   inline bool canAlias( const Other* alias ) const noexcept;
+
+   template< typename MT2, ptrdiff_t... BIs2 >
+   inline bool canAlias( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept;
+
+   template< typename Other >
+   inline bool isAliased( const Other* alias ) const noexcept;
+
+   template< typename MT2, ptrdiff_t... BIs2 >
+   inline bool isAliased( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept;
+
+   inline bool isAligned   () const noexcept;
+   inline bool canSMPAssign() const noexcept;
+
+   template< typename VT > inline void assign    ( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void assign    ( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void addAssign ( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void addAssign ( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void subAssign ( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void subAssign ( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void multAssign( const DenseVector <VT,TF>& rhs );
+   template< typename VT > inline void multAssign( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline void divAssign ( const DenseVector <VT,TF>& rhs );
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   using DataType::matrix_;
+   //**********************************************************************************************
+
+   //**Compile time checks*************************************************************************
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE   ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE  ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE    ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE  ( MT );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CONSTRUCTORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for bands with a compile time index.
+//
+// \param matrix The matrix containing the band.
+// \exception std::invalid_argument Invalid band access index.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline BandImpl<MT,TF,true,false,BIs...>::BandImpl( Operand matrix )
+   : DataType( matrix )  // Base class initialization
+{}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for bands with a runtime index.
+//
+// \param matrix The matrix containing the band.
+// \param index The index of the band.
+// \exception std::invalid_argument Invalid band access index.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline BandImpl<MT,TF,true,false,BIs...>::BandImpl( Operand matrix, ptrdiff_t index )
+   : DataType( matrix, index )  // Base class initialization
+{}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DATA ACCESS FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subscript operator for the direct access to the band elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix columns.
+// \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::Reference
+   BandImpl<MT,TF,true,false,BIs...>::operator[]( size_t index )
+{
+   BLAZE_USER_ASSERT( index < size(), "Invalid band access index" );
+   return matrix_(row()+index,column()+index);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subscript operator for the direct access to the band elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix columns.
+// \return Reference to the accessed value.
+//
+// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
+// the at() function is guaranteed to perform a check of the given access index.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::ConstReference
+   BandImpl<MT,TF,true,false,BIs...>::operator[]( size_t index ) const
+{
+   BLAZE_USER_ASSERT( index < size(), "Invalid band access index" );
+   return const_cast<const MT&>( matrix_ )(row()+index,column()+index);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the band elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid band access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::Reference
+   BandImpl<MT,TF,true,false,BIs...>::at( size_t index )
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid band access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checked access to the band elements.
+//
+// \param index Access index. The index must be smaller than the number of matrix columns.
+// \return Reference to the accessed value.
+// \exception std::out_of_range Invalid band access index.
+//
+// In contrast to the subscript operator this function always performs a check of the given
+// access index.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::ConstReference
+   BandImpl<MT,TF,true,false,BIs...>::at( size_t index ) const
+{
+   if( index >= size() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid band access index" );
+   }
+   return (*this)[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the band elements.
+//
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense band. Note that you
+// can NOT assume that the band elements lie adjacent to each other!
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::Pointer
+   BandImpl<MT,TF,true,false,BIs...>::data() noexcept
+{
+   if( IsRowMajorMatrix<MT>::value )
+      return matrix_.data() + row() * matrix_.spacing() + column();
+   else
+      return matrix_.data() + row() + column() * matrix_.spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Low-level data access to the row elements.
+//
+// \return Pointer to the internal element storage.
+//
+// This function returns a pointer to the internal storage of the dense band. Note that you
+// can NOT assume that the band elements lie adjacent to each other!
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::ConstPointer
+   BandImpl<MT,TF,true,false,BIs...>::data() const noexcept
+{
+   if( IsRowMajorMatrix<MT>::value )
+      return matrix_.data() + row() * matrix_.spacing() + column();
+   else
+      return matrix_.data() + row() + column() * matrix_.spacing();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of the band.
+//
+// \return Iterator to the first element of the band.
+//
+// This function returns an iterator to the first element of the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::Iterator
+   BandImpl<MT,TF,true,false,BIs...>::begin()
+{
+   return Iterator( matrix_, row(), column() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of the band.
+//
+// \return Iterator to the first element of the band.
+//
+// This function returns an iterator to the first element of the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::ConstIterator
+   BandImpl<MT,TF,true,false,BIs...>::begin() const
+{
+   return ConstIterator( matrix_, row(), column() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator to the first element of the band.
+//
+// \return Iterator to the first element of the band.
+//
+// This function returns an iterator to the first element of the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::ConstIterator
+   BandImpl<MT,TF,true,false,BIs...>::cbegin() const
+{
+   return ConstIterator( matrix_, row(), column() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of the band.
+//
+// \return Iterator just past the last element of the band.
+//
+// This function returns an iterator just past the last element of the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::Iterator
+   BandImpl<MT,TF,true,false,BIs...>::end()
+{
+   const size_t n( size() );
+   return Iterator( matrix_, row()+n, column()+n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of the band.
+//
+// \return Iterator just past the last element of the band.
+//
+// This function returns an iterator just past the last element of the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::ConstIterator
+   BandImpl<MT,TF,true,false,BIs...>::end() const
+{
+   const size_t n( size() );
+   return ConstIterator( matrix_, row()+n, column()+n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns an iterator just past the last element of the band.
+//
+// \return Iterator just past the last element of the band.
+//
+// This function returns an iterator just past the last element of the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline typename BandImpl<MT,TF,true,false,BIs...>::ConstIterator
+   BandImpl<MT,TF,true,false,BIs...>::cend() const
+{
+   const size_t n( size() );
+   return ConstIterator( matrix_, row()+n, column()+n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ASSIGNMENT OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Homogenous assignment to all band elements.
+//
+// \param rhs Scalar value to be assigned to all band elements.
+// \return Reference to the assigned band.
+//
+// This function homogeneously assigns the given value to all elements of the band. Note that in
+// case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
+// of the underlying matrix are modified.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator=( const ElementType& rhs )
+{
+   if( ( IsLower<MT>::value && column() > 0UL ) ||
+       ( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value ) && row() == 0UL ) ||
+       ( IsUpper<MT>::value && row() > 0UL ) ||
+       ( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value ) && column() == 0UL ) )
+      return *this;
+
+   const size_t n( size() );
+   for( size_t i=0UL; i<n; ++i )
+      matrix_(row()+i,column()+i) = rhs;
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all band elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to band.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// band by means of an initializer list. The band elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the band, a \a std::invalid_argument exception is
+// thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator=( initializer_list<ElementType> list )
+{
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to band" );
+   }
+
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Copy assignment operator for Band.
+//
+// \param rhs Dense band to be copied.
+// \return Reference to the assigned band.
+// \exception std::invalid_argument Band sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two bands don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower or upper triangular matrix and the
+// assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator=( const BandImpl& rhs )
+{
+   if( &rhs == this ) return *this;
+
+   if( size() != rhs.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Band sizes do not match" );
+   }
+
+   if( !tryAssign( matrix_, rhs, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   smpAssign( left, rhs );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for different vectors.
+//
+// \param rhs Vector to be assigned.
+// \return Reference to the assigned band.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower or upper triangular matrix and the
+// assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side vector
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator=( const Vector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   Right right( ~rhs );
+
+   if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpAssign( left, tmp );
+   }
+   else {
+      if( IsSparseVector<VT>::value )
+         reset();
+      smpAssign( left, right );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Addition assignment operator for the addition of a vector (\f$ \vec{a}+=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector to be added to the dense band.
+// \return Reference to the assigned band.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower or upper triangular matrix and the
+// assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side vector
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator+=( const Vector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   Right right( ~rhs );
+
+   if( !tryAddAssign( matrix_, right, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpAddAssign( left, tmp );
+   }
+   else {
+      smpAddAssign( left, right );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Subtraction assignment operator for the subtraction of a vector (\f$ \vec{a}-=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector to be subtracted from the dense band.
+// \return Reference to the assigned band.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying matrix \a MT is a lower or upper triangular matrix and the
+// assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side vector
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator-=( const Vector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   Right right( ~rhs );
+
+   if( !trySubAssign( matrix_, right, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpSubAssign( left, tmp );
+   }
+   else {
+      smpSubAssign( left, right );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector to be multiplied with the dense band.
+// \return Reference to the assigned band.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side dense vector
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator*=( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   Right right( ~rhs );
+
+   if( !tryMultAssign( matrix_, right, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpMultAssign( left, tmp );
+   }
+   else {
+      smpMultAssign( left, right );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
+//        (\f$ \vec{a}*=\vec{b} \f$).
+//
+// \param rhs The right-hand side sparse vector to be multiplied with the dense band.
+// \return Reference to the assigned band.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side sparse vector
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator*=( const SparseVector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   const ResultType right( *this * (~rhs) );
+
+   if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   smpAssign( left, right );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Vector sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side dense vector
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator/=( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   if( size() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
+   }
+
+   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   Right right( ~rhs );
+
+   if( !tryDivAssign( matrix_, right, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+      const ResultType_<VT> tmp( right );
+      smpDivAssign( left, tmp );
+   }
+   else {
+      smpDivAssign( left, right );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Cross product assignment operator for the multiplication of a vector
+//        (\f$ \vec{a}\times=\vec{b} \f$).
+//
+// \param rhs The right-hand side vector for the cross product.
+// \return Reference to the assigned row.
+// \exception std::invalid_argument Invalid vector size for cross product.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side vector
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::operator%=( const Vector<VT,TF>& rhs )
+{
+   using blaze::assign;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+
+   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
+
+   if( size() != 3UL || (~rhs).size() != 3UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
+   }
+
+   const CrossType right( *this % (~rhs) );
+
+   if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   assign( left, right );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication between a dense band and
+//        a scalar value (\f$ \vec{a}*=s \f$).
+//
+// \param rhs The right-hand side scalar value for the multiplication.
+// \return Reference to the vector.
+//
+// This operator cannot be used for bands on lower or upper unitriangular matrices. The attempt
+// to scale such a band results in a compilation error!
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename Other >    // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<Other>, BandImpl<MT,TF,true,false,BIs...> >&
+   BandImpl<MT,TF,true,false,BIs...>::operator*=( Other rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   return operator=( (*this) * rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division assignment operator for the division of a dense band by a scalar value
+//        (\f$ \vec{a}/=s \f$).
+//
+// \param rhs The right-hand side scalar value for the division.
+// \return Reference to the vector.
+//
+// This operator cannot be used for bands on lower or upper unitriangular matrices. The attempt
+// to scale such a band results in a compilation error!
+//
+// \note A division by zero is only checked by an user assert.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename Other >    // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<Other>, BandImpl<MT,TF,true,false,BIs...> >&
+   BandImpl<MT,TF,true,false,BIs...>::operator/=( Other rhs )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+
+   return operator=( (*this) / rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  UTILITY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the current size/dimension of the band.
+//
+// \return The size of the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline size_t BandImpl<MT,TF,true,false,BIs...>::size() const noexcept
+{
+   return min( matrix_.rows() - row(), matrix_.columns() - column() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the minimum capacity of the band.
+//
+// \return The minimum capacity of the band.
+//
+// This function returns the minimum capacity of the band, which corresponds to the current size
+// plus padding.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline size_t BandImpl<MT,TF,true,false,BIs...>::spacing() const noexcept
+{
+   return size();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the maximum capacity of the dense band.
+//
+// \return The maximum capacity of the dense band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline size_t BandImpl<MT,TF,true,false,BIs...>::capacity() const noexcept
+{
+   return size();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of non-zero elements in the band.
+//
+// \return The number of non-zero elements in the band.
+//
+// Note that the number of non-zero elements is always less than or equal to the current number
+// of columns of the matrix containing the band.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline size_t BandImpl<MT,TF,true,false,BIs...>::nonZeros() const
+{
+   const size_t n( size() );
+   size_t nonzeros( 0UL );
+
+   for( size_t i=0UL; i<n; ++i )
+      if( !isDefault( matrix_(row()+i,column()+i) ) )
+         ++nonzeros;
+
+   return nonzeros;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset to the default initial values.
+//
+// \return void
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline void BandImpl<MT,TF,true,false,BIs...>::reset()
+{
+   using blaze::clear;
+
+   if( ( IsLower<MT>::value && column() > 0UL ) ||
+       ( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value ) && row() == 0UL ) ||
+       ( IsUpper<MT>::value && row() > 0UL ) ||
+       ( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value ) && column() == 0UL ) )
+      return;
+
+   const size_t n( size() );
+   for( size_t i=0UL; i<n; ++i )
+      clear( matrix_(row()+i,column()+i) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  NUMERIC FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Scaling of the band by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+//
+// \param scalar The scalar value for the band scaling.
+// \return Reference to the dense band.
+//
+// This function scales the band by applying the given scalar value \a scalar to each element
+// of the band. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a band
+// on a lower or upper unitriangular matrix. The attempt to scale such a band results in a
+// compile time error!
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename Other >    // Data type of the scalar value
+inline BandImpl<MT,TF,true,false,BIs...>&
+   BandImpl<MT,TF,true,false,BIs...>::scale( const Other& scalar )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   if( ( IsLower<MT>::value         && column() >  0UL ) ||
+       ( IsStrictlyLower<MT>::value && row()    == 0UL ) ||
+       ( IsUpper<MT>::value         && row()    >  0UL ) ||
+       ( IsStrictlyUpper<MT>::value && column() == 0UL ) )
+      return *this;
+
+   const size_t n( size() );
+   for( size_t i=0UL; i<n; ++i ) {
+      matrix_(row()+i,column()+i) *= scalar;
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPRESSION TEMPLATE EVALUATION FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense band can alias with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense band, \a false if not.
+//
+// This function returns whether the given address can alias with the dense band. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename Other >    // Data type of the foreign expression
+inline bool BandImpl<MT,TF,true,false,BIs...>::canAlias( const Other* alias ) const noexcept
+{
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense band can alias with the given dense band \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense band, \a false if not.
+//
+// This function returns whether the given address can alias with the dense band. In contrast
+// to the isAliased() function this function is allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... BIs >   // Band indices
+template< typename MT2         // Matrix type of the foreign dense band
+        , ptrdiff_t... BIs2 >  // Band indices of the foreign dense band
+inline bool
+   BandImpl<MT,TF,true,false,BIs...>::canAlias( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept
+{
+   return matrix_.isAliased( &alias->matrix_ ) && ( band() == alias->band() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense band is aliased with the given address \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense band, \a false if not.
+//
+// This function returns whether the given address is aliased with the dense band. In contrast
+// to the canAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename Other >    // Data type of the foreign expression
+inline bool BandImpl<MT,TF,true,false,BIs...>::isAliased( const Other* alias ) const noexcept
+{
+   return matrix_.isAliased( alias );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense band is aliased with the given dense band \a alias.
+//
+// \param alias The alias to be checked.
+// \return \a true in case the alias corresponds to this dense band, \a false if not.
+//
+// This function returns whether the given address is aliased with the dense band. In contrast
+// to the canAlias() function this function is not allowed to use compile time expressions to
+// optimize the evaluation.
+*/
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... BIs >   // Band indices
+template< typename MT2         // Matrix type of the foreign dense band
+        , ptrdiff_t... BIs2 >  // Band indices of the foreign dense band
+inline bool
+   BandImpl<MT,TF,true,false,BIs...>::isAliased( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept
+{
+   return matrix_.isAliased( &alias->matrix_ ) && ( band() == alias->band() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense band is properly aligned in memory.
+//
+// \return \a true in case the dense band is aligned, \a false if not.
+//
+// This function returns whether the dense band is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of the dense band are guaranteed to conform to the
+// alignment restrictions of the element type \a Type.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline bool BandImpl<MT,TF,true,false,BIs...>::isAligned() const noexcept
+{
+   return false;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the dense band can be used in SMP assignments.
+//
+// \return \a true in case the dense band can be used in SMP assignments, \a false if not.
+//
+// This function returns whether the dense band can be used in SMP assignments. In contrast to
+// the \a smpAssignable member enumeration, which is based solely on compile time information,
+// this function additionally provides runtime information (as for instance the current size
+// of the dense band).
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+inline bool BandImpl<MT,TF,true,false,BIs...>::canSMPAssign() const noexcept
+{
+   return ( size() > SMP_DVECASSIGN_THRESHOLD );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be assigned.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side dense vector
+inline void BandImpl<MT,TF,true,false,BIs...>::assign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      matrix_(row()+i    ,column()+i    ) = (~rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) = (~rhs)[i+1UL];
+   }
+   if( ipos < (~rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) = (~rhs)[ipos];
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be assigned.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side sparse vector
+inline void BandImpl<MT,TF,true,false,BIs...>::assign( const SparseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      matrix_(row()+index,column()+index) = element->value();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the addition assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be added.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side dense vector
+inline void BandImpl<MT,TF,true,false,BIs...>::addAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      matrix_(row()+i    ,column()+i    ) += (~rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) += (~rhs)[i+1UL];
+   }
+   if( ipos < (~rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) += (~rhs)[ipos];
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the addition assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be added.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side sparse vector
+inline void BandImpl<MT,TF,true,false,BIs...>::addAssign( const SparseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      matrix_(row()+index,column()+index) += element->value();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the subtraction assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be subtracted.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side dense vector
+inline void BandImpl<MT,TF,true,false,BIs...>::subAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      matrix_(row()+i    ,column()+i    ) -= (~rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) -= (~rhs)[i+1UL];
+   }
+   if( ipos < (~rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) -= (~rhs)[ipos];
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the subtraction assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be subtracted.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side sparse vector
+inline void BandImpl<MT,TF,true,false,BIs...>::subAssign( const SparseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      matrix_(row()+index,column()+index) -= element->value();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the multiplication assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector to be multiplied.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side dense vector
+inline void BandImpl<MT,TF,true,false,BIs...>::multAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      matrix_(row()+i    ,column()+i    ) *= (~rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) *= (~rhs)[i+1UL];
+   }
+   if( ipos < (~rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) *= (~rhs)[ipos];
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the multiplication assignment of a sparse vector.
+//
+// \param rhs The right-hand side sparse vector to be multiplied.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side sparse vector
+inline void BandImpl<MT,TF,true,false,BIs...>::multAssign( const SparseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const ResultType tmp( serial( *this ) );
+
+   reset();
+
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      matrix_(row()+index,column()+index) = tmp[index] * element->value();
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the division assignment of a dense vector.
+//
+// \param rhs The right-hand side dense vector divisor.
+// \return void
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT         // Type of the dense matrix
+        , bool TF             // Transpose flag
+        , ptrdiff_t... BIs >  // Band indices
+template< typename VT >       // Type of the right-hand side dense vector
+inline void BandImpl<MT,TF,true,false,BIs...>::divAssign( const DenseVector<VT,TF>& rhs )
+{
+   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+
+   const size_t ipos( (~rhs).size() & size_t(-2) );
+   for( size_t i=0UL; i<ipos; i+=2UL ) {
+      matrix_(row()+i    ,column()+i    ) /= (~rhs)[i    ];
+      matrix_(row()+i+1UL,column()+i+1UL) /= (~rhs)[i+1UL];
+   }
+   if( ipos < (~rhs).size() ) {
+      matrix_(row()+ipos,column()+ipos) /= (~rhs)[ipos];
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
+
+#endif
