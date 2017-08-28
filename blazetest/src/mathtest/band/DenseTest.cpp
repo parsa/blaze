@@ -752,7 +752,7 @@ void DenseTest::testAssignment()
 
       BT band1 = blaze::band( mat_, -1L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory.get(), 3UL, 16UL );
       vec1[0] = 8;
@@ -806,7 +806,7 @@ void DenseTest::testAssignment()
 
       BT band1 = blaze::band( mat_, -1L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[4] );
       UnalignedUnpadded vec1( memory.get()+1UL, 3UL );
       vec1[0] = 8;
@@ -1164,7 +1164,7 @@ void DenseTest::testAssignment()
 
       OBT band1 = blaze::band( tmat_, 1L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory.get(), 3UL, 16UL );
       vec1[0] = 8;
@@ -1222,7 +1222,7 @@ void DenseTest::testAssignment()
 
       OBT band1 = blaze::band( tmat_, 1L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[4] );
       UnalignedUnpadded vec1( memory.get()+1UL, 3UL );
       vec1[0] = 8;
@@ -1445,7 +1445,7 @@ void DenseTest::testAddAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -1500,7 +1500,7 @@ void DenseTest::testAddAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -1712,7 +1712,7 @@ void DenseTest::testAddAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -1771,7 +1771,7 @@ void DenseTest::testAddAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -1996,7 +1996,7 @@ void DenseTest::testSubAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -2051,7 +2051,7 @@ void DenseTest::testSubAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -2263,7 +2263,7 @@ void DenseTest::testSubAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -2322,7 +2322,7 @@ void DenseTest::testSubAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -2547,7 +2547,7 @@ void DenseTest::testMultAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -2602,7 +2602,7 @@ void DenseTest::testMultAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -2814,7 +2814,7 @@ void DenseTest::testMultAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] =  2;
@@ -2873,7 +2873,7 @@ void DenseTest::testMultAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] =  2;
@@ -3098,7 +3098,7 @@ void DenseTest::testDivAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] = -1;
@@ -3154,7 +3154,7 @@ void DenseTest::testDivAssign()
 
       BT band0 = blaze::band( mat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] = -1;
@@ -3315,7 +3315,7 @@ void DenseTest::testDivAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 4UL, 16UL );
       vec[0] = -1;
@@ -3374,7 +3374,7 @@ void DenseTest::testDivAssign()
 
       OBT band0 = blaze::band( tmat_, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[5] );
       UnalignedUnpadded vec( memory.get()+1UL, 4UL );
       vec[0] = -1;
@@ -3539,7 +3539,7 @@ void DenseTest::testCrossAssign()
 
       BT band0 = blaze::band( mat, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 3UL, 16UL );
       vec[0] =  1;
@@ -3591,7 +3591,7 @@ void DenseTest::testCrossAssign()
 
       BT band0 = blaze::band( mat, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[4] );
       UnalignedUnpadded vec( memory.get()+1UL, 3UL );
       vec[0] =  1;
@@ -3790,7 +3790,7 @@ void DenseTest::testCrossAssign()
 
       OBT band0 = blaze::band( mat, 0L );
 
-      typedef blaze::CustomVector<int,aligned,padded,columnVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,columnVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec( memory.get(), 3UL, 16UL );
       vec[0] =  1;
@@ -3844,7 +3844,7 @@ void DenseTest::testCrossAssign()
 
       OBT band0 = blaze::band( mat, 0L );
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,columnVector>;
       std::unique_ptr<int[]> memory( new int[4] );
       UnalignedUnpadded vec( memory.get()+1UL, 3UL );
       vec[0] =  1;

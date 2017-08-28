@@ -142,10 +142,10 @@ class SparseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MT;   //!< Row-major compressed matrix type
-   typedef MT::OppositeType                              OMT;  //!< Column-major compressed matrix type
-   typedef blaze::Band<MT>                               BT;   //!< Sparse band type for row-major matrices.
-   typedef blaze::Band<OMT>                              OBT;  //!< Sparse band type for column-major matrices.
+   using MT  = blaze::CompressedMatrix<int,blaze::rowMajor>;  //!< Row-major compressed matrix type
+   using OMT = MT::OppositeType;                              //!< Column-major compressed matrix type
+   using BT  = blaze::Band<MT>;                               //!< Sparse band type for row-major matrices.
+   using OBT = blaze::Band<OMT>;                              //!< Sparse band type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
