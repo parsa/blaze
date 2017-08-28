@@ -173,6 +173,7 @@ class OperationTest
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
+                          void testBandOperation     ();
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -337,6 +338,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
+   testBandOperation();
 }
 //*************************************************************************************************
 
@@ -3957,6 +3959,228 @@ void OperationTest<VT1,VT2>::testColumnOperation()
                column( sres_  , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
                column( osres_ , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
                column( refres_, i ) *= column( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the band-wise dense vector/sparse vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the band-wise outer product with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testBandOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_BAND_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_BAND_OPERATION > 1 )
+   {
+      const ptrdiff_t ibegin( 1UL - lhs_.size() );
+      const ptrdiff_t iend  ( rhs_.size() );
+
+
+      //=====================================================================================
+      // Band-wise outer product
+      //=====================================================================================
+
+      // Band-wise outer product with the given vectors
+      {
+         test_  = "Band-wise outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( lhs_ * rhs_, i );
+               band( odres_ , i ) = band( lhs_ * rhs_, i );
+               band( sres_  , i ) = band( lhs_ * rhs_, i );
+               band( osres_ , i ) = band( lhs_ * rhs_, i );
+               band( refres_, i ) = band( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Band-wise outer product with evaluated vectors
+      {
+         test_  = "Band-wise outer product with the given vectors";
+         error_ = "Failed outer product operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( odres_ , i ) = band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( sres_  , i ) = band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( osres_ , i ) = band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( refres_, i ) = band( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Band-wise outer product with addition assignment
+      //=====================================================================================
+
+      // Band-wise outer product with addition assignment with the given vectors
+      {
+         test_  = "Band-wise outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( lhs_ * rhs_, i );
+               band( odres_ , i ) += band( lhs_ * rhs_, i );
+               band( sres_  , i ) += band( lhs_ * rhs_, i );
+               band( osres_ , i ) += band( lhs_ * rhs_, i );
+               band( refres_, i ) += band( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Band-wise outer product with addition assignment with evaluated vectors
+      {
+         test_  = "Band-wise outer product with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( odres_ , i ) += band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( sres_  , i ) += band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( osres_ , i ) += band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( refres_, i ) += band( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Band-wise outer product with subtraction assignment
+      //=====================================================================================
+
+      // Band-wise outer product with subtraction assignment with the given vectors
+      {
+         test_  = "Band-wise outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( lhs_ * rhs_, i );
+               band( odres_ , i ) -= band( lhs_ * rhs_, i );
+               band( sres_  , i ) -= band( lhs_ * rhs_, i );
+               band( osres_ , i ) -= band( lhs_ * rhs_, i );
+               band( refres_, i ) -= band( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Band-wise outer product with subtraction assignment with evaluated vectors
+      {
+         test_  = "Band-wise outer product with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( odres_ , i ) -= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( sres_  , i ) -= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( osres_ , i ) -= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( refres_, i ) -= band( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Band-wise outer product with multiplication assignment
+      //=====================================================================================
+
+      // Band-wise outer product with multiplication assignment with the given vectors
+      {
+         test_  = "Band-wise outer product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( lhs_ * rhs_, i );
+               band( odres_ , i ) *= band( lhs_ * rhs_, i );
+               band( sres_  , i ) *= band( lhs_ * rhs_, i );
+               band( osres_ , i ) *= band( lhs_ * rhs_, i );
+               band( refres_, i ) *= band( reflhs_ * refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Band-wise outer product with multiplication assignment with evaluated vectors
+      {
+         test_  = "Band-wise outer product with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( odres_ , i ) *= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( sres_  , i ) *= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( osres_ , i ) *= band( eval( lhs_ ) * eval( rhs_ ), i );
+               band( refres_, i ) *= band( eval( reflhs_ ) * eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {

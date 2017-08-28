@@ -182,6 +182,7 @@ class OperationTest
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testColumnOperation   ();
+                          void testBandOperation     ();
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -369,6 +370,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testSubmatrixOperation();
    testRowOperation();
    testColumnOperation();
+   testBandOperation();
 }
 //*************************************************************************************************
 
@@ -8593,6 +8595,616 @@ void OperationTest<MT1,MT2>::testRowOperation()
                row( sres_  , i ) *= row( max( eval( olhs_ ), eval( orhs_ ) ), i );
                row( osres_ , i ) *= row( max( eval( olhs_ ), eval( orhs_ ) ), i );
                row( refres_, i ) *= row( eval( ref_ )                       , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the band-wise dense matrix/dense matrix maximum operation.
+//
+// \return void
+// \exception std::runtime_error Maximum error detected.
+//
+// This function tests the band-wise matrix maximum with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// maximum operation or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testBandOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_BAND_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_BAND_OPERATION > 1 )
+   {
+      if( lhs_.rows() == 0UL || lhs_.columns() == 0UL )
+         return;
+
+
+      const ptrdiff_t ibegin( 1UL - lhs_.rows() );
+      const ptrdiff_t iend  ( lhs_.columns() );
+
+
+      //=====================================================================================
+      // Band-wise maximum
+      //=====================================================================================
+
+      // Band-wise maximum with the given matrices
+      {
+         test_  = "Band-wise maximum with the given matrices";
+         error_ = "Failed maximum operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( lhs_, rhs_ ), i );
+               band( odres_ , i ) = band( max( lhs_, rhs_ ), i );
+               band( sres_  , i ) = band( max( lhs_, rhs_ ), i );
+               band( osres_ , i ) = band( max( lhs_, rhs_ ), i );
+               band( refres_, i ) = band( ref_             , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( lhs_, orhs_ ), i );
+               band( odres_ , i ) = band( max( lhs_, orhs_ ), i );
+               band( sres_  , i ) = band( max( lhs_, orhs_ ), i );
+               band( osres_ , i ) = band( max( lhs_, orhs_ ), i );
+               band( refres_, i ) = band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( olhs_, rhs_ ), i );
+               band( odres_ , i ) = band( max( olhs_, rhs_ ), i );
+               band( sres_  , i ) = band( max( olhs_, rhs_ ), i );
+               band( osres_ , i ) = band( max( olhs_, rhs_ ), i );
+               band( refres_, i ) = band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( olhs_, orhs_ ), i );
+               band( odres_ , i ) = band( max( olhs_, orhs_ ), i );
+               band( sres_  , i ) = band( max( olhs_, orhs_ ), i );
+               band( osres_ , i ) = band( max( olhs_, orhs_ ), i );
+               band( refres_, i ) = band( ref_               , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Band-wise maximum with evaluated matrices
+      {
+         test_  = "Band-wise maximum with evaluated matrices";
+         error_ = "Failed maximum operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) = band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) = band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) = band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) = band( eval( ref_ )                     , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) = band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) = band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) = band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) = band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) = band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) = band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) = band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) = band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) = band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) = band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) = band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) = band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) = band( eval( ref_ )                       , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Band-wise maximum with addition assignment
+      //=====================================================================================
+
+      // Band-wise maximum with addition assignment with the given matrices
+      {
+         test_  = "Band-wise maximum with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( lhs_, rhs_ ), i );
+               band( odres_ , i ) += band( max( lhs_, rhs_ ), i );
+               band( sres_  , i ) += band( max( lhs_, rhs_ ), i );
+               band( osres_ , i ) += band( max( lhs_, rhs_ ), i );
+               band( refres_, i ) += band( ref_             , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( lhs_, orhs_ ), i );
+               band( odres_ , i ) += band( max( lhs_, orhs_ ), i );
+               band( sres_  , i ) += band( max( lhs_, orhs_ ), i );
+               band( osres_ , i ) += band( max( lhs_, orhs_ ), i );
+               band( refres_, i ) += band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( olhs_, rhs_ ), i );
+               band( odres_ , i ) += band( max( olhs_, rhs_ ), i );
+               band( sres_  , i ) += band( max( olhs_, rhs_ ), i );
+               band( osres_ , i ) += band( max( olhs_, rhs_ ), i );
+               band( refres_, i ) += band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( olhs_, orhs_ ), i );
+               band( odres_ , i ) += band( max( olhs_, orhs_ ), i );
+               band( sres_  , i ) += band( max( olhs_, orhs_ ), i );
+               band( osres_ , i ) += band( max( olhs_, orhs_ ), i );
+               band( refres_, i ) += band( ref_               , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Band-wise maximum with addition assignment with evaluated matrices
+      {
+         test_  = "Band-wise maximum with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) += band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) += band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) += band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) += band( eval( ref_ )                     , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) += band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) += band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) += band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) += band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) += band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) += band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) += band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) += band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) += band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) += band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) += band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) += band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) += band( eval( ref_ )                       , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Band-wise maximum with subtraction assignment
+      //=====================================================================================
+
+      // Band-wise maximum with subtraction assignment with the given matrices
+      {
+         test_  = "Band-wise maximum with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( lhs_, rhs_ ), i );
+               band( odres_ , i ) -= band( max( lhs_, rhs_ ), i );
+               band( sres_  , i ) -= band( max( lhs_, rhs_ ), i );
+               band( osres_ , i ) -= band( max( lhs_, rhs_ ), i );
+               band( refres_, i ) -= band( ref_             , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( lhs_, orhs_ ), i );
+               band( odres_ , i ) -= band( max( lhs_, orhs_ ), i );
+               band( sres_  , i ) -= band( max( lhs_, orhs_ ), i );
+               band( osres_ , i ) -= band( max( lhs_, orhs_ ), i );
+               band( refres_, i ) -= band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( olhs_, rhs_ ), i );
+               band( odres_ , i ) -= band( max( olhs_, rhs_ ), i );
+               band( sres_  , i ) -= band( max( olhs_, rhs_ ), i );
+               band( osres_ , i ) -= band( max( olhs_, rhs_ ), i );
+               band( refres_, i ) -= band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( olhs_, orhs_ ), i );
+               band( odres_ , i ) -= band( max( olhs_, orhs_ ), i );
+               band( sres_  , i ) -= band( max( olhs_, orhs_ ), i );
+               band( osres_ , i ) -= band( max( olhs_, orhs_ ), i );
+               band( refres_, i ) -= band( ref_               , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Band-wise maximum with subtraction assignment with evaluated matrices
+      {
+         test_  = "Band-wise maximum with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) -= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) -= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) -= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) -= band( eval( ref_ )                     , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) -= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) -= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) -= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) -= band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) -= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) -= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) -= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) -= band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) -= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) -= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) -= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) -= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) -= band( eval( ref_ )                       , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Band-wise maximum with multiplication assignment
+      //=====================================================================================
+
+      // Band-wise maximum with multiplication assignment with the given matrices
+      {
+         test_  = "Band-wise maximum with multiplication assignment with the given matrices";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( lhs_, rhs_ ), i );
+               band( odres_ , i ) *= band( max( lhs_, rhs_ ), i );
+               band( sres_  , i ) *= band( max( lhs_, rhs_ ), i );
+               band( osres_ , i ) *= band( max( lhs_, rhs_ ), i );
+               band( refres_, i ) *= band( ref_             , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( lhs_, orhs_ ), i );
+               band( odres_ , i ) *= band( max( lhs_, orhs_ ), i );
+               band( sres_  , i ) *= band( max( lhs_, orhs_ ), i );
+               band( osres_ , i ) *= band( max( lhs_, orhs_ ), i );
+               band( refres_, i ) *= band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( olhs_, rhs_ ), i );
+               band( odres_ , i ) *= band( max( olhs_, rhs_ ), i );
+               band( sres_  , i ) *= band( max( olhs_, rhs_ ), i );
+               band( osres_ , i ) *= band( max( olhs_, rhs_ ), i );
+               band( refres_, i ) *= band( ref_              , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( olhs_, orhs_ ), i );
+               band( odres_ , i ) *= band( max( olhs_, orhs_ ), i );
+               band( sres_  , i ) *= band( max( olhs_, orhs_ ), i );
+               band( osres_ , i ) *= band( max( olhs_, orhs_ ), i );
+               band( refres_, i ) *= band( ref_               , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Band-wise maximum with multiplication assignment with evaluated matrices
+      {
+         test_  = "Band-wise maximum with multiplication assignment with evaluated matrices";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) *= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) *= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) *= band( max( eval( lhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) *= band( eval( ref_ )                     , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) *= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) *= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) *= band( max( eval( lhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) *= band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( odres_ , i ) *= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( sres_  , i ) *= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( osres_ , i ) *= band( max( eval( olhs_ ), eval( rhs_ ) ), i );
+               band( refres_, i ) *= band( eval( ref_ )                      , i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( ptrdiff_t i=ibegin; i<iend; ++i ) {
+               band( dres_  , i ) *= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( odres_ , i ) *= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( sres_  , i ) *= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( osres_ , i ) *= band( max( eval( olhs_ ), eval( orhs_ ) ), i );
+               band( refres_, i ) *= band( eval( ref_ )                       , i );
             }
          }
          catch( std::exception& ex ) {
