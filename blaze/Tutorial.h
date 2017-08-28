@@ -84,6 +84,7 @@
 //          <li> \ref views_submatrices </li>
 //          <li> \ref views_rows </li>
 //          <li> \ref views_columns </li>
+//          <li> \ref views_bands </li>
 //       </ul>
 //    </li>
 //    <li> \ref arithmetic_operations
@@ -6878,11 +6879,11 @@
 // vector are immediately visible in the subvector.
 //
 //
-// \n \section views_subvectors_class The Subvector Class Template
+// \n \section views_subvectors_template The Subvector Template
 // <hr>
 //
-// The blaze::Subvector class template represents a view on a specific subvector of a dense or
-// sparse vector primitive. It can be included via the header file
+// The blaze::Subvector template represents a view on a specific subvector of a dense or sparse
+// vector primitive. It can be included via the header file
 
    \code
    #include <blaze/math/Subvector.h>
@@ -6941,36 +6942,6 @@
 // expression type.
 //
 //
-// \n \section views_subvectors_common_operations Common Operations
-// <hr>
-//
-// A subvector view can be used like any other dense or sparse vector. For instance, the current
-// number of elements can be obtained via the \c size() function, the current capacity via the
-// \c capacity() function, and the number of non-zero elements via the \c nonZeros() function.
-// However, since subvectors are references to a specific range of a vector, several operations
-// are not possible on views, such as resizing and swapping. The following example shows this by
-// means of a dense subvector view:
-
-   \code
-   typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                SubvectorType;
-
-   VectorType v( 42UL );
-   // ... Resizing and initialization
-
-   // Creating a view on the range [5..15] of vector v
-   SubvectorType sv = subvector( v, 5UL, 10UL );
-
-   sv.size();          // Returns the number of elements in the subvector
-   sv.capacity();      // Returns the capacity of the subvector
-   sv.nonZeros();      // Returns the number of non-zero elements contained in the subvector
-
-   sv.resize( 84UL );  // Compilation error: Cannot resize a subvector of a vector
-
-   SubvectorType sv2 = subvector( v, 15UL, 10UL );
-   swap( sv, sv2 );   // Compilation error: Swap operation not allowed
-   \endcode
-
 // \n \section views_subvectors_element_access Element Access
 // <hr>
 //
@@ -7095,6 +7066,37 @@
    // does not work as efficiently for a subvector as it does for a vector.
    sv.reserve( 10UL );
    sv.append( 51UL, -2.1 );
+   \endcode
+
+// \n \section views_subvectors_common_operations Common Operations
+// <hr>
+//
+// A subvector view can be used like any other dense or sparse vector. This means that with
+// only a few exceptions all \ref vector_operations and \ref arithmetic_operations can be used.
+// For instance, the current number of elements can be obtained via the \c size() function, the
+// current capacity via the \c capacity() function, and the number of non-zero elements via the
+// \c nonZeros() function. However, since subvectors are references to a specific range of a
+// vector, several operations are not possible, such as resizing and swapping. The following
+// example shows this by means of a dense subvector view:
+
+   \code
+   typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
+   typedef blaze::Subvector<VectorType>                SubvectorType;
+
+   VectorType v( 42UL );
+   // ... Resizing and initialization
+
+   // Creating a view on the range [5..15] of vector v
+   SubvectorType sv = subvector( v, 5UL, 10UL );
+
+   sv.size();          // Returns the number of elements in the subvector
+   sv.capacity();      // Returns the capacity of the subvector
+   sv.nonZeros();      // Returns the number of non-zero elements contained in the subvector
+
+   sv.resize( 84UL );  // Compilation error: Cannot resize a subvector of a vector
+
+   SubvectorType sv2 = subvector( v, 15UL, 10UL );
+   swap( sv, sv2 );   // Compilation error: Swap operation not allowed
    \endcode
 
 // \n \section views_subvectors_arithmetic_operations Arithmetic Operations
@@ -7275,11 +7277,11 @@
 // immediately visible in the submatrix.
 //
 //
-// \n \section views_submatrices_class The Submatrix Class Template
+// \n \section views_submatrices_template The Submatrix Template
 // <hr>
 //
-// The blaze::Submatrix class template represents a view on a specific submatrix of a dense or
-// sparse matrix primitive. It can be included via the header file
+// The blaze::Submatrix template represents a view on a specific submatrix of a dense or sparse
+// matrix primitive. It can be included via the header file
 
    \code
    #include <blaze/math/Submatrix.h>
@@ -7330,36 +7332,6 @@
 
    // Creating a view on the multiplication of D2 and S2
    ssm = submatrix( D2 * S2, 7UL, 13UL, 8UL, 16UL );
-   \endcode
-
-// \n \section views_submatrices_common_operations Common Operations
-// <hr>
-//
-// The current size of the matrix, i.e. the number of rows or columns can be obtained via the
-// \c rows() and \c columns() functions, the current total capacity via the \c capacity() function,
-// and the number of non-zero elements via the \c nonZeros() function. However, since submatrices
-// are views on a specific submatrix of a matrix, several operations are not possible on views,
-// such as resizing and swapping:
-
-   \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
-
-   MatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a view on the a 8x12 submatrix of matrix A
-   SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
-
-   sm.rows();      // Returns the number of rows of the submatrix
-   sm.columns();   // Returns the number of columns of the submatrix
-   sm.capacity();  // Returns the capacity of the submatrix
-   sm.nonZeros();  // Returns the number of non-zero elements contained in the submatrix
-
-   sm.resize( 10UL, 8UL );  // Compilation error: Cannot resize a submatrix of a matrix
-
-   SubmatrixType sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
-   swap( sm, sm2 );  // Compilation error: Swap operation not allowed
    \endcode
 
 // \n \section views_submatrices_element_access Element Access
@@ -7485,6 +7457,38 @@
    // submatrix as it does for a matrix.
    sm.reserve( 2UL, 10UL );
    sm.append( 2UL, 10UL, -2.1 );
+   \endcode
+
+// \n \section views_submatrices_common_operations Common Operations
+// <hr>
+//
+// A submatrix view can be used like any other dense or sparse matrix. This means that with only
+// a few exceptions all \ref matrix_operations and \ref arithmetic_operations can be used. For
+// instance, the current size of the matrix, i.e. the number of rows or columns can be obtained
+// via the \c rows() and \c columns() functions, the current total capacity via the \c capacity()
+// function, and the number of non-zero elements via the \c nonZeros() function. However, since
+// submatrices are views on a specific submatrix of a matrix, several operations are not possible,
+// such as resizing and swapping:
+
+   \code
+   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
+   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
+
+   MatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a view on the a 8x12 submatrix of matrix A
+   SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
+
+   sm.rows();      // Returns the number of rows of the submatrix
+   sm.columns();   // Returns the number of columns of the submatrix
+   sm.capacity();  // Returns the capacity of the submatrix
+   sm.nonZeros();  // Returns the number of non-zero elements contained in the submatrix
+
+   sm.resize( 10UL, 8UL );  // Compilation error: Cannot resize a submatrix of a matrix
+
+   SubmatrixType sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
+   swap( sm, sm2 );  // Compilation error: Swap operation not allowed
    \endcode
 
 // \n \section views_submatrices_arithmetic_operations Arithmetic Operations
@@ -7724,11 +7728,11 @@
 // and changes made via the matrix are immediately visible in the row.
 //
 //
-// \n \section views_rows_class The Row Class Template
+// \n \section views_rows_template The Row Template
 // <hr>
 //
-// The blaze::Row class template represents a reference to a specific row of a dense or sparse
-// matrix primitive. It can be included via the header file
+// The blaze::Row template represents a reference to a specific row of a dense or sparse matrix
+// primitive. It can be included via the header file
 
    \code
    #include <blaze/math/Row.h>
@@ -7748,19 +7752,35 @@
 // \n \section views_rows_setup Setup of Rows
 // <hr>
 //
+// \image html row.png
+// \image latex row.eps "Row view" width=250pt
+//
 // A reference to a dense or sparse row can be created very conveniently via the \c row() function.
-// This reference can be treated as any other row vector, i.e. it can be assigned to, it can be
-// copied from, and it can be used in arithmetic operations. The reference can also be used on
-// both sides of an assignment: The row can either be used as an alias to grant write access to a
-// specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
-// to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
-// The following two examples demonstrate this for dense and sparse matrices:
+// The row index must be in the range from \f$[0..M-1]\f$, where \c M is the total number of rows
+// of the matrix:
 
    \code
-   typedef blaze::DynamicVector<double,rowVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,rowVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,rowMajor>      DenseMatrixType;
-   typedef blaze::CompressedMatrix<double,rowMajor>   SparseMatrixType;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd row of matrix A
+   blaze::Row<DenseMatrixType> row2 = row( A, 2UL );
+   \endcode
+
+// The resulting reference can be treated as any other row vector, i.e. it can be assigned to,
+// it can be copied from, and it can be used in arithmetic operations. The reference can also be
+// used on both sides of an assignment: The row can either be used as an alias to grant write
+// access to a specific row of a matrix primitive on the left-hand side of an assignment or to
+// grant read-access to a specific row of a matrix primitive or expression on the right-hand side
+// of an assignment. The following example demonstrates this in detail:
+
+   \code
+   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   typedef blaze::DynamicMatrix<double,blaze::rowMajor>      DenseMatrixType;
+   typedef blaze::CompressedMatrix<double,blaze::rowMajor>   SparseMatrixType;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -7788,35 +7808,6 @@
 // access.
 //
 //
-// \n \section views_rows_common_operations Common Operations
-// <hr>
-//
-// A row view can be used like any other row vector. For instance, the current number of elements
-// can be obtained via the \c size() function, the current capacity via the \c capacity() function,
-// and the number of non-zero elements via the \c nonZeros() function. However, since rows are
-// references to specific rows of a matrix, several operations are not possible on views, such
-// as resizing and swapping. The following example shows this by means of a dense row view:
-
-   \code
-   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>              RowType;
-
-   MatrixType A( 42UL, 42UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 2nd row of matrix A
-   RowType row2 = row( A, 2UL );
-
-   row2.size();          // Returns the number of elements in the row
-   row2.capacity();      // Returns the capacity of the row
-   row2.nonZeros();      // Returns the number of non-zero elements contained in the row
-
-   row2.resize( 84UL );  // Compilation error: Cannot resize a single row of a matrix
-
-   RowType row3 = row( A, 3UL );
-   swap( row2, row3 );   // Compilation error: Swap operation not allowed
-   \endcode
-
 // \n \section views_rows_element_access Element Access
 // <hr>
 //
@@ -7911,6 +7902,37 @@
    // enough to hold the new element.
    row0.reserve( 10UL );
    row0.append( 51UL, -2.1 );
+   \endcode
+
+// \n \section views_rows_common_operations Common Operations
+// <hr>
+//
+// A row view can be used like any other row vector. This means that with only a few exceptions
+// all \ref vector_operations and \ref arithmetic_operations can be used. For instance, the
+// current number of elements can be obtained via the \c size() function, the current capacity
+// via the \c capacity() function, and the number of non-zero elements via the \c nonZeros()
+// function. However, since rows are references to specific rows of a matrix, several operations
+// are not possible on views, such as resizing and swapping. The following example shows this by
+// means of a dense row view:
+
+   \code
+   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
+   typedef blaze::Row<MatrixType>              RowType;
+
+   MatrixType A( 42UL, 42UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd row of matrix A
+   RowType row2 = row( A, 2UL );
+
+   row2.size();          // Returns the number of elements in the row
+   row2.capacity();      // Returns the capacity of the row
+   row2.nonZeros();      // Returns the number of non-zero elements contained in the row
+
+   row2.resize( 84UL );  // Compilation error: Cannot resize a single row of a matrix
+
+   RowType row3 = row( A, 3UL );
+   swap( row2, row3 );   // Compilation error: Swap operation not allowed
    \endcode
 
 // \n \section views_rows_arithmetic_operations Arithmetic Operations
@@ -8021,11 +8043,11 @@
 // matrix and changes made via the matrix are immediately visible in the column.
 //
 //
-// \n \section views_columns_class The Column Class Template
+// \n \section views_columns_template The Column Template
 // <hr>
 //
-// The blaze::Column class template represents a reference to a specific column of a dense or
-// sparse matrix primitive. It can be included via the header file
+// The blaze::Column template represents a reference to a specific column of a dense or sparse
+// matrix primitive. It can be included via the header file
 
    \code
    #include <blaze/math/Column.h>
@@ -8045,19 +8067,35 @@
 // \n \section views_colums_setup Setup of Columns
 // <hr>
 //
-// Similar to the setup of a row, a reference to a dense or sparse column can be created very
-// conveniently via the \c column() function. This reference can be treated as any other column
-// vector, i.e. it can be assigned to, copied from, and be used in arithmetic operations. The
-// column can either be used as an alias to grant write access to a specific column of a matrix
-// primitive on the left-hand side of an assignment or to grant read-access to a specific column
-// of a matrix primitive or expression on the right-hand side of an assignment. The following
-// two examples demonstrate this for dense and sparse matrices:
+// \image html column.png
+// \image latex column.eps "Column view" width=250pt
+//
+// A reference to a dense or sparse column can be created very conveniently via the \c column()
+// function. The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total
+// number of column of the matrix:
 
    \code
-   typedef blaze::DynamicVector<double,columnVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,columnVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,columnMajor>      DenseMatrixType;
-   typedef blaze::CompressedMatrix<double,columnMajor>   SparseMatrixType;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd column of matrix A
+   blaze::Column<DenseMatrixType> col2 = row( A, 2UL );
+   \endcode
+
+// The resulting reference can be treated as any other column vector, i.e. it can be assigned to,
+// it can be copied from, and it can be used in arithmetic operations. The reference can also be
+// used on both sides of an assignment: The column can either be used as an alias to grant write
+// access to a specific column of a matrix primitive on the left-hand side of an assignment or to
+// grant read-access to a specific column of a matrix primitive or expression on the right-hand
+// side of an assignment. The following example demonstrates this in detail:
+
+   \code
+   typedef blaze::DynamicVector<double,blaze::columnVector>     DenseVectorType;
+   typedef blaze::CompressedVector<double,blaze::columnVector>  SparseVectorType;
+   typedef blaze::DynamicMatrix<double,blaze::columnMajor>      DenseMatrixType;
+   typedef blaze::CompressedMatrix<double,blaze::columnMajor>   SparseMatrixType;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -8085,36 +8123,6 @@
 // access.
 //
 //
-// \n \section views_columns_common_operations Common Operations
-// <hr>
-//
-// A column view can be used like any other column vector. For instance, the current number of
-// elements can be obtained via the \c size() function, the current capacity via the \c capacity()
-// function, and the number of non-zero elements via the \c nonZeros() function. However, since
-// columns are references to specific columns of a matrix, several operations are not possible on
-// views, such as resizing and swapping. The following example shows this by means of a dense
-// column view:
-
-   \code
-   typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::Column<MatrixType>              ColumnType;
-
-   MatrixType A( 42UL, 42UL );
-   // ... Resizing and initialization
-
-   // Creating a reference to the 2nd column of matrix A
-   ColumnType col2 = column( A, 2UL );
-
-   col2.size();          // Returns the number of elements in the column
-   col2.capacity();      // Returns the capacity of the column
-   col2.nonZeros();      // Returns the number of non-zero elements contained in the column
-
-   col2.resize( 84UL );  // Compilation error: Cannot resize a single column of a matrix
-
-   ColumnType col3 = column( A, 3UL );
-   swap( col2, col3 );   // Compilation error: Swap operation not allowed
-   \endcode
-
 // \n \section views_columns_element_access Element Access
 // <hr>
 //
@@ -8211,6 +8219,37 @@
    col0.append( 51UL, -2.1 );
    \endcode
 
+// \n \section views_columns_common_operations Common Operations
+// <hr>
+//
+// A column view can be used like any other column vector. This means that with only a few
+// exceptions all \ref vector_operations and \ref arithmetic_operations can be used. For instance,
+// the current number of elements can be obtained via the \c size() function, the current capacity
+// via the \c capacity() function, and the number of non-zero elements via the \c nonZeros()
+// function. However, since columns are references to specific columns of a matrix, several
+// operations are not possible on views, such as resizing and swapping. The following example
+// shows this by means of a dense column view:
+
+   \code
+   typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
+   typedef blaze::Column<MatrixType>              ColumnType;
+
+   MatrixType A( 42UL, 42UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd column of matrix A
+   ColumnType col2 = column( A, 2UL );
+
+   col2.size();          // Returns the number of elements in the column
+   col2.capacity();      // Returns the capacity of the column
+   col2.nonZeros();      // Returns the number of non-zero elements contained in the column
+
+   col2.resize( 84UL );  // Compilation error: Cannot resize a single column of a matrix
+
+   ColumnType col3 = column( A, 3UL );
+   swap( col2, col3 );   // Compilation error: Swap operation not allowed
+   \endcode
+
 // \n \section views_columns_arithmetic_operations Arithmetic Operations
 // <hr>
 //
@@ -8300,7 +8339,289 @@
 // Although \b Blaze performs the resulting matrix/vector multiplication as efficiently as possible
 // using a column-major storage order for matrix B would result in a more efficient evaluation.
 //
-// \n Previous: \ref views_rows &nbsp; &nbsp; Next: \ref arithmetic_operations
+// \n Previous: \ref views_rows &nbsp; &nbsp; Next: \ref views_bands
+*/
+//*************************************************************************************************
+
+
+//**Bands******************************************************************************************
+/*!\page views_bands Bands
+//
+// \tableofcontents
+//
+//
+// Bands provide views on a specific band of a dense or sparse matrix. As such, bands act as a
+// reference to a specific band. This reference is valid and can be used in every way any other
+// vector can be used as long as the matrix containing the band is not resized or entirely
+// destroyed. The band also acts as an alias to the band elements: Changes made to the elements
+// (e.g. modifying values, inserting or erasing elements) are immediately visible in the matrix
+// and changes made via the matrix are immediately visible in the band.
+//
+//
+// \n \section views_bands_template The Band Template
+// <hr>
+//
+// The blaze::Band template represents a reference to a specific band of a dense or sparse matrix
+// primitive. It can be included via the header file
+
+   \code
+   #include <blaze/math/Band.h>
+   \endcode
+
+// The type of the matrix is specified via template parameter:
+
+   \code
+   template< typename MT >
+   class Band;
+   \endcode
+
+// \c MT specifies the type of the matrix primitive. Band can be used with every matrix primitive,
+// but does not work with any matrix expression type.
+//
+//
+// \n \section views_bands_setup Setup of Bands
+// <hr>
+//
+// \image html band.png
+// \image latex band.eps "Band view" width=250pt
+//
+// A reference to a dense or sparse band can be created very conveniently via the \c band()
+// function. The band index must be in the range from \f$[1-M..N-1]\f$, where \c M is the total
+// number of rows and \c N is the total number of columns, and can be specified both at compile
+// time or at runtime:
+
+   \code
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a reference to the 1st lower band of matrix A (compile time index)
+   blaze::Band<DenseMatrixType,-1L> band1 = band<-1L>( A );
+
+   // Creating a reference to the 2nd upper band of matrix A (runtime index)
+   blaze::Band<DenseMatrixType> band2 = band( A, 2L );
+   \endcode
+
+// The resulting reference can be treated as any other vector, i.e. it can be assigned to, it can
+// be copied from, and it can be used in arithmetic operations. By default, bands are considered
+// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
+// reference can also be used on both sides of an assignment: The band can either be used as an
+// alias to grant write access to a specific band of a matrix primitive on the left-hand side of
+// an assignment or to grant read-access to a specific band of a matrix primitive or expression
+// on the right-hand side of an assignment. The following example demonstrates this in detail:
+
+   \code
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
+
+   DenseVectorType  x;
+   SparseVectorType y;
+   DenseMatrixType  A, B;
+   SparseMatrixType C, D;
+   // ... Resizing and initialization
+
+   // Setting the 2nd upper band of matrix A to x
+   blaze::Band<DenseMatrixType> band2 = band( A, 2L );
+   band2 = x;
+
+   // Setting the 3rd upper band of matrix B to y
+   band( B, 3L ) = y;
+
+   // Setting x to the 2nd lower band of the result of the matrix multiplication
+   x = band( A * B, -2L );
+
+   // Setting y to the 2nd upper band of the result of the sparse matrix multiplication
+   y = band( C * D, 2L );
+   \endcode
+
+// The \c band() function can be used on any dense or sparse matrix, including expressions, as
+// illustrated by the source code example. However, bands cannot be instantiated for expression
+// types, but only for matrix primitives, respectively, i.e. for matrix types that offer write
+// access.
+//
+//
+// \n \section views_bands_element_access Element Access
+// <hr>
+//
+// A dense or sparse band can be used like any other vector. For instance, the elements of a band
+// can be directly accessed with the subscript operator:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   MatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a view on the 4th upper band of matrix A
+   blaze::Band<MatrixType> band4 = band( A, 4L );
+
+   // Setting the 1st element of the dense band, which corresponds
+   // to the 1st element in the 4th upper band of matrix A
+   band4[1] = 2.0;
+   \endcode
+
+// The numbering of the band elements is
+
+                             \f[\left(\begin{array}{*{5}{c}}
+                             0 & 1 & 2 & \cdots & N-1 \\
+                             \end{array}\right),\f]
+
+// where N is the number of elements of the referenced band. Alternatively, the elements of a band
+// can be traversed via iterators. Just as with vectors, in case of non-const band, \c begin() and
+// \c end() return an Iterator, which allows a manipulation of the non-zero values, in case of
+// constant band a ConstIterator is returned:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;
+   using BandType   = blaze::Band<MatrixType>;
+
+   MatrixType A( 128UL, 256UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 5th upper band of matrix A
+   BandType band5 = band( A, 5L );
+
+   for( BandType::Iterator it=band5.begin(); it!=band5.end(); ++it ) {
+      *it = ...;  // OK; Write access to the dense band value
+      ... = *it;  // OK: Read access to the dense band value.
+   }
+
+   for( BandType::ConstIterator it=band5.begin(); it!=band5.end(); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      ... = *it;  // OK: Read access to the dense band value.
+   }
+   \endcode
+
+   \code
+   using MatrixType = blaze::CompressedMatrix<int,blaze::rowMajor>;
+   using BandType   = blaze::Band<MatrixType>;
+
+   MatrixType A( 128UL, 256UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 5th band of matrix A
+   BandType band5 = band( A, 5L );
+
+   for( BandType::Iterator it=band5.begin(); it!=band5.end(); ++it ) {
+      it->value() = ...;  // OK: Write access to the value of the non-zero element.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+
+   for( BandType::ConstIterator it=band5.begin(); it!=band5.end(); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      ... = it->value();  // OK: Read access to the value of the non-zero element.
+      it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
+      ... = it->index();  // OK: Read access to the index of the sparse element.
+   }
+   \endcode
+
+// \n \section views_bands_element_insertion Element Insertion
+// <hr>
+//
+// Inserting/accessing elements in a sparse band can be done by several alternative functions.
+// The following example demonstrates all options:
+
+   \code
+   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
+   MatrixType A( 10UL, 100UL );  // Non-initialized 10x100 matrix
+
+   using BandType = blaze::Band<MatrixType>;
+   BandType diag( band( A, 0L ) );  // Reference to the diagonal of A
+
+   // The subscript operator provides access to all possible elements of the sparse band,
+   // including the zero elements. In case the subscript operator is used to access an element
+   // that is currently not stored in the sparse band, the element is inserted into the band.
+   diag[42] = 2.0;
+
+   // The second operation for inserting elements is the set() function. In case the element
+   // is not contained in the band it is inserted into the band, if it is already contained in
+   // the band its value is modified.
+   diag.set( 45UL, -1.2 );
+
+   // An alternative for inserting elements into the band is the insert() function. However,
+   // it inserts the element only in case the element is not already contained in the band.
+   diag.insert( 50UL, 3.7 );
+   \endcode
+
+// \n \section views_bands_common_operations Common Operations
+// <hr>
+//
+// A band view can be used like any other column vector. This means that with only a few
+// exceptions all \ref vector_operations and \ref arithmetic_operations can be used. For instance,
+// the current number of band elements can be obtained via the \c size() function, the current
+// capacity via the \c capacity() function, and the number of non-zero elements via the
+// \c nonZeros() function. However, since bands are references to specific bands of a matrix,
+// several operations are not possible, such as resizing and swapping. The following example
+// shows this by means of a dense band view:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;
+   using BandType = blaze::Band<MatrixType>;
+
+   MatrixType A( 42UL, 42UL );
+   // ... Resizing and initialization
+
+   // Creating a reference to the 2nd upper band of matrix A
+   BandType band2 = band( A, 2L );
+
+   band2.size();          // Returns the number of elements in the band
+   band2.capacity();      // Returns the capacity of the band
+   band2.nonZeros();      // Returns the number of non-zero elements contained in the band
+
+   band2.resize( 84UL );  // Compilation error: Cannot resize a single band of a matrix
+
+   BandType band3 = band( A, 3L );
+   swap( band2, band3 );   // Compilation error: Swap operation not allowed
+   \endcode
+
+// \n \section views_bands_arithmetic_operations Arithmetic Operations
+// <hr>
+//
+// Both dense and sparse bands can be used in all arithmetic operations that any other dense or
+// sparse vector can be used in. The following example gives an impression of the use of dense
+// bands within arithmetic operations. All operations (addition, subtraction, multiplication,
+// scaling, ...) can be performed on all possible combinations of dense and sparse bands with
+// fitting element types:
+
+   \code
+   blaze::DynamicVector<double,blaze::columnVector> a( 2UL, 2.0 ), b;
+   blaze::CompressedVector<double,blaze::columnVector> c( 2UL );
+   c[1] = 3.0;
+
+   using DenseMatrix = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   DenseMatrix A( 4UL, 2UL );  // Non-initialized 4x2 matrix
+
+   using BandType = blaze::Band<DenseMatrix>;
+   BandType band1( band( A, 1L ) );  // Reference to the 1st upper band of A
+   BandType diag ( band( A, 0L ) );  // Reference to the diagonal of A
+
+   band1[0] = 0.0;      // Manual initialization of the 1st upper band of A
+   diag = 1.0;          // Homogeneous initialization of the diagonal of A
+   band( A, -1L ) = a;  // Dense vector initialization of the 1st lower band of A
+   band( A, -2L ) = c;  // Sparse vector initialization of the 2nd lower band of A
+
+   b = diag + a;               // Dense vector/dense vector addition
+   b = c + band( A, -1L );     // Sparse vector/dense vector addition
+   b = diag * band( A, -2L );  // Component-wise vector multiplication
+
+   band( A, -1L ) *= 2.0;     // In-place scaling of the 1st upper band
+   b = band( A, -1L ) * 2.0;  // Scaling of the 1st upper band
+   b = 2.0 * band( A, -1L );  // Scaling of the 1st upper band
+
+   band( A, -2L ) += a;              // Addition assignment
+   band( A, -2L ) -= c;              // Subtraction assignment
+   band( A, -2L ) *= band( A, 0L );  // Multiplication assignment
+
+   double scalar = trans( c ) * band( A, -1L );  // Scalar/dot/inner product between two vectors
+
+   A = band( A, -1L ) * trans( c );  // Outer product between two vectors
+   \endcode
+
+// \n Previous: \ref views_columns &nbsp; &nbsp; Next: \ref arithmetic_operations
 */
 //*************************************************************************************************
 
@@ -8330,7 +8651,7 @@
 //    <li> \ref matrix_matrix_multiplication </li>
 // </ul>
 //
-// \n Previous: \ref views_columns &nbsp; &nbsp; Next: \ref addition
+// \n Previous: \ref views_bands &nbsp; &nbsp; Next: \ref addition
 */
 //*************************************************************************************************
 
