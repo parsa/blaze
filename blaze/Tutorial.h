@@ -8403,6 +8403,25 @@
    blaze::Band<DenseMatrixType> band2 = band( A, 2L );
    \endcode
 
+// In addition, the \c diagonal() function provides a convenient shortcut for the setup of a view
+// on the diagonal of a dense or sparse matrix. It has the same effect as calling the \c band()
+// function with a compile time index of 0:
+
+   \code
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using DiagonalType1   = blaze::Band<DenseMatrixType,0L>;
+   using DiagonalType2   = blaze::Diagonal<DenseMatrixType>;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a reference to the diagonal of matrix A via the band() and diagonal() functions
+   DiagonalType1 diag1 = band<0L>( A );
+   DiagonalType2 diag2 = diagonal( A );
+
+   static_assert( blaze::IsSame<DiagonalType1,DiagonalType2>::value, "Non-identical types detected" );
+   \endcode
+
 // The resulting reference can be treated as any other vector, i.e. it can be assigned to, it can
 // be copied from, and it can be used in arithmetic operations. By default, bands are considered
 // column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
