@@ -1062,7 +1062,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( band<-BI>( (~matrix).operand() ) );
+   return band<-BI>( (~matrix).operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1086,7 +1086,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( band( (~matrix).operand(), -index ) );
+   return band( (~matrix).operand(), -index );
 }
 /*! \endcond */
 //*************************************************************************************************
