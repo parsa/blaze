@@ -143,9 +143,6 @@ class BandImpl<MT,TF,true,false,BIs...>
 
    //! Pointer to a non-constant band value.
    using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
-
-   //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
    //**********************************************************************************************
 
    //**BandIterator class definition***************************************************************
@@ -466,8 +463,8 @@ class BandImpl<MT,TF,true,false,BIs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline BandImpl( Operand matrix );
-   explicit inline BandImpl( Operand matrix, ptrdiff_t index );
+   explicit inline BandImpl( MT& matrix );
+   explicit inline BandImpl( MT& matrix, ptrdiff_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -605,7 +602,7 @@ class BandImpl<MT,TF,true,false,BIs...>
 template< typename MT         // Type of the dense matrix
         , bool TF             // Transpose flag
         , ptrdiff_t... BIs >  // Band indices
-inline BandImpl<MT,TF,true,false,BIs...>::BandImpl( Operand matrix )
+inline BandImpl<MT,TF,true,false,BIs...>::BandImpl( MT& matrix )
    : DataType( matrix )  // Base class initialization
 {}
 /*! \endcond */
@@ -623,7 +620,7 @@ inline BandImpl<MT,TF,true,false,BIs...>::BandImpl( Operand matrix )
 template< typename MT         // Type of the dense matrix
         , bool TF             // Transpose flag
         , ptrdiff_t... BIs >  // Band indices
-inline BandImpl<MT,TF,true,false,BIs...>::BandImpl( Operand matrix, ptrdiff_t index )
+inline BandImpl<MT,TF,true,false,BIs...>::BandImpl( MT& matrix, ptrdiff_t index )
    : DataType( matrix, index )  // Base class initialization
 {}
 /*! \endcond */
