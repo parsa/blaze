@@ -128,10 +128,10 @@ class DenseUnalignedTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;    //!< Row-major dynamic matrix type
-   typedef MT::OppositeType                           OMT;   //!< Column-major dynamic matrix type
-   typedef blaze::Submatrix<MT>                       SMT;   //!< Dense submatrix type for row-major matrices.
-   typedef blaze::Submatrix<OMT>                      OSMT;  //!< Dense submatrix type for column-major matrices.
+   using MT   = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type
+   using OMT  = MT::OppositeType;                           //!< Column-major dynamic matrix type
+   using SMT  = blaze::Submatrix<MT>;                       //!< Dense submatrix type for row-major matrices.
+   using OSMT = blaze::Submatrix<OMT>;                      //!< Dense submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************

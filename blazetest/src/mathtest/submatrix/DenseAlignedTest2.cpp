@@ -3441,13 +3441,10 @@ void DenseAlignedTest::testRow()
 
       initialize();
 
-      typedef blaze::Row<ASMT>  AlignedRowType;
-      typedef blaze::Row<USMT>  UnalignedRowType;
-
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-      AlignedRowType   row1 = row( sm1, 1UL );
-      UnalignedRowType row2 = row( sm2, 1UL );
+      ASMT sm1  = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2  = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      auto row1 = row( sm1, 1UL );
+      auto row2 = row( sm2, 1UL );
 
       if( row1 != row2 ) {
          std::ostringstream oss;
@@ -3490,13 +3487,10 @@ void DenseAlignedTest::testRow()
 
       initialize();
 
-      typedef blaze::Row<AOSMT>  AlignedRowType;
-      typedef blaze::Row<UOSMT>  UnalignedRowType;
-
-      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
-      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
-      AlignedRowType   row1 = row( sm1, 1UL );
-      UnalignedRowType row2 = row( sm2, 1UL );
+      AOSMT sm1  = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2  = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      auto  row1 = row( sm1, 1UL );
+      auto  row2 = row( sm2, 1UL );
 
       if( row1 != row2 ) {
          std::ostringstream oss;
@@ -3557,13 +3551,10 @@ void DenseAlignedTest::testColumn()
 
       initialize();
 
-      typedef blaze::Column<ASMT>  AlignedColumnType;
-      typedef blaze::Column<USMT>  UnalignedColumnType;
-
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-      AlignedColumnType   col1 = column( sm1, 1UL );
-      UnalignedColumnType col2 = column( sm2, 1UL );
+      ASMT sm1  = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2  = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      auto col1 = column( sm1, 1UL );
+      auto col2 = column( sm2, 1UL );
 
       if( col1 != col2 ) {
          std::ostringstream oss;
@@ -3606,13 +3597,10 @@ void DenseAlignedTest::testColumn()
 
       initialize();
 
-      typedef blaze::Column<AOSMT>  AlignedColumnType;
-      typedef blaze::Column<UOSMT>  UnalignedColumnType;
-
-      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
-      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
-      AlignedColumnType   col1 = column( sm1, 1UL );
-      UnalignedColumnType col2 = column( sm2, 1UL );
+      AOSMT sm1  = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2  = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      auto  col1 = column( sm1, 1UL );
+      auto  col2 = column( sm2, 1UL );
 
       if( col1 != col2 ) {
          std::ostringstream oss;

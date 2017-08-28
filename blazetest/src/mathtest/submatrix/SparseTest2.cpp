@@ -5407,7 +5407,7 @@ void SparseTest::testFind()
    {
       test_ = "Row-major Submatrix::find()";
 
-      typedef SMT::ConstIterator  ConstIterator;
+      using ConstIterator = SMT::ConstIterator;
 
       initialize();
 
@@ -5501,7 +5501,7 @@ void SparseTest::testFind()
    {
       test_ = "Column-major Submatrix::find()";
 
-      typedef OSMT::ConstIterator  ConstIterator;
+      using ConstIterator = OSMT::ConstIterator;
 
       initialize();
 
@@ -5608,7 +5608,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Row-major Submatrix::lowerBound()";
 
-      typedef SMT::ConstIterator  ConstIterator;
+      using ConstIterator = SMT::ConstIterator;
 
       SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 1UL, 4UL );
 
@@ -5695,7 +5695,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Column-major Submatrix::lowerBound()";
 
-      typedef OSMT::ConstIterator  ConstIterator;
+      using ConstIterator = OSMT::ConstIterator;
 
       OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
 
@@ -5795,7 +5795,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Row-major Submatrix::upperBound()";
 
-      typedef SMT::ConstIterator  ConstIterator;
+      using ConstIterator = SMT::ConstIterator;
 
       SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 1UL, 4UL );
 
@@ -5870,7 +5870,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Column-major Submatrix::upperBound()";
 
-      typedef OSMT::ConstIterator  ConstIterator;
+      using ConstIterator = OSMT::ConstIterator;
 
       OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 4UL, 1UL );
 
@@ -7118,10 +7118,8 @@ void SparseTest::testRow()
 
       initialize();
 
-      typedef blaze::Row<SMT>  RowType;
-
-      SMT sm1 = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
-      RowType row1 = row( sm1, 1UL );
+      SMT  sm1  = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+      auto row1 = row( sm1, 1UL );
 
       if( row1[1] != -3 ) {
          std::ostringstream oss;
@@ -7154,10 +7152,8 @@ void SparseTest::testRow()
 
       initialize();
 
-      typedef blaze::Row<OSMT>  RowType;
-
-      OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-      RowType row1 = row( sm1, 1UL );
+      OSMT sm1  = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      auto row1 = row( sm1, 1UL );
 
       if( row1[1] != -3 ) {
          std::ostringstream oss;
@@ -7203,10 +7199,8 @@ void SparseTest::testColumn()
 
       initialize();
 
-      typedef blaze::Column<SMT>  ColumnType;
-
-      SMT sm1 = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
-      ColumnType col1 = column( sm1, 1UL );
+      SMT  sm1  = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+      auto col1 = column( sm1, 1UL );
 
       if( col1[1] != -3 ) {
          std::ostringstream oss;
@@ -7239,10 +7233,8 @@ void SparseTest::testColumn()
 
       initialize();
 
-      typedef blaze::Column<OSMT>  ColumnType;
-
-      OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
-      ColumnType col1 = column( sm1, 1UL );
+      OSMT sm1  = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      auto col1 = column( sm1, 1UL );
 
       if( col1[1] != -3 ) {
          std::ostringstream oss;

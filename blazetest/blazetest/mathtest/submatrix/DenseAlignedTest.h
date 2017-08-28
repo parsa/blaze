@@ -128,12 +128,12 @@ class DenseAlignedTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MT;     //!< Row-major dynamic matrix type
-   typedef MT::OppositeType                           OMT;    //!< Column-major dynamic matrix type
-   typedef blaze::Submatrix<MT,blaze::aligned>        ASMT;   //!< Aligned dense submatrix type for row-major matrices.
-   typedef blaze::Submatrix<MT,blaze::unaligned>      USMT;   //!< Unaligned dense submatrix type for row-major matrices.
-   typedef blaze::Submatrix<OMT,blaze::aligned>       AOSMT;  //!< Aligned dense submatrix type for column-major matrices.
-   typedef blaze::Submatrix<OMT,blaze::unaligned>     UOSMT;  //!< Unaligned dense submatrix type for column-major matrices.
+   using MT    = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type
+   using OMT   = MT::OppositeType;                           //!< Column-major dynamic matrix type
+   using ASMT  = blaze::Submatrix<MT,blaze::aligned>;        //!< Aligned dense submatrix type for row-major matrices.
+   using USMT  = blaze::Submatrix<MT,blaze::unaligned>;      //!< Unaligned dense submatrix type for row-major matrices.
+   using AOSMT = blaze::Submatrix<OMT,blaze::aligned>;       //!< Aligned dense submatrix type for column-major matrices.
+   using UOSMT = blaze::Submatrix<OMT,blaze::unaligned>;     //!< Unaligned dense submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
