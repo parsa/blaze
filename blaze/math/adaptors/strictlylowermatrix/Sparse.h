@@ -297,7 +297,6 @@ class StrictlyLowerMatrix<MT,SO,false>
    /*!\name Numeric functions */
    //@{
    template< typename Other > inline StrictlyLowerMatrix& scale( const Other& scalar );
-   template< typename Other > inline StrictlyLowerMatrix& scaleDiagonal( const Other& scale );
    //@}
    //**********************************************************************************************
 
@@ -2171,29 +2170,6 @@ inline StrictlyLowerMatrix<MT,SO,false>&
    StrictlyLowerMatrix<MT,SO,false>::scale( const Other& scalar )
 {
    matrix_.scale( scalar );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling the diagonal of the lower matrix by the scalar value \a scalar.
-//
-// \param scalar The scalar value for the diagonal scaling.
-// \return Reference to the lower matrix.
-//
-// This function scales the diagonal of the matrix by applying the given scalar value \a scalar
-// to each element of the diagonal.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline StrictlyLowerMatrix<MT,SO,false>&
-   StrictlyLowerMatrix<MT,SO,false>::scaleDiagonal( const Other& scalar )
-{
-   matrix_.scaleDiagonal( scalar );
    return *this;
 }
 /*! \endcond */

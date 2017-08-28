@@ -607,7 +607,6 @@ class SymmetricMatrix<MT,SO,false,false>
    inline SymmetricMatrix& ctranspose();
 
    template< typename Other > inline SymmetricMatrix& scale( const Other& scalar );
-   template< typename Other > inline SymmetricMatrix& scaleDiagonal( const Other& scale );
    //@}
    //**********************************************************************************************
 
@@ -2615,29 +2614,6 @@ inline SymmetricMatrix<MT,SO,false,false>&
          ( *element->value() ).scale( scalar );
    }
 
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling the diagonal of the symmetric matrix by the scalar value \a scalar.
-//
-// \param scalar The scalar value for the diagonal scaling.
-// \return Reference to the symmetric matrix.
-//
-// This function scales the diagonal of the matrix by applying the given scalar value \a scalar
-// to each element of the diagonal.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the scalar value
-inline SymmetricMatrix<MT,SO,false,false>&
-   SymmetricMatrix<MT,SO,false,false>::scaleDiagonal( const Other& scalar )
-{
-   matrix_.scaleDiagonal( scalar );
    return *this;
 }
 /*! \endcond */

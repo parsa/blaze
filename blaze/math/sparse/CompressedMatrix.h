@@ -463,7 +463,6 @@ class CompressedMatrix
    inline CompressedMatrix& ctranspose();
 
    template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
-   template< typename Other > inline CompressedMatrix& scaleDiagonal( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -2603,33 +2602,6 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scale( const Other&
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*!\brief Scaling the diagonal of the compressed matrix by the scalar value \a scalar.
-//
-// \param scalar The scalar value for the diagonal scaling.
-// \return Reference to the compressed matrix.
-//
-// This function scales the diagonal of the matrix by applying the given scalar value \a scalar
-// to each element of the diagonal.
-*/
-template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the scalar value
-inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scaleDiagonal( const Other& scalar )
-{
-   const size_t size( blaze::min( m_, n_ ) );
-
-   for( size_t i=0UL; i<size; ++i ) {
-      Iterator pos = lowerBound( i, i );
-      if( pos != end_[i] && pos->index_ == i )
-         pos->value_ *= scalar;
-   }
-
-   return *this;
-}
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -3241,7 +3213,6 @@ class CompressedMatrix<Type,true>
    inline CompressedMatrix& ctranspose();
 
    template< typename Other > inline CompressedMatrix& scale( const Other& scalar );
-   template< typename Other > inline CompressedMatrix& scaleDiagonal( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -5373,34 +5344,6 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scale( const Ot
    for( size_t j=0UL; j<n_; ++j )
       for( Iterator element=begin_[j]; element!=end_[j]; ++element )
          element->value_ *= scalar;
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling the diagonal of the compressed matrix by the scalar value \a scalar.
-//
-// \param scalar The scalar value for the diagonal scaling.
-// \return Reference to the compressed matrix.
-//
-// This function scales the diagonal of the matrix by applying the given scalar value \a scalar
-// to each element of the diagonal.
-*/
-template< typename Type >   // Data type of the matrix
-template< typename Other >  // Data type of the scalar value
-inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scaleDiagonal( const Other& scalar )
-{
-   const size_t size( blaze::min( m_, n_ ) );
-
-   for( size_t j=0UL; j<size; ++j ) {
-      Iterator pos = lowerBound( j, j );
-      if( pos != end_[j] && pos->index_ == j )
-         pos->value_ *= scalar;
-   }
 
    return *this;
 }
