@@ -697,8 +697,8 @@ inline decltype(auto)
    const size_t column( index >= 0L ?  index : 0UL );
    const size_t size  ( min( leftOperand.size() - row, rightOperand.size() - column ) );
 
-   return trans<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ) *
-          trans<defaultTransposeFlag>( subvector( rightOperand, column, size ) );
+   return transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ) *
+          transTo<defaultTransposeFlag>( subvector( rightOperand, column, size ) );
 }
 /*! \endcond */
 //*************************************************************************************************
