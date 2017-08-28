@@ -820,8 +820,8 @@ inline bool isSame( const Subvector<VT,AF,TF,DF>& a, const Vector<VT,TF>& b ) no
 template< typename VT, bool AF, bool TF, bool DF >
 inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept;
 
-template< typename VT, bool AF, bool TF, bool DF >
-inline bool isSame( const Subvector<VT,AF,TF,DF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept;
+template< typename VT1, bool AF, bool TF, bool DF, typename VT2 >
+inline bool isSame( const Subvector<VT1,AF,TF,DF>& a, const Subvector<VT2,AF,TF,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1065,11 +1065,12 @@ inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,TF,DF>& b ) no
 // same range of the same vector. In case both subvectors represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT  // Type of the vector
-        , bool AF      // Alignment flag
-        , bool TF      // Transpose flag
-        , bool DF >    // Density flag
-inline bool isSame( const Subvector<VT,AF,TF,DF>& a, const Subvector<VT,AF,TF,DF>& b ) noexcept
+template< typename VT1    // Type of the vector of the left-hand side subvector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , typename VT2 >  // Type of the vector of the right-hand side subvector
+inline bool isSame( const Subvector<VT1,AF,TF,DF>& a, const Subvector<VT2,AF,TF,DF>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) &&
             ( a.offset() == b.offset() ) &&

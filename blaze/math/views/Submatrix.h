@@ -1054,8 +1054,8 @@ inline bool isSame( const Submatrix<MT,AF,SO,DF>& a, const Matrix<MT,SO>& b ) no
 template< typename MT, bool AF, bool SO, bool DF >
 inline bool isSame( const Matrix<MT,SO>& a, const Submatrix<MT,AF,SO,DF>& b ) noexcept;
 
-template< typename MT, bool AF, bool SO, bool DF >
-inline bool isSame( const Submatrix<MT,AF,SO,DF>& a, const Submatrix<MT,AF,SO,DF>& b ) noexcept;
+template< typename MT1, bool AF, bool SO, bool DF, typename MT2 >
+inline bool isSame( const Submatrix<MT1,AF,SO,DF>& a, const Submatrix<MT2,AF,SO,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1699,11 +1699,12 @@ inline bool isSame( const Matrix<MT,SO>& a, const Submatrix<MT,AF,SO,DF>& b ) no
 // same part of the same matrix. In case both submatrices represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT  // Type of the matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , bool DF >    // Density flag
-inline bool isSame( const Submatrix<MT,AF,SO,DF>& a, const Submatrix<MT,AF,SO,DF>& b ) noexcept
+template< typename MT1    // Type of the matrix of the left-hand side submatrix
+        , bool AF         // Alignment flag
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , typename MT2 >  // Type of the matrix of the right-hand side submatrix
+inline bool isSame( const Submatrix<MT1,AF,SO,DF>& a, const Submatrix<MT2,AF,SO,DF>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) &&
             ( a.row() == b.row() ) && ( a.column() == b.column() ) &&

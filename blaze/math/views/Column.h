@@ -743,12 +743,14 @@ inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept
 // regular columns. In case both columns represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline DisableIf_< IsSubmatrix<MT>, bool >
-   isSame_backend( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept
+template< typename MT1  // Type of the matrix of the left-hand side column
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side column
+        , typename MT2  // Type of the matrix of the right-hand side column
+        , bool SF2 >    // Symmetry flag of the right-hand side column
+inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
+   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.column() == b.column() ) );
 }
@@ -829,12 +831,14 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // being columns on submatrices. In case both columns represent the same observable state, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename MT  // Type of the submatrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline EnableIf_< IsSubmatrix<MT>, bool >
-   isSame_backend( const Column<MT,SO,DF,SF>& a, const Column<MT,SO,DF,SF>& b ) noexcept
+template< typename MT1  // Type of the submatrix of the left-hand side column
+        , bool SO       // Storage order
+        , bool DF       // Density flag
+        , bool SF1      // Symmetry flag of the left-hand side column
+        , typename MT2  // Type of the submatrix of the right-hand side column
+        , bool SF2 >    // Symmetry flag of the right-hand side column
+inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
+   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&

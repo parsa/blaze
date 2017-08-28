@@ -1327,11 +1327,12 @@ inline bool isIntact( const Band<MT,BIs...>& band ) noexcept
 // bands. In case both bands represent the same observable state, the function returns \a true,
 // otherwise it returns \a false.
 */
-template< typename MT          // Type of the matrix
+template< typename MT1         // Type of the matrix of the left-hand side band
         , ptrdiff_t... BIs1    // Band indices of the left-hand side band
+        , typename MT2         // Type of the matrix of the right-hand side band
         , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
-inline DisableIf_< IsSubmatrix<MT>, bool >
-   isSame_backend( const Band<MT,BIs1...>& a, const Band<MT,BIs2...>& b ) noexcept
+inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
+   isSame_backend( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.band() == b.band() ) );
 }
@@ -1410,11 +1411,12 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // being bands on submatrices. In case both bands represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT          // Type of the submatrix
+template< typename MT1         // Type of the submatrix of the left-hand side band
         , ptrdiff_t... BIs1    // Band indices of the left-hand side band
+        , typename MT2         // Type of the submatrix of the right-hand side band
         , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
-inline EnableIf_< IsSubmatrix<MT>, bool >
-   isSame_backend( const Band<MT,BIs1...>& a, const Band<MT,BIs2...>& b ) noexcept
+inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
+   isSame_backend( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
