@@ -130,8 +130,8 @@ class SparseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedVector<int,blaze::rowVector>  VT;   //!< Compressed row vector type
-   typedef blaze::Subvector<VT>                           SVT;  //!< Subvector type for compressed row vectors.
+   using VT  = blaze::CompressedVector<int,blaze::rowVector>;  //!< Compressed row vector type
+   using SVT = blaze::Subvector<VT>;                           //!< Subvector type for compressed row vectors.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
