@@ -135,11 +135,11 @@ class DenseSymmetricTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  DMT;  //!< Row-major dynamic matrix type.
-   typedef blaze::SymmetricMatrix<DMT>                MT;   //!< Row-major dynamic matrix type.
-   typedef MT::OppositeType                           OMT;  //!< Column-major dynamic matrix type.
-   typedef blaze::Column<MT>                          CT;   //!< Dense column type for row-major matrices.
-   typedef blaze::Column<OMT>                         OCT;  //!< Dense column type for column-major matrices.
+   using DMT = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type.
+   using MT  = blaze::SymmetricMatrix<DMT>;                //!< Row-major dynamic matrix type.
+   using OMT = MT::OppositeType;                           //!< Column-major dynamic matrix type.
+   using CT  = blaze::Column<MT>;                          //!< Dense column type for row-major matrices.
+   using OCT = blaze::Column<OMT>;                         //!< Dense column type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************

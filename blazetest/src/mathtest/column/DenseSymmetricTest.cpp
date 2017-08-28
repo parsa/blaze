@@ -7036,10 +7036,8 @@ void DenseSymmetricTest::testSubvector()
 
       initialize();
 
-      typedef blaze::Subvector<CT>  SubvectorType;
-
-      CT col1 = blaze::column( mat_, 1UL );
-      SubvectorType sv = subvector( col1, 0UL, 4UL );
+      CT   col1 = blaze::column( mat_, 1UL );
+      auto sv   = subvector( col1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
          std::ostringstream oss;
@@ -7072,10 +7070,8 @@ void DenseSymmetricTest::testSubvector()
 
       initialize();
 
-      typedef blaze::Subvector<OCT>  SubvectorType;
-
-      OCT col1 = blaze::column( tmat_, 1UL );
-      SubvectorType sv = subvector( col1, 0UL, 4UL );
+      OCT  col1 = blaze::column( tmat_, 1UL );
+      auto sv   = subvector( col1, 0UL, 4UL );
 
       if( sv[1] != 1 ) {
          std::ostringstream oss;
