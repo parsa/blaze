@@ -107,11 +107,13 @@ namespace blaze {
    \endcode
 
 // This view can be treated as any other dense or sparse matrix, i.e. it can be assigned to, it
-// can be copied from, and it can be used in arithmetic operations. The view can also be used on
-// both sides of an assignment: The submatrix can either be used as an alias to grant write access
-// to a specific submatrix of a matrix primitive on the left-hand side of an assignment or to grant
-// read-access to a specific submatrix of a matrix primitive or expression on the right-hand side
-// of an assignment. The following example demonstrates this in detail:
+// can be copied from, and it can be used in arithmetic operations. A submatrix created from a
+// row-major matrix will itself be a row-major matrix, a submatrix created from a column-major
+// matrix will be a column-major matrix. The view can also be used on both sides of an assignment:
+// The submatrix can either be used as an alias to grant write access to a specific submatrix
+// of a matrix primitive on the left-hand side of an assignment or to grant read-access to
+// a specific submatrix of a matrix primitive or expression on the right-hand side of an
+// assignment. The following example demonstrates this in detail:
 
    \code
    using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::columnMajor>;
@@ -134,6 +136,12 @@ namespace blaze {
    sm = submatrix( B + C, 0UL, 0UL, 8UL, 4UL );
    \endcode
 
+// The \c submatrix() function can be used on any dense or sparse matrix, including expressions,
+// as illustrated by the source code example. However, submatrices cannot be instantiated for
+// expression types, but only for matrix primitives, respectively, i.e. for matrix types that
+// offer write access.
+//
+//
 // \n \section submatrix_element_access Element access
 //
 // A submatrix can be used like any other dense or sparse matrix. For instance, the elements of

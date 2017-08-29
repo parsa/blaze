@@ -106,12 +106,14 @@ namespace blaze {
    blaze::Subvector<SparseVectorType> sv = subvector( x, 5UL, 7UL );
    \endcode
 
-// This view can be treated as any other dense or sparse vector, i.e. it can be assigned to, it
-// can be copied from, and it can be used in arithmetic operations. The view can also be used on
-// both sides of an assignment: The subvector can either be used as an alias to grant write access
-// to a specific subvector of a vector primitive on the left-hand side of an assignment or to grant
-// read-access to a specific subvector of a vector primitive or expression on the right-hand side
-// of an assignment. The following example demonstrates this in detail:
+// The view can be treated as any other dense or sparse vector, i.e. it can be assigned to, it
+// can be copied from, and it can be used in arithmetic operations. A subvector created from a
+// row vector can be used as any other row vector, a subvector created from a column vector can
+// be used as any other column vector. The view can also be used on both sides of an assignment:
+// The subvector can either be used as an alias to grant write access to a specific subvector of
+// a vector primitive on the left-hand side of an assignment or to grant read-access to a specific
+// subvector of a vector primitive or expression on the right-hand side of an assignment. The
+// following example demonstrates this in detail:
 
    \code
    using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
@@ -139,6 +141,12 @@ namespace blaze {
    x = subvector( y + row( A, 1UL ), 2UL, 5UL )
    \endcode
 
+// The \c subvector() function can be used on any dense or sparse vector, including expressions,
+// as demonstrated in the example. Note however that a blaze::Subvector can only be instantiated
+// with a dense or sparse vector primitive, i.e. with types that can be written, and not with an
+// expression type.
+//
+//
 // \n \section subvector_element_access Element access
 //
 // A subvector can be used like any other dense or sparse vector. For instance, the elements of
@@ -254,10 +262,11 @@ namespace blaze {
 // \n \section subvector_common_operations Common Operations
 //
 // A subvector view can be used like any other dense or sparse vector. For instance, the current
-// number of subvector elements can be obtained via the \c size() function, the current capacity
-// via the \c capacity() function, and the number of non-zero elements via the \c nonZeros()
-// function. However, since subvector are views on a specific subvector of a vector, several
-// operations are not possible, such as resizing and swapping:
+// number of elements can be obtained via the \c size() function, the current capacity via the
+// \c capacity() function, and the number of non-zero elements via the \c nonZeros() function.
+// However, since subvectors are references to a specific range of a vector, several operations
+// are not possible, such as resizing and swapping. The following example shows this by means of
+// a dense subvector view:
 
    \code
    using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;
