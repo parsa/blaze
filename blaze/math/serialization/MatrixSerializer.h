@@ -684,7 +684,7 @@ void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<
 {
    using ET = ElementType_<MT>;
 
-   ET value = ET();
+   ET value{};
 
    for( size_t i=0UL; i<rows_; ++i ) {
       size_t j( 0UL );
@@ -750,7 +750,7 @@ DisableIf_< IsNumeric< ElementType_<MT> > >
 {
    using ET = ElementType_<MT>;
 
-   ET value = ET();
+   ET value{};
 
    const size_t dim1( ( SO == rowMajor )?( rows_ ):( columns_ ) );
    const size_t dim2( ( SO != rowMajor )?( rows_ ):( columns_ ) );
@@ -823,7 +823,7 @@ void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatr
 {
    using ET = ElementType_<MT>;
 
-   ET value = ET();
+   ET value{};
 
    for( size_t j=0UL; j<columns_; ++j ) {
       size_t i( 0UL );
@@ -889,7 +889,7 @@ DisableIf_< IsNumeric< ElementType_<MT> > >
 {
    using ET = ElementType_<MT>;
 
-   ET value = ET();
+   ET value{};
 
    const size_t dim1( ( SO == rowMajor )?( rows_ ):( columns_ ) );
    const size_t dim2( ( SO != rowMajor )?( rows_ ):( columns_ ) );
@@ -934,7 +934,7 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, DenseMatrix
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );
-   ET       value = ET();
+   ET       value {};
 
    for( size_t i=0UL; i<rows_; ++i ) {
       archive >> number;
@@ -972,7 +972,7 @@ void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatri
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );
-   ET       value = ET();
+   ET       value {};
 
    for( size_t i=0UL; i<rows_; ++i )
    {
@@ -1042,7 +1042,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, DenseMat
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );
-   ET       value = ET();
+   ET       value {};
 
    for( size_t j=0UL; j<columns_; ++j ) {
       archive >> number;
@@ -1107,7 +1107,7 @@ void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMa
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );
-   ET       value = ET();
+   ET       value {};
 
    for( size_t j=0UL; j<columns_; ++j )
    {

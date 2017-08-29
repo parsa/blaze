@@ -1660,8 +1660,8 @@ class TDMatDMatMultExpr
                                   ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
                                   :( K ) );
 
-               ElementType value1 = ElementType();
-               ElementType value2 = ElementType();
+               ElementType value1{};
+               ElementType value2{};
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   value1 += A(i    ,k) * B(k,j);
@@ -1680,7 +1680,7 @@ class TDMatDMatMultExpr
                                        :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                     :( IsLower<MT5>::value ? j : 0UL ) );
 
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t k=kbegin; k<K; ++k ) {
                   value += A(i,k) * B(k,j);
@@ -2341,8 +2341,8 @@ class TDMatDMatMultExpr
                                   ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
                                   :( K ) );
 
-               ElementType value1 = ElementType();
-               ElementType value2 = ElementType();
+               ElementType value1{};
+               ElementType value2{};
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   value1 += A(i,k) * B(k,j    );
@@ -2361,7 +2361,7 @@ class TDMatDMatMultExpr
                                        :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
                                     :( IsUpper<MT4>::value ? i : 0UL ) );
 
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t k=kbegin; k<K; ++k ) {
                   value += A(i,k) * B(k,j);
@@ -8396,8 +8396,8 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                   ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
                                   :( K ) );
 
-               ElementType value1 = ElementType();
-               ElementType value2 = ElementType();
+               ElementType value1{};
+               ElementType value2{};
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   value1 += A(i    ,k) * B(k,j);
@@ -8416,7 +8416,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                        :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                     :( IsLower<MT5>::value ? j : 0UL ) );
 
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t k=kbegin; k<K; ++k ) {
                   value += A(i,k) * B(k,j);
@@ -9079,8 +9079,8 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                   ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
                                   :( K ) );
 
-               ElementType value1 = ElementType();
-               ElementType value2 = ElementType();
+               ElementType value1{};
+               ElementType value2{};
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   value1 += A(i,k) * B(k,j    );
@@ -9099,7 +9099,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                        :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
                                     :( IsUpper<MT4>::value ? i : 0UL ) );
 
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t k=kbegin; k<K; ++k ) {
                   value += A(i,k) * B(k,j);
@@ -10256,8 +10256,8 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
                                :( K ) );
 
-            ElementType value1 = ElementType();
-            ElementType value2 = ElementType();
+            ElementType value1{};
+            ElementType value2{};
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 += A(i    ,k) * B(k,j);
@@ -10276,7 +10276,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                     :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
-            ElementType value = ElementType();
+            ElementType value{};
 
             for( size_t k=kbegin; k<K; ++k ) {
                value += A(i,k) * B(k,j);
@@ -10907,8 +10907,8 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
                                :( K ) );
 
-            ElementType value1 = ElementType();
-            ElementType value2 = ElementType();
+            ElementType value1{};
+            ElementType value2{};
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 += A(i,k) * B(k,j    );
@@ -10927,7 +10927,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                     :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
                                  :( IsUpper<MT4>::value ? i : 0UL ) );
 
-            ElementType value = ElementType();
+            ElementType value{};
 
             for( size_t k=kbegin; k<K; ++k ) {
                value += A(i,k) * B(k,j);
@@ -12023,8 +12023,8 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                ?( IsStrictlyLower<MT4>::value ? i+1UL : i+2UL )
                                :( K ) );
 
-            ElementType value1 = ElementType();
-            ElementType value2 = ElementType();
+            ElementType value1{};
+            ElementType value2{};
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 += A(i    ,k) * B(k,j);
@@ -12043,7 +12043,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                     :( IsStrictlyUpper<MT4>::value ? i+1UL : i ) )
                                  :( IsLower<MT5>::value ? j : 0UL ) );
 
-            ElementType value = ElementType();
+            ElementType value{};
 
             for( size_t k=kbegin; k<K; ++k ) {
                value += A(i,k) * B(k,j);
@@ -12674,8 +12674,8 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
                                :( K ) );
 
-            ElementType value1 = ElementType();
-            ElementType value2 = ElementType();
+            ElementType value1{};
+            ElementType value2{};
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 += A(i,k) * B(k,j    );
@@ -12694,7 +12694,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                                     :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
                                  :( IsUpper<MT4>::value ? i : 0UL ) );
 
-            ElementType value = ElementType();
+            ElementType value{};
 
             for( size_t k=kbegin; k<K; ++k ) {
                value += A(i,k) * B(k,j);

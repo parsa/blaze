@@ -1614,7 +1614,7 @@ const ElementType_<MT> min( const SparseMatrix<MT,SO>& sm )
       return ET();
    }
 
-   ET minimum = ET();
+   ET minimum{};
    if( nonzeros == A.rows() * A.columns() ) {
       minimum = A.begin( 0UL )->value();
    }
@@ -1663,7 +1663,7 @@ const ElementType_<MT> max( const SparseMatrix<MT,SO>& sm )
       return ET();
    }
 
-   ET maximum = ET();
+   ET maximum{};
    if( nonzeros == A.rows() * A.columns() ) {
       maximum = A.begin( 0UL )->value();
    }

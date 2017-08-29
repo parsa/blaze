@@ -124,7 +124,7 @@ inline decltype(auto)
    ConstIterator element( right.begin() );
    ConstIterator end    ( right.end()   );
 
-   MultType sp = MultType();
+   MultType sp{};
 
    if( element != end ) {
       sp = left[ element->index() ] * element->value();

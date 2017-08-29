@@ -713,7 +713,7 @@ class TDMatDVecMultExpr
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         ElementType value = ElementType();
+         ElementType value{};
 
          for( size_t j=jbegin; j<jend; ++j ) {
             value += A(i,j) * x[j];
@@ -885,7 +885,7 @@ class TDMatDVecMultExpr
 
             for( ; remainder && i<iend; ++i )
             {
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t j=jj; j<jend; ++j ) {
                   value += A(i,j) * x[j];
@@ -1309,7 +1309,7 @@ class TDMatDVecMultExpr
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         ElementType value = ElementType();
+         ElementType value{};
 
          for( size_t j=jbegin; j<jend; ++j ) {
             value += A(i,j) * x[j];
@@ -1479,7 +1479,7 @@ class TDMatDVecMultExpr
 
             for( ; remainder && i<iend; ++i )
             {
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t j=jj; j<jend; ++j ) {
                   value += A(i,j) * x[j];
@@ -1879,7 +1879,7 @@ class TDMatDVecMultExpr
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         ElementType value = ElementType();
+         ElementType value{};
 
          for( size_t j=jbegin; j<jend; ++j ) {
             value += A(i,j) * x[j];
@@ -2050,7 +2050,7 @@ class TDMatDVecMultExpr
 
             for( ; remainder && i<iend; ++i )
             {
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t j=jj; j<jend; ++j ) {
                   value += A(i,j) * x[j];
@@ -3055,7 +3055,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         ElementType value = ElementType();
+         ElementType value{};
 
          for( size_t j=jbegin; j<jend; ++j ) {
             value += A(i,j) * x[j];
@@ -3229,7 +3229,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
             for( ; remainder && i<iend; ++i )
             {
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t j=jj; j<jend; ++j ) {
                   value += A(i,j) * x[j];
@@ -3612,7 +3612,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         ElementType value = ElementType();
+         ElementType value{};
 
          for( size_t j=jbegin; j<jend; ++j ) {
             value += A(i,j) * x[j];
@@ -3785,7 +3785,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
             for( ; remainder && i<iend; ++i )
             {
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t j=jj; j<jend; ++j ) {
                   value += A(i,j) * x[j];
@@ -4145,7 +4145,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
                             :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
-         ElementType value = ElementType();
+         ElementType value{};
 
          for( size_t j=jbegin; j<jend; ++j ) {
             value += A(i,j) * x[j];
@@ -4318,7 +4318,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
 
             for( ; remainder && i<iend; ++i )
             {
-               ElementType value = ElementType();
+               ElementType value{};
 
                for( size_t j=jj; j<jend; ++j ) {
                   value += A(i,j) * x[j];

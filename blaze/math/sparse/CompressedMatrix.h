@@ -539,7 +539,7 @@ class CompressedMatrix
 //=================================================================================================
 
 template< typename Type, bool SO >
-const Type CompressedMatrix<Type,SO>::zero_ = Type();
+const Type CompressedMatrix<Type,SO>::zero_{};
 
 
 
@@ -3290,7 +3290,7 @@ class CompressedMatrix<Type,true>
 //=================================================================================================
 
 template< typename Type >
-const Type CompressedMatrix<Type,true>::zero_ = Type();
+const Type CompressedMatrix<Type,true>::zero_{};
 
 
 

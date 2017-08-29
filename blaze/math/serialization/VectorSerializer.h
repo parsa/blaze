@@ -598,7 +598,7 @@ typename DisableIfTrue< VT::simdEnabled >::Type
    using ET = ElementType_<VT>;
 
    size_t i( 0UL );
-   ET value = ET();
+   ET value{};
 
    while( ( i != size_ ) && ( archive >> value ) ) {
       (~vec)[i] = value;
@@ -660,7 +660,7 @@ void VectorSerializer::deserializeDenseVector( Archive& archive, SparseVector<VT
    using ET = ElementType_<VT>;
 
    size_t i( 0UL );
-   ET value = ET();
+   ET value{};
 
    while( ( i != size_ ) && ( archive >> value ) ) {
       (~vec)[i] = value;
@@ -693,9 +693,9 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, DenseVector<VT
 {
    using ET = ElementType_<VT>;
 
-   size_t i( 0UL );
+   size_t i    ( 0UL );
    size_t index( 0UL );
-   ET     value = ET();
+   ET     value{};
 
    while( ( i != number_ ) && ( archive >> index >> value ) ) {
       (~vec)[index] = value;
@@ -728,9 +728,9 @@ void VectorSerializer::deserializeSparseVector( Archive& archive, SparseVector<V
 {
    using ET = ElementType_<VT>;
 
-   size_t i( 0UL );
+   size_t i    ( 0UL );
    size_t index( 0UL );
-   ET     value = ET();
+   ET     value{};
 
    while( ( i != number_ ) && ( archive >> index >> value ) ) {
       (~vec).append( index, value, false );

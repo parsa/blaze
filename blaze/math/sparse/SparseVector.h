@@ -420,7 +420,7 @@ const ElementType_<VT> min( const SparseVector<VT,TF>& sv )
       return minimum;
    }
    else {
-      ET minimum = ET();
+      ET minimum{};
       for( ; element!=end; ++element )
          minimum = min( minimum, element->value() );
       return minimum;
@@ -477,7 +477,7 @@ const ElementType_<VT> max( const SparseVector<VT,TF>& sv )
       return maximum;
    }
    else {
-      ET maximum = ET();
+      ET maximum{};
       for( ; element!=end; ++element )
          maximum = max( maximum, element->value() );
       return maximum;

@@ -503,7 +503,7 @@ class CompressedVector
 
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-const Type CompressedVector<Type,TF>::zero_ = Type();
+const Type CompressedVector<Type,TF>::zero_{};
 
 
 
