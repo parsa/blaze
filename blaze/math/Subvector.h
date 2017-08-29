@@ -41,12 +41,16 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/constraints/Subvector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -73,10 +77,11 @@ class Rand< Subvector<VT,AF,TF,true> >
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( Subvector<VT,AF,TF,true>& subvector ) const;
+   template< typename SVT >
+   inline void randomize( SVT&& subvector ) const;
 
-   template< typename Arg >
-   inline void randomize( Subvector<VT,AF,TF,true>& subvector, const Arg& min, const Arg& max ) const;
+   template< typename SVT, typename Arg >
+   inline void randomize( SVT&& subvector, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -91,12 +96,18 @@ class Rand< Subvector<VT,AF,TF,true> >
 // \param subvector The subvector to be randomized.
 // \return void
 */
-template< typename VT  // Type of the dense vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline void Rand< Subvector<VT,AF,TF,true> >::randomize( Subvector<VT,AF,TF,true>& subvector ) const
+template< typename VT     // Type of the dense vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename SVT >  // Type of the subvector
+inline void Rand< Subvector<VT,AF,TF,true> >::randomize( SVT&& subvector ) const
 {
    using blaze::randomize;
+
+   using SubvectorType = RemoveReference_<SVT>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubvectorType );
 
    for( size_t i=0UL; i<subvector.size(); ++i ) {
       randomize( subvector[i] );
@@ -118,11 +129,16 @@ inline void Rand< Subvector<VT,AF,TF,true> >::randomize( Subvector<VT,AF,TF,true
 template< typename VT     // Type of the dense vector
         , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
-template< typename Arg >  // Min/max argument type
-inline void Rand< Subvector<VT,AF,TF,true> >::randomize( Subvector<VT,AF,TF,true>& subvector,
-                                                         const Arg& min, const Arg& max ) const
+template< typename SVT    // Type of the subvector
+        , typename Arg >  // Min/max argument type
+inline void Rand< Subvector<VT,AF,TF,true> >::randomize( SVT&& subvector, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
+
+   using SubvectorType = RemoveReference_<SVT>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubvectorType );
 
    for( size_t i=0UL; i<subvector.size(); ++i ) {
       randomize( subvector[i], min, max );
@@ -156,14 +172,17 @@ class Rand< Subvector<VT,AF,TF,false> >
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( Subvector<VT,AF,TF,false>& subvector ) const;
-   inline void randomize( Subvector<VT,AF,TF,false>& subvector, size_t nonzeros ) const;
+   template< typename SVT >
+   inline void randomize( SVT&& subvector ) const;
 
-   template< typename Arg >
-   inline void randomize( Subvector<VT,AF,TF,false>& subvector, const Arg& min, const Arg& max ) const;
+   template< typename SVT >
+   inline void randomize( SVT&& subvector, size_t nonzeros ) const;
 
-   template< typename Arg >
-   inline void randomize( Subvector<VT,AF,TF,false>& subvector, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   template< typename SVT, typename Arg >
+   inline void randomize( SVT&& subvector, const Arg& min, const Arg& max ) const;
+
+   template< typename SVT, typename Arg >
+   inline void randomize( SVT&& subvector, size_t nonzeros, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -178,12 +197,17 @@ class Rand< Subvector<VT,AF,TF,false> >
 // \param subvector The subvector to be randomized.
 // \return void
 */
-template< typename VT  // Type of the sparse vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector ) const
+template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename SVT >  // Type of the subvector
+inline void Rand< Subvector<VT,AF,TF,false> >::randomize( SVT&& subvector ) const
 {
-   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
+   using SubvectorType = RemoveReference_<SVT>;
+   using ElementType   = ElementType_<SubvectorType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );
 
    const size_t size( subvector.size() );
 
@@ -211,12 +235,17 @@ inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,fal
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename VT  // Type of the sparse vector
-        , bool AF      // Alignment flag
-        , bool TF >    // Transpose flag
-inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector, size_t nonzeros ) const
+template< typename VT     // Type of the sparse vector
+        , bool AF         // Alignment flag
+        , bool TF >       // Transpose flag
+template< typename SVT >  // Type of the subvector
+inline void Rand< Subvector<VT,AF,TF,false> >::randomize( SVT&& subvector, size_t nonzeros ) const
 {
-   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
+   using SubvectorType = RemoveReference_<SVT>;
+   using ElementType   = ElementType_<SubvectorType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );
 
    const size_t size( subvector.size() );
 
@@ -249,11 +278,15 @@ inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,fal
 template< typename VT     // Type of the sparse vector
         , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
-template< typename Arg >  // Min/max argument type
-inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector,
-                                                          const Arg& min, const Arg& max ) const
+template< typename SVT    // Type of the subvector
+        , typename Arg >  // Min/max argument type
+inline void Rand< Subvector<VT,AF,TF,false> >::randomize( SVT&& subvector, const Arg& min, const Arg& max ) const
 {
-   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
+   using SubvectorType = RemoveReference_<SVT>;
+   using ElementType   = ElementType_<SubvectorType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );
 
    const size_t size( subvector.size() );
 
@@ -286,11 +319,16 @@ inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,fal
 template< typename VT     // Type of the sparse vector
         , bool AF         // Alignment flag
         , bool TF >       // Transpose flag
-template< typename Arg >  // Min/max argument type
-inline void Rand< Subvector<VT,AF,TF,false> >::randomize( Subvector<VT,AF,TF,false>& subvector,
-                                                          size_t nonzeros, const Arg& min, const Arg& max ) const
+template< typename SVT    // Type of the subvector
+        , typename Arg >  // Min/max argument type
+inline void Rand< Subvector<VT,AF,TF,false> >::randomize( SVT&& subvector, size_t nonzeros,
+                                                          const Arg& min, const Arg& max ) const
 {
-   using ElementType = ElementType_< Subvector<VT,AF,TF,false> >;
+   using SubvectorType = RemoveReference_<SVT>;
+   using ElementType   = ElementType_<SubvectorType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );
 
    const size_t size( subvector.size() );
 
