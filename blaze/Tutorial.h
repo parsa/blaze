@@ -705,20 +705,20 @@
    using blaze::unpadded;
 
    // Definition of an unmanaged custom column vector for unaligned, unpadded integer arrays
-   typedef CustomVector<int,unaligned,unpadded,columnVector>  UnalignedUnpadded;
+   using UnalignedUnpadded = CustomVector<int,unaligned,unpadded,columnVector>;
    std::vector<int> vec( 7UL );
    UnalignedUnpadded a( &vec[0], 7UL );
 
    // Definition of a managed custom column vector for unaligned but padded 'float' arrays
-   typedef CustomVector<float,unaligned,padded,columnVector>  UnalignedPadded;
+   using UnalignedPadded = CustomVector<float,unaligned,padded,columnVector>;
    UnalignedPadded b( new float[16], 9UL, 16UL, blaze::ArrayDelete() );
 
    // Definition of a managed custom row vector for aligned, unpadded 'double' arrays
-   typedef CustomVector<double,aligned,unpadded,rowVector>  AlignedUnpadded;
+   using AlignedUnpadded = CustomVector<double,aligned,unpadded,rowVector>;
    AlignedUnpadded c( blaze::allocate<double>( 7UL ), 7UL, blaze::Deallocate() );
 
    // Definition of a managed custom row vector for aligned, padded 'complex<double>' arrays
-   typedef CustomVector<complex<double>,aligned,padded,columnVector>  AlignedPadded;
+   using AlignedPadded = CustomVector<complex<double>,aligned,padded,columnVector>;
    AlignedPadded d( allocate< complex<double> >( 8UL ), 5UL, 8UL, blaze::Deallocate() );
    \endcode
 
@@ -772,7 +772,7 @@
    using blaze::unaligned;
    using blaze::unpadded;
 
-   typedef CustomVector<int,unaligned,unpadded>  CustomType;
+   using CustomType = CustomVector<int,unaligned,unpadded>;
 
    std::vector<int> vec( 5UL, 10 );  // Vector of 5 integers of the value 10
    CustomType a( &vec[0], 5UL );     // Represent the std::vector as Blaze dense vector
@@ -831,7 +831,7 @@
    using blaze::aligned;
    using blaze::padded;
 
-   typedef CustomVector<double,aligned,padded>  CustomType;
+   using CustomType = CustomVector<double,aligned,padded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 4UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
@@ -857,7 +857,7 @@
    using blaze::aligned;
    using blaze::unpadded;
 
-   typedef CustomVector<double,aligned,unpadded>  CustomType;
+   using CustomType = CustomVector<double,aligned,unpadded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 3UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 3UL ) );
@@ -1547,8 +1547,8 @@
 // on the vector:
 
    \code
-   typedef blaze::DynamicVector<int,rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>         SubvectorType;
+   using VectorType    = blaze::DynamicVector<int,rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType v1( 10UL );                         // Creating a dynamic vector of size 10
    SubvectorType sv = subvector( v1, 2UL, 5UL );  // Creating a view on the range [2..6]
@@ -1739,7 +1739,7 @@
    \code
    using blaze::StaticVector;
 
-   typedef std::complex<double>  cplx;
+   using cplx = std::complex<double>;
 
    // Creating the vector
    //    ( (-2,-1) )
@@ -1770,7 +1770,7 @@
    \code
    using blaze::StaticVector;
 
-   typedef std::complex<double>  cplx;
+   using cplx = std::complex<double>;
 
    // Creating the vector
    //    ( (-2,-1) )
@@ -1792,7 +1792,7 @@
    \code
    using blaze::StaticVector;
 
-   typedef std::complex<double>  cplx;
+   using cplx = std::complex<double>;
 
    // Creating the vector
    //    ( (-2,-1) )
@@ -2236,20 +2236,20 @@
    using blaze::unpadded;
 
    // Definition of an unmanaged 3x4 custom matrix for unaligned, unpadded integer arrays
-   typedef CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+   using UnalignedUnpadded = CustomMatrix<int,unaligned,unpadded,rowMajor>;
    std::vector<int> vec( 12UL )
    UnalignedUnpadded A( &vec[0], 3UL, 4UL );
 
    // Definition of a managed 5x6 custom matrix for unaligned but padded 'float' arrays
-   typedef CustomMatrix<float,unaligned,padded,columnMajor>  UnalignedPadded;
+   using UnalignedPadded = CustomMatrix<float,unaligned,padded,columnMajor>;
    UnalignedPadded B( new float[40], 5UL, 6UL, 8UL, blaze::ArrayDelete() );
 
    // Definition of a managed 12x13 custom matrix for aligned, unpadded 'double' arrays
-   typedef CustomMatrix<double,aligned,unpadded,rowMajor>  AlignedUnpadded;
+   using AlignedUnpadded = CustomMatrix<double,aligned,unpadded,rowMajor>;
    AlignedUnpadded C( blaze::allocate<double>( 192UL ), 12UL, 13UL, 16UL, blaze::Deallocate );
 
    // Definition of a 7x14 custom matrix for aligned, padded 'complex<double>' arrays
-   typedef CustomMatrix<complex<double>,aligned,padded,columnMajor>  AlignedPadded;
+   using AlignedPadded = CustomMatrix<complex<double>,aligned,padded,columnMajor>;
    AlignedPadded D( blaze::allocate<double>( 112UL ), 7UL, 14UL, 16UL, blaze::Deallocate() );
    \endcode
 
@@ -2303,7 +2303,7 @@
    using blaze::unaligned;
    using blaze::unpadded;
 
-   typedef CustomMatrix<int,unaligned,unpadded>  CustomType;
+   using CustomType = CustomMatrix<int,unaligned,unpadded>;
 
    std::vector<int> vec( 6UL, 10 );    // Vector of 6 integers of the value 10
    CustomType A( &vec[0], 2UL, 3UL );  // Represent the std::vector as Blaze dense matrix
@@ -2369,7 +2369,7 @@
    using blaze::aligned;
    using blaze::padded;
 
-   typedef CustomMatrix<double,aligned,padded>  CustomType;
+   using CustomType = CustomMatrix<double,aligned,padded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 12UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 12UL ) );
@@ -2395,7 +2395,7 @@
    using blaze::aligned;
    using blaze::unpadded;
 
-   typedef CustomMatrix<double,aligned,unpadded>  CustomType;
+   using CustomType = CustomMatrix<double,aligned,unpadded>;
 
    std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 9UL ) );
    std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 9UL ) );
@@ -3369,8 +3369,8 @@
 // on the matrix:
 
    \code
-   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>              RowType;
+   using MatrixType = blaze::DynamicMatrix<int,rowMajor>;
+   using RowType    = blaze::Row<MatrixType>;
 
    MatrixType M1( 10UL, 20UL );    // Creating a 10x20 matrix
    RowType row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
@@ -3604,7 +3604,7 @@
    \code
    using blaze::StaticMatrix;
 
-   typedef std::complex<double>  cplx;
+   using cplx = std::complex<double>;
 
    // Creating the matrix
    //    ( (1,0)  (-2,-1) )
@@ -3636,7 +3636,7 @@
    \code
    using blaze::StaticMatrix;
 
-   typedef std::complex<double>  cplx;
+   using cplx = std::complex<double>;
 
    // Creating the matrix
    //    ( (1,0)  (-2,-1) )
@@ -3659,7 +3659,7 @@
    \code
    using blaze::StaticMatrix;
 
-   typedef std::complex<double>  cplx;
+   using cplx = std::complex<double>;
 
    // Creating the matrix
    //    ( (1,0)  (-2,-1) )
@@ -4940,7 +4940,7 @@
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef SymmetricMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomSymmetric;
+   using CustomSymmetric = SymmetricMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 symmetric custom matrix from a properly initialized array
    double array[9] = { 1.0, 2.0, 4.0,
@@ -5203,7 +5203,7 @@
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef SymmetricMatrix< DynamicMatrix<double,columnMajor> >  DynamicSymmetric;
+   using DynamicSymmetric = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
 
    DynamicSymmetric A( 10UL );
    Row<DynamicSymmetric> row5 = row( A, 5UL );
@@ -5435,7 +5435,7 @@
    using blaze::HermitianMatrix;
    using blaze::rowMajor;
 
-	typedef std::complex<double>  cplx;
+	using cplx = std::complex<double>;
 
    // Default constructed, row-major 3x3 Hermitian compressed matrix
    HermitianMatrix< CompressedMatrix<cplx,rowMajor> > A( 3 );
@@ -5502,7 +5502,7 @@
    using blaze::HermitianMatrix;
    using blaze::rowMajor;
 
-	typedef std::complex<double>  cplx;
+	using cplx = std::complex<double>;
 
    // Setup of the Hermitian matrix
    //
@@ -5533,7 +5533,7 @@
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef HermitianMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomHermitian;
+   using CustomHermitian = HermitianMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 Hermitian custom matrix from a properly initialized array
    double array[9] = { 1.0, 2.0, 4.0,
@@ -5554,7 +5554,7 @@
    using blaze::DynamicMatrix;
    using blaze::HermtianMatrix;
 
-	typedef std::complex<double>  cplx;
+	using cplx = std::complex<double>;
 
    // Setup of the Hermitian matrix
    //
@@ -5662,7 +5662,7 @@
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-	typedef complex<float>  cplx;
+	using cplx = complex<float>;
 
    DynamicMatrix<cplx,rowMajor> A( 3, 3 );
    CompressedMatrix<cplx,rowMajor> B( 3, 3 );
@@ -5778,7 +5778,7 @@
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef HermitianMatrix< DynamicMatrix<double,columnMajor> >  DynamicHermitian;
+   using DynamicHermitian = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
 
    DynamicHermitian A( 10UL );  // Both Hermitian and symmetric
    Row<DynamicHermitian> row5 = row( A, 5UL );
@@ -6344,7 +6344,7 @@
    using blaze::LowerMatrix;
    using blaze::rowMajor;
 
-   typedef LowerMatrix< CompressedMatrix<double,rowMajor> >  CompressedLower;
+   using CompressedLower = LowerMatrix< CompressedMatrix<double,rowMajor> >;
 
    // Default constructed, row-major 3x3 lower compressed matrix
    CompressedLower A( 3 );
@@ -6400,7 +6400,7 @@
    using blaze::unpadded;
    using blaze::rowMajor;
 
-   typedef LowerMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >  CustomLower;
+   using CustomLower = LowerMatrix< CustomMatrix<double,unaligned,unpadded,rowMajor> >;
 
    // Creating a 3x3 lower custom matrix from a properly initialized array
    double array[9] = { 1.0, 0.0, 0.0,
@@ -6565,10 +6565,10 @@
 
    \code
    // Recommendation 1: use dense matrices for small diagonal matrices
-   typedef blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >  SmallDiagonalMatrix;
+   using SmallDiagonalMatrix = blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >;
 
    // Recommendation 2: use sparse matrices for large diagonal matrices
-   typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<float> >  LargeDiagonalMatrix;
+   using LargeDiagonalMatrix = blaze::DiagonalMatrix< blaze::CompressedMatrix<float> >;
    \endcode
 
 // \n \subsection adaptors_triangular_matrices_scaling Unitriangular Matrices Cannot Be Scaled!
@@ -6975,7 +6975,7 @@
 // The elements of a subvector can be directly accessed via the subscript operator:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>  VectorType;
+   using VectorType = blaze::DynamicVector<double,blaze::rowVector>;
    VectorType v;
    // ... Resizing and initialization
 
@@ -6999,8 +6999,8 @@
 // of constant subvectors a ConstIterator is returned:
 
    \code
-   typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                SubvectorType;
+   using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType v( 256UL );
    // ... Resizing and initialization
@@ -7020,8 +7020,8 @@
    \endcode
 
    \code
-   typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                   SubvectorType;
+   using VectorType    = blaze::CompressedVector<int,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType v( 256UL );
    // ... Resizing and initialization
@@ -7051,10 +7051,10 @@
 // The following example demonstrates all options:
 
    \code
-   typedef blaze::CompressedVector<double,blaze::rowVector>  VectorType;
+   using VectorType = blaze::CompressedVector<double,blaze::rowVector>;
    VectorType v( 256UL );  // Non-initialized vector of size 256
 
-   typedef blaze::Subvector<VectorType>  SubvectorType;
+   using SubvectorType = blaze::Subvector<VectorType>;
    SubvectorType sv( subvector( v, 10UL, 60UL ) );  // View on the range [10..69] of v
 
    // The subscript operator provides access to all possible elements of the sparse subvector,
@@ -7094,8 +7094,8 @@
 // example shows this by means of a dense subvector view:
 
    \code
-   typedef blaze::DynamicVector<int,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                SubvectorType;
+   using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType v( 42UL );
    // ... Resizing and initialization
@@ -7123,17 +7123,17 @@
 // fitting element types:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
    DenseVectorType d1, d2, d3;
    SparseVectorType s1, s2;
 
    // ... Resizing and initialization
 
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
    DenseMatrixType A;
 
-   typedef blaze::Subvector<DenseVectorType>  SubvectorType;
+   using SubvectorType = blaze::Subvector<DenseVectorType>;
    SubvectorType dsv( subvector( d1, 0UL, 10UL ) );  // View on the range [0..9] of vector d1
 
    dsv = d2;                          // Dense vector initialization of the range [0..9]
@@ -7168,7 +7168,7 @@
    \code
    using blaze::unaligned;
 
-   typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
+   using DenseVectorType = blaze::DynamicVector<double,blaze::rowVector>;
 
    DenseVectorType x;
    // ... Resizing and initialization
@@ -7211,8 +7211,8 @@
    using blaze::aligned;
    using blaze::columnVector;
 
-   typedef blaze::DynamicVector<double,columnVector>  VectorType;
-   typedef blaze::Subvector<VectorType,aligned>  SubvectorType;
+   using VectorType    = blaze::DynamicVector<double,columnVector>;
+   using SubvectorType = blaze::Subvector<VectorType,aligned>;
 
    VectorType d( 17UL );
    // ... Resizing and initialization
@@ -7238,7 +7238,7 @@
    \code
    using blaze::aligned;
 
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
 
    SparseVectorType x;
    // ... Resizing and initialization
@@ -7256,8 +7256,8 @@
 // is just another view on the underlying vector:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>  VectorType;
-   typedef blaze::Subvector<VectorType>                   SubvectorType;
+   using VectorType    = blaze::DynamicVector<double,blaze::rowVector>;
+   using SubvectorType = blaze::Subvector<VectorType>;
 
    VectorType d1;
 
@@ -7350,8 +7350,8 @@
 // assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>     DenseMatrixType;
-   typedef blaze::CompressedVector<int,blaze::columnMajor>  SparseMatrixType;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SparseMatrixType = blaze::CompressedVector<int,blaze::columnMajor>;
 
    DenseMatrixType  D1, D2;
    SparseMatrixType S1, S2;
@@ -7382,7 +7382,7 @@
 // The elements of a submatrix can be directly accessed with the function call operator:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
+   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
    MatrixType A;
    // ... Resizing and initialization
 
@@ -7400,8 +7400,8 @@
 // ConstIterator is returned:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A( 256UL, 512UL );
    // ... Resizing and initialization
@@ -7423,8 +7423,8 @@
    \endcode
 
    \code
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>                  SubmatrixType;
+   using MatrixType    = blaze::CompressedMatrix<int,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A( 256UL, 512UL );
    // ... Resizing and initialization
@@ -7456,10 +7456,10 @@
 // The following example demonstrates all options:
 
    \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
+   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
    MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
 
-   typedef blaze::Submatrix<MatrixType>  SubmatrixType;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
    SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
@@ -7500,8 +7500,8 @@
 // such as resizing and swapping:
 
    \code
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>               SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType A;
    // ... Resizing and initialization
@@ -7530,17 +7530,17 @@
 // fitting element types:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>     DenseMatrixType;
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
    DenseMatrixType D1, D2, D3;
    SparseMatrixType S1, S2;
 
-   typedef blaze::CompressedVector<double,blaze::columnVector>  SparseVectorType;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::columnVector>;
    SparseVectorType a, b;
 
    // ... Resizing and initialization
 
-   typedef Submatrix<DenseMatrixType>  SubmatrixType;
+   using SubmatrixType = Submatrix<DenseMatrixType>;
    SubmatrixType sm = submatrix( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix D1
                                                             // starting from row 0 and column 0
 
@@ -7575,7 +7575,7 @@
    \code
    using blaze::unaligned;
 
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrixType;
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
 
    DenseMatrixType A;
    // ... Resizing and initialization
@@ -7618,8 +7618,8 @@
    using blaze::aligned;
    using blaze::rowMajor;
 
-   typedef blaze::DynamicMatrix<double,rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType,aligned>   SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<double,rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType,aligned>;
 
    MatrixType D( 13UL, 17UL );
    // ... Resizing and initialization
@@ -7645,7 +7645,7 @@
    \code
    using blaze::aligned;
 
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  SparseMatrixType;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
 
    SparseMatrixType A;
    // ... Resizing and initialization
@@ -7663,8 +7663,8 @@
 // underlying matrix:
 
    \code
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
-   typedef blaze::Submatrix<MatrixType>                  SubmatrixType;
+   using MatrixType    = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SubmatrixType = blaze::Submatrix<MatrixType>;
 
    MatrixType D1;
 
@@ -7686,8 +7686,8 @@
    using blaze::SymmetricMatrix;
    using blaze::Submatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >  SymmetricDynamicType;
-   typedef Submatrix< SymmetricDynamicType >      SubmatrixType;
+   using SymmetricDynamicType = SymmetricMatrix< DynamicMatrix<int> >;
+   using SubmatrixType        = Submatrix< SymmetricDynamicType >;
 
    // Setup of a 16x16 symmetric matrix
    SymmetricDynamicType A( 16UL );
@@ -7806,10 +7806,10 @@
 // of an assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,blaze::rowVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>      DenseMatrixType;
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>   SparseMatrixType;
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -7868,8 +7868,8 @@
 // value, in case of a constant row a ConstIterator is returned:
 
    \code
-   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>              RowType;
+   using MatrixType = blaze::DynamicMatrix<int,rowMajor>;
+   using RowType    = blaze::Row<MatrixType>;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -7889,8 +7889,8 @@
    \endcode
 
    \code
-   typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>                 RowType;
+   using MatrixType = blaze::CompressedMatrix<int,rowMajor>;
+   using RowType    = blaze::Row<MatrixType>;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -7920,10 +7920,10 @@
 // The following example demonstrates all options:
 
    \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
+   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
    MatrixType A( 10UL, 100UL );  // Non-initialized 10x100 matrix
 
-   typedef blaze::Row<MatrixType>  RowType;
+   using RowType = blaze::Row<MatrixType>;
    RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
    // The subscript operator provides access to all possible elements of the sparse row,
@@ -7960,8 +7960,8 @@
 // means of a dense row view:
 
    \code
-   typedef blaze::DynamicMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>              RowType;
+   using MatrixType = blaze::DynamicMatrix<int,rowMajor>;
+   using RowType    = blaze::Row<MatrixType>;
 
    MatrixType A( 42UL, 42UL );
    // ... Resizing and initialization
@@ -7993,10 +7993,10 @@
    blaze::CompressedVector<double,blaze::rowVector> c( 2UL );
    c[1] = 3.0;
 
-   typedef blaze::DynamicMatrix<double,blaze::rowMajor>  DenseMatrix;
+   using DenseMatrix = blaze::DynamicMatrix<double,blaze::rowMajor>;
    DenseMatrix A( 4UL, 2UL );  // Non-initialized 4x2 matrix
 
-   typedef blaze::Row<DenseMatrix>  RowType;
+   using RowType = blaze::Row<DenseMatrix>;
    RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
    row0[0] = 0.0;        // Manual initialization of the 0th row of A
@@ -8032,8 +8032,8 @@
 // instance:
 
    \code
-   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::Row<MatrixType>                    RowType;
+   using MatrixType = blaze::CompressedMatrix<int,columnMajor>;
+   using RowType    = blaze::Row<MatrixType>;
 
    MatrixType A( 64UL, 32UL );
    // ... Resizing and initialization
@@ -8136,10 +8136,10 @@
 // side of an assignment. The following example demonstrates this in detail:
 
    \code
-   typedef blaze::DynamicVector<double,blaze::columnVector>     DenseVectorType;
-   typedef blaze::CompressedVector<double,blaze::columnVector>  SparseVectorType;
-   typedef blaze::DynamicMatrix<double,blaze::columnMajor>      DenseMatrixType;
-   typedef blaze::CompressedMatrix<double,blaze::columnMajor>   SparseMatrixType;
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::columnVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::columnVector>;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::columnMajor>;
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::columnMajor>;
 
    DenseVectorType  x;
    SparseVectorType y;
@@ -8198,8 +8198,8 @@
 // value, in case of a constant column a ConstIterator is returned:
 
    \code
-   typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::Column<MatrixType>              ColumnType;
+   using MatrixType = blaze::DynamicMatrix<int,columnMajor>;
+   using ColumnType = blaze::Column<MatrixType>;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -8219,8 +8219,8 @@
    \endcode
 
    \code
-   typedef blaze::CompressedMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::Column<MatrixType>                 ColumnType;
+   using MatrixType = blaze::CompressedMatrix<int,columnMajor>;
+   using ColumnType = blaze::Column<MatrixType>;
 
    MatrixType A( 128UL, 256UL );
    // ... Resizing and initialization
@@ -8250,10 +8250,10 @@
 // The following example demonstrates all options:
 
    \code
-   typedef blaze::CompressedMatrix<double,blaze::columnMajor>  MatrixType;
+   using MatrixType = blaze::CompressedMatrix<double,blaze::columnMajor>;
    MatrixType A( 100UL, 10UL );  // Non-initialized 10x100 matrix
 
-   typedef blaze::Column<MatrixType>  ColumnType;
+   using ColumnType = blaze::Column<MatrixType>;
    ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    // The subscript operator provides access to all possible elements of the sparse column,
@@ -8290,8 +8290,8 @@
 // shows this by means of a dense column view:
 
    \code
-   typedef blaze::DynamicMatrix<int,columnMajor>  MatrixType;
-   typedef blaze::Column<MatrixType>              ColumnType;
+   using MatrixType = blaze::DynamicMatrix<int,columnMajor>;
+   using ColumnType = blaze::Column<MatrixType>;
 
    MatrixType A( 42UL, 42UL );
    // ... Resizing and initialization
@@ -8323,10 +8323,10 @@
    blaze::CompressedVector<double,blaze::columnVector> c( 2UL );
    c[1] = 3.0;
 
-   typedef blaze::DynamicMatrix<double,blaze::columnMajor>  MatrixType;
+   using MatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
    MatrixType A( 2UL, 4UL );  // Non-initialized 2x4 matrix
 
-   typedef blaze::Column<DenseMatrix>  ColumnType;
+   using ColumnType = blaze::Column<DenseMatrix>;
    ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    col0[0] = 0.0;           // Manual initialization of the 0th column of A
@@ -8362,8 +8362,8 @@
 // instance:
 
    \code
-   typedef blaze::CompressedMatrix<int,rowMajor>  MatrixType;
-   typedef blaze::Column<MatrixType>              ColumnType;
+   using MatrixType = blaze::CompressedMatrix<int,rowMajor>;
+   using ColumnType = blaze::Column<MatrixType>;
 
    MatrixType A( 64UL, 32UL );
    // ... Resizing and initialization
@@ -10572,22 +10572,22 @@
 
    template<>
    struct AddTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
+      using Type = custom::double_t;
    };
 
    template<>
    struct SubTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
+      using Type = custom::double_t;
    };
 
    template<>
    struct MultTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
+      using Type = custom::double_t;
    };
 
    template<>
    struct DivTrait<custom::double_t,custom::double_t> {
-      typedef custom::double_t  Type;
+      using Type = custom::double_t;
    };
 
    } // namespace blaze
@@ -12671,8 +12671,8 @@
    // ( ( 3 3 )  ( 4 4 ) )   ( ( 2 ) )   ( ( 22 ) )
    // ( ( 3 3 )  ( 4 4 ) )   ( ( 2 ) )   ( ( 22 ) )
 
-   typedef StaticMatrix<int,2UL,2UL,rowMajor> M2x2;
-   typedef StaticVector<int,2UL,columnVector> V2;
+   using M2x2 = StaticMatrix<int,2UL,2UL,rowMajor>;
+   using V2   = StaticVector<int,2UL,columnVector>;
 
    DynamicMatrix<M2x2,rowMajor> A{ { M2x2(1), M2x2(2) }
                                    { M2x2(3), M2x2(4) } };
