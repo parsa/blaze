@@ -41,11 +41,15 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/Band.h>
+#include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/views/Band.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -71,10 +75,11 @@ class Rand< DenseBand<MT,BIs...> >
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( DenseBand<MT,BIs...>& band ) const;
+   template< typename BT >
+   inline void randomize( BT&& band ) const;
 
-   template< typename Arg >
-   inline void randomize( DenseBand<MT,BIs...>& band, const Arg& min, const Arg& max ) const;
+   template< typename BT, typename Arg >
+   inline void randomize( BT&& band, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -91,9 +96,15 @@ class Rand< DenseBand<MT,BIs...> >
 */
 template< typename MT         // Type of the matrix
         , ptrdiff_t... BIs >  // Band indices
-inline void Rand< DenseBand<MT,BIs...> >::randomize( DenseBand<MT,BIs...>& band ) const
+template< typename BT >       // Type of the band
+inline void Rand< DenseBand<MT,BIs...> >::randomize( BT&& band ) const
 {
    using blaze::randomize;
+
+   using BandType = RemoveReference_<BT>;
+
+   BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( BandType );
 
    for( size_t i=0UL; i<band.size(); ++i ) {
       randomize( band[i] );
@@ -114,11 +125,16 @@ inline void Rand< DenseBand<MT,BIs...> >::randomize( DenseBand<MT,BIs...>& band 
 */
 template< typename MT         // Type of the matrix
         , ptrdiff_t... BIs >  // Band indices
-template< typename Arg >      // Min/max argument type
-inline void Rand< DenseBand<MT,BIs...> >::randomize( DenseBand<MT,BIs...>& band,
-                                                     const Arg& min, const Arg& max ) const
+template< typename BT         // Type of the band
+        , typename Arg >      // Min/max argument type
+inline void Rand< DenseBand<MT,BIs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
+
+   using BandType = RemoveReference_<BT>;
+
+   BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( BandType );
 
    for( size_t i=0UL; i<band.size(); ++i ) {
       randomize( band[i], min, max );
@@ -151,14 +167,17 @@ class Rand< SparseBand<MT,BIs...> >
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( SparseBand<MT,BIs...>& band ) const;
-   inline void randomize( SparseBand<MT,BIs...>& band, size_t nonzeros ) const;
+   template< typename BT >
+   inline void randomize( BT&& band ) const;
 
-   template< typename Arg >
-   inline void randomize( SparseBand<MT,BIs...>& band, const Arg& min, const Arg& max ) const;
+   template< typename BT >
+   inline void randomize( BT&& band, size_t nonzeros ) const;
 
-   template< typename Arg >
-   inline void randomize( SparseBand<MT,BIs...>& band, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   template< typename BT, typename Arg >
+   inline void randomize( BT&& band, const Arg& min, const Arg& max ) const;
+
+   template< typename BT, typename Arg >
+   inline void randomize( BT&& band, size_t nonzeros, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -175,9 +194,14 @@ class Rand< SparseBand<MT,BIs...> >
 */
 template< typename MT         // Type of the matrix
         , ptrdiff_t... BIs >  // Band indices
-inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& band ) const
+template< typename BT >       // Type of the band
+inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band ) const
 {
-   using ElementType = ElementType_< SparseBand<MT,BIs...> >;
+   using BandType    = RemoveReference_<BT>;
+   using ElementType = ElementType_<BandType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );
 
    const size_t size( band.size() );
 
@@ -207,9 +231,14 @@ inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& ban
 */
 template< typename MT         // Type of the matrix
         , ptrdiff_t... BIs >  // Band indices
-inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& band, size_t nonzeros ) const
+template< typename BT >       // Type of the band
+inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, size_t nonzeros ) const
 {
-   using ElementType = ElementType_< SparseBand<MT,BIs...> >;
+   using BandType    = RemoveReference_<BT>;
+   using ElementType = ElementType_<BandType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );
 
    const size_t size( band.size() );
 
@@ -241,11 +270,15 @@ inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& ban
 */
 template< typename MT         // Type of the matrix
         , ptrdiff_t... BIs >  // Band indices
-template< typename Arg >      // Min/max argument type
-inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& band,
-                                                      const Arg& min, const Arg& max ) const
+template< typename BT         // Type of the band
+        , typename Arg >      // Min/max argument type
+inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
-   using ElementType = ElementType_< SparseBand<MT,BIs...> >;
+   using BandType    = RemoveReference_<BT>;
+   using ElementType = ElementType_<BandType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );
 
    const size_t size( band.size() );
 
@@ -277,11 +310,16 @@ inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& ban
 */
 template< typename MT         // Type of the matrix
         , ptrdiff_t... BIs >  // Band indices
-template< typename Arg >      // Min/max argument type
-inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& band, size_t nonzeros,
+template< typename BT         // Type of the band
+        , typename Arg >      // Min/max argument type
+inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, size_t nonzeros,
                                                       const Arg& min, const Arg& max ) const
 {
-   using ElementType = ElementType_< SparseBand<MT,BIs...> >;
+   using BandType    = RemoveReference_<BT>;
+   using ElementType = ElementType_<BandType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );
 
    const size_t size( band.size() );
 
@@ -300,7 +338,6 @@ inline void Rand< SparseBand<MT,BIs...> >::randomize( SparseBand<MT,BIs...>& ban
 }
 /*! \endcond */
 //*************************************************************************************************
-
 
 } // namespace blaze
 
