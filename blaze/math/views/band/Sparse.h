@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/band/BandData.h>
 #include <blaze/math/views/band/BaseTemplate.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -2285,7 +2286,7 @@ class BandImpl<MT,TF,false,true,BIs...>
    // \return The number of non-zero elements in the vector.
    */
    inline size_t nonZeros() const {
-      return size();
+      return 0UL;
    }
    //**********************************************************************************************
 
@@ -2384,8 +2385,18 @@ class BandImpl<MT,TF,false,true,BIs...>
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
+      ElementType_<VT> tmp{};
+      size_t nonzeros( 0UL );
+
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs).append( i, row( A, rhs.row()+i ) * column( B, rhs.column()+i ), true );
+         tmp = row( A, rhs.row()+i ) * column( B, rhs.column()+i );
+         if( !isDefault( tmp ) ) {
+            if( (~lhs).capacity() <= nonzeros ) {
+               (~lhs).reserve( min( max( 2UL*(~lhs).capacity(), 7UL ), (~lhs).size() ) );
+            }
+            (~lhs).append( i, tmp, false );
+            ++nonzeros;
+         }
       }
    }
    /*! \endcond */
