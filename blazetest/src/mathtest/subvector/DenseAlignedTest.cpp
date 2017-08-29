@@ -1844,7 +1844,7 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "Iterator default constructor";
 
-      ASVT::Iterator it = ASVT::Iterator();
+      ASVT::Iterator it{};
 
       if( it != ASVT::Iterator() ) {
          std::ostringstream oss;
@@ -1858,7 +1858,7 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "ConstIterator default constructor";
 
-      ASVT::ConstIterator it = ASVT::ConstIterator();
+      ASVT::ConstIterator it{};
 
       if( it != ASVT::ConstIterator() ) {
          std::ostringstream oss;

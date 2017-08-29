@@ -2165,7 +2165,7 @@ void DenseTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         Iterator it = Iterator();
+         Iterator it{};
 
          if( it != Iterator() ) {
             std::ostringstream oss;
@@ -2179,7 +2179,7 @@ void DenseTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;
@@ -2556,7 +2556,7 @@ void DenseTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         Iterator it = Iterator();
+         Iterator it{};
 
          if( it != Iterator() ) {
             std::ostringstream oss;
@@ -2570,7 +2570,7 @@ void DenseTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;
@@ -5036,7 +5036,7 @@ void DenseTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || *it != -4 ) {
          std::ostringstream oss;
@@ -5176,7 +5176,7 @@ void DenseTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || *it != -4 ) {
          std::ostringstream oss;
@@ -5329,7 +5329,7 @@ void DenseTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || *it != 0 ) {
          std::ostringstream oss;
@@ -5469,7 +5469,7 @@ void DenseTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || *it != 0 ) {
          std::ostringstream oss;

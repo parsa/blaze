@@ -4845,7 +4845,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         CT::Iterator it = CT::Iterator();
+         CT::Iterator it{};
 
          if( it != CT::Iterator() ) {
             std::ostringstream oss;
@@ -4859,7 +4859,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         CT::ConstIterator it = CT::ConstIterator();
+         CT::ConstIterator it{};
 
          if( it != CT::ConstIterator() ) {
             std::ostringstream oss;
@@ -5219,7 +5219,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         OCT::Iterator it = OCT::Iterator();
+         OCT::Iterator it{};
 
          if( it != OCT::Iterator() ) {
             std::ostringstream oss;
@@ -5233,7 +5233,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         OCT::ConstIterator it = OCT::ConstIterator();
+         OCT::ConstIterator it{};
 
          if( it != OCT::ConstIterator() ) {
             std::ostringstream oss;

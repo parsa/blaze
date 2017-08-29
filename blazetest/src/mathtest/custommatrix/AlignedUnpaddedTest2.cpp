@@ -3632,7 +3632,7 @@ void AlignedUnpaddedTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         Iterator it = Iterator();
+         Iterator it{};
 
          if( it != Iterator() ) {
             std::ostringstream oss;
@@ -3646,7 +3646,7 @@ void AlignedUnpaddedTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;
@@ -3936,7 +3936,7 @@ void AlignedUnpaddedTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         Iterator it = Iterator();
+         Iterator it{};
 
          if( it != Iterator() ) {
             std::ostringstream oss;
@@ -3950,7 +3950,7 @@ void AlignedUnpaddedTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;

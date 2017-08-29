@@ -2381,16 +2381,16 @@ void OperationTest<T>::testReduction()
 
    initialize();
 
-   T ssum = T();
+   T ssum{};
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
-      T tmp = T();
+      T tmp{};
       for( size_t j=0UL; j<SIMDSIZE; ++j ) {
          tmp += a_[i+j];
       }
       ssum += tmp;
    }
 
-   T vsum = T();
+   T vsum{};
    for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
       vsum += sum( loada( a_+i ) );
    }

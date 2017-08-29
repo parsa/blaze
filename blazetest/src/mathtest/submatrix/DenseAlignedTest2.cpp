@@ -1186,7 +1186,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         ASMT::Iterator it = ASMT::Iterator();
+         ASMT::Iterator it{};
 
          if( it != ASMT::Iterator() ) {
             std::ostringstream oss;
@@ -1200,7 +1200,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         ASMT::ConstIterator it = ASMT::ConstIterator();
+         ASMT::ConstIterator it{};
 
          if( it != ASMT::ConstIterator() ) {
             std::ostringstream oss;
@@ -1509,7 +1509,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         AOSMT::Iterator it = AOSMT::Iterator();
+         AOSMT::Iterator it{};
 
          if( it != AOSMT::Iterator() ) {
             std::ostringstream oss;
@@ -1523,7 +1523,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         AOSMT::ConstIterator it = AOSMT::ConstIterator();
+         AOSMT::ConstIterator it{};
 
          if( it != AOSMT::ConstIterator() ) {
             std::ostringstream oss;

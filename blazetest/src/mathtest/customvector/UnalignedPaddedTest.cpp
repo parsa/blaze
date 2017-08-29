@@ -2054,7 +2054,7 @@ void UnalignedPaddedTest::testIterator()
    {
       test_ = "Iterator default constructor";
 
-      Iterator it = Iterator();
+      Iterator it{};
 
       if( it != Iterator() ) {
          std::ostringstream oss;
@@ -2068,7 +2068,7 @@ void UnalignedPaddedTest::testIterator()
    {
       test_ = "ConstIterator default constructor";
 
-      ConstIterator it = ConstIterator();
+      ConstIterator it{};
 
       if( it != ConstIterator() ) {
          std::ostringstream oss;

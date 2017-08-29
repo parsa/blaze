@@ -5016,7 +5016,7 @@ void DenseComplexTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || *it != cplx(-4,1) ) {
          std::ostringstream oss;
@@ -5110,7 +5110,7 @@ void DenseComplexTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || *it != cplx(-4,1) ) {
          std::ostringstream oss;
@@ -5217,7 +5217,7 @@ void DenseComplexTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || *it != cplx(-4,-1) ) {
          std::ostringstream oss;
@@ -5311,7 +5311,7 @@ void DenseComplexTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || *it != cplx(-4,-1) ) {
          std::ostringstream oss;

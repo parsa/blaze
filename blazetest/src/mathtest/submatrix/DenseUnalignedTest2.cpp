@@ -1878,7 +1878,7 @@ void DenseUnalignedTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         SMT::Iterator it = SMT::Iterator();
+         SMT::Iterator it{};
 
          if( it != SMT::Iterator() ) {
             std::ostringstream oss;
@@ -1892,7 +1892,7 @@ void DenseUnalignedTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         SMT::ConstIterator it = SMT::ConstIterator();
+         SMT::ConstIterator it{};
 
          if( it != SMT::ConstIterator() ) {
             std::ostringstream oss;
@@ -2264,7 +2264,7 @@ void DenseUnalignedTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         OSMT::Iterator it = OSMT::Iterator();
+         OSMT::Iterator it{};
 
          if( it != OSMT::Iterator() ) {
             std::ostringstream oss;
@@ -2278,7 +2278,7 @@ void DenseUnalignedTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         OSMT::ConstIterator it = OSMT::ConstIterator();
+         OSMT::ConstIterator it{};
 
          if( it != OSMT::ConstIterator() ) {
             std::ostringstream oss;

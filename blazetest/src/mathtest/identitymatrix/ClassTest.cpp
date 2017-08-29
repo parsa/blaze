@@ -1140,7 +1140,7 @@ void ClassTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;
@@ -1231,7 +1231,7 @@ void ClassTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;

@@ -5193,7 +5193,7 @@ void DenseTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         BT::Iterator it = BT::Iterator();
+         BT::Iterator it{};
 
          if( it != BT::Iterator() ) {
             std::ostringstream oss;
@@ -5207,7 +5207,7 @@ void DenseTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         BT::ConstIterator it = BT::ConstIterator();
+         BT::ConstIterator it{};
 
          if( it != BT::ConstIterator() ) {
             std::ostringstream oss;
@@ -5567,7 +5567,7 @@ void DenseTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         OBT::Iterator it = OBT::Iterator();
+         OBT::Iterator it{};
 
          if( it != OBT::Iterator() ) {
             std::ostringstream oss;
@@ -5581,7 +5581,7 @@ void DenseTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         OBT::ConstIterator it = OBT::ConstIterator();
+         OBT::ConstIterator it{};
 
          if( it != OBT::ConstIterator() ) {
             std::ostringstream oss;

@@ -4476,7 +4476,7 @@ void DenseRealTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || *it != -4 ) {
          std::ostringstream oss;
@@ -4566,7 +4566,7 @@ void DenseRealTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || *it != -4 ) {
          std::ostringstream oss;
@@ -4669,7 +4669,7 @@ void DenseRealTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || *it != -4 ) {
          std::ostringstream oss;
@@ -4759,7 +4759,7 @@ void DenseRealTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || *it != -4 ) {
          std::ostringstream oss;

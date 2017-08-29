@@ -1468,7 +1468,7 @@ void SparseNumericTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         Iterator it = Iterator();
+         Iterator it{};
 
          if( it != Iterator() ) {
             std::ostringstream oss;
@@ -1482,7 +1482,7 @@ void SparseNumericTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;
@@ -1907,7 +1907,7 @@ void SparseNumericTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         Iterator it = Iterator();
+         Iterator it{};
 
          if( it != Iterator() ) {
             std::ostringstream oss;
@@ -1921,7 +1921,7 @@ void SparseNumericTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         ConstIterator it = ConstIterator();
+         ConstIterator it{};
 
          if( it != ConstIterator() ) {
             std::ostringstream oss;
@@ -7765,7 +7765,7 @@ void SparseNumericTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || it->value() != -4 ) {
          std::ostringstream oss;
@@ -7855,7 +7855,7 @@ void SparseNumericTest::testRow()
          throw std::runtime_error( oss.str() );
       }
 
-      RT::Iterator it = row1.begin();
+      RT::Iterator it( row1.begin() );
 
       if( it == row1.end() || it->value() != -4 ) {
          std::ostringstream oss;
@@ -7958,7 +7958,7 @@ void SparseNumericTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || it->value() != -4 ) {
          std::ostringstream oss;
@@ -8048,7 +8048,7 @@ void SparseNumericTest::testColumn()
          throw std::runtime_error( oss.str() );
       }
 
-      CT::Iterator it = col1.begin();
+      CT::Iterator it( col1.begin() );
 
       if( it == col1.end() || it->value() != -4 ) {
          std::ostringstream oss;

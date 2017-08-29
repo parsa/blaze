@@ -4713,7 +4713,7 @@ void DenseSymmetricTest::testIterator()
       {
          test_ = "Row-major Iterator default constructor";
 
-         RT::Iterator it = RT::Iterator();
+         RT::Iterator it{};
 
          if( it != RT::Iterator() ) {
             std::ostringstream oss;
@@ -4727,7 +4727,7 @@ void DenseSymmetricTest::testIterator()
       {
          test_ = "Row-major ConstIterator default constructor";
 
-         RT::ConstIterator it = RT::ConstIterator();
+         RT::ConstIterator it{};
 
          if( it != RT::ConstIterator() ) {
             std::ostringstream oss;
@@ -5087,7 +5087,7 @@ void DenseSymmetricTest::testIterator()
       {
          test_ = "Column-major Iterator default constructor";
 
-         ORT::Iterator it = ORT::Iterator();
+         ORT::Iterator it{};
 
          if( it != ORT::Iterator() ) {
             std::ostringstream oss;
@@ -5101,7 +5101,7 @@ void DenseSymmetricTest::testIterator()
       {
          test_ = "Column-major ConstIterator default constructor";
 
-         ORT::ConstIterator it = ORT::ConstIterator();
+         ORT::ConstIterator it{};
 
          if( it != ORT::ConstIterator() ) {
             std::ostringstream oss;

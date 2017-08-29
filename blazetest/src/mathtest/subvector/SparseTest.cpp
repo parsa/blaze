@@ -1637,7 +1637,7 @@ void SparseTest::testIterator()
    {
       test_ = "Iterator default constructor";
 
-      SVT::Iterator it = SVT::Iterator();
+      SVT::Iterator it{};
 
       if( it != SVT::Iterator() ) {
          std::ostringstream oss;
@@ -1651,7 +1651,7 @@ void SparseTest::testIterator()
    {
       test_ = "ConstIterator default constructor";
 
-      SVT::ConstIterator it = SVT::ConstIterator();
+      SVT::ConstIterator it{};
 
       if( it != SVT::ConstIterator() ) {
          std::ostringstream oss;
