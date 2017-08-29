@@ -2315,7 +2315,7 @@ class Column<MT,false,false,false>
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline bool operator==( const ColumnIterator<MatrixType2,IteratorType2>& rhs ) const {
-         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
+         return row_ == rhs.row_;
       }
       //*******************************************************************************************
 

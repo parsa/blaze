@@ -2424,7 +2424,7 @@ class Column<MT,false,true,false>
       */
       template< typename MatrixType2 >
       inline bool operator==( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
-         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
+         return row_ == rhs.row_;
       }
       //*******************************************************************************************
 
@@ -2448,7 +2448,7 @@ class Column<MT,false,true,false>
       */
       template< typename MatrixType2 >
       inline bool operator<( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
-         return ( matrix_ == rhs.matrix_ ) && ( row_ < rhs.row_ ) && ( column_ == rhs.column_ );
+         return row_ < rhs.row_;
       }
       //*******************************************************************************************
 
@@ -2460,7 +2460,7 @@ class Column<MT,false,true,false>
       */
       template< typename MatrixType2 >
       inline bool operator>( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
-         return ( matrix_ == rhs.matrix_ ) && ( row_ > rhs.row_ ) && ( column_ == rhs.column_ );
+         return row_ > rhs.row_;
       }
       //*******************************************************************************************
 
@@ -2472,7 +2472,7 @@ class Column<MT,false,true,false>
       */
       template< typename MatrixType2 >
       inline bool operator<=( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
-         return ( matrix_ == rhs.matrix_ ) && ( row_ <= rhs.row_ ) && ( column_ == rhs.column_ );
+         return row_ <= rhs.row_;
       }
       //*******************************************************************************************
 
@@ -2484,7 +2484,7 @@ class Column<MT,false,true,false>
       */
       template< typename MatrixType2 >
       inline bool operator>=( const ColumnIterator<MatrixType2>& rhs ) const noexcept {
-         return ( matrix_ == rhs.matrix_ ) && ( row_ >= rhs.row_ ) && ( column_ == rhs.column_ );
+         return row_ >= rhs.row_;
       }
       //*******************************************************************************************
 

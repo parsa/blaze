@@ -2309,7 +2309,7 @@ class Row<MT,false,false,false>
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline bool operator==( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
-         return ( matrix_ == rhs.matrix_ ) && ( row_ == rhs.row_ ) && ( column_ == rhs.column_ );
+         return column_ == rhs.column_;
       }
       //*******************************************************************************************
 
