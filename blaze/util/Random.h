@@ -48,6 +48,8 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/NonCreatable.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -132,10 +134,10 @@ template< typename T, typename... Args >
 inline T rand( Args&&... args );
 
 template< typename T >
-inline void randomize( T& value );
+inline void randomize( T&& value );
 
 template< typename T, typename... Args >
-inline void randomize( T& value, Args&&... args );
+inline void randomize( T&& value, Args&&... args );
 
 inline uint32_t defaultSeed();
 inline uint32_t getSeed();
@@ -883,7 +885,7 @@ inline void Rand< complex<T> >::randomize( complex<T>& value, const T& realmin, 
 template< typename T >  // Type of the random number
 inline T rand()
 {
-   Rand<T> tmp;
+   Rand< RemoveCV_<T> > tmp;
    return tmp.generate();
 }
 //*************************************************************************************************
@@ -902,7 +904,7 @@ template< typename T          // Type of the random number
         , typename... Args >  // Types of the optional arguments
 inline T rand( Args&&... args )
 {
-   Rand<T> tmp;
+   Rand< RemoveCV_<T> > tmp;
    return tmp.generate( std::forward<Args>( args )... );
 }
 //*************************************************************************************************
@@ -924,10 +926,10 @@ inline T rand( Args&&... args )
 // elements, \f$ [0..1) \f$ for floating point elements).
 */
 template< typename T >  // Type of the random number
-inline void randomize( T& value )
+inline void randomize( T&& value )
 {
-   Rand<T> tmp;
-   tmp.randomize( value );
+   Rand< Decay_<T> > tmp;
+   tmp.randomize( std::forward<T>( value ) );
 }
 //*************************************************************************************************
 
@@ -944,10 +946,10 @@ inline void randomize( T& value )
 */
 template< typename T          // Type of the random number
         , typename... Args >  // Types of the optional arguments
-inline void randomize( T& value, Args&&... args )
+inline void randomize( T&& value, Args&&... args )
 {
-   Rand<T> tmp;
-   tmp.randomize( value, std::forward<Args>( args )... );
+   Rand< Decay_<T> > tmp;
+   tmp.randomize( std::forward<T>( value ), std::forward<Args>( args )... );
 }
 //*************************************************************************************************
 
