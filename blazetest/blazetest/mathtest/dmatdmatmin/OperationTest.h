@@ -135,7 +135,8 @@ class OperationTest
    typedef blaze::TransposeType_<SRE>   TSRE;   //!< Transpose sparse result type
    typedef blaze::TransposeType_<OSRE>  TOSRE;  //!< Transpose sparse result type with opposite storage order
 
-   typedef blaze::DynamicMatrix<blaze::ElementType_<DRE>,false>  RT;  //!< Reference type
+   //! Reference result type
+   typedef MatchSymmetry_< DRE, blaze::DynamicMatrix<blaze::ElementType_<DRE>,false> >  RT;
    //**********************************************************************************************
 
  public:
