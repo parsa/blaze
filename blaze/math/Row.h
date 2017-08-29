@@ -41,12 +41,16 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/DenseVector.h>
+#include <blaze/math/constraints/Row.h>
+#include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/smp/DenseVector.h>
 #include <blaze/math/smp/SparseVector.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -73,10 +77,11 @@ class Rand< Row<MT,SO,true,SF> >
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( Row<MT,SO,true,SF>& row ) const;
+   template< typename RT >
+   inline void randomize( RT&& row ) const;
 
-   template< typename Arg >
-   inline void randomize( Row<MT,SO,true,SF>& row, const Arg& min, const Arg& max ) const;
+   template< typename RT, typename Arg >
+   inline void randomize( RT&& row, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -91,12 +96,18 @@ class Rand< Row<MT,SO,true,SF> >
 // \param row The row to be randomized.
 // \return void
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline void Rand< Row<MT,SO,true,SF> >::randomize( Row<MT,SO,true,SF>& row ) const
+template< typename MT    // Type of the dense matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename RT >  // Type of the row
+inline void Rand< Row<MT,SO,true,SF> >::randomize( RT&& row ) const
 {
    using blaze::randomize;
+
+   using RowType = RemoveReference_<RT>;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RowType );
 
    for( size_t i=0UL; i<row.size(); ++i ) {
       randomize( row[i] );
@@ -118,11 +129,16 @@ inline void Rand< Row<MT,SO,true,SF> >::randomize( Row<MT,SO,true,SF>& row ) con
 template< typename MT     // Type of the dense matrix
         , bool SO         // Storage order
         , bool SF >       // Symmetry flag
-template< typename Arg >  // Min/max argument type
-inline void Rand< Row<MT,SO,true,SF> >::randomize( Row<MT,SO,true,SF>& row,
-                                                   const Arg& min, const Arg& max ) const
+template< typename RT     // Type of the row
+        , typename Arg >  // Min/max argument type
+inline void Rand< Row<MT,SO,true,SF> >::randomize( RT&& row, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
+
+   using RowType = RemoveReference_<RT>;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RowType );
 
    for( size_t i=0UL; i<row.size(); ++i ) {
       randomize( row[i], min, max );
@@ -156,14 +172,17 @@ class Rand< Row<MT,SO,false,SF> >
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( Row<MT,SO,false,SF>& row ) const;
-   inline void randomize( Row<MT,SO,false,SF>& row, size_t nonzeros ) const;
+   template< typename RT >
+   inline void randomize( RT&& row ) const;
 
-   template< typename Arg >
-   inline void randomize( Row<MT,SO,false,SF>& row, const Arg& min, const Arg& max ) const;
+   template< typename RT >
+   inline void randomize( RT&& row, size_t nonzeros ) const;
 
-   template< typename Arg >
-   inline void randomize( Row<MT,SO,false,SF>& row, size_t nonzeros, const Arg& min, const Arg& max ) const;
+   template< typename RT, typename Arg >
+   inline void randomize( RT&& row, const Arg& min, const Arg& max ) const;
+
+   template< typename RT, typename Arg >
+   inline void randomize( RT&& row, size_t nonzeros, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -178,12 +197,17 @@ class Rand< Row<MT,SO,false,SF> >
 // \param row The row to be randomized.
 // \return void
 */
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row ) const
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename RT >  // Type of the row
+inline void Rand< Row<MT,SO,false,SF> >::randomize( RT&& row ) const
 {
-   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
+   using RowType     = RemoveReference_<RT>;
+   using ElementType = ElementType_<RowType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );
 
    const size_t size( row.size() );
 
@@ -211,12 +235,17 @@ inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row ) c
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row, size_t nonzeros ) const
+template< typename MT    // Type of the sparse matrix
+        , bool SO        // Storage order
+        , bool SF >      // Symmetry flag
+template< typename RT >  // Type of the row
+inline void Rand< Row<MT,SO,false,SF> >::randomize( RT&& row, size_t nonzeros ) const
 {
-   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
+   using RowType     = RemoveReference_<RT>;
+   using ElementType = ElementType_<RowType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );
 
    const size_t size( row.size() );
 
@@ -249,11 +278,15 @@ inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row, si
 template< typename MT     // Type of the sparse matrix
         , bool SO         // Storage order
         , bool SF >       // Symmetry flag
-template< typename Arg >  // Min/max argument type
-inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row,
-                                                   const Arg& min, const Arg& max ) const
+template< typename RT     // Type of the row
+        , typename Arg >  // Min/max argument type
+inline void Rand< Row<MT,SO,false,SF> >::randomize( RT&& row, const Arg& min, const Arg& max ) const
 {
-   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
+   using RowType     = RemoveReference_<RT>;
+   using ElementType = ElementType_<RowType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );
 
    const size_t size( row.size() );
 
@@ -286,11 +319,16 @@ inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row,
 template< typename MT     // Type of the sparse matrix
         , bool SO         // Storage order
         , bool SF >       // Symmetry flag
-template< typename Arg >  // Min/max argument type
-inline void Rand< Row<MT,SO,false,SF> >::randomize( Row<MT,SO,false,SF>& row, size_t nonzeros,
-                                                   const Arg& min, const Arg& max ) const
+template< typename RT     // Type of the row
+        , typename Arg >  // Min/max argument type
+inline void Rand< Row<MT,SO,false,SF> >::randomize( RT&& row, size_t nonzeros,
+                                                    const Arg& min, const Arg& max ) const
 {
-   using ElementType = ElementType_< Row<MT,SO,false,SF> >;
+   using RowType     = RemoveReference_<RT>;
+   using ElementType = ElementType_<RowType>;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
+   BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );
 
    const size_t size( row.size() );
 
