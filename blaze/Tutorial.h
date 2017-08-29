@@ -6906,34 +6906,61 @@
 // <hr>
 //
 // A view on a dense or sparse subvector can be created very conveniently via the \c subvector()
-// function. This view can be treated as any other vector, i.e. it can be assigned to, it can
-// be copied from, and it can be used in arithmetic operations. A subvector created from a row
-// vector can be used as any other row vector, a subvector created from a column vector can be
-// used as any other column vector. The view can also be used on both sides of an assignment:
-// The subvector can either be used as an alias to grant write access to a specific subvector
-// of a vector primitive on the left-hand side of an assignment or to grant read-access to a
-// specific subvector of a vector primitive or expression on the right-hand side of an assignment.
-// The following example demonstrates this in detail:
+// function.
 
    \code
-   typedef blaze::DynamicVector<double,blaze::rowVector>  DenseVectorType;
-   typedef blaze::CompressedVector<int,blaze::rowVector>  SparseVectorType;
+   using DenseVectorType = blaze::DynamicVector<double,blaze::rowVector>;
 
-   DenseVectorType  d1, d2;
-   SparseVectorType s1, s2;
+   DenseVectorType x;
    // ... Resizing and initialization
 
-   // Creating a view on the first ten elements of the dense vector d1
-   blaze::Subvector<DenseVectorType> dsv = subvector( d1, 0UL, 10UL );
+   // Create a dense subvector from index 8 with a size of 16 (i.e. in the range [8..23])
+   blaze::Subvector<DenseVectorType> sv = subvector( x, 8UL, 16UL );
+   \endcode
 
-   // Creating a view on the second ten elements of the sparse vector s1
-   blaze::Subvector<SparseVectorType> ssv = subvector( s1, 10UL, 10UL );
+   \code
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
 
-   // Creating a view on the addition of d2 and s2
-   dsv = subvector( d2 + s2, 5UL, 10UL );
+   SparseVectorType x;
+   // ... Resizing and initialization
 
-   // Creating a view on the multiplication of d2 and s2
-   ssv = subvector( d2 * s2, 2UL, 10UL );
+   // Create a sparse subvector from index 5 with a size of 7 (i.e. in the range [5..11])
+   blaze::Subvector<SparseVectorType> sv = subvector( x, 5UL, 7UL );
+   \endcode
+
+// The view can be treated as any other dense or sparse vector, i.e. it can be assigned to, it
+// can be copied from, and it can be used in arithmetic operations. A subvector created from a
+// row vector can be used as any other row vector, a subvector created from a column vector can
+// be used as any other column vector. The view can also be used on both sides of an assignment:
+// The subvector can either be used as an alias to grant write access to a specific subvector of
+// a vector primitive on the left-hand side of an assignment or to grant read-access to a specific
+// subvector of a vector primitive or expression on the right-hand side of an assignment. The
+// following example demonstrates this in detail:
+
+   \code
+   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
+   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
+   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
+
+   DenseVectorType  x;
+   SparseVectorType y;
+   DenseMatrixType  A;
+   // ... Resizing and initialization
+
+   // Create a subvector from index 0 with a size of 10 (i.e. in the range [0..9])
+   blaze::Subvector<DenseVectorType> sv = subvector( x, 0UL, 10UL );
+
+   // Setting the first ten elements of x to the 2nd row of matrix A
+   sv = row( A, 2UL );
+
+   // Setting the second ten elements of x to y
+   subvector( x, 10UL, 10UL ) = y;
+
+   // Setting the 3rd row of A to a subvector of x
+   row( A, 3UL ) = subvector( x, 3UL, 10UL );
+
+   // Setting x to a subvector of the result of the addition between y and the 1st row of A
+   x = subvector( y + row( A, 1UL ), 2UL, 5UL )
    \endcode
 
 // The \c subvector() function can be used on any dense or sparse vector, including expressions,
@@ -6949,19 +6976,6 @@
 
    \code
    typedef blaze::DynamicVector<double,blaze::rowVector>  VectorType;
-   VectorType v;
-   // ... Resizing and initialization
-
-   // Creating an 8-dimensional subvector, starting from index 4
-   blaze::Subvector<VectorType> sv = subvector( v, 4UL, 8UL );
-
-   // Setting the 1st element of the subvector, which corresponds to
-   // the element at index 5 in vector v
-   sv[1] = 2.0;
-   \endcode
-
-   \code
-   typedef blaze::CompressedVector<double,blaze::rowVector>  VectorType;
    VectorType v;
    // ... Resizing and initialization
 
@@ -7303,7 +7317,29 @@
 // \n \section views_submatrices_setup Setup of Submatrices
 // <hr>
 //
-// A view on a submatrix can be created very conveniently via the \c submatrix() function.
+// A view on a dense or sparse submatrix can be created very conveniently via the \c submatrix()
+// function:
+
+   \code
+   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+
+   DenseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a dense submatrix of size 8x16, starting in row 0 and column 4
+   blaze::Submatrix<DenseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
+   \endcode
+
+   \code
+   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
+
+   SparseMatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a sparse submatrix of size 8x16, starting in row 0 and column 4
+   blaze::Submatrix<SparseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
+   \endcode
+
 // This view can be treated as any other matrix, i.e. it can be assigned to, it can be copied
 // from, and it can be used in arithmetic operations. A submatrix created from a row-major
 // matrix will itself be a row-major matrix, a submatrix created from a column-major matrix
@@ -7334,6 +7370,12 @@
    ssm = submatrix( D2 * S2, 7UL, 13UL, 8UL, 16UL );
    \endcode
 
+// The \c submatrix() function can be used on any dense or sparse matrix, including expressions,
+// as illustrated by the source code example. However, submatrices cannot be instantiated for
+// expression types, but only for matrix primitives, respectively, i.e. for matrix types that
+// offer write access.
+//
+//
 // \n \section views_submatrices_element_access Element Access
 // <hr>
 //
@@ -7341,19 +7383,6 @@
 
    \code
    typedef blaze::DynamicMatrix<double,blaze::rowMajor>  MatrixType;
-   MatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a 8x8 submatrix, starting from position (4,4)
-   blaze::Submatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
-
-   // Setting the element (0,0) of the submatrix, which corresponds to
-   // the element at position (4,4) in matrix A
-   sm(0,0) = 2.0;
-   \endcode
-
-   \code
-   typedef blaze::CompressedMatrix<double,blaze::rowMajor>  MatrixType;
    MatrixType A;
    // ... Resizing and initialization
 
@@ -7811,8 +7840,23 @@
 // \n \section views_rows_element_access Element Access
 // <hr>
 //
-// The elements of the row can be directly accessed with the subscript operator. The numbering
-// of the row elements is
+// A dense or sparse row can be used like any other row vector. For instance, the elements of a
+// row can be directly accessed with the subscript operator:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   MatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a view on the 4th row of matrix A
+   blaze::Row<MatrixType> row4 = row( A, 4UL );
+
+   // Setting the 1st element of the dense row, which corresponds
+   // to the 1st element in the 4th row of matrix A
+   row4[1] = 2.0;
+   \endcode
+
+// The numbering of the row elements is
 
                              \f[\left(\begin{array}{*{5}{c}}
                              0 & 1 & 2 & \cdots & N-1 \\
@@ -8126,8 +8170,23 @@
 // \n \section views_columns_element_access Element Access
 // <hr>
 //
-// The elements of the column can be directly accessed with the subscript operator. The numbering
-// of the column elements is
+// A dense or sparse column can be used like any other column vector. For instance, the elements
+// of the dense column can be directly accessed with the subscript operator.
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
+   MatrixType A;
+   // ... Resizing and initialization
+
+   // Creating a view on the 4th column of matrix A
+   blaze::Column<MatrixType> col4 = column( A, 4UL );
+
+   // Setting the 1st element of the dense column, which corresponds
+   // to the 1st element in the 4th column of matrix A
+   col4[1] = 2.0;
+   \endcode
+
+// The numbering of the column elements is
 
                              \f[\left(\begin{array}{*{5}{c}}
                              0 & 1 & 2 & \cdots & N-1 \\
