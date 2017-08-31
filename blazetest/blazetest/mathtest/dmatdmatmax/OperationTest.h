@@ -57,11 +57,13 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
@@ -340,7 +342,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
 
    ref_.resize( lhs_.rows(), lhs_.columns() );
    for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-      for( size_t j=0UL; j<lhs_.columns(); ++j ) {
+      const size_t jbegin( blaze::IsUpper<RT>::value ? i : 0UL );
+      const size_t jend  ( blaze::IsLower<RT>::value ? i+1UL : lhs_.columns() );
+      for( size_t j=jbegin; j<jend; ++j ) {
          ref_(i,j) = blaze::max( lhs_(i,j), rhs_(i,j) );
       }
    }
