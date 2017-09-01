@@ -101,8 +101,8 @@ class DVecDVecAddExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RE1 = ResultType_<VT1>;     //!< Result type of the left-hand side dense vector expression.
-   using RE2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side dense vector expression.
+   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
    using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side dense vector expression.
    using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
    using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side dense vector expression.
@@ -161,7 +161,7 @@ class DVecDVecAddExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecDVecAddExpr<VT1,VT2,TF>;  //!< Type of this DVecDVecAddExpr instance.
-   using ResultType    = AddTrait_<RE1,RE2>;           //!< Result type for expression template evaluations.
+   using ResultType    = AddTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 
