@@ -63,7 +63,6 @@
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -2405,31 +2404,6 @@ template< typename MT, bool SO >
 struct IsAligned< Submatrix<MT,aligned,SO,true> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ADDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, typename T >
-struct AddTrait< Submatrix<MT,AF,SO,DF>, T >
-{
-   using Type = AddTrait_< SubmatrixTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool AF, bool SO, bool DF >
-struct AddTrait< T, Submatrix<MT,AF,SO,DF> >
-{
-   using Type = AddTrait_< T, SubmatrixTrait_<MT> >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

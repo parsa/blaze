@@ -58,7 +58,6 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
@@ -6454,103 +6453,6 @@ template< typename T, bool AF, bool SO >
 struct IsPadded< CustomMatrix<T,AF,padded,SO> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ADDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
-struct AddTrait< CustomMatrix<T1,AF,PF,SO>, StaticMatrix<T2,M,N,SO> >
-{
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, StaticMatrix<T2,M,N,SO2> >
-{
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
-struct AddTrait< StaticMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
-{
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
-struct AddTrait< StaticMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
-{
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
-struct AddTrait< CustomMatrix<T1,AF,PF,SO>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, HybridMatrix<T2,M,N,SO2> >
-{
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
-struct AddTrait< HybridMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
-{
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
-struct AddTrait< HybridMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
-{
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO, typename T2 >
-struct AddTrait< CustomMatrix<T1,AF,PF,SO>, DynamicMatrix<T2,SO> >
-{
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
-struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, DynamicMatrix<T2,SO2> >
-{
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, false >;
-};
-
-template< typename T1, bool SO, typename T2, bool AF, bool PF >
-struct AddTrait< DynamicMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
-{
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
-struct AddTrait< DynamicMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
-{
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, false >;
-};
-
-template< typename T1, bool AF1, bool PF1, bool SO, typename T2, bool AF2, bool PF2 >
-struct AddTrait< CustomMatrix<T1,AF1,PF1,SO>, CustomMatrix<T2,AF2,PF2,SO> >
-{
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
-};
-
-template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool PF2, bool SO2 >
-struct AddTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
-{
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, false >;
-};
 /*! \endcond */
 //*************************************************************************************************
 
