@@ -44,19 +44,39 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool DF          // Density flag
+        , bool SF          // Symmetry flag
+        , size_t... CIs >  // Column indices
+class ColumnImpl
+{};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ALIAS DECLARATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*!\defgroup column Column
-// \ingroup views
+// \ingroup column
 */
 /*!\brief Reference to a specific column of a dense or sparse matrix.
 // \ingroup column
@@ -90,7 +110,7 @@ namespace blaze {
 //
 // A reference to a dense or sparse column can be created very conveniently via the \c column()
 // function. The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total
-// number of column of the matrix:
+// number of columns of the matrix, and can be specified both at compile time or at runtime:
 
    \code
    using DenseMatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
@@ -98,8 +118,11 @@ namespace blaze {
    DenseMatrixType A;
    // ... Resizing and initialization
 
-   // Creating a reference to the 2nd column of matrix A
-   blaze::Column<DenseMatrixType> col2 = row( A, 2UL );
+   // Creating a reference to the 1st column of matrix A (compile time index)
+   blaze::Column<DenseMatrixType,1UL> col1 = column<1UL>( A );
+
+   // Creating a reference to the 2nd column of matrix A (runtime index)
+   blaze::Column<DenseMatrixType> col2 = column( A, 2UL );
    \endcode
 
 // The resulting reference can be treated as any other column vector, i.e. it can be assigned to,
@@ -364,12 +387,69 @@ namespace blaze {
 // Although Blaze performs the resulting matrix/vector multiplication as efficiently as possible
 // using a column-major storage order for matrix A would result in a more efficient evaluation.
 */
-template< typename MT                               // Type of the matrix
-        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
-        , bool DF = IsDenseMatrix<MT>::value        // Density flag
-        , bool SF = IsSymmetric<MT>::value >        // Symmetry flag
-class Column
-{};
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+using Column = ColumnImpl< MT
+                         , IsColumnMajorMatrix<MT>::value
+                         , IsDenseMatrix<MT>::value
+                         , IsSymmetric<MT>::value
+                         , CIs... >;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reference to a specific column of a dense matrix.
+// \ingroup column
+//
+// The DenseColumn template represents a reference to a specific column of a dense matrix primitive.
+*/
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+using DenseColumn = ColumnImpl< MT
+                              , IsColumnMajorMatrix<MT>::value
+                              , true
+                              , IsSymmetric<MT>::value
+                              , CIs... >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reference to a specific column of a sparse matrix.
+// \ingroup column
+//
+// The SparseColumn template represents a reference to a specific column of a sparse matrix
+// primitive.
+*/
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+using SparseColumn = ColumnImpl< MT
+                               , IsColumnMajorMatrix<MT>::value
+                               , false
+                               , IsSymmetric<MT>::value
+                               , CIs... >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reference to a specific column of a row-major, non-symmetric matrix.
+// \ingroup column
+//
+// The OpposingColumn template represents a reference to a specific column of a row-major,
+// non-symmetric matrix primitive.
+*/
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+using OpposingColumn = ColumnImpl< MT
+                                 , false
+                                 , IsDenseMatrix<MT>::value
+                                 , false
+                                 , CIs... >;
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

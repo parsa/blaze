@@ -96,6 +96,117 @@ namespace blaze {
 // \ingroup views
 //
 // \param matrix The matrix containing the column.
+// \return View on the specified column of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given matrix.
+
+   \code
+   using blaze::columnMajor;
+
+   using DenseMatrix  = blaze::DynamicMatrix<double,columnMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<double,columnMajor>;
+
+   DenseMatrix D;
+   SparseMatrix S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 3rd column of the dense matrix D
+   blaze::Column<DenseMatrix,3UL> = column<3UL>( D );
+
+   // Creating a view on the 4th column of the sparse matrix S
+   blaze::Column<SparseMatrix,4UL> = column<4UL>( S );
+   \endcode
+
+// In case the column is not properly specified (i.e. if the specified index is greater than or
+// equal to the total number of the columns in the given matrix) a \a std::invalid_argument
+// exception is thrown.
+*/
+template< size_t CI    // Column index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline Column<MT,CI> column( Matrix<MT,SO>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return Column<MT,CI>( ~matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific column of the given constant matrix.
+// \ingroup views
+//
+// \param matrix The constant matrix containing the column.
+// \return View on the specified column of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given constant
+// matrix.
+
+   \code
+   using blaze::columnMajor;
+
+   using DenseMatrix  = blaze::DynamicMatrix<double,columnMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<double,columnMajor>;
+
+   const DenseMatrix D( ... );
+   const SparseMatrix S( ... );
+
+   // Creating a view on the 3rd column of the dense matrix D
+   blaze::Column<const DenseMatrix,3UL> = column<3UL>( D );
+
+   // Creating a view on the 4th column of the sparse matrix S
+   blaze::Column<const SparseMatrix,4UL> = column<4UL>( S );
+   \endcode
+
+// In case the column is not properly specified (i.e. if the specified index is greater than or
+// equal to the total number of the columns in the given matrix) a \a std::invalid_argument
+// exception is thrown.
+*/
+template< size_t CI    // Column index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const Column<const MT,CI> column( const Matrix<MT,SO>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return Column<const MT,CI>( ~matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific column of the given temporary matrix.
+// \ingroup views
+//
+// \param matrix The temporary matrix containing the column.
+// \return View on the specified column of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given temporary
+// matrix. In case the column is not properly specified (i.e. if the specified index is greater
+// than or equal to the total number of the columns in the given matrix) a \a std::invalid_argument
+// exception is thrown.
+*/
+template< size_t CI    // Column index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline Column<MT,CI> column( Matrix<MT,SO>&& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return Column<MT,CI>( ~matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific column of the given matrix.
+// \ingroup views
+//
+// \param matrix The matrix containing the column.
 // \param index The index of the column.
 // \return View on the specified column of the matrix.
 // \exception std::invalid_argument Invalid column access index.
@@ -216,6 +327,29 @@ inline Column<MT> column( Matrix<MT,SO>&& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant matrix/matrix addition.
+// \return View on the specified column of the addition.
+//
+// This function returns an expression representing the specified column of the given matrix/matrix
+// addition.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatMatAddExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column<CI>( (~matrix).leftOperand() ) + column<CI>( (~matrix).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix/matrix addition.
+// \ingroup views
+//
+// \param matrix The constant matrix/matrix addition.
 // \param index The index of the column.
 // \return View on the specified column of the addition.
 //
@@ -228,6 +362,29 @@ inline decltype(auto) column( const MatMatAddExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return column( (~matrix).leftOperand(), index ) + column( (~matrix).rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix/matrix subtraction.
+// \ingroup views
+//
+// \param matrix The constant matrix/matrix subtraction.
+// \return View on the specified column of the subtraction.
+//
+// This function returns an expression representing the specified column of the given matrix/matrix
+// subtraction.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatMatSubExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column<CI>( (~matrix).leftOperand() ) - column<CI>( (~matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -262,6 +419,29 @@ inline decltype(auto) column( const MatMatSubExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant Schur product.
+// \return View on the specified column of the Schur product.
+//
+// This function returns an expression representing the specified column of the given Schur
+// product.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const SchurExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column<CI>( (~matrix).leftOperand() ) * column<CI>( (~matrix).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given Schur product.
+// \ingroup views
+//
+// \param matrix The constant Schur product.
 // \param index The index of the column.
 // \return View on the specified column of the Schur product.
 //
@@ -274,6 +454,29 @@ inline decltype(auto) column( const SchurExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return column( (~matrix).leftOperand(), index ) * column( (~matrix).rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix/matrix multiplication.
+// \ingroup views
+//
+// \param matrix The constant matrix/matrix multiplication.
+// \return View on the specified column of the multiplication.
+//
+// This function returns an expression representing the specified column of the given matrix/matrix
+// multiplication.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatMatMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~matrix).leftOperand() * column<CI>( (~matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -308,6 +511,29 @@ inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant outer product.
+// \return View on the specified column of the outer product.
+//
+// This function returns an expression representing the specified column of the given outer
+// product.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~matrix).leftOperand() * (~matrix).rightOperand()[CI];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given outer product.
+// \ingroup views
+//
+// \param matrix The constant outer product.
 // \param index The index of the column.
 // \return View on the specified column of the outer product.
 //
@@ -320,6 +546,29 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return (~matrix).leftOperand() * (~matrix).rightOperand()[index];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix/scalar multiplication.
+// \ingroup views
+//
+// \param matrix The constant matrix/scalar multiplication.
+// \return View on the specified column of the multiplication.
+//
+// This function returns an expression representing the specified column of the given matrix/scalar
+// multiplication.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column<CI>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -354,6 +603,29 @@ inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix, size_t index 
 // \ingroup views
 //
 // \param matrix The constant matrix/scalar division.
+// \return View on the specified column of the division.
+//
+// This function returns an expression representing the specified column of the given matrix/scalar
+// division.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column<CI>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix/scalar division.
+// \ingroup views
+//
+// \param matrix The constant matrix/scalar division.
 // \param index The index of the column.
 // \return View on the specified column of the division.
 //
@@ -377,6 +649,29 @@ inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant unary matrix map operation.
+// \return View on the specified column of the unary map operation.
+//
+// This function returns an expression representing the specified column of the given unary
+// matrix map operation.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatMapExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( column<CI>( (~matrix).operand() ), (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given unary matrix map operation.
+// \ingroup views
+//
+// \param matrix The constant unary matrix map operation.
 // \param index The index of the column.
 // \return View on the specified column of the unary map operation.
 //
@@ -389,6 +684,31 @@ inline decltype(auto) column( const MatMapExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return map( column( (~matrix).operand(), index ), (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given binary matrix map operation.
+// \ingroup views
+//
+// \param matrix The constant binary matrix map operation.
+// \return View on the specified column of the binary map operation.
+//
+// This function returns an expression representing the specified column of the given binary
+// matrix map operation.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatMatMapExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( column<CI>( (~matrix).leftOperand() ),
+               column<CI>( (~matrix).rightOperand() ),
+               (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -425,6 +745,29 @@ inline decltype(auto) column( const MatMatMapExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant matrix evaluation operation.
+// \return View on the specified column of the evaluation operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// evaluation operation.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatEvalExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return eval( column<CI>( (~matrix).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix evaluation operation.
+// \ingroup views
+//
+// \param matrix The constant matrix evaluation operation.
 // \param index The index of the column.
 // \return View on the specified column of the evaluation operation.
 //
@@ -437,6 +780,29 @@ inline decltype(auto) column( const MatEvalExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return eval( column( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix serialization operation.
+// \ingroup views
+//
+// \param matrix The constant matrix serialization operation.
+// \return View on the specified column of the serialization operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// serialization operation.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatSerialExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return serial( column<CI>( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -471,6 +837,29 @@ inline decltype(auto) column( const MatSerialExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant matrix declaration operation.
+// \return View on the specified column of the declaration operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// declaration operation.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const DeclExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return column<CI>( (~matrix).operand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix declaration operation.
+// \ingroup views
+//
+// \param matrix The constant matrix declaration operation.
 // \param index The index of the column.
 // \return View on the specified column of the declaration operation.
 //
@@ -483,6 +872,29 @@ inline decltype(auto) column( const DeclExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return column( (~matrix).operand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix transpose operation.
+// \ingroup views
+//
+// \param matrix The constant matrix transpose operation.
+// \return View on the specified column of the transpose operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// transpose operation.
+*/
+template< size_t CI      // Column index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) column( const MatTransExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( row<CI>( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -522,26 +934,26 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, size_t index )
 //*************************************************************************************************
 /*!\name Column operators */
 //@{
-template< typename MT, bool SO, bool DF, bool SF >
-inline void reset( Column<MT,SO,DF,SF>& column );
+template< typename MT, size_t... CIs >
+inline void reset( Column<MT,CIs...>& column );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline void reset( Column<MT,SO,DF,SF>&& column );
+template< typename MT, size_t... CIs >
+inline void reset( Column<MT,CIs...>&& column );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline void clear( Column<MT,SO,DF,SF>& column );
+template< typename MT, size_t... CIs >
+inline void clear( Column<MT,CIs...>& column );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline void clear( Column<MT,SO,DF,SF>&& column );
+template< typename MT, size_t... CIs >
+inline void clear( Column<MT,CIs...>&& column );
 
-template< bool RF, typename MT, bool SO, bool DF, bool SF >
-inline bool isDefault( const Column<MT,SO,DF,SF>& column );
+template< bool RF, typename MT, size_t... CIs >
+inline bool isDefault( const Column<MT,CIs...>& column );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept;
+template< typename MT, size_t... CIs >
+inline bool isIntact( const Column<MT,CIs...>& column ) noexcept;
 
-template< typename MT1, bool SO, bool DF, bool SF1, typename MT2, bool SF2 >
-inline bool isSame( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept;
+template< typename MT1, size_t... CIs1, typename MT2, size_t... CIs2 >
+inline bool isSame( const Column<MT1,CIs1...>& a, const Column<MT2,CIs2...>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -553,11 +965,9 @@ inline bool isSame( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>&
 // \param column The column to be resetted.
 // \return void
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void reset( Column<MT,SO,DF,SF>& column )
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline void reset( Column<MT,CIs...>& column )
 {
    column.reset();
 }
@@ -571,11 +981,9 @@ inline void reset( Column<MT,SO,DF,SF>& column )
 // \param column The temporary column to be resetted.
 // \return void
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void reset( Column<MT,SO,DF,SF>&& column )
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline void reset( Column<MT,CIs...>&& column )
 {
    column.reset();
 }
@@ -591,11 +999,9 @@ inline void reset( Column<MT,SO,DF,SF>&& column )
 //
 // Clearing a column is equivalent to resetting it via the reset() function.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void clear( Column<MT,SO,DF,SF>& column )
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline void clear( Column<MT,CIs...>& column )
 {
    column.reset();
 }
@@ -611,14 +1017,66 @@ inline void clear( Column<MT,SO,DF,SF>& column )
 //
 // Clearing a column is equivalent to resetting it via the reset() function.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void clear( Column<MT,SO,DF,SF>&& column )
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline void clear( Column<MT,CIs...>&& column )
 {
    column.reset();
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given dense column is in default state.
+// \ingroup column
+//
+// \param column The dense column to be tested for its default state.
+// \return \a true in case the given dense column is component-wise zero, \a false otherwise.
+//
+// This function checks whether the dense column is in default state. For instance, in case the
+// column is instantiated for a built-in integral or floating point data type, the function returns
+// \a true in case all column elements are 0 and \a false in case any column element is not 0.
+*/
+template< bool RF             // Relaxation flag
+        , typename MT         // Type of the dense matrix
+        , ptrdiff_t... CIs >  // Column indices
+inline bool isDefault_backend( const DenseColumn<MT,CIs...>& column )
+{
+   using blaze::isDefault;
+
+   for( size_t i=0UL; i<column.size(); ++i )
+      if( !isDefault<RF>( column[i] ) ) return false;
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given sparse column is in default state.
+// \ingroup column
+//
+// \param column The sparse column to be tested for its default state.
+// \return \a true in case the given column is component-wise zero, \a false otherwise.
+//
+// This function checks whether the sparse column is in default state. For instance, in case the
+// column is instantiated for a built-in integral or floating point data type, the function returns
+// \a true in case all column elements are 0 and \a false in case any column element is not 0.
+*/
+template< bool RF             // Relaxation flag
+        , typename MT         // Type of the sparse matrix
+        , ptrdiff_t... CIs >  // Column indices
+inline bool isDefault_backend( const SparseColumn<MT,CIs...>& column )
+{
+   using blaze::isDefault;
+
+   for( const auto& element : column )
+      if( !isDefault<RF>( element.value() ) ) return false;
+   return true;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -647,57 +1105,13 @@ inline void clear( Column<MT,SO,DF,SF>&& column )
    if( isDefault<relaxed>( column( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline bool isDefault( const Column<MT,SO,DF,SF>& column )
+template< bool RF          // Relaxation flag
+        , typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline bool isDefault( const Column<MT,CIs...>& column )
 {
-   using blaze::isDefault;
-
-   for( size_t i=0UL; i<column.size(); ++i )
-      if( !isDefault<RF>( column[i] ) ) return false;
-   return true;
+   return isDefault_backend<RF>( column );
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given sparse column is in default state.
-// \ingroup column
-//
-// \param column The sparse column to be tested for its default state.
-// \return \a true in case the given column is component-wise zero, \a false otherwise.
-//
-// This function checks whether the sparse column is in default state. For instance, in case
-// the column is instantiated for a built-in integral or floating point data type, the function
-// returns \a true in case all column elements are 0 and \a false in case any vector element is
-// not 0. The following example demonstrates the use of the \a isDefault function:
-
-   \code
-   blaze::CompressedMatrix<double,columnMajor> A;
-   // ... Resizing and initialization
-   if( isDefault( column( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isDefault( const Column<MT,SO,false,SF>& column )
-{
-   using blaze::isDefault;
-
-   using ConstIterator = ConstIterator_< Column<MT,SO,false,SF> >;
-
-   const ConstIterator end( column.end() );
-   for( ConstIterator element=column.begin(); element!=end; ++element )
-      if( !isDefault<RF>( element->value() ) ) return false;
-   return true;
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -718,11 +1132,9 @@ inline bool isDefault( const Column<MT,SO,false,SF>& column )
    if( isIntact( column( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline bool isIntact( const Column<MT,CIs...>& column ) noexcept
 {
    return ( column.column() < column.operand().columns() &&
             isIntact( column.operand() ) );
@@ -743,14 +1155,12 @@ inline bool isIntact( const Column<MT,SO,DF,SF>& column ) noexcept
 // regular columns. In case both columns represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the matrix of the left-hand side column
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side column
-        , typename MT2  // Type of the matrix of the right-hand side column
-        , bool SF2 >    // Symmetry flag of the right-hand side column
+template< typename MT1      // Type of the matrix of the left-hand side column
+        , size_t... CIs1    // Column indices of the left-hand side column
+        , typename MT2      // Type of the matrix of the right-hand side column
+        , size_t... CIs2 >  // Column indices of the right-hand side column
 inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Column<MT1,CIs1...>& a, const Column<MT2,CIs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.column() == b.column() ) );
 }
@@ -771,14 +1181,12 @@ inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // column being a column on a submatrix. In case both columns represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the submatrix of the left-hand side column
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side column
-        , typename MT2  // Type of the matrix of the right-hand side column
-        , bool SF2 >    // Symmetry flag of the right-hand side column
+template< typename MT1      // Type of the submatrix of the left-hand side column
+        , size_t... CIs1    // Column indices of the left-hand side column
+        , typename MT2      // Type of the matrix of the right-hand side column
+        , size_t... CIs2 >  // Column indices of the right-hand side column
 inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
-   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Column<MT1,CIs1...>& a, const Column<MT2,CIs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand() ) &&
             ( a.size() == b.size() ) &&
@@ -801,14 +1209,12 @@ inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
 // column being a column on a submatrix. In case both columns represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the submatrix of the left-hand side column
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side column
-        , typename MT2  // Type of the matrix of the right-hand side column
-        , bool SF2 >    // Symmetry flag of the right-hand side column
+template< typename MT1      // Type of the matrix of the left-hand side column
+        , size_t... CIs1    // Column indices of the left-hand side column
+        , typename MT2      // Type of the submatrix of the right-hand side column
+        , size_t... CIs2 >  // Column indices of the right-hand side column
 inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Column<MT1,CIs1...>& a, const Column<MT2,CIs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -831,14 +1237,12 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // being columns on submatrices. In case both columns represent the same observable state, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the submatrix of the left-hand side column
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side column
-        , typename MT2  // Type of the submatrix of the right-hand side column
-        , bool SF2 >    // Symmetry flag of the right-hand side column
+template< typename MT1      // Type of the submatrix of the left-hand side column
+        , size_t... CIs1    // Column indices of the left-hand side column
+        , typename MT2      // Type of the submatrix of the right-hand side column
+        , size_t... CIs2 >  // Column indices of the right-hand side column
 inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Column<MT1,CIs1...>& a, const Column<MT2,CIs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -861,13 +1265,11 @@ inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // same range of the same matrix. In case both columns represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the matrix of the left-hand side column
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side column
-        , typename MT2  // Type of the matrix of the right-hand side column
-        , bool SF2 >    // Symmetry flag of the right-hand side column
-inline bool isSame( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>& b ) noexcept
+template< typename MT1      // Type of the matrix of the left-hand side column
+        , size_t... CIs1    // Column indices of the left-hand side column
+        , typename MT2      // Type of the matrix of the right-hand side column
+        , size_t... CIs2 >  // Column indices of the right-hand side column
+inline bool isSame( const Column<MT1,CIs1...>& a, const Column<MT2,CIs2...>& b ) noexcept
 {
    return isSame_backend( a, b );
 }
@@ -890,11 +1292,9 @@ inline bool isSame( const Column<MT1,SO,DF,SF1>& a, const Column<MT2,SO,DF,SF2>&
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... CIs  // Column indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+inline bool tryAssign( const Column<MT,CIs...>& lhs, const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -921,11 +1321,9 @@ inline bool tryAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& r
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... CIs  // Column indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryAddAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+inline bool tryAddAssign( const Column<MT,CIs...>& lhs, const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -952,11 +1350,9 @@ inline bool tryAddAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... CIs  // Column indices
         , typename VT >  // Type of the right-hand side vector
-inline bool trySubAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+inline bool trySubAssign( const Column<MT,CIs...>& lhs, const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -983,11 +1379,9 @@ inline bool trySubAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... CIs  // Column indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryMultAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+inline bool tryMultAssign( const Column<MT,CIs...>& lhs, const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1014,11 +1408,9 @@ inline bool tryMultAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... CIs  // Column indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryDivAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>& rhs, size_t index )
+inline bool tryDivAssign( const Column<MT,CIs...>& lhs, const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1044,11 +1436,9 @@ inline bool tryDivAssign( const Column<MT,SO,DF,SF>& lhs, const Vector<VT,false>
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( Column<MT,SO,DF,SF>& c )
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline decltype(auto) derestrict( Column<MT,CIs...>& c )
 {
    return column( derestrict( c.operand() ), c.column() );
 }
@@ -1071,11 +1461,9 @@ inline decltype(auto) derestrict( Column<MT,SO,DF,SF>& c )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( Column<MT,SO,DF,SF>&& c )
+template< typename MT      // Type of the matrix
+        , size_t... CIs >  // Column indices
+inline decltype(auto) derestrict( Column<MT,CIs...>&& c )
 {
    return column( derestrict( c.operand() ), c.column() );
 }
@@ -1093,8 +1481,8 @@ inline decltype(auto) derestrict( Column<MT,SO,DF,SF>&& c )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF >
-struct IsRestricted< Column<MT,SO,DF,SF> >
+template< typename MT, size_t... CIs >
+struct IsRestricted< Column<MT,CIs...> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
@@ -1111,8 +1499,8 @@ struct IsRestricted< Column<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasConstDataAccess< Column<MT,SO,true,SF> >
+template< typename MT, size_t... CIs >
+struct HasConstDataAccess< DenseColumn<MT,CIs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1129,8 +1517,8 @@ struct HasConstDataAccess< Column<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasMutableDataAccess< Column<MT,SO,true,SF> >
+template< typename MT, size_t... CIs >
+struct HasMutableDataAccess< DenseColumn<MT,CIs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1147,8 +1535,8 @@ struct HasMutableDataAccess< Column<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsAligned< Column<MT,SO,true,SF> >
+template< typename MT, size_t... CIs >
+struct IsAligned< DenseColumn<MT,CIs...> >
    : public BoolConstant< And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1165,8 +1553,8 @@ struct IsAligned< Column<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsPadded< Column<MT,SO,true,SF> >
+template< typename MT, size_t... CIs >
+struct IsPadded< DenseColumn<MT,CIs...> >
    : public BoolConstant< And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1183,8 +1571,8 @@ struct IsPadded< Column<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool DF >
-struct IsOpposedView< Column<MT,false,DF,false> >
+template< typename MT, size_t... CIs >
+struct IsOpposedView< OpposingColumn<MT,CIs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1201,14 +1589,14 @@ struct IsOpposedView< Column<MT,false,DF,false> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct AddTrait< Column<MT,SO,DF,SF>, T >
+template< typename MT, size_t... CIs, typename T >
+struct AddTrait< Column<MT,CIs...>, T >
 {
    using Type = AddTrait_< ColumnTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct AddTrait< T, Column<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... CIs >
+struct AddTrait< T, Column<MT,CIs...> >
 {
    using Type = AddTrait_< T, ColumnTrait_<MT> >;
 };
@@ -1226,14 +1614,14 @@ struct AddTrait< T, Column<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct SubTrait< Column<MT,SO,DF,SF>, T >
+template< typename MT, size_t... CIs, typename T >
+struct SubTrait< Column<MT,CIs...>, T >
 {
    using Type = SubTrait_< ColumnTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct SubTrait< T, Column<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... CIs >
+struct SubTrait< T, Column<MT,CIs...> >
 {
    using Type = SubTrait_< T, ColumnTrait_<MT> >;
 };
@@ -1251,14 +1639,14 @@ struct SubTrait< T, Column<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct MultTrait< Column<MT,SO,DF,SF>, T >
+template< typename MT, size_t... CIs, typename T >
+struct MultTrait< Column<MT,CIs...>, T >
 {
    using Type = MultTrait_< ColumnTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct MultTrait< T, Column<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... CIs >
+struct MultTrait< T, Column<MT,CIs...> >
 {
    using Type = MultTrait_< T, ColumnTrait_<MT> >;
 };
@@ -1276,14 +1664,14 @@ struct MultTrait< T, Column<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct DivTrait< Column<MT,SO,DF,SF>, T >
+template< typename MT, size_t... CIs, typename T >
+struct DivTrait< Column<MT,CIs...>, T >
 {
    using Type = DivTrait_< ColumnTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct DivTrait< T, Column<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... CIs >
+struct DivTrait< T, Column<MT,CIs...> >
 {
    using Type = DivTrait_< T, ColumnTrait_<MT> >;
 };
@@ -1301,14 +1689,14 @@ struct DivTrait< T, Column<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct CrossTrait< Column<MT,SO,DF,SF>, T >
+template< typename MT, size_t... CIs, typename T >
+struct CrossTrait< Column<MT,CIs...>, T >
 {
    using Type = CrossTrait_< ColumnTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct CrossTrait< T, Column<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... CIs >
+struct CrossTrait< T, Column<MT,CIs...> >
 {
    using Type = CrossTrait_< T, ColumnTrait_<MT> >;
 };
@@ -1326,10 +1714,10 @@ struct CrossTrait< T, Column<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF >
-struct SubvectorTrait< Column<MT,SO,DF,SF> >
+template< typename MT, size_t... CIs >
+struct SubvectorTrait< Column<MT,CIs...> >
 {
-   using Type = SubvectorTrait_< ResultType_< Column<MT,SO,DF,SF> > >;
+   using Type = SubvectorTrait_< ResultType_< Column<MT,CIs...> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
