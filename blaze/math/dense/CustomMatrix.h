@@ -65,7 +65,6 @@
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
-#include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
@@ -6451,103 +6450,6 @@ template< typename T, bool AF, bool SO >
 struct IsPadded< CustomMatrix<T,AF,padded,SO> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SCHURTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
-struct SchurTrait< CustomMatrix<T1,AF,PF,SO>, StaticMatrix<T2,M,N,SO> >
-{
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, StaticMatrix<T2,M,N,SO2> >
-{
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
-struct SchurTrait< StaticMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
-{
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
-struct SchurTrait< StaticMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
-{
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N >
-struct SchurTrait< CustomMatrix<T1,AF,PF,SO>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, HybridMatrix<T2,M,N,SO2> >
-{
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
-struct SchurTrait< HybridMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO> >
-{
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
-struct SchurTrait< HybridMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2> >
-{
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, false >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO, typename T2 >
-struct SchurTrait< CustomMatrix<T1,AF,PF,SO>, DynamicMatrix<T2,SO> >
-{
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, DynamicMatrix<T2,SO2> >
-{
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
-};
-
-template< typename T1, bool SO, typename T2, bool AF, bool PF >
-struct SchurTrait< DynamicMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
-{
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
-struct SchurTrait< DynamicMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
-{
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
-};
-
-template< typename T1, bool AF1, bool PF1, bool SO, typename T2, bool AF2, bool PF2 >
-struct SchurTrait< CustomMatrix<T1,AF1,PF1,SO>, CustomMatrix<T2,AF2,PF2,SO> >
-{
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
-};
-
-template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool PF2, bool SO2 >
-struct SchurTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
-{
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
-};
 /*! \endcond */
 //*************************************************************************************************
 
