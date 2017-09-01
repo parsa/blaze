@@ -7786,7 +7786,7 @@
 //
 // A reference to a dense or sparse row can be created very conveniently via the \c row() function.
 // The row index must be in the range from \f$[0..M-1]\f$, where \c M is the total number of rows
-// of the matrix:
+// of the matrix, and can be specified both at compile time or at runtime:
 
    \code
    using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
@@ -7794,7 +7794,10 @@
    DenseMatrixType A;
    // ... Resizing and initialization
 
-   // Creating a reference to the 2nd row of matrix A
+   // Creating a reference to the 1st row of matrix A (compile time index)
+   blaze::Row<DenseMatrixType,1UL> row1 = row<1UL>( A );
+
+   // Creating a reference to the 2nd row of matrix A (runtime index)
    blaze::Row<DenseMatrixType> row2 = row( A, 2UL );
    \endcode
 
@@ -8116,7 +8119,7 @@
 //
 // A reference to a dense or sparse column can be created very conveniently via the \c column()
 // function. The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total
-// number of column of the matrix:
+// number of column of the matrix, and can be specified both at compile time or at runtime:
 
    \code
    using DenseMatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
@@ -8124,8 +8127,11 @@
    DenseMatrixType A;
    // ... Resizing and initialization
 
-   // Creating a reference to the 2nd column of matrix A
-   blaze::Column<DenseMatrixType> col2 = row( A, 2UL );
+   // Creating a reference to the 1st column of matrix A (compile time index)
+   blaze::Column<DenseMatrixType,1UL> col1 = column<1UL>( A );
+
+   // Creating a reference to the 2nd column of matrix A (runtime index)
+   blaze::Column<DenseMatrixType> col2 = column( A, 2UL );
    \endcode
 
 // The resulting reference can be treated as any other column vector, i.e. it can be assigned to,
