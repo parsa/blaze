@@ -1382,9 +1382,9 @@ inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
 // band being a band on a submatrix. In case both bands represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1         // Type of the submatrix of the left-hand side band
+template< typename MT1         // Type of the matrix of the left-hand side band
         , ptrdiff_t... BIs1    // Band indices of the left-hand side band
-        , typename MT2         // Type of the matrix of the right-hand side band
+        , typename MT2         // Type of the submatrix of the right-hand side band
         , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
 inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
    isSame_backend( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
@@ -1727,7 +1727,7 @@ struct IsRestricted< Band<MT,BIs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, ptrdiff_t... BIs >
-struct HasConstDataAccess< Band<MT,BIs...> >
+struct HasConstDataAccess< DenseBand<MT,BIs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1745,7 +1745,7 @@ struct HasConstDataAccess< Band<MT,BIs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, ptrdiff_t... BIs >
-struct HasMutableDataAccess< Band<MT,BIs...> >
+struct HasMutableDataAccess< DenseBand<MT,BIs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */

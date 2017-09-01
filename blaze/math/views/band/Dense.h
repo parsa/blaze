@@ -59,6 +59,7 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/BandTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -114,7 +115,7 @@ class BandImpl<MT,TF,true,false,BIs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT       = ResultType_<MT>;      //!< Result type of the sparse matrix expression.
+   using RT       = ResultType_<MT>;      //!< Result type of the dense matrix expression.
    using DataType = BandData<MT,BIs...>;  //!< The type of the BandData base class.
    //**********************************************************************************************
 
@@ -544,13 +545,13 @@ class BandImpl<MT,TF,true,false,BIs...>
    inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, ptrdiff_t... BIs2 >
-   inline bool canAlias( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept;
+   inline bool canAlias( const BandImpl<MT2,TF,true,false,BIs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, ptrdiff_t... BIs2 >
-   inline bool isAliased( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept;
+   inline bool isAliased( const BandImpl<MT2,TF,true,false,BIs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -1650,7 +1651,7 @@ template< typename MT          // Type of the dense matrix
 template< typename MT2         // Matrix type of the foreign dense band
         , ptrdiff_t... BIs2 >  // Band indices of the foreign dense band
 inline bool
-   BandImpl<MT,TF,true,false,BIs...>::canAlias( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept
+   BandImpl<MT,TF,true,false,BIs...>::canAlias( const BandImpl<MT2,TF,true,false,BIs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( band() == alias->band() );
 }
@@ -1698,7 +1699,7 @@ template< typename MT          // Type of the dense matrix
 template< typename MT2         // Matrix type of the foreign dense band
         , ptrdiff_t... BIs2 >  // Band indices of the foreign dense band
 inline bool
-   BandImpl<MT,TF,true,false,BIs...>::isAliased( const BandImpl<MT2,TF,true,BIs2...>* alias ) const noexcept
+   BandImpl<MT,TF,true,false,BIs...>::isAliased( const BandImpl<MT2,TF,true,false,BIs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( band() == alias->band() );
 }

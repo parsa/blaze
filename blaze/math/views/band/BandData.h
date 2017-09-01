@@ -146,8 +146,8 @@ inline BandData<MT>::BandData( Operand matrix, ptrdiff_t index )
    , row_   ( index >= 0L ?   0UL : -index )  // The index of the row containing the first element of the band
    , column_( index >= 0L ? index :    0UL )  // The index of the column containing the first element of the band
 {
-   if( ( band() >= 0L && column() >= matrix.columns() ) ||
-       ( band() <  0L && row() >= matrix.rows() ) ) {
+   if( ( band() > 0L && column() >= matrix.columns() ) ||
+       ( band() < 0L && row() >= matrix.rows() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
    }
 }
@@ -278,8 +278,8 @@ template< typename MT     // Type of the matrix
 inline BandData<MT,BI>::BandData( Operand matrix )
    : matrix_( matrix )  // The matrix containing the band
 {
-   if( ( band() >= 0L && column() >= matrix.columns() ) ||
-       ( band() <  0L && row() >= matrix.rows() ) ) {
+   if( ( band() > 0L && column() >= matrix.columns() ) ||
+       ( band() < 0L && row() >= matrix.rows() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
    }
 }
@@ -292,7 +292,7 @@ inline BandData<MT,BI>::BandData( Operand matrix )
 // \return The matrix containing the band.
 */
 template< typename MT     // Type of the matrix
-        , ptrdiff_t BI >  // Band indices
+        , ptrdiff_t BI >  // Band index
 inline typename BandData<MT,BI>::Operand BandData<MT,BI>::operand() const noexcept
 {
    return matrix_;
@@ -306,7 +306,7 @@ inline typename BandData<MT,BI>::Operand BandData<MT,BI>::operand() const noexce
 // \return The index of the band.
 */
 template< typename MT     // Type of the matrix
-        , ptrdiff_t BI >  // Band indices
+        , ptrdiff_t BI >  // Band index
 inline constexpr ptrdiff_t BandData<MT,BI>::band() const noexcept
 {
    return BI;

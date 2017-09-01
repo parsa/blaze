@@ -57,6 +57,9 @@
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
+#include <blaze/math/traits/CrossTrait.h>
+#include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
