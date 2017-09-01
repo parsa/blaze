@@ -40,8 +40,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsCustom.h>
+#include <blaze/math/typetraits/IsView.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -70,32 +75,13 @@ namespace blaze {
 // type \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and
 // reference modifiers are generally ignored.
 //
-// Since the Schur product is only defined for matrices, the SchurTrait template only supports
-// the following matrix types:
-//
-// <ul>
-//    <li>blaze::StaticMatrix</li>
-//    <li>blaze::HybridMatrix</li>
-//    <li>blaze::DynamicMatrix</li>
-//    <li>blaze::CustomMatrix</li>
-//    <li>blaze::CompressedMatrix</li>
-//    <li>blaze::SymmetricMatrix</li>
-//    <li>blaze::HermitianMatrix</li>
-//    <li>blaze::LowerMatrix</li>
-//    <li>blaze::UniLowerMatrix</li>
-//    <li>blaze::StrictlyLowerMatrix</li>
-//    <li>blaze::UpperMatrix</li>
-//    <li>blaze::UniUpperMatrix</li>
-//    <li>blaze::StrictlyUpperMatrix</li>
-//    <li>blaze::DiagonalMatrix</li>
-// </ul>
-//
 //
 // \n \section schurtrait_specializations Creating custom specializations
 //
-// It is possible to specialize the SchurTrait template for additional user-defined data types.
-// The following example shows the according specialization for the Schur product between two
-// static matrices with equal storage order:
+// Per default, SchurTrait supports all matrix types of the Blaze library (including views and
+// adaptors). For all other data types it is possible to specialize the SchurTrait template. The
+// following example shows the according specialization for the Schur product between two static
+// matrices with equal storage order:
 
    \code
    template< typename T1, size_t M, size_t N, bool SO, typename T2 >
@@ -119,19 +105,13 @@ namespace blaze {
    }                                     //
    \endcode
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
+template< typename T1        // Type of the left-hand side operand
+        , typename T2        // Type of the right-hand side operand
+        , typename = void >  // Restricting condition
 struct SchurTrait
 {
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type1 = Decay_<T1>;
-   using Type2 = Decay_<T2>;
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
@@ -142,11 +122,71 @@ struct SchurTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , SchurTrait<Type1,Type2>
+                            , SchurTrait< Decay_<T1>, Decay_<T2> >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SchurTrait class template for the left operand being a custom or
+//        view type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct SchurTrait< T1, T2
+                 , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
+                                 , Not< Or< IsCustom<T2>, IsView<T2> > > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename SchurTrait< typename T1::ResultType, T2 >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SchurTrait class template for the right operand being a custom or
+//        view type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct SchurTrait< T1, T2
+                 , EnableIf_< And< Not< Or< IsCustom<T1>, IsView<T1> > >
+                                 , Or< IsCustom<T2>, IsView<T2> > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename SchurTrait< T1, typename T2::ResultType >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the SchurTrait class template for the both operands being custom or
+//        view types.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct SchurTrait< T1, T2
+                 , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
+                                 , Or< IsCustom<T2>, IsView<T2> > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename SchurTrait< typename T1::ResultType, typename T2::ResultType >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
