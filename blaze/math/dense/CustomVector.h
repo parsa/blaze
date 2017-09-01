@@ -5176,61 +5176,6 @@ struct IsPadded< CustomVector<T,AF,padded,TF> >
 
 //=================================================================================================
 //
-//  SUBTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
-struct SubTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF> >
-{
-   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
-struct SubTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
-struct SubTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< SubTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
-struct SubTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = HybridVector< SubTrait_<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct SubTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF> >
-{
-   using Type = DynamicVector< SubTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct SubTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = DynamicVector< SubTrait_<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2 >
-struct SubTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
-{
-   using Type = DynamicVector< SubTrait_<T1,T2>, TF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  MULTTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
