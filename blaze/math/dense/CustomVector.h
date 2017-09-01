@@ -64,7 +64,6 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -5168,89 +5167,6 @@ template< typename T, bool AF, bool TF >
 struct IsPadded< CustomVector<T,AF,padded,TF> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct CrossTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,3UL,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct CrossTrait< StaticVector<T1,3UL,TF>, CustomVector<T2,AF,PF,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N >
-struct CrossTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF >
-struct CrossTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct CrossTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct CrossTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2 >
-struct CrossTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF> >
-{
- private:
-   using T = MultTrait_<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

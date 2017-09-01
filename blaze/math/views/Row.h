@@ -55,7 +55,6 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -1567,31 +1566,6 @@ template< typename MT, size_t... RIs >
 struct IsOpposedView< OpposingRow<MT,RIs...> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t... RIs, typename T >
-struct CrossTrait< Row<MT,RIs...>, T >
-{
-   using Type = CrossTrait_< RowTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, size_t... RIs >
-struct CrossTrait< T, Row<MT,RIs...> >
-{
-   using Type = CrossTrait_< T, RowTrait_<MT> >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

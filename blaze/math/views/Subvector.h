@@ -58,7 +58,6 @@
 #include <blaze/math/expressions/VecVecSubExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1352,31 +1351,6 @@ template< typename VT, bool TF >
 struct IsAligned< Subvector<VT,aligned,TF,true> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, bool TF, bool DF, typename T >
-struct CrossTrait< Subvector<VT,AF,TF,DF>, T >
-{
-   using Type = CrossTrait_< SubvectorTrait_<VT>, T >;
-};
-
-template< typename T, typename VT, bool AF, bool TF, bool DF >
-struct CrossTrait< T, Subvector<VT,AF,TF,DF> >
-{
-   using Type = CrossTrait_< T, SubvectorTrait_<VT> >;
-};
 /*! \endcond */
 //*************************************************************************************************
 
