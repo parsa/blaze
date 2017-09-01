@@ -44,13 +44,33 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool DF          // Density flag
+        , bool SF          // Symmetry flag
+        , size_t... RIs >  // Row indices
+class RowImpl
+{};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ALIAS DECLARATIONS
 //
 //=================================================================================================
 
@@ -65,22 +85,14 @@ namespace blaze {
 // The type of the matrix is specified via the first template parameter:
 
    \code
-   template< typename MT, bool SO, bool DF, bool SF >
+   template< typename MT, size_t... RIs >
    class Row;
    \endcode
 
 //  - MT: specifies the type of the matrix primitive. Row can be used with every matrix primitive,
 //        but does not work with any matrix expression type.
-//  - SO: specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix. This
-//        template parameter doesn't have to be explicitly defined, but is automatically derived
-//        from the first template parameter.
-//  - DF: specifies whether the given matrix type is a dense or sparse matrix type. This template
-//        parameter doesn't have to be defined explicitly, it is automatically derived from the
-//        first template parameter. Defining the parameter explicitly may result in a compilation
-//        error!
-//  - SF: specifies whether the given matrix is a symmetric matrix or not. Also this parameter
-//        doesn't have to be explicitly defined, but is automatically derived from the first
-//        template parameter.
+//  - RIs: specifies zero or one row indices. This optional parameter can be used to provide the
+//         row index at compile time.
 //
 //
 // \n \section row_setup Setup of Rows
@@ -90,7 +102,7 @@ namespace blaze {
 //
 // A reference to a dense or sparse row can be created very conveniently via the \c row() function.
 // The row index must be in the range from \f$[0..M-1]\f$, where \c M is the total number of rows
-// of the matrix:
+// of the matrix, and can be specified both at compile time or at runtime:
 
    \code
    using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
@@ -98,7 +110,10 @@ namespace blaze {
    DenseMatrixType A;
    // ... Resizing and initialization
 
-   // Creating a reference to the 2nd row of matrix A
+   // Creating a reference to the 1st row of matrix A (compile time index)
+   blaze::Row<DenseMatrixType,1UL> row1 = row<1UL>( A );
+
+   // Creating a reference to the 2nd row of matrix A (runtime index)
    blaze::Row<DenseMatrixType> row2 = row( A, 2UL );
    \endcode
 
@@ -364,12 +379,68 @@ namespace blaze {
 // Although Blaze performs the resulting vector/matrix multiplication as efficiently as possible
 // using a row-major storage order for matrix A would result in a more efficient evaluation.
 */
-template< typename MT                            // Type of the matrix
-        , bool SO = IsRowMajorMatrix<MT>::value  // Storage order
-        , bool DF = IsDenseMatrix<MT>::value     // Density flag
-        , bool SF = IsSymmetric<MT>::value >     // Symmetry flag
-class Row
-{};
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+using Row = RowImpl< MT
+                   , IsRowMajorMatrix<MT>::value
+                   , IsDenseMatrix<MT>::value
+                   , IsSymmetric<MT>::value
+                   , RIs... >;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reference to a specific row of a dense matrix.
+// \ingroup row
+//
+// The DenseRow template represents a reference to a specific row of a dense matrix primitive.
+*/
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+using DenseRow = RowImpl< MT
+                        , IsRowMajorMatrix<MT>::value
+                        , true
+                        , IsSymmetric<MT>::value
+                        , RIs... >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reference to a specific row of a sparse matrix.
+// \ingroup row
+//
+// The SparseRow template represents a reference to a specific row of a sparse matrix primitive.
+*/
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+using SparseRow = RowImpl< MT
+                         , IsRowMajorMatrix<MT>::value
+                         , false
+                         , IsSymmetric<MT>::value
+                         , RIs... >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reference to a specific row of a column-major, non-symmetric matrix.
+// \ingroup row
+//
+// The OpposingRow template represents a reference to a specific row of a column-major,
+// non-symmetric matrix primitive.
+*/
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+using OpposingRow = RowImpl< MT
+                           , false
+                           , IsDenseMatrix<MT>::value
+                           , false
+                           , RIs... >;
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

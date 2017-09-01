@@ -96,6 +96,117 @@ namespace blaze {
 // \ingroup views
 //
 // \param matrix The matrix containing the row.
+// \return View on the specified row of the matrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given matrix.
+
+   \code
+   using blaze::rowMajor;
+
+   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
+
+   DenseMatrix D;
+   SparseMatrix S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 3rd row of the dense matrix D
+   blaze::Row<DenseMatrix,3UL> = row<3UL>( D );
+
+   // Creating a view on the 4th row of the sparse matrix S
+   blaze::Row<SparseMatrix,4UL> = row<4UL>( S );
+   \endcode
+
+// In case the row is not properly specified (i.e. if the specified index is greater than or equal
+// to the total number of the rows in the given matrix) a \a std::invalid_argument exception is
+// thrown.
+*/
+template< size_t RI    // Row index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline Row<MT,RI> row( Matrix<MT,SO>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return Row<MT,RI>( ~matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific row of the given constant matrix.
+// \ingroup views
+//
+// \param matrix The constant matrix containing the row.
+// \return View on the specified row of the matrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given constant
+// matrix.
+
+   \code
+   using blaze::rowMajor;
+
+   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
+   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
+
+   const DenseMatrix D( ... );
+   const SparseMatrix S( ... );
+
+   // Creating a view on the 3rd row of the dense matrix D
+   blaze::Row<const DenseMatrix,3UL> = row<3UL>( D );
+
+   // Creating a view on the 4th row of the sparse matrix S
+   blaze::Row<const SparseMatrix,4UL> = row<4UL>( S );
+   \endcode
+
+// In case the row is not properly specified (i.e. if the specified index is greater than or equal
+// to the total number of the rows in the given matrix) a \a std::invalid_argument exception is
+// thrown.
+*/
+template< size_t RI    // Row index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const Row<const MT,RI> row( const Matrix<MT,SO>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return Row<const MT,RI>( ~matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific row of the given temporary matrix.
+// \ingroup views
+//
+// \param matrix The temporary matrix containing the row.
+// \return View on the specified row of the matrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given temporary
+// matrix. In case the row is not properly specified (i.e. if the specified index is greater
+// than or equal to the total number of the rows in the given matrix) a \a std::invalid_argument
+// exception is thrown.
+*/
+template< size_t RI    // Row index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline Row<MT,RI> row( Matrix<MT,SO>&& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return Row<MT,RI>( ~matrix );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a specific row of the given matrix.
+// \ingroup views
+//
+// \param matrix The matrix containing the row.
 // \param index The index of the row.
 // \return View on the specified row of the matrix.
 // \exception std::invalid_argument Invalid row access index.
@@ -216,6 +327,29 @@ inline Row<MT> row( Matrix<MT,SO>&& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant matrix/matrix addition.
+// \return View on the specified row of the addition.
+//
+// This function returns an expression representing the specified row of the given matrix/matrix
+// addition.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatAddExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row<RI>( (~matrix).leftOperand() ) + row<RI>( (~matrix).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix/matrix addition.
+// \ingroup views
+//
+// \param matrix The constant matrix/matrix addition.
 // \param index The index of the row.
 // \return View on the specified row of the addition.
 //
@@ -228,6 +362,29 @@ inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return row( (~matrix).leftOperand(), index ) + row( (~matrix).rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix/matrix subtraction.
+// \ingroup views
+//
+// \param matrix The constant matrix/matrix subtraction.
+// \return View on the specified row of the subtraction.
+//
+// This function returns an expression representing the specified row of the given matrix/matrix
+// subtraction.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatSubExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row<RI>( (~matrix).leftOperand() ) - row<RI>( (~matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -262,6 +419,28 @@ inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant Schur product.
+// \return View on the specified row of the Schur product.
+//
+// This function returns an expression representing the specified row of the given Schur product.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const SchurExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row<RI>( (~matrix).leftOperand() ) * row<RI>( (~matrix).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given Schur product.
+// \ingroup views
+//
+// \param matrix The constant Schur product.
 // \param index The index of the row.
 // \return View on the specified row of the Schur product.
 //
@@ -273,6 +452,29 @@ inline decltype(auto) row( const SchurExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return row( (~matrix).leftOperand(), index ) * row( (~matrix).rightOperand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix/matrix multiplication.
+// \ingroup views
+//
+// \param matrix The constant matrix/matrix multiplication.
+// \return View on the specified row of the multiplication.
+//
+// This function returns an expression representing the specified row of the given matrix/matrix
+// multiplication.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row<RI>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -307,6 +509,28 @@ inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant outer product.
+// \return View on the specified row of the outer product.
+//
+// This function returns an expression representing the specified row of the given outer product.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~matrix).leftOperand()[RI] * (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given outer product.
+// \ingroup views
+//
+// \param matrix The constant outer product.
 // \param index The index of the row.
 // \return View on the specified row of the outer product.
 //
@@ -318,6 +542,29 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return (~matrix).leftOperand()[index] * (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix/scalar multiplication.
+// \ingroup views
+//
+// \param matrix The constant matrix/scalar multiplication.
+// \return View on the specified row of the multiplication.
+//
+// This function returns an expression representing the specified row of the given matrix/scalar
+// multiplication.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row<RI>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -352,6 +599,29 @@ inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant matrix/scalar division.
+// \return View on the specified row of the division.
+//
+// This function returns an expression representing the specified row of the given matrix/scalar
+// division.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row<RI>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix/scalar division.
+// \ingroup views
+//
+// \param matrix The constant matrix/scalar division.
 // \param index The index of the row.
 // \return View on the specified row of the division.
 //
@@ -375,6 +645,29 @@ inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant unary matrix map operation.
+// \return View on the specified row of the unary map operation.
+//
+// This function returns an expression representing the specified row of the given unary matrix
+// map operation.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMapExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( row<RI>( (~matrix).operand() ), (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given unary matrix map operation.
+// \ingroup views
+//
+// \param matrix The constant unary matrix map operation.
 // \param index The index of the row.
 // \return View on the specified row of the unary map operation.
 //
@@ -387,6 +680,31 @@ inline decltype(auto) row( const MatMapExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return map( row( (~matrix).operand(), index ), (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given binary matrix map operation.
+// \ingroup views
+//
+// \param matrix The constant binary matrix map operation.
+// \return View on the specified row of the binary map operation.
+//
+// This function returns an expression representing the specified row of the given binary matrix
+// map operation.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatMatMapExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( row<RI>( (~matrix).leftOperand() ),
+               row<RI>( (~matrix).rightOperand() ),
+               (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -423,6 +741,29 @@ inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant matrix evaluation operation.
+// \return View on the specified row of the evaluation operation.
+//
+// This function returns an expression representing the specified row of the given matrix
+// evaluation operation.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatEvalExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return eval( row<RI>( (~matrix).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix evaluation operation.
+// \ingroup views
+//
+// \param matrix The constant matrix evaluation operation.
 // \param index The index of the row.
 // \return View on the specified row of the evaluation operation.
 //
@@ -435,6 +776,29 @@ inline decltype(auto) row( const MatEvalExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return eval( row( (~matrix).operand(), index ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix serialization operation.
+// \ingroup views
+//
+// \param matrix The constant matrix serialization operation.
+// \return View on the specified row of the serialization operation.
+//
+// This function returns an expression representing the specified row of the given matrix
+// serialization operation.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatSerialExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return serial( row<RI>( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -469,6 +833,29 @@ inline decltype(auto) row( const MatSerialExpr<MT>& matrix, size_t index )
 // \ingroup views
 //
 // \param matrix The constant matrix declaration operation.
+// \return View on the specified row of the declaration operation.
+//
+// This function returns an expression representing the specified row of the given matrix
+// declaration operation.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const DeclExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return row<RI>( (~matrix).operand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix declaration operation.
+// \ingroup views
+//
+// \param matrix The constant matrix declaration operation.
 // \param index The index of the row.
 // \return View on the specified row of the declaration operation.
 //
@@ -481,6 +868,29 @@ inline decltype(auto) row( const DeclExpr<MT>& matrix, size_t index )
    BLAZE_FUNCTION_TRACE;
 
    return row( (~matrix).operand(), index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix transpose operation.
+// \ingroup views
+//
+// \param matrix The constant matrix transpose operation.
+// \return View on the specified row of the transpose operation.
+//
+// This function returns an expression representing the specified row of the given matrix
+// transpose operation.
+*/
+template< size_t RI      // Row index
+        , typename MT >  // Matrix base type of the expression
+inline decltype(auto) row( const MatTransExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( column<RI>( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -520,26 +930,26 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, size_t index )
 //*************************************************************************************************
 /*!\name Row operators */
 //@{
-template< typename MT, bool SO, bool DF, bool SF >
-inline void reset( Row<MT,SO,DF,SF>& row );
+template< typename MT, size_t... RIs >
+inline void reset( Row<MT,RIs...>& row );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline void reset( Row<MT,SO,DF,SF>&& row );
+template< typename MT, size_t... RIs >
+inline void reset( Row<MT,RIs...>&& row );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline void clear( Row<MT,SO,DF,SF>& row );
+template< typename MT, size_t... RIs >
+inline void clear( Row<MT,RIs...>& row );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline void clear( Row<MT,SO,DF,SF>&& row );
+template< typename MT, size_t... RIs >
+inline void clear( Row<MT,RIs...>&& row );
 
-template< bool RF, typename MT, bool SO, bool DF, bool SF >
-inline bool isDefault( const Row<MT,SO,DF,SF>& row );
+template< bool RF, typename MT, size_t... RIs >
+inline bool isDefault( const Row<MT,RIs...>& row );
 
-template< typename MT, bool SO, bool DF, bool SF >
-inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept;
+template< typename MT, size_t... RIs >
+inline bool isIntact( const Row<MT,RIs...>& row ) noexcept;
 
-template< typename MT1, bool SO, bool DF, bool SF1, typename MT2, bool SF2 >
-inline bool isSame( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept;
+template< typename MT1, size_t... RIs1, typename MT2, size_t... RIs2 >
+inline bool isSame( const Row<MT1,RIs1...>& a, const Row<MT2,RIs2...>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -551,11 +961,9 @@ inline bool isSame( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) n
 // \param row The row to be resetted.
 // \return void
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void reset( Row<MT,SO,DF,SF>& row )
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline void reset( Row<MT,RIs...>& row )
 {
    row.reset();
 }
@@ -569,11 +977,9 @@ inline void reset( Row<MT,SO,DF,SF>& row )
 // \param row The temporary row to be resetted.
 // \return void
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void reset( Row<MT,SO,DF,SF>&& row )
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline void reset( Row<MT,RIs...>&& row )
 {
    row.reset();
 }
@@ -589,11 +995,9 @@ inline void reset( Row<MT,SO,DF,SF>&& row )
 //
 // Clearing a row is equivalent to resetting it via the reset() function.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void clear( Row<MT,SO,DF,SF>& row )
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline void clear( Row<MT,RIs...>& row )
 {
    row.reset();
 }
@@ -609,14 +1013,66 @@ inline void clear( Row<MT,SO,DF,SF>& row )
 //
 // Clearing a row is equivalent to resetting it via the reset() function.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline void clear( Row<MT,SO,DF,SF>&& row )
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline void clear( Row<MT,RIs...>&& row )
 {
    row.reset();
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given dense row is in default state.
+// \ingroup row
+//
+// \param row The dense row to be tested for its default state.
+// \return \a true in case the given dense row is component-wise zero, \a false otherwise.
+//
+// This function checks whether the dense row is in default state. For instance, in case the
+// row is instantiated for a built-in integral or floating point data type, the function returns
+// \a true in case all row elements are 0 and \a false in case any row element is not 0.
+*/
+template< bool RF             // Relaxation flag
+        , typename MT         // Type of the dense matrix
+        , ptrdiff_t... RIs >  // Row indices
+inline bool isDefault_backend( const DenseRow<MT,RIs...>& row )
+{
+   using blaze::isDefault;
+
+   for( size_t i=0UL; i<row.size(); ++i )
+      if( !isDefault<RF>( row[i] ) ) return false;
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given sparse row is in default state.
+// \ingroup row
+//
+// \param row The sparse row to be tested for its default state.
+// \return \a true in case the given row is component-wise zero, \a false otherwise.
+//
+// This function checks whether the sparse row is in default state. For instance, in case the
+// row is instantiated for a built-in integral or floating point data type, the function returns
+// \a true in case all row elements are 0 and \a false in case any row element is not 0.
+*/
+template< bool RF             // Relaxation flag
+        , typename MT         // Type of the sparse matrix
+        , ptrdiff_t... RIs >  // Row indices
+inline bool isDefault_backend( const SparseRow<MT,RIs...>& row )
+{
+   using blaze::isDefault;
+
+   for( const auto& element : row )
+      if( !isDefault<RF>( element.value() ) ) return false;
+   return true;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -645,57 +1101,13 @@ inline void clear( Row<MT,SO,DF,SF>&& row )
    if( isDefault<relaxed>( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline bool isDefault( const Row<MT,SO,DF,SF>& row )
+template< bool RF          // Relaxation flag
+        , typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline bool isDefault( const Row<MT,RIs...>& row )
 {
-   using blaze::isDefault;
-
-   for( size_t i=0UL; i<row.size(); ++i )
-      if( !isDefault<RF>( row[i] ) ) return false;
-   return true;
+   return isDefault_backend<RF>( row );
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given sparse row is in default state.
-// \ingroup row
-//
-// \param row The sparse row to be tested for its default state.
-// \return \a true in case the given row is component-wise zero, \a false otherwise.
-//
-// This function checks whether the sparse row is in default state. For instance, in case the
-// row is instantiated for a built-in integral or floating point data type, the function returns
-// \a true in case all row elements are 0 and \a false in case any vector element is not 0. The
-// following example demonstrates the use of the \a isDefault function:
-
-   \code
-   blaze::CompressedMatrix<double,rowMajor> A;
-   // ... Resizing and initialization
-   if( isDefault( row( A, 0UL ) ) ) { ... }
-   \endcode
-*/
-template< bool RF      // Relaxation flag
-        , typename MT  // Type of the sparse matrix
-        , bool SO      // Storage order
-        , bool SF >    // Symmetry flag
-inline bool isDefault( const Row<MT,SO,false,SF>& row )
-{
-   using blaze::isDefault;
-
-   using ConstIterator = ConstIterator_< Row<MT,SO,false,SF> >;
-
-   const ConstIterator end( row.end() );
-   for( ConstIterator element=row.begin(); element!=end; ++element )
-      if( !isDefault<RF>( element->value() ) ) return false;
-   return true;
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -716,11 +1128,9 @@ inline bool isDefault( const Row<MT,SO,false,SF>& row )
    if( isIntact( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline bool isIntact( const Row<MT,RIs...>& row ) noexcept
 {
    return ( row.row() < row.operand().rows() &&
             isIntact( row.operand() ) );
@@ -741,14 +1151,12 @@ inline bool isIntact( const Row<MT,SO,DF,SF>& row ) noexcept
 // rows. In case both rows represent the same observable state, the function returns \a true,
 // otherwise it returns \a false.
 */
-template< typename MT1    // Type of the matrix of the left-hand side row
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF1        // Symmetry flag of the left-hand side row
-        , typename MT2    // Type of the matrix of the right-hand side row
-        , bool SF2 >      // Symmetry flag of the right-hand side row
+template< typename MT1      // Type of the matrix of the left-hand side row
+        , size_t... RIs1    // Row indices of the left-hand side row
+        , typename MT2      // Type of the matrix of the right-hand side row
+        , size_t... RIs2 >  // Row indices of the right-hand side row
 inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Row<MT1,RIs1...>& a, const Row<MT2,RIs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.row() == b.row() ) );
 }
@@ -769,14 +1177,12 @@ inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // being a row on a submatrix. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the submatrix of the left-hand side row
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side row
-        , typename MT2  // Type of the matrix of the right-hand side row
-        , bool SF2 >    // Symmetry flag of the right-hand side row
+template< typename MT1      // Type of the submatrix of the left-hand side row
+        , size_t... RIs1    // Row indices of the left-hand side row
+        , typename MT2      // Type of the matrix of the right-hand side row
+        , size_t... RIs2 >  // Row indices of the right-hand side row
 inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
-   isSame_backend( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Row<MT1,RIs1...>& a, const Row<MT2,RIs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand() ) &&
             ( a.size() == b.size() ) &&
@@ -799,14 +1205,12 @@ inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
 // being a row on a submatrix. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the matrix of the left-hand side row
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side row
-        , typename MT2  // Type of the submatrix of the right-hand side row
-        , bool SF2 >    // Symmetry flag of the right-hand side row
+template< typename MT1      // Type of the matrix of the left-hand side row
+        , size_t... RIs1    // Row indices of the left-hand side row
+        , typename MT2      // Type of the submatrix of the right-hand side row
+        , size_t... RIs2 >  // Row indices of the right-hand side row
 inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Row<MT1,RIs1...>& a, const Row<MT2,RIs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -829,14 +1233,12 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // being rows on submatrices. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the submatrix of the left-hand side row
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side row
-        , typename MT2  // Type of the submatrix of the right-hand side row
-        , bool SF2 >    // Symmetry flag of the right-hand side row
+template< typename MT1      // Type of the submatrix of the left-hand side row
+        , size_t... RIs1    // Row indices of the left-hand side row
+        , typename MT2      // Type of the submatrix of the right-hand side row
+        , size_t... RIs2 >  // Row indices of the right-hand side row
 inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
+   isSame_backend( const Row<MT1,RIs1...>& a, const Row<MT2,RIs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -859,13 +1261,11 @@ inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // range of the same matrix. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1  // Type of the matrix of the left-hand side row
-        , bool SO       // Storage order
-        , bool DF       // Density flag
-        , bool SF1      // Symmetry flag of the left-hand side row
-        , typename MT2  // Type of the matrix of the right-hand side row
-        , bool SF2 >    // Symmetry flag of the right-hand side row
-inline bool isSame( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) noexcept
+template< typename MT1      // Type of the matrix of the left-hand side row
+        , size_t... RIs1    // Row indices of the left-hand side row
+        , typename MT2      // Type of the matrix of the right-hand side row
+        , size_t... RIs2 >  // Row indices of the right-hand side row
+inline bool isSame( const Row<MT1,RIs1...>& a, const Row<MT2,RIs2...>& b ) noexcept
 {
    return isSame_backend( a, b );
 }
@@ -888,11 +1288,9 @@ inline bool isSame( const Row<MT1,SO,DF,SF1>& a, const Row<MT2,SO,DF,SF2>& b ) n
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... RIs  // Row indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+inline bool tryAssign( const Row<MT,RIs...>& lhs, const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -919,11 +1317,9 @@ inline bool tryAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rhs, 
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... RIs  // Row indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryAddAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+inline bool tryAddAssign( const Row<MT,RIs...>& lhs, const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -950,11 +1346,9 @@ inline bool tryAddAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rh
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... RIs  // Row indices
         , typename VT >  // Type of the right-hand side vector
-inline bool trySubAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+inline bool trySubAssign( const Row<MT,RIs...>& lhs, const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -981,11 +1375,9 @@ inline bool trySubAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rh
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... RIs  // Row indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryMultAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+inline bool tryMultAssign( const Row<MT,RIs...>& lhs, const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1012,11 +1404,9 @@ inline bool tryMultAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& r
 // assignment operator.
 */
 template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
+        , size_t... RIs  // Row indices
         , typename VT >  // Type of the right-hand side vector
-inline bool tryDivAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rhs, size_t index )
+inline bool tryDivAssign( const Row<MT,RIs...>& lhs, const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1042,11 +1432,9 @@ inline bool tryDivAssign( const Row<MT,SO,DF,SF>& lhs, const Vector<VT,true>& rh
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( Row<MT,SO,DF,SF>& r )
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline decltype(auto) derestrict( Row<MT,RIs...>& r )
 {
    return row( derestrict( r.operand() ), r.row() );
 }
@@ -1069,11 +1457,9 @@ inline decltype(auto) derestrict( Row<MT,SO,DF,SF>& r )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
+template< typename MT      // Type of the matrix
+        , size_t... RIs >  // Row indices
+inline decltype(auto) derestrict( Row<MT,RIs...>&& r )
 {
    return row( derestrict( r.operand() ), r.row() );
 }
@@ -1091,8 +1477,8 @@ inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF >
-struct IsRestricted< Row<MT,SO,DF,SF> >
+template< typename MT, size_t... RIs >
+struct IsRestricted< Row<MT,RIs...> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
@@ -1109,8 +1495,8 @@ struct IsRestricted< Row<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasConstDataAccess< Row<MT,SO,true,SF> >
+template< typename MT, size_t... RIs >
+struct HasConstDataAccess< DenseRow<MT,RIs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1127,8 +1513,8 @@ struct HasConstDataAccess< Row<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct HasMutableDataAccess< Row<MT,SO,true,SF> >
+template< typename MT, size_t... RIs >
+struct HasMutableDataAccess< DenseRow<MT,RIs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1145,8 +1531,8 @@ struct HasMutableDataAccess< Row<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsAligned< Row<MT,SO,true,SF> >
+template< typename MT, size_t... RIs >
+struct IsAligned< DenseRow<MT,RIs...> >
    : public BoolConstant< And< IsAligned<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1163,8 +1549,8 @@ struct IsAligned< Row<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF >
-struct IsPadded< Row<MT,SO,true,SF> >
+template< typename MT, size_t... RIs >
+struct IsPadded< DenseRow<MT,RIs...> >
    : public BoolConstant< And< IsPadded<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1181,8 +1567,8 @@ struct IsPadded< Row<MT,SO,true,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool DF >
-struct IsOpposedView< Row<MT,false,DF,false> >
+template< typename MT, size_t... RIs >
+struct IsOpposedView< OpposingRow<MT,RIs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1199,14 +1585,14 @@ struct IsOpposedView< Row<MT,false,DF,false> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct AddTrait< Row<MT,SO,DF,SF>, T >
+template< typename MT, size_t... RIs, typename T >
+struct AddTrait< Row<MT,RIs...>, T >
 {
    using Type = AddTrait_< RowTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct AddTrait< T, Row<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... RIs >
+struct AddTrait< T, Row<MT,RIs...> >
 {
    using Type = AddTrait_< T, RowTrait_<MT> >;
 };
@@ -1224,14 +1610,14 @@ struct AddTrait< T, Row<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct SubTrait< Row<MT,SO,DF,SF>, T >
+template< typename MT, size_t... RIs, typename T >
+struct SubTrait< Row<MT,RIs...>, T >
 {
    using Type = SubTrait_< RowTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct SubTrait< T, Row<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... RIs >
+struct SubTrait< T, Row<MT,RIs...> >
 {
    using Type = SubTrait_< T, RowTrait_<MT> >;
 };
@@ -1249,14 +1635,14 @@ struct SubTrait< T, Row<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct MultTrait< Row<MT,SO,DF,SF>, T >
+template< typename MT, size_t... RIs, typename T >
+struct MultTrait< Row<MT,RIs...>, T >
 {
    using Type = MultTrait_< RowTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct MultTrait< T, Row<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... RIs >
+struct MultTrait< T, Row<MT,RIs...> >
 {
    using Type = MultTrait_< T, RowTrait_<MT> >;
 };
@@ -1274,14 +1660,14 @@ struct MultTrait< T, Row<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct DivTrait< Row<MT,SO,DF,SF>, T >
+template< typename MT, size_t... RIs, typename T >
+struct DivTrait< Row<MT,RIs...>, T >
 {
    using Type = DivTrait_< RowTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct DivTrait< T, Row<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... RIs >
+struct DivTrait< T, Row<MT,RIs...> >
 {
    using Type = DivTrait_< T, RowTrait_<MT> >;
 };
@@ -1299,14 +1685,14 @@ struct DivTrait< T, Row<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, typename T >
-struct CrossTrait< Row<MT,SO,DF,SF>, T >
+template< typename MT, size_t... RIs, typename T >
+struct CrossTrait< Row<MT,RIs...>, T >
 {
    using Type = CrossTrait_< RowTrait_<MT>, T >;
 };
 
-template< typename T, typename MT, bool SO, bool DF, bool SF >
-struct CrossTrait< T, Row<MT,SO,DF,SF> >
+template< typename T, typename MT, size_t... RIs >
+struct CrossTrait< T, Row<MT,RIs...> >
 {
    using Type = CrossTrait_< T, RowTrait_<MT> >;
 };
@@ -1324,10 +1710,10 @@ struct CrossTrait< T, Row<MT,SO,DF,SF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF >
-struct SubvectorTrait< Row<MT,SO,DF,SF> >
+template< typename MT, size_t... RIs >
+struct SubvectorTrait< Row<MT,RIs...> >
 {
-   using Type = SubvectorTrait_< ResultType_< Row<MT,SO,DF,SF> > >;
+   using Type = SubvectorTrait_< ResultType_< Row<MT,RIs...> > >;
 };
 /*! \endcond */
 //*************************************************************************************************
