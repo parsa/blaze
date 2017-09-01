@@ -12664,13 +12664,15 @@
 // accordingly upfront.
 //
 //
-// \n \section block_vectors_and_matrices_example Example
+// \n \section block_vectors_and_matrices_examples Examples
 // <hr>
 //
-// The following example demonstrates a complete multiplication between a statically sized block
-// matrix and block vector:
+// The first example demonstrates the multiplication between a statically sized block matrix
+// and a block vector:
 
    \code
+   using namespace blaze;
+
    // ( ( 1 1 )  ( 2 2 ) )   ( ( 1 ) )   ( ( 10 ) )
    // ( ( 1 1 )  ( 2 2 ) )   ( ( 1 ) )   ( ( 10 ) )
    // (                  ) * (       ) = (        )
@@ -12686,6 +12688,39 @@
    DynamicVector<V2,columnVector> x{ V2(1), V2(2) };
 
    DynamicVector<V2,columnVector> y( A * x );
+   \endcode
+
+// The second example shows the multiplication between a compressed block matrix with blocks of
+// varying size and a compressed block vector:
+
+   \code
+   using namespace blaze;
+
+   // ( ( 1 -2  3 )         ( 5 -1 ) )   ( (  1 ) )   ( ( -3 ) )
+   // ( ( 4  1  0 )         ( 1  2 ) )   ( (  0 ) )   ( (  7 ) )
+   // ( ( 0  2  4 )         ( 3  1 ) )   ( (  1 ) )   ( (  3 ) )
+   // (                              )   (        )   (        )
+   // (              ( 1 )           ) * ( (  2 ) ) = ( (  2 ) )
+   // (                              )   (        )   (        )
+   // ( ( 0 -1  1 )         ( 1  0 ) )   ( ( -1 ) )   ( (  0 ) )
+   // ( ( 2 -1  2 )         ( 0  1 ) )   ( (  2 ) )   ( (  6 ) )
+
+   using M3x3 = HybridMatrix<int,3UL,3UL,rowMajor>;
+   using V3   = HybridVector<int,3UL,columnVector>;
+
+   CompressedMatrix<M3x3,rowMajor> A( 3UL, 3UL, 5UL );
+   A(0,0) = M3x3{ { 1, -2, 3 }, { 4, 1, 0 }, { 0, 2, 4 } };
+   A(0,2) = M3x3{ { 5, -1 }, { 1, 2 }, { 3, 1 } };
+   A(1,1) = M3x3{ { 1 } };
+   A(2,0) = M3x3{ { 0, -1, 1 }, { 2, -1, 2 } };
+   A(2,2) = M3x3{ { 1, 0 }, { 0, 1 } };
+
+   CompressedVector<V3,columnVector> x( 3UL, 3UL );
+   x[0] = V3{ 1, 0, 1 };
+   x[1] = V3{ 2 };
+   x[2] = V3{ -1, 2 };
+
+   CompressedVector<V3,columnVector> y( A * x );
    \endcode
 
 // \n Previous: \ref lapack_functions &nbsp; &nbsp; Next: \ref intra_statement_optimization \n
