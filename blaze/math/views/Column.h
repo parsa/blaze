@@ -57,7 +57,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1572,31 +1571,6 @@ template< typename MT, size_t... CIs >
 struct IsOpposedView< OpposingColumn<MT,CIs...> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t... CIs, typename T >
-struct DivTrait< Column<MT,CIs...>, T >
-{
-   using Type = DivTrait_< ColumnTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, size_t... CIs >
-struct DivTrait< T, Column<MT,CIs...> >
-{
-   using Type = DivTrait_< T, ColumnTrait_<MT> >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

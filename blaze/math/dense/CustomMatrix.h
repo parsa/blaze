@@ -62,7 +62,6 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
-#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -6548,25 +6547,6 @@ template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool
 struct SchurTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2> >
 {
    using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool AF, bool PF, bool SO, typename T2 >
-struct DivTrait< CustomMatrix<T1,AF,PF,SO>, T2, EnableIf_<IsNumeric<T2> > >
-{
-   using Type = DynamicMatrix< DivTrait_<T1,T2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
