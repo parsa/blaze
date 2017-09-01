@@ -40,8 +40,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsCustom.h>
+#include <blaze/math/typetraits/IsView.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -84,9 +89,10 @@ namespace blaze {
 //
 // \n \section crosstrait_specializations Creating custom specializations
 //
-// It is possible to specialize the CrossTrait template for additional user-defined data types.
-// The following example shows the according specialization for the cross product between two
-// static column vectors:
+// Per default, CrossTrait supports all vector types of the Blaze library (including views and
+// adaptors). For all other data types it is possible to specialize the CrossTrait template. The
+// following example shows the according specialization for the cross product between two static
+// column vectors:
 
    \code
    template< typename T1, typename T2 >
@@ -111,19 +117,13 @@ namespace blaze {
    }                                     //
    \endcode
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2 >  // Type of the right-hand side operand
+template< typename T1        // Type of the left-hand side operand
+        , typename T2        // Type of the right-hand side operand
+        , typename = void >  // Restricting condition
 struct CrossTrait
 {
  private:
    //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   using Type1 = Decay_<T1>;
-   using Type2 = Decay_<T2>;
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct Failure******************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
@@ -134,11 +134,71 @@ struct CrossTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , CrossTrait<Type1,Type2>
+                            , CrossTrait< Decay_<T1>, Decay_<T2> >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the CrossTrait class template for the left operand being a custom or
+//        view type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct CrossTrait< T1, T2
+                 , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
+                                 , Not< Or< IsCustom<T2>, IsView<T2> > > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename CrossTrait< typename T1::ResultType, T2 >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the CrossTrait class template for the right operand being a custom or
+//        view type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct CrossTrait< T1, T2
+                 , EnableIf_< And< Not< Or< IsCustom<T1>, IsView<T1> > >
+                                 , Or< IsCustom<T2>, IsView<T2> > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename CrossTrait< T1, typename T2::ResultType >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the CrossTrait class template for the both operands being custom or
+//        view types.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct CrossTrait< T1, T2
+                 , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
+                                 , Or< IsCustom<T2>, IsView<T2> > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename CrossTrait< typename T1::ResultType, typename T2::ResultType >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
