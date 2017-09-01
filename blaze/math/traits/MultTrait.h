@@ -41,12 +41,16 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/typetraits/HasMult.h>
+#include <blaze/math/typetraits/IsCustom.h>
+#include <blaze/math/typetraits/IsView.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/InvalidType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/All.h>
-#include <blaze/util/typetraits/Any.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -75,41 +79,16 @@ namespace blaze {
 // In case the two types \a T1 and \a T2 cannot be multiplied, a compilation error is created.
 // Note that \c const and \c volatile qualifiers and reference modifiers are generally ignored.
 //
-// Per default, MultTrait supports all built-in data types. Additionally, the Blaze library
-// provides appropriate specializations for the following user-defined arithmetic types:
-//
-// <ul>
-//    <li>std::complex</li>
-//    <li>blaze::StaticVector</li>
-//    <li>blaze::HybridVector</li>
-//    <li>blaze::DynamicVector</li>
-//    <li>blaze::CustomVector</li>
-//    <li>blaze::CompressedVector</li>
-//    <li>blaze::StaticMatrix</li>
-//    <li>blaze::HybridMatrix</li>
-//    <li>blaze::DynamicMatrix</li>
-//    <li>blaze::CustomMatrix</li>
-//    <li>blaze::CompressedMatrix</li>
-//    <li>blaze::SymmetricMatrix</li>
-//    <li>blaze::HermitianMatrix</li>
-//    <li>blaze::LowerMatrix</li>
-//    <li>blaze::UniLowerMatrix</li>
-//    <li>blaze::StrictlyLowerMatrix</li>
-//    <li>blaze::UpperMatrix</li>
-//    <li>blaze::UniUpperMatrix</li>
-//    <li>blaze::StrictlyUpperMatrix</li>
-//    <li>blaze::DiagonalMatrix</li>
-// </ul>
-//
 //
 // \n \section multtrait_specializations Creating custom specializations
 //
-// MultTrait is guaranteed to work for all data types that provide a multiplication operator
-// (i.e. \c operator*). In order to add support for user-defined data types that either don't
-// provide a multiplication operator or whose addition operator returns a proxy object instead
-// of a concrete type (as it is common in expression template libraries) it is possible to
-// specialize the MultTrait template. The following example shows the according specialization
-// for the multiplication between two dynamic column vectors:
+// MultTrait is guaranteed to work for all built-in data types, complex numbers, all vector
+// and matrix types of the Blaze library (including views and adaptors) and all data types that
+// provide a multiplication operator (i.e. \c operator*). In order to add support for user-defined
+// data types that either don't provide a multiplication operator or whose multiplication operator
+// returns a proxy object instead of a concrete type (as it is common in expression template
+// libraries) it is possible to specialize the MultTrait template. The following example shows
+// the according specialization for the multiplication between two dynamic column vectors:
 
    \code
    template< typename T1, typename T2 >
@@ -141,14 +120,13 @@ struct MultTrait
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type1 = Decay_<T1>;
-   using Type2 = Decay_<T2>;
+   struct MultType { using Type = decltype( std::declval<T1>() * std::declval<T2>() ); };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct MultType { using Type = decltype( std::declval<Type1>() * std::declval<Type2>() ); };
+   struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -157,8 +135,10 @@ struct MultTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , MultTrait<Type1,Type2>
-                            , MultType >::Type;
+                            , MultTrait< Decay_<T1>, Decay_<T2> >
+                            , If_< HasMult<T1,T2>
+                                 , MultType
+                                 , Failure > >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -227,6 +207,66 @@ struct MultTrait< complex<T1>, complex<T2> >
  public:
    //**********************************************************************************************
    using Type = CommonType_< complex<T1>, complex<T2> >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTrait class template for the left operand being a custom or
+//        view type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct MultTrait< T1, T2
+                , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
+                                , Not< Or< IsCustom<T2>, IsView<T2> > > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename MultTrait< typename T1::ResultType, T2 >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTrait class template for the right operand being a custom or
+//        view type.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct MultTrait< T1, T2
+                , EnableIf_< And< Not< Or< IsCustom<T1>, IsView<T1> > >
+                                , Or< IsCustom<T2>, IsView<T2> > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename MultTrait< T1, typename T2::ResultType >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the MultTrait class template for the both operands being custom or
+//        view types.
+// \ingroup math_traits
+*/
+template< typename T1, typename T2 >
+struct MultTrait< T1, T2
+                , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
+                                , Or< IsCustom<T2>, IsView<T2> > > > >
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename MultTrait< typename T1::ResultType, typename T2::ResultType >::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
