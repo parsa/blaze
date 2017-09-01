@@ -66,7 +66,6 @@
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -2403,31 +2402,6 @@ template< typename MT, bool SO >
 struct IsAligned< Submatrix<MT,aligned,SO,true> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MULTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, typename T >
-struct MultTrait< Submatrix<MT,AF,SO,DF>, T >
-{
-   using Type = MultTrait_< SubmatrixTrait_<MT>, T >;
-};
-
-template< typename T, typename MT, bool AF, bool SO, bool DF >
-struct MultTrait< T, Submatrix<MT,AF,SO,DF> >
-{
-   using Type = MultTrait_< T, SubmatrixTrait_<MT> >;
-};
 /*! \endcond */
 //*************************************************************************************************
 
