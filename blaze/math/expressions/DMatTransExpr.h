@@ -55,6 +55,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -893,6 +894,24 @@ struct Rows< DMatTransExpr<MT,SO> >
 template< typename MT, bool SO >
 struct Columns< DMatTransExpr<MT,SO> >
    : public Rows<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct HasConstDataAccess< DMatTransExpr<MT,SO> >
+   : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
