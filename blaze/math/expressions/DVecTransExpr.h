@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -879,6 +880,24 @@ inline decltype(auto) trans( const DVecScalarMultExpr<VT,ST,TF>& dv )
 template< typename VT, bool TF >
 struct Size< DVecTransExpr<VT,TF> >
    : public Size<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct HasConstDataAccess< DVecTransExpr<VT,TF> >
+   : public BoolConstant< HasConstDataAccess<VT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************
