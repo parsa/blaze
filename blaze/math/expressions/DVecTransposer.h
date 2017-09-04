@@ -48,6 +48,8 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Inline.h>
@@ -771,6 +773,42 @@ inline void reset( DVecTransposer<VT,TF>& v )
 {
    v.reset();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct HasConstDataAccess< DVecTransposer<VT,TF> >
+   : public BoolConstant< HasConstDataAccess<VT>::value >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASMUTABLEDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct HasMutableDataAccess< DVecTransposer<VT,TF> >
+   : public BoolConstant< HasMutableDataAccess<VT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 

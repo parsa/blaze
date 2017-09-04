@@ -57,6 +57,7 @@
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -1110,6 +1111,24 @@ struct Rows< DMatDeclHermExpr<MT,SO> >
 template< typename MT, bool SO >
 struct Columns< DMatDeclHermExpr<MT,SO> >
    : public Columns<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct HasConstDataAccess< DMatDeclHermExpr<MT,SO> >
+   : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
 //*************************************************************************************************

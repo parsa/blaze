@@ -50,6 +50,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -2211,6 +2212,24 @@ inline bool isIntact( const DMatTransposer<MT,SO>& m ) noexcept
 {
    return m.isIntact();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  HASCONSTDATAACCESS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct HasConstDataAccess< DMatTransposer<MT,SO> >
+   : public BoolConstant< HasConstDataAccess<MT>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
