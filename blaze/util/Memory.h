@@ -237,7 +237,7 @@ EnableIf_< IsBuiltin<T> > deallocate( T* address ) noexcept
    if( alignment >= 8UL ) {
       deallocate_backend( address );
    }
-   else delete[] address;
+   else ::delete[] address;
 }
 //*************************************************************************************************
 
@@ -274,7 +274,7 @@ DisableIf_< IsBuiltin<T> > deallocate( T* address )
 
       deallocate_backend( raw );
    }
-   else delete[] address;
+   else ::delete[] address;
 }
 //*************************************************************************************************
 
