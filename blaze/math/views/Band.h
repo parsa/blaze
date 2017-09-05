@@ -1775,10 +1775,10 @@ struct IsOpposedView< Band<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, ptrdiff_t... BIs >
-struct SubvectorTrait< Band<MT,BIs...> >
+template< typename MT, ptrdiff_t... BIs, size_t... SAs >
+struct SubvectorTrait< Band<MT,BIs...>, SAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< Band<MT,BIs...> > >;
+   using Type = SubvectorTrait_< ResultType_< Band<MT,BIs...> >, SAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

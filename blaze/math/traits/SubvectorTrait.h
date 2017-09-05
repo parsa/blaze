@@ -70,29 +70,17 @@ namespace blaze {
 // is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference
 // modifiers are generally ignored.
 //
-// Per default, the SubvectorTrait template only supports the following vector types:
-//
-// <ul>
-//    <li>blaze::StaticVector</li>
-//    <li>blaze::HybridVector</li>
-//    <li>blaze::DynamicVector</li>
-//    <li>blaze::CustomVector</li>
-//    <li>blaze::CompressedVector</li>
-//    <li>blaze::Subvector</li>
-//    <li>blaze::Row</li>
-//    <li>blaze::Column</li>
-// </ul>
-//
 //
 // \section subvectortrait_specializations Creating custom specializations
 //
-// It is possible to specialize the SubvectorTrait template for additional user-defined vector
-// types. The following example shows the according specialization for the DynamicVector class
-// template:
+// Per default, SubvectorTrait supports all vector types of the Blaze library (including views
+// and adaptors). For all other data types it is possible to specialize the SubvectorTrait
+// template. The following example shows the according specialization for the DynamicVector
+// class template:
 
    \code
-   template< typename T1, bool TF >
-   struct SubvectorTrait< DynamicVector<T1,TF> >
+   template< typename T1, bool TF, size_t... SAs >
+   struct SubvectorTrait< DynamicVector<T1,TF>, SAs... >
    {
       using Type = DynamicVector<T1,TF>;
    };
@@ -116,7 +104,8 @@ namespace blaze {
    using ResultType2 = typename blaze::SubvectorTrait<VectorType2>::Type;
    \endcode
 */
-template< typename VT >  // Type of the vector
+template< typename VT      // Type of the vector
+        , size_t... SAs >  // Compile time subvector arguments
 struct SubvectorTrait
 {
  private:
@@ -130,7 +119,7 @@ struct SubvectorTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , SubvectorTrait< Decay_<VT> >
+                            , SubvectorTrait< Decay_<VT>, SAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -151,8 +140,9 @@ struct SubvectorTrait
    using Type2 = SubvectorTrait_<VT>;
    \endcode
 */
-template< typename VT >  // Type of the vector
-using SubvectorTrait_ = typename SubvectorTrait<VT>::Type;
+template< typename VT      // Type of the vector
+        , size_t... SAs >  // Compile time subvector arguments
+using SubvectorTrait_ = typename SubvectorTrait<VT,SAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

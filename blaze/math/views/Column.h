@@ -1584,10 +1584,10 @@ struct IsOpposedView< OpposingColumn<MT,CIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t... CIs >
-struct SubvectorTrait< Column<MT,CIs...> >
+template< typename MT, size_t... CIs, size_t... SAs >
+struct SubvectorTrait< Column<MT,CIs...>, SAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< Column<MT,CIs...> > >;
+   using Type = SubvectorTrait_< ResultType_< Column<MT,CIs...> >, SAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
