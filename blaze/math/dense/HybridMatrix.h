@@ -7251,7 +7251,8 @@ struct ColumnTrait< HybridMatrix<T,M,N,SO> >
 template< typename T, size_t M, size_t N, bool SO >
 struct BandTrait< HybridMatrix<T,M,N,SO> >
 {
-   using Type = HybridVector<T,min(M,N),defaultTransposeFlag>;
+   enum : size_t { Min = min(M, N) };
+   using Type = HybridVector<T,Min,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
