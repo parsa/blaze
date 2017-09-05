@@ -528,15 +528,12 @@ inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector )
 // \a false.
 
    \code
-   using VectorType    = blaze::DynamicVector<int>;
-   using SubvectorType = blaze::Subvector<VectorType>;
+   blaze::DynamicVector<int> vec1( 4UL );  // Setup of a 4-dimensional dynamic vector
+   blaze::DynamicVector<int> vec2( 4UL );  // Setup of a second 4-dimensional dynamic vector
 
-   VectorType vec1( 4UL );  // Setup of a 4-dimensional dynamic vector
-   VectorType vec2( 4UL );  // Setup of a second 4-dimensional dynamic vector
-
-   SubvectorType sub1 = subvector( vec1, 0UL, 4UL );  // Subvector of vec1 for the entire range
-   SubvectorType sub2 = subvector( vec1, 1UL, 2UL );  // Subvector of vec1 for the range [1..3]
-   SubvectorType sub3 = subvector( vec1, 1UL, 2UL );  // Second subvector of vec1 for the range [1..3]
+   auto sub1 = subvector( vec1, 0UL, 4UL );  // Subvector of vec1 for the entire range
+   auto sub2 = subvector( vec1, 1UL, 2UL );  // Subvector of vec1 for the range [1..3]
+   auto sub3 = subvector( vec1, 1UL, 2UL );  // Second subvector of vec1 for the range [1..3]
 
    isSame( vec1, vec1 );  // returns true since both objects refer to the same vector
    isSame( vec1, vec2 );  // returns false since vec1 and vec2 are two different vectors
