@@ -43,6 +43,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -70,36 +71,16 @@ namespace blaze {
 // set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
 // are generally ignored.
 //
-// Per default, the RowTrait template only supports the following matrix types:
-//
-// <ul>
-//    <li>blaze::StaticMatrix</li>
-//    <li>blaze::HybridMatrix</li>
-//    <li>blaze::DynamicMatrix</li>
-//    <li>blaze::CustomMatrix</li>
-//    <li>blaze::CompressedMatrix</li>
-//    <li>blaze::IdentityMatrix</li>
-//    <li>blaze::SymmetricMatrix</li>
-//    <li>blaze::HermitianMatrix</li>
-//    <li>blaze::LowerMatrix</li>
-//    <li>blaze::UniLowerMatrix</li>
-//    <li>blaze::StrictlyLowerMatrix</li>
-//    <li>blaze::UpperMatrix</li>
-//    <li>blaze::UniUpperMatrix</li>
-//    <li>blaze::StrictlyUpperMatrix</li>
-//    <li>blaze::DiagonalMatrix</li>
-//    <li>blaze::Submatrix</li>
-// </ul>
-//
 //
 // \section rowtrait_specializations Creating custom specializations
 //
-// It is possible to specialize the RowTrait template for additional user-defined matrix types.
-// The following example shows the according specialization for the DynamicMatrix class template:
+// Per default, RowTrait supports all matrix types of the Blaze library (including views and
+// adaptors). For all other data types it is possible to specialize the RowTrait template. The
+// following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO >
-   struct RowTrait< DynamicMatrix<T1,SO> >
+   template< typename T1, bool SO, size_t... RAs >
+   struct RowTrait< DynamicMatrix<T1,SO>, RAs... >
    {
       using Type = DynamicVector<T1,true>;
    };
@@ -123,7 +104,8 @@ namespace blaze {
    using RowType2    = typename blaze::RowTrait<MatrixType2>::Type;
    \endcode
 */
-template< typename MT >  // Type of the matrix
+template< typename MT      // Type of the matrix
+        , size_t... RAs >  // Compile time row arguments
 struct RowTrait
 {
  private:
@@ -137,7 +119,7 @@ struct RowTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , RowTrait< Decay_<MT> >
+                            , RowTrait< Decay_<MT>, RAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -158,8 +140,9 @@ struct RowTrait
    using Type2 = RowTrait_<MT>;
    \endcode
 */
-template< typename MT >  // Type of the matrix
-using RowTrait_ = typename RowTrait<MT>::Type;
+template< typename MT      // Type of the matrix
+        , size_t... RAs >  // Compile time row arguments
+using RowTrait_ = typename RowTrait<MT,RAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

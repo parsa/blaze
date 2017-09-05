@@ -2615,8 +2615,8 @@ struct SubmatrixTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct RowTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, size_t... RAs >
+struct RowTrait< IdentityMatrix<T,SO>, RAs... >
 {
    using Type = CompressedVector<T,true>;
 };
@@ -2634,8 +2634,8 @@ struct RowTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct ColumnTrait< IdentityMatrix<T,SO> >
+template< typename T, bool SO, size_t... CAs >
+struct ColumnTrait< IdentityMatrix<T,SO>, CAs... >
 {
    using Type = CompressedVector<T,false>;
 };
@@ -2653,8 +2653,8 @@ struct ColumnTrait< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, ptrdiff_t... BIs >
-struct BandTrait< IdentityMatrix<T,SO>, BIs... >
+template< typename T, bool SO, ptrdiff_t... BAs >
+struct BandTrait< IdentityMatrix<T,SO>, BAs... >
 {
    using Type = CompressedVector<T,defaultTransposeFlag>;
 };

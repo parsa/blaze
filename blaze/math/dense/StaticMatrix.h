@@ -6810,8 +6810,8 @@ struct SubmatrixTrait< StaticMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct RowTrait< StaticMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, size_t... RAs >
+struct RowTrait< StaticMatrix<T,M,N,SO>, RAs... >
 {
    using Type = StaticVector<T,N,true>;
 };
@@ -6829,8 +6829,8 @@ struct RowTrait< StaticMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct ColumnTrait< StaticMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, size_t... CAs >
+struct ColumnTrait< StaticMatrix<T,M,N,SO>, CAs... >
 {
    using Type = StaticVector<T,M,false>;
 };
@@ -6851,14 +6851,14 @@ struct ColumnTrait< StaticMatrix<T,M,N,SO> >
 template< typename T, size_t M, size_t N, bool SO >
 struct BandTrait< StaticMatrix<T,M,N,SO> >
 {
-   enum : size_t { Min = min(M, N) };
+   enum : size_t { Min = min( M, N ) };
    using Type = HybridVector<T,Min,defaultTransposeFlag>;
 };
 
-template< typename T, size_t M, size_t N, bool SO, ptrdiff_t BI >
-struct BandTrait< StaticMatrix<T,M,N,SO>, BI >
+template< typename T, size_t M, size_t N, bool SO, ptrdiff_t I >
+struct BandTrait< StaticMatrix<T,M,N,SO>, I >
 {
-   enum : size_t { Min = min( M - ( BI >= 0L ? 0UL : -BI ), N - ( BI >= 0L ? BI  : 0UL ) ) };
+   enum : size_t { Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I  : 0UL ) ) };
    using Type = StaticVector<T,Min,defaultTransposeFlag>;
 };
 /*! \endcond */

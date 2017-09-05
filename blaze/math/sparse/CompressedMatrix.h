@@ -6468,8 +6468,8 @@ struct SubmatrixTrait< CompressedMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct RowTrait< CompressedMatrix<T,SO> >
+template< typename T, bool SO, size_t... RAs >
+struct RowTrait< CompressedMatrix<T,SO>, RAs... >
 {
    using Type = CompressedVector<T,true>;
 };
@@ -6487,8 +6487,8 @@ struct RowTrait< CompressedMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct ColumnTrait< CompressedMatrix<T,SO> >
+template< typename T, bool SO, size_t... CAs >
+struct ColumnTrait< CompressedMatrix<T,SO>, CAs... >
 {
    using Type = CompressedVector<T,false>;
 };
@@ -6506,8 +6506,8 @@ struct ColumnTrait< CompressedMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, ptrdiff_t... BIs >
-struct BandTrait< CompressedMatrix<T,SO>, BIs... >
+template< typename T, bool SO, ptrdiff_t... BAs >
+struct BandTrait< CompressedMatrix<T,SO>, BAs... >
 {
    using Type = CompressedVector<T,defaultTransposeFlag>;
 };

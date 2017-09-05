@@ -70,36 +70,16 @@ namespace blaze {
 // set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
 // are generally ignored.
 //
-// Per default, the ColumnTrait template only supports the following matrix types:
-//
-// <ul>
-//    <li>blaze::StaticMatrix</li>
-//    <li>blaze::HybridMatrix</li>
-//    <li>blaze::DynamicMatrix</li>
-//    <li>blaze::CustomMatrix</li>
-//    <li>blaze::CompressedMatrix</li>
-//    <li>blaze::IdentityMatrix</li>
-//    <li>blaze::SymmetricMatrix</li>
-//    <li>blaze::HermitianMatrix</li>
-//    <li>blaze::LowerMatrix</li>
-//    <li>blaze::UniLowerMatrix</li>
-//    <li>blaze::StrictlyLowerMatrix</li>
-//    <li>blaze::UpperMatrix</li>
-//    <li>blaze::UniUpperMatrix</li>
-//    <li>blaze::StrictlyUpperMatrix</li>
-//    <li>blaze::DiagonalMatrix</li>
-//    <li>blaze::Submatrix</li>
-// </ul>
-//
 //
 // \section columntrait_specializations Creating custom specializations
 //
-// It is possible to specialize the ColumnTrait template for additional user-defined matrix types.
-// The following example shows the according specialization for the DynamicMatrix class template:
+// Per default, ColumnTrait supports all matrix types of the Blaze library (including views and
+// adaptors). For all other data types it is possible to specialize the ColumnTrait template. The
+// following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO >
-   struct ColumnTrait< DynamicMatrix<T1,SO> >
+   template< typename T1, bool SO, size_t... CAs >
+   struct ColumnTrait< DynamicMatrix<T1,SO>, CAs... >
    {
       using Type = DynamicVector<T1,true>;
    };
@@ -123,7 +103,8 @@ namespace blaze {
    using ColumnType2 = typename blaze::ColumnTrait<MatrixType2>::Type;
    \endcode
 */
-template< typename MT >  // Type of the matrix
+template< typename MT      // Type of the matrix
+        , size_t... CAs >  // Compile time column arguments
 struct ColumnTrait
 {
  private:
@@ -137,7 +118,7 @@ struct ColumnTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , ColumnTrait< Decay_<MT> >
+                            , ColumnTrait< Decay_<MT>, CAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -158,8 +139,9 @@ struct ColumnTrait
    using Type2 = ColumnTrait_<MT>;
    \endcode
 */
-template< typename MT >  // Type of the matrix
-using ColumnTrait_ = typename ColumnTrait<MT>::Type;
+template< typename MT      // Type of the matrix
+        , size_t... CAs >  // Compile time column arguments
+using ColumnTrait_ = typename ColumnTrait<MT,CAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

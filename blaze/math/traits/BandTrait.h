@@ -71,36 +71,16 @@ namespace blaze {
 // set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
 // are generally ignored.
 //
-// Per default, the BandTrait template only supports the following matrix types:
-//
-// <ul>
-//    <li>blaze::StaticMatrix</li>
-//    <li>blaze::HybridMatrix</li>
-//    <li>blaze::DynamicMatrix</li>
-//    <li>blaze::CustomMatrix</li>
-//    <li>blaze::CompressedMatrix</li>
-//    <li>blaze::IdentityMatrix</li>
-//    <li>blaze::SymmetricMatrix</li>
-//    <li>blaze::HermitianMatrix</li>
-//    <li>blaze::LowerMatrix</li>
-//    <li>blaze::UniLowerMatrix</li>
-//    <li>blaze::StrictlyLowerMatrix</li>
-//    <li>blaze::UpperMatrix</li>
-//    <li>blaze::UniUpperMatrix</li>
-//    <li>blaze::StrictlyUpperMatrix</li>
-//    <li>blaze::DiagonalMatrix</li>
-//    <li>blaze::Submatrix</li>
-// </ul>
-//
 //
 // \section bandtrait_specializations Creating custom specializations
 //
-// It is possible to specialize the BandTrait template for additional user-defined matrix types.
-// The following example shows the according specialization for the DynamicMatrix class template:
+// Per default, BandTrait supports all matrix types of the Blaze library (including views and
+// adaptors). For all other data types it is possible to specialize the BandTrait template. The
+// following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO, ptrdiff_t... BIs >
-   struct BandTrait< DynamicMatrix<T1,SO>, BIs... >
+   template< typename T1, bool SO, ptrdiff_t... BAs >
+   struct BandTrait< DynamicMatrix<T1,SO>, BAs... >
    {
       using Type = DynamicVector<T1,true>;
    };
@@ -125,7 +105,7 @@ namespace blaze {
    \endcode
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
+        , ptrdiff_t... BAs >  // Compile time band arguments
 struct BandTrait
 {
  private:
@@ -139,7 +119,7 @@ struct BandTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , BandTrait< Decay_<MT>, BIs... >
+                            , BandTrait< Decay_<MT>, BAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -161,8 +141,8 @@ struct BandTrait
    \endcode
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-using BandTrait_ = typename BandTrait<MT,BIs...>::Type;
+        , ptrdiff_t... BAs >  // Compile time band arguments
+using BandTrait_ = typename BandTrait<MT,BAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

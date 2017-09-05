@@ -2287,10 +2287,10 @@ struct SubmatrixTrait< StrictlyLowerMatrix<MT,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct RowTrait< StrictlyLowerMatrix<MT,SO,DF> >
+template< typename MT, bool SO, bool DF, size_t... RAs >
+struct RowTrait< StrictlyLowerMatrix<MT,SO,DF>, RAs... >
 {
-   using Type = RowTrait_<MT>;
+   using Type = RowTrait_<MT,RAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2306,10 +2306,10 @@ struct RowTrait< StrictlyLowerMatrix<MT,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct ColumnTrait< StrictlyLowerMatrix<MT,SO,DF> >
+template< typename MT, bool SO, bool DF, size_t... CAs >
+struct ColumnTrait< StrictlyLowerMatrix<MT,SO,DF>, CAs... >
 {
-   using Type = ColumnTrait_<MT>;
+   using Type = ColumnTrait_<MT,CAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2325,10 +2325,10 @@ struct ColumnTrait< StrictlyLowerMatrix<MT,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, ptrdiff_t... BIs >
-struct BandTrait< StrictlyLowerMatrix<MT,SO,DF>, BIs... >
+template< typename MT, bool SO, bool DF, ptrdiff_t... BAs >
+struct BandTrait< StrictlyLowerMatrix<MT,SO,DF>, BAs... >
 {
-   using Type = BandTrait_<MT,BIs...>;
+   using Type = BandTrait_<MT,BAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

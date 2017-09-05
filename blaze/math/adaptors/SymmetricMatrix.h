@@ -1545,10 +1545,10 @@ struct SubmatrixTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct RowTrait< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool NF, size_t... RAs >
+struct RowTrait< SymmetricMatrix<MT,SO,DF,NF>, RAs... >
 {
-   using Type = RowTrait_<MT>;
+   using Type = RowTrait_<MT,RAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1564,10 +1564,10 @@ struct RowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF >
-struct ColumnTrait< SymmetricMatrix<MT,SO,DF,NF> >
+template< typename MT, bool SO, bool DF, bool NF, size_t... CAs >
+struct ColumnTrait< SymmetricMatrix<MT,SO,DF,NF>, CAs... >
 {
-   using Type = ColumnTrait_<MT>;
+   using Type = ColumnTrait_<MT,CAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1583,10 +1583,10 @@ struct ColumnTrait< SymmetricMatrix<MT,SO,DF,NF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF, ptrdiff_t... BIs >
-struct BandTrait< SymmetricMatrix<MT,SO,DF,NF>, BIs... >
+template< typename MT, bool SO, bool DF, bool NF, ptrdiff_t... BAs >
+struct BandTrait< SymmetricMatrix<MT,SO,DF,NF>, BAs... >
 {
-   using Type = BandTrait_<MT,BIs...>;
+   using Type = BandTrait_<MT,BAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

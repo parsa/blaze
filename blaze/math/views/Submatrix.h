@@ -2434,10 +2434,10 @@ struct SubmatrixTrait< Submatrix<MT,AF,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF >
-struct RowTrait< Submatrix<MT,AF,SO,DF> >
+template< typename MT, bool AF, bool SO, bool DF, size_t... RAs >
+struct RowTrait< Submatrix<MT,AF,SO,DF>, RAs... >
 {
-   using Type = RowTrait_< ResultType_< Submatrix<MT,AF,SO,DF> > >;
+   using Type = RowTrait_< ResultType_< Submatrix<MT,AF,SO,DF> >, RAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2453,10 +2453,10 @@ struct RowTrait< Submatrix<MT,AF,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF >
-struct ColumnTrait< Submatrix<MT,AF,SO,DF> >
+template< typename MT, bool AF, bool SO, bool DF, size_t... CAs >
+struct ColumnTrait< Submatrix<MT,AF,SO,DF>, CAs... >
 {
-   using Type = ColumnTrait_< ResultType_< Submatrix<MT,AF,SO,DF> > >;
+   using Type = ColumnTrait_< ResultType_< Submatrix<MT,AF,SO,DF> >, CAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2472,10 +2472,10 @@ struct ColumnTrait< Submatrix<MT,AF,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, ptrdiff_t... BIs >
-struct BandTrait< Submatrix<MT,AF,SO,DF>, BIs... >
+template< typename MT, bool AF, bool SO, bool DF, ptrdiff_t... BAs >
+struct BandTrait< Submatrix<MT,AF,SO,DF>, BAs... >
 {
-   using Type = BandTrait_< ResultType_< Submatrix<MT,AF,SO,DF> >, BIs... >;
+   using Type = BandTrait_< ResultType_< Submatrix<MT,AF,SO,DF> >, BAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

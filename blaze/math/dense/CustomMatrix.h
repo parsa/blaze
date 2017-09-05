@@ -6599,8 +6599,8 @@ struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO >
-struct RowTrait< CustomMatrix<T,AF,PF,SO> >
+template< typename T, bool AF, bool PF, bool SO, size_t... RAs >
+struct RowTrait< CustomMatrix<T,AF,PF,SO>, RAs... >
 {
    using Type = DynamicVector<T,true>;
 };
@@ -6618,8 +6618,8 @@ struct RowTrait< CustomMatrix<T,AF,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO >
-struct ColumnTrait< CustomMatrix<T,AF,PF,SO> >
+template< typename T, bool AF, bool PF, bool SO, size_t... CAs >
+struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CAs... >
 {
    using Type = DynamicVector<T,false>;
 };
@@ -6637,8 +6637,8 @@ struct ColumnTrait< CustomMatrix<T,AF,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO, ptrdiff_t... BIs >
-struct BandTrait< CustomMatrix<T,AF,PF,SO>, BIs... >
+template< typename T, bool AF, bool PF, bool SO, ptrdiff_t... BAs >
+struct BandTrait< CustomMatrix<T,AF,PF,SO>, BAs... >
 {
    using Type = DynamicVector<T,defaultTransposeFlag>;
 };

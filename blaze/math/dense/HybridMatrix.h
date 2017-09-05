@@ -7210,8 +7210,8 @@ struct SubmatrixTrait< HybridMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct RowTrait< HybridMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, size_t... RAs >
+struct RowTrait< HybridMatrix<T,M,N,SO>, RAs... >
 {
    using Type = HybridVector<T,N,true>;
 };
@@ -7229,8 +7229,8 @@ struct RowTrait< HybridMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct ColumnTrait< HybridMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, size_t... CAs >
+struct ColumnTrait< HybridMatrix<T,M,N,SO>, CAs... >
 {
    using Type = HybridVector<T,M,false>;
 };
@@ -7251,19 +7251,14 @@ struct ColumnTrait< HybridMatrix<T,M,N,SO> >
 template< typename T, size_t M, size_t N, bool SO >
 struct BandTrait< HybridMatrix<T,M,N,SO> >
 {
-   enum : size_t { Min = min(M, N) };
+   enum : size_t { Min = min( M, N ) };
    using Type = HybridVector<T,Min,defaultTransposeFlag>;
 };
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, ptrdiff_t BI >
-struct BandTrait< HybridMatrix<T,M,N,SO>, BI >
+template< typename T, size_t M, size_t N, bool SO, ptrdiff_t I >
+struct BandTrait< HybridMatrix<T,M,N,SO>, I >
 {
-   enum : size_t { Min = min( M - ( BI >= 0L ? 0UL : -BI ), N - ( BI >= 0L ? BI  : 0UL ) ) };
+   enum : size_t { Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I  : 0UL ) ) };
    using Type = HybridVector<T,Min,defaultTransposeFlag>;
 };
 /*! \endcond */
