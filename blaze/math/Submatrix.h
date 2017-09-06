@@ -68,10 +68,11 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense submatrices.
 */
-template< typename MT  // Type of the dense matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-class Rand< Submatrix<MT,AF,SO,true> >
+template< typename MT      // Type of the matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+class Rand< SubmatrixImpl<MT,AF,SO,true,SAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -96,11 +97,12 @@ class Rand< Submatrix<MT,AF,SO,true> >
 // \param submatrix The submatrix to be randomized.
 // \return void
 */
-template< typename MT     // Type of the dense matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
-template< typename SMT >  // Type of the submatrix
-inline void Rand< Submatrix<MT,AF,SO,true> >::randomize( SMT&& submatrix ) const
+template< typename MT      // Type of the dense matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+template< typename SMT >   // Type of the submatrix
+inline void Rand< SubmatrixImpl<MT,AF,SO,true,SAs...> >::randomize( SMT&& submatrix ) const
 {
    using blaze::randomize;
 
@@ -137,12 +139,14 @@ inline void Rand< Submatrix<MT,AF,SO,true> >::randomize( SMT&& submatrix ) const
 // \param max The largest possible value for a matrix element.
 // \return void
 */
-template< typename MT     // Type of the dense matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
-template< typename SMT    // Type of the submatrix
-        , typename Arg >  // Min/max argument type
-inline void Rand< Submatrix<MT,AF,SO,true> >::randomize( SMT&& submatrix, const Arg& min, const Arg& max ) const
+template< typename MT      // Type of the dense matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+template< typename SMT     // Type of the submatrix
+        , typename Arg >   // Min/max argument type
+inline void Rand< SubmatrixImpl<MT,AF,SO,true,SAs...> >::randomize( SMT&& submatrix,
+                                                                    const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -185,10 +189,11 @@ inline void Rand< Submatrix<MT,AF,SO,true> >::randomize( SMT&& submatrix, const 
 //
 // This specialization of the Rand class randomizes sparse submatrices.
 */
-template< typename MT  // Type of the sparse matrix
-        , bool AF      // Alignment flag
-        , bool SO >    // Storage order
-class Rand< Submatrix<MT,AF,SO,false> >
+template< typename MT      // Type of the dense matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+class Rand< SubmatrixImpl<MT,AF,SO,false,SAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -219,11 +224,12 @@ class Rand< Submatrix<MT,AF,SO,false> >
 // \param submatrix The submatrix to be randomized.
 // \return void
 */
-template< typename MT     // Type of the sparse matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
-template< typename SMT >  // Type of the submatrix
-inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( SMT&& submatrix ) const
+template< typename MT      // Type of the dense matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+template< typename SMT >   // Type of the submatrix
+inline void Rand< SubmatrixImpl<MT,AF,SO,false,SAs...> >::randomize( SMT&& submatrix ) const
 {
    using SubmatrixType = RemoveReference_<SMT>;
    using ElementType   = ElementType_<SubmatrixType>;
@@ -258,11 +264,12 @@ inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( SMT&& submatrix ) cons
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT     // Type of the sparse matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
-template< typename SMT >  // Type of the submatrix
-inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( SMT&& submatrix, size_t nonzeros ) const
+template< typename MT      // Type of the dense matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+template< typename SMT >   // Type of the submatrix
+inline void Rand< SubmatrixImpl<MT,AF,SO,false,SAs...> >::randomize( SMT&& submatrix, size_t nonzeros ) const
 {
    using SubmatrixType = RemoveReference_<SMT>;
    using ElementType   = ElementType_<SubmatrixType>;
@@ -299,13 +306,14 @@ inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( SMT&& submatrix, size_
 // \param max The largest possible value for a submatrix element.
 // \return void
 */
-template< typename MT     // Type of the sparse matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
-template< typename SMT    // Type of the submatrix
-        , typename Arg >  // Min/max argument type
-inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( SMT&& submatrix,
-                                                          const Arg& min, const Arg& max ) const
+template< typename MT      // Type of the dense matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+template< typename SMT     // Type of the submatrix
+        , typename Arg >   // Min/max argument type
+inline void Rand< SubmatrixImpl<MT,AF,SO,false,SAs...> >::randomize( SMT&& submatrix,
+                                                                     const Arg& min, const Arg& max ) const
 {
    using SubmatrixType = RemoveReference_<SMT>;
    using ElementType   = ElementType_<SubmatrixType>;
@@ -342,13 +350,14 @@ inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( SMT&& submatrix,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT     // Type of the sparse matrix
-        , bool AF         // Alignment flag
-        , bool SO >       // Storage order
-template< typename SMT    // Type of the submatrix
-        , typename Arg >  // Min/max argument type
-inline void Rand< Submatrix<MT,AF,SO,false> >::randomize( SMT&& submatrix, size_t nonzeros,
-                                                          const Arg& min, const Arg& max ) const
+template< typename MT      // Type of the dense matrix
+        , bool AF          // Alignment flag
+        , bool SO          // Storage order
+        , size_t... SAs >  // Compile time submatrix arguments
+template< typename SMT     // Type of the submatrix
+        , typename Arg >   // Min/max argument type
+inline void Rand< SubmatrixImpl<MT,AF,SO,false,SAs...> >::randomize( SMT&& submatrix, size_t nonzeros,
+                                                                     const Arg& min, const Arg& max ) const
 {
    using SubmatrixType = RemoveReference_<SMT>;
    using ElementType   = ElementType_<SubmatrixType>;
