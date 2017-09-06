@@ -7157,8 +7157,8 @@ struct LowType< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct SubmatrixTrait< DynamicMatrix<T,SO> >
+template< typename T, bool SO, size_t... SAs >
+struct SubmatrixTrait< DynamicMatrix<T,SO>, SAs... >
 {
    using Type = DynamicMatrix<T,SO>;
 };

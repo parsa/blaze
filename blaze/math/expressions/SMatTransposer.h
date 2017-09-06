@@ -1138,10 +1138,10 @@ inline bool isIntact( const SMatTransposer<MT,SO>& m ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct SubmatrixTrait< SMatTransposer<MT,SO> >
+template< typename MT, bool SO, size_t... SAs >
+struct SubmatrixTrait< SMatTransposer<MT,SO>, SAs... >
 {
-   using Type = SubmatrixTrait_< ResultType_< SMatTransposer<MT,SO> > >;
+   using Type = SubmatrixTrait_< ResultType_< SMatTransposer<MT,SO> >, SAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

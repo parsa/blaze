@@ -7191,8 +7191,8 @@ struct LowType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct SubmatrixTrait< HybridMatrix<T,M,N,SO> >
+template< typename T, size_t M, size_t N, bool SO, size_t... SAs >
+struct SubmatrixTrait< HybridMatrix<T,M,N,SO>, SAs... >
 {
    using Type = HybridMatrix<T,M,N,SO>;
 };

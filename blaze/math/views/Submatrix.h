@@ -3253,10 +3253,10 @@ struct IsAligned< SubmatrixImpl<MT,true,SO,true,SAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t... SAs >
-struct SubmatrixTrait< SubmatrixImpl<MT,AF,SO,DF,SAs...> >
+template< typename MT, bool AF, bool SO, bool DF, size_t... SAs1, size_t... SAs2 >
+struct SubmatrixTrait< SubmatrixImpl<MT,AF,SO,DF,SAs1...>, SAs2... >
 {
-   using Type = SubmatrixTrait_< ResultType_< SubmatrixImpl<MT,AF,SO,DF,SAs...> > >;
+   using Type = SubmatrixTrait_< ResultType_< SubmatrixImpl<MT,AF,SO,DF,SAs1...> >, SAs2... >;
 };
 /*! \endcond */
 //*************************************************************************************************

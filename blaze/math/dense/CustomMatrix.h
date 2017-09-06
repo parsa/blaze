@@ -6580,8 +6580,8 @@ struct BinaryMapTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO >
-struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO> >
+template< typename T, bool AF, bool PF, bool SO, size_t... SAs >
+struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO>, SAs... >
 {
    using Type = DynamicMatrix<T,SO>;
 };

@@ -2660,10 +2660,10 @@ struct LowType< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct SubmatrixTrait< DiagonalMatrix<MT,SO,DF> >
+template< typename MT, bool SO, bool DF, size_t... SAs >
+struct SubmatrixTrait< DiagonalMatrix<MT,SO,DF>, SAs... >
 {
-   using Type = SubmatrixTrait_<MT>;
+   using Type = SubmatrixTrait_<MT,SAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

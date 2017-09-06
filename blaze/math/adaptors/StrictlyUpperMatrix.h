@@ -2413,10 +2413,10 @@ struct LowType< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct SubmatrixTrait< StrictlyUpperMatrix<MT,SO,DF> >
+template< typename MT, bool SO, bool DF, size_t... SAs >
+struct SubmatrixTrait< StrictlyUpperMatrix<MT,SO,DF>, SAs... >
 {
-   using Type = SubmatrixTrait_<MT>;
+   using Type = SubmatrixTrait_<MT,SAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
