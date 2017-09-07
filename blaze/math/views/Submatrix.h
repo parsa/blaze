@@ -329,10 +329,6 @@ inline Submatrix<MT,AF,I,J,M,N> submatrix( Matrix<MT,SO>& matrix )
 // \ingroup submatrix
 //
 // \param matrix The constant matrix containing the submatrix.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -406,10 +402,6 @@ inline const Submatrix<const MT,AF,I,J,M,N> submatrix( const Matrix<MT,SO>& matr
 // \ingroup submatrix
 //
 // \param matrix The temporary matrix containing the submatrix.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -2566,7 +2558,7 @@ inline bool isSame( const SubmatrixImpl<MT1,AF1,SO1,DF1,SAs1...>& a,
 template< InversionFlag IF  // Inversion algorithm
         , typename MT       // Type of the dense matrix
         , bool AF           // Alignment flag
-        , bool SO          // Storage order
+        , bool SO           // Storage order
         , size_t... SAs >   // Compile time submatrix arguments
 inline DisableIf_< HasMutableDataAccess<MT> > invert( SubmatrixImpl<MT,AF,SO,true,SAs...>& sm )
 {
@@ -3130,14 +3122,17 @@ inline bool tryDivAssign( const SubmatrixImpl<MT,AF,SO,DF,SAs...>& lhs,
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the matrix
-        , bool AF          // Alignment flag
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline decltype(auto) derestrict( SubmatrixImpl<MT,AF,SO,DF,SAs...>& dm )
+template< typename MT  // Type of the matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , size_t I     // Index of the first row
+        , size_t J     // Index of the first column
+        , size_t M     // Number of rows
+        , size_t N >   // Number of columns
+inline decltype(auto) derestrict( SubmatrixImpl<MT,AF,SO,DF,I,J,M,N>& dm )
 {
-   return submatrix( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
+   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3158,14 +3153,71 @@ inline decltype(auto) derestrict( SubmatrixImpl<MT,AF,SO,DF,SAs...>& dm )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the matrix
-        , bool AF          // Alignment flag
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline decltype(auto) derestrict( SubmatrixImpl<MT,AF,SO,DF,SAs...>&& dm )
+template< typename MT  // Type of the matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , bool DF      // Density flag
+        , size_t I     // Index of the first row
+        , size_t J     // Index of the first column
+        , size_t M     // Number of rows
+        , size_t N >   // Number of columns
+inline decltype(auto) derestrict( SubmatrixImpl<MT,AF,SO,DF,I,J,M,N>&& dm )
 {
-   return submatrix( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
+   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given submatrix.
+// \ingroup submatrix
+//
+// \param dm The submatrix to be derestricted.
+// \return Submatrix without access restrictions.
+//
+// This function removes all restrictions on the data access to the given submatrix. It returns a
+// submatrix that does provide the same interface but does not have any restrictions on the data
+// access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , bool DF >    // Density flag
+inline decltype(auto) derestrict( SubmatrixImpl<MT,AF,SO,DF>& dm )
+{
+   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given temporary submatrix.
+// \ingroup submatrix
+//
+// \param dm The temporary submatrix to be derestricted.
+// \return Submatrix without access restrictions.
+//
+// This function removes all restrictions on the data access to the given temporary submatrix. It
+// returns a submatrix that does provide the same interface but does not have any restrictions on
+// the data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool AF      // Alignment flag
+        , bool SO      // Storage order
+        , bool DF >    // Density flag
+inline decltype(auto) derestrict( SubmatrixImpl<MT,AF,SO,DF>&& dm )
+{
+   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

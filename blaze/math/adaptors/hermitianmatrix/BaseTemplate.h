@@ -557,13 +557,10 @@ namespace blaze {
    \code
    using blaze::DynamicMatrix;
    using blaze::HermitianMatrix;
-   using blaze::rowMajor;
    using blaze::columnMajor;
 
-   using DynamicHermitian = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
-
-   DynamicHermitian A( 10UL );  // Both Hermitian and symmetric
-   Row<DynamicHermitian> row5 = row( A, 5UL );
+   HermitianMatrix< DynamicMatrix<double,columnMajor> > A( 10UL );  // Both Hermitian and symmetric
+   auto row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in

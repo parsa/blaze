@@ -72,33 +72,12 @@ namespace blaze {
 // set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and reference modifiers
 // are generally ignored.
 //
-// Per default, the DeclSymTrait template only supports the following matrix types:
-//
-// <ul>
-//    <li>blaze::StaticMatrix</li>
-//    <li>blaze::HybridMatrix</li>
-//    <li>blaze::DynamicMatrix</li>
-//    <li>blaze::CustomMatrix</li>
-//    <li>blaze::CompressedMatrix</li>
-//    <li>blaze::IdentityMatrix</li>
-//    <li>blaze::SymmetricMatrix</li>
-//    <li>blaze::HermitianMatrix</li>
-//    <li>blaze::LowerMatrix</li>
-//    <li>blaze::UniLowerMatrix</li>
-//    <li>blaze::StrictlyLowerMatrix</li>
-//    <li>blaze::UpperMatrix</li>
-//    <li>blaze::UniUpperMatrix</li>
-//    <li>blaze::StrictlyUpperMatrix</li>
-//    <li>blaze::DiagonalMatrix</li>
-//    <li>blaze::Submatrix</li>
-// </ul>
-//
 //
 // \section declsymtrait_specializations Creating custom specializations
 //
-// It is possible to specialize the DeclSymTrait template for additional user-defined matrix
-// types. The following example shows the according specialization for the LowerMatrix class
-// template:
+// Per default, DeclSymTrait supports all matrix types of the Blaze library (including views and
+// adaptors). For all other data types it is possible to specialize the DeclSymTrait template.
+// The following example shows the according specialization for the LowerMatrix class template:
 
    \code
    template< typename MT, bool SO, bool DF >

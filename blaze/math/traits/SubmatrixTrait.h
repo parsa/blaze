@@ -75,8 +75,8 @@ namespace blaze {
 //
 // Per default, SubmatrixTrait supports all matrix types of the Blaze library (including views
 // and adaptors). For all other data types it is possible to specialize the SubmatrixTrait
-// template for additional user-defined matrix types. The following example shows the according
-// specialization for the DynamicMatrix class template:
+// template. The following example shows the according specialization for the DynamicMatrix
+// class template:
 
    \code
    template< typename T1, bool SO >

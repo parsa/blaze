@@ -46,29 +46,38 @@
 /*!\defgroup submatrix Submatrix
 // \ingroup views
 //
+// Submatrices provide views on a specific part of a dense or sparse matrix just as subvectors
+// provide views on specific parts of vectors. As such, submatrices act as a reference to a
+// specific block within a matrix. This reference is valid and can be used in evary way any
+// other dense or sparse matrix can be used as long as the matrix containing the submatrix is
+// not resized or entirely destroyed. The submatrix also acts as an alias to the matrix elements
+// in the specified block: Changes made to the elements (e.g. modifying values, inserting or
+// erasing elements) are immediately visible in the matrix and changes made via the matrix are
+// immediately visible in the submatrix.
+//
+//
 // \n \section submatrix_setup Setup of Submatrices
 //
 // A view on a dense or sparse submatrix can be created very conveniently via the \c submatrix()
-// function:
+// function. It can be included via the header file
 
    \code
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-
-   DenseMatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a dense submatrix of size 8x16, starting in row 0 and column 4
-   blaze::Submatrix<DenseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
+   #include <blaze/math/Submatrix.h>
    \endcode
 
-   \code
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
+// The first and second parameter specify the row and column of the first element of the submatrix.
+// The third and fourth parameter specify the number of rows and columns, respectively. The four
+// parameters can be specified either at compile time or at runtime:
 
-   SparseMatrixType A;
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
-   // Creating a sparse submatrix of size 8x16, starting in row 0 and column 4
-   blaze::Submatrix<SparseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
+   // Creating a dense submatrix of size 4x8, starting in row 3 and column 0 (compile time arguments)
+   auto sm1 = submatrix<3UL,0UL,4UL,8UL>( A );
+
+   // Creating a dense submatrix of size 8x16, starting in row 0 and column 4 (runtime arguments)
+   auto sm2 = submatrix( A, 0UL, 4UL, 8UL, 16UL );
    \endcode
 
 // This view can be treated as any other dense or sparse matrix, i.e. it can be assigned to, it
@@ -81,15 +90,12 @@
 // assignment. The following example demonstrates this in detail:
 
    \code
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::columnMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-
-   DenseMatrixType A, B;
-   SparseMatrixType C;
+   blaze::DynamicMatrix<double,blaze::columnMajor> A, B;
+   blaze::CompressedMatrix<double,blaze::rowMajor> C;
    // ... Resizing and initialization
 
    // Creating a dense submatrix of size 8x4, starting in row 0 and column 2
-   blaze::Submatrix<DenseMatrixType> sm = submatrix( A, 0UL, 2UL, 8UL, 4UL );
+   auto sm = submatrix( A, 0UL, 2UL, 8UL, 4UL );
 
    // Setting the submatrix of A to a 8x4 submatrix of B
    sm = submatrix( B, 0UL, 0UL, 8UL, 4UL );
@@ -101,24 +107,16 @@
    sm = submatrix( B + C, 0UL, 0UL, 8UL, 4UL );
    \endcode
 
-// The \c submatrix() function can be used on any dense or sparse matrix, including expressions,
-// as illustrated by the source code example. However, submatrices cannot be instantiated for
-// expression types, but only for matrix primitives, respectively, i.e. for matrix types that
-// offer write access.
-//
-//
 // \n \section submatrix_element_access Element access
 //
-// A submatrix can be used like any other dense or sparse matrix. For instance, the elements of
-// the submatrix can be directly accessed with the function call operator:
+// The elements of a submatrix can be directly accessed with the function call operator:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   MatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating a 8x8 submatrix, starting from position (4,4)
-   blaze::Submatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
+   auto sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
 
    // Setting the element (0,0) of the submatrix, which corresponds to
    // the element at position (4,4) in matrix A
@@ -126,45 +124,39 @@
    \endcode
 
 // Alternatively, the elements of a submatrix can be traversed via (const) iterators. Just as
-// with matrices, in case of non-const submatrices, \c begin() and \c end() return an Iterator,
-// which allows a manipulation of the non-zero values, in case of constant submatrices a
-// ConstIterator is returned:
+// with matrices, in case of non-const submatrices, \c begin() and \c end() return an iterator,
+// which allows to manipuate the elements, in case of constant submatrices an iterator to
+// immutable elements is returned:
 
    \code
-   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType A( 256UL, 512UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 256UL, 512UL );
    // ... Resizing and initialization
 
    // Creating a reference to a specific submatrix of matrix A
-   SubmatrixType sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
+   auto sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
-   for( SubmatrixType::Iterator it=sm.begin(0); it!=sm.end(0); ++it ) {
+   for( auto it=sm.begin(0); it!=sm.end(0); ++it ) {
       *it = ...;  // OK: Write access to the dense submatrix value.
       ... = *it;  // OK: Read access to the dense submatrix value.
    }
 
    // Traversing the elements of the 1st row via iterators to const elements
-   for( SubmatrixType::ConstIterator it=sm.begin(1); it!=sm.end(1); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   for( auto it=sm.cbegin(1); it!=sm.cend(1); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = *it;  // OK: Read access to the dense submatrix value.
    }
    \endcode
 
    \code
-   using MatrixType    = blaze::CompressedMatrix<int,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType A( 256UL, 512UL );
+   blaze::CompressedMatrix<int,blaze::rowMajor> A( 256UL, 512UL );
    // ... Resizing and initialization
 
    // Creating a reference to a specific submatrix of matrix A
-   SubmatrixType sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
+   auto sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
-   for( SubmatrixType::Iterator it=sm.begin(0); it!=sm.end(0); ++it ) {
+   for( auto it=sm.begin(0); it!=sm.end(0); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -172,8 +164,8 @@
    }
 
    // Traversing the elements of the 1st row via iterators to const elements
-   for( SubmatrixType::ConstIterator it=sm.begin(1); it!=sm.end(1); ++it ) {
-      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   for( auto it=sm.cbegin(1); it!=sm.cend(1); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
@@ -186,11 +178,9 @@
 // The following example demonstrates all options:
 
    \code
-   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-   MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
+   blaze::CompressedMatrix<double,blaze::rowMajor> A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
 
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-   SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
+   auto sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -228,14 +218,11 @@
 // resizing and swapping:
 
    \code
-   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType A;
+   blaze::DynamicMatrix<int,blaze::rowMajor>
    // ... Resizing and initialization
 
    // Creating a view on the a 8x12 submatrix of matrix A
-   SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
+   auto sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
 
    sm.rows();      // Returns the number of rows of the submatrix
    sm.columns();   // Returns the number of columns of the submatrix
@@ -244,30 +231,28 @@
 
    sm.resize( 10UL, 8UL );  // Compilation error: Cannot resize a submatrix of a matrix
 
-   SubmatrixType sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
+   auto sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
    swap( sm, sm2 );  // Compilation error: Swap operation not allowed
    \endcode
 
 // \n \section submatrix_arithmetic_operations Arithmetic Operations
 //
-// The following example gives an impression of the use of Submatrix within arithmetic operations.
-// All operations (addition, subtraction, multiplication, scaling, ...) can be performed on all
-// possible combinations of dense and sparse matrices with fitting element types:
+// Both dense and sparse submatrices can be used in all arithmetic operations that any other dense
+// or sparse matrix can be used in. The following example gives an impression of the use of dense
+// submatrices within arithmetic operations. All operations (addition, subtraction, multiplication,
+// scaling, ...) can be performed on all possible combinations of dense and sparse matrices with
+// fitting element types:
 
    \code
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-   DenseMatrixType D1, D2, D3;
-   SparseMatrixType S1, S2;
+   blaze::DynamicMatrix<double,blaze::rowMajor> D1, D2, D3;
+   blaze::CompressedMatrix<double,blaze::rowMajor>
 
-   using SparseVectorType = blaze::CompressedVector<double,blaze::columnVector>;
-   SparseVectorType a, b;
+   blaze::CompressedVector<double,blaze::columnVector> a, b;
 
    // ... Resizing and initialization
 
-   using SubmatrixType = blaze::Submatrix<DenseMatrixType>;
-   SubmatrixType sm = submatrix( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix D1
-                                                            // starting from row 0 and column 0
+   auto sm = submatrix( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix D1
+                                                   // starting from row 0 and column 0
 
    submatrix( D1, 0UL, 8UL, 8UL, 8UL ) = D2;  // Dense matrix initialization of the 8x8 submatrix
                                               // starting in row 0 and column 8
@@ -294,74 +279,66 @@
 // may have an arbitrary extension (only restricted by the extension of the underlying matrix).
 // However, in contrast to matrices themselves, which are always properly aligned in memory and
 // therefore can provide maximum performance, this means that submatrices in general have to be
-// considered to be unaligned. This can be made explicit by the \a blaze::unaligned flag:
+// considered to be unaligned. This can be made explicit by the blaze::unaligned flag:
 
    \code
    using blaze::unaligned;
 
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-
-   DenseMatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::Submatrix<DenseMatrixType>           sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::Submatrix<DenseMatrixType>           sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::Submatrix<DenseMatrixType,unaligned> sm3 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::Submatrix<DenseMatrixType,unaligned> sm4 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   auto sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sm3 = submatrix<0UL,0UL,8UL,8UL>          ( A );
+   auto sm4 = submatrix<unaligned,0UL,0UL,8UL,8UL>( A );
    \endcode
 
 // All of these calls to the \c submatrix() function are identical. Whether the alignment flag is
 // explicitly specified or not, it always returns an unaligned submatrix. Whereas this may provide
-// full flexibility in the creation of submatrices, this might result in performance restrictions
-// (even in case the specified submatrix could be aligned). However, it is also possible to create
-// aligned submatrices. Aligned submatrices are identical to unaligned submatrices in all aspects,
-// except that they may pose additional alignment restrictions and therefore have less flexibility
-// during creation, but don't suffer from performance penalties and provide the same performance
-// as the underlying matrix. Aligned submatrices are created by explicitly specifying the
-// \a blaze::aligned flag:
+// full flexibility in the creation of submatrices, this might result in performance disadvantages
+// in comparison to matrix primitives (even in case the specified submatrix could be aligned).
+// Whereas matrix primitives are guaranteed to be properly aligned and therefore provide maximum
+// performance in all operations, a general view on a matrix might not be properly aligned. This
+// may cause a performance penalty on some platforms and/or for some operations.
+//
+// However, it is also possible to create aligned submatrices. Aligned submatrices are identical to
+// unaligned submatrices in all aspects, except that they may pose additional alignment restrictions
+// and therefore have less flexibility during creation, but don't suffer from performance penalties
+// and provide the same performance as the underlying matrix. Aligned submatrices are created by
+// explicitly specifying the blaze::aligned flag:
 
    \code
    using blaze::aligned;
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::Submatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sv1 = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sv2 = submatrix<aligned,0UL,0UL,8UL,8UL>( A );
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
-// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
-// examples for a double precision dense matrix, assuming that AVX is available, which packs 4
-// \c double values into a SIMD vector:
+// type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
+// first element of each row/column of the submatrix must be aligned. The following source code
+// gives some examples for a double precision row-major dynamic matrix, assuming that padding is
+// enabled and that AVX is available, which packs 4 \c double values into a SIMD vector:
 
    \code
-   using blaze::rowMajor;
+   using blaze::aligned;
 
-   using MatrixType    = blaze::DynamicMatrix<double,rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType,aligned>;
-
-   MatrixType D( 13UL, 17UL );
+   blaze::DynamicMatrix<double,blaze::rowMajor> D( 13UL, 17UL );
    // ... Resizing and initialization
 
-   // OK: Starts at position (0,0) and the number of rows and columns are a multiple of 4
-   SubmatrixType dsm1 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 12UL );
+   // OK: Starts at position (0,0), i.e. the first element of each row is aligned (due to padding)
+   auto dsm1 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 11UL );
 
-   // OK: First row and column and the number of rows and columns are all a multiple of 4
-   SubmatrixType dsm2 = submatrix<aligned>( D, 4UL, 12UL, 8UL, 16UL );
+   // OK: First column is a multiple of 4, i.e. the first element of each row is aligned (due to padding)
+   auto dsm2 = submatrix<aligned>( D, 3UL, 12UL, 8UL, 16UL );
 
-   // OK: First row and column are a multiple of 4 and the submatrix includes the last row and column
-   SubmatrixType dsm3 = submatrix<aligned>( D, 4UL, 0UL, 9UL, 17UL );
+   // OK: First column is a multiple of 4 and the submatrix includes the last row and column
+   auto dsm3 = submatrix<aligned>( D, 4UL, 0UL, 9UL, 17UL );
 
-   // Error: First row is not a multiple of 4
-   SubmatrixType dsm4 = submatrix<aligned>( D, 2UL, 4UL, 12UL, 12UL );
-
-   // Error: First column is not a multiple of 4
-   SubmatrixType dsm5 = submatrix<aligned>( D, 0UL, 2UL, 8UL, 8UL );
-
-   // Error: The number of rows is not a multiple of 4 and the submatrix does not include the last row
-   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 8UL );
-
-   // Error: The number of columns is not a multiple of 4 and the submatrix does not include the last column
-   SubmatrixType dsm6 = submatrix<aligned>( D, 0UL, 0UL, 8UL, 11UL );
+   // Error: First column is not a multiple of 4, i.e. the first element is not aligned
+   auto dsm4 = submatrix<aligned>( D, 2UL, 3UL, 12UL, 12UL );
    \endcode
 
 // Note that the discussed alignment restrictions are only valid for aligned dense submatrices.
@@ -372,54 +349,26 @@
    \code
    using blaze::aligned;
 
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-
-   SparseMatrixType A;
+   blaze::CompressedMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::Submatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
-   \endcode
-
-// \n \section submatrix_on_submatrix Submatrix on Submatrix
-//
-// It is also possible to create a submatrix view on another submatrix. In this context it is
-// important to remember that the type returned by the \c submatrix() function is the same type
-// as the type of the given submatrix, since the view on a submatrix is just another view on the
-// underlying dense matrix:
-
-   \code
-   using MatrixType    = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType D1;
-
-   // ... Resizing and initialization
-
-   // Creating a submatrix view on the dense matrix D1
-   SubmatrixType sm1 = submatrix( D1, 4UL, 4UL, 8UL, 16UL );
-
-   // Creating a submatrix view on the dense submatrix sm1
-   SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
+   auto sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
    \endcode
 
 // \n \section submatrix_on_symmetric_matrices Submatrix on Symmetric Matrices
 //
-// Submatrices can also be created on symmetric matrices (see the SymmetricMatrix class template):
+// Submatrices can also be created on symmetric matrices (see the \c SymmetricMatrix class template):
 
    \code
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
-   using blaze::Submatrix;
-
-   using SymmetricDynamicType = SymmetricMatrix< DynamicMatrix<int> >;
-   using SubmatrixType        = Submatrix< SymmetricDynamicType >;
 
    // Setup of a 16x16 symmetric matrix
-   SymmetricDynamicType A( 16UL );
+   SymmetricMatrix< DynamicMatrix<int> > A( 16UL );
 
    // Creating a dense submatrix of size 8x12, starting in row 2 and column 4
-   SubmatrixType sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
+   auto sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
    \endcode
 
 // It is important to note, however, that (compound) assignments to such submatrices have a
@@ -438,17 +387,11 @@
 
    // Setup of the 3x2 dynamic matrix
    //
-   //       ( 0 9 )
-   //   B = ( 9 8 )
-   //       ( 0 7 )
+   //       ( 1 2 )
+   //   B = ( 3 4 )
+   //       ( 5 6 )
    //
-   DynamicMatrix<int> B( 3UL, 2UL );
-   B(0,0) = 1;
-   B(0,1) = 2;
-   B(1,0) = 3;
-   B(1,1) = 4;
-   B(2,1) = 5;
-   B(2,2) = 6;
+   DynamicMatrix<int> B{ { 1, 2 }, { 3, 4 }, { 5, 6 } };
 
    // OK: Assigning B to a submatrix of A1 such that the symmetry can be preserved
    //

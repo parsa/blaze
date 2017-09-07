@@ -57,6 +57,15 @@ namespace blaze {
 //
 //=================================================================================================
 
+template< bool AF, size_t I, size_t N, typename VT, bool TF >
+Subvector<VT,AF,I,N> subvector( Vector<VT,TF>& );
+
+template< bool AF, size_t I, size_t N, typename VT, bool TF >
+const Subvector<const VT,AF,I,N> subvector( const Vector<VT,TF>& );
+
+template< bool AF, size_t I, size_t N, typename VT, bool TF >
+Subvector<VT,AF,I,N> subvector( Vector<VT,TF>&& );
+
 template< bool AF, typename VT, bool TF >
 Subvector<VT,AF> subvector( Vector<VT,TF>&, size_t, size_t );
 
@@ -65,6 +74,15 @@ const Subvector<const VT,AF> subvector( const Vector<VT,TF>&, size_t, size_t );
 
 template< bool AF, typename VT, bool TF >
 Subvector<VT,AF> subvector( Vector<VT,TF>&&, size_t, size_t );
+
+template< bool AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
+Submatrix<MT,AF,I,J,M,N> submatrix( Matrix<MT,SO>& );
+
+template< bool AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
+const Submatrix<const MT,AF,I,J,M,N> submatrix( const Matrix<MT,SO>& );
+
+template< bool AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
+Submatrix<MT,AF,I,J,M,N> submatrix( Matrix<MT,SO>&& );
 
 template< bool AF, typename MT, bool SO >
 Submatrix<MT,AF> submatrix( Matrix<MT,SO>&, size_t, size_t, size_t, size_t );
@@ -75,6 +93,15 @@ const Submatrix<const MT,AF> submatrix( const Matrix<MT,SO>&, size_t, size_t, si
 template< bool AF, typename MT, bool SO >
 Submatrix<MT,AF> submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t );
 
+template< size_t I, typename MT, bool SO >
+Row<MT,I> row( Matrix<MT,SO>& );
+
+template< size_t I, typename MT, bool SO >
+const Row<const MT,I> row( const Matrix<MT,SO>& );
+
+template< size_t I, typename MT, bool SO >
+Row<MT,I> row( Matrix<MT,SO>&& );
+
 template< typename MT, bool SO >
 Row<MT> row( Matrix<MT,SO>&, size_t );
 
@@ -83,6 +110,15 @@ const Row<const MT> row( const Matrix<MT,SO>&, size_t );
 
 template< typename MT, bool SO >
 Row<MT> row( Matrix<MT,SO>&&, size_t );
+
+template< size_t I, typename MT, bool SO >
+Column<MT,I> column( Matrix<MT,SO>& );
+
+template< size_t I, typename MT, bool SO >
+const Column<const MT,I> column( const Matrix<MT,SO>& );
+
+template< size_t I, typename MT, bool SO >
+Column<MT,I> column( Matrix<MT,SO>&& );
 
 template< typename MT, bool SO >
 Column<MT> column( Matrix<MT,SO>&, size_t );
@@ -93,14 +129,14 @@ const Column<const MT> column( const Matrix<MT,SO>&, size_t );
 template< typename MT, bool SO >
 Column<MT> column( Matrix<MT,SO>&&, size_t );
 
-template< ptrdiff_t B, typename MT, bool SO >
-Band<MT,B> band( Matrix<MT,SO>& );
+template< ptrdiff_t I, typename MT, bool SO >
+Band<MT,I> band( Matrix<MT,SO>& );
 
-template< ptrdiff_t B, typename MT, bool SO >
-const Band<const MT,B> band( const Matrix<MT,SO>& );
+template< ptrdiff_t I, typename MT, bool SO >
+const Band<const MT,I> band( const Matrix<MT,SO>& );
 
-template< ptrdiff_t B, typename MT, bool SO >
-Band<MT,B> band( Matrix<MT,SO>&& );
+template< ptrdiff_t I, typename MT, bool SO >
+Band<MT,I> band( Matrix<MT,SO>&& );
 
 template< typename MT, bool SO >
 Band<MT> band( Matrix<MT,SO>&, ptrdiff_t );

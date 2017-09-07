@@ -45,6 +45,7 @@
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -65,19 +66,26 @@ namespace blaze {
 // type. In case the given type is neither a dense nor a sparse matrix type, the resulting data
 // type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT >  // Type of the matrix operand
+template< typename MT      // Type of the matrix operand
+        , size_t... RAs >  // Compile time row arguments
 struct RowExprTrait
 {
  private:
-   //**struct Failure******************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
-   //**struct Result*******************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = decltype( row( std::declval<MT>(), std::declval<size_t>() ) ); };
+   struct CompileTime { using Type = decltype( row<RAs...>( std::declval<MT>() ) ); };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct Runtime { using Type = decltype( row( std::declval<MT>(), std::declval<size_t>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -85,7 +93,9 @@ struct RowExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsMatrix< RemoveReference_<MT> >
-                            , Result
+                            , IfTrue_< ( sizeof...( RAs ) > 0UL )
+                                     , CompileTime
+                                     , Runtime >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -106,8 +116,9 @@ struct RowExprTrait
    using Type2 = RowExprTrait_<MT>;
    \endcode
 */
-template< typename MT >  // Type of the matrix operand
-using RowExprTrait_ = typename RowExprTrait<MT>::Type;
+template< typename MT      // Type of the matrix operand
+        , size_t... RAs >  // Compile time row arguments
+using RowExprTrait_ = typename RowExprTrait<MT,RAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

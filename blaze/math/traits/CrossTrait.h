@@ -75,17 +75,6 @@ namespace blaze {
 // type \a Type is set to \a INVALID_TYPE. Note that \a const and \a volatile qualifiers and
 // reference modifiers are generally ignored.
 //
-// Since the cross product is only defined for 3-dimensional vectors, the CrossTrait template
-// only supports the following vector types:
-//
-// <ul>
-//    <li>blaze::StaticVector</li>
-//    <li>blaze::HybridVector</li>
-//    <li>blaze::DynamicVector</li>
-//    <li>blaze::CustomVector</li>
-//    <li>blaze::CompressedVector</li>
-// </ul>
-//
 //
 // \n \section crosstrait_specializations Creating custom specializations
 //

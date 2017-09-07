@@ -776,6 +776,10 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
    //@}
    //**********************************************************************************************
 
+   //**Friend declarations*************************************************************************
+   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... SAs2 > friend class SubvectorImpl;
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE   ( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
@@ -2948,6 +2952,10 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
  private:
    //**Member variables****************************************************************************
    using DataType::vector_;
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... SAs2 > friend class SubvectorImpl;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

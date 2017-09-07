@@ -72,37 +72,15 @@ namespace blaze {
 // can be determined for the type \a T, a compilation error is created. Note that \c const and
 // \c volatile qualifiers and reference modifiers are generally ignored.
 //
-// Per default, UnaryMapTrait supports all built-in data types. Additionally, the Blaze library
-// provides appropriate specializations for the following user-defined arithmetic types:
-//
-// <ul>
-//    <li>blaze::StaticVector</li>
-//    <li>blaze::HybridVector</li>
-//    <li>blaze::DynamicVector</li>
-//    <li>blaze::CustomVector</li>
-//    <li>blaze::StaticMatrix</li>
-//    <li>blaze::HybridMatrix</li>
-//    <li>blaze::DynamicMatrix</li>
-//    <li>blaze::CustomMatrix</li>
-//    <li>blaze::SymmetricMatrix</li>
-//    <li>blaze::HermitianMatrix</li>
-//    <li>blaze::LowerMatrix</li>
-//    <li>blaze::UniLowerMatrix</li>
-//    <li>blaze::StrictlyLowerMatrix</li>
-//    <li>blaze::UpperMatrix</li>
-//    <li>blaze::UniUpperMatrix</li>
-//    <li>blaze::StrictlyUpperMatrix</li>
-//    <li>blaze::DiagonalMatrix</li>
-// </ul>
-//
 //
 // \n \section unarymaptrait_specializations Creating custom specializations
 //
-// UnaryMapTrait is guaranteed to work for all data types that work in combination with the
-// provided custom operation \a OP. In order to add support for user-defined data types or in
-// order to adapt to special cases it is possible to specialize the UnaryMapTrait template.
-// The following example shows the according specialization for unary map operations with a
-// dynamic column vector:
+// UnaryMapTrait is guaranteed to work for all built-in data types, complex numbers, all vector
+// and matrix types of the Blaze library (including views and adaptors) and all data types that
+// work in combination with the provided custom operation \a OP. In order to add support for
+// user-defined data types or in order to adapt to special cases it is possible to specialize
+// the UnaryMapTrait template. The following example shows the according specialization for
+// unary map operations with a dynamic column vector:
 
    \code
    template< typename T, typename OP >

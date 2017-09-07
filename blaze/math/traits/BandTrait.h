@@ -97,11 +97,11 @@ namespace blaze {
 
    // Definition of the fitting type for any band of a row-major dynamic matrix
    using MatrixType1 = blaze::DynamicMatrix<int,rowMajor>;
-   using BandType1   = typename blaze::BandTrait<MatrixType1>::Type;
+   using ResultType1 = typename blaze::BandTrait<MatrixType1>::Type;
 
    // Definition of the fitting type of the 3rd band of a column-major static matrix
    using MatrixType2 = blaze::StaticMatrix<int,3UL,3UL,columnMajor>;
-   using BandType2   = typename blaze::BandTrait<MatrixType2,3L>::Type;
+   using ResultType2 = typename blaze::BandTrait<MatrixType2,3L>::Type;
    \endcode
 */
 template< typename MT         // Type of the matrix

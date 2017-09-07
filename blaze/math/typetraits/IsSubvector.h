@@ -90,11 +90,11 @@ struct IsSubvector
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubvector type trait for 'Subvector'.
+/*!\brief Specialization of the IsSubvector type trait for 'SubvectorImpl'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< Subvector<VT,AF,TF,DF> >
+template< typename VT, bool AF, bool TF, bool DF, size_t... SAs >
+struct IsSubvector< SubvectorImpl<VT,AF,TF,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -103,11 +103,11 @@ struct IsSubvector< Subvector<VT,AF,TF,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubvector type trait for 'const Subvector'.
+/*!\brief Specialization of the IsSubvector type trait for 'const SubvectorImpl'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< const Subvector<VT,AF,TF,DF> >
+template< typename VT, bool AF, bool TF, bool DF, size_t... SAs >
+struct IsSubvector< const SubvectorImpl<VT,AF,TF,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -116,11 +116,11 @@ struct IsSubvector< const Subvector<VT,AF,TF,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubvector type trait for 'volatile Subvector'.
+/*!\brief Specialization of the IsSubvector type trait for 'volatile SubvectorImpl'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< volatile Subvector<VT,AF,TF,DF> >
+template< typename VT, bool AF, bool TF, bool DF, size_t... SAs >
+struct IsSubvector< volatile SubvectorImpl<VT,AF,TF,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -129,11 +129,11 @@ struct IsSubvector< volatile Subvector<VT,AF,TF,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubvector type trait for 'const volatile Subvector'.
+/*!\brief Specialization of the IsSubvector type trait for 'const volatile SubvectorImpl'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF >
-struct IsSubvector< const volatile Subvector<VT,AF,TF,DF> >
+template< typename VT, bool AF, bool TF, bool DF, size_t... SAs >
+struct IsSubvector< const volatile SubvectorImpl<VT,AF,TF,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */

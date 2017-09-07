@@ -91,11 +91,11 @@ struct IsBand
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsBand type trait for 'Band'.
+/*!\brief Specialization of the IsBand type trait for 'BandImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, ptrdiff_t... BIs >
-struct IsBand< Band<MT,BIs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BIs >
+struct IsBand< BandImpl<MT,TF,DF,MF,BIs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -104,11 +104,11 @@ struct IsBand< Band<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsBand type trait for 'const Band'.
+/*!\brief Specialization of the IsBand type trait for 'const BandImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, ptrdiff_t... BIs >
-struct IsBand< const Band<MT,BIs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BIs >
+struct IsBand< const BandImpl<MT,TF,DF,MF,BIs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -117,11 +117,11 @@ struct IsBand< const Band<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsBand type trait for 'volatile Band'.
+/*!\brief Specialization of the IsBand type trait for 'volatile BandImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, ptrdiff_t... BIs >
-struct IsBand< volatile Band<MT,BIs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BIs >
+struct IsBand< volatile BandImpl<MT,TF,DF,MF,BIs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -130,11 +130,11 @@ struct IsBand< volatile Band<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsBand type trait for 'const volatile Band'.
+/*!\brief Specialization of the IsBand type trait for 'const volatile BandImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, ptrdiff_t... BIs >
-struct IsBand< const volatile Band<MT,BIs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BIs >
+struct IsBand< const volatile BandImpl<MT,TF,DF,MF,BIs...> >
    : public TrueType
 {};
 /*! \endcond */

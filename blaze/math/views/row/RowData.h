@@ -59,11 +59,11 @@ namespace blaze {
 // \ingroup row
 //
 // The auxiliary RowData class template represents an abstraction of the data members of the
-// RowImpl class template. The necessary set of data member is selected depending on the number
-// of compile time row indices.
+// RowImpl class template. The necessary set of data members is selected depending on the number
+// of compile time row arguments.
 */
 template< typename MT      // Type of the matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 struct RowData
 {};
 //*************************************************************************************************
@@ -78,11 +78,11 @@ struct RowData
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the RowData class template for zero compile time row indices.
+/*!\brief Specialization of the RowData class template for zero compile time row arguments.
 // \ingroup row
 //
 // This specialization of RowData adapts the class template to the requirements of zero compile
-// time row indices.
+// time row arguments.
 */
 template< typename MT >  // Type of the matrix
 struct RowData<MT>
@@ -117,6 +117,7 @@ struct RowData<MT>
    //@}
    //**********************************************************************************************
 
+ protected:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -182,15 +183,15 @@ inline size_t RowData<MT>::row() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the RowData class template for a single compile time row index.
+/*!\brief Specialization of the RowData class template for a single compile time row argument.
 // \ingroup row
 //
 // This specialization of RowData adapts the class template to the requirements of a single
-// compile time row index.
+// compile time row argument.
 */
-template< typename MT  // Type of the matrix
-        , size_t RI >  // Row index
-struct RowData<MT,RI>
+template< typename MT     // Type of the matrix
+        , size_t Index >  // Compile time row index
+struct RowData<MT,Index>
 {
  public:
    //**Type definitions****************************************************************************
@@ -222,6 +223,7 @@ struct RowData<MT,RI>
    //@}
    //**********************************************************************************************
 
+ protected:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -238,9 +240,9 @@ struct RowData<MT,RI>
 // \param matrix The matrix containing the row.
 // \exception std::invalid_argument Invalid row access index.
 */
-template< typename MT  // Type of the matrix
-        , size_t RI >  // Row index
-inline RowData<MT,RI>::RowData( Operand matrix )
+template< typename MT     // Type of the matrix
+        , size_t Index >  // Compile time row index
+inline RowData<MT,Index>::RowData( Operand matrix )
    : matrix_( matrix )  // The matrix containing the row
 {
    if( matrix_.rows() <= row() ) {
@@ -255,9 +257,9 @@ inline RowData<MT,RI>::RowData( Operand matrix )
 //
 // \return The matrix containing the row.
 */
-template< typename MT  // Type of the matrix
-        , size_t RI >  // Row index
-inline typename RowData<MT,RI>::Operand RowData<MT,RI>::operand() const noexcept
+template< typename MT     // Type of the matrix
+        , size_t Index >  // Compile time row index
+inline typename RowData<MT,Index>::Operand RowData<MT,Index>::operand() const noexcept
 {
    return matrix_;
 }
@@ -269,11 +271,11 @@ inline typename RowData<MT,RI>::Operand RowData<MT,RI>::operand() const noexcept
 //
 // \return The index of the row.
 */
-template< typename MT  // Type of the matrix
-        , size_t RI >  // Row index
-inline constexpr size_t RowData<MT,RI>::row() const noexcept
+template< typename MT     // Type of the matrix
+        , size_t Index >  // Compile time row index
+inline constexpr size_t RowData<MT,Index>::row() const noexcept
 {
-   return RI;
+   return Index;
 }
 //*************************************************************************************************
 

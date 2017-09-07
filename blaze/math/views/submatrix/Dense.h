@@ -831,6 +831,10 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
    //@}
    //**********************************************************************************************
 
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
@@ -4170,6 +4174,10 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
    //@}
    //**********************************************************************************************
 
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
@@ -7050,6 +7058,10 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
 
    //**Member variables****************************************************************************
    using DataType::matrix_;
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -9975,6 +9987,10 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
 
    //**Member variables****************************************************************************
    using DataType::matrix_;
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

@@ -87,7 +87,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Creating a view on a specific band of the given matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The matrix containing the band.
 // \return View on the specified band of the matrix.
@@ -98,38 +98,35 @@ namespace blaze {
    \code
    using blaze::rowMajor;
 
-   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
-   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
-
-   DenseMatrix D;
-   SparseMatrix S;
+   blaze::DynamicMatrix<double,rowMajor> D;
+   blaze::CompressedMatrix<double,rowMajor> S;
    // ... Resizing and initialization
 
    // Creating a view on the upper secondary diagonal of the dense matrix D
-   blaze::Band<DenseMatrix,1L> = band<1L>( D );
+   auto ub1 = band<1L>( D );
 
    // Creating a view on the lower secondary diagonal of the sparse matrix S
-   blaze::Band<SparseMatrix,-1L> = band<-1L>( S );
+   auto lb1 = band<-1L>( S );
    \endcode
 
 // In case the band is not properly specified (i.e. if the specified index does not correspond
 // to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
 */
-template< ptrdiff_t BI  // Band index
-        , typename MT   // Type of the matrix
-        , bool SO >     // Storage order
-inline Band<MT,BI> band( Matrix<MT,SO>& matrix )
+template< ptrdiff_t I  // Band index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline Band<MT,I> band( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<MT,BI>( ~matrix );
+   return Band<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Creating a view on a specific band of the given constant matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix containing the band.
 // \return View on the specified band of the matrix.
@@ -141,37 +138,34 @@ inline Band<MT,BI> band( Matrix<MT,SO>& matrix )
    \code
    using blaze::rowMajor;
 
-   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
-   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
-
-   const DenseMatrix D( ... );
-   const SparseMatrix S( ... );
+   const blaze::DynamicMatrix<double,rowMajor> D( ... );
+   const blaze::CompressedMatrix<double,rowMajor> S( ... );
 
    // Creating a view on the upper secondary diagonal of the dense matrix D
-   blaze::Band<const DenseMatrix,1L> = band<1L>( D );
+   auto ub1 = band<1L>( D );
 
    // Creating a view on the lower secondary diagonal of the sparse matrix S
-   blaze::Band<const SparseMatrix,-1L> = band<-1L>( S );
+   auto lb1 = band<-1L>( S );
    \endcode
 
 // In case the band is not properly specified (i.e. if the specified index does not correspond
 // to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
 */
-template< ptrdiff_t BI  // Band index
-        , typename MT   // Type of the matrix
-        , bool SO >     // Storage order
-inline const Band<const MT,BI> band( const Matrix<MT,SO>& matrix )
+template< ptrdiff_t I  // Band index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline const Band<const MT,I> band( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<const MT,BI>( ~matrix );
+   return Band<const MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Creating a view on a specific band of the given temporary matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The temporary matrix containing the band.
 // \return View on the specified band of the matrix.
@@ -182,21 +176,21 @@ inline const Band<const MT,BI> band( const Matrix<MT,SO>& matrix )
 // correspond to a valid band in the given matrix) a \a std::invalid_argument exception is
 // thrown.
 */
-template< ptrdiff_t BI  // Band index
-        , typename MT   // Type of the matrix
-        , bool SO >     // Storage order
-inline Band<MT,BI> band( Matrix<MT,SO>&& matrix )
+template< ptrdiff_t I  // Band index
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline Band<MT,I> band( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<MT,BI>( ~matrix );
+   return Band<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*!\brief Creating a view on a specific band of the given matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The matrix containing the band.
 // \param index The band index.
@@ -208,18 +202,15 @@ inline Band<MT,BI> band( Matrix<MT,SO>&& matrix )
    \code
    using blaze::rowMajor;
 
-   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
-   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
-
-   DenseMatrix D;
-   SparseMatrix S;
+   blaze::DynamicMatrix<double,rowMajor> D;
+   blaze::CompressedMatrix<double,rowMajor> S;
    // ... Resizing and initialization
 
    // Creating a view on the upper secondary diagonal of the dense matrix D
-   blaze::Band<DenseMatrix> = band( D, 1L );
+   auto ub1 = band( D, 1L );
 
    // Creating a view on the lower secondary diagonal of the sparse matrix S
-   blaze::Band<SparseMatrix> = band( S, -1L );
+   auto lb1 = band( S, -1L );
    \endcode
 
 // In case the band is not properly specified (i.e. if the specified index does not correspond
@@ -238,7 +229,7 @@ inline Band<MT> band( Matrix<MT,SO>& matrix, ptrdiff_t index )
 
 //*************************************************************************************************
 /*!\brief Creating a view on a specific band of the given constant matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix containing the band.
 // \param index The band index.
@@ -251,17 +242,14 @@ inline Band<MT> band( Matrix<MT,SO>& matrix, ptrdiff_t index )
    \code
    using blaze::rowMajor;
 
-   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
-   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
-
-   const DenseMatrix D( ... );
-   const SparseMatrix S( ... );
+   const blaze::DynamicMatrix<double,rowMajor> D( ... );
+   const blaze::CompressedMatrix<double,rowMajor> S( ... );
 
    // Creating a view on the upper secondary diagonal of the dense matrix D
-   blaze::Band<const DenseMatrix> = band( D, 1L );
+   auto lb1 = band( D, 1L );
 
    // Creating a view on the lower secondary diagonal of the sparse matrix S
-   blaze::Band<const SparseMatrix> = band( S, -1L );
+   auto ub1 = band( S, -1L );
    \endcode
 
 // In case the band is not properly specified (i.e. if the specified index does not correspond
@@ -280,7 +268,7 @@ inline const Band<const MT> band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
 
 //*************************************************************************************************
 /*!\brief Creating a view on a specific band of the given temporary matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The temporary matrix containing the band.
 // \param index The band index.
@@ -305,7 +293,7 @@ inline Band<MT> band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
 
 //*************************************************************************************************
 /*!\brief Creating a view on the diagonal of the given matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The matrix containing the diagonal.
 // \return View on the diagonal of the matrix.
@@ -316,18 +304,15 @@ inline Band<MT> band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
    \code
    using blaze::rowMajor;
 
-   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
-   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
-
-   DenseMatrix D;
-   SparseMatrix S;
+   blaze::DynamicMatrix<double,rowMajor> D;
+   blaze::CompressedMatrix<double,rowMajor> S;
    // ... Resizing and initialization
 
    // Creating a view on the diagonal of the dense matrix D
-   blaze::Diagonal<DenseMatrix> = diagonal( D );
+   auto diag1 = diagonal( D );
 
    // Creating a view on the diagonal of the sparse matrix S
-   blaze::Diagonal<SparseMatrix> = diagonal( S );
+   auto diag2 = diagonal( S );
    \endcode
 
 // In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
@@ -346,7 +331,7 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix )
 
 //*************************************************************************************************
 /*!\brief Creating a view on the diagonal of the given constant matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix containing the diagonal.
 // \return View on the diagonal of the matrix.
@@ -357,17 +342,14 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix )
    \code
    using blaze::rowMajor;
 
-   using DenseMatrix  = blaze::DynamicMatrix<double,rowMajor>;
-   using SparseMatrix = blaze::CompressedMatrix<double,rowMajor>;
-
-   const DenseMatrix D( ... );
-   const SparseMatrix S( ... );
+   const blaze::DynamicMatrix<double,rowMajor> D( ... );
+   const blaze::CompressedMatrix<double,rowMajor> S( ... );
 
    // Creating a view on the diagonal of the dense matrix D
-   blaze::Diagonal<const DenseMatrix> = diagonal( D );
+   auto diag1 = diagonal( D );
 
    // Creating a view on the diagonal of the sparse matrix S
-   blaze::Diagonal<const SparseMatrix> = diagonal( S );
+   auto diag2 = diagonal( S );
    \endcode
 
 // In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
@@ -386,7 +368,7 @@ inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix )
 
 //*************************************************************************************************
 /*!\brief Creating a view on the diagonal of the given temporary matrix.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The temporary matrix containing the diagonal.
 // \return View on the diagonal of the matrix.
@@ -418,7 +400,65 @@ inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific subvector of the given band.
-// \ingroup views
+// \ingroup band
+//
+// \param b The band containing the subvector.
+// \return View on the specified subvector of the band.
+//
+// This function returns an expression representing the specified subvector of the given band.
+*/
+template< bool AF         // Alignment flag
+        , size_t I1       // Index of the first subvector element
+        , size_t N        // Size of the subvector
+        , typename MT     // Type of the matrix
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , bool MF         // Multiplication flag
+        , ptrdiff_t I2 >  // Band index
+inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,I2>& b )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr size_t row   ( I2 >= 0L ? 0UL : -I2 );
+   constexpr size_t column( I2 >= 0L ?  I2 : 0UL );
+
+   return diagonal( submatrix<AF,row+I1,column+I1,N,N>( b.operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given band.
+// \ingroup band
+//
+// \param b The band containing the subvector.
+// \return View on the specified subvector of the band.
+//
+// This function returns an expression representing the specified subvector of the given band.
+*/
+template< bool AF      // Alignment flag
+        , size_t I     // Index of the first subvector element
+        , size_t N     // Size of the subvector
+        , typename MT  // Type of the matrix
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
+        , bool MF >    // Multiplication flag
+inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF>& b )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return diagonal( submatrix<AF>( b.operand(), b.row()+I, b.column()+I, N, N ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given band.
+// \ingroup band
 //
 // \param b The band containing the subvector.
 // \param index The index of the first element of the subvector.
@@ -429,9 +469,11 @@ inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix )
 */
 template< bool AF             // Alignment flag
         , typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline decltype(auto)
-   subvector( Band<MT,BIs...>& b, size_t index, size_t size )
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,BAs...>& b, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -444,21 +486,83 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific subvector of the given constant band.
-// \ingroup views
+// \ingroup band
 //
-// \param b The constant band containing the subvector
+// \param b The constant band containing the subvector.
+// \return View on the specified subvector of the constant band.
+//
+// This function returns an expression representing the specified subvector of the given constant
+// band.
+*/
+template< bool AF         // Alignment flag
+        , size_t I1       // Index of the first subvector element
+        , size_t N        // Size of the subvector
+        , typename MT     // Type of the matrix
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , bool MF         // Multiplication flag
+        , ptrdiff_t I2 >  // Band index
+inline decltype(auto) subvector( const BandImpl<MT,TF,DF,MF,I2>& b )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr size_t row   ( I2 >= 0L ? 0UL : -I2 );
+   constexpr size_t column( I2 >= 0L ?  I2 : 0UL );
+
+   return diagonal( submatrix<AF,row+I1,column+I1,N,N>( b.operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given constant band.
+// \ingroup band
+//
+// \param b The constant band containing the subvector.
+// \return View on the specified subvector of the constant band.
+//
+// This function returns an expression representing the specified subvector of the given constant
+// band.
+*/
+template< bool AF      // Alignment flag
+        , size_t I     // Index of the first subvector element
+        , size_t N     // Size of the subvector
+        , typename MT  // Type of the matrix
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
+        , bool MF >    // Multiplication flag
+inline decltype(auto) subvector( const BandImpl<MT,TF,DF,MF>& b )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return diagonal( submatrix<AF>( b.operand(), b.row()+I, b.column()+I, N, N ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given constant band.
+// \ingroup band
+//
+// \param b The constant band containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
 // \return View on the specified subvector of the constant band.
 //
-// This function returns an expression representing the specified subvector of the given
-// constant band.
+// This function returns an expression representing the specified subvector of the given constant
+// band.
 */
 template< bool AF             // Alignment flag
         , typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline decltype(auto)
-   subvector( const Band<MT,BIs...>& b, size_t index, size_t size )
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline decltype(auto) subvector( const BandImpl<MT,TF,DF,MF,BAs...>& b, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -471,21 +575,83 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific subvector of the given temporary band.
-// \ingroup views
+// \ingroup band
 //
-// \param b The temporary band containing the subvector
+// \param b The temporary band containing the subvector.
+// \return View on the specified subvector of the temporary band.
+//
+// This function returns an expression representing the specified subvector of the given temporary
+// band.
+*/
+template< bool AF         // Alignment flag
+        , size_t I1       // Index of the first subvector element
+        , size_t N        // Size of the subvector
+        , typename MT     // Type of the matrix
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , bool MF         // Multiplication flag
+        , ptrdiff_t I2 >  // Band index
+inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,I2>&& b )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr size_t row   ( I2 >= 0L ? 0UL : -I2 );
+   constexpr size_t column( I2 >= 0L ?  I2 : 0UL );
+
+   return diagonal( submatrix<AF,row+I1,column+I1,N,N>( b.operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given temporary band.
+// \ingroup band
+//
+// \param b The temporary band containing the subvector.
+// \return View on the specified subvector of the temporary band.
+//
+// This function returns an expression representing the specified subvector of the given temporary
+// band.
+*/
+template< bool AF      // Alignment flag
+        , size_t I     // Index of the first subvector element
+        , size_t N     // Size of the subvector
+        , typename MT  // Type of the matrix
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
+        , bool MF >    // Multiplication flag
+inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF>&& b )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return diagonal( submatrix<AF>( b.operand(), b.row()+I, b.column()+I, N, N ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given temporary band.
+// \ingroup band
+//
+// \param b The temporary band containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
 // \return View on the specified subvector of the temporary band.
 //
-// This function returns an expression representing the specified subvector of the given
-// temporary band.
+// This function returns an expression representing the specified subvector of the given temporary
+// band.
 */
 template< bool AF             // Alignment flag
         , typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline decltype(auto)
-   subvector( Band<MT,BIs...>&& b, size_t index, size_t size )
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,BAs...>&& b, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -498,7 +664,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/matrix addition.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/matrix addition.
 // \return View on the specified band of the addition.
@@ -506,14 +672,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix/matrix
 // addition.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMatAddExpr<MT>& matrix )
+inline decltype(auto) band( const MatMatAddExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<BI>( (~matrix).leftOperand() ) + band<BI>( (~matrix).rightOperand() );
+   return band<I>( (~matrix).leftOperand() ) + band<I>( (~matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -522,7 +687,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/matrix addition.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/matrix addition.
 // \param index The band index.
@@ -532,8 +697,7 @@ inline decltype(auto)
 // addition.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMatAddExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatMatAddExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -546,7 +710,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/matrix subtraction.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/matrix subtraction.
 // \return View on the specified band of the subtraction.
@@ -554,14 +718,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix/matrix
 // subtraction.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMatSubExpr<MT>& matrix )
+inline decltype(auto) band( const MatMatSubExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<BI>( (~matrix).leftOperand() ) - band<BI>( (~matrix).rightOperand() );
+   return band<I>( (~matrix).leftOperand() ) - band<I>( (~matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -570,7 +733,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/matrix subtraction.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/matrix subtraction.
 // \param index The band index.
@@ -580,8 +743,7 @@ inline decltype(auto)
 // subtraction.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMatSubExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatMatSubExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -594,21 +756,20 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given Schur product.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant Schur product.
 // \return View on the specified band of the Schur product.
 //
 // This function returns an expression representing the specified band of the given Schur product.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const SchurExpr<MT>& matrix )
+inline decltype(auto) band( const SchurExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<BI>( (~matrix).leftOperand() ) * band<BI>( (~matrix).rightOperand() );
+   return band<I>( (~matrix).leftOperand() ) * band<I>( (~matrix).rightOperand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -617,7 +778,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given Schur product.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant Schur product.
 // \param index The band index.
@@ -626,8 +787,7 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given Schur product.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const SchurExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const SchurExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -640,25 +800,24 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given outer product.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant outer product.
 // \return View on the specified band of the outer product.
 //
 // This function returns an expression representing the specified band of the given outer product.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const VecTVecMultExpr<MT>& matrix )
+inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
    decltype(auto) leftOperand ( (~matrix).leftOperand()  );
    decltype(auto) rightOperand( (~matrix).rightOperand() );
 
-   const size_t row   ( BI <  0L ? -BI : 0UL );
-   const size_t column( BI >= 0L ?  BI : 0UL );
+   const size_t row   ( I <  0L ? -I : 0UL );
+   const size_t column( I >= 0L ?  I : 0UL );
    const size_t size  ( min( leftOperand.size() - row, rightOperand.size() - column ) );
 
    return transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ) *
@@ -671,7 +830,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given outer product.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant outer product.
 // \param index The band index.
@@ -680,8 +839,7 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given outer product.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const VecTVecMultExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -702,7 +860,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/scalar multiplication.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/scalar multiplication.
 // \return View on the specified band of the multiplication.
@@ -710,14 +868,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix/scalar
 // multiplication.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatScalarMultExpr<MT>& matrix )
+inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<BI>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
+   return band<I>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -726,7 +883,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/scalar multiplication.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/scalar multiplication.
 // \param index The band index.
@@ -736,8 +893,7 @@ inline decltype(auto)
 // multiplication.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatScalarMultExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -750,7 +906,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/scalar division.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/scalar division.
 // \return View on the specified band of the division.
@@ -758,14 +914,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix/scalar
 // division.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatScalarDivExpr<MT>& matrix )
+inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<BI>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+   return band<I>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -774,7 +929,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix/scalar division.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix/scalar division.
 // \param index The band index.
@@ -784,8 +939,7 @@ inline decltype(auto)
 // division.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatScalarDivExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -798,7 +952,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given unary matrix map operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant unary matrix map operation.
 // \return View on the specified band of the unary map operation.
@@ -806,14 +960,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given unary matrix
 // map operation.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMapExpr<MT>& matrix )
+inline decltype(auto) band( const MatMapExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( band<BI>( (~matrix).operand() ), (~matrix).operation() );
+   return map( band<I>( (~matrix).operand() ), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -822,7 +975,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given unary matrix map operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant unary matrix map operation.
 // \param index The band index.
@@ -832,8 +985,7 @@ inline decltype(auto)
 // map operation.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMapExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatMapExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -846,7 +998,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given binary matrix map operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant binary matrix map operation.
 // \return View on the specified band of the binary map operation.
@@ -854,15 +1006,14 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given binary matrix
 // map operation.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMatMapExpr<MT>& matrix )
+inline decltype(auto) band( const MatMatMapExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( band<BI>( (~matrix).leftOperand() ),
-               band<BI>( (~matrix).rightOperand() ),
+   return map( band<I>( (~matrix).leftOperand() ),
+               band<I>( (~matrix).rightOperand() ),
                (~matrix).operation() );
 }
 /*! \endcond */
@@ -872,7 +1023,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given binary matrix map operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant binary matrix map operation.
 // \param index The band index.
@@ -882,8 +1033,7 @@ inline decltype(auto)
 // map operation.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatMatMapExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatMatMapExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -898,7 +1048,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix evaluation operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix evaluation operation.
 // \return View on the specified band of the evaluation operation.
@@ -906,14 +1056,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix
 // evaluation operation.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatEvalExpr<MT>& matrix )
+inline decltype(auto) band( const MatEvalExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( band<BI>( (~matrix).operand() ) );
+   return eval( band<I>( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -922,7 +1071,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix evaluation operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix evaluation operation.
 // \param index The band index.
@@ -932,8 +1081,7 @@ inline decltype(auto)
 // evaluation operation.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatEvalExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatEvalExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -946,7 +1094,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix serialization operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix serialization operation.
 // \return View on the specified band of the serialization operation.
@@ -954,14 +1102,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix
 // serialization operation.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatSerialExpr<MT>& matrix )
+inline decltype(auto) band( const MatSerialExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( band<BI>( (~matrix).operand() ) );
+   return serial( band<I>( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -970,7 +1117,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix serialization operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix serialization operation.
 // \param index The band index.
@@ -980,8 +1127,7 @@ inline decltype(auto)
 // serialization operation.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatSerialExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatSerialExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -994,7 +1140,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix declaration operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix declaration operation.
 // \return View on the specified band of the declaration operation.
@@ -1002,14 +1148,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix
 // declaration operation.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const DeclExpr<MT>& matrix )
+inline decltype(auto) band( const DeclExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<BI>( (~matrix).operand() );
+   return band<I>( (~matrix).operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1018,7 +1163,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix declaration operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix declaration operation.
 // \param index The band index.
@@ -1028,8 +1173,7 @@ inline decltype(auto)
 // declaration operation.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const DeclExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const DeclExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1042,7 +1186,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix transpose operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix transpose operation.
 // \return View on the specified band of the transpose operation.
@@ -1050,14 +1194,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified band of the given matrix
 // transpose operation.
 */
-template< ptrdiff_t BI   // Band index
+template< ptrdiff_t I    // Band index
         , typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatTransExpr<MT>& matrix )
+inline decltype(auto) band( const MatTransExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<-BI>( (~matrix).operand() );
+   return band<-I>( (~matrix).operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1066,7 +1209,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific band of the given matrix transpose operation.
-// \ingroup views
+// \ingroup band
 //
 // \param matrix The constant matrix declaration operation.
 // \param index The band index.
@@ -1076,8 +1219,7 @@ inline decltype(auto)
 // declaration operation.
 */
 template< typename MT >  // Type of the matrix
-inline decltype(auto)
-   band( const MatTransExpr<MT>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const MatTransExpr<MT>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1096,33 +1238,7 @@ inline decltype(auto)
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Band operators */
-//@{
-template< typename MT, ptrdiff_t... BIs >
-inline void reset( Band<MT,BIs...>& band );
-
-template< typename MT, ptrdiff_t... BIs >
-inline void reset( Band<MT,BIs...>&& band );
-
-template< typename MT, ptrdiff_t... BIs >
-inline void clear( Band<MT,BIs...>& band );
-
-template< typename MT, ptrdiff_t... BIs >
-inline void clear( Band<MT,BIs...>&& band );
-
-template< bool RF, typename MT, ptrdiff_t... BIs >
-inline bool isDefault( const Band<MT,BIs...>& band );
-
-template< typename MT, ptrdiff_t... BIs >
-inline bool isIntact( const Band<MT,BIs...>& band ) noexcept;
-
-template< typename MT1, ptrdiff_t... BIs1, typename MT2, ptrdiff_t... BIs2 >
-inline bool isSame( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept;
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resetting the given band.
 // \ingroup band
 //
@@ -1130,15 +1246,20 @@ inline bool isSame( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noe
 // \return void
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline void reset( Band<MT,BIs...>& band )
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline void reset( BandImpl<MT,TF,DF,MF,BAs...>& band )
 {
    band.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resetting the given temporary band.
 // \ingroup band
 //
@@ -1146,15 +1267,20 @@ inline void reset( Band<MT,BIs...>& band )
 // \return void
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline void reset( Band<MT,BIs...>&& band )
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline void reset( BandImpl<MT,TF,DF,MF,BAs...>&& band )
 {
    band.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Clearing the given band.
 // \ingroup band
 //
@@ -1164,15 +1290,20 @@ inline void reset( Band<MT,BIs...>&& band )
 // Clearing a band is equivalent to resetting it via the reset() function.
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline void clear( Band<MT,BIs...>& band )
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline void clear( BandImpl<MT,TF,DF,MF,BAs...>& band )
 {
    band.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Clearing the given temporary band.
 // \ingroup band
 //
@@ -1182,11 +1313,15 @@ inline void clear( Band<MT,BIs...>& band )
 // Clearing a band is equivalent to resetting it via the reset() function.
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline void clear( Band<MT,BIs...>&& band )
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline void clear( BandImpl<MT,TF,DF,MF,BAs...>&& band )
 {
    band.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1200,12 +1335,28 @@ inline void clear( Band<MT,BIs...>&& band )
 //
 // This function checks whether the dense band is in default state. For instance, in case the
 // band is instantiated for a built-in integral or floating point data type, the function returns
-// \a true in case all band elements are 0 and \a false in case any band element is not 0.
+// \a true in case all band elements are 0 and \a false in case any band element is not 0. The
+// following example demonstrates the use of the \a isDefault function:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> A;
+   // ... Resizing and initialization
+   if( isDefault( band( A, 0UL ) ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDefault<relaxed>( band( A, 0UL ) ) ) { ... }
+   \endcode
 */
 template< bool RF             // Relaxation flag
         , typename MT         // Type of the dense matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline bool isDefault_backend( const DenseBand<MT,BIs...>& band )
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline bool isDefault( const BandImpl<MT,TF,true,MF,BAs...>& band )
 {
    using blaze::isDefault;
 
@@ -1227,37 +1378,11 @@ inline bool isDefault_backend( const DenseBand<MT,BIs...>& band )
 //
 // This function checks whether the sparse band is in default state. For instance, in case the
 // band is instantiated for a built-in integral or floating point data type, the function returns
-// \a true in case all band elements are 0 and \a false in case any band element is not 0.
-*/
-template< bool RF             // Relaxation flag
-        , typename MT         // Type of the sparse matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline bool isDefault_backend( const SparseBand<MT,BIs...>& band )
-{
-   using blaze::isDefault;
-
-   for( const auto& element : band )
-      if( !isDefault<RF>( element.value() ) ) return false;
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the given band is in default state.
-// \ingroup band
-//
-// \param band The band to be tested for its default state.
-// \return \a true in case the given band is component-wise zero, \a false otherwise.
-//
-// This function checks whether the band is in default state. For instance, in case the band
-// is instantiated for a built-in integral or floating point data type, the function returns
 // \a true in case all band elements are 0 and \a false in case any band element is not 0. The
 // following example demonstrates the use of the \a isDefault function:
 
    \code
-   blaze::DynamicMatrix<int,rowMajor> A;
+   blaze::CompressedMatrix<int,rowMajor> A;
    // ... Resizing and initialization
    if( isDefault( band( A, 0UL ) ) ) { ... }
    \endcode
@@ -1270,16 +1395,24 @@ inline bool isDefault_backend( const SparseBand<MT,BIs...>& band )
    \endcode
 */
 template< bool RF             // Relaxation flag
-        , typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline bool isDefault( const Band<MT,BIs...>& band )
+        , typename MT         // Type of the sparse matrix
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline bool isDefault( const BandImpl<MT,TF,false,MF,BAs...>& band )
 {
-   return isDefault_backend<RF>( band );
+   using blaze::isDefault;
+
+   for( const auto& element : band )
+      if( !isDefault<RF>( element.value() ) ) return false;
+   return true;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the invariants of the given band are intact.
 // \ingroup band
 //
@@ -1297,8 +1430,11 @@ inline bool isDefault( const Band<MT,BIs...>& band )
    \endcode
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-inline bool isIntact( const Band<MT,BIs...>& band ) noexcept
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+inline bool isIntact( const BandImpl<MT,TF,DF,MF,BAs...>& band ) noexcept
 {
    const ptrdiff_t index( band.band() );
 
@@ -1306,6 +1442,7 @@ inline bool isIntact( const Band<MT,BIs...>& band ) noexcept
             ( index <  0L || size_t(  index ) < band.operand().columns() ) &&
             isIntact( band.operand() ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1323,11 +1460,15 @@ inline bool isIntact( const Band<MT,BIs...>& band ) noexcept
 // otherwise it returns \a false.
 */
 template< typename MT1         // Type of the matrix of the left-hand side band
-        , ptrdiff_t... BIs1    // Band indices of the left-hand side band
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
         , typename MT2         // Type of the matrix of the right-hand side band
-        , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
+        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
 inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
+   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
+                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.band() == b.band() ) );
 }
@@ -1349,11 +1490,15 @@ inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT1         // Type of the submatrix of the left-hand side band
-        , ptrdiff_t... BIs1    // Band indices of the left-hand side band
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
         , typename MT2         // Type of the matrix of the right-hand side band
-        , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
+        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
 inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
-   isSame_backend( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
+   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
+                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1378,11 +1523,15 @@ inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
 // the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT1         // Type of the matrix of the left-hand side band
-        , ptrdiff_t... BIs1    // Band indices of the left-hand side band
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
         , typename MT2         // Type of the submatrix of the right-hand side band
-        , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
+        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
 inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
+   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
+                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1407,11 +1556,15 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // returns \a true, otherwise it returns \a false.
 */
 template< typename MT1         // Type of the submatrix of the left-hand side band
-        , ptrdiff_t... BIs1    // Band indices of the left-hand side band
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
         , typename MT2         // Type of the submatrix of the right-hand side band
-        , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
+        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
 inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
+   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
+                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1423,6 +1576,7 @@ inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the two given bands represent the same observable state.
 // \ingroup band
 //
@@ -1435,13 +1589,18 @@ inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // returns \a true, otherwise it returns \a false.
 */
 template< typename MT1         // Type of the matrix of the left-hand side band
-        , ptrdiff_t... BIs1    // Band indices of the left-hand side band
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
         , typename MT2         // Type of the matrix of the right-hand side band
-        , ptrdiff_t... BIs2 >  // Band indices of the right-hand side band
-inline bool isSame( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noexcept
+        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
+inline bool isSame( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
+                    const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
 {
    return isSame_backend( a, b );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1461,10 +1620,13 @@ inline bool isSame( const Band<MT1,BIs1...>& a, const Band<MT2,BIs2...>& b ) noe
 // assignment operator.
 */
 template< typename MT       // Type of the matrix
-        , ptrdiff_t... BIs  // Band indices
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, size_t index )
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , bool MF           // Multiplication flag
+        , ptrdiff_t... BAs  // Compile time band arguments
+        , typename VT >     // Type of the right-hand side vector
+inline bool tryAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+                       const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1491,10 +1653,13 @@ inline bool tryAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, siz
 // assignment operator.
 */
 template< typename MT       // Type of the matrix
-        , ptrdiff_t... BIs  // Band indices
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryAddAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, size_t index )
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , bool MF           // Multiplication flag
+        , ptrdiff_t... BAs  // Compile time band arguments
+        , typename VT >     // Type of the right-hand side vector
+inline bool tryAddAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+                          const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1521,10 +1686,13 @@ inline bool tryAddAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, 
 // assignment operator.
 */
 template< typename MT       // Type of the matrix
-        , ptrdiff_t... BIs  // Band indices
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool trySubAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, size_t index )
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , bool MF           // Multiplication flag
+        , ptrdiff_t... BAs  // Compile time band arguments
+        , typename VT >     // Type of the right-hand side vector
+inline bool trySubAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+                          const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1551,10 +1719,13 @@ inline bool trySubAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, 
 // assignment operator.
 */
 template< typename MT       // Type of the matrix
-        , ptrdiff_t... BIs  // Band indices
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryMultAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, size_t index )
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , bool MF           // Multiplication flag
+        , ptrdiff_t... BAs  // Compile time band arguments
+        , typename VT >     // Type of the right-hand side vector
+inline bool tryMultAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+                           const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1581,10 +1752,13 @@ inline bool tryMultAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs,
 // assignment operator.
 */
 template< typename MT       // Type of the matrix
-        , ptrdiff_t... BIs  // Band indices
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryDivAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, size_t index )
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , bool MF           // Multiplication flag
+        , ptrdiff_t... BAs  // Compile time band arguments
+        , typename VT >     // Type of the right-hand side vector
+inline bool tryDivAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+                          const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1610,11 +1784,14 @@ inline bool tryDivAssign( const Band<MT,BIs...>& lhs, const Vector<VT,TF>& rhs, 
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT     // Type of the matrix
-        , ptrdiff_t BI >  // Band indices
-inline decltype(auto) derestrict( Band<MT,BI>& b )
+template< typename MT    // Type of the matrix
+        , bool TF        // Transpose flag
+        , bool DF        // Density flag
+        , bool MF        // Multiplication flag
+        , ptrdiff_t I >  // Band index
+inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF,I>& b )
 {
-   return band<BI>( derestrict( b.operand() ) );
+   return band<I>( derestrict( b.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1635,11 +1812,14 @@ inline decltype(auto) derestrict( Band<MT,BI>& b )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT     // Type of the matrix
-        , ptrdiff_t BI >  // Band indices
-inline decltype(auto) derestrict( Band<MT,BI>&& b )
+template< typename MT    // Type of the matrix
+        , bool TF        // Transpose flag
+        , bool DF        // Density flag
+        , bool MF        // Multiplication flag
+        , ptrdiff_t I >  // Band index
+inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF,I>&& b )
 {
-   return band<BI>( derestrict( b.operand() ) );
+   return band<I>( derestrict( b.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1660,8 +1840,11 @@ inline decltype(auto) derestrict( Band<MT,BI>&& b )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT >  // Type of the matrix
-inline decltype(auto) derestrict( Band<MT>& b )
+template< typename MT  // Type of the matrix
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
+        , bool MF >    // Multiplication flag
+inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF>& b )
 {
    return band( derestrict( b.operand() ), b.band() );
 }
@@ -1684,8 +1867,11 @@ inline decltype(auto) derestrict( Band<MT>& b )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT >  // Type of the matrix
-inline decltype(auto) derestrict( Band<MT>&& b )
+template< typename MT  // Type of the matrix
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
+        , bool MF >    // Multiplication flag
+inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF>&& b )
 {
    return band( derestrict( b.operand() ), b.band() );
 }
@@ -1703,8 +1889,8 @@ inline decltype(auto) derestrict( Band<MT>&& b )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, ptrdiff_t... BIs >
-struct IsRestricted< Band<MT,BIs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs >
+struct IsRestricted< BandImpl<MT,TF,DF,MF,BAs...> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
@@ -1721,8 +1907,8 @@ struct IsRestricted< Band<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, ptrdiff_t... BIs >
-struct HasConstDataAccess< DenseBand<MT,BIs...> >
+template< typename MT, bool TF, bool MF, ptrdiff_t... BAs >
+struct HasConstDataAccess< BandImpl<MT,TF,true,MF,BAs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1739,8 +1925,8 @@ struct HasConstDataAccess< DenseBand<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, ptrdiff_t... BIs >
-struct HasMutableDataAccess< DenseBand<MT,BIs...> >
+template< typename MT, bool TF, bool MF, ptrdiff_t... BAs >
+struct HasMutableDataAccess< BandImpl<MT,TF,true,MF,BAs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1757,8 +1943,8 @@ struct HasMutableDataAccess< DenseBand<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, ptrdiff_t... BIs >
-struct IsOpposedView< Band<MT,BIs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs >
+struct IsOpposedView< BandImpl<MT,TF,DF,MF,BAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1775,10 +1961,10 @@ struct IsOpposedView< Band<MT,BIs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, ptrdiff_t... BIs, size_t... SAs >
-struct SubvectorTrait< Band<MT,BIs...>, SAs... >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs, size_t... SAs >
+struct SubvectorTrait< BandImpl<MT,TF,DF,MF,BAs...>, SAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< Band<MT,BIs...> >, SAs... >;
+   using Type = SubvectorTrait_< ResultType_< BandImpl<MT,TF,DF,MF,BAs...> >, SAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

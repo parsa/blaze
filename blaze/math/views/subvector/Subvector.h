@@ -46,15 +46,27 @@
 /*!\defgroup subvector Subvector
 // \ingroup views
 //
-// \tableofcontents
+// Subvectors provide views on a specific part of a dense or sparse vector. As such, subvectors
+// act as a reference to a specific range within a vector. This reference is valid and can be
+// used in every way any other dense or sparse vector can be used as long as the vector containing
+// the subvector is not resized or entirely destroyed. The subvector also acts as an alias to the
+// vector elements in the specified range: Changes made to the elements (e.g. modifying values,
+// inserting or erasing elements) are immediately visible in the vector and changes made via the
+// vector are immediately visible in the subvector.
 //
 //
 // \n \section subvector_setup Setup of Subvectors
 //
 // A view on a dense or sparse subvector can be created very conveniently via the \c subvector()
-// function. The first parameter specifies the offset of the subvector within the underlying dense
-// or sparse vector, the second parameter specifies the size of the subvector. The two parameters
-// can be specified either at compile time or at runtime:
+// function. It can be included via the header file
+
+   \code
+   #include <blaze/math/Subvector.h>
+   \endcode
+
+// The first parameter specifies the offset of the subvector within the underlying dense or sparse
+// vector, the second parameter specifies the size of the subvector. The two parameters can be
+// specified either at compile time or at runtime:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
@@ -99,16 +111,9 @@
    x = subvector( y + row( A, 1UL ), 2UL, 5UL )
    \endcode
 
-// The \c subvector() function can be used on any dense or sparse vector, including expressions,
-// as demonstrated in the example. Note however that a blaze::Subvector can only be instantiated
-// with a dense or sparse vector primitive, i.e. with types that can be written, and not with an
-// expression type.
-//
-//
 // \n \section subvector_element_access Element access
 //
-// A subvector can be used like any other dense or sparse vector. For instance, the elements of
-// the subvector can be directly accessed with the subscript operator.
+// The elements of a subvector can be directly accessed via the subscript operator:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> v;
@@ -130,8 +135,8 @@
 
 // where N is the specified size of the subvector. Alternatively, the elements of a subvector can
 // be traversed via iterators. Just as with vectors, in case of non-const subvectors, \c begin()
-// and \c end() return an Iterator, which allows a manipulation of the non-zero values, in case
-// of constant subvectors a ConstIterator is returned:
+// and \c end() return an iterator, which allows to manipulate the elements, in case of constant
+// subvectors an iterator to immutable elements is returned:
 
    \code
    blaze::DynamicVector<int,blaze::rowVector> v( 256UL );
@@ -140,13 +145,15 @@
    // Creating a reference to a specific subvector of vector v
    auto sv = subvector( v, 16UL, 64UL );
 
+   // Traversing the elements via iterators to non-const elements
    for( auto it=sv.begin(); it!=sv.end(); ++it ) {
       *it = ...;  // OK: Write access to the dense subvector value.
       ... = *it;  // OK: Read access to the dense subvector value.
    }
 
+   // Traversing the elements via iterators to const elements
    for( auto it=sv.cbegin(); it!=sv.cend(); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      *it = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = *it;  // OK: Read access to the dense subvector value.
    }
    \endcode
@@ -158,6 +165,7 @@
    // Creating a reference to a specific subvector of vector v
    auto sv = subvector( v, 16UL, 64UL );
 
+   // Traversing the elements via iterators to non-const elements
    for( auto it=sv.begin(); it!=sv.end(); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
@@ -165,8 +173,9 @@
       ... = it->index();  // OK: Read access to the index of the sparse element.
    }
 
+   // Traversing the elements via iterators to const elements
    for( auto it=sv.cbegin(); it!=sv.cend(); ++it ) {
-      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      it->value() = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
@@ -236,9 +245,11 @@
 
 // \n \section subvector_arithmetic_operations Arithmetic Operations
 //
-// The following example gives an impression of the use of Subvector within arithmetic operations.
-// All operations (addition, subtraction, multiplication, scaling, ...) can be performed on all
-// possible combinations of dense and sparse vectors with fitting element types:
+// Both dense and sparse subvectors can be used in all arithmetic operations that any other dense
+// or sparse vector can be used in. The following example gives an impression of the use of dense
+// subvectors within arithmetic operations. All operations (addition, subtraction, multiplication,
+// scaling, ...) can be performed on all possible combinations of dense and sparse subvectors with
+// fitting element types:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> d1, d2, d3;
@@ -276,7 +287,7 @@
 // may have an arbitrary size (only restricted by the size of the underlying vector). However, in
 // contrast to vectors themselves, which are always properly aligned in memory and therefore can
 // provide maximum performance, this means that subvectors in general have to be considered to be
-// unaligned. This can be made explicit by the \a blaze::unaligned flag:
+// unaligned. This can be made explicit by the blaze::unaligned flag:
 
    \code
    using blaze::unaligned;
@@ -293,13 +304,17 @@
 
 // All of these calls to the \c subvector() function are identical. Whether the alignment flag is
 // explicitly specified or not, it always returns an unaligned subvector. Whereas this may provide
-// full flexibility in the creation of subvectors, this might result in performance restrictions
-// (even in case the specified subvector could be aligned). However, it is also possible to create
-// aligned subvectors. Aligned subvectors are identical to unaligned subvectors in all aspects,
-// except that they may pose additional alignment restrictions and therefore have less flexibility
-// during creation, but don't suffer from performance penalties and provide the same performance
-// as the underlying vector. Aligned subvectors are created by explicitly specifying the
-// \a blaze::aligned flag:
+// full flexibility in the creation of subvectors, this might result in performance disadvantages
+// in comparison to vector primitives (even in case the specified subvector could be aligned).
+// Whereas vector primitives are guaranteed to be properly aligned and therefore provide maximum
+// performance in all operations, a general view on a vector might not be properly aligned. This
+// may cause a performance penalty on some platforms and/or for some operations.
+//
+// However, it is also possible to create aligned subvectors. Aligned subvectors are identical to
+// unaligned subvectors in all aspects, except that they may pose additional alignment restrictions
+// and therefore have less flexibility during creation, but don't suffer from performance penalties
+// and provide the same performance as the underlying vector. Aligned subvectors are created by
+// explicitly specifying the blaze::aligned flag:
 
    \code
    using blaze::aligned;
@@ -310,28 +325,28 @@
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
-// type and the available vectorization mode (SSE, AVX, ...). The following source code gives some
-// examples for a double precision dense vector, assuming that AVX is available, which packs 4
-// \c double values into a SIMD vector:
+// type and the available vectorization mode (SSE, AVX, ...). In order to be properly aligned the
+// first element of the subvector must be aligned. The following source code gives some examples
+// for a double precision dynamic vector, assuming that AVX is available, which packs 4 \c double
+// values into a SIMD vector:
 
    \code
-   blaze::DynamicVector<double,blaze::columnVector>
+   using blaze::aligned;
+
+   blaze::DynamicVector<double,blaze::columnVector> d( 17UL );
    // ... Resizing and initialization
 
-   // OK: Starts at the beginning and the size is a multiple of 4
-   auto dsv1 = subvector<aligned>( d, 0UL, 12UL );
+   // OK: Starts at the beginning, i.e. the first element is aligned
+   auto dsv1 = subvector<aligned>( d, 0UL, 13UL );
 
-   // OK: Start index and the size are both a multiple of 4
-   auto dsv2 = subvector<aligned>( d, 4UL, 8UL );
+   // OK: Start index is a multiple of 4, i.e. the first element is aligned
+   auto dsv2 = subvector<aligned>( d, 4UL, 7UL );
 
    // OK: The start index is a multiple of 4 and the subvector includes the last element
    auto dsv3 = subvector<aligned>( d, 8UL, 9UL );
 
-   // Error: Start index is not a multiple of 4
+   // Error: Start index is not a multiple of 4, i.e. the first element is not aligned
    auto dsv4 = subvector<aligned>( d, 5UL, 8UL );
-
-   // Error: Size is not a multiple of 4 and the subvector does not include the last element
-   auto dsv5 = subvector<aligned>( d, 8UL, 5UL );
    \endcode
 
 // Note that the discussed alignment restrictions are only valid for aligned dense subvectors.
@@ -346,26 +361,8 @@
    // ... Resizing and initialization
 
    // Creating an aligned subvector in the range [8..23]
-   auto sv = subvector<aligned>( x, 8UL, 16UL );
-   \endcode
-
-// \n \section subvector_on_subvector Subvectors on Subvectors
-//
-// It is also possible to create a subvector view on another subvector. In this context it is
-// important to remember that the type returned by the \c subvector() function is the same type
-// as the type of the given subvector, since the view on a subvector is just another view on the
-// underlying vector:
-
-   \code
-   blaze::DynamicVector<double,blaze::rowVector> d1;
-
-   // ... Resizing and initialization
-
-   // Creating a subvector view on the dense vector d1
-   auto sv1 = subvector( d1, 5UL, 10UL );
-
-   // Creating a subvector view on the dense subvector sv1
-   auto sv2 = subvector( sv1, 1UL, 5UL );
+   auto sv1 = subvector<aligned>( x, 8UL, 16UL );
+   auto sv2 = subvector<aligned,8UL,16UL>( x );
    \endcode
 */
 //*************************************************************************************************

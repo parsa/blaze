@@ -43,6 +43,7 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -73,7 +74,7 @@ class SubvectorImpl
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reference to a specific subvector of a dense or sparse vector.
+/*!\brief View on a specific subvector of a dense or sparse vector.
 // \ingroup subvector
 //
 // The Subvector template represents a reference to a specific subvector of a dense or sparse
@@ -91,7 +92,7 @@ using Subvector = SubvectorImpl< VT
 
 
 //*************************************************************************************************
-/*!\brief Reference to a specific subvector of a dense vector.
+/*!\brief View on a specific subvector of a dense vector.
 // \ingroup subvector
 //
 // The DenseSubvector template represents a reference to a specific subvector of a dense vector
@@ -109,7 +110,7 @@ using DenseSubvector = SubvectorImpl< VT
 
 
 //*************************************************************************************************
-/*!\brief Reference to a specific subvector of a sparse vector.
+/*!\brief View on a specific subvector of a sparse vector.
 // \ingroup subvector
 //
 // The SparseSubvector template represents a reference to a specific subvector of a sparse vector
@@ -127,7 +128,7 @@ using SparseSubvector = SubvectorImpl< VT
 
 
 //*************************************************************************************************
-/*!\brief Reference to a specific unaligned subvector of a vector.
+/*!\brief View on a specific unaligned subvector of a vector.
 // \ingroup subvector
 //
 // The UnalignedSubvector template represents a reference to a specific unaligned subvector of a
@@ -144,7 +145,7 @@ using UnalignedSubvector = SubvectorImpl< VT
 
 
 //*************************************************************************************************
-/*!\brief Reference to a specific aligned subvector of a vector.
+/*!\brief View on a specific aligned subvector of a vector.
 // \ingroup subvector
 //
 // The AlignedSubvector template represents a reference to a specific aligned subvector of a

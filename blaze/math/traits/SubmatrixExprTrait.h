@@ -65,24 +65,31 @@ namespace blaze {
 // \a Type corresponds to the resulting return type. In case the given type is neither a
 // dense nor a sparse matrix type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT  // Type of the matrix operand
-        , bool AF >    // Alignment flag
+template< typename MT      // Type of the matrix operand
+        , bool AF          // Alignment flag
+        , size_t... SAs >  // Compile time submatrix arguments
 struct SubmatrixExprTrait
 {
  private:
-   //**struct Failure******************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
-   //**struct Result*******************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = decltype( submatrix<AF>( std::declval<MT>()
-                                                       , std::declval<size_t>()
-                                                       , std::declval<size_t>()
-                                                       , std::declval<size_t>()
-                                                       , std::declval<size_t>() ) ); };
+   struct CompileTime { using Type = decltype( submatrix<AF,SAs...>( std::declval<MT>() ) ); };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct Runtime { using Type = decltype( submatrix<AF>( std::declval<MT>()
+                                                        , std::declval<size_t>()
+                                                        , std::declval<size_t>()
+                                                        , std::declval<size_t>()
+                                                        , std::declval<size_t>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -90,7 +97,9 @@ struct SubmatrixExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsMatrix< RemoveReference_<MT> >
-                            , Result
+                            , IfTrue_< ( sizeof...( SAs ) > 0UL )
+                                     , CompileTime
+                                     , Runtime >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -111,9 +120,10 @@ struct SubmatrixExprTrait
    using Type2 = SubmatrixExprTrait_<MT,AF>;
    \endcode
 */
-template< typename MT  // Type of the matrix operand
-        , bool AF >    // Alignment flag
-using SubmatrixExprTrait_ = typename SubmatrixExprTrait<MT,AF>::Type;
+template< typename MT      // Type of the matrix operand
+        , bool AF          // Alignment flag
+        , size_t... SAs >  // Compile time submatrix arguments
+using SubmatrixExprTrait_ = typename SubmatrixExprTrait<MT,AF,SAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

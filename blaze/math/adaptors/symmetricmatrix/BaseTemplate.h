@@ -553,13 +553,10 @@ namespace blaze {
    \code
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
-   using blaze::rowMajor;
    using blaze::columnMajor;
 
-   using DynamicSymmetric = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
-
-   DynamicSymmetric A( 10UL );
-   Row<DynamicSymmetric> row5 = row( A, 5UL );
+   SymmetricMatrix< DynamicMatrix<double,columnMajor> > A( 10UL );
+   auto row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in

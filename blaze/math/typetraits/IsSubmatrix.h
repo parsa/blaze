@@ -90,11 +90,11 @@ struct IsSubmatrix
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubmatrix type trait for 'Submatrix'.
+/*!\brief Specialization of the IsSubmatrix type trait for 'SubmatrixImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< Submatrix<MT,AF,SO,DF> >
+template< typename MT, bool AF, bool SO, bool DF, size_t... SAs >
+struct IsSubmatrix< SubmatrixImpl<MT,AF,SO,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -103,11 +103,11 @@ struct IsSubmatrix< Submatrix<MT,AF,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubmatrix type trait for 'const Submatrix'.
+/*!\brief Specialization of the IsSubmatrix type trait for 'const SubmatrixImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< const Submatrix<MT,AF,SO,DF> >
+template< typename MT, bool AF, bool SO, bool DF, size_t... SAs >
+struct IsSubmatrix< const SubmatrixImpl<MT,AF,SO,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -116,11 +116,11 @@ struct IsSubmatrix< const Submatrix<MT,AF,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubmatrix type trait for 'volatile Submatrix'.
+/*!\brief Specialization of the IsSubmatrix type trait for 'volatile SubmatrixImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF> >
+template< typename MT, bool AF, bool SO, bool DF, size_t... SAs >
+struct IsSubmatrix< volatile SubmatrixImpl<MT,AF,SO,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -129,11 +129,11 @@ struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsSubmatrix type trait for 'const volatile Submatrix'.
+/*!\brief Specialization of the IsSubmatrix type trait for 'const volatile SubmatrixImpl'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF >
-struct IsSubmatrix< const volatile Submatrix<MT,AF,SO,DF> >
+template< typename MT, bool AF, bool SO, bool DF, size_t... SAs >
+struct IsSubmatrix< const volatile SubmatrixImpl<MT,AF,SO,DF,SAs...> >
    : public TrueType
 {};
 /*! \endcond */

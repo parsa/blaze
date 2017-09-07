@@ -55,10 +55,8 @@ namespace blaze {
    using blaze::columnVector;
    using blaze::unaligned;
 
-   using VectorType = blaze::DynamicVector<int,columnVector>;
-
-   VectorType v( 100UL );
-   Subvector<VectorType,unaligned> sv = subvector<unaligned>( v, 10UL, 20UL );
+   blaze::DynamicVector<int,columnVector> v( 100UL );
+   auto sv = subvector<unaligned>( v, 10UL, 20UL );
    \endcode
 */
 constexpr bool unaligned = false;
@@ -76,10 +74,8 @@ constexpr bool unaligned = false;
    using blaze::columnVector;
    using blaze::aligned;
 
-   using VectorType = blaze::DynamicVector<int,columnVector>;
-
-   VectorType v( 100UL );
-   Subvector<VectorType,aligned> sv = subvector<aligned>( v, 8UL, 32UL );
+   blaze::DynamicVector<int,columnVector> v( 100UL );
+   auto sv = subvector<aligned>( v, 8UL, 32UL );
    \endcode
 */
 constexpr bool aligned = true;

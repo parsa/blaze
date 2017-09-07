@@ -65,22 +65,29 @@ namespace blaze {
 // \a Type corresponds to the resulting return type. In case the given type is neither a
 // dense nor a sparse vector type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename VT  // Type of the vector operand
-        , bool AF >    // Alignment Flag
+template< typename VT      // Type of the vector operand
+        , bool AF          // Alignment Flag
+        , size_t... SAs >  // Compile time subvector arguments
 struct SubvectorExprTrait
 {
  private:
-   //**struct Failure******************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
-   //**struct Result*******************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = decltype( subvector<AF>( std::declval<VT>()
-                                                       , std::declval<size_t>()
-                                                       , std::declval<size_t>() ) ); };
+   struct CompileTime { using Type = decltype( subvector<AF,SAs...>( std::declval<VT>() ) ); };
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct Runtime { using Type = decltype( subvector<AF>( std::declval<VT>()
+                                                        , std::declval<size_t>()
+                                                        , std::declval<size_t>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -88,7 +95,9 @@ struct SubvectorExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsVector< RemoveReference_<VT> >
-                            , Result
+                            , IfTrue_< ( sizeof...( SAs ) > 0UL )
+                                     , CompileTime
+                                     , Runtime >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -109,9 +118,10 @@ struct SubvectorExprTrait
    using Type2 = SubvectorExprTrait_<VT,AF>;
    \endcode
 */
-template< typename VT  // Type of the vector operand
-        , bool AF >    // Alignment Flag
-using SubvectorExprTrait_ = typename SubvectorExprTrait<VT,AF>::Type;
+template< typename VT      // Type of the vector operand
+        , bool AF          // Alignment Flag
+        , size_t... SAs >  // Compile time subvector arguments
+using SubvectorExprTrait_ = typename SubvectorExprTrait<VT,AF,SAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

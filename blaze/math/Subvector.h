@@ -68,10 +68,11 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense subvectors.
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
-class Rand< DenseSubvector<VT,AF,SAs...> >
+class Rand< SubvectorImpl<VT,AF,TF,true,SAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -96,11 +97,12 @@ class Rand< DenseSubvector<VT,AF,SAs...> >
 // \param subvector The subvector to be randomized.
 // \return void
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
 template< typename SVT >   // Type of the subvector
-inline void Rand< DenseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector ) const
+inline void Rand< SubvectorImpl<VT,AF,TF,true,SAs...> >::randomize( SVT&& subvector ) const
 {
    using blaze::randomize;
 
@@ -126,12 +128,13 @@ inline void Rand< DenseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector ) c
 // \param max The largest possible value for a subvector element.
 // \return void
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
 template< typename SVT     // Type of the subvector
         , typename Arg >   // Min/max argument type
-inline void Rand< DenseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector, const Arg& min, const Arg& max ) const
+inline void Rand< SubvectorImpl<VT,AF,TF,true,SAs...> >::randomize( SVT&& subvector, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -163,10 +166,11 @@ inline void Rand< DenseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector, co
 //
 // This specialization of the Rand class randomizes sparse subvectors.
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
-class Rand< SparseSubvector<VT,AF,SAs...> >
+class Rand< SubvectorImpl<VT,AF,TF,false,SAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -197,11 +201,12 @@ class Rand< SparseSubvector<VT,AF,SAs...> >
 // \param subvector The subvector to be randomized.
 // \return void
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
 template< typename SVT >   // Type of the subvector
-inline void Rand< SparseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector ) const
+inline void Rand< SubvectorImpl<VT,AF,TF,false,SAs...> >::randomize( SVT&& subvector ) const
 {
    using SubvectorType = RemoveReference_<SVT>;
    using ElementType   = ElementType_<SubvectorType>;
@@ -235,11 +240,12 @@ inline void Rand< SparseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector ) 
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
 template< typename SVT >   // Type of the subvector
-inline void Rand< SparseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector, size_t nonzeros ) const
+inline void Rand< SubvectorImpl<VT,AF,TF,false,SAs...> >::randomize( SVT&& subvector, size_t nonzeros ) const
 {
    using SubvectorType = RemoveReference_<SVT>;
    using ElementType   = ElementType_<SubvectorType>;
@@ -275,12 +281,14 @@ inline void Rand< SparseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector, s
 // \param max The largest possible value for a subvector element.
 // \return void
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
 template< typename SVT     // Type of the subvector
         , typename Arg >   // Min/max argument type
-inline void Rand< SparseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector, const Arg& min, const Arg& max ) const
+inline void Rand< SubvectorImpl<VT,AF,TF,false,SAs...> >::randomize( SVT&& subvector,
+                                                                     const Arg& min, const Arg& max ) const
 {
    using SubvectorType = RemoveReference_<SVT>;
    using ElementType   = ElementType_<SubvectorType>;
@@ -316,13 +324,14 @@ inline void Rand< SparseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector, c
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename VT      // Type of the dense vector
+template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
 template< typename SVT     // Type of the subvector
         , typename Arg >   // Min/max argument type
-inline void Rand< SparseSubvector<VT,AF,SAs...> >::randomize( SVT&& subvector, size_t nonzeros,
-                                                              const Arg& min, const Arg& max ) const
+inline void Rand< SubvectorImpl<VT,AF,TF,false,SAs...> >::randomize( SVT&& subvector, size_t nonzeros,
+                                                                     const Arg& min, const Arg& max ) const
 {
    using SubvectorType = RemoveReference_<SVT>;
    using ElementType   = ElementType_<SubvectorType>;

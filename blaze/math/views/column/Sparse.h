@@ -110,20 +110,20 @@ namespace blaze {
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-class ColumnImpl<MT,true,false,SF,CIs...>
-   : public View< SparseVector< ColumnImpl<MT,true,false,SF,CIs...>, false > >
-   , private ColumnData<MT,CIs...>
+        , size_t... CAs >  // Compile time column arguments
+class ColumnImpl<MT,true,false,SF,CAs...>
+   : public View< SparseVector< ColumnImpl<MT,true,false,SF,CAs...>, false > >
+   , private ColumnData<MT,CAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CIs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<MT,CAs...>;  //!< The type of the ColumnData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of this ColumnImpl instance.
-   using This = ColumnImpl<MT,true,false,SF,CIs...>;
+   using This = ColumnImpl<MT,true,false,SF,CAs...>;
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
@@ -316,8 +316,8 @@ class ColumnImpl<MT,true,false,SF,CIs...>
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,true,false,SF,CIs...>::ColumnImpl( MT& matrix )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,true,false,SF,CAs...>::ColumnImpl( MT& matrix )
    : DataType( matrix )  // Base class initialization
 {}
 /*! \endcond */
@@ -334,8 +334,8 @@ inline ColumnImpl<MT,true,false,SF,CIs...>::ColumnImpl( MT& matrix )
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,true,false,SF,CIs...>::ColumnImpl( MT& matrix, size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,true,false,SF,CAs...>::ColumnImpl( MT& matrix, size_t index )
    : DataType( matrix, index )  // Base class initialization
 {}
 /*! \endcond */
@@ -362,9 +362,9 @@ inline ColumnImpl<MT,true,false,SF,CIs...>::ColumnImpl( MT& matrix, size_t index
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Reference
-   ColumnImpl<MT,true,false,SF,CIs...>::operator[]( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Reference
+   ColumnImpl<MT,true,false,SF,CAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return matrix_(index,column());
@@ -385,9 +385,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Reference
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstReference
-   ColumnImpl<MT,true,false,SF,CIs...>::operator[]( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstReference
+   ColumnImpl<MT,true,false,SF,CAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,column());
@@ -409,9 +409,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstReference
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Reference
-   ColumnImpl<MT,true,false,SF,CIs...>::at( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Reference
+   ColumnImpl<MT,true,false,SF,CAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -435,9 +435,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Reference
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstReference
-   ColumnImpl<MT,true,false,SF,CIs...>::at( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstReference
+   ColumnImpl<MT,true,false,SF,CAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -458,9 +458,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstReference
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::begin()
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::begin()
 {
    return matrix_.begin( column() );
 }
@@ -478,9 +478,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
-   ColumnImpl<MT,true,false,SF,CIs...>::begin() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstIterator
+   ColumnImpl<MT,true,false,SF,CAs...>::begin() const
 {
    return matrix_.cbegin( column() );
 }
@@ -498,9 +498,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
-   ColumnImpl<MT,true,false,SF,CIs...>::cbegin() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstIterator
+   ColumnImpl<MT,true,false,SF,CAs...>::cbegin() const
 {
    return matrix_.cbegin( column() );
 }
@@ -518,9 +518,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::end()
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::end()
 {
    return matrix_.end( column() );
 }
@@ -538,9 +538,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
-   ColumnImpl<MT,true,false,SF,CIs...>::end() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstIterator
+   ColumnImpl<MT,true,false,SF,CAs...>::end() const
 {
    return matrix_.cend( column() );
 }
@@ -558,9 +558,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
-   ColumnImpl<MT,true,false,SF,CIs...>::cend() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstIterator
+   ColumnImpl<MT,true,false,SF,CAs...>::cend() const
 {
    return matrix_.cend( column() );
 }
@@ -592,9 +592,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator=( const ColumnImpl& rhs )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator=( const ColumnImpl& rhs )
 {
    using blaze::assign;
 
@@ -651,10 +651,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -709,10 +709,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator=( const SparseVector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator=( const SparseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -769,10 +769,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator+=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator+=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -828,10 +828,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator+=( const SparseVector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator+=( const SparseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -889,10 +889,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator-=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator-=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -949,10 +949,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator-=( const SparseVector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator-=( const SparseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -1008,10 +1008,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator*=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator*=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -1063,10 +1063,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator/=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator/=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -1121,10 +1121,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator%=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator%=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -1177,10 +1177,10 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,true,false,SF,CIs...> >&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator*=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,true,false,SF,CAs...> >&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1212,10 +1212,10 @@ inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,true,false,SF,CIs...> >&
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,true,false,SF,CIs...> >&
-   ColumnImpl<MT,true,false,SF,CIs...>::operator/=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,true,false,SF,CAs...> >&
+   ColumnImpl<MT,true,false,SF,CAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1258,8 +1258,8 @@ inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,true,false,SF,CIs...> >&
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,true,false,SF,CIs...>::size() const noexcept
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,true,false,SF,CAs...>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -1275,8 +1275,8 @@ inline size_t ColumnImpl<MT,true,false,SF,CIs...>::size() const noexcept
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,true,false,SF,CIs...>::capacity() const noexcept
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,true,false,SF,CAs...>::capacity() const noexcept
 {
    return matrix_.capacity( column() );
 }
@@ -1295,8 +1295,8 @@ inline size_t ColumnImpl<MT,true,false,SF,CIs...>::capacity() const noexcept
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,true,false,SF,CIs...>::nonZeros() const
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,true,false,SF,CAs...>::nonZeros() const
 {
    return matrix_.nonZeros( column() );
 }
@@ -1312,8 +1312,8 @@ inline size_t ColumnImpl<MT,true,false,SF,CIs...>::nonZeros() const
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,true,false,SF,CIs...>::reset()
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,true,false,SF,CAs...>::reset()
 {
    matrix_.reset( column() );
 }
@@ -1333,8 +1333,8 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::reset()
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-void ColumnImpl<MT,true,false,SF,CIs...>::reserve( size_t n )
+        , size_t... CAs >  // Compile time column arguments
+void ColumnImpl<MT,true,false,SF,CAs...>::reserve( size_t n )
 {
    matrix_.reserve( column(), n );
 }
@@ -1353,8 +1353,8 @@ void ColumnImpl<MT,true,false,SF,CIs...>::reserve( size_t n )
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,true,false,SF,CIs...>::extendCapacity() const noexcept
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,true,false,SF,CAs...>::extendCapacity() const noexcept
 {
    using blaze::max;
    using blaze::min;
@@ -1393,9 +1393,9 @@ inline size_t ColumnImpl<MT,true,false,SF,CIs...>::extendCapacity() const noexce
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::set( size_t index, const ElementType& value )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::set( size_t index, const ElementType& value )
 {
    return matrix_.set( index, column(), value );
 }
@@ -1418,9 +1418,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::insert( size_t index, const ElementType& value )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::insert( size_t index, const ElementType& value )
 {
    return matrix_.insert( index, column(), value );
 }
@@ -1455,8 +1455,8 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,true,false,SF,CIs...>::append( size_t index, const ElementType& value, bool check )
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,true,false,SF,CAs...>::append( size_t index, const ElementType& value, bool check )
 {
    matrix_.append( index, column(), value, check );
 }
@@ -1483,8 +1483,8 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::append( size_t index, const Ele
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,true,false,SF,CIs...>::erase( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,true,false,SF,CAs...>::erase( size_t index )
 {
    matrix_.erase( index, column() );
 }
@@ -1503,9 +1503,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::erase( size_t index )
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::erase( Iterator pos )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::erase( Iterator pos )
 {
    return matrix_.erase( column(), pos );
 }
@@ -1525,9 +1525,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::erase( Iterator first, Iterator last )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::erase( Iterator first, Iterator last )
 {
    return matrix_.erase( column(), first, last );
 }
@@ -1560,10 +1560,10 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename Pred    // Type of the unary predicate
         , typename >       // Type restriction on the unary predicate
-inline void ColumnImpl<MT,true,false,SF,CIs...>::erase( Pred predicate )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::erase( Pred predicate )
 {
    matrix_.erase( column(), begin(), end(), predicate );
 }
@@ -1598,9 +1598,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::erase( Pred predicate )
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename Pred >  // Type of the unary predicate
-inline void ColumnImpl<MT,true,false,SF,CIs...>::erase( Iterator first, Iterator last, Pred predicate )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::erase( Iterator first, Iterator last, Pred predicate )
 {
    matrix_.erase( column(), first, last, predicate );
 }
@@ -1632,9 +1632,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::erase( Iterator first, Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::find( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::find( size_t index )
 {
    return matrix_.find( index, column() );
 }
@@ -1658,9 +1658,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
-   ColumnImpl<MT,true,false,SF,CIs...>::find( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstIterator
+   ColumnImpl<MT,true,false,SF,CAs...>::find( size_t index ) const
 {
    return matrix_.find( index, column() );
 }
@@ -1683,9 +1683,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::lowerBound( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::lowerBound( size_t index )
 {
    return matrix_.lowerBound( index, column() );
 }
@@ -1708,9 +1708,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
-   ColumnImpl<MT,true,false,SF,CIs...>::lowerBound( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstIterator
+   ColumnImpl<MT,true,false,SF,CAs...>::lowerBound( size_t index ) const
 {
    return matrix_.lowerBound( index, column() );
 }
@@ -1733,9 +1733,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
-   ColumnImpl<MT,true,false,SF,CIs...>::upperBound( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::Iterator
+   ColumnImpl<MT,true,false,SF,CAs...>::upperBound( size_t index )
 {
    return matrix_.upperBound( index, column() );
 }
@@ -1758,9 +1758,9 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::Iterator
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
-   ColumnImpl<MT,true,false,SF,CIs...>::upperBound( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,true,false,SF,CAs...>::ConstIterator
+   ColumnImpl<MT,true,false,SF,CAs...>::upperBound( size_t index ) const
 {
    return matrix_.upperBound( index, column() );
 }
@@ -1791,10 +1791,10 @@ inline typename ColumnImpl<MT,true,false,SF,CIs...>::ConstIterator
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the scalar value
-inline ColumnImpl<MT,true,false,SF,CIs...>&
-   ColumnImpl<MT,true,false,SF,CIs...>::scale( const Other& scalar )
+inline ColumnImpl<MT,true,false,SF,CAs...>&
+   ColumnImpl<MT,true,false,SF,CAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1827,9 +1827,9 @@ inline ColumnImpl<MT,true,false,SF,CIs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool ColumnImpl<MT,true,false,SF,CIs...>::canAlias( const Other* alias ) const noexcept
+inline bool ColumnImpl<MT,true,false,SF,CAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1850,9 +1850,9 @@ inline bool ColumnImpl<MT,true,false,SF,CIs...>::canAlias( const Other* alias ) 
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool ColumnImpl<MT,true,false,SF,CIs...>::isAliased( const Other* alias ) const noexcept
+inline bool ColumnImpl<MT,true,false,SF,CAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1874,9 +1874,9 @@ inline bool ColumnImpl<MT,true,false,SF,CIs...>::isAliased( const Other* alias )
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void ColumnImpl<MT,true,false,SF,CIs...>::assign( const DenseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -1907,9 +1907,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::assign( const DenseVector<VT,fa
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void ColumnImpl<MT,true,false,SF,CIs...>::assign( const SparseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -1936,9 +1936,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::assign( const SparseVector<VT,f
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void ColumnImpl<MT,true,false,SF,CIs...>::addAssign( const DenseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::addAssign( const DenseVector<VT,false>& rhs )
 {
    using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
@@ -1970,9 +1970,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::addAssign( const DenseVector<VT
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void ColumnImpl<MT,true,false,SF,CIs...>::addAssign( const SparseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::addAssign( const SparseVector<VT,false>& rhs )
 {
    using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
@@ -2005,9 +2005,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::addAssign( const SparseVector<V
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void ColumnImpl<MT,true,false,SF,CIs...>::subAssign( const DenseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::subAssign( const DenseVector<VT,false>& rhs )
 {
    using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
@@ -2039,9 +2039,9 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::subAssign( const DenseVector<VT
 */
 template< typename MT      // Type of the sparse matrix
         , bool SF          // Symmetry flag
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void ColumnImpl<MT,true,false,SF,CIs...>::subAssign( const SparseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,true,false,SF,CAs...>::subAssign( const SparseVector<VT,false>& rhs )
 {
    using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
@@ -2081,20 +2081,20 @@ inline void ColumnImpl<MT,true,false,SF,CIs...>::subAssign( const SparseVector<V
 // row-major sparse matrices.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-class ColumnImpl<MT,false,false,false,CIs...>
-   : public View< SparseVector< ColumnImpl<MT,false,false,false,CIs...>, false > >
-   , private ColumnData<MT,CIs...>
+        , size_t... CAs >  // Compile time column arguments
+class ColumnImpl<MT,false,false,false,CAs...>
+   : public View< SparseVector< ColumnImpl<MT,false,false,false,CAs...>, false > >
+   , private ColumnData<MT,CAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CIs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<MT,CAs...>;  //!< The type of the ColumnData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of this ColumnImpl instance.
-   using This = ColumnImpl<MT,false,false,false,CIs...>;
+   using This = ColumnImpl<MT,false,false,false,CAs...>;
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
@@ -2413,7 +2413,7 @@ class ColumnImpl<MT,false,false,false,CIs...>
 
       //**Friend declarations**********************************************************************
       template< typename MatrixType2, typename IteratorType2 > friend class ColumnIterator;
-      template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... CIs2 > friend class ColumnImpl;
+      template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... CAs2 > friend class ColumnImpl;
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -2584,8 +2584,8 @@ class ColumnImpl<MT,false,false,false,CIs...>
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,false,false,false,CIs...>::ColumnImpl( MT& matrix )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,false,false,false,CAs...>::ColumnImpl( MT& matrix )
    : DataType( matrix )  // Base class initialization
 {}
 /*! \endcond */
@@ -2601,8 +2601,8 @@ inline ColumnImpl<MT,false,false,false,CIs...>::ColumnImpl( MT& matrix )
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,false,false,false,CIs...>::ColumnImpl( MT& matrix, size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,false,false,false,CAs...>::ColumnImpl( MT& matrix, size_t index )
    : DataType( matrix, index )  // Base class initialization
 {}
 /*! \endcond */
@@ -2628,9 +2628,9 @@ inline ColumnImpl<MT,false,false,false,CIs...>::ColumnImpl( MT& matrix, size_t i
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Reference
-   ColumnImpl<MT,false,false,false,CIs...>::operator[]( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Reference
+   ColumnImpl<MT,false,false,false,CAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return matrix_(index,column());
@@ -2650,9 +2650,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstReference
-   ColumnImpl<MT,false,false,false,CIs...>::operator[]( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstReference
+   ColumnImpl<MT,false,false,false,CAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(index,column());
@@ -2673,9 +2673,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstReference
 // access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Reference
-   ColumnImpl<MT,false,false,false,CIs...>::at( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Reference
+   ColumnImpl<MT,false,false,false,CAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -2698,9 +2698,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Reference
 // access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstReference
-   ColumnImpl<MT,false,false,false,CIs...>::at( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstReference
+   ColumnImpl<MT,false,false,false,CAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -2720,9 +2720,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstReference
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::begin()
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::begin()
 {
    return Iterator( matrix_, 0UL, column() );
 }
@@ -2739,9 +2739,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,false,CIs...>::begin() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,false,CAs...>::begin() const
 {
    return ConstIterator( matrix_, 0UL, column() );
 }
@@ -2758,9 +2758,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,false,CIs...>::cbegin() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,false,CAs...>::cbegin() const
 {
    return ConstIterator( matrix_, 0UL, column() );
 }
@@ -2777,9 +2777,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::end()
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::end()
 {
    return Iterator( matrix_, size(), column() );
 }
@@ -2796,9 +2796,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,false,CIs...>::end() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,false,CAs...>::end() const
 {
    return ConstIterator( matrix_, size(), column() );
 }
@@ -2815,9 +2815,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,false,CIs...>::cend() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,false,CAs...>::cend() const
 {
    return ConstIterator( matrix_, size(), column() );
 }
@@ -2848,9 +2848,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::operator=( const ColumnImpl& rhs )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::operator=( const ColumnImpl& rhs )
 {
    using blaze::assign;
 
@@ -2902,10 +2902,10 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::operator=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::operator=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -2946,10 +2946,10 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::operator+=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::operator+=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -3001,10 +3001,10 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::operator-=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::operator-=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -3055,10 +3055,10 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::operator*=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::operator*=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -3108,10 +3108,10 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::operator/=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::operator/=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -3164,10 +3164,10 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::operator%=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::operator%=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -3218,10 +3218,10 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // built-in data type.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,false,CIs...> >&
-   ColumnImpl<MT,false,false,false,CIs...>::operator*=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,false,CAs...> >&
+   ColumnImpl<MT,false,false,false,CAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3252,10 +3252,10 @@ inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,false,CIs...> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,false,CIs...> >&
-   ColumnImpl<MT,false,false,false,CIs...>::operator/=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,false,CAs...> >&
+   ColumnImpl<MT,false,false,false,CAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3297,8 +3297,8 @@ inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,false,CIs...> >&
 // \return The size of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,false,false,false,CIs...>::size() const
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,false,false,false,CAs...>::size() const
 {
    return matrix_.rows();
 }
@@ -3313,8 +3313,8 @@ inline size_t ColumnImpl<MT,false,false,false,CIs...>::size() const
 // \return The capacity of the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,false,false,false,CIs...>::capacity() const
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,false,false,false,CAs...>::capacity() const
 {
    return matrix_.rows();
 }
@@ -3332,8 +3332,8 @@ inline size_t ColumnImpl<MT,false,false,false,CIs...>::capacity() const
 // of rows of the matrix containing the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,false,false,false,CIs...>::nonZeros() const
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,false,false,false,CAs...>::nonZeros() const
 {
    size_t counter( 0UL );
    for( ConstIterator element=begin(); element!=end(); ++element ) {
@@ -3352,8 +3352,8 @@ inline size_t ColumnImpl<MT,false,false,false,CIs...>::nonZeros() const
 // \return void
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,false,false,false,CIs...>::reset()
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,false,false,false,CAs...>::reset()
 {
    const size_t ibegin( ( IsLower<MT>::value )
                         ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
@@ -3385,8 +3385,8 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::reset()
 // current values of the column elements are preserved.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-void ColumnImpl<MT,false,false,false,CIs...>::reserve( size_t n )
+        , size_t... CAs >  // Compile time column arguments
+void ColumnImpl<MT,false,false,false,CAs...>::reserve( size_t n )
 {
    UNUSED_PARAMETER( n );
 
@@ -3417,9 +3417,9 @@ void ColumnImpl<MT,false,false,false,CIs...>::reserve( size_t n )
 // with the given \a value is inserted.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::set( size_t index, const ElementType& value )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::set( size_t index, const ElementType& value )
 {
    return Iterator( matrix_, index, column(), matrix_.set( index, column(), value ) );
 }
@@ -3441,9 +3441,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::insert( size_t index, const ElementType& value )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::insert( size_t index, const ElementType& value )
 {
    return Iterator( matrix_, index, column(), matrix_.insert( index, column(), value ) );
 }
@@ -3477,8 +3477,8 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // returned by the end() functions!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,false,false,false,CIs...>::append( size_t index, const ElementType& value, bool check )
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,false,false,false,CAs...>::append( size_t index, const ElementType& value, bool check )
 {
    if( !check || !isDefault( value ) )
       matrix_.insert( index, column(), value );
@@ -3505,8 +3505,8 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::append( size_t index, const
 // This function erases an element from the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,false,false,false,CIs...>::erase( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,false,false,false,CAs...>::erase( size_t index )
 {
    matrix_.erase( index, column() );
 }
@@ -3524,9 +3524,9 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::erase( size_t index )
 // This function erases an element from the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::erase( Iterator pos )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::erase( Iterator pos )
 {
    const size_t row( pos.row_ );
 
@@ -3551,9 +3551,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // This function erases a range of elements from the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::erase( Iterator first, Iterator last )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::erase( Iterator first, Iterator last )
 {
    for( ; first!=last; ++first ) {
       matrix_.erase( first.row_, first.pos_ );
@@ -3588,10 +3588,10 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename Pred    // Type of the unary predicate
         , typename >       // Type restriction on the unary predicate
-inline void ColumnImpl<MT,false,false,false,CIs...>::erase( Pred predicate )
+inline void ColumnImpl<MT,false,false,false,CAs...>::erase( Pred predicate )
 {
    for( Iterator element=begin(); element!=end(); ++element ) {
       if( predicate( element->value() ) )
@@ -3629,9 +3629,9 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::erase( Pred predicate )
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename Pred >  // Type of the unary predicate
-inline void ColumnImpl<MT,false,false,false,CIs...>::erase( Iterator first, Iterator last, Pred predicate )
+inline void ColumnImpl<MT,false,false,false,CAs...>::erase( Iterator first, Iterator last, Pred predicate )
 {
    for( ; first!=last; ++first ) {
       if( predicate( first->value() ) )
@@ -3665,9 +3665,9 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::erase( Iterator first, Iter
 // via the subscript operator or the insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::find( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::find( size_t index )
 {
    const Iterator_<MT> pos( matrix_.find( index, column() ) );
 
@@ -3695,9 +3695,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // via the subscript operator or the insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,false,CIs...>::find( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,false,CAs...>::find( size_t index ) const
 {
    const ConstIterator_<MT> pos( matrix_.find( index, column() ) );
 
@@ -3724,9 +3724,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::lowerBound( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::lowerBound( size_t index )
 {
    for( size_t i=index; i<size(); ++i )
    {
@@ -3756,9 +3756,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,false,CIs...>::lowerBound( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,false,CAs...>::lowerBound( size_t index ) const
 {
    for( size_t i=index; i<size(); ++i )
    {
@@ -3788,9 +3788,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
-   ColumnImpl<MT,false,false,false,CIs...>::upperBound( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::Iterator
+   ColumnImpl<MT,false,false,false,CAs...>::upperBound( size_t index )
 {
    for( size_t i=index+1UL; i<size(); ++i )
    {
@@ -3820,9 +3820,9 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::Iterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,false,CIs...>::upperBound( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,false,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,false,CAs...>::upperBound( size_t index ) const
 {
    for( size_t i=index+1UL; i<size(); ++i )
    {
@@ -3860,10 +3860,10 @@ inline typename ColumnImpl<MT,false,false,false,CIs...>::ConstIterator
 // compile time error!
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the scalar value
-inline ColumnImpl<MT,false,false,false,CIs...>&
-   ColumnImpl<MT,false,false,false,CIs...>::scale( const Other& scalar )
+inline ColumnImpl<MT,false,false,false,CAs...>&
+   ColumnImpl<MT,false,false,false,CAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3895,9 +3895,9 @@ inline ColumnImpl<MT,false,false,false,CIs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool ColumnImpl<MT,false,false,false,CIs...>::canAlias( const Other* alias ) const
+inline bool ColumnImpl<MT,false,false,false,CAs...>::canAlias( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
 }
@@ -3913,9 +3913,9 @@ inline bool ColumnImpl<MT,false,false,false,CIs...>::canAlias( const Other* alia
 // \return \a true in case the alias corresponds to this column, \a false if not.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool ColumnImpl<MT,false,false,false,CIs...>::isAliased( const Other* alias ) const
+inline bool ColumnImpl<MT,false,false,false,CAs...>::isAliased( const Other* alias ) const
 {
    return matrix_.isAliased( alias );
 }
@@ -3936,9 +3936,9 @@ inline bool ColumnImpl<MT,false,false,false,CIs...>::isAliased( const Other* ali
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void ColumnImpl<MT,false,false,false,CIs...>::assign( const DenseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,false,CAs...>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3963,9 +3963,9 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::assign( const DenseVector<V
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void ColumnImpl<MT,false,false,false,CIs...>::assign( const SparseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,false,CAs...>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3997,9 +3997,9 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::assign( const SparseVector<
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline void ColumnImpl<MT,false,false,false,CIs...>::addAssign( const Vector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,false,CAs...>::addAssign( const Vector<VT,false>& rhs )
 {
    using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
@@ -4028,9 +4028,9 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::addAssign( const Vector<VT,
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline void ColumnImpl<MT,false,false,false,CIs...>::subAssign( const Vector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,false,CAs...>::subAssign( const Vector<VT,false>& rhs )
 {
    using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
@@ -4067,20 +4067,20 @@ inline void ColumnImpl<MT,false,false,false,CIs...>::subAssign( const Vector<VT,
 // row-major matrices.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-class ColumnImpl<MT,false,false,true,CIs...>
-   : public View< SparseVector< ColumnImpl<MT,false,false,true,CIs...>, false > >
-   , private ColumnData<MT,CIs...>
+        , size_t... CAs >  // Compile time column arguments
+class ColumnImpl<MT,false,false,true,CAs...>
+   : public View< SparseVector< ColumnImpl<MT,false,false,true,CAs...>, false > >
+   , private ColumnData<MT,CAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CIs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<MT,CAs...>;  //!< The type of the ColumnData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of this ColumnImpl instance.
-   using This = ColumnImpl<MT,false,false,true,CIs...>;
+   using This = ColumnImpl<MT,false,false,true,CAs...>;
 
    using BaseType      = SparseVector<This,false>;     //!< Base type of this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;             //!< Result type for expression template evaluations.
@@ -4273,8 +4273,8 @@ class ColumnImpl<MT,false,false,true,CIs...>
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,false,false,true,CIs...>::ColumnImpl( MT& matrix )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,false,false,true,CAs...>::ColumnImpl( MT& matrix )
    : DataType( matrix )  // Base class initialization
 {}
 /*! \endcond */
@@ -4290,8 +4290,8 @@ inline ColumnImpl<MT,false,false,true,CIs...>::ColumnImpl( MT& matrix )
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,false,false,true,CIs...>::ColumnImpl( MT& matrix, size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,false,false,true,CAs...>::ColumnImpl( MT& matrix, size_t index )
    : DataType( matrix, index )  // Base class initialization
 {}
 /*! \endcond */
@@ -4317,9 +4317,9 @@ inline ColumnImpl<MT,false,false,true,CIs...>::ColumnImpl( MT& matrix, size_t in
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Reference
-   ColumnImpl<MT,false,false,true,CIs...>::operator[]( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Reference
+   ColumnImpl<MT,false,false,true,CAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return matrix_(column(),index);
@@ -4339,9 +4339,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstReference
-   ColumnImpl<MT,false,false,true,CIs...>::operator[]( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstReference
+   ColumnImpl<MT,false,false,true,CAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid column access index" );
    return const_cast<const MT&>( matrix_ )(column(),index);
@@ -4362,9 +4362,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstReference
 // access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Reference
-   ColumnImpl<MT,false,false,true,CIs...>::at( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Reference
+   ColumnImpl<MT,false,false,true,CAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -4387,9 +4387,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Reference
 // access index.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstReference
-   ColumnImpl<MT,false,false,true,CIs...>::at( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstReference
+   ColumnImpl<MT,false,false,true,CAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
@@ -4409,9 +4409,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstReference
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::begin()
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::begin()
 {
    return matrix_.begin( column() );
 }
@@ -4428,9 +4428,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,true,CIs...>::begin() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,true,CAs...>::begin() const
 {
    return matrix_.cbegin( column() );
 }
@@ -4447,9 +4447,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
 // This function returns an iterator to the first element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,true,CIs...>::cbegin() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,true,CAs...>::cbegin() const
 {
    return matrix_.cbegin( column() );
 }
@@ -4466,9 +4466,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::end()
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::end()
 {
    return matrix_.end( column() );
 }
@@ -4485,9 +4485,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,true,CIs...>::end() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,true,CAs...>::end() const
 {
    return matrix_.cend( column() );
 }
@@ -4504,9 +4504,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
 // This function returns an iterator just past the last element of the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,true,CIs...>::cend() const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,true,CAs...>::cend() const
 {
    return matrix_.cend( column() );
 }
@@ -4537,9 +4537,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator=( const ColumnImpl& rhs )
+        , size_t... CAs >  // Compile time column arguments
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator=( const ColumnImpl& rhs )
 {
    using blaze::assign;
 
@@ -4595,10 +4595,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -4652,10 +4652,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator=( const SparseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator=( const SparseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -4711,10 +4711,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator+=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator+=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -4769,10 +4769,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator+=( const SparseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator+=( const SparseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -4829,10 +4829,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator-=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator-=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -4888,10 +4888,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator-=( const SparseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator-=( const SparseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -4946,10 +4946,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator*=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator*=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -5000,10 +5000,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator/=( const DenseVector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator/=( const DenseVector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -5057,10 +5057,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side vector
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::operator%=( const Vector<VT,false>& rhs )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::operator%=( const Vector<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -5112,10 +5112,10 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // built-in data type.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,true,CIs...> >&
-   ColumnImpl<MT,false,false,true,CIs...>::operator*=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,true,CAs...> >&
+   ColumnImpl<MT,false,false,true,CAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5146,10 +5146,10 @@ inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,true,CIs...> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,true,CIs...> >&
-   ColumnImpl<MT,false,false,true,CIs...>::operator/=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,true,CAs...> >&
+   ColumnImpl<MT,false,false,true,CAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5191,8 +5191,8 @@ inline EnableIf_<IsNumeric<Other>, ColumnImpl<MT,false,false,true,CIs...> >&
 // \return The size of the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,false,false,true,CIs...>::size() const noexcept
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,false,false,true,CAs...>::size() const noexcept
 {
    return matrix_.rows();
 }
@@ -5207,8 +5207,8 @@ inline size_t ColumnImpl<MT,false,false,true,CIs...>::size() const noexcept
 // \return The capacity of the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,false,false,true,CIs...>::capacity() const noexcept
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,false,false,true,CAs...>::capacity() const noexcept
 {
    return matrix_.capacity( column() );
 }
@@ -5226,8 +5226,8 @@ inline size_t ColumnImpl<MT,false,false,true,CIs...>::capacity() const noexcept
 // of rows of the matrix containing the column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,false,false,true,CIs...>::nonZeros() const
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,false,false,true,CAs...>::nonZeros() const
 {
    return matrix_.nonZeros( column() );
 }
@@ -5242,8 +5242,8 @@ inline size_t ColumnImpl<MT,false,false,true,CIs...>::nonZeros() const
 // \return void
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,false,false,true,CIs...>::reset()
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,false,false,true,CAs...>::reset()
 {
    matrix_.reset( column() );
 }
@@ -5262,8 +5262,8 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::reset()
 // current values of the column elements are preserved.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-void ColumnImpl<MT,false,false,true,CIs...>::reserve( size_t n )
+        , size_t... CAs >  // Compile time column arguments
+void ColumnImpl<MT,false,false,true,CAs...>::reserve( size_t n )
 {
    matrix_.reserve( column(), n );
 }
@@ -5281,8 +5281,8 @@ void ColumnImpl<MT,false,false,true,CIs...>::reserve( size_t n )
 // column. Note that the new capacity is restricted to the interval \f$[7..size]\f$.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline size_t ColumnImpl<MT,false,false,true,CIs...>::extendCapacity() const noexcept
+        , size_t... CAs >  // Compile time column arguments
+inline size_t ColumnImpl<MT,false,false,true,CAs...>::extendCapacity() const noexcept
 {
    using blaze::max;
    using blaze::min;
@@ -5320,9 +5320,9 @@ inline size_t ColumnImpl<MT,false,false,true,CIs...>::extendCapacity() const noe
 // with the given \a value is inserted.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::set( size_t index, const ElementType& value )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::set( size_t index, const ElementType& value )
 {
    return matrix_.set( column(), index, value );
 }
@@ -5344,9 +5344,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::insert( size_t index, const ElementType& value )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::insert( size_t index, const ElementType& value )
 {
    return matrix_.insert( column(), index, value );
 }
@@ -5380,8 +5380,8 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // returned by the end() functions!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,false,false,true,CIs...>::append( size_t index, const ElementType& value, bool check )
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,false,false,true,CAs...>::append( size_t index, const ElementType& value, bool check )
 {
    matrix_.append( column(), index, value, check );
 }
@@ -5407,8 +5407,8 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::append( size_t index, const 
 // This function erases an element from the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline void ColumnImpl<MT,false,false,true,CIs...>::erase( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline void ColumnImpl<MT,false,false,true,CAs...>::erase( size_t index )
 {
    matrix_.erase( column(), index );
 }
@@ -5426,9 +5426,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::erase( size_t index )
 // This function erases an element from the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::erase( Iterator pos )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::erase( Iterator pos )
 {
    return matrix_.erase( column(), pos );
 }
@@ -5447,9 +5447,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // This function erases a range of elements from the sparse column.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::erase( Iterator first, Iterator last )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::erase( Iterator first, Iterator last )
 {
    return matrix_.erase( column(), first, last );
 }
@@ -5481,10 +5481,10 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename Pred    // Type of the unary predicate
         , typename >       // Type restriction on the unary predicate
-inline void ColumnImpl<MT,false,false,true,CIs...>::erase( Pred predicate )
+inline void ColumnImpl<MT,false,false,true,CAs...>::erase( Pred predicate )
 {
    matrix_.erase( column(), begin(), end(), predicate );
 }
@@ -5518,9 +5518,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::erase( Pred predicate )
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename Pred >  // Type of the unary predicate
-inline void ColumnImpl<MT,false,false,true,CIs...>::erase( Iterator first, Iterator last, Pred predicate )
+inline void ColumnImpl<MT,false,false,true,CAs...>::erase( Iterator first, Iterator last, Pred predicate )
 {
    matrix_.erase( column(), first, last, predicate );
 }
@@ -5551,9 +5551,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::erase( Iterator first, Itera
 // via the subscript operator or the insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::find( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::find( size_t index )
 {
    return matrix_.find( column(), index );
 }
@@ -5576,9 +5576,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // via the subscript operator or the insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,true,CIs...>::find( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,true,CAs...>::find( size_t index ) const
 {
    return matrix_.find( column(), index );
 }
@@ -5600,9 +5600,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::lowerBound( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::lowerBound( size_t index )
 {
    return matrix_.lowerBound( column(), index );
 }
@@ -5624,9 +5624,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,true,CIs...>::lowerBound( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,true,CAs...>::lowerBound( size_t index ) const
 {
    return matrix_.lowerBound( column(), index );
 }
@@ -5648,9 +5648,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
-   ColumnImpl<MT,false,false,true,CIs...>::upperBound( size_t index )
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::Iterator
+   ColumnImpl<MT,false,false,true,CAs...>::upperBound( size_t index )
 {
    return matrix_.upperBound( column(), index );
 }
@@ -5672,9 +5672,9 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::Iterator
 // insert() function!
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
-inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
-   ColumnImpl<MT,false,false,true,CIs...>::upperBound( size_t index ) const
+        , size_t... CAs >  // Compile time column arguments
+inline typename ColumnImpl<MT,false,false,true,CAs...>::ConstIterator
+   ColumnImpl<MT,false,false,true,CAs...>::upperBound( size_t index ) const
 {
    return matrix_.upperBound( column(), index );
 }
@@ -5704,10 +5704,10 @@ inline typename ColumnImpl<MT,false,false,true,CIs...>::ConstIterator
 // compile time error!
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the scalar value
-inline ColumnImpl<MT,false,false,true,CIs...>&
-   ColumnImpl<MT,false,false,true,CIs...>::scale( const Other& scalar )
+inline ColumnImpl<MT,false,false,true,CAs...>&
+   ColumnImpl<MT,false,false,true,CAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5739,9 +5739,9 @@ inline ColumnImpl<MT,false,false,true,CIs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool ColumnImpl<MT,false,false,true,CIs...>::canAlias( const Other* alias ) const noexcept
+inline bool ColumnImpl<MT,false,false,true,CAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5761,9 +5761,9 @@ inline bool ColumnImpl<MT,false,false,true,CIs...>::canAlias( const Other* alias
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , size_t... CIs >   // Column indices
+        , size_t... CAs >   // Compile time column arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool ColumnImpl<MT,false,false,true,CIs...>::isAliased( const Other* alias ) const noexcept
+inline bool ColumnImpl<MT,false,false,true,CAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5784,9 +5784,9 @@ inline bool ColumnImpl<MT,false,false,true,CIs...>::isAliased( const Other* alia
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void ColumnImpl<MT,false,false,true,CIs...>::assign( const DenseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,true,CAs...>::assign( const DenseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -5816,9 +5816,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::assign( const DenseVector<VT
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void ColumnImpl<MT,false,false,true,CIs...>::assign( const SparseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,true,CAs...>::assign( const SparseVector<VT,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -5844,9 +5844,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::assign( const SparseVector<V
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void ColumnImpl<MT,false,false,true,CIs...>::addAssign( const DenseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,true,CAs...>::addAssign( const DenseVector<VT,false>& rhs )
 {
    using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
@@ -5877,9 +5877,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::addAssign( const DenseVector
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void ColumnImpl<MT,false,false,true,CIs...>::addAssign( const SparseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,true,CAs...>::addAssign( const SparseVector<VT,false>& rhs )
 {
    using AddType = AddTrait_< ResultType, ResultType_<VT> >;
 
@@ -5911,9 +5911,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::addAssign( const SparseVecto
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void ColumnImpl<MT,false,false,true,CIs...>::subAssign( const DenseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,true,CAs...>::subAssign( const DenseVector<VT,false>& rhs )
 {
    using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 
@@ -5944,9 +5944,9 @@ inline void ColumnImpl<MT,false,false,true,CIs...>::subAssign( const DenseVector
 // assignment operator.
 */
 template< typename MT      // Type of the sparse matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void ColumnImpl<MT,false,false,true,CIs...>::subAssign( const SparseVector<VT,false>& rhs )
+inline void ColumnImpl<MT,false,false,true,CAs...>::subAssign( const SparseVector<VT,false>& rhs )
 {
    using SubType = SubTrait_< ResultType, ResultType_<VT> >;
 

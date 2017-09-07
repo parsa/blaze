@@ -68,8 +68,10 @@ namespace blaze {
 // This specialization of the Rand class randomizes dense bands.
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-class Rand< DenseBand<MT,BIs...> >
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+class Rand< BandImpl<MT,TF,true,MF,BAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -95,9 +97,11 @@ class Rand< DenseBand<MT,BIs...> >
 // \return void
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
 template< typename BT >       // Type of the band
-inline void Rand< DenseBand<MT,BIs...> >::randomize( BT&& band ) const
+inline void Rand< BandImpl<MT,TF,true,MF,BAs...> >::randomize( BT&& band ) const
 {
    using blaze::randomize;
 
@@ -124,10 +128,12 @@ inline void Rand< DenseBand<MT,BIs...> >::randomize( BT&& band ) const
 // \return void
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
 template< typename BT         // Type of the band
         , typename Arg >      // Min/max argument type
-inline void Rand< DenseBand<MT,BIs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
+inline void Rand< BandImpl<MT,TF,true,MF,BAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -160,8 +166,10 @@ inline void Rand< DenseBand<MT,BIs...> >::randomize( BT&& band, const Arg& min, 
 // This specialization of the Rand class randomizes sparse bands.
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
-class Rand< SparseBand<MT,BIs...> >
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
+class Rand< BandImpl<MT,TF,false,MF,BAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -193,9 +201,11 @@ class Rand< SparseBand<MT,BIs...> >
 // \return void
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
 template< typename BT >       // Type of the band
-inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band ) const
+inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;
@@ -230,9 +240,11 @@ inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band ) const
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
 template< typename BT >       // Type of the band
-inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, size_t nonzeros ) const
+inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, size_t nonzeros ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;
@@ -269,10 +281,12 @@ inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, size_t nonzeros
 // \return void
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
 template< typename BT         // Type of the band
         , typename Arg >      // Min/max argument type
-inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
+inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;
@@ -309,11 +323,13 @@ inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, const Arg& min,
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT         // Type of the matrix
-        , ptrdiff_t... BIs >  // Band indices
+        , bool TF             // Transpose flag
+        , bool MF             // Multiplication flag
+        , ptrdiff_t... BAs >  // Compile time band arguments
 template< typename BT         // Type of the band
         , typename Arg >      // Min/max argument type
-inline void Rand< SparseBand<MT,BIs...> >::randomize( BT&& band, size_t nonzeros,
-                                                      const Arg& min, const Arg& max ) const
+inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, size_t nonzeros,
+                                                                const Arg& min, const Arg& max ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;

@@ -68,9 +68,11 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense columns.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
-class Rand< DenseColumn<MT,CIs...> >
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
+class Rand< ColumnImpl<MT,SO,true,SF,CAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -95,10 +97,12 @@ class Rand< DenseColumn<MT,CIs...> >
 // \param column The column to be randomized.
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
 template< typename CT >    // Type of the column
-inline void Rand< DenseColumn<MT,CIs...> >::randomize( CT&& column ) const
+inline void Rand< ColumnImpl<MT,SO,true,SF,CAs...> >::randomize( CT&& column ) const
 {
    using blaze::randomize;
 
@@ -124,11 +128,13 @@ inline void Rand< DenseColumn<MT,CIs...> >::randomize( CT&& column ) const
 // \param max The largest possible value for a column element.
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
 template< typename CT      // Type of the column
         , typename Arg >   // Min/max argument type
-inline void Rand< DenseColumn<MT,CIs...> >::randomize( CT&& column, const Arg& min, const Arg& max ) const
+inline void Rand< ColumnImpl<MT,SO,true,SF,CAs...> >::randomize( CT&& column, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -160,9 +166,11 @@ inline void Rand< DenseColumn<MT,CIs...> >::randomize( CT&& column, const Arg& m
 //
 // This specialization of the Rand class randomizes sparse columns.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
-class Rand< SparseColumn<MT,CIs...> >
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
+class Rand< ColumnImpl<MT,SO,false,SF,CAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -193,10 +201,12 @@ class Rand< SparseColumn<MT,CIs...> >
 // \param column The column to be randomized.
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
 template< typename CT >    // Type of the column
-inline void Rand< SparseColumn<MT,CIs...> >::randomize( CT&& column ) const
+inline void Rand< ColumnImpl<MT,SO,false,SF,CAs...> >::randomize( CT&& column ) const
 {
    using ColumnType  = RemoveReference_<CT>;
    using ElementType = ElementType_<ColumnType>;
@@ -230,10 +240,12 @@ inline void Rand< SparseColumn<MT,CIs...> >::randomize( CT&& column ) const
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
 template< typename CT >    // Type of the column
-inline void Rand< SparseColumn<MT,CIs...> >::randomize( CT&& column, size_t nonzeros ) const
+inline void Rand< ColumnImpl<MT,SO,false,SF,CAs...> >::randomize( CT&& column, size_t nonzeros ) const
 {
    using ColumnType  = RemoveReference_<CT>;
    using ElementType = ElementType_<ColumnType>;
@@ -269,11 +281,13 @@ inline void Rand< SparseColumn<MT,CIs...> >::randomize( CT&& column, size_t nonz
 // \param max The largest possible value for a column element.
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
 template< typename CT      // Type of the column
         , typename Arg >   // Min/max argument type
-inline void Rand< SparseColumn<MT,CIs...> >::randomize( CT&& column, const Arg& min, const Arg& max ) const
+inline void Rand< ColumnImpl<MT,SO,false,SF,CAs...> >::randomize( CT&& column, const Arg& min, const Arg& max ) const
 {
    using ColumnType  = RemoveReference_<CT>;
    using ElementType = ElementType_<ColumnType>;
@@ -309,12 +323,14 @@ inline void Rand< SparseColumn<MT,CIs...> >::randomize( CT&& column, const Arg& 
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... CIs >  // Column indices
+template< typename MT      // Type of the matrix
+        , bool SO          // Storage order
+        , bool SF          // Symmetry flag
+        , size_t... CAs >  // Compile time column arguments
 template< typename CT      // Type of the column
         , typename Arg >   // Min/max argument type
-inline void Rand< SparseColumn<MT,CIs...> >::randomize( CT&& column, size_t nonzeros,
-                                                        const Arg& min, const Arg& max ) const
+inline void Rand< ColumnImpl<MT,SO,false,SF,CAs...> >::randomize( CT&& column, size_t nonzeros,
+                                                                  const Arg& min, const Arg& max ) const
 {
    using ColumnType  = RemoveReference_<CT>;
    using ElementType = ElementType_<ColumnType>;

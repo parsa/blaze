@@ -761,15 +761,12 @@ BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept
 // \a false.
 
    \code
-   using MatrixType    = blaze::DynamicMatrix<int>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
+   blaze::DynamicMatrix<int> mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic matrix
+   blaze::DynamicMatrix<int> mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic matrix
 
-   MatrixType mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic matrix
-   MatrixType mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic matrix
-
-   SubmatrixType sub1 = submatrix( mat1, 0UL, 0UL, 4UL, 5UL );  // Submatrix fully covering mat1
-   SubmatrixType sub2 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
-   SubmatrixType sub3 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
+   auto sub1 = submatrix( mat1, 0UL, 0UL, 4UL, 5UL );  // Submatrix fully covering mat1
+   auto sub2 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
+   auto sub3 = submatrix( mat1, 1UL, 1UL, 2UL, 3UL );  // Submatrix partially covering mat1
 
    isSame( mat1, mat1 );  // returns true since both objects refer to the same matrix
    isSame( mat1, mat2 );  // returns false since mat1 and mat2 are two different matrices

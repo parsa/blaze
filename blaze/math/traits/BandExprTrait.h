@@ -67,25 +67,25 @@ namespace blaze {
 // type \a Type is set to \a INVALID_TYPE.
 */
 template< typename MT         // Type of the matrix operand
-        , ptrdiff_t... BIs >  // Band indices
+        , ptrdiff_t... BAs >  // Compile time band arguments
 struct BandExprTrait
 {
  private:
-   //**struct Failure******************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct Failure { using Type = INVALID_TYPE; };
    /*! \endcond */
    //**********************************************************************************************
 
-   //**struct UnaryResult**************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct UnaryResult { using Type = decltype( band<BIs...>( std::declval<MT>() ) ); };
+   struct CompileTime { using Type = decltype( band<BAs...>( std::declval<MT>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
-   //**struct BinaryResult*************************************************************************
+   //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct BinaryResult { using Type = decltype( band( std::declval<MT>(), std::declval<ptrdiff_t>() ) ); };
+   struct Runtime { using Type = decltype( band( std::declval<MT>(), std::declval<ptrdiff_t>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -93,9 +93,9 @@ struct BandExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsMatrix< RemoveReference_<MT> >
-                            , IfTrue_< ( sizeof...( BIs ) > 0UL )
-                                     , UnaryResult
-                                     , BinaryResult >
+                            , IfTrue_< ( sizeof...( BAs ) > 0UL )
+                                     , CompileTime
+                                     , Runtime >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -116,8 +116,9 @@ struct BandExprTrait
    using Type2 = BandExprTrait_<MT>;
    \endcode
 */
-template< typename MT >  // Type of the matrix operand
-using BandExprTrait_ = typename BandExprTrait<MT>::Type;
+template< typename MT         // Type of the matrix operand
+        , ptrdiff_t... BAs >  // Compile time band arguments
+using BandExprTrait_ = typename BandExprTrait<MT,BAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -117,20 +118,20 @@ namespace blaze {
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-class RowImpl<MT,true,true,SF,RIs...>
-   : public View< DenseVector< RowImpl<MT,true,true,SF,RIs...>, true > >
-   , private RowData<MT,RIs...>
+        , size_t... RAs >  // Compile time row arguments
+class RowImpl<MT,true,true,SF,RAs...>
+   : public View< DenseVector< RowImpl<MT,true,true,SF,RAs...>, true > >
+   , private RowData<MT,RAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<MT,RIs...>;  //!< The type of the RowData base class.
+   using DataType = RowData<MT,RAs...>;  //!< The type of the RowData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of this RowImpl instance.
-   using This = RowImpl<MT,true,true,SF,RIs...>;
+   using This = RowImpl<MT,true,true,SF,RAs...>;
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
@@ -309,14 +310,14 @@ class RowImpl<MT,true,true,SF,RIs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... RIs2 >
-   inline bool canAlias( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept;
+   template< typename MT2, bool SO2, bool SF2, size_t... RAs2 >
+   inline bool canAlias( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... RIs2 >
-   inline bool isAliased( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept;
+   template< typename MT2, bool SO2, bool SF2, size_t... RAs2 >
+   inline bool isAliased( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -375,6 +376,10 @@ class RowImpl<MT,true,true,SF,RIs...>
    using DataType::matrix_;
    //**********************************************************************************************
 
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... RAs2 > friend class RowImpl;
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
@@ -405,8 +410,8 @@ class RowImpl<MT,true,true,SF,RIs...>
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,true,true,SF,RIs...>::RowImpl( MT& matrix )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,true,true,SF,RAs...>::RowImpl( MT& matrix )
    : DataType( matrix )  // Base class initialization
 {}
 /*! \endcond */
@@ -423,8 +428,8 @@ inline RowImpl<MT,true,true,SF,RIs...>::RowImpl( MT& matrix )
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,true,true,SF,RIs...>::RowImpl( MT& matrix, size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,true,true,SF,RAs...>::RowImpl( MT& matrix, size_t index )
    : DataType( matrix, index )  // Base class initialization
 {}
 /*! \endcond */
@@ -451,9 +456,9 @@ inline RowImpl<MT,true,true,SF,RIs...>::RowImpl( MT& matrix, size_t index )
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::Reference
-   RowImpl<MT,true,true,SF,RIs...>::operator[]( size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::Reference
+   RowImpl<MT,true,true,SF,RAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(row(),index);
@@ -474,9 +479,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::Reference
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::ConstReference
-   RowImpl<MT,true,true,SF,RIs...>::operator[]( size_t index ) const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::ConstReference
+   RowImpl<MT,true,true,SF,RAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(row(),index);
@@ -498,9 +503,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::ConstReference
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::Reference
-   RowImpl<MT,true,true,SF,RIs...>::at( size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::Reference
+   RowImpl<MT,true,true,SF,RAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -524,9 +529,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::Reference
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::ConstReference
-   RowImpl<MT,true,true,SF,RIs...>::at( size_t index ) const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::ConstReference
+   RowImpl<MT,true,true,SF,RAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -548,9 +553,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::ConstReference
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::Pointer
-   RowImpl<MT,true,true,SF,RIs...>::data() noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::Pointer
+   RowImpl<MT,true,true,SF,RAs...>::data() noexcept
 {
    return matrix_.data( row() );
 }
@@ -569,9 +574,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::Pointer
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::ConstPointer
-   RowImpl<MT,true,true,SF,RIs...>::data() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::ConstPointer
+   RowImpl<MT,true,true,SF,RAs...>::data() const noexcept
 {
    return matrix_.data( row() );
 }
@@ -589,9 +594,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::ConstPointer
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::Iterator
-   RowImpl<MT,true,true,SF,RIs...>::begin()
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::Iterator
+   RowImpl<MT,true,true,SF,RAs...>::begin()
 {
    return matrix_.begin( row() );
 }
@@ -609,9 +614,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::Iterator
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
-   RowImpl<MT,true,true,SF,RIs...>::begin() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::ConstIterator
+   RowImpl<MT,true,true,SF,RAs...>::begin() const
 {
    return matrix_.cbegin( row() );
 }
@@ -629,9 +634,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
-   RowImpl<MT,true,true,SF,RIs...>::cbegin() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::ConstIterator
+   RowImpl<MT,true,true,SF,RAs...>::cbegin() const
 {
    return matrix_.cbegin( row() );
 }
@@ -649,9 +654,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::Iterator
-   RowImpl<MT,true,true,SF,RIs...>::end()
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::Iterator
+   RowImpl<MT,true,true,SF,RAs...>::end()
 {
    return matrix_.end( row() );
 }
@@ -669,9 +674,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::Iterator
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
-   RowImpl<MT,true,true,SF,RIs...>::end() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::ConstIterator
+   RowImpl<MT,true,true,SF,RAs...>::end() const
 {
    return matrix_.cend( row() );
 }
@@ -689,9 +694,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
-   RowImpl<MT,true,true,SF,RIs...>::cend() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,true,true,SF,RAs...>::ConstIterator
+   RowImpl<MT,true,true,SF,RAs...>::cend() const
 {
    return matrix_.cend( row() );
 }
@@ -720,9 +725,9 @@ inline typename RowImpl<MT,true,true,SF,RIs...>::ConstIterator
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator=( const ElementType& rhs )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator=( const ElementType& rhs )
 {
    const size_t jbegin( ( IsUpper<MT>::value )
                         ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
@@ -759,9 +764,9 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator=( initializer_list<ElementType> list )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -793,9 +798,9 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator=( const RowImpl& rhs )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator=( const RowImpl& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -809,7 +814,13 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, rhs );
+   if( IsExpression<MT>::value && rhs.canAlias( &matrix_ ) ) {
+      const ResultType tmp( rhs );
+      smpAssign( left, tmp );
+   }
+   else {
+      smpAssign( left, rhs );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -835,10 +846,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -890,10 +901,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator+=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator+=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -943,10 +954,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator-=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator-=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -995,10 +1006,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator*=( const DenseVector<VT,true>& rhs )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator*=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1047,10 +1058,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator*=( const SparseVector<VT,true>& rhs )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator*=( const SparseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -1092,10 +1103,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator/=( const DenseVector<VT,true>& rhs )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator/=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1144,10 +1155,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::operator%=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::operator%=( const Vector<VT,true>& rhs )
 {
    using blaze::assign;
 
@@ -1195,10 +1206,10 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, RowImpl<MT,true,true,SF,RIs...> >&
-   RowImpl<MT,true,true,SF,RIs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, RowImpl<MT,true,true,SF,RAs...> >&
+   RowImpl<MT,true,true,SF,RAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1223,10 +1234,10 @@ inline EnableIf_< IsNumeric<Other>, RowImpl<MT,true,true,SF,RIs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, RowImpl<MT,true,true,SF,RIs...> >&
-   RowImpl<MT,true,true,SF,RIs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, RowImpl<MT,true,true,SF,RAs...> >&
+   RowImpl<MT,true,true,SF,RAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1254,8 +1265,8 @@ inline EnableIf_< IsNumeric<Other>, RowImpl<MT,true,true,SF,RIs...> >&
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,true,true,SF,RIs...>::size() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,true,true,SF,RAs...>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -1274,8 +1285,8 @@ inline size_t RowImpl<MT,true,true,SF,RIs...>::size() const noexcept
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,true,true,SF,RIs...>::spacing() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,true,true,SF,RAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -1291,8 +1302,8 @@ inline size_t RowImpl<MT,true,true,SF,RIs...>::spacing() const noexcept
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,true,true,SF,RIs...>::capacity() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,true,true,SF,RAs...>::capacity() const noexcept
 {
    return matrix_.capacity( row() );
 }
@@ -1311,8 +1322,8 @@ inline size_t RowImpl<MT,true,true,SF,RIs...>::capacity() const noexcept
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,true,true,SF,RIs...>::nonZeros() const
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,true,true,SF,RAs...>::nonZeros() const
 {
    return matrix_.nonZeros( row() );
 }
@@ -1328,8 +1339,8 @@ inline size_t RowImpl<MT,true,true,SF,RIs...>::nonZeros() const
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline void RowImpl<MT,true,true,SF,RIs...>::reset()
+        , size_t... RAs >  // Compile time row arguments
+inline void RowImpl<MT,true,true,SF,RAs...>::reset()
 {
    matrix_.reset( row() );
 }
@@ -1360,10 +1371,10 @@ inline void RowImpl<MT,true,true,SF,RIs...>::reset()
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the scalar value
-inline RowImpl<MT,true,true,SF,RIs...>&
-   RowImpl<MT,true,true,SF,RIs...>::scale( const Other& scalar )
+inline RowImpl<MT,true,true,SF,RAs...>&
+   RowImpl<MT,true,true,SF,RAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1409,9 +1420,9 @@ inline RowImpl<MT,true,true,SF,RIs...>&
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool RowImpl<MT,true,true,SF,RIs...>::canAlias( const Other* alias ) const noexcept
+inline bool RowImpl<MT,true,true,SF,RAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1432,13 +1443,13 @@ inline bool RowImpl<MT,true,true,SF,RIs...>::canAlias( const Other* alias ) cons
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename MT2      // Data type of the foreign dense row
         , bool SO2          // Storage order of the foreign dense row
         , bool SF2          // Symmetry flag of the foreign dense row
-        , size_t... RIs2 >  // Row indices of the foreign dense row
+        , size_t... RAs2 >  // Compile time row arguments of the foreign dense row
 inline bool
-   RowImpl<MT,true,true,SF,RIs...>::canAlias( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept
+   RowImpl<MT,true,true,SF,RAs...>::canAlias( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row() == alias->row() );
 }
@@ -1459,9 +1470,9 @@ inline bool
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool RowImpl<MT,true,true,SF,RIs...>::isAliased( const Other* alias ) const noexcept
+inline bool RowImpl<MT,true,true,SF,RAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1482,13 +1493,13 @@ inline bool RowImpl<MT,true,true,SF,RIs...>::isAliased( const Other* alias ) con
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename MT2      // Data type of the foreign dense row
         , bool SO2          // Storage order of the foreign dense row
         , bool SF2          // Symmetry flag of the foreign dense row
-        , size_t... RIs2 >  // Row indices of the foreign dense row
+        , size_t... RAs2 >  // Compile time row arguments of the foreign dense row
 inline bool
-   RowImpl<MT,true,true,SF,RIs...>::isAliased( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept
+   RowImpl<MT,true,true,SF,RAs...>::isAliased( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row() == alias->row() );
 }
@@ -1508,8 +1519,8 @@ inline bool
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline bool RowImpl<MT,true,true,SF,RIs...>::isAligned() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline bool RowImpl<MT,true,true,SF,RAs...>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -1530,8 +1541,8 @@ inline bool RowImpl<MT,true,true,SF,RIs...>::isAligned() const noexcept
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-inline bool RowImpl<MT,true,true,SF,RIs...>::canSMPAssign() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline bool RowImpl<MT,true,true,SF,RAs...>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1554,9 +1565,9 @@ inline bool RowImpl<MT,true,true,SF,RIs...>::canSMPAssign() const noexcept
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RIs...>::SIMDType
-   RowImpl<MT,true,true,SF,RIs...>::load( size_t index ) const noexcept
+        , size_t... RAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RAs...>::SIMDType
+   RowImpl<MT,true,true,SF,RAs...>::load( size_t index ) const noexcept
 {
    return matrix_.load( row(), index );
 }
@@ -1579,9 +1590,9 @@ BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RIs...>::SIMDType
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RIs...>::SIMDType
-   RowImpl<MT,true,true,SF,RIs...>::loada( size_t index ) const noexcept
+        , size_t... RAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RAs...>::SIMDType
+   RowImpl<MT,true,true,SF,RAs...>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( row(), index );
 }
@@ -1604,9 +1615,9 @@ BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RIs...>::SIMDType
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
-BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RIs...>::SIMDType
-   RowImpl<MT,true,true,SF,RIs...>::loadu( size_t index ) const noexcept
+        , size_t... RAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RAs...>::SIMDType
+   RowImpl<MT,true,true,SF,RAs...>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( row(), index );
 }
@@ -1630,9 +1641,9 @@ BLAZE_ALWAYS_INLINE typename RowImpl<MT,true,true,SF,RIs...>::SIMDType
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,true,true,SF,RIs...>::store( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,true,true,SF,RAs...>::store( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.store( row(), index, value );
 }
@@ -1656,9 +1667,9 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,true,true,SF,RIs...>::storea( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,true,true,SF,RAs...>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( row(), index, value );
 }
@@ -1682,9 +1693,9 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,true,true,SF,RIs...>::storeu( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,true,true,SF,RAs...>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( row(), index, value );
 }
@@ -1708,9 +1719,9 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,true,true,SF,RIs...>::stream( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,true,true,SF,RAs...>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( row(), index, value );
 }
@@ -1732,10 +1743,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::assign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1765,10 +1776,10 @@ inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vect
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::assign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1828,9 +1839,9 @@ inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vecto
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,true,true,SF,RIs...>::assign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,true,true,SF,RAs...>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1855,10 +1866,10 @@ inline void RowImpl<MT,true,true,SF,RIs...>::assign( const SparseVector<VT,true>
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::addAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1888,10 +1899,10 @@ inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vect
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::addAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1939,9 +1950,9 @@ inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vecto
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,true,true,SF,RIs...>::addAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,true,true,SF,RAs...>::addAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1966,10 +1977,10 @@ inline void RowImpl<MT,true,true,SF,RIs...>::addAssign( const SparseVector<VT,tr
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::subAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1999,10 +2010,10 @@ inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vect
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::subAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2050,9 +2061,9 @@ inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vecto
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,true,true,SF,RIs...>::subAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,true,true,SF,RAs...>::subAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2077,10 +2088,10 @@ inline void RowImpl<MT,true,true,SF,RIs...>::subAssign( const SparseVector<VT,tr
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::multAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2110,10 +2121,10 @@ inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vect
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::multAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2161,9 +2172,9 @@ inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vecto
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,true,true,SF,RIs...>::multAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,true,true,SF,RAs...>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2192,10 +2203,10 @@ inline void RowImpl<MT,true,true,SF,RIs...>::multAssign( const SparseVector<VT,t
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::divAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2225,10 +2236,10 @@ inline DisableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vect
 */
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   RowImpl<MT,true,true,SF,RIs...>::divAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,true,true,SF,RAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   RowImpl<MT,true,true,SF,RAs...>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2281,20 +2292,20 @@ inline EnableIf_< typename RowImpl<MT,true,true,SF,RIs...>::BLAZE_TEMPLATE Vecto
 // column-major dense matrices.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-class RowImpl<MT,false,true,false,RIs...>
-   : public View< DenseVector< RowImpl<MT,false,true,false,RIs...>, true > >
-   , private RowData<MT,RIs...>
+        , size_t... RAs >  // Compile time row arguments
+class RowImpl<MT,false,true,false,RAs...>
+   : public View< DenseVector< RowImpl<MT,false,true,false,RAs...>, true > >
+   , private RowData<MT,RAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<MT,RIs...>;  //!< The type of the RowData base class.
+   using DataType = RowData<MT,RAs...>;  //!< The type of the RowData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of this RowImpl instance.
-   using This = RowImpl<MT,false,true,false,RIs...>;
+   using This = RowImpl<MT,false,true,false,RAs...>;
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
@@ -2708,14 +2719,14 @@ class RowImpl<MT,false,true,false,RIs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... RIs2 >
-   inline bool canAlias( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept;
+   template< typename MT2, bool SO2, bool SF2, size_t... RAs2 >
+   inline bool canAlias( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... RIs2 >
-   inline bool isAliased( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept;
+   template< typename MT2, bool SO2, bool SF2, size_t... RAs2 >
+   inline bool isAliased( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -2735,6 +2746,10 @@ class RowImpl<MT,false,true,false,RIs...>
  private:
    //**Member variables****************************************************************************
    using DataType::matrix_;
+   //**********************************************************************************************
+
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... RAs2 > friend class RowImpl;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2767,8 +2782,8 @@ class RowImpl<MT,false,true,false,RIs...>
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,false,RIs...>::RowImpl( MT& matrix )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,false,RAs...>::RowImpl( MT& matrix )
    : DataType( matrix )  // Base class initialization
 {}
 /*! \endcond */
@@ -2784,8 +2799,8 @@ inline RowImpl<MT,false,true,false,RIs...>::RowImpl( MT& matrix )
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,false,RIs...>::RowImpl( MT& matrix, size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,false,RAs...>::RowImpl( MT& matrix, size_t index )
    : DataType( matrix, index )  // Base class initialization
 {}
 /*! \endcond */
@@ -2811,9 +2826,9 @@ inline RowImpl<MT,false,true,false,RIs...>::RowImpl( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::Reference
-   RowImpl<MT,false,true,false,RIs...>::operator[]( size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::Reference
+   RowImpl<MT,false,true,false,RAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(row(),index);
@@ -2833,9 +2848,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::ConstReference
-   RowImpl<MT,false,true,false,RIs...>::operator[]( size_t index ) const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::ConstReference
+   RowImpl<MT,false,true,false,RAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(row(),index);
@@ -2856,9 +2871,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::ConstReference
 // access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::Reference
-   RowImpl<MT,false,true,false,RIs...>::at( size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::Reference
+   RowImpl<MT,false,true,false,RAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -2881,9 +2896,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::Reference
 // access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::ConstReference
-   RowImpl<MT,false,true,false,RIs...>::at( size_t index ) const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::ConstReference
+   RowImpl<MT,false,true,false,RAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -2904,9 +2919,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::ConstReference
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::Pointer
-   RowImpl<MT,false,true,false,RIs...>::data() noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::Pointer
+   RowImpl<MT,false,true,false,RAs...>::data() noexcept
 {
    return matrix_.data() + row();
 }
@@ -2924,9 +2939,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::Pointer
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::ConstPointer
-   RowImpl<MT,false,true,false,RIs...>::data() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::ConstPointer
+   RowImpl<MT,false,true,false,RAs...>::data() const noexcept
 {
    return matrix_.data() + row();
 }
@@ -2943,9 +2958,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::ConstPointer
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::Iterator
-   RowImpl<MT,false,true,false,RIs...>::begin()
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::Iterator
+   RowImpl<MT,false,true,false,RAs...>::begin()
 {
    return Iterator( matrix_, row(), 0UL );
 }
@@ -2962,9 +2977,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::Iterator
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
-   RowImpl<MT,false,true,false,RIs...>::begin() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::ConstIterator
+   RowImpl<MT,false,true,false,RAs...>::begin() const
 {
    return ConstIterator( matrix_, row(), 0UL );
 }
@@ -2981,9 +2996,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
-   RowImpl<MT,false,true,false,RIs...>::cbegin() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::ConstIterator
+   RowImpl<MT,false,true,false,RAs...>::cbegin() const
 {
    return ConstIterator( matrix_, row(), 0UL );
 }
@@ -3000,9 +3015,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::Iterator
-   RowImpl<MT,false,true,false,RIs...>::end()
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::Iterator
+   RowImpl<MT,false,true,false,RAs...>::end()
 {
    return Iterator( matrix_, row(), size() );
 }
@@ -3019,9 +3034,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::Iterator
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
-   RowImpl<MT,false,true,false,RIs...>::end() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::ConstIterator
+   RowImpl<MT,false,true,false,RAs...>::end() const
 {
    return ConstIterator( matrix_, row(), size() );
 }
@@ -3038,9 +3053,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
-   RowImpl<MT,false,true,false,RIs...>::cend() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,false,RAs...>::ConstIterator
+   RowImpl<MT,false,true,false,RAs...>::cend() const
 {
    return ConstIterator( matrix_, row(), size() );
 }
@@ -3068,9 +3083,9 @@ inline typename RowImpl<MT,false,true,false,RIs...>::ConstIterator
 // of the underlying matrix are modified.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator=( const ElementType& rhs )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator=( const ElementType& rhs )
 {
    const size_t jbegin( ( IsUpper<MT>::value )
                         ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
@@ -3106,9 +3121,9 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator=( initializer_list<ElementType> list )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -3139,9 +3154,9 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator=( const RowImpl& rhs )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator=( const RowImpl& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -3155,7 +3170,13 @@ inline RowImpl<MT,false,true,false,RIs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, rhs );
+   if( IsExpression<MT>::value && rhs.canAlias( &matrix_ ) ) {
+      const ResultType tmp( rhs );
+      smpAssign( left, tmp );
+   }
+   else {
+      smpAssign( left, rhs );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3180,10 +3201,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -3235,10 +3256,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator+=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator+=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3287,10 +3308,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator-=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator-=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3338,10 +3359,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator*=( const DenseVector<VT,true>& rhs )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator*=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3389,10 +3410,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator*=( const SparseVector<VT,true>& rhs )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator*=( const SparseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -3433,10 +3454,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator/=( const DenseVector<VT,true>& rhs )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator/=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3484,10 +3505,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::operator%=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::operator%=( const Vector<VT,true>& rhs )
 {
    using blaze::assign;
 
@@ -3534,10 +3555,10 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // to scale such a row results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,false,RIs...> >&
-   RowImpl<MT,false,true,false,RIs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,false,RAs...> >&
+   RowImpl<MT,false,true,false,RAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3561,10 +3582,10 @@ inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,false,RIs...> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,false,RIs...> >&
-   RowImpl<MT,false,true,false,RIs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,false,RAs...> >&
+   RowImpl<MT,false,true,false,RAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3591,8 +3612,8 @@ inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,false,RIs...> >&
 // \return The size of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,false,RIs...>::size() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,false,RAs...>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -3610,8 +3631,8 @@ inline size_t RowImpl<MT,false,true,false,RIs...>::size() const noexcept
 // plus padding.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,false,RIs...>::spacing() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,false,RAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -3626,8 +3647,8 @@ inline size_t RowImpl<MT,false,true,false,RIs...>::spacing() const noexcept
 // \return The maximum capacity of the dense row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,false,RIs...>::capacity() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,false,RAs...>::capacity() const noexcept
 {
    return matrix_.columns();
 }
@@ -3645,8 +3666,8 @@ inline size_t RowImpl<MT,false,true,false,RIs...>::capacity() const noexcept
 // of columns of the matrix containing the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,false,RIs...>::nonZeros() const
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,false,RAs...>::nonZeros() const
 {
    const size_t columns( size() );
    size_t nonzeros( 0UL );
@@ -3668,8 +3689,8 @@ inline size_t RowImpl<MT,false,true,false,RIs...>::nonZeros() const
 // \return void
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline void RowImpl<MT,false,true,false,RIs...>::reset()
+        , size_t... RAs >  // Compile time row arguments
+inline void RowImpl<MT,false,true,false,RAs...>::reset()
 {
    using blaze::clear;
 
@@ -3713,10 +3734,10 @@ inline void RowImpl<MT,false,true,false,RIs...>::reset()
 // compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the scalar value
-inline RowImpl<MT,false,true,false,RIs...>&
-   RowImpl<MT,false,true,false,RIs...>::scale( const Other& scalar )
+inline RowImpl<MT,false,true,false,RAs...>&
+   RowImpl<MT,false,true,false,RAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3761,9 +3782,9 @@ inline RowImpl<MT,false,true,false,RIs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool RowImpl<MT,false,true,false,RIs...>::canAlias( const Other* alias ) const noexcept
+inline bool RowImpl<MT,false,true,false,RAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3783,13 +3804,13 @@ inline bool RowImpl<MT,false,true,false,RIs...>::canAlias( const Other* alias ) 
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename MT2      // Data type of the foreign dense row
         , bool SO2          // Storage order of the foreign dense row
         , bool SF2          // Symmetry flag of the foreign dense row
-        , size_t... RIs2 >  // Row indices of the foreign dense row
+        , size_t... RAs2 >  // Compile time row arguments of the foreign dense row
 inline bool
-   RowImpl<MT,false,true,false,RIs...>::canAlias( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept
+   RowImpl<MT,false,true,false,RAs...>::canAlias( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row() == alias->row() );
 }
@@ -3809,9 +3830,9 @@ inline bool
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool RowImpl<MT,false,true,false,RIs...>::isAliased( const Other* alias ) const noexcept
+inline bool RowImpl<MT,false,true,false,RAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -3831,13 +3852,13 @@ inline bool RowImpl<MT,false,true,false,RIs...>::isAliased( const Other* alias )
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename MT2      // Data type of the foreign dense row
         , bool SO2          // Storage order of the foreign dense row
         , bool SF2          // Symmetry flag of the foreign dense row
-        , size_t... RIs2 >  // Row indices of the foreign dense row
+        , size_t... RAs2 >  // Compile time row arguments of the foreign dense row
 inline bool
-   RowImpl<MT,false,true,false,RIs...>::isAliased( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept
+   RowImpl<MT,false,true,false,RAs...>::isAliased( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row() == alias->row() );
 }
@@ -3856,8 +3877,8 @@ inline bool
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline bool RowImpl<MT,false,true,false,RIs...>::isAligned() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline bool RowImpl<MT,false,true,false,RAs...>::isAligned() const noexcept
 {
    return false;
 }
@@ -3877,8 +3898,8 @@ inline bool RowImpl<MT,false,true,false,RIs...>::isAligned() const noexcept
 // of the dense row).
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline bool RowImpl<MT,false,true,false,RIs...>::canSMPAssign() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline bool RowImpl<MT,false,true,false,RAs...>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -3899,9 +3920,9 @@ inline bool RowImpl<MT,false,true,false,RIs...>::canSMPAssign() const noexcept
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void RowImpl<MT,false,true,false,RIs...>::assign( const DenseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3930,9 +3951,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::assign( const DenseVector<VT,tr
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,false,RIs...>::assign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3956,9 +3977,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::assign( const SparseVector<VT,t
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void RowImpl<MT,false,true,false,RIs...>::addAssign( const DenseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -3987,9 +4008,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::addAssign( const DenseVector<VT
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,false,RIs...>::addAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::addAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4013,9 +4034,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::addAssign( const SparseVector<V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void RowImpl<MT,false,true,false,RIs...>::subAssign( const DenseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4044,9 +4065,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::subAssign( const DenseVector<VT
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,false,RIs...>::subAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::subAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4070,9 +4091,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::subAssign( const SparseVector<V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void RowImpl<MT,false,true,false,RIs...>::multAssign( const DenseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4101,9 +4122,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::multAssign( const DenseVector<V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,false,RIs...>::multAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4131,9 +4152,9 @@ inline void RowImpl<MT,false,true,false,RIs...>::multAssign( const SparseVector<
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline void RowImpl<MT,false,true,false,RIs...>::divAssign( const DenseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,false,RAs...>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4170,20 +4191,20 @@ inline void RowImpl<MT,false,true,false,RIs...>::divAssign( const DenseVector<VT
 // column-major dense matrices.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-class RowImpl<MT,false,true,true,RIs...>
-   : public View< DenseVector< RowImpl<MT,false,true,true,RIs...>, true > >
-   , private RowData<MT,RIs...>
+        , size_t... RAs >  // Compile time row arguments
+class RowImpl<MT,false,true,true,RAs...>
+   : public View< DenseVector< RowImpl<MT,false,true,true,RAs...>, true > >
+   , private RowData<MT,RAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<MT,RIs...>;  //!< The type of the RowData base class.
+   using DataType = RowData<MT,RAs...>;  //!< The type of the RowData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    //! Type of this RowImpl instance.
-   using This = RowImpl<MT,false,true,true,RIs...>;
+   using This = RowImpl<MT,false,true,true,RAs...>;
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
@@ -4362,14 +4383,14 @@ class RowImpl<MT,false,true,true,RIs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... RIs2 >
-   inline bool canAlias( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept;
+   template< typename MT2, bool SO2, bool SF2, size_t... RAs2 >
+   inline bool canAlias( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool SO2, bool SF2, size_t... RIs2 >
-   inline bool isAliased( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept;
+   template< typename MT2, bool SO2, bool SF2, size_t... RAs2 >
+   inline bool isAliased( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -4428,6 +4449,10 @@ class RowImpl<MT,false,true,true,RIs...>
    using DataType::matrix_;
    //**********************************************************************************************
 
+   //**Friend declarations*************************************************************************
+   template< typename MT2, bool SO2, bool DF2, bool SF2, size_t... RAs2 > friend class RowImpl;
+   //**********************************************************************************************
+
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
@@ -4458,8 +4483,8 @@ class RowImpl<MT,false,true,true,RIs...>
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,true,RIs...>::RowImpl( MT& matrix )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,true,RAs...>::RowImpl( MT& matrix )
    : DataType( matrix )  // Base class initialization
 {}
 /*! \endcond */
@@ -4475,8 +4500,8 @@ inline RowImpl<MT,false,true,true,RIs...>::RowImpl( MT& matrix )
 // \exception std::invalid_argument Invalid row access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,true,RIs...>::RowImpl( MT& matrix, size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,true,RAs...>::RowImpl( MT& matrix, size_t index )
    : DataType( matrix, index )  // Base class initialization
 {}
 /*! \endcond */
@@ -4502,9 +4527,9 @@ inline RowImpl<MT,false,true,true,RIs...>::RowImpl( MT& matrix, size_t index )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::Reference
-   RowImpl<MT,false,true,true,RIs...>::operator[]( size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::Reference
+   RowImpl<MT,false,true,true,RAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return matrix_(index,row());
@@ -4524,9 +4549,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::ConstReference
-   RowImpl<MT,false,true,true,RIs...>::operator[]( size_t index ) const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::ConstReference
+   RowImpl<MT,false,true,true,RAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid row access index" );
    return const_cast<const MT&>( matrix_ )(index,row());
@@ -4547,9 +4572,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::ConstReference
 // access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::Reference
-   RowImpl<MT,false,true,true,RIs...>::at( size_t index )
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::Reference
+   RowImpl<MT,false,true,true,RAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4572,9 +4597,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::Reference
 // access index.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::ConstReference
-   RowImpl<MT,false,true,true,RIs...>::at( size_t index ) const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::ConstReference
+   RowImpl<MT,false,true,true,RAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4595,9 +4620,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::ConstReference
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::Pointer
-   RowImpl<MT,false,true,true,RIs...>::data() noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::Pointer
+   RowImpl<MT,false,true,true,RAs...>::data() noexcept
 {
    return matrix_.data( row() );
 }
@@ -4615,9 +4640,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::Pointer
 // of a column-major matrix you can NOT assume that the row elements lie adjacent to each other!
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::ConstPointer
-   RowImpl<MT,false,true,true,RIs...>::data() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::ConstPointer
+   RowImpl<MT,false,true,true,RAs...>::data() const noexcept
 {
    return matrix_.data( row() );
 }
@@ -4634,9 +4659,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::ConstPointer
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::Iterator
-   RowImpl<MT,false,true,true,RIs...>::begin()
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::Iterator
+   RowImpl<MT,false,true,true,RAs...>::begin()
 {
    return matrix_.begin( row() );
 }
@@ -4653,9 +4678,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::Iterator
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
-   RowImpl<MT,false,true,true,RIs...>::begin() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::ConstIterator
+   RowImpl<MT,false,true,true,RAs...>::begin() const
 {
    return matrix_.cbegin( row() );
 }
@@ -4672,9 +4697,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
 // This function returns an iterator to the first element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
-   RowImpl<MT,false,true,true,RIs...>::cbegin() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::ConstIterator
+   RowImpl<MT,false,true,true,RAs...>::cbegin() const
 {
    return matrix_.cbegin( row() );
 }
@@ -4691,9 +4716,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::Iterator
-   RowImpl<MT,false,true,true,RIs...>::end()
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::Iterator
+   RowImpl<MT,false,true,true,RAs...>::end()
 {
    return matrix_.end( row() );
 }
@@ -4710,9 +4735,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::Iterator
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
-   RowImpl<MT,false,true,true,RIs...>::end() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::ConstIterator
+   RowImpl<MT,false,true,true,RAs...>::end() const
 {
    return matrix_.cend( row() );
 }
@@ -4729,9 +4754,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
 // This function returns an iterator just past the last element of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
-   RowImpl<MT,false,true,true,RIs...>::cend() const
+        , size_t... RAs >  // Compile time row arguments
+inline typename RowImpl<MT,false,true,true,RAs...>::ConstIterator
+   RowImpl<MT,false,true,true,RAs...>::cend() const
 {
    return matrix_.cend( row() );
 }
@@ -4755,9 +4780,9 @@ inline typename RowImpl<MT,false,true,true,RIs...>::ConstIterator
 // \return Reference to the assigned row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator=( const ElementType& rhs )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator=( const ElementType& rhs )
 {
    const size_t ibegin( ( IsLower<MT>::value )
                         ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
@@ -4793,9 +4818,9 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator=( initializer_list<ElementType> list )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
@@ -4826,9 +4851,9 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator=( const RowImpl& rhs )
+        , size_t... RAs >  // Compile time row arguments
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator=( const RowImpl& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -4842,7 +4867,13 @@ inline RowImpl<MT,false,true,true,RIs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   smpAssign( left, rhs );
+   if( IsExpression<MT>::value && rhs.canAlias( &matrix_ ) ) {
+      const ResultType tmp( rhs );
+      smpAssign( left, tmp );
+   }
+   else {
+      smpAssign( left, rhs );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4867,10 +4898,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4921,10 +4952,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator+=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator+=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -4973,10 +5004,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator-=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator-=( const Vector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -5024,10 +5055,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator*=( const DenseVector<VT,true>& rhs )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator*=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -5075,10 +5106,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator*=( const SparseVector<VT,true>& rhs )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator*=( const SparseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType );
@@ -5119,10 +5150,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator/=( const DenseVector<VT,true>& rhs )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator/=( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -5170,10 +5201,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // exception is thrown.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side vector
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::operator%=( const Vector<VT,true>& rhs )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::operator%=( const Vector<VT,true>& rhs )
 {
    using blaze::assign;
 
@@ -5220,10 +5251,10 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // to scale such a row results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,true,RIs...> >&
-   RowImpl<MT,false,true,true,RIs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,true,RAs...> >&
+   RowImpl<MT,false,true,true,RAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5247,10 +5278,10 @@ inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,true,RIs...> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,true,RIs...> >&
-   RowImpl<MT,false,true,true,RIs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,true,RAs...> >&
+   RowImpl<MT,false,true,true,RAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5277,8 +5308,8 @@ inline EnableIf_< IsNumeric<Other>, RowImpl<MT,false,true,true,RIs...> >&
 // \return The size of the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,true,RIs...>::size() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,true,RAs...>::size() const noexcept
 {
    return matrix_.columns();
 }
@@ -5296,8 +5327,8 @@ inline size_t RowImpl<MT,false,true,true,RIs...>::size() const noexcept
 // plus padding.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,true,RIs...>::spacing() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,true,RAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -5312,8 +5343,8 @@ inline size_t RowImpl<MT,false,true,true,RIs...>::spacing() const noexcept
 // \return The maximum capacity of the dense row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,true,RIs...>::capacity() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,true,RAs...>::capacity() const noexcept
 {
    return matrix_.capacity( row() );
 }
@@ -5331,8 +5362,8 @@ inline size_t RowImpl<MT,false,true,true,RIs...>::capacity() const noexcept
 // of columns of the matrix containing the row.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline size_t RowImpl<MT,false,true,true,RIs...>::nonZeros() const
+        , size_t... RAs >  // Compile time row arguments
+inline size_t RowImpl<MT,false,true,true,RAs...>::nonZeros() const
 {
    return matrix_.nonZeros( row() );
 }
@@ -5347,8 +5378,8 @@ inline size_t RowImpl<MT,false,true,true,RIs...>::nonZeros() const
 // \return void
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline void RowImpl<MT,false,true,true,RIs...>::reset()
+        , size_t... RAs >  // Compile time row arguments
+inline void RowImpl<MT,false,true,true,RAs...>::reset()
 {
    matrix_.reset( row() );
 }
@@ -5378,10 +5409,10 @@ inline void RowImpl<MT,false,true,true,RIs...>::reset()
 // compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the scalar value
-inline RowImpl<MT,false,true,true,RIs...>&
-   RowImpl<MT,false,true,true,RIs...>::scale( const Other& scalar )
+inline RowImpl<MT,false,true,true,RAs...>&
+   RowImpl<MT,false,true,true,RAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5426,9 +5457,9 @@ inline RowImpl<MT,false,true,true,RIs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool RowImpl<MT,false,true,true,RIs...>::canAlias( const Other* alias ) const noexcept
+inline bool RowImpl<MT,false,true,true,RAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5448,13 +5479,13 @@ inline bool RowImpl<MT,false,true,true,RIs...>::canAlias( const Other* alias ) c
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename MT2      // Data type of the foreign dense row
         , bool SO2          // Storage order of the foreign dense row
         , bool SF2          // Symmetry flag of the foreign dense row
-        , size_t... RIs2 >  // Row indices of the foreign dense row
+        , size_t... RAs2 >  // Compile time row arguments of the foreign dense row
 inline bool
-   RowImpl<MT,false,true,true,RIs...>::canAlias( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept
+   RowImpl<MT,false,true,true,RAs...>::canAlias( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row() == alias->row() );
 }
@@ -5474,9 +5505,9 @@ inline bool
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool RowImpl<MT,false,true,true,RIs...>::isAliased( const Other* alias ) const noexcept
+inline bool RowImpl<MT,false,true,true,RAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5496,13 +5527,13 @@ inline bool RowImpl<MT,false,true,true,RIs...>::isAliased( const Other* alias ) 
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... RIs >   // Row indices
+        , size_t... RAs >   // Compile time row arguments
 template< typename MT2      // Data type of the foreign dense row
         , bool SO2          // Storage order of the foreign dense row
         , bool SF2          // Symmetry flag of the foreign dense row
-        , size_t... RIs2 >  // Row indices of the foreign dense row
+        , size_t... RAs2 >  // Compile time row arguments of the foreign dense row
 inline bool
-   RowImpl<MT,false,true,true,RIs...>::isAliased( const RowImpl<MT2,SO2,true,SF2,RIs2...>* alias ) const noexcept
+   RowImpl<MT,false,true,true,RAs...>::isAliased( const RowImpl<MT2,SO2,true,SF2,RAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( row() == alias->row() );
 }
@@ -5521,8 +5552,8 @@ inline bool
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline bool RowImpl<MT,false,true,true,RIs...>::isAligned() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline bool RowImpl<MT,false,true,true,RAs...>::isAligned() const noexcept
 {
    return matrix_.isAligned();
 }
@@ -5542,8 +5573,8 @@ inline bool RowImpl<MT,false,true,true,RIs...>::isAligned() const noexcept
 // of the dense row).
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-inline bool RowImpl<MT,false,true,true,RIs...>::canSMPAssign() const noexcept
+        , size_t... RAs >  // Compile time row arguments
+inline bool RowImpl<MT,false,true,true,RAs...>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -5565,9 +5596,9 @@ inline bool RowImpl<MT,false,true,true,RIs...>::canSMPAssign() const noexcept
 // compilation errors.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RIs...>::SIMDType
-   RowImpl<MT,false,true,true,RIs...>::load( size_t index ) const noexcept
+        , size_t... RAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RAs...>::SIMDType
+   RowImpl<MT,false,true,true,RAs...>::load( size_t index ) const noexcept
 {
    return matrix_.load( index, row() );
 }
@@ -5589,9 +5620,9 @@ BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RIs...>::SIMDType
 // and/or in compilation errors.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RIs...>::SIMDType
-   RowImpl<MT,false,true,true,RIs...>::loada( size_t index ) const noexcept
+        , size_t... RAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RAs...>::SIMDType
+   RowImpl<MT,false,true,true,RAs...>::loada( size_t index ) const noexcept
 {
    return matrix_.loada( index, row() );
 }
@@ -5613,9 +5644,9 @@ BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RIs...>::SIMDType
 // and/or in compilation errors.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
-BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RIs...>::SIMDType
-   RowImpl<MT,false,true,true,RIs...>::loadu( size_t index ) const noexcept
+        , size_t... RAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RAs...>::SIMDType
+   RowImpl<MT,false,true,true,RAs...>::loadu( size_t index ) const noexcept
 {
    return matrix_.loadu( index, row() );
 }
@@ -5638,9 +5669,9 @@ BLAZE_ALWAYS_INLINE typename RowImpl<MT,false,true,true,RIs...>::SIMDType
 // compilation errors.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,false,true,true,RIs...>::store( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,false,true,true,RAs...>::store( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.store( index, row(), value );
 }
@@ -5663,9 +5694,9 @@ BLAZE_ALWAYS_INLINE void
 // and/or in compilation errors.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,false,true,true,RIs...>::storea( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,false,true,true,RAs...>::storea( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storea( index, row(), value );
 }
@@ -5688,9 +5719,9 @@ BLAZE_ALWAYS_INLINE void
 // and/or in compilation errors.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,false,true,true,RIs...>::storeu( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,false,true,true,RAs...>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.storeu( index, row(), value );
 }
@@ -5713,9 +5744,9 @@ BLAZE_ALWAYS_INLINE void
 // and/or in compilation errors.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 BLAZE_ALWAYS_INLINE void
-   RowImpl<MT,false,true,true,RIs...>::stream( size_t index, const SIMDType& value ) noexcept
+   RowImpl<MT,false,true,true,RAs...>::stream( size_t index, const SIMDType& value ) noexcept
 {
    matrix_.stream( index, row(), value );
 }
@@ -5736,10 +5767,10 @@ BLAZE_ALWAYS_INLINE void
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::assign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5768,10 +5799,10 @@ inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::assign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::assign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5830,9 +5861,9 @@ inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE Ve
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,true,RIs...>::assign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,true,RAs...>::assign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5856,10 +5887,10 @@ inline void RowImpl<MT,false,true,true,RIs...>::assign( const SparseVector<VT,tr
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::addAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5888,10 +5919,10 @@ inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::addAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::addAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5938,9 +5969,9 @@ inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE Ve
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,true,RIs...>::addAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,true,RAs...>::addAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5964,10 +5995,10 @@ inline void RowImpl<MT,false,true,true,RIs...>::addAssign( const SparseVector<VT
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::subAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5996,10 +6027,10 @@ inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::subAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::subAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6046,9 +6077,9 @@ inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE Ve
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,true,RIs...>::subAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,true,RAs...>::subAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -6072,10 +6103,10 @@ inline void RowImpl<MT,false,true,true,RIs...>::subAssign( const SparseVector<VT
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::multAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -6104,10 +6135,10 @@ inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::multAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::multAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6154,9 +6185,9 @@ inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE Ve
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side sparse vector
-inline void RowImpl<MT,false,true,true,RIs...>::multAssign( const SparseVector<VT,true>& rhs )
+inline void RowImpl<MT,false,true,true,RAs...>::multAssign( const SparseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -6184,10 +6215,10 @@ inline void RowImpl<MT,false,true,true,RIs...>::multAssign( const SparseVector<V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::divAssign( const DenseVector<VT,true>& rhs )
+inline DisableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -6216,10 +6247,10 @@ inline DisableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE V
 // assignment operator.
 */
 template< typename MT      // Type of the dense matrix
-        , size_t... RIs >  // Row indices
+        , size_t... RAs >  // Compile time row arguments
 template< typename VT >    // Type of the right-hand side dense vector
-inline EnableIf_< typename RowImpl<MT,false,true,true,RIs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
-   RowImpl<MT,false,true,true,RIs...>::divAssign( const DenseVector<VT,true>& rhs )
+inline EnableIf_< typename RowImpl<MT,false,true,true,RAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT> >
+   RowImpl<MT,false,true,true,RAs...>::divAssign( const DenseVector<VT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 

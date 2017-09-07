@@ -96,11 +96,11 @@ namespace blaze {
 
    // Definition of the column type of a column-major dynamic matrix
    using MatrixType1 = blaze::DynamicMatrix<int,columnMajor>;
-   using ColumnType1 = typename blaze::ColumnTrait<MatrixType1>::Type;
+   using ResultType1 = typename blaze::ColumnTrait<MatrixType1>::Type;
 
    // Definition of the column type of the row-major static matrix
    using MatrixType2 = blaze::StaticMatrix<int,3UL,3UL,rowMajor>;
-   using ColumnType2 = typename blaze::ColumnTrait<MatrixType2>::Type;
+   using ResultType2 = typename blaze::ColumnTrait<MatrixType2>::Type;
    \endcode
 */
 template< typename MT      // Type of the matrix

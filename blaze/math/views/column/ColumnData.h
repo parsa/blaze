@@ -59,11 +59,11 @@ namespace blaze {
 // \ingroup column
 //
 // The auxiliary ColumnData class template represents an abstraction of the data members of
-// the ColumnImpl class template. The necessary set of data member is selected depending on
-// the number of compile time column indices.
+// the ColumnImpl class template. The necessary set of data members is selected depending on
+// the number of compile time column arguments.
 */
 template< typename MT      // Type of the matrix
-        , size_t... CIs >  // Column indices
+        , size_t... CAs >  // Compile time column arguments
 struct ColumnData
 {};
 //*************************************************************************************************
@@ -78,11 +78,11 @@ struct ColumnData
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the ColumnData class template for zero compile time column indices.
+/*!\brief Specialization of the ColumnData class template for zero compile time column arguments.
 // \ingroup column
 //
 // This specialization of ColumnData adapts the class template to the requirements of zero compile
-// time column indices.
+// time column arguments.
 */
 template< typename MT >  // Type of the matrix
 struct ColumnData<MT>
@@ -117,6 +117,7 @@ struct ColumnData<MT>
    //@}
    //**********************************************************************************************
 
+ protected:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -182,15 +183,15 @@ inline size_t ColumnData<MT>::column() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the ColumnData class template for a single compile time column index.
+/*!\brief Specialization of the ColumnData class template for a single compile time column argument.
 // \ingroup column
 //
 // This specialization of ColumnData adapts the class template to the requirements of a single
-// compile time column index.
+// compile time column argument.
 */
 template< typename MT  // Type of the matrix
-        , size_t CI >  // Column index
-struct ColumnData<MT,CI>
+        , size_t I >   // Compile time column index
+struct ColumnData<MT,I>
 {
  public:
    //**Type definitions****************************************************************************
@@ -222,6 +223,7 @@ struct ColumnData<MT,CI>
    //@}
    //**********************************************************************************************
 
+ protected:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -239,8 +241,8 @@ struct ColumnData<MT,CI>
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT  // Type of the matrix
-        , size_t CI >  // Column index
-inline ColumnData<MT,CI>::ColumnData( Operand matrix )
+        , size_t I >   // Compile time column index
+inline ColumnData<MT,I>::ColumnData( Operand matrix )
    : matrix_( matrix )  // The matrix containing the column
 {
    if( matrix_.columns() <= column() ) {
@@ -256,8 +258,8 @@ inline ColumnData<MT,CI>::ColumnData( Operand matrix )
 // \return The matrix containing the column.
 */
 template< typename MT  // Type of the matrix
-        , size_t CI >  // Column index
-inline typename ColumnData<MT,CI>::Operand ColumnData<MT,CI>::operand() const noexcept
+        , size_t I >   // Compile time column index
+inline typename ColumnData<MT,I>::Operand ColumnData<MT,I>::operand() const noexcept
 {
    return matrix_;
 }
@@ -270,10 +272,10 @@ inline typename ColumnData<MT,CI>::Operand ColumnData<MT,CI>::operand() const no
 // \return The index of the column.
 */
 template< typename MT  // Type of the matrix
-        , size_t CI >  // Column index
-inline constexpr size_t ColumnData<MT,CI>::column() const noexcept
+        , size_t I >   // Compile time column index
+inline constexpr size_t ColumnData<MT,I>::column() const noexcept
 {
-   return CI;
+   return I;
 }
 //*************************************************************************************************
 

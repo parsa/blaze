@@ -123,8 +123,8 @@ namespace blaze {
    auto dsv = subvector<aligned,4UL,8UL>( d );
    \endcode
 
-// Note however that in this case the given \a index and \a size are subject to additional checks
-// to guarantee proper alignment.
+// Note however that in this case the given compile time arguments \a I and \a N are subject to
+// additional checks to guarantee proper alignment.
 */
 template< size_t I     // Index of the first subvector element
         , size_t N     // Size of the subvector
@@ -182,8 +182,8 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector )
    auto dsv = subvector<aligned,4UL,8UL>( d );
    \endcode
 
-// Note however that in this case the given \a index and \a size are subject to additional checks
-// to guarantee proper alignment.
+// Note however that in this case the given compile time arguments \a I and \a N are subject to
+// additional checks to guarantee proper alignment.
 */
 template< size_t I     // Index of the first subvector element
         , size_t N     // Size of the subvector
@@ -253,7 +253,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector )
 // vector) a \a std::invalid_argument exception is thrown.
 //
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
-// additional alignment restrictions and the given \a index is subject to additional checks to
+// additional alignment restrictions and the given index \a I is subject to additional checks to
 // guarantee proper alignment. However, especially in case of dense subvectors this may result
 // in considerable performance improvements.
 //
@@ -324,7 +324,7 @@ inline Subvector<VT,AF,I,N> subvector( Vector<VT,TF>& vector )
 // vector) a \a std::invalid_argument exception is thrown.
 //
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
-// additional alignment restrictions and the given \a index is subject to additional checks to
+// additional alignment restrictions and the given index \a I is subject to additional checks to
 // guarantee proper alignment. However, especially in case of dense subvectors this may result
 // in considerable performance improvements.
 //
@@ -357,8 +357,7 @@ template< bool AF      // Alignment flag
         , size_t N     // Size of the subvector
         , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-inline const Subvector<const VT,AF,I,N>
-   subvector( const Vector<VT,TF>& vector )
+inline const Subvector<const VT,AF,I,N> subvector( const Vector<VT,TF>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1345,10 +1344,11 @@ inline decltype(auto) subvector( const VecTransExpr<VT>& vector, size_t index, s
 template< bool AF1     // Required alignment flag
         , size_t I     // Index of the first subvector element
         , size_t N     // Size of the subvector
-        , typename VT  // Type of the dense vector
-        , bool AF2 >   // Present alignment flag
-inline const Subvector<VT,AF1>
-   subvector( const Subvector<VT,AF2>& sv )
+        , typename VT  // Type of the vector
+        , bool AF2     // Present alignment flag
+        , bool TF      // Transpose flag
+        , bool DF >    // Density flag
+inline decltype(auto) subvector( const SubvectorImpl<VT,AF2,TF,DF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1356,7 +1356,7 @@ inline const Subvector<VT,AF1>
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
 
-   return Subvector<VT,AF1>( sv.operand(), sv.offset() + I, N );
+   return subvector<AF1>( sv.operand(), sv.offset() + I, N );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1373,22 +1373,23 @@ inline const Subvector<VT,AF1>
 // This function returns an expression representing the specified subvector of the given subvector.
 */
 template< bool AF1     // Required alignment flag
-        , size_t I     // Required subvector offset
-        , size_t N     // Required size of the subvector
-        , typename VT  // Type of the dense vector
+        , size_t I1    // Required subvector offset
+        , size_t N1    // Required size of the subvector
+        , typename VT  // Type of the vector
         , bool AF2     // Present alignment flag
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
         , size_t I2    // Present subvector offset
         , size_t N2 >  // Present size of the subvector
-inline const Subvector<VT,AF1,I+I2,N>
-   subvector( const Subvector<VT,AF2,I2,N2>& sv )
+inline decltype(auto) subvector( const SubvectorImpl<VT,AF2,TF,DF,I2,N2>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( I + N > sv.size() ) {
+   if( I1 + N1 > N2 ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
 
-   return Subvector<VT,AF1,I+I2,N>( sv.operand() );
+   return subvector<AF1,I1+I2,N1>( sv.operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1409,9 +1410,11 @@ inline const Subvector<VT,AF1,I+I2,N>
 template< bool AF1         // Required alignment flag
         , typename VT      // Type of the dense vector
         , bool AF2         // Present alignment flag
+        , bool TF          // Transpose flag
+        , bool DF          // Density flag
         , size_t... SAs >  // Compile time subvector arguments
-inline const Subvector<VT,AF1>
-   subvector( const Subvector<VT,AF2,SAs...>& sv, size_t index, size_t size )
+inline decltype(auto)
+   subvector( const SubvectorImpl<VT,AF2,TF,DF,SAs...>& sv, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1419,7 +1422,7 @@ inline const Subvector<VT,AF1>
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
 
-   return Subvector<VT,AF1>( sv.operand(), sv.offset() + index, size );
+   return subvector<AF1>( sv.operand(), sv.offset() + index, size );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1434,39 +1437,7 @@ inline const Subvector<VT,AF1>
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Subvector operators */
-//@{
-template< typename VT, bool AF, size_t... SAs >
-inline void reset( Subvector<VT,AF,SAs...>& sv );
-
-template< typename VT, bool AF, size_t... SAs >
-inline void reset( Subvector<VT,AF,SAs...>&& sv );
-
-template< typename VT, bool AF, size_t... SAs >
-inline void clear( Subvector<VT,AF,SAs...>& sv );
-
-template< typename VT, bool AF, size_t... SAs >
-inline void clear( Subvector<VT,AF,SAs...>&& sv );
-
-template< bool RF, typename VT, bool AF, size_t... SAs >
-inline bool isDefault( const Subvector<VT,AF,SAs...>& sv );
-
-template< typename VT, bool AF, size_t... SAs >
-inline bool isIntact( const Subvector<VT,AF,SAs...>& sv ) noexcept;
-
-template< typename VT, bool AF, size_t... SAs, bool TF >
-inline bool isSame( const Subvector<VT,AF,SAs...>& a, const Vector<VT,TF>& b ) noexcept;
-
-template< typename VT, bool TF, bool AF, size_t... SAs >
-inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,SAs...>& b ) noexcept;
-
-template< typename VT1, bool AF1, size_t... SAs1, typename VT2, bool AF2, size_t... SAs2 >
-inline bool isSame( const Subvector<VT1,AF1,SAs1...>& a, const Subvector<VT2,AF2,SAs2...>& b ) noexcept;
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resetting the given subvector.
 // \ingroup subvector
 //
@@ -1475,15 +1446,19 @@ inline bool isSame( const Subvector<VT1,AF1,SAs1...>& a, const Subvector<VT2,AF2
 */
 template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
+        , bool DF          // Density flag
         , size_t... SAs >  // Compile time subvector arguments
-inline void reset( Subvector<VT,AF,SAs...>& sv )
+inline void reset( SubvectorImpl<VT,AF,TF,DF,SAs...>& sv )
 {
    sv.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Resetting the given temporary subvector.
 // \ingroup subvector
 //
@@ -1492,15 +1467,19 @@ inline void reset( Subvector<VT,AF,SAs...>& sv )
 */
 template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
+        , bool DF          // Density flag
         , size_t... SAs >  // Compile time subvector arguments
-inline void reset( Subvector<VT,AF,SAs...>&& sv )
+inline void reset( SubvectorImpl<VT,AF,TF,DF,SAs...>&& sv )
 {
    sv.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Clearing the given subvector.
 // \ingroup subvector
 //
@@ -1509,15 +1488,19 @@ inline void reset( Subvector<VT,AF,SAs...>&& sv )
 */
 template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
+        , bool DF          // Density flag
         , size_t... SAs >  // Compile time subvector arguments
-inline void clear( Subvector<VT,AF,SAs...>& sv )
+inline void clear( SubvectorImpl<VT,AF,TF,DF,SAs...>& sv )
 {
    sv.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Clearing the given temporary subvector.
 // \ingroup subvector
 //
@@ -1526,11 +1509,14 @@ inline void clear( Subvector<VT,AF,SAs...>& sv )
 */
 template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
+        , bool DF          // Density flag
         , size_t... SAs >  // Compile time subvector arguments
-inline void clear( Subvector<VT,AF,SAs...>&& sv )
+inline void clear( SubvectorImpl<VT,AF,TF,DF,SAs...>&& sv )
 {
    sv.reset();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1542,65 +1528,8 @@ inline void clear( Subvector<VT,AF,SAs...>&& sv )
 // \param sv The dense subvector to be tested for its default state.
 // \return \a true in case the given dense subvector is component-wise zero, \a false otherwise.
 //
-// This function checks whether the dense row is in default state. For instance, in case the
-// subvector is instantiated for a vector of built-in integral or floating point data type,
-// the function returns \a true in case all subvector elements are 0 and \a false in case any
-// subvector element is not 0.
-*/
-template< bool RF          // Relaxation flag
-        , typename VT      // Type of the vector
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline bool isDefault_backend( const DenseSubvector<VT,AF,SAs...>& sv )
-{
-   using blaze::isDefault;
-
-   for( size_t i=0UL; i<sv.size(); ++i )
-      if( !isDefault<RF>( sv[i] ) ) return false;
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given sparse subvector is in default state.
-// \ingroup subvector
-//
-// \param row The sparse subvector to be tested for its default state.
-// \return \a true in case the given subvector is component-wise zero, \a false otherwise.
-//
-// This function checks whether the sparse subvector is in default state. For instance, in case
+// This function checks whether the dense subvector is in default state. For instance, in case
 // the subvector is instantiated for a vector of built-in integral or floating point data type,
-// the function returns \a true in case all subvector elements are 0 and \a false in case any
-// element is not 0.
-*/
-template< bool RF          // Relaxation flag
-        , typename VT      // Type of the vector
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline bool isDefault_backend( const SparseSubvector<VT,AF,SAs...>& sv )
-{
-   using blaze::isDefault;
-
-   for( const auto& element : ~sv )
-      if( !isDefault<RF>( element.value() ) ) return false;
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns whether the given subvector is in default state.
-// \ingroup subvector
-//
-// \param sv The subvector to be tested for its default state.
-// \return \a true in case the given subvector is component-wise zero, \a false otherwise.
-//
-// This function checks whether the subvector is in default state. For instance, in case the
-// subvector is instantiated for a vector of built-in integral or floating point data type,
 // the function returns \a true in case all subvector elements are 0 and \a false in case any
 // subvector element is not 0. The following example demonstrates the use of the \a isDefault
 // function:
@@ -1619,17 +1548,68 @@ inline bool isDefault_backend( const SparseSubvector<VT,AF,SAs...>& sv )
    \endcode
 */
 template< bool RF          // Relaxation flag
-        , typename VT      // Type of the vector
+        , typename VT      // Type of the dense vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
         , size_t... SAs >  // Compile time subvector arguments
-inline bool isDefault( const Subvector<VT,AF,SAs...>& sv )
+inline bool isDefault( const SubvectorImpl<VT,AF,TF,true,SAs...>& sv )
 {
-   return isDefault_backend<RF>( ~sv );
+   using blaze::isDefault;
+
+   for( size_t i=0UL; i<sv.size(); ++i )
+      if( !isDefault<RF>( sv[i] ) ) return false;
+   return true;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given sparse subvector is in default state.
+// \ingroup subvector
+//
+// \param sv The sparse subvector to be tested for its default state.
+// \return \a true in case the given sparse subvector is component-wise zero, \a false otherwise.
+//
+// This function checks whether the sparse subvector is in default state. For instance, in case
+// the subvector is instantiated for a vector of built-in integral or floating point data type,
+// the function returns \a true in case all subvector elements are 0 and \a false in case any
+// subvector element is not 0. The following example demonstrates the use of the \a isDefault
+// function:
+
+   \code
+   blaze::CompressedVector<int,rowVector> v;
+   // ... Resizing and initialization
+   if( isDefault( subvector( v, 10UL, 20UL ) ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isDefault<relaxed>( subvector( v, 10UL, 20UL ) ) ) { ... }
+   \endcode
+*/
+template< bool RF          // Relaxation flag
+        , typename VT      // Type of the sparse vector
+        , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
+        , size_t... SAs >  // Compile time subvector arguments
+inline bool isDefault( const SubvectorImpl<VT,AF,TF,false,SAs...>& sv )
+{
+   using blaze::isDefault;
+
+   for( const auto& element : ~sv )
+      if( !isDefault<RF>( element.value() ) ) return false;
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the invariants of the given subvector vector are intact.
 // \ingroup subvector
 //
@@ -1648,16 +1628,20 @@ inline bool isDefault( const Subvector<VT,AF,SAs...>& sv )
 */
 template< typename VT      // Type of the vector
         , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
+        , bool DF          // Density flag
         , size_t... SAs >  // Compile time subvector arguments
-inline bool isIntact( const Subvector<VT,AF,SAs...>& sv ) noexcept
+inline bool isIntact( const SubvectorImpl<VT,AF,TF,DF,SAs...>& sv ) noexcept
 {
    return ( sv.offset() + sv.size() <= sv.operand().size() &&
             isIntact( sv.operand() ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given vector and subvector represent the same observable state.
 // \ingroup subvector
 //
@@ -1669,18 +1653,21 @@ inline bool isIntact( const Subvector<VT,AF,SAs...>& sv ) noexcept
 // range of the given vector and by that represents the same observable state. In this case,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT    // Type of the vector
-        , bool AF        // Alignment flag
-        , size_t... SAs  // Compile time subvector arguments
-        , bool TF >      // Transpose flag
-inline bool isSame( const Subvector<VT,AF,SAs...>& a, const Vector<VT,TF>& b ) noexcept
+template< typename VT      // Type of the vector
+        , bool AF          // Alignment flag
+        , bool TF          // Transpose flag
+        , bool DF          // Density flag
+        , size_t... SAs >  // Compile time subvector arguments
+inline bool isSame( const SubvectorImpl<VT,AF,TF,DF,SAs...>& a, const Vector<VT,TF>& b ) noexcept
 {
    return ( isSame( a.operand(), ~b ) && ( a.size() == (~b).size() ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the given vector and subvector represent the same observable state.
 // \ingroup subvector
 //
@@ -1695,15 +1682,18 @@ inline bool isSame( const Subvector<VT,AF,SAs...>& a, const Vector<VT,TF>& b ) n
 template< typename VT      // Type of the vector
         , bool TF          // Transpose flag
         , bool AF          // Alignment flag
+        , bool DF          // Density flag
         , size_t... SAs >  // Compile time subvector arguments
-inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,SAs...>& b ) noexcept
+inline bool isSame( const Vector<VT,TF>& a, const SubvectorImpl<VT,AF,TF,DF,SAs...>& b ) noexcept
 {
    return ( isSame( ~a, b.operand() ) && ( (~a).size() == b.size() ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns whether the two given subvectors represent the same observable state.
 // \ingroup subvector
 //
@@ -1717,16 +1707,22 @@ inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,SAs...>& b ) n
 */
 template< typename VT1      // Type of the vector of the left-hand side subvector
         , bool AF1          // Alignment flag of the left-hand side subvector
+        , bool TF1          // Transpose flag of the left-hand side subvector
+        , bool DF1          // Density flag of the left-hand side subvector
         , size_t... SAs1    // Compile time subvector arguments of the left-hand side subvector
         , typename VT2      // Type of the vector of the right-hand side subvector
         , bool AF2          // Alignment flag of the right-hand side subvector
+        , bool TF2          // Transpose flag of the right-hand side subvector
+        , bool DF2          // Density flag of the right-hand side subvector
         , size_t... SAs2 >  // Compile time subvector arguments of the right-hand side subvector
-inline bool isSame( const Subvector<VT1,AF1,SAs1...>& a, const Subvector<VT2,AF2,SAs2...>& b ) noexcept
+inline bool isSame( const SubvectorImpl<VT1,AF1,TF1,DF1,SAs1...>& a,
+                    const SubvectorImpl<VT2,AF2,TF2,DF2,SAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) &&
             ( a.offset() == b.offset() ) &&
             ( a.size() == b.size() ) );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1747,10 +1743,12 @@ inline bool isSame( const Subvector<VT1,AF1,SAs1...>& a, const Subvector<VT2,AF2
 */
 template< typename VT1    // Type of the vector
         , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
         , size_t... SAs   // Compile time subvector arguments
-        , typename VT2    // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
-inline bool tryAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryAssign( const SubvectorImpl<VT1,AF,TF,DF,SAs...>& lhs,
+                       const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1778,10 +1776,12 @@ inline bool tryAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,TF>
 */
 template< typename VT1    // Type of the vector
         , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
         , size_t... SAs   // Compile time subvector arguments
-        , typename VT2    // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
-inline bool tryAddAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryAddAssign( const SubvectorImpl<VT1,AF,TF,DF,SAs...>& lhs,
+                          const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1809,10 +1809,12 @@ inline bool tryAddAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,
 */
 template< typename VT1    // Type of the vector
         , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
         , size_t... SAs   // Compile time subvector arguments
-        , typename VT2    // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
-inline bool trySubAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool trySubAssign( const SubvectorImpl<VT1,AF,TF,DF,SAs...>& lhs,
+                          const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1840,10 +1842,12 @@ inline bool trySubAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,
 */
 template< typename VT1    // Type of the vector
         , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
         , size_t... SAs   // Compile time subvector arguments
-        , typename VT2    // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
-inline bool tryMultAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryMultAssign( const SubvectorImpl<VT1,AF,TF,DF,SAs...>& lhs,
+                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1871,10 +1875,12 @@ inline bool tryMultAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2
 */
 template< typename VT1    // Type of the vector
         , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
         , size_t... SAs   // Compile time subvector arguments
-        , typename VT2    // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
-inline bool tryDivAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,TF>& rhs, size_t index )
+        , typename VT2 >  // Type of the right-hand side vector
+inline bool tryDivAssign( const SubvectorImpl<VT1,AF,TF,DF,SAs...>& lhs,
+                          const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
@@ -1900,10 +1906,69 @@ inline bool tryDivAssign( const Subvector<VT1,AF,SAs...>& lhs, const Vector<VT2,
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename VT      // Type of the vector
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline decltype(auto) derestrict( Subvector<VT,AF,SAs...>& sv )
+template< typename VT  // Type of the vector
+        , bool AF      // Alignment flag
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
+        , size_t I     // Index of the first element
+        , size_t N >   // Number of elements
+inline decltype(auto) derestrict( SubvectorImpl<VT,AF,TF,DF,I,N>& sv )
+{
+   return subvector<I,N>( derestrict( sv.operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given temporary subvector.
+// \ingroup subvector
+//
+// \param sv The temporary subvector to be derestricted.
+// \return Subvector without access restrictions.
+//
+// This function removes all restrictions on the data access to the given temporary subvector. It
+// returns a subvector that does provide the same interface but does not have any restrictions on
+// the data access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the vector
+        , bool AF      // Alignment flag
+        , bool TF      // Transpose flag
+        , bool DF      // Density flag
+        , size_t I     // Index of the first element
+        , size_t N >   // Number of elements
+inline decltype(auto) derestrict( SubvectorImpl<VT,AF,TF,DF,I,N>&& sv )
+{
+   return subvector<I,N>( derestrict( sv.operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of all restrictions on the data access to the given subvector.
+// \ingroup subvector
+//
+// \param sv The subvector to be derestricted.
+// \return Subvector without access restrictions.
+//
+// This function removes all restrictions on the data access to the given subvector. It returns a
+// subvector that does provide the same interface but does not have any restrictions on the data
+// access.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the vector
+        , bool AF      // Alignment flag
+        , bool TF      // Transpose flag
+        , bool DF >    // Density flag
+inline decltype(auto) derestrict( SubvectorImpl<VT,AF,TF,DF>& sv )
 {
    return subvector( derestrict( sv.operand() ), sv.offset(), sv.size() );
 }
@@ -1926,10 +1991,11 @@ inline decltype(auto) derestrict( Subvector<VT,AF,SAs...>& sv )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename VT      // Type of the vector
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline decltype(auto) derestrict( Subvector<VT,AF,SAs...>&& sv )
+template< typename VT  // Type of the vector
+        , bool AF      // Alignment flag
+        , bool TF      // Transpose flag
+        , bool DF >    // Density flag
+inline decltype(auto) derestrict( SubvectorImpl<VT,AF,TF,DF>&& sv )
 {
    return subvector( derestrict( sv.operand() ), sv.offset(), sv.size() );
 }
@@ -1947,8 +2013,8 @@ inline decltype(auto) derestrict( Subvector<VT,AF,SAs...>&& sv )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, size_t... SAs >
-struct IsRestricted< Subvector<VT,AF,SAs...> >
+template< typename VT, bool AF, bool TF, bool DF, size_t... SAs >
+struct IsRestricted< SubvectorImpl<VT,AF,TF,DF,SAs...> >
    : public BoolConstant< IsRestricted<VT>::value >
 {};
 /*! \endcond */
@@ -1965,8 +2031,8 @@ struct IsRestricted< Subvector<VT,AF,SAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, size_t... SAs >
-struct HasConstDataAccess< DenseSubvector<VT,AF,SAs...> >
+template< typename VT, bool AF, bool TF, size_t... SAs >
+struct HasConstDataAccess< SubvectorImpl<VT,AF,TF,true,SAs...> >
    : public BoolConstant< HasConstDataAccess<VT>::value >
 {};
 /*! \endcond */
@@ -1983,8 +2049,8 @@ struct HasConstDataAccess< DenseSubvector<VT,AF,SAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, size_t... SAs >
-struct HasMutableDataAccess< DenseSubvector<VT,AF,SAs...> >
+template< typename VT, bool AF, bool TF, size_t... SAs >
+struct HasMutableDataAccess< SubvectorImpl<VT,AF,TF,true,SAs...> >
    : public BoolConstant< HasMutableDataAccess<VT>::value >
 {};
 /*! \endcond */
@@ -2001,8 +2067,8 @@ struct HasMutableDataAccess< DenseSubvector<VT,AF,SAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool AF, size_t... SAs >
-struct IsAligned< AlignedSubvector<VT,AF,SAs...> >
+template< typename VT, bool TF, size_t... SAs >
+struct IsAligned< SubvectorImpl<VT,true,TF,true,SAs...> >
    : public TrueType
 {};
 /*! \endcond */
