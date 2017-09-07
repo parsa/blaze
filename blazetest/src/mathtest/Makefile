@@ -43,7 +43,7 @@ all: functions simd blas lapack typetraits \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
      diagonalmatrix identitymatrix \
-     subvector submatrix row column \
+     subvector submatrix row column band \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
      dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
@@ -74,7 +74,7 @@ noop: functions simd blas lapack typetraits \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
       diagonalmatrix identitymatrix \
-      subvector submatrix row column \
+      subvector submatrix row column band \
       determinant lu llh qr rq ql lq inversion eigen svd \
       vectorserializer matrixserializer
 
@@ -244,6 +244,11 @@ column:
 	@echo
 	@echo "Building the Column tests..."
 	@$(MAKE) --no-print-directory -C ./column $(MAKECMDGOALS)
+
+band:
+	@echo
+	@echo "Building the Band tests..."
+	@$(MAKE) --no-print-directory -C ./band $(MAKECMDGOALS)
 
 dvecdvecadd:
 	@echo
@@ -611,6 +616,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./submatrix reset
 	@$(MAKE) --no-print-directory -C ./row reset
 	@$(MAKE) --no-print-directory -C ./column reset
+	@$(MAKE) --no-print-directory -C ./band reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd reset
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd reset
 	@$(MAKE) --no-print-directory -C ./svecdvecadd reset
@@ -712,6 +718,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./submatrix clean
 	@$(MAKE) --no-print-directory -C ./row clean
 	@$(MAKE) --no-print-directory -C ./column clean
+	@$(MAKE) --no-print-directory -C ./band clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecadd clean
 	@$(MAKE) --no-print-directory -C ./dvecsvecadd clean
 	@$(MAKE) --no-print-directory -C ./svecdvecadd clean
@@ -790,7 +797,7 @@ clean:
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
         diagonalmatrix identitymatrix \
-        subvector submatrix row column \
+        subvector submatrix row column band \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
         dvecdvecmult dvecsvecmult svecdvecmult svecsvecmult \
