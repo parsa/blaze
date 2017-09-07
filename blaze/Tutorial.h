@@ -1547,12 +1547,9 @@
 // on the vector:
 
    \code
-   using VectorType    = blaze::DynamicVector<int,rowVector>;
-   using SubvectorType = blaze::Subvector<VectorType>;
-
-   VectorType v1( 10UL );                         // Creating a dynamic vector of size 10
-   SubvectorType sv = subvector( v1, 2UL, 5UL );  // Creating a view on the range [2..6]
-   v1.resize( 6UL );                              // Resizing the vector invalidates the view
+   blaze::DynamicVector<int,rowVector> v1( 10UL );  // Creating a dynamic vector of size 10
+   auto sv = subvector( v1, 2UL, 5UL );             // Creating a view on the range [2..6]
+   v1.resize( 6UL );                                // Resizing the vector invalidates the view
    \endcode
 
 // When the internal capacity of a vector is no longer sufficient, the allocation of a larger
@@ -3369,12 +3366,9 @@
 // on the matrix:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<int,rowMajor>;
-   using RowType    = blaze::Row<MatrixType>;
-
-   MatrixType M1( 10UL, 20UL );    // Creating a 10x20 matrix
-   RowType row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
-   M1.resize( 6UL, 20UL );         // Resizing the matrix invalidates the view
+   blaze::DynamicMatrix<int,rowMajor> M1( 10UL, 20UL );  // Creating a 10x20 matrix
+   auto row8 = row( M1, 8UL );  // Creating a view on the 8th row of the matrix
+   M1.resize( 6UL, 20UL );      // Resizing the matrix invalidates the view
    \endcode
 
 // When the internal capacity of a matrix is no longer sufficient, the allocation of a larger
@@ -5199,14 +5193,10 @@
    \code
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
-   using blaze::Row;
-   using blaze::rowMajor;
    using blaze::columnMajor;
 
-   using DynamicSymmetric = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
-
-   DynamicSymmetric A( 10UL );
-   Row<DynamicSymmetric> row5 = row( A, 5UL );
+   SymmetricMatrix< DynamicMatrix<double,columnMajor> > A( 10UL );
+   auto row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in
@@ -5774,14 +5764,10 @@
    \code
    using blaze::DynamicMatrix;
    using blaze::HermitianMatrix;
-   using blaze::Row;
-   using blaze::rowMajor;
    using blaze::columnMajor;
 
-   using DynamicHermitian = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
-
-   DynamicHermitian A( 10UL );  // Both Hermitian and symmetric
-   Row<DynamicHermitian> row5 = row( A, 5UL );
+   HermitianMatrix< DynamicMatrix<double,columnMajor> > A( 10UL );  // Both Hermitian and symmetric
+   auto row5 = row( A, 5UL );
    \endcode
 
 // Usually, a row view on a column-major matrix results in a considerable performance decrease in
@@ -6809,13 +6795,13 @@
 // <hr>
 //
 // Views represents parts of a vector or matrix, such as a subvector, a submatrix, or a specific
-// row or column of a matrix. As such, views act as a reference to a specific part of a vector
-// or matrix. This reference is valid and can be used in every way as any other vector or matrix
-// can be used as long as the referenced vector or matrix is not resized or entirely destroyed.
-// Views also act as alias to the elements of the vector or matrix: Changes made to the elements
-// (e.g. modifying values, inserting or erasing elements) via the view are immediately visible in
-// the vector or matrix and changes made via the vector or matrix are immediately visible in the
-// view.
+// row, column, or band of a matrix. As such, views act as a reference to a specific part of a
+// vector or matrix. This reference is valid and can be used in every way as any other vector
+// or matrix can be used as long as the referenced vector or matrix is not resized or entirely
+// destroyed. Views also act as alias to the elements of the vector or matrix: Changes made to the
+// elements (e.g. modifying values, inserting or erasing elements) via the view are immediately
+// visible in the vector or matrix and changes made via the vector or matrix are immediately
+// visible in the view.
 //
 // The \b Blaze library provides the following views on vectors and matrices:
 //
@@ -6826,6 +6812,7 @@
 //  - \ref views_submatrices
 //  - \ref views_rows
 //  - \ref views_columns
+//  - \ref views_bands
 //
 //
 // \n \section views_examples Examples
@@ -6879,76 +6866,49 @@
 // vector are immediately visible in the subvector.
 //
 //
-// \n \section views_subvectors_template The Subvector Template
+// \n \section views_subvectors_setup Setup of Subvectors
 // <hr>
 //
-// The blaze::Subvector template represents a view on a specific subvector of a dense or sparse
-// vector primitive. It can be included via the header file
+// A view on a dense or sparse subvector can be created very conveniently via the \c subvector()
+// function. It can be included via the header file
 
    \code
    #include <blaze/math/Subvector.h>
    \endcode
 
-// The type of the vector is specified via two template parameters:
+// The first parameter specifies the offset of the subvector within the underlying dense or sparse
+// vector, the second parameter specifies the size of the subvector. The two parameters can be
+// specified either at compile time or at runtime:
 
    \code
-   template< typename VT, bool AF >
-   class Subvector;
-   \endcode
-
-//  - \c VT: specifies the type of the vector primitive. Subvector can be used with every vector
-//           primitive or view, but does not work with any vector expression type.
-//  - \c AF: the alignment flag specifies whether the subvector is aligned (blaze::aligned) or
-//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
-//
-//
-// \n \section views_subvectors_setup Setup of Subvectors
-// <hr>
-//
-// A view on a dense or sparse subvector can be created very conveniently via the \c subvector()
-// function.
-
-   \code
-   using DenseVectorType = blaze::DynamicVector<double,blaze::rowVector>;
-
-   DenseVectorType x;
+   blaze::DynamicVector<double,blaze::rowVector> x;
    // ... Resizing and initialization
 
-   // Create a dense subvector from index 8 with a size of 16 (i.e. in the range [8..23])
-   blaze::Subvector<DenseVectorType> sv = subvector( x, 8UL, 16UL );
+   // Create a subvector from index 4 with a size of 12 (i.e. in the range [4..15]) (compile time arguments)
+   auto sv1 = subvector<4UL,12UL>( x );
+
+   // Create a subvector from index 8 with a size of 16 (i.e. in the range [8..23]) (runtime arguments)
+   auto sv2 = subvector( x, 8UL, 16UL );
    \endcode
 
-   \code
-   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
-
-   SparseVectorType x;
-   // ... Resizing and initialization
-
-   // Create a sparse subvector from index 5 with a size of 7 (i.e. in the range [5..11])
-   blaze::Subvector<SparseVectorType> sv = subvector( x, 5UL, 7UL );
-   \endcode
-
-// The view can be treated as any other dense or sparse vector, i.e. it can be assigned to, it
-// can be copied from, and it can be used in arithmetic operations. A subvector created from a
-// row vector can be used as any other row vector, a subvector created from a column vector can
-// be used as any other column vector. The view can also be used on both sides of an assignment:
-// The subvector can either be used as an alias to grant write access to a specific subvector of
-// a vector primitive on the left-hand side of an assignment or to grant read-access to a specific
+// The \c subvector() function returns an expression representing the subvector view. This view
+// can be treated as any other dense or sparse vector, i.e. it can be assigned to, it can be
+// copied from, and it can be used in arithmetic operations. A subvector created from a row
+// vector can be used as any other row vector, a subvector created from a column vector can be
+// used as any other column vector. The view can also be used on both sides of an assignment: The
+// subvector can either be used as an alias to grant write access to a specific subvector of a
+// vector primitive on the left-hand side of an assignment or to grant read-access to a specific
 // subvector of a vector primitive or expression on the right-hand side of an assignment. The
 // following example demonstrates this in detail:
 
    \code
-   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
-   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
-
-   DenseVectorType  x;
-   SparseVectorType y;
-   DenseMatrixType  A;
+   blaze::DynamicVector<double,blaze::rowVector> x;
+   blaze::CompressedVector<double,blaze::rowVector> y;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Create a subvector from index 0 with a size of 10 (i.e. in the range [0..9])
-   blaze::Subvector<DenseVectorType> sv = subvector( x, 0UL, 10UL );
+   auto sv = subvector( x, 0UL, 10UL );
 
    // Setting the first ten elements of x to the 2nd row of matrix A
    sv = row( A, 2UL );
@@ -6963,24 +6923,17 @@
    x = subvector( y + row( A, 1UL ), 2UL, 5UL )
    \endcode
 
-// The \c subvector() function can be used on any dense or sparse vector, including expressions,
-// as demonstrated in the example. Note however that a blaze::Subvector can only be instantiated
-// with a dense or sparse vector primitive, i.e. with types that can be written, and not with an
-// expression type.
-//
-//
 // \n \section views_subvectors_element_access Element Access
 // <hr>
 //
 // The elements of a subvector can be directly accessed via the subscript operator:
 
    \code
-   using VectorType = blaze::DynamicVector<double,blaze::rowVector>;
-   VectorType v;
+   blaze::DynamicVector<double,blaze::rowVector> v;
    // ... Resizing and initialization
 
    // Creating an 8-dimensional subvector, starting from index 4
-   blaze::Subvector<VectorType> sv = subvector( v, 4UL, 8UL );
+   auto sv = subvector( v, 4UL, 8UL );
 
    // Setting the 1st element of the subvector, which corresponds to
    // the element at index 5 in vector v
@@ -6995,49 +6948,47 @@
 
 // where N is the specified size of the subvector. Alternatively, the elements of a subvector can
 // be traversed via iterators. Just as with vectors, in case of non-const subvectors, \c begin()
-// and \c end() return an Iterator, which allows a manipulation of the non-zero values, in case
-// of constant subvectors a ConstIterator is returned:
+// and \c end() return an iterator, which allows to manipulate the elements, in case of constant
+// subvectors an iterator to immutable elements is returned:
 
    \code
-   using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;
-   using SubvectorType = blaze::Subvector<VectorType>;
-
-   VectorType v( 256UL );
+   blaze::DynamicVector<int,blaze::rowVector> v( 256UL );
    // ... Resizing and initialization
 
-   // Creating a reference to a specific subvector of the dense vector v
-   SubvectorType sv = subvector( v, 16UL, 64UL );
+   // Creating a reference to a specific subvector of vector v
+   auto sv = subvector( v, 16UL, 64UL );
 
-   for( SubvectorType::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=sv.begin(); it!=sv.end(); ++it ) {
       *it = ...;  // OK: Write access to the dense subvector value.
       ... = *it;  // OK: Read access to the dense subvector value.
    }
 
-   for( SubvectorType::ConstIterator it=sv.begin(); it!=sv.end(); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   // Traversing the elements via iterators to const elements
+   for( auto it=sv.cbegin(); it!=sv.cend(); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = *it;  // OK: Read access to the dense subvector value.
    }
    \endcode
 
    \code
-   using VectorType    = blaze::CompressedVector<int,blaze::rowVector>;
-   using SubvectorType = blaze::Subvector<VectorType>;
-
-   VectorType v( 256UL );
+   blaze::CompressedVector<int,blaze::rowVector> v( 256UL );
    // ... Resizing and initialization
 
-   // Creating a reference to a specific subvector of the sparse vector v
-   SubvectorType sv = subvector( v, 16UL, 64UL );
+   // Creating a reference to a specific subvector of vector v
+   auto sv = subvector( v, 16UL, 64UL );
 
-   for( SubvectorType::Iterator it=sv.begin(); it!=sv.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=sv.begin(); it!=sv.end(); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
    }
 
-   for( SubvectorType::ConstIterator it=sv.begin(); it!=sv.end(); ++it ) {
-      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   // Traversing the elements via iterators to const elements
+   for( auto it=sv.cbegin(); it!=sv.cend(); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
@@ -7051,11 +7002,9 @@
 // The following example demonstrates all options:
 
    \code
-   using VectorType = blaze::CompressedVector<double,blaze::rowVector>;
-   VectorType v( 256UL );  // Non-initialized vector of size 256
+   blaze::CompressedVector<double,blaze::rowVector> v( 256UL );  // Non-initialized vector of size 256
 
-   using SubvectorType = blaze::Subvector<VectorType>;
-   SubvectorType sv( subvector( v, 10UL, 60UL ) );  // View on the range [10..69] of v
+   auto sv = subvector( v, 10UL, 60UL );  // View on the range [10..69] of v
 
    // The subscript operator provides access to all possible elements of the sparse subvector,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -7063,9 +7012,9 @@
    // subvector.
    sv[42] = 2.0;
 
-   // The second operation for inserting elements is the set() function. In case the element
-   // is not contained in the vector it is inserted into the vector, if it is already contained
-   // in the vector its value is modified.
+   // The second operation for inserting elements is the set() function. In case the element is
+   // not contained in the subvector it is inserted into the subvector, if it is already contained
+   // in the subvector its value is modified.
    sv.set( 45UL, -1.2 );
 
    // An alternative for inserting elements into the subvector is the insert() function. However,
@@ -7094,14 +7043,11 @@
 // example shows this by means of a dense subvector view:
 
    \code
-   using VectorType    = blaze::DynamicVector<int,blaze::rowVector>;
-   using SubvectorType = blaze::Subvector<VectorType>;
-
-   VectorType v( 42UL );
+   blaze::DynamicVector<int,blaze::rowVector> v( 42UL );
    // ... Resizing and initialization
 
    // Creating a view on the range [5..15] of vector v
-   SubvectorType sv = subvector( v, 5UL, 10UL );
+   auto sv = subvector( v, 5UL, 10UL );
 
    sv.size();          // Returns the number of elements in the subvector
    sv.capacity();      // Returns the capacity of the subvector
@@ -7109,7 +7055,7 @@
 
    sv.resize( 84UL );  // Compilation error: Cannot resize a subvector of a vector
 
-   SubvectorType sv2 = subvector( v, 15UL, 10UL );
+   auto sv2 = subvector( v, 15UL, 10UL );
    swap( sv, sv2 );   // Compilation error: Swap operation not allowed
    \endcode
 
@@ -7123,33 +7069,29 @@
 // fitting element types:
 
    \code
-   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
-   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
-   DenseVectorType d1, d2, d3;
-   SparseVectorType s1, s2;
+   blaze::DynamicVector<double,blaze::rowVector> d1, d2, d3;
+   blaze::CompressedVector<double,blaze::rowVector> s1, s2;
 
    // ... Resizing and initialization
 
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   DenseMatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
 
-   using SubvectorType = blaze::Subvector<DenseVectorType>;
-   SubvectorType dsv( subvector( d1, 0UL, 10UL ) );  // View on the range [0..9] of vector d1
+   auto sv( subvector( d1, 0UL, 10UL ) );  // View on the range [0..9] of vector d1
 
-   dsv = d2;                          // Dense vector initialization of the range [0..9]
+   sv = d2;                           // Dense vector initialization of the range [0..9]
    subvector( d1, 10UL, 10UL ) = s1;  // Sparse vector initialization of the range [10..19]
 
-   d3 = dsv + d2;                           // Dense vector/dense vector addition
-   s2 = s1 + subvector( d1, 10UL, 10UL );   // Sparse vector/dense vector addition
-   d2 = dsv * subvector( d1, 20UL, 10UL );  // Component-wise vector multiplication
+   d3 = sv + d2;                           // Dense vector/dense vector addition
+   s2 = s1 + subvector( d1, 10UL, 10UL );  // Sparse vector/dense vector addition
+   d2 = sv * subvector( d1, 20UL, 10UL );  // Component-wise vector multiplication
 
    subvector( d1, 3UL, 4UL ) *= 2.0;      // In-place scaling of the range [3..6]
    d2 = subvector( d1, 7UL, 3UL ) * 2.0;  // Scaling of the range [7..9]
    d2 = 2.0 * subvector( d1, 7UL, 3UL );  // Scaling of the range [7..9]
 
-   subvector( d1, 0UL , 10UL ) += d2;   // Addition assignment
-   subvector( d1, 10UL, 10UL ) -= s2;   // Subtraction assignment
-   subvector( d1, 20UL, 10UL ) *= dsv;  // Multiplication assignment
+   subvector( d1, 0UL , 10UL ) += d2;  // Addition assignment
+   subvector( d1, 10UL, 10UL ) -= s2;  // Subtraction assignment
+   subvector( d1, 20UL, 10UL ) *= sv;  // Multiplication assignment
 
    double scalar = subvector( d1, 5UL, 10UL ) * trans( s1 );  // Scalar/dot/inner product between two vectors
 
@@ -7163,21 +7105,19 @@
 // may have an arbitrary size (only restricted by the size of the underlying vector). However, in
 // contrast to vectors themselves, which are always properly aligned in memory and therefore can
 // provide maximum performance, this means that subvectors in general have to be considered to be
-// unaligned. This can be made explicit by the blaze::unaligned flag:
+// unaligned. This can be made explicit by the \a blaze::unaligned flag:
 
    \code
    using blaze::unaligned;
 
-   using DenseVectorType = blaze::DynamicVector<double,blaze::rowVector>;
-
-   DenseVectorType x;
+   blaze::DynamicVector<double,blaze::rowVector> x;
    // ... Resizing and initialization
 
    // Identical creations of an unaligned subvector in the range [8..23]
-   blaze::Subvector<DenseVectorType>           sv1 = subvector           ( x, 8UL, 16UL );
-   blaze::Subvector<DenseVectorType>           sv2 = subvector<unaligned>( x, 8UL, 16UL );
-   blaze::Subvector<DenseVectorType,unaligned> sv3 = subvector           ( x, 8UL, 16UL );
-   blaze::Subvector<DenseVectorType,unaligned> sv4 = subvector<unaligned>( x, 8UL, 16UL );
+   auto sv1 = subvector           ( x, 8UL, 16UL );
+   auto sv2 = subvector<unaligned>( x, 8UL, 16UL );
+   auto sv3 = subvector<8UL,16UL>          ( x );
+   auto sv4 = subvector<unaligned,8UL,16UL>( x );
    \endcode
 
 // All of these calls to the \c subvector() function are identical. Whether the alignment flag is
@@ -7197,8 +7137,9 @@
    \code
    using blaze::aligned;
 
-   // Creating an aligned dense subvector in the range [8..23]
-   blaze::Subvector<DenseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
+   // Creating an aligned subvector in the range [8..23]
+   auto sv1 = subvector<aligned>( x, 8UL, 16UL );
+   auto sv2 = subvector<aligned,8UL,16UL>( x );
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
@@ -7209,25 +7150,21 @@
 
    \code
    using blaze::aligned;
-   using blaze::columnVector;
 
-   using VectorType    = blaze::DynamicVector<double,columnVector>;
-   using SubvectorType = blaze::Subvector<VectorType,aligned>;
-
-   VectorType d( 17UL );
+   blaze::DynamicVector<double,blaze::columnVector> d( 17UL );
    // ... Resizing and initialization
 
    // OK: Starts at the beginning, i.e. the first element is aligned
-   SubvectorType dsv1 = subvector<aligned>( d, 0UL, 13UL );
+   auto dsv1 = subvector<aligned>( d, 0UL, 13UL );
 
    // OK: Start index is a multiple of 4, i.e. the first element is aligned
-   SubvectorType dsv2 = subvector<aligned>( d, 4UL, 7UL );
+   auto dsv2 = subvector<aligned>( d, 4UL, 7UL );
 
    // OK: The start index is a multiple of 4 and the subvector includes the last element
-   SubvectorType dsv3 = subvector<aligned>( d, 8UL, 9UL );
+   auto dsv3 = subvector<aligned>( d, 8UL, 9UL );
 
    // Error: Start index is not a multiple of 4, i.e. the first element is not aligned
-   SubvectorType dsv4 = subvector<aligned>( d, 5UL, 8UL );
+   auto dsv4 = subvector<aligned>( d, 5UL, 8UL );
    \endcode
 
 // Note that the discussed alignment restrictions are only valid for aligned dense subvectors.
@@ -7238,36 +7175,12 @@
    \code
    using blaze::aligned;
 
-   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
-
-   SparseVectorType x;
+   blaze::CompressedVector<double,blaze::rowVector> x;
    // ... Resizing and initialization
 
    // Creating an aligned subvector in the range [8..23]
-   blaze::Subvector<SparseVectorType,aligned> sv = subvector<aligned>( x, 8UL, 16UL );
-   \endcode
-
-// \n \section views_subvectors_on_subvectors Subvectors on Subvectors
-// <hr>
-//
-// It is also possible to create a subvector view on another subvector. In this context it is
-// important to remember that the type returned by the \c subvector() function is the same type
-// as the type of the given subvector, not a nested subvector type, since the view on a subvector
-// is just another view on the underlying vector:
-
-   \code
-   using VectorType    = blaze::DynamicVector<double,blaze::rowVector>;
-   using SubvectorType = blaze::Subvector<VectorType>;
-
-   VectorType d1;
-
-   // ... Resizing and initialization
-
-   // Creating a subvector view on the dense vector d1
-   SubvectorType sv1 = subvector( d1, 5UL, 10UL );
-
-   // Creating a subvector view on the dense subvector sv1
-   SubvectorType sv2 = subvector( sv1, 1UL, 5UL );
+   auto sv1 = subvector<aligned>( x, 8UL, 16UL );
+   auto sv2 = subvector<aligned,8UL,16UL>( x );
    \endcode
 
 // \n Previous: \ref views &nbsp; &nbsp; Next: \ref views_submatrices
@@ -7291,103 +7204,69 @@
 // immediately visible in the submatrix.
 //
 //
-// \n \section views_submatrices_template The Submatrix Template
+// \n \section views_submatrices_setup Setup of Submatrices
 // <hr>
 //
-// The blaze::Submatrix template represents a view on a specific submatrix of a dense or sparse
-// matrix primitive. It can be included via the header file
+// A view on a dense or sparse submatrix can be created very conveniently via the \c submatrix()
+// function. It can be included via the header file
 
    \code
    #include <blaze/math/Submatrix.h>
    \endcode
 
-// The type of the matrix is specified via two template parameters:
+// The first and second parameter specify the row and column of the first element of the submatrix.
+// The third and fourth parameter specify the number of rows and columns, respectively. The four
+// parameters can be specified either at compile time or at runtime:
 
    \code
-   template< typename MT, bool AF >
-   class Submatrix;
-   \endcode
-
-//  - \c MT: specifies the type of the matrix primitive. Submatrix can be used with every matrix
-//           primitive, but does not work with any matrix expression type.
-//  - \c AF: the alignment flag specifies whether the submatrix is aligned (blaze::aligned) or
-//           unaligned (blaze::unaligned). The default value is blaze::unaligned.
-//
-//
-// \n \section views_submatrices_setup Setup of Submatrices
-// <hr>
-//
-// A view on a dense or sparse submatrix can be created very conveniently via the \c submatrix()
-// function:
-
-   \code
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-
-   DenseMatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
-   // Creating a dense submatrix of size 8x16, starting in row 0 and column 4
-   blaze::Submatrix<DenseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
+   // Creating a dense submatrix of size 4x8, starting in row 3 and column 0 (compile time arguments)
+   auto sm1 = submatrix<3UL,0UL,4UL,8UL>( A );
+
+   // Creating a dense submatrix of size 8x16, starting in row 0 and column 4 (runtime arguments)
+   auto sm2 = submatrix( A, 0UL, 4UL, 8UL, 16UL );
    \endcode
 
-   \code
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-
-   SparseMatrixType A;
-   // ... Resizing and initialization
-
-   // Creating a sparse submatrix of size 8x16, starting in row 0 and column 4
-   blaze::Submatrix<SparseMatrixType> sm = submatrix( A, 0UL, 4UL, 8UL, 16UL );
-   \endcode
-
-// This view can be treated as any other matrix, i.e. it can be assigned to, it can be copied
-// from, and it can be used in arithmetic operations. A submatrix created from a row-major
-// matrix will itself be a row-major matrix, a submatrix created from a column-major matrix
-// will be a column-major matrix. The view can also be used on both sides of an assignment:
+// This view can be treated as any other dense or sparse matrix, i.e. it can be assigned to, it
+// can be copied from, and it can be used in arithmetic operations. A submatrix created from a
+// row-major matrix will itself be a row-major matrix, a submatrix created from a column-major
+// matrix will be a column-major matrix. The view can also be used on both sides of an assignment:
 // The submatrix can either be used as an alias to grant write access to a specific submatrix
 // of a matrix primitive on the left-hand side of an assignment or to grant read-access to
 // a specific submatrix of a matrix primitive or expression on the right-hand side of an
 // assignment. The following example demonstrates this in detail:
 
    \code
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using SparseMatrixType = blaze::CompressedVector<int,blaze::columnMajor>;
-
-   DenseMatrixType  D1, D2;
-   SparseMatrixType S1, S2;
+   blaze::DynamicMatrix<double,blaze::columnMajor> A, B;
+   blaze::CompressedMatrix<double,blaze::rowMajor> C;
    // ... Resizing and initialization
 
-   // Creating a view on the first 8x16 block of the dense matrix D1
-   blaze::Submatrix<DenseMatrixType> dsm = submatrix( D1, 0UL, 0UL, 8UL, 16UL );
+   // Creating a dense submatrix of size 8x4, starting in row 0 and column 2
+   auto sm = submatrix( A, 0UL, 2UL, 8UL, 4UL );
 
-   // Creating a view on the second 8x16 block of the sparse matrix S1
-   blaze::Submatrix<SparseMatrixType> ssm = submatrix( S1, 0UL, 16UL, 8UL, 16UL );
+   // Setting the submatrix of A to a 8x4 submatrix of B
+   sm = submatrix( B, 0UL, 0UL, 8UL, 4UL );
 
-   // Creating a view on the addition of D2 and S2
-   dsm = submatrix( D2 + S2, 5UL, 10UL, 8UL, 16UL );
+   // Copying the sparse matrix C into another 8x4 submatrix of A
+   submatrix( A, 8UL, 2UL, 8UL, 4UL ) = C;
 
-   // Creating a view on the multiplication of D2 and S2
-   ssm = submatrix( D2 * S2, 7UL, 13UL, 8UL, 16UL );
+   // Assigning part of the result of a matrix addition to the first submatrix
+   sm = submatrix( B + C, 0UL, 0UL, 8UL, 4UL );
    \endcode
 
-// The \c submatrix() function can be used on any dense or sparse matrix, including expressions,
-// as illustrated by the source code example. However, submatrices cannot be instantiated for
-// expression types, but only for matrix primitives, respectively, i.e. for matrix types that
-// offer write access.
-//
-//
 // \n \section views_submatrices_element_access Element Access
 // <hr>
 //
 // The elements of a submatrix can be directly accessed with the function call operator:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   MatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating a 8x8 submatrix, starting from position (4,4)
-   blaze::Submatrix<MatrixType> sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
+   auto sm = submatrix( A, 4UL, 4UL, 8UL, 8UL );
 
    // Setting the element (0,0) of the submatrix, which corresponds to
    // the element at position (4,4) in matrix A
@@ -7395,45 +7274,39 @@
    \endcode
 
 // Alternatively, the elements of a submatrix can be traversed via (const) iterators. Just as
-// with matrices, in case of non-const submatrices, \c begin() and \c end() return an Iterator,
-// which allows a manipulation of the non-zero values, in case of constant submatrices a
-// ConstIterator is returned:
+// with matrices, in case of non-const submatrices, \c begin() and \c end() return an iterator,
+// which allows to manipuate the elements, in case of constant submatrices an iterator to
+// immutable elements is returned:
 
    \code
-   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType A( 256UL, 512UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 256UL, 512UL );
    // ... Resizing and initialization
 
-   // Creating a reference to a specific submatrix of the dense matrix A
-   SubmatrixType sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
+   // Creating a reference to a specific submatrix of matrix A
+   auto sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
-   for( SubmatrixType::Iterator it=sm.begin(0); it!=sm.end(0); ++it ) {
+   for( auto it=sm.begin(0); it!=sm.end(0); ++it ) {
       *it = ...;  // OK: Write access to the dense submatrix value.
       ... = *it;  // OK: Read access to the dense submatrix value.
    }
 
    // Traversing the elements of the 1st row via iterators to const elements
-   for( SubmatrixType::ConstIterator it=sm.begin(1); it!=sm.end(1); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   for( auto it=sm.cbegin(1); it!=sm.cend(1); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = *it;  // OK: Read access to the dense submatrix value.
    }
    \endcode
 
    \code
-   using MatrixType    = blaze::CompressedMatrix<int,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType A( 256UL, 512UL );
+   blaze::CompressedMatrix<int,blaze::rowMajor> A( 256UL, 512UL );
    // ... Resizing and initialization
 
-   // Creating a reference to a specific submatrix of the sparse matrix A
-   SubmatrixType sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
+   // Creating a reference to a specific submatrix of matrix A
+   auto sm = submatrix( A, 16UL, 16UL, 64UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
-   for( SubmatrixType::Iterator it=sm.begin(0); it!=sm.end(0); ++it ) {
+   for( auto it=sm.begin(0); it!=sm.end(0); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -7441,8 +7314,8 @@
    }
 
    // Traversing the elements of the 1st row via iterators to const elements
-   for( SubmatrixType::ConstIterator it=sm.begin(1); it!=sm.end(1); ++it ) {
-      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   for( auto it=sm.cbegin(1); it!=sm.cend(1); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
@@ -7456,11 +7329,9 @@
 // The following example demonstrates all options:
 
    \code
-   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-   MatrixType A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
+   blaze::CompressedMatrix<double,blaze::rowMajor> A( 256UL, 512UL );  // Non-initialized matrix of size 256x512
 
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-   SubmatrixType sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
+   auto sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -7473,17 +7344,17 @@
    // in the submatrix its value is modified.
    sm.set( 2UL, 5UL, -1.2 );
 
-   // An alternative for inserting elements into the submatrix is the insert() function. However,
+   // An alternative for inserting elements into the submatrix is the \c insert() function. However,
    // it inserts the element only in case the element is not already contained in the submatrix.
    sm.insert( 2UL, 6UL, 3.7 );
 
-   // Just as in case of sparse matrices, elements can also be inserted via the append() function.
-   // In case of submatrices, append() also requires that the appended element's index is strictly
-   // larger than the currently largest non-zero index in the according row or column of the
-   // submatrix and that the according row's or column's capacity is large enough to hold the new
-   // element. Note however that due to the nature of a submatrix, which may be an alias to the
-   // middle of a sparse matrix, the append() function does not work as efficiently for a
-   // submatrix as it does for a matrix.
+   // Just as in the case of sparse matrices, elements can also be inserted via the \c append()
+   // function. In case of submatrices, \c append() also requires that the appended element's
+   // index is strictly larger than the currently largest non-zero index in the according row
+   // or column of the submatrix and that the according row's or column's capacity is large enough
+   // to hold the new element. Note however that due to the nature of a submatrix, which may be an
+   // alias to the middle of a sparse matrix, the \c append() function does not work as efficiently
+   // for a submatrix as it does for a matrix.
    sm.reserve( 2UL, 10UL );
    sm.append( 2UL, 10UL, -2.1 );
    \endcode
@@ -7500,14 +7371,11 @@
 // such as resizing and swapping:
 
    \code
-   using MatrixType    = blaze::DynamicMatrix<int,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType A;
+   blaze::DynamicMatrix<int,blaze::rowMajor>
    // ... Resizing and initialization
 
    // Creating a view on the a 8x12 submatrix of matrix A
-   SubmatrixType sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
+   auto sm = submatrix( A, 0UL, 0UL, 8UL, 12UL );
 
    sm.rows();      // Returns the number of rows of the submatrix
    sm.columns();   // Returns the number of columns of the submatrix
@@ -7516,7 +7384,7 @@
 
    sm.resize( 10UL, 8UL );  // Compilation error: Cannot resize a submatrix of a matrix
 
-   SubmatrixType sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
+   auto sm2 = submatrix( A, 8UL, 0UL, 12UL, 8UL );
    swap( sm, sm2 );  // Compilation error: Swap operation not allowed
    \endcode
 
@@ -7530,19 +7398,15 @@
 // fitting element types:
 
    \code
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-   DenseMatrixType D1, D2, D3;
-   SparseMatrixType S1, S2;
+   blaze::DynamicMatrix<double,blaze::rowMajor> D1, D2, D3;
+   blaze::CompressedMatrix<double,blaze::rowMajor>
 
-   using SparseVectorType = blaze::CompressedVector<double,blaze::columnVector>;
-   SparseVectorType a, b;
+   blaze::CompressedVector<double,blaze::columnVector> a, b;
 
    // ... Resizing and initialization
 
-   using SubmatrixType = Submatrix<DenseMatrixType>;
-   SubmatrixType sm = submatrix( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix D1
-                                                            // starting from row 0 and column 0
+   auto sm = submatrix( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 submatrix of matrix D1
+                                                   // starting from row 0 and column 0
 
    submatrix( D1, 0UL, 8UL, 8UL, 8UL ) = D2;  // Dense matrix initialization of the 8x8 submatrix
                                               // starting in row 0 and column 8
@@ -7575,16 +7439,14 @@
    \code
    using blaze::unaligned;
 
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-
-   DenseMatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Identical creations of an unaligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::Submatrix<DenseMatrixType>           sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::Submatrix<DenseMatrixType>           sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::Submatrix<DenseMatrixType,unaligned> sm3 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
-   blaze::Submatrix<DenseMatrixType,unaligned> sm4 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sm1 = submatrix           ( A, 0UL, 0UL, 8UL, 8UL );
+   auto sm2 = submatrix<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sm3 = submatrix<0UL,0UL,8UL,8UL>          ( A );
+   auto sm4 = submatrix<unaligned,0UL,0UL,8UL,8UL>( A );
    \endcode
 
 // All of these calls to the \c submatrix() function are identical. Whether the alignment flag is
@@ -7605,7 +7467,8 @@
    using blaze::aligned;
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::Submatrix<DenseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sv1 = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sv2 = submatrix<aligned,0UL,0UL,8UL,8UL>( A );
    \endcode
 
 // The alignment restrictions refer to system dependent address restrictions for the used element
@@ -7616,25 +7479,21 @@
 
    \code
    using blaze::aligned;
-   using blaze::rowMajor;
 
-   using MatrixType    = blaze::DynamicMatrix<double,rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType,aligned>;
-
-   MatrixType D( 13UL, 17UL );
+   blaze::DynamicMatrix<double,blaze::rowMajor> D( 13UL, 17UL );
    // ... Resizing and initialization
 
    // OK: Starts at position (0,0), i.e. the first element of each row is aligned (due to padding)
-   SubmatrixType dsm1 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 11UL );
+   auto dsm1 = submatrix<aligned>( D, 0UL, 0UL, 7UL, 11UL );
 
    // OK: First column is a multiple of 4, i.e. the first element of each row is aligned (due to padding)
-   SubmatrixType dsm2 = submatrix<aligned>( D, 3UL, 12UL, 8UL, 16UL );
+   auto dsm2 = submatrix<aligned>( D, 3UL, 12UL, 8UL, 16UL );
 
    // OK: First column is a multiple of 4 and the submatrix includes the last row and column
-   SubmatrixType dsm3 = submatrix<aligned>( D, 4UL, 0UL, 9UL, 17UL );
+   auto dsm3 = submatrix<aligned>( D, 4UL, 0UL, 9UL, 17UL );
 
    // Error: First column is not a multiple of 4, i.e. the first element is not aligned
-   SubmatrixType dsm4 = submatrix<aligned>( D, 2UL, 3UL, 12UL, 12UL );
+   auto dsm4 = submatrix<aligned>( D, 2UL, 3UL, 12UL, 12UL );
    \endcode
 
 // Note that the discussed alignment restrictions are only valid for aligned dense submatrices.
@@ -7645,36 +7504,11 @@
    \code
    using blaze::aligned;
 
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-
-   SparseMatrixType A;
+   blaze::CompressedMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating an aligned submatrix of size 8x8, starting in row 0 and column 0
-   blaze::Submatrix<SparseMatrixType,aligned> sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
-   \endcode
-
-// \n \section views_submatrices_on_submatrices Submatrices on Submatrices
-// <hr>
-//
-// It is also possible to create a submatrix view on another submatrix. In this context it is
-// important to remember that the type returned by the \c submatrix() function is the same type
-// as the type of the given submatrix, since the view on a submatrix is just another view on the
-// underlying matrix:
-
-   \code
-   using MatrixType    = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using SubmatrixType = blaze::Submatrix<MatrixType>;
-
-   MatrixType D1;
-
-   // ... Resizing and initialization
-
-   // Creating a submatrix view on the dense matrix D1
-   SubmatrixType sm1 = submatrix( D1, 4UL, 4UL, 8UL, 16UL );
-
-   // Creating a submatrix view on the dense submatrix sm1
-   SubmatrixType sm2 = submatrix( sm1, 1UL, 1UL, 4UL, 8UL );
+   auto sv = submatrix<aligned>( A, 0UL, 0UL, 8UL, 8UL );
    \endcode
 
 // \n \section views_submatrices_on_symmetric_matrices Submatrices on Symmetric Matrices
@@ -7684,23 +7518,19 @@
    \code
    using blaze::DynamicMatrix;
    using blaze::SymmetricMatrix;
-   using blaze::Submatrix;
-
-   using SymmetricDynamicType = SymmetricMatrix< DynamicMatrix<int> >;
-   using SubmatrixType        = Submatrix< SymmetricDynamicType >;
 
    // Setup of a 16x16 symmetric matrix
-   SymmetricDynamicType A( 16UL );
+   SymmetricMatrix< DynamicMatrix<int> > A( 16UL );
 
    // Creating a dense submatrix of size 8x12, starting in row 2 and column 4
-   SubmatrixType sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
+   auto sm = submatrix( A, 2UL, 4UL, 8UL, 12UL );
    \endcode
 
 // It is important to note, however, that (compound) assignments to such submatrices have a
 // special restriction: The symmetry of the underlying symmetric matrix must not be broken!
 // Since the modification of element \f$ a_{ij} \f$ of a symmetric matrix also modifies the
 // element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the symmetry
-// of the symmetric matrix is preserved. Otherwise a \c std::invalid_argument exception is
+// of the symmetric matrix is preserved. Otherwise a \a std::invalid_argument exception is
 // thrown:
 
    \code
@@ -7757,27 +7587,6 @@
 // and changes made via the matrix are immediately visible in the row.
 //
 //
-// \n \section views_rows_template The Row Template
-// <hr>
-//
-// The blaze::Row template represents a reference to a specific row of a dense or sparse matrix
-// primitive. It can be included via the header file
-
-   \code
-   #include <blaze/math/Row.h>
-   \endcode
-
-// The type of the matrix is specified via template parameter:
-
-   \code
-   template< typename MT >
-   class Row;
-   \endcode
-
-// \c MT specifies the type of the matrix primitive. Row can be used with every matrix primitive,
-// but does not work with any matrix expression type.
-//
-//
 // \n \section views_rows_setup Setup of Rows
 // <hr>
 //
@@ -7785,43 +7594,43 @@
 // \image latex row.eps "Row view" width=250pt
 //
 // A reference to a dense or sparse row can be created very conveniently via the \c row() function.
+// It can be included via the header file
+
+   \code
+   #include <blaze/math/Row.h>
+   \endcode
+
 // The row index must be in the range from \f$[0..M-1]\f$, where \c M is the total number of rows
 // of the matrix, and can be specified both at compile time or at runtime:
 
    \code
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-
-   DenseMatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating a reference to the 1st row of matrix A (compile time index)
-   blaze::Row<DenseMatrixType,1UL> row1 = row<1UL>( A );
+   auto row1 = row<1UL>( A );
 
    // Creating a reference to the 2nd row of matrix A (runtime index)
-   blaze::Row<DenseMatrixType> row2 = row( A, 2UL );
+   auto row2 = row( A, 2UL );
    \endcode
 
-// The resulting reference can be treated as any other row vector, i.e. it can be assigned to,
-// it can be copied from, and it can be used in arithmetic operations. The reference can also be
-// used on both sides of an assignment: The row can either be used as an alias to grant write
-// access to a specific row of a matrix primitive on the left-hand side of an assignment or to
-// grant read-access to a specific row of a matrix primitive or expression on the right-hand side
-// of an assignment. The following example demonstrates this in detail:
+// The \c row() function returns an expression representing the row view. This view can be treated
+// as any other row vector, i.e. it can be assigned to, it can be copied from, and it can be used
+// in arithmetic operations. The reference can also be used on both sides of an assignment: The
+// row can either be used as an alias to grant write access to a specific row of a matrix primitive
+// on the left-hand side of an assignment or to grant read-access to a specific row of a matrix
+// primitive or expression on the right-hand side of an assignment. The following example
+// demonstrates this in detail:
 
    \code
-   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
-   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-
-   DenseVectorType  x;
-   SparseVectorType y;
-   DenseMatrixType  A, B;
-   SparseMatrixType C, D;
+   blaze::DynamicVector<double,blaze::rowVector> x;
+   blaze::CompressedVector<double,blaze::rowVector> y;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A, B;
+   blaze::CompressedMatrix<double,blaze::rowMajor> C, D;
    // ... Resizing and initialization
 
    // Setting the 2nd row of matrix A to x
-   blaze::Row<DenseMatrixType> row2 = row( A, 2UL );
+   auto row2 = row( A, 2UL );
    row2 = x;
 
    // Setting the 3rd row of matrix B to y
@@ -7834,25 +7643,17 @@
    y = row( C * D, 2UL );
    \endcode
 
-// The \c row() function can be used on any dense or sparse matrix, including expressions, as
-// illustrated by the source code example. However, rows cannot be instantiated for expression
-// types, but only for matrix primitives, respectively, i.e. for matrix types that offer write
-// access.
-//
-//
 // \n \section views_rows_element_access Element Access
 // <hr>
 //
-// A dense or sparse row can be used like any other row vector. For instance, the elements of a
-// row can be directly accessed with the subscript operator:
+// The elements of a row can be directly accessed with the subscript operator:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   MatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating a view on the 4th row of matrix A
-   blaze::Row<MatrixType> row4 = row( A, 4UL );
+   auto row4 = row( A, 4UL );
 
    // Setting the 1st element of the dense row, which corresponds
    // to the 1st element in the 4th row of matrix A
@@ -7865,50 +7666,48 @@
                              0 & 1 & 2 & \cdots & N-1 \\
                              \end{array}\right),\f]
 
-// where N is the number of columns of the referenced matrix. Alternatively, the elements of
-// a row can be traversed via iterators. Just as with vectors, in case of non-const rows,
-// \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// value, in case of a constant row a ConstIterator is returned:
+// where N is the number of columns of the referenced matrix. Alternatively, the elements of a
+// row can be traversed via iterators. Just as with vectors, in case of non-const rows, \c begin()
+// and \c end() return an iterator, which allows to manipulate the elements, in case of constant
+// rows an iterator to immutable elements is returned:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<int,rowMajor>;
-   using RowType    = blaze::Row<MatrixType>;
-
-   MatrixType A( 128UL, 256UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 128UL, 256UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 31st row of matrix A
-   RowType row31 = row( A, 31UL );
+   auto row31 = row( A, 31UL );
 
-   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=row31.begin(); it!=row31.end(); ++it ) {
       *it = ...;  // OK; Write access to the dense row value
       ... = *it;  // OK: Read access to the dense row value.
    }
 
-   for( RowType::ConstIterator it=row31.begin(); it!=row31.end(); ++it ) {
+   // Traversing the elements via iterators to const elements
+   for( auto it=row31.cbegin(); it!=row31.cend(); ++it ) {
       *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
       ... = *it;  // OK: Read access to the dense row value.
    }
    \endcode
 
    \code
-   using MatrixType = blaze::CompressedMatrix<int,rowMajor>;
-   using RowType    = blaze::Row<MatrixType>;
-
-   MatrixType A( 128UL, 256UL );
+   blaze::CompressedMatrix<int,blaze::rowMajor> A( 128UL, 256UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 31st row of matrix A
-   RowType row31 = row( A, 31UL );
+   auto row31 = row( A, 31UL );
 
-   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=row31.begin(); it!=row31.end(); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
    }
 
-   for( RowType::Iterator it=row31.begin(); it!=row31.end(); ++it ) {
+   // Traversing the elements via iterators to const elements
+   for( auto it=row31.cbegin(); it!=row31.cend(); ++it ) {
       it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -7923,11 +7722,9 @@
 // The following example demonstrates all options:
 
    \code
-   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-   MatrixType A( 10UL, 100UL );  // Non-initialized 10x100 matrix
+   blaze::CompressedMatrix<double,blaze::rowMajor> A( 10UL, 100UL );  // Non-initialized 10x100 matrix
 
-   using RowType = blaze::Row<MatrixType>;
-   RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
+   auto row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
    // The subscript operator provides access to all possible elements of the sparse row,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -7963,14 +7760,11 @@
 // means of a dense row view:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<int,rowMajor>;
-   using RowType    = blaze::Row<MatrixType>;
-
-   MatrixType A( 42UL, 42UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 42UL, 42UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 2nd row of matrix A
-   RowType row2 = row( A, 2UL );
+   auto row2 = row( A, 2UL );
 
    row2.size();          // Returns the number of elements in the row
    row2.capacity();      // Returns the capacity of the row
@@ -7978,7 +7772,7 @@
 
    row2.resize( 84UL );  // Compilation error: Cannot resize a single row of a matrix
 
-   RowType row3 = row( A, 3UL );
+   auto row3 = row( A, 3UL );
    swap( row2, row3 );   // Compilation error: Swap operation not allowed
    \endcode
 
@@ -7996,11 +7790,9 @@
    blaze::CompressedVector<double,blaze::rowVector> c( 2UL );
    c[1] = 3.0;
 
-   using DenseMatrix = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   DenseMatrix A( 4UL, 2UL );  // Non-initialized 4x2 matrix
+   blaze::DynamicMatrix<double,blaze::rowMajor> A( 4UL, 2UL );  // Non-initialized 4x2 matrix
 
-   using RowType = blaze::Row<DenseMatrix>;
-   RowType row0( row( A, 0UL ) );  // Reference to the 0th row of A
+   auto row0( row( A, 0UL ) );  // Reference to the 0th row of A
 
    row0[0] = 0.0;        // Manual initialization of the 0th row of A
    row0[1] = 0.0;
@@ -8035,41 +7827,38 @@
 // instance:
 
    \code
-   using MatrixType = blaze::CompressedMatrix<int,columnMajor>;
-   using RowType    = blaze::Row<MatrixType>;
-
-   MatrixType A( 64UL, 32UL );
+   blaze::DynamicMatrix<int,blaze::columnMajor> A( 64UL, 32UL );
    // ... Resizing and initialization
 
-   // Creating a reference to the 31st row of a column-major matrix A
-   RowType row1 = row( A, 1UL );
+   // Creating a reference to the 1st row of a column-major matrix A
+   auto row1 = row( A, 1UL );
 
-   for( RowType::Iterator it=row1.begin(); it!=row1.end(); ++it ) {
+   for( auto it=row1.begin(); it!=row1.end(); ++it ) {
       // ...
    }
    \endcode
 
 // However, please note that creating a row view on a matrix stored in a column-major fashion
-// can result in a considerable performance decrease in comparison to a view on a matrix with
-// a fitting storage orientation. This is due to the non-contiguous storage of the matrix
+// can result in a considerable performance decrease in comparison to a row view on a matrix
+// with row-major storage format. This is due to the non-contiguous storage of the matrix
 // elements. Therefore care has to be taken in the choice of the most suitable storage order:
 
    \code
    // Setup of two column-major matrices
-   CompressedMatrix<double,columnMajor> A( 128UL, 128UL );
-   CompressedMatrix<double,columnMajor> B( 128UL, 128UL );
+   blaze::DynamicMatrix<double,blaze::columnMajor> A( 128UL, 128UL );
+   blaze::DynamicMatrix<double,blaze::columnMajor> B( 128UL, 128UL );
    // ... Resizing and initialization
 
    // The computation of the 15th row of the multiplication between A and B ...
-   CompressedVector<double,rowVector> x = row( A * B, 15UL );
+   blaze::DynamicVector<double,blaze::rowVector> x = row( A * B, 15UL );
 
    // ... is essentially the same as the following computation, which multiplies
    // the 15th row of the column-major matrix A with B.
-   CompressedVector<double,rowVector> x = row( A, 15UL ) * B;
+   blaze::DynamicVector<double,blaze::rowVector> x = row( A, 15UL ) * B;
    \endcode
 
 // Although \b Blaze performs the resulting vector/matrix multiplication as efficiently as possible
-// using a row-major storage order for matrix A would result in a more efficient evaluation.
+// using a row-major storage order for matrix \c A would result in a more efficient evaluation.
 //
 // \n Previous: \ref views_submatrices &nbsp; &nbsp; Next: \ref views_columns
 */
@@ -8090,27 +7879,6 @@
 // matrix and changes made via the matrix are immediately visible in the column.
 //
 //
-// \n \section views_columns_template The Column Template
-// <hr>
-//
-// The blaze::Column template represents a reference to a specific column of a dense or sparse
-// matrix primitive. It can be included via the header file
-
-   \code
-   #include <blaze/math/Column.h>
-   \endcode
-
-// The type of the matrix is specified via template parameter:
-
-   \code
-   template< typename MT >
-   class Column;
-   \endcode
-
-// \c MT specifies the type of the matrix primitive. Column can be used with every matrix
-// primitive, but does not work with any matrix expression type.
-//
-//
 // \n \section views_colums_setup Setup of Columns
 // <hr>
 //
@@ -8118,43 +7886,43 @@
 // \image latex column.eps "Column view" width=250pt
 //
 // A reference to a dense or sparse column can be created very conveniently via the \c column()
-// function. The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total
-// number of column of the matrix, and can be specified both at compile time or at runtime:
+// function. It can be included via the header file
 
    \code
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
+   #include <blaze/math/Column.h>
+   \endcode
 
-   DenseMatrixType A;
+// The column index must be in the range from \f$[0..N-1]\f$, where \c N is the total number of
+// columns of the matrix, and can be specified both at compile time or at runtime:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::columnMajor> A;
    // ... Resizing and initialization
 
    // Creating a reference to the 1st column of matrix A (compile time index)
-   blaze::Column<DenseMatrixType,1UL> col1 = column<1UL>( A );
+   auto col1 = column<1UL>( A );
 
    // Creating a reference to the 2nd column of matrix A (runtime index)
-   blaze::Column<DenseMatrixType> col2 = column( A, 2UL );
+   auto col2 = column( A, 2UL );
    \endcode
 
-// The resulting reference can be treated as any other column vector, i.e. it can be assigned to,
-// it can be copied from, and it can be used in arithmetic operations. The reference can also be
-// used on both sides of an assignment: The column can either be used as an alias to grant write
-// access to a specific column of a matrix primitive on the left-hand side of an assignment or to
-// grant read-access to a specific column of a matrix primitive or expression on the right-hand
-// side of an assignment. The following example demonstrates this in detail:
+// The \c column() function returns an expression representing the column view. This view can be
+// treated as any other column vector, i.e. it can be assigned to, it can be copied from, and
+// it can be used in arithmetic operations. The reference can also be used on both sides of an
+// assignment: The column can either be used as an alias to grant write access to a specific
+// column of a matrix primitive on the left-hand side of an assignment or to grant read-access to
+// a specific column of a matrix primitive or expression on the right-hand side of an assignment.
+// The following example demonstrates this in detail:
 
    \code
-   using DenseVectorType  = blaze::DynamicVector<double,blaze::columnVector>;
-   using SparseVectorType = blaze::CompressedVector<double,blaze::columnVector>;
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::columnMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::columnMajor>;
-
-   DenseVectorType  x;
-   SparseVectorType y;
-   DenseMatrixType  A, B;
-   SparseMatrixType C, D;
+   blaze::DynamicVector<double,blaze::columnVector> x;
+   blaze::CompressedVector<double,blaze::columnVector> y;
+   blaze::DynamicMatrix<double,blaze::columnMajor> A, B;
+   blaze::CompressedMatrix<double,blaze::columnMajor> C, D;
    // ... Resizing and initialization
 
    // Setting the 1st column of matrix A to x
-   blaze::Column<DenseMatrixType> col1 = column( A, 1UL );
+   auto col1 = column( A, 1UL );
    col1 = x;
 
    // Setting the 4th column of matrix B to y
@@ -8167,25 +7935,17 @@
    y = column( C * D, 2UL );
    \endcode
 
-// The \c column() function can be used on any dense or sparse matrix, including expressions, as
-// illustrated by the source code example. However, columns cannot be instantiated for expression
-// types, but only for matrix primitives, respectively, i.e. for matrix types that offer write
-// access.
-//
-//
 // \n \section views_columns_element_access Element Access
 // <hr>
 //
-// A dense or sparse column can be used like any other column vector. For instance, the elements
-// of the dense column can be directly accessed with the subscript operator.
+// The elements of the dense column can be directly accessed with the subscript operator.
 
    \code
-   using MatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
-   MatrixType A;
+   blaze::DynamicMatrix<double,blaze::columnMajor> A;
    // ... Resizing and initialization
 
    // Creating a view on the 4th column of matrix A
-   blaze::Column<MatrixType> col4 = column( A, 4UL );
+   auto col4 = column( A, 4UL );
 
    // Setting the 1st element of the dense column, which corresponds
    // to the 1st element in the 4th column of matrix A
@@ -8198,51 +7958,49 @@
                              0 & 1 & 2 & \cdots & N-1 \\
                              \end{array}\right),\f]
 
-// where N is the number of rows of the referenced matrix. Alternatively, the elements of
-// a column can be traversed via iterators. Just as with vectors, in case of non-const columns,
-// \c begin() and \c end() return an Iterator, which allows a manipulation of the non-zero
-// value, in case of a constant column a ConstIterator is returned:
+// where N is the number of rows of the referenced matrix. Alternatively, the elements of a column
+// can be traversed via iterators. Just as with vectors, in case of non-const columns, \c begin()
+// and \c end() return an iterator, which allows to manipulate the elements, in case of constant
+// columns an iterator to immutable elements is returned:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<int,columnMajor>;
-   using ColumnType = blaze::Column<MatrixType>;
-
-   MatrixType A( 128UL, 256UL );
+   blaze::DynamicMatrix<int,blaze::columnMajor> A( 128UL, 256UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 31st column of matrix A
-   ColumnType col31 = column( A, 31UL );
+   auto col31 = column( A, 31UL );
 
-   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=col31.begin(); it!=col31.end(); ++it ) {
       *it = ...;  // OK; Write access to the dense column value
       ... = *it;  // OK: Read access to the dense column value.
    }
 
-   for( ColumnType::ConstIterator it=col31.begin(); it!=col31.end(); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   // Traversing the elements via iterators to const elements
+   for( auto it=col31.cbegin(); it!=col31.cend(); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = *it;  // OK: Read access to the dense column value.
    }
    \endcode
 
    \code
-   using MatrixType = blaze::CompressedMatrix<int,columnMajor>;
-   using ColumnType = blaze::Column<MatrixType>;
-
-   MatrixType A( 128UL, 256UL );
+   blaze::CompressedMatrix<int,blaze::columnMajor> A( 128UL, 256UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 31st column of matrix A
-   ColumnType col31 = column( A, 31UL );
+   auto col31 = column( A, 31UL );
 
-   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=col31.begin(); it!=col31.end(); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
    }
 
-   for( ColumnType::Iterator it=col31.begin(); it!=col31.end(); ++it ) {
-      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   // Traversing the elements via iterators to const elements
+   for( auto it=col31.cbegin(); it!=col31.cend(); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
@@ -8256,11 +8014,9 @@
 // The following example demonstrates all options:
 
    \code
-   using MatrixType = blaze::CompressedMatrix<double,blaze::columnMajor>;
-   MatrixType A( 100UL, 10UL );  // Non-initialized 10x100 matrix
+   blaze::CompressedMatrix<double,blaze::columnMajor> A( 100UL, 10UL );  // Non-initialized 100x10 matrix
 
-   using ColumnType = blaze::Column<MatrixType>;
-   ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
+   auto col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    // The subscript operator provides access to all possible elements of the sparse column,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -8296,14 +8052,11 @@
 // shows this by means of a dense column view:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<int,columnMajor>;
-   using ColumnType = blaze::Column<MatrixType>;
-
-   MatrixType A( 42UL, 42UL );
+   blaze::DynamicMatrix<int,blaze::columnMajor> A( 42UL, 42UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 2nd column of matrix A
-   ColumnType col2 = column( A, 2UL );
+   auto col2 = column( A, 2UL );
 
    col2.size();          // Returns the number of elements in the column
    col2.capacity();      // Returns the capacity of the column
@@ -8311,7 +8064,7 @@
 
    col2.resize( 84UL );  // Compilation error: Cannot resize a single column of a matrix
 
-   ColumnType col3 = column( A, 3UL );
+   auto col3 = column( A, 3UL );
    swap( col2, col3 );   // Compilation error: Swap operation not allowed
    \endcode
 
@@ -8329,11 +8082,9 @@
    blaze::CompressedVector<double,blaze::columnVector> c( 2UL );
    c[1] = 3.0;
 
-   using MatrixType = blaze::DynamicMatrix<double,blaze::columnMajor>;
-   MatrixType A( 2UL, 4UL );  // Non-initialized 2x4 matrix
+   blaze::DynamicMatrix<double,blaze::columnMajor> A( 2UL, 4UL );  // Non-initialized 2x4 matrix
 
-   using ColumnType = blaze::Column<DenseMatrix>;
-   ColumnType col0( column( A, 0UL ) );  // Reference to the 0th column of A
+   auto col0( column( A, 0UL ) );  // Reference to the 0th column of A
 
    col0[0] = 0.0;           // Manual initialization of the 0th column of A
    col0[1] = 0.0;
@@ -8368,37 +8119,34 @@
 // instance:
 
    \code
-   using MatrixType = blaze::CompressedMatrix<int,rowMajor>;
-   using ColumnType = blaze::Column<MatrixType>;
-
-   MatrixType A( 64UL, 32UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 64UL, 32UL );
    // ... Resizing and initialization
 
-   // Creating a reference to the 31st column of a row-major matrix A
-   ColumnType col1 = column( A, 1UL );
+   // Creating a reference to the 1st column of a column-major matrix A
+   auto col1 = column( A, 1UL );
 
-   for( ColumnType::Iterator it=col1.begin(); it!=col1.end(); ++it ) {
+   for( auto it=col1.begin(); it!=col1.end(); ++it ) {
       // ...
    }
    \endcode
 
 // However, please note that creating a column view on a matrix stored in a row-major fashion
-// can result in a considerable performance decrease in comparison to a view on a matrix with
-// a fitting storage orientation. This is due to the non-contiguous storage of the matrix
+// can result in a considerable performance decrease in comparison to a column view on a matrix
+// with column-major storage format. This is due to the non-contiguous storage of the matrix
 // elements. Therefore care has to be taken in the choice of the most suitable storage order:
 
    \code
    // Setup of two row-major matrices
-   CompressedMatrix<double,rowMajor> A( 128UL, 128UL );
-   CompressedMatrix<double,rowMajor> B( 128UL, 128UL );
+   blaze::DynamicMatrix<double,blaze::rowMajor> A( 128UL, 128UL );
+   blaze::DynamicMatrix<double,blaze::rowMajor> B( 128UL, 128UL );
    // ... Resizing and initialization
 
    // The computation of the 15th column of the multiplication between A and B ...
-   CompressedVector<double,columnVector> x = column( A * B, 15UL );
+   blaze::DynamicVector<double,blaze::columnVector> x = column( A * B, 15UL );
 
    // ... is essentially the same as the following computation, which multiplies
-   // the 15th column of the row-major matrix B with A.
-   CompressedVector<double,columnVector> x = A * column( B, 15UL );
+   // A with the 15th column of the row-major matrix B.
+   blaze::DynamicVector<double,blaze::rowVector> x = A * column( B, 15UL );
    \endcode
 
 // Although \b Blaze performs the resulting matrix/vector multiplication as efficiently as possible
@@ -8415,33 +8163,13 @@
 // \tableofcontents
 //
 //
-// Bands provide views on a specific band of a dense or sparse matrix. As such, bands act as a
-// reference to a specific band. This reference is valid and can be used in every way any other
-// vector can be used as long as the matrix containing the band is not resized or entirely
-// destroyed. The band also acts as an alias to the band elements: Changes made to the elements
-// (e.g. modifying values, inserting or erasing elements) are immediately visible in the matrix
-// and changes made via the matrix are immediately visible in the band.
-//
-//
-// \n \section views_bands_template The Band Template
-// <hr>
-//
-// The blaze::Band template represents a reference to a specific band of a dense or sparse matrix
-// primitive. It can be included via the header file
-
-   \code
-   #include <blaze/math/Band.h>
-   \endcode
-
-// The type of the matrix is specified via template parameter:
-
-   \code
-   template< typename MT >
-   class Band;
-   \endcode
-
-// \c MT specifies the type of the matrix primitive. Band can be used with every matrix primitive,
-// but does not work with any matrix expression type.
+// Bands provide views on a specific band of a dense or sparse matrix (e.g. the diagonal, the
+// subdiagonal, ...). As such, bands act as a reference to a specific band. This reference
+// is valid and can be used in every way any other vector can be used as long as the matrix
+// containing the band is not resized or entirely destroyed. The band also acts as an alias to
+// the band elements: Changes made to the elements (e.g. modifying values, inserting or erasing
+// elements) are immediately visible in the matrix and changes made via the matrix are immediately
+// visible in the band.
 //
 //
 // \n \section views_bands_setup Setup of Bands
@@ -8451,21 +8179,25 @@
 // \image latex band.eps "Band view" width=250pt
 //
 // A reference to a dense or sparse band can be created very conveniently via the \c band()
-// function. The band index must be in the range from \f$[1-M..N-1]\f$, where \c M is the total
-// number of rows and \c N is the total number of columns, and can be specified both at compile
-// time or at runtime:
+// function. It can be included via the header file
 
    \code
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
+   #include <blaze/math/Band.h>
+   \endcode
 
-   DenseMatrixType A;
+// The band index must be in the range from \f$[1-M..N-1]\f$, where \c M is the total number of
+// rows and \c N is the total number of columns, and can be specified both at compile time or at
+// runtime:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating a reference to the 1st lower band of matrix A (compile time index)
-   blaze::Band<DenseMatrixType,-1L> band1 = band<-1L>( A );
+   auto band1 = band<-1L>( A );
 
    // Creating a reference to the 2nd upper band of matrix A (runtime index)
-   blaze::Band<DenseMatrixType> band2 = band( A, 2L );
+   auto band2 = band( A, 2L );
    \endcode
 
 // In addition, the \c diagonal() function provides a convenient shortcut for the setup of a view
@@ -8473,42 +8205,34 @@
 // function with a compile time index of 0:
 
    \code
-   using DenseMatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using DiagonalType1   = blaze::Band<DenseMatrixType,0L>;
-   using DiagonalType2   = blaze::Diagonal<DenseMatrixType>;
-
-   DenseMatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating a reference to the diagonal of matrix A via the band() and diagonal() functions
-   DiagonalType1 diag1 = band<0L>( A );
-   DiagonalType2 diag2 = diagonal( A );
+   auto diag1 = band<0L>( A );
+   auto diag2 = diagonal( A );
 
-   static_assert( blaze::IsSame<DiagonalType1,DiagonalType2>::value, "Non-identical types detected" );
+   static_assert( blaze::IsSame< decltype(diag1), decltype(diag2) >::value, "Non-identical types detected" );
    \endcode
 
-// The resulting reference can be treated as any other vector, i.e. it can be assigned to, it can
-// be copied from, and it can be used in arithmetic operations. By default, bands are considered
-// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
-// reference can also be used on both sides of an assignment: The band can either be used as an
-// alias to grant write access to a specific band of a matrix primitive on the left-hand side of
-// an assignment or to grant read-access to a specific band of a matrix primitive or expression
-// on the right-hand side of an assignment. The following example demonstrates this in detail:
+// Both the \c band() and the diagonal() function return an expression representing the band view.
+// This view can be treated as any other vector, i.e. it can be assigned to, it can be copied from,
+// and it can be used in arithmetic operations. By default, bands are considered column vectors,
+// but this setting can be changed via the \c defaultTransposeFlag switch. The reference can also
+// be used on both sides of an assignment: The band can either be used as an alias to grant write
+// access to a specific band of a matrix primitive on the left-hand side of an assignment or to
+// grant read-access to a specific band of a matrix primitive or expression on the right-hand side
+// of an assignment. The following example demonstrates this in detail:
 
    \code
-   using DenseVectorType  = blaze::DynamicVector<double,blaze::rowVector>;
-   using SparseVectorType = blaze::CompressedVector<double,blaze::rowVector>;
-   using DenseMatrixType  = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   using SparseMatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-
-   DenseVectorType  x;
-   SparseVectorType y;
-   DenseMatrixType  A, B;
-   SparseMatrixType C, D;
+   blaze::DynamicVector<double,blaze::rowVector> x;
+   blaze::CompressedVector<double,blaze::rowVector> y;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A, B;
+   blaze::CompressedMatrix<double,blaze::rowMajor> C, D;
    // ... Resizing and initialization
 
    // Setting the 2nd upper band of matrix A to x
-   blaze::Band<DenseMatrixType> band2 = band( A, 2L );
+   auto band2 = band( A, 2L );
    band2 = x;
 
    // Setting the 3rd upper band of matrix B to y
@@ -8521,25 +8245,17 @@
    y = band( C * D, 2L );
    \endcode
 
-// The \c band() function can be used on any dense or sparse matrix, including expressions, as
-// illustrated by the source code example. However, bands cannot be instantiated for expression
-// types, but only for matrix primitives, respectively, i.e. for matrix types that offer write
-// access.
-//
-//
 // \n \section views_bands_element_access Element Access
 // <hr>
 //
-// A dense or sparse band can be used like any other vector. For instance, the elements of a band
-// can be directly accessed with the subscript operator:
+// The elements of a band can be directly accessed with the subscript operator:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   MatrixType A;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
    // ... Resizing and initialization
 
    // Creating a view on the 4th upper band of matrix A
-   blaze::Band<MatrixType> band4 = band( A, 4L );
+   auto band4 = band( A, 4L );
 
    // Setting the 1st element of the dense band, which corresponds
    // to the 1st element in the 4th upper band of matrix A
@@ -8554,49 +8270,47 @@
 
 // where N is the number of elements of the referenced band. Alternatively, the elements of a band
 // can be traversed via iterators. Just as with vectors, in case of non-const band, \c begin() and
-// \c end() return an Iterator, which allows a manipulation of the non-zero values, in case of
-// constant band a ConstIterator is returned:
+// \c end() return an iterator, which allows to manipulate the elements, in case of constant bands
+// an iterator to immutable elements is returned:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;
-   using BandType   = blaze::Band<MatrixType>;
-
-   MatrixType A( 128UL, 256UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 128UL, 256UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 5th upper band of matrix A
-   BandType band5 = band( A, 5L );
+   auto band5 = band( A, 5L );
 
-   for( BandType::Iterator it=band5.begin(); it!=band5.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=band5.begin(); it!=band5.end(); ++it ) {
       *it = ...;  // OK; Write access to the dense band value
       ... = *it;  // OK: Read access to the dense band value.
    }
 
-   for( BandType::ConstIterator it=band5.begin(); it!=band5.end(); ++it ) {
-      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   // Traversing the elements via iterators to const elements
+   for( auto it=band5.cbegin(); it!=band5.cend(); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = *it;  // OK: Read access to the dense band value.
    }
    \endcode
 
    \code
-   using MatrixType = blaze::CompressedMatrix<int,blaze::rowMajor>;
-   using BandType   = blaze::Band<MatrixType>;
-
-   MatrixType A( 128UL, 256UL );
+   blaze::CompressedMatrix<int,blaze::rowMajor> A( 128UL, 256UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 5th band of matrix A
-   BandType band5 = band( A, 5L );
+   auto band5 = band( A, 5L );
 
-   for( BandType::Iterator it=band5.begin(); it!=band5.end(); ++it ) {
+   // Traversing the elements via iterators to non-const elements
+   for( auto it=band5.begin(); it!=band5.end(); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
    }
 
-   for( BandType::ConstIterator it=band5.begin(); it!=band5.end(); ++it ) {
-      it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+   // Traversing the elements via iterators to const elements
+   for( auto it=band5.cbegin(); it!=band5.cend(); ++it ) {
+      it->value() = ...;  // Compilation error: Assignment to the value via iterator-to-const is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the sparse element.
@@ -8610,11 +8324,9 @@
 // The following example demonstrates all options:
 
    \code
-   using MatrixType = blaze::CompressedMatrix<double,blaze::rowMajor>;
-   MatrixType A( 10UL, 100UL );  // Non-initialized 10x100 matrix
+   blaze::CompressedMatrix<double,blaze::rowMajor> A( 10UL, 100UL );  // Non-initialized 10x100 matrix
 
-   using BandType = blaze::Band<MatrixType>;
-   BandType diag( band( A, 0L ) );  // Reference to the diagonal of A
+   auto diag( band( A, 0L ) );  // Reference to the diagonal of A
 
    // The subscript operator provides access to all possible elements of the sparse band,
    // including the zero elements. In case the subscript operator is used to access an element
@@ -8643,14 +8355,11 @@
 // shows this by means of a dense band view:
 
    \code
-   using MatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;
-   using BandType = blaze::Band<MatrixType>;
-
-   MatrixType A( 42UL, 42UL );
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 42UL, 42UL );
    // ... Resizing and initialization
 
    // Creating a reference to the 2nd upper band of matrix A
-   BandType band2 = band( A, 2L );
+   auto band2 = band( A, 2L );
 
    band2.size();          // Returns the number of elements in the band
    band2.capacity();      // Returns the capacity of the band
@@ -8658,7 +8367,7 @@
 
    band2.resize( 84UL );  // Compilation error: Cannot resize a single band of a matrix
 
-   BandType band3 = band( A, 3L );
+   auto band3 = band( A, 3L );
    swap( band2, band3 );   // Compilation error: Swap operation not allowed
    \endcode
 
@@ -8676,12 +8385,10 @@
    blaze::CompressedVector<double,blaze::columnVector> c( 2UL );
    c[1] = 3.0;
 
-   using DenseMatrix = blaze::DynamicMatrix<double,blaze::rowMajor>;
-   DenseMatrix A( 4UL, 2UL );  // Non-initialized 4x2 matrix
+   blaze::DynamicMatrix<double,blaze::rowMajor> A( 4UL, 2UL );  // Non-initialized 4x2 matrix
 
-   using BandType = blaze::Band<DenseMatrix>;
-   BandType band1( band( A, 1L ) );  // Reference to the 1st upper band of A
-   BandType diag ( band( A, 0L ) );  // Reference to the diagonal of A
+   auto band1( band( A, 1L ) );  // Reference to the 1st upper band of A
+   auto diag ( band( A, 0L ) );  // Reference to the diagonal of A
 
    band1[0] = 0.0;      // Manual initialization of the 1st upper band of A
    diag = 1.0;          // Homogeneous initialization of the diagonal of A
@@ -12682,7 +12389,7 @@
    using M2x2 = StaticMatrix<int,2UL,2UL,rowMajor>;
    using V2   = StaticVector<int,2UL,columnVector>;
 
-   DynamicMatrix<M2x2,rowMajor> A{ { M2x2(1), M2x2(2) }
+   DynamicMatrix<M2x2,rowMajor> A{ { M2x2(1), M2x2(2) },
                                    { M2x2(3), M2x2(4) } };
 
    DynamicVector<V2,columnVector> x{ V2(1), V2(2) };
