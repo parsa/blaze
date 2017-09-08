@@ -463,6 +463,26 @@ template< typename T >
 using VectorType_ = typename T::VectorType;
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Alias declaration for nested \c ViewedType type definitions.
+// \ingroup aliases
+//
+// The ViewedType_ alias declaration provides a convenient shortcut to access the nested
+// \a ViewedType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::ViewedType;
+   using Type2 = ViewedType_<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using ViewedType_ = typename T::ViewedType;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
