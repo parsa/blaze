@@ -125,6 +125,7 @@ class BandImpl<MT,TF,true,false,BAs...>
    using This = BandImpl<MT,TF,true,false,BAs...>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this BandImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this BandImpl instance.
    using ResultType    = BandTrait_<RT,BAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the band elements.
@@ -2083,8 +2084,14 @@ class BandImpl<MT,TF,true,true,BAs...>
 
  public:
    //**Type definitions****************************************************************************
-   //!< Type of this BandImpl instance.
+   //! Type of this BandImpl instance.
    using This = BandImpl<MT,TF,true,true,BAs...>;
+
+   //! Base type of this BandImpl instance.
+   using BaseType = DenseVector<This,TF>;
+
+   //! The type viewed by this BandImpl instance.
+   using ViewedType = MT;
 
    //! Result type for expression template evaluations.
    using ResultType = BandTrait_<ResultType_<MT>,BAs...>;

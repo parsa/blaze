@@ -126,6 +126,7 @@ class ColumnImpl<MT,true,false,SF,CAs...>
    using This = ColumnImpl<MT,true,false,SF,CAs...>;
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this ColumnImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
@@ -2097,6 +2098,7 @@ class ColumnImpl<MT,false,false,false,CAs...>
    using This = ColumnImpl<MT,false,false,false,CAs...>;
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this ColumnImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
@@ -4082,12 +4084,13 @@ class ColumnImpl<MT,false,false,true,CAs...>
    //! Type of this ColumnImpl instance.
    using This = ColumnImpl<MT,false,false,true,CAs...>;
 
-   using BaseType      = SparseVector<This,false>;     //!< Base type of this ColumnImpl instance.
-   using ResultType    = ColumnTrait_<MT>;             //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;             //!< Type of the column elements.
-   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
-   using CompositeType = const ColumnImpl&;            //!< Data type for composite expression templates.
+   using BaseType      = SparseVector<This,false>;    //!< Base type of this ColumnImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this ColumnImpl instance.
+   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
+   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const ColumnImpl&;           //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
    using ConstReference = ConstReference_<MT>;

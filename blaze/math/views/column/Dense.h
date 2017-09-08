@@ -135,6 +135,7 @@ class ColumnImpl<MT,true,true,SF,CAs...>
    using This = ColumnImpl<MT,true,true,SF,CAs...>;
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this ColumnImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
@@ -2307,6 +2308,7 @@ class ColumnImpl<MT,false,true,false,CAs...>
    using This = ColumnImpl<MT,false,true,false,CAs...>;
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this ColumnImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
@@ -4206,6 +4208,7 @@ class ColumnImpl<MT,false,true,true,CAs...>
    using This = ColumnImpl<MT,false,true,true,CAs...>;
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this ColumnImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this ColumnImpl instance.
    using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.

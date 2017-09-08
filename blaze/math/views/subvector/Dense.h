@@ -122,6 +122,7 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
    using This = SubvectorImpl<VT,unaligned,TF,true,SAs...>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
+   using ViewedType    = VT;                          //!< The type viewed by this SubvectorImpl instance.
    using ResultType    = SubvectorTrait_<VT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<VT>;            //!< Type of the subvector elements.
@@ -2713,6 +2714,7 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
    using This = SubvectorImpl<VT,aligned,TF,true>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
+   using ViewedType    = VT;                          //!< The type viewed by this SubvectorImpl instance.
    using ResultType    = SubvectorTrait_<VT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<VT>;            //!< Type of the subvector elements.
@@ -4883,6 +4885,7 @@ class SubvectorImpl< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.
@@ -5027,6 +5030,7 @@ class SubvectorImpl< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.
@@ -5171,6 +5175,7 @@ class SubvectorImpl< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.
@@ -5315,6 +5320,7 @@ class SubvectorImpl< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.

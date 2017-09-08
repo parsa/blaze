@@ -134,6 +134,7 @@ class RowImpl<MT,true,true,SF,RAs...>
    using This = RowImpl<MT,true,true,SF,RAs...>;
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this RowImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
@@ -2308,6 +2309,7 @@ class RowImpl<MT,false,true,false,RAs...>
    using This = RowImpl<MT,false,true,false,RAs...>;
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this RowImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
@@ -4207,6 +4209,7 @@ class RowImpl<MT,false,true,true,RAs...>
    using This = RowImpl<MT,false,true,true,RAs...>;
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this RowImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.

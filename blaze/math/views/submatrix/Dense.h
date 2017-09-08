@@ -145,6 +145,7 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
    using This = SubmatrixImpl<MT,unaligned,false,true,SAs...>;
 
    using BaseType      = DenseMatrix<This,false>;     //!< Base type of this SubmatrixImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -3486,6 +3487,7 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
    using This = SubmatrixImpl<MT,unaligned,true,true,SAs...>;
 
    using BaseType      = DenseMatrix<This,true>;      //!< Base type of this SubmatrixImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -6785,6 +6787,7 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
    using This = SubmatrixImpl<MT,aligned,false,true,SAs...>;
 
    using BaseType      = DenseMatrix<This,false>;     //!< Base type of this SubmatrixImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -9714,6 +9717,7 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
    using This = SubmatrixImpl<MT,aligned,true,true,SAs...>;
 
    using BaseType      = DenseMatrix<This,true>;      //!< Base type of this SubmatrixImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.

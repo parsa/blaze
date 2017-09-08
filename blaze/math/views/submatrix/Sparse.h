@@ -129,6 +129,7 @@ class SubmatrixImpl<MT,AF,false,false,SAs...>
    using This = SubmatrixImpl<MT,AF,false,false,SAs...>;
 
    using BaseType      = SparseMatrix<This,false>;    //!< Base type of this SubmatrixImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
@@ -2652,6 +2653,7 @@ class SubmatrixImpl<MT,AF,true,false,SAs...>
    using This = SubmatrixImpl<MT,AF,true,false,SAs...>;
 
    using BaseType      = SparseMatrix<This,true>;     //!< Base type of this SubmatrixImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.

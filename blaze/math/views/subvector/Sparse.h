@@ -114,6 +114,7 @@ class SubvectorImpl<VT,AF,TF,false,SAs...>
    using This = SubvectorImpl<VT,AF,TF,false,SAs...>;
 
    using BaseType      = SparseVector<This,TF>;       //!< Base type of this SubvectorImpl instance.
+   using ViewedType    = VT;                          //!< The type viewed by this SubvectorImpl instance.
    using ResultType    = SubvectorTrait_<VT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<VT>;            //!< Type of the subvector elements.

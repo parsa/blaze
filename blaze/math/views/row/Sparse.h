@@ -127,6 +127,7 @@ class RowImpl<MT,true,false,SF,RAs...>
    using This = RowImpl<MT,true,false,SF,RAs...>;
 
    using BaseType      = SparseVector<This,true>;     //!< Base type of this RowImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
@@ -2098,6 +2099,7 @@ class RowImpl<MT,false,false,false,RAs...>
    using This = RowImpl<MT,false,false,false,RAs...>;
 
    using BaseType      = SparseVector<This,true>;     //!< Base type of this RowImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
@@ -4079,10 +4081,11 @@ class RowImpl<MT,false,false,true,RAs...>
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this Row instance.
+   //! Type of this RowImpl instance.
    using This = RowImpl<MT,false,false,true,RAs...>;
 
-   using BaseType      = SparseVector<This,true>;     //!< Base type of this Row instance.
+   using BaseType      = SparseVector<This,true>;     //!< Base type of this RowImpl instance.
+   using ViewedType    = MT;                          //!< The type viewed by this RowImpl instance.
    using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
