@@ -312,7 +312,7 @@ class SMatTransposer
    //**********************************************************************************************
 
    //**NonZeros function***************************************************************************
-   /*!\brief Returns the number of non-zero elements in the matrix
+   /*!\brief Returns the number of non-zero elements in the matrix.
    //
    // \return The number of non-zero elements in the matrix.
    */

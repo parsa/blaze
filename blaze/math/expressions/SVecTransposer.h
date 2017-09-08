@@ -238,6 +238,26 @@ class SVecTransposer
    }
    //**********************************************************************************************
 
+   //**Capacity function***************************************************************************
+   /*!\brief Returns the maximum capacity of the vector.
+   //
+   // \return The capacity of the vector.
+   */
+   inline size_t capacity() const noexcept {
+      return sv_.capacity();
+   }
+   //**********************************************************************************************
+
+   //**NonZeros function***************************************************************************
+   /*!\brief Returns the number of non-zero elements in the vector.
+   //
+   // \return The number of non-zero elements in the vector.
+   */
+   inline size_t nonZeros() const {
+      return sv_.nonZeros();
+   }
+   //**********************************************************************************************
+
    //**Reset function******************************************************************************
    /*!\brief Resets the vector elements.
    //
