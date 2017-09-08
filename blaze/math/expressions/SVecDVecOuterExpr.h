@@ -741,6 +741,10 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
+      // Final memory allocation (based on the evaluated operands)
+      (~lhs).reserve( x.nonZeros() * y.size() );
+
+      // Performing the outer product
       const ConstIterator begin( x.begin() );
       const ConstIterator end  ( x.end()   );
 

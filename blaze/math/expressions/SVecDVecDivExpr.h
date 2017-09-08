@@ -522,6 +522,10 @@ class SVecDVecDivExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
+      // Final memory allocation (based on the evaluated operands)
+      (~lhs).reserve( x.nonZeros() );
+
+      // Performing the vector division
       for( ConstIterator element=x.begin(); element!=x.end(); ++element )
          (~lhs).append( element->index(), element->value() / y[element->index()] );
    }

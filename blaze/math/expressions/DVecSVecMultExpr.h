@@ -527,6 +527,10 @@ class DVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
+      // Final memory allocation (based on the evaluated operands)
+      (~lhs).reserve( y.nonZeros() );
+
+      // Performing the vector multiplication
       for( ConstIterator element=y.begin(); element!=y.end(); ++element )
          (~lhs).append( element->index(), x[element->index()] * element->value() );
    }

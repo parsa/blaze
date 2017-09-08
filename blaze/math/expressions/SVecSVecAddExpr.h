@@ -384,6 +384,10 @@ class SVecSVecAddExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
+      // Final memory allocation (based on the evaluated operands)
+      (~lhs).reserve( min( x.size(), x.nonZeros() + y.nonZeros() ) );
+
+      // Performing the vector addition
       const LeftIterator  lend( x.end() );
       const RightIterator rend( y.end() );
 
