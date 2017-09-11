@@ -57,28 +57,33 @@ namespace blaze {
 /*!\brief Compile time check for rows.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a row (i.e. dense or
-// sparse row). In case the type is a row, the \a value member constant is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// This type trait tests whether or not the given template parameter is a row (i.e. a view on a
+// row of a dense or sparse matrix). In case the type is a row, the \a value member constant is
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 
    \code
-   using DenseMatrixType1 = blaze::DynamicMatrix<double,columnMajor>;
-   using DenseRowType1    = blaze::Row<DenseMatrixType1>;
+   using blaze::aligned;
 
-   using DenseMatrixType2 = blaze::StaticMatrix<float,3UL,4UL,rowMajor>;
-   using DenseRowType2    = blaze::Row<DenseMatrixType2>;
+   using MatrixType1 = blaze::StaticMatrix<int,10UL,16UL>;
+   using MatrixType2 = blaze::DynamicMatrix<double>;
+   using MatrixType3 = blaze::CompressedMatrix<float>;
 
-   using SparseMatrixType = blaze::CompressedMatrix<int,columnMajor>;
-   using SparseRowType    = blaze::Row<SparseMatrixType>;
+   MatrixType1 A;
+   MatrixType2 B( 100UL, 200UL );
+   MatrixType3 C( 200UL, 250UL );
 
-   blaze::IsRow< SparseRowType >::value          // Evaluates to 1
-   blaze::IsRow< const DenseRowType1 >::Type     // Results in TrueType
-   blaze::IsRow< volatile DenseRowType2 >        // Is derived from TrueType
-   blaze::IsRow< DenseMatrixType1 >::value       // Evaluates to 0
-   blaze::IsRow< const SparseMatrixType >::Type  // Results in FalseType
-   blaze::IsRow< volatile long double >          // Is derived from FalseType
+   using RowType1 = decltype( blaze::row<4UL>( A ) );
+   using RowType2 = decltype( blaze::row( B, 16UL ) );
+   using RowType3 = decltype( blaze::row( C, 17UL ) );
+
+   blaze::IsRow< RowType1 >::value          // Evaluates to 1
+   blaze::IsRow< const RowType2 >::Type     // Results in TrueType
+   blaze::IsRow< volatile RowType3 >        // Is derived from TrueType
+   blaze::IsRow< MatrixType1 >::value       // Evaluates to 0
+   blaze::IsRow< const MatrixType2 >::Type  // Results in FalseType
+   blaze::IsRow< volatile MatrixType3 >     // Is derived from FalseType
    \endcode
 */
 template< typename T >
