@@ -102,10 +102,14 @@ struct IsSMPAssignableHelper
    \code
    using blaze::StaticVector;
    using blaze::StaticMatrix;
+   using blaze::DynamicVector;
    using blaze::DynamicMatrix;
 
-   using VectorType    = blaze::DynamicVector<int,columnVector>;
-   using SubvectorType = blaze::Subvector<VectorType>;
+   using VectorType = DynamicVector<int,columnVector>;
+
+   VectorType a( 100UL );
+
+   using SubvectorType = decltype( blaze::subvector( a, 8UL, 16UL ) );
 
    blaze::IsSMPAssignable< VectorType >::value            // Evaluates to 1
    blaze::IsSMPAssignable< SubvectorType >::Type          // Results in TrueType
