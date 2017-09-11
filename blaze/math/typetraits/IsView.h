@@ -91,14 +91,17 @@ struct IsViewHelper
 // derives from \a FalseType.
 
    \code
-   using blaze::columnVector;
+   using blaze::aligned;
 
-   using VectorType    = blaze::DynamicVector<double,columnVector>;
-   using SubvectorType = blaze::Subvector<VectorType>;
+   using VectorType = blaze::StaticVector<int,10UL>;
+   using MatrixType = blaze::DynamicMatrix<double>;
 
-   using MatrixType = blaze::CompressedMatrix<int,rowMajor>;
-   using RowType    = blaze::Row<MatrixType>;
-   using ColumnType = blaze::Column<MatrixType>;
+   VectorType a;
+   MatrixType A( 100UL, 200UL );
+
+   using SubvectorType = decltype( blaze::subvector( a, 2UL, 8UL ) );
+   using RowType       = decltype( blaze::row( A, 8UL ) );
+   using ColumnType    = decltype( blaze::column( A, 5UL ) );
 
    blaze::IsView< SubvectorType >::value    // Evaluates to 1
    blaze::IsView< const RowType >::Type     // Results in TrueType
