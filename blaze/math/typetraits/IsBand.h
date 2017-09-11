@@ -65,21 +65,26 @@ namespace blaze {
 // \a FalseType.
 
    \code
-   using DenseMatrixType1 = blaze::DynamicMatrix<double,columnMajor>;
-   using DenseBandType1   = blaze::Band<DenseMatrixType1>;
+   using blaze::aligned;
 
-   using DenseMatrixType2 = blaze::StaticMatrix<float,3UL,4UL,rowMajor>;
-   using DenseBandType2   = blaze::Band<DenseMatrixType2>;
+   using MatrixType1 = blaze::StaticMatrix<int,10UL,16UL>;
+   using MatrixType2 = blaze::DynamicMatrix<double>;
+   using MatrixType3 = blaze::CompressedMatrix<float>;
 
-   using SparseMatrixType = blaze::CompressedMatrix<int,columnMajor>;
-   using SparseBandType   = blaze::Band<SparseMatrixType>;
+   MatrixType1 A;
+   MatrixType2 B( 100UL, 200UL );
+   MatrixType3 C( 200UL, 250UL );
 
-   blaze::IsBand< SparseBandType >::value         // Evaluates to 1
-   blaze::IsBand< const DenseBandType1 >::Type    // Results in TrueType
-   blaze::IsBand< volatile DenseBandType2 >       // Is derived from TrueType
-   blaze::IsBand< DenseMatrixType1 >::value       // Evaluates to 0
-   blaze::IsBand< const SparseMatrixType >::Type  // Results in FalseType
-   blaze::IsBand< volatile long double >          // Is derived from FalseType
+   using BandType1 = decltype( blaze::band<0L>( A ) );
+   using BandType2 = decltype( blaze::band( B, 2L ) );
+   using BandType3 = decltype( blaze::band( C, -4L ) );
+
+   blaze::IsBand< BandType1 >::value         // Evaluates to 1
+   blaze::IsBand< const BandType2 >::Type    // Results in TrueType
+   blaze::IsBand< volatile BandType3 >       // Is derived from TrueType
+   blaze::IsBand< MatrixType1 >::value       // Evaluates to 0
+   blaze::IsBand< const MatrixType2 >::Type  // Results in FalseType
+   blaze::IsBand< volatile MatrixType3 >     // Is derived from FalseType
    \endcode
 */
 template< typename T >
