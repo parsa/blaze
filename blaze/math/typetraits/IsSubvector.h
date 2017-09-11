@@ -57,28 +57,33 @@ namespace blaze {
 /*!\brief Compile time check for subvectors.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template parameter is a subvector (i.e. dense
-// or sparse subvector). In case the type is a subvector, the \a value member constant is set
-// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
-// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
-// derives from \a FalseType.
+// This type trait tests whether or not the given template parameter is a subvector (i.e. a view
+// on the part of a dense or sparse vector). In case the type is a subvector, the \a value member
+// constant is set to \a true, the nested type definition \a Type is \a TrueType, and the class
+// derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and
+// the class derives from \a FalseType.
 
    \code
-   using DenseVectorType1    = blaze::DynamicVector<double,columnVector>;
-   using DenseSubvectorType1 = blaze::Subvector<DenseVectorType1>;
+   using blaze::aligned;
 
-   using DenseVectorType2    = blaze::StaticVector<float,3UL,rowVector>;
-   using DenseSubvectorType2 = blaze::Subvector<DenseVectorType2>;
+   using VectorType1 = blaze::StaticVector<int,10UL>;
+   using VectorType2 = blaze::DynamicVector<double>;
+   using VectorType3 = blaze::CompressedVector<float>;
 
-   using SparseVectorType    = blaze::CompressedVector<int,columnVector>;
-   using SparseSubvectorType = blaze::Subvector<SparseVectorType>;
+   VectorType1 a;
+   VectorType2 b( 100UL );
+   VectorType3 c( 200UL );
 
-   blaze::IsSubvector< SparseSubvectorType >::value       // Evaluates to 1
-   blaze::IsSubvector< const DenseSubvectorType1 >::Type  // Results in TrueType
-   blaze::IsSubvector< volatile DenseSubvectorType2 >     // Is derived from TrueType
-   blaze::IsSubvector< DenseVectorType1 >::value          // Evaluates to 0
-   blaze::IsSubvector< const SparseVectorType >::Type     // Results in FalseType
-   blaze::IsSubvector< volatile long double >             // Is derived from FalseType
+   using SubvectorType1 = decltype( blaze::subvector<2UL,4UL>( a ) );
+   using SubvectorType2 = decltype( blaze::subvector<aligned>( b, 8UL 24UL ) );
+   using SubvectorType3 = decltype( blaze::subvector( c, 5UL, 13UL ) );
+
+   blaze::IsSubvector< SubvectorType1 >::value       // Evaluates to 1
+   blaze::IsSubvector< const SubvectorType2 >::Type  // Results in TrueType
+   blaze::IsSubvector< volatile SubvectorType3 >     // Is derived from TrueType
+   blaze::IsSubvector< VectorType1 >::value          // Evaluates to 0
+   blaze::IsSubvector< const VectorType2 >::Type     // Results in FalseType
+   blaze::IsSubvector< volatile VectorType3 >        // Is derived from FalseType
    \endcode
 */
 template< typename T >
