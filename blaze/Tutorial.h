@@ -6891,12 +6891,23 @@
    auto sv2 = subvector( x, 8UL, 16UL );
    \endcode
 
-// The \c subvector() function returns an expression representing the subvector view. This view
-// can be treated as any other dense or sparse vector, i.e. it can be assigned to, it can be
-// copied from, and it can be used in arithmetic operations. A subvector created from a row
-// vector can be used as any other row vector, a subvector created from a column vector can be
-// used as any other column vector. The view can also be used on both sides of an assignment: The
-// subvector can either be used as an alias to grant write access to a specific subvector of a
+// The \c subvector() function returns an expression representing the subvector view. The type of
+// this expression depends on the given subvector arguments, primarily the type of the vector and
+// the compile time arguments. If the type is required, it can be determined via \c decltype or
+// via the \c SubvectorExprTrait class template:
+
+   \code
+   using VectorType = blaze::DynamicVector<int>;
+
+   using SubvectorType1 = decltype( blaze::subvector<4UL,12UL>( std::declval<VectorType>() ) );
+   using SubvectorType2 = blaze::SubvectorExprTrait<VectorType,4UL,12UL>::Type;
+   \endcode
+
+// The resulting view can be treated as any other dense or sparse vector, i.e. it can be assigned
+// to, it can be copied from, and it can be used in arithmetic operations. A subvector created
+// from a row vector can be used as any other row vector, a subvector created from a column vector
+// can be used as any other column vector. The view can also be used on both sides of an assignment:
+// The subvector can either be used as an alias to grant write access to a specific subvector of a
 // vector primitive on the left-hand side of an assignment or to grant read-access to a specific
 // subvector of a vector primitive or expression on the right-hand side of an assignment. The
 // following example demonstrates this in detail:
@@ -7229,9 +7240,21 @@
    auto sm2 = submatrix( A, 0UL, 4UL, 8UL, 16UL );
    \endcode
 
-// This view can be treated as any other dense or sparse matrix, i.e. it can be assigned to, it
-// can be copied from, and it can be used in arithmetic operations. A submatrix created from a
-// row-major matrix will itself be a row-major matrix, a submatrix created from a column-major
+// The \c submatrix() function returns an expression representing the submatrix view. The type of
+// this expression depends on the given submatrix arguments, primarily the type of the matrix and
+// the compile time arguments. If the type is required, it can be determined via \c decltype or
+// via the \c SubmatrixExprTrait class template:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using SubmatrixType1 = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
+   using SubmatrixType2 = blaze::SubmatrixExprTrait<VectorType,3UL,0UL,4UL,8UL>::Type;
+   \endcode
+
+// The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
+// to, it can be copied from, and it can be used in arithmetic operations. A submatrix created from
+// a row-major matrix will itself be a row-major matrix, a submatrix created from a column-major
 // matrix will be a column-major matrix. The view can also be used on both sides of an assignment:
 // The submatrix can either be used as an alias to grant write access to a specific submatrix
 // of a matrix primitive on the left-hand side of an assignment or to grant read-access to
@@ -7614,13 +7637,24 @@
    auto row2 = row( A, 2UL );
    \endcode
 
-// The \c row() function returns an expression representing the row view. This view can be treated
-// as any other row vector, i.e. it can be assigned to, it can be copied from, and it can be used
-// in arithmetic operations. The reference can also be used on both sides of an assignment: The
-// row can either be used as an alias to grant write access to a specific row of a matrix primitive
-// on the left-hand side of an assignment or to grant read-access to a specific row of a matrix
-// primitive or expression on the right-hand side of an assignment. The following example
-// demonstrates this in detail:
+// The \c row() function returns an expression representing the row view. The type of this
+// expression depends on the given row arguments, primarily the type of the matrix and the compile
+// time arguments. If the type is required, it can be determined via \c decltype or via the
+// \c RowExprTrait class template:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using RowType1 = decltype( blaze::row<1UL>( std::declval<MatrixType>() ) );
+   using RowType2 = blaze::RowExprTrait<MatrixType,1UL>::Type;
+   \endcode
+
+// The resulting view can be treated as any other row vector, i.e. it can be assigned to, it can
+// be copied from, and it can be used in arithmetic operations. The reference can also be used on
+// both sides of an assignment: The row can either be used as an alias to grant write access to a
+// specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
+// to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
+// The following example demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
@@ -7906,13 +7940,24 @@
    auto col2 = column( A, 2UL );
    \endcode
 
-// The \c column() function returns an expression representing the column view. This view can be
-// treated as any other column vector, i.e. it can be assigned to, it can be copied from, and
-// it can be used in arithmetic operations. The reference can also be used on both sides of an
-// assignment: The column can either be used as an alias to grant write access to a specific
-// column of a matrix primitive on the left-hand side of an assignment or to grant read-access to
-// a specific column of a matrix primitive or expression on the right-hand side of an assignment.
-// The following example demonstrates this in detail:
+// The \c column() function returns an expression representing the column view. The type of this
+// expression depends on the given column arguments, primarily the type of the matrix and the
+// compile time arguments. If the type is required, it can be determined via \c decltype or via
+// the \c ColumnExprTrait class template:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using ColumnType1 = decltype( blaze::column<1UL>( std::declval<MatrixType>() ) );
+   using ColumnType2 = blaze::ColumnExprTrait<MatrixType,1UL>::Type;
+   \endcode
+
+// The resulting view can be treated as any other column vector, i.e. it can be assigned to, it
+// can be copied from, and it can be used in arithmetic operations. The reference can also be used
+// on both sides of an assignment: The column can either be used as an alias to grant write access
+// to a specific column of a matrix primitive on the left-hand side of an assignment or to grant
+// read-access to a specific column of a matrix primitive or expression on the right-hand side
+// of an assignment. The following example demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::columnVector> x;
@@ -8216,13 +8261,27 @@
    \endcode
 
 // Both the \c band() and the diagonal() function return an expression representing the band view.
-// This view can be treated as any other vector, i.e. it can be assigned to, it can be copied from,
-// and it can be used in arithmetic operations. By default, bands are considered column vectors,
-// but this setting can be changed via the \c defaultTransposeFlag switch. The reference can also
-// be used on both sides of an assignment: The band can either be used as an alias to grant write
-// access to a specific band of a matrix primitive on the left-hand side of an assignment or to
-// grant read-access to a specific band of a matrix primitive or expression on the right-hand side
-// of an assignment. The following example demonstrates this in detail:
+// The type of this expression depends on the given arguments, primarily the type of the matrix
+// and the compile time arguments. If the type is required, it can be determined via \c decltype
+// or via the \c BandExprTrait and \c DiagonalExprTrait class templates, respectively:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using BandType1 = decltype( blaze::band<1L>( std::declval<MatrixType>() ) );
+   using BandType2 = blaze::BandExprTrait<MatrixType,1L>::Type;
+
+   using DiagonalType1 = decltype( blaze::diagonal( std::declval<MatrixType>() ) );
+   using DiagonalType2 = blaze::DiagonalExprTrait<MatrixType>::Type;
+   \endcode
+
+// This resulting view can be treated as any other vector, i.e. it can be assigned to, it can
+// be copied from, and it can be used in arithmetic operations. By default, bands are considered
+// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
+// reference can also be used on both sides of an assignment: The band can either be used as an
+// alias to grant write access to a specific band of a matrix primitive on the left-hand side of
+// an assignment or to grant read-access to a specific band of a matrix primitive or expression
+// on the right-hand side of an assignment. The following example demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
