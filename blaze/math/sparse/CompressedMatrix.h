@@ -6506,8 +6506,8 @@ struct ColumnTrait< CompressedMatrix<T,SO>, CCAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, ptrdiff_t... BAs >
-struct BandTrait< CompressedMatrix<T,SO>, BAs... >
+template< typename T, bool SO, ptrdiff_t... CBAs >
+struct BandTrait< CompressedMatrix<T,SO>, CBAs... >
 {
    using Type = CompressedVector<T,defaultTransposeFlag>;
 };

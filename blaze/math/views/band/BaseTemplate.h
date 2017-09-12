@@ -55,12 +55,12 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-class BandImpl
+template< typename MT                            // Type of the matrix
+        , bool TF = defaultTransposeFlag         // Transpose flag
+        , bool DF = IsDenseMatrix<MT>::value     // Density flag
+        , bool MF = IsMatMatMultExpr<MT>::value  // Multiplication flag
+        , ptrdiff_t... CBAs >                    // Compile time band arguments
+class Band
 {};
 //*************************************************************************************************
 
@@ -74,86 +74,21 @@ class BandImpl
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief View on a specific band of a dense or sparse matrix.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the Band class template.
 // \ingroup band
 //
-// The Band template represents a reference to a specific band of a dense or sparse matrix primitive.
+// The Band_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Band class template.
 */
-template< typename MT         // Type of the matrix
-        , ptrdiff_t... BAs >  // Compile time band arguments
-using Band = BandImpl< MT
-                     , defaultTransposeFlag
-                     , IsDenseMatrix<MT>::value
-                     , IsMatMatMultExpr<MT>::value
-                     , BAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific band of a dense matrix.
-// \ingroup band
-//
-// The DenseBand template represents a reference to a specific band of a dense matrix primitive.
-*/
-template< typename MT         // Type of the matrix
-        , ptrdiff_t... BAs >  // Compile time band arguments
-using DenseBand = BandImpl< MT
-                          , defaultTransposeFlag
-                          , true
-                          , IsMatMatMultExpr<MT>::value
-                          , BAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific band of a sparse matrix.
-// \ingroup band
-//
-// The SparseBand template represents a reference to a specific band of a sparse matrix primitive.
-*/
-template< typename MT         // Type of the matrix
-        , ptrdiff_t... BAs >  // Compile time band arguments
-using SparseBand = BandImpl< MT
-                           , defaultTransposeFlag
-                           , false
-                           , IsMatMatMultExpr<MT>::value
-                           , BAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific diagonal of a dense or sparse matrix.
-// \ingroup diagonal
-//
-// The DenseDiagonal template represents a reference to a specific diagonal of a dense or sparse
-// matrix primitive.
-*/
-template< typename MT >
-using Diagonal = Band<MT,0L>;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific diagonal of a dense matrix.
-// \ingroup diagonal
-//
-// The DenseDiagonal template represents a reference to a specific diagonal of a dense matrix
-// primitive.
-*/
-template< typename MT >   // Type of the matrix
-using DenseDiagonal = DenseBand<MT,0L>;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific diagonal of a sparse matrix.
-// \ingroup diagonal
-//
-// The SparseDiagonal template represents a reference to a specific diagonal of a sparse matrix
-// primitive.
-*/
-template< typename MT >  // Type of the matrix
-using SparseDiagonal = SparseBand<MT,0L>;
+template< typename MT          // Type of the matrix
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+using Band_ = Band< MT
+                  , defaultTransposeFlag
+                  , IsDenseMatrix<MT>::value
+                  , IsMatMatMultExpr<MT>::value
+                  , CBAs... >;
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

@@ -2653,8 +2653,8 @@ struct ColumnTrait< IdentityMatrix<T,SO>, CCAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, ptrdiff_t... BAs >
-struct BandTrait< IdentityMatrix<T,SO>, BAs... >
+template< typename T, bool SO, ptrdiff_t... CBAs >
+struct BandTrait< IdentityMatrix<T,SO>, CBAs... >
 {
    using Type = CompressedVector<T,defaultTransposeFlag>;
 };

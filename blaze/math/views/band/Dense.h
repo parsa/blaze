@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/views/band/Dense.h
-//  \brief BandImpl specialization for dense matrices
+//  \brief Band specialization for dense matrices
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -102,38 +102,38 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of BandImpl for dense matrices.
+/*!\brief Specialization of Band for dense matrices.
 // \ingroup views
 //
-// This specialization of BandImpl adapts the class template to the requirements of dense matrices.
+// This specialization of Band adapts the class template to the requirements of dense matrices.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-class BandImpl<MT,TF,true,false,BAs...>
-   : public View< DenseVector< BandImpl<MT,TF,true,false,BAs...>, TF > >
-   , private BandData<MT,BAs...>
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+class Band<MT,TF,true,false,CBAs...>
+   : public View< DenseVector< Band<MT,TF,true,false,CBAs...>, TF > >
+   , private BandData<MT,CBAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT       = ResultType_<MT>;      //!< Result type of the dense matrix expression.
-   using DataType = BandData<MT,BAs...>;  //!< The type of the BandData base class.
+   using RT       = ResultType_<MT>;       //!< Result type of the dense matrix expression.
+   using DataType = BandData<MT,CBAs...>;  //!< The type of the BandData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this BandImpl instance.
-   using This = BandImpl<MT,TF,true,false,BAs...>;
+   //! Type of this Band instance.
+   using This = Band<MT,TF,true,false,CBAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this BandImpl instance.
-   using ViewedType    = MT;                          //!< The type viewed by this BandImpl instance.
-   using ResultType    = BandTrait_<RT,BAs...>;       //!< Result type for expression template evaluations.
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Band instance.
+   using ViewedType    = MT;                          //!< The type viewed by this Band instance.
+   using ResultType    = BandTrait_<RT,CBAs...>;      //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the band elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< RequiresEvaluation<MT>::value, const ResultType, const BandImpl& >;
+   using CompositeType = IfTrue_< RequiresEvaluation<MT>::value, const ResultType, const Band& >;
 
    //! Reference to a constant band value.
    using ConstReference = ConstReference_<MT>;
@@ -466,8 +466,8 @@ class BandImpl<MT,TF,true,false,BAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline BandImpl( MT& matrix );
-   explicit inline BandImpl( MT& matrix, ptrdiff_t index );
+   template< typename... RBAs >
+   explicit inline Band( MT& matrix, RBAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -497,22 +497,22 @@ class BandImpl<MT,TF,true,false,BAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline BandImpl& operator=( const ElementType& rhs );
-   inline BandImpl& operator=( initializer_list<ElementType> list );
-   inline BandImpl& operator=( const BandImpl& rhs );
+   inline Band& operator=( const ElementType& rhs );
+   inline Band& operator=( initializer_list<ElementType> list );
+   inline Band& operator=( const Band& rhs );
 
-   template< typename VT > inline BandImpl& operator= ( const Vector<VT,TF>& rhs );
-   template< typename VT > inline BandImpl& operator+=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline BandImpl& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline BandImpl& operator*=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline BandImpl& operator/=( const DenseVector<VT,TF>&  rhs );
-   template< typename VT > inline BandImpl& operator%=( const Vector<VT,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, BandImpl >& operator*=( Other rhs );
+   template< typename VT > inline Band& operator= ( const Vector<VT,TF>& rhs );
+   template< typename VT > inline Band& operator+=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline Band& operator-=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline Band& operator*=( const Vector<VT,TF>& rhs );
+   template< typename VT > inline Band& operator/=( const DenseVector<VT,TF>&  rhs );
+   template< typename VT > inline Band& operator%=( const Vector<VT,TF>& rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, BandImpl >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Band >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_< IsNumeric<Other>, Band >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -535,7 +535,7 @@ class BandImpl<MT,TF,true,false,BAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   template< typename Other > inline BandImpl& scale( const Other& scalar );
+   template< typename Other > inline Band& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -545,14 +545,14 @@ class BandImpl<MT,TF,true,false,BAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, ptrdiff_t... BAs2 >
-   inline bool canAlias( const BandImpl<MT2,TF,true,false,BAs2...>* alias ) const noexcept;
+   template< typename MT2, ptrdiff_t... CBAs2 >
+   inline bool canAlias( const Band<MT2,TF,true,false,CBAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, ptrdiff_t... BAs2 >
-   inline bool isAliased( const BandImpl<MT2,TF,true,false,BAs2...>* alias ) const noexcept;
+   template< typename MT2, ptrdiff_t... CBAs2 >
+   inline bool isAliased( const Band<MT2,TF,true,false,CBAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -575,7 +575,7 @@ class BandImpl<MT,TF,true,false,BAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool TF2, bool DF2, bool MF2, ptrdiff_t... BAs2 > friend class BandImpl;
+   template< typename MT2, bool TF2, bool DF2, bool MF2, ptrdiff_t... CBAs2 > friend class Band;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -600,34 +600,18 @@ class BandImpl<MT,TF,true,false,BAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for bands with a compile time index.
+/*!\brief The constructor for bands on dense matrices.
 //
 // \param matrix The matrix containing the band.
+// \param args The runtime band arguments.
 // \exception std::invalid_argument Invalid band access index.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline BandImpl<MT,TF,true,false,BAs...>::BandImpl( MT& matrix )
-   : DataType( matrix )  // Base class initialization
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for bands with a runtime index.
-//
-// \param matrix The matrix containing the band.
-// \param index The index of the band.
-// \exception std::invalid_argument Invalid band access index.
-*/
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline BandImpl<MT,TF,true,false,BAs...>::BandImpl( MT& matrix, ptrdiff_t index )
-   : DataType( matrix, index )  // Base class initialization
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename... RBAs >   // Runtime band arguments
+inline Band<MT,TF,true,false,CBAs...>::Band( MT& matrix, RBAs... args )
+   : DataType( matrix, args... )  // Base class initialization
 {}
 /*! \endcond */
 //*************************************************************************************************
@@ -651,11 +635,11 @@ inline BandImpl<MT,TF,true,false,BAs...>::BandImpl( MT& matrix, ptrdiff_t index 
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::Reference
-   BandImpl<MT,TF,true,false,BAs...>::operator[]( size_t index )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::Reference
+   Band<MT,TF,true,false,CBAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid band access index" );
    return matrix_(row()+index,column()+index);
@@ -674,11 +658,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::ConstReference
-   BandImpl<MT,TF,true,false,BAs...>::operator[]( size_t index ) const
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::ConstReference
+   Band<MT,TF,true,false,CBAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid band access index" );
    return const_cast<const MT&>( matrix_ )(row()+index,column()+index);
@@ -698,11 +682,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::Reference
-   BandImpl<MT,TF,true,false,BAs...>::at( size_t index )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::Reference
+   Band<MT,TF,true,false,CBAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid band access index" );
@@ -724,11 +708,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::ConstReference
-   BandImpl<MT,TF,true,false,BAs...>::at( size_t index ) const
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::ConstReference
+   Band<MT,TF,true,false,CBAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid band access index" );
@@ -748,11 +732,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::ConstReference
 // This function returns a pointer to the internal storage of the dense band. Note that you
 // can NOT assume that the band elements lie adjacent to each other!
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::Pointer
-   BandImpl<MT,TF,true,false,BAs...>::data() noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::Pointer
+   Band<MT,TF,true,false,CBAs...>::data() noexcept
 {
    if( IsRowMajorMatrix<MT>::value )
       return matrix_.data() + row() * matrix_.spacing() + column();
@@ -772,11 +756,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::Pointer
 // This function returns a pointer to the internal storage of the dense band. Note that you
 // can NOT assume that the band elements lie adjacent to each other!
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::ConstPointer
-   BandImpl<MT,TF,true,false,BAs...>::data() const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::ConstPointer
+   Band<MT,TF,true,false,CBAs...>::data() const noexcept
 {
    if( IsRowMajorMatrix<MT>::value )
       return matrix_.data() + row() * matrix_.spacing() + column();
@@ -795,11 +779,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::ConstPointer
 //
 // This function returns an iterator to the first element of the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::Iterator
-   BandImpl<MT,TF,true,false,BAs...>::begin()
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::Iterator
+   Band<MT,TF,true,false,CBAs...>::begin()
 {
    return Iterator( matrix_, row(), column() );
 }
@@ -815,11 +799,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::Iterator
 //
 // This function returns an iterator to the first element of the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
-   BandImpl<MT,TF,true,false,BAs...>::begin() const
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::ConstIterator
+   Band<MT,TF,true,false,CBAs...>::begin() const
 {
    return ConstIterator( matrix_, row(), column() );
 }
@@ -835,11 +819,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
 //
 // This function returns an iterator to the first element of the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
-   BandImpl<MT,TF,true,false,BAs...>::cbegin() const
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::ConstIterator
+   Band<MT,TF,true,false,CBAs...>::cbegin() const
 {
    return ConstIterator( matrix_, row(), column() );
 }
@@ -855,11 +839,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::Iterator
-   BandImpl<MT,TF,true,false,BAs...>::end()
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::Iterator
+   Band<MT,TF,true,false,CBAs...>::end()
 {
    const size_t n( size() );
    return Iterator( matrix_, row()+n, column()+n );
@@ -876,11 +860,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::Iterator
 //
 // This function returns an iterator just past the last element of the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
-   BandImpl<MT,TF,true,false,BAs...>::end() const
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::ConstIterator
+   Band<MT,TF,true,false,CBAs...>::end() const
 {
    const size_t n( size() );
    return ConstIterator( matrix_, row()+n, column()+n );
@@ -897,11 +881,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
-   BandImpl<MT,TF,true,false,BAs...>::cend() const
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::ConstIterator
+   Band<MT,TF,true,false,CBAs...>::cend() const
 {
    const size_t n( size() );
    return ConstIterator( matrix_, row()+n, column()+n );
@@ -929,11 +913,11 @@ inline typename BandImpl<MT,TF,true,false,BAs...>::ConstIterator
 // case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
 // of the underlying matrix are modified.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator=( const ElementType& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator=( const ElementType& rhs )
 {
    if( ( IsLower<MT>::value && column() > 0UL ) ||
        ( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value ) && row() == 0UL ) ||
@@ -964,11 +948,11 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // of the initializer list exceeds the size of the band, a \a std::invalid_argument exception is
 // thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator=( initializer_list<ElementType> list )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to band" );
@@ -998,11 +982,11 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator=( const BandImpl& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator=( const Band& rhs )
 {
    if( &rhs == this ) return *this;
 
@@ -1046,12 +1030,12 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side vector
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator=( const Vector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side vector
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1101,12 +1085,12 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side vector
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator+=( const Vector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side vector
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator+=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1154,12 +1138,12 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side vector
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator-=( const Vector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side vector
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator-=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1206,12 +1190,12 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side vector
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator*=( const Vector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side vector
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator*=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
@@ -1260,12 +1244,12 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side dense vector
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator/=( const DenseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side dense vector
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1312,12 +1296,12 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side vector
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator%=( const Vector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side vector
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::operator%=( const Vector<VT,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1363,12 +1347,12 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // This operator cannot be used for bands on lower or upper unitriangular matrices. The attempt
 // to scale such a band results in a compilation error!
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename Other >    // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, BandImpl<MT,TF,true,false,BAs...> >&
-   BandImpl<MT,TF,true,false,BAs...>::operator*=( Other rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename Other >     // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<Other>, Band<MT,TF,true,false,CBAs...> >&
+   Band<MT,TF,true,false,CBAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1391,12 +1375,12 @@ inline EnableIf_< IsNumeric<Other>, BandImpl<MT,TF,true,false,BAs...> >&
 //
 // \note A division by zero is only checked by an user assert.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename Other >    // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, BandImpl<MT,TF,true,false,BAs...> >&
-   BandImpl<MT,TF,true,false,BAs...>::operator/=( Other rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename Other >     // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<Other>, Band<MT,TF,true,false,CBAs...> >&
+   Band<MT,TF,true,false,CBAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1422,10 +1406,10 @@ inline EnableIf_< IsNumeric<Other>, BandImpl<MT,TF,true,false,BAs...> >&
 //
 // \return The size of the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline size_t BandImpl<MT,TF,true,false,BAs...>::size() const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline size_t Band<MT,TF,true,false,CBAs...>::size() const noexcept
 {
    return min( matrix_.rows() - row(), matrix_.columns() - column() );
 }
@@ -1442,10 +1426,10 @@ inline size_t BandImpl<MT,TF,true,false,BAs...>::size() const noexcept
 // This function returns the minimum capacity of the band, which corresponds to the current size
 // plus padding.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline size_t BandImpl<MT,TF,true,false,BAs...>::spacing() const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline size_t Band<MT,TF,true,false,CBAs...>::spacing() const noexcept
 {
    return size();
 }
@@ -1459,10 +1443,10 @@ inline size_t BandImpl<MT,TF,true,false,BAs...>::spacing() const noexcept
 //
 // \return The maximum capacity of the dense band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline size_t BandImpl<MT,TF,true,false,BAs...>::capacity() const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline size_t Band<MT,TF,true,false,CBAs...>::capacity() const noexcept
 {
    return size();
 }
@@ -1479,10 +1463,10 @@ inline size_t BandImpl<MT,TF,true,false,BAs...>::capacity() const noexcept
 // Note that the number of non-zero elements is always less than or equal to the current number
 // of columns of the matrix containing the band.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline size_t BandImpl<MT,TF,true,false,BAs...>::nonZeros() const
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline size_t Band<MT,TF,true,false,CBAs...>::nonZeros() const
 {
    const size_t n( size() );
    size_t nonzeros( 0UL );
@@ -1503,10 +1487,10 @@ inline size_t BandImpl<MT,TF,true,false,BAs...>::nonZeros() const
 //
 // \return void
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline void BandImpl<MT,TF,true,false,BAs...>::reset()
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline void Band<MT,TF,true,false,CBAs...>::reset()
 {
    using blaze::clear;
 
@@ -1545,12 +1529,12 @@ inline void BandImpl<MT,TF,true,false,BAs...>::reset()
 // on a lower or upper unitriangular matrix. The attempt to scale such a band results in a
 // compile time error!
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename Other >    // Data type of the scalar value
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::scale( const Other& scalar )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename Other >     // Data type of the scalar value
+inline Band<MT,TF,true,false,CBAs...>&
+   Band<MT,TF,true,false,CBAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1590,11 +1574,11 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename Other >    // Data type of the foreign expression
-inline bool BandImpl<MT,TF,true,false,BAs...>::canAlias( const Other* alias ) const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename Other >     // Data type of the foreign expression
+inline bool Band<MT,TF,true,false,CBAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1613,13 +1597,13 @@ inline bool BandImpl<MT,TF,true,false,BAs...>::canAlias( const Other* alias ) co
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT          // Type of the dense matrix
-        , bool TF              // Transpose flag
-        , ptrdiff_t... BAs >   // Compile time band arguments
-template< typename MT2         // Matrix type of the foreign dense band
-        , ptrdiff_t... BAs2 >  // Compile time band arguments of the foreign dense band
+template< typename MT           // Type of the dense matrix
+        , bool TF               // Transpose flag
+        , ptrdiff_t... CBAs >   // Compile time band arguments
+template< typename MT2          // Matrix type of the foreign dense band
+        , ptrdiff_t... CBAs2 >  // Compile time band arguments of the foreign dense band
 inline bool
-   BandImpl<MT,TF,true,false,BAs...>::canAlias( const BandImpl<MT2,TF,true,false,BAs2...>* alias ) const noexcept
+   Band<MT,TF,true,false,CBAs...>::canAlias( const Band<MT2,TF,true,false,CBAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( band() == alias->band() );
 }
@@ -1638,11 +1622,11 @@ inline bool
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename Other >    // Data type of the foreign expression
-inline bool BandImpl<MT,TF,true,false,BAs...>::isAliased( const Other* alias ) const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename Other >     // Data type of the foreign expression
+inline bool Band<MT,TF,true,false,CBAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -1661,13 +1645,13 @@ inline bool BandImpl<MT,TF,true,false,BAs...>::isAliased( const Other* alias ) c
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT          // Type of the dense matrix
-        , bool TF              // Transpose flag
-        , ptrdiff_t... BAs >   // Compile time band arguments
-template< typename MT2         // Matrix type of the foreign dense band
-        , ptrdiff_t... BAs2 >  // Compile time band arguments of the foreign dense band
+template< typename MT           // Type of the dense matrix
+        , bool TF               // Transpose flag
+        , ptrdiff_t... CBAs >   // Compile time band arguments
+template< typename MT2          // Matrix type of the foreign dense band
+        , ptrdiff_t... CBAs2 >  // Compile time band arguments of the foreign dense band
 inline bool
-   BandImpl<MT,TF,true,false,BAs...>::isAliased( const BandImpl<MT2,TF,true,false,BAs2...>* alias ) const noexcept
+   Band<MT,TF,true,false,CBAs...>::isAliased( const Band<MT2,TF,true,false,CBAs2...>* alias ) const noexcept
 {
    return matrix_.isAliased( &alias->matrix_ ) && ( band() == alias->band() );
 }
@@ -1685,10 +1669,10 @@ inline bool
 // i.e. whether the beginning and the end of the dense band are guaranteed to conform to the
 // alignment restrictions of the element type \a Type.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline bool BandImpl<MT,TF,true,false,BAs...>::isAligned() const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline bool Band<MT,TF,true,false,CBAs...>::isAligned() const noexcept
 {
    return false;
 }
@@ -1707,10 +1691,10 @@ inline bool BandImpl<MT,TF,true,false,BAs...>::isAligned() const noexcept
 // this function additionally provides runtime information (as for instance the current size
 // of the dense band).
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline bool BandImpl<MT,TF,true,false,BAs...>::canSMPAssign() const noexcept
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline bool Band<MT,TF,true,false,CBAs...>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1730,11 +1714,11 @@ inline bool BandImpl<MT,TF,true,false,BAs...>::canSMPAssign() const noexcept
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side dense vector
-inline void BandImpl<MT,TF,true,false,BAs...>::assign( const DenseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side dense vector
+inline void Band<MT,TF,true,false,CBAs...>::assign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1763,11 +1747,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::assign( const DenseVector<VT,TF>&
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side sparse vector
-inline void BandImpl<MT,TF,true,false,BAs...>::assign( const SparseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side sparse vector
+inline void Band<MT,TF,true,false,CBAs...>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1792,11 +1776,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::assign( const SparseVector<VT,TF>
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side dense vector
-inline void BandImpl<MT,TF,true,false,BAs...>::addAssign( const DenseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side dense vector
+inline void Band<MT,TF,true,false,CBAs...>::addAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1825,11 +1809,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::addAssign( const DenseVector<VT,T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side sparse vector
-inline void BandImpl<MT,TF,true,false,BAs...>::addAssign( const SparseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side sparse vector
+inline void Band<MT,TF,true,false,CBAs...>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1854,11 +1838,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::addAssign( const SparseVector<VT,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side dense vector
-inline void BandImpl<MT,TF,true,false,BAs...>::subAssign( const DenseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side dense vector
+inline void Band<MT,TF,true,false,CBAs...>::subAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1887,11 +1871,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::subAssign( const DenseVector<VT,T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side sparse vector
-inline void BandImpl<MT,TF,true,false,BAs...>::subAssign( const SparseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side sparse vector
+inline void Band<MT,TF,true,false,CBAs...>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1916,11 +1900,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::subAssign( const SparseVector<VT,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side dense vector
-inline void BandImpl<MT,TF,true,false,BAs...>::multAssign( const DenseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side dense vector
+inline void Band<MT,TF,true,false,CBAs...>::multAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1949,11 +1933,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::multAssign( const DenseVector<VT,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side sparse vector
-inline void BandImpl<MT,TF,true,false,BAs...>::multAssign( const SparseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side sparse vector
+inline void Band<MT,TF,true,false,CBAs...>::multAssign( const SparseVector<VT,TF>& rhs )
 {
    using blaze::reset;
 
@@ -1989,11 +1973,11 @@ inline void BandImpl<MT,TF,true,false,BAs...>::multAssign( const SparseVector<VT
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side dense vector
-inline void BandImpl<MT,TF,true,false,BAs...>::divAssign( const DenseVector<VT,TF>& rhs )
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename VT >        // Type of the right-hand side dense vector
+inline void Band<MT,TF,true,false,CBAs...>::divAssign( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2020,24 +2004,24 @@ inline void BandImpl<MT,TF,true,false,BAs...>::divAssign( const DenseVector<VT,T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of BandImpl for dense matrix multiplications.
+/*!\brief Specialization of Band for dense matrix multiplications.
 // \ingroup views
 //
-// This specialization of BandImpl adapts the class template to the requirements of dense matrix
+// This specialization of Band adapts the class template to the requirements of dense matrix
 // multiplications.
 */
-template< typename MT         // Type of the dense matrix multiplication
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-class BandImpl<MT,TF,true,true,BAs...>
-   : public View< DenseVector< BandImpl<MT,TF,true,true,BAs...>, TF > >
-   , private BandData<MT,BAs...>
+template< typename MT          // Type of the dense matrix multiplication
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+class Band<MT,TF,true,true,CBAs...>
+   : public View< DenseVector< Band<MT,TF,true,true,CBAs...>, TF > >
+   , private BandData<MT,CBAs...>
    , private Computation
 {
  private:
    //**Type definitions****************************************************************************
    //! The type of the BandData base class.
-   using DataType = BandData<MT,BAs...>;
+   using DataType = BandData<MT,CBAs...>;
 
    //! The type of the left-hand side matrix operand.
    using LeftOperand = RemoveReference_< LeftOperand_<MT> >;
@@ -2048,17 +2032,17 @@ class BandImpl<MT,TF,true,true,BAs...>
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this BandImpl instance.
-   using This = BandImpl<MT,TF,true,true,BAs...>;
+   //! Type of this Band instance.
+   using This = Band<MT,TF,true,true,CBAs...>;
 
-   //! Base type of this BandImpl instance.
+   //! Base type of this Band instance.
    using BaseType = DenseVector<This,TF>;
 
-   //! The type viewed by this BandImpl instance.
+   //! The type viewed by this Band instance.
    using ViewedType = MT;
 
    //! Result type for expression template evaluations.
-   using ResultType = BandTrait_<ResultType_<MT>,BAs...>;
+   using ResultType = BandTrait_<ResultType_<MT>,CBAs...>;
 
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
@@ -2067,7 +2051,7 @@ class BandImpl<MT,TF,true,true,BAs...>
    //! Data type for composite expression templates.
    using CompositeType = If_< Or< RequiresEvaluation<LeftOperand>
                                 , RequiresEvaluation<RightOperand> >
-                            , const ResultType, const BandImpl& >;
+                            , const ResultType, const Band& >;
 
    //! Type for the assignment of the left-hand side matrix operand.
    using LT = If_< And< IsSparseMatrix<LeftOperand>, IsColumnMajorMatrix<LeftOperand> >
@@ -2089,24 +2073,24 @@ class BandImpl<MT,TF,true,true,BAs...>
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the BandImpl specialization.
+   /*!\brief Constructor for the Band specialization.
    //
    // \param mmm The matrix multiplication containing the band.
    // \exception std::invalid_argument Invalid band access index.
    */
-   explicit inline BandImpl( const MT& mmm )
+   explicit inline Band( const MT& mmm )
       : DataType( mmm )  // Base class initialization
    {}
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the BandImpl specialization.
+   /*!\brief Constructor for the Band specialization.
    //
    // \param mmm The matrix multiplication containing the band.
    // \param index The index of the band.
    // \exception std::invalid_argument Invalid band access index.
    */
-   explicit inline BandImpl( const MT& mmm, ptrdiff_t index )
+   explicit inline Band( const MT& mmm, ptrdiff_t index )
       : DataType( mmm, index )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -2207,7 +2191,7 @@ class BandImpl<MT,TF,true,true,BAs...>
    // matrix multiplication to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void assign( DenseVector<VT,TF>& lhs, const BandImpl& rhs )
+   friend inline void assign( DenseVector<VT,TF>& lhs, const Band& rhs )
    {
       using blaze::row;
       using blaze::column;
@@ -2240,7 +2224,7 @@ class BandImpl<MT,TF,true,true,BAs...>
    // matrix multiplication to a sparse vector.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline void assign( SparseVector<VT,TF>& lhs, const BandImpl& rhs )
+   friend inline void assign( SparseVector<VT,TF>& lhs, const Band& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -2269,7 +2253,7 @@ class BandImpl<MT,TF,true,true,BAs...>
    // dense matrix multiplication to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void addAssign( DenseVector<VT,TF>& lhs, const BandImpl& rhs )
+   friend inline void addAssign( DenseVector<VT,TF>& lhs, const Band& rhs )
    {
       using blaze::row;
       using blaze::column;
@@ -2306,7 +2290,7 @@ class BandImpl<MT,TF,true,true,BAs...>
    // on a dense matrix multiplication to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void subAssign( DenseVector<VT,TF>& lhs, const BandImpl& rhs )
+   friend inline void subAssign( DenseVector<VT,TF>& lhs, const Band& rhs )
    {
       using blaze::row;
       using blaze::column;
@@ -2344,7 +2328,7 @@ class BandImpl<MT,TF,true,true,BAs...>
    // on a dense matrix multiplication to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void multAssign( DenseVector<VT,TF>& lhs, const BandImpl& rhs )
+   friend inline void multAssign( DenseVector<VT,TF>& lhs, const Band& rhs )
    {
       using blaze::row;
       using blaze::column;
@@ -2381,7 +2365,7 @@ class BandImpl<MT,TF,true,true,BAs...>
    // dense matrix multiplication to a dense vector.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline void divAssign( DenseVector<VT,TF>& lhs, const BandImpl& rhs )
+   friend inline void divAssign( DenseVector<VT,TF>& lhs, const Band& rhs )
    {
       using blaze::row;
       using blaze::column;

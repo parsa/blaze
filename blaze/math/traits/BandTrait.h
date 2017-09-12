@@ -79,8 +79,8 @@ namespace blaze {
 // following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO, ptrdiff_t... BAs >
-   struct BandTrait< DynamicMatrix<T1,SO>, BAs... >
+   template< typename T1, bool SO, ptrdiff_t... CBAs >
+   struct BandTrait< DynamicMatrix<T1,SO>, CBAs... >
    {
       using Type = DynamicVector<T1,true>;
    };
@@ -104,8 +104,8 @@ namespace blaze {
    using ResultType2 = typename blaze::BandTrait<MatrixType2,3L>::Type;
    \endcode
 */
-template< typename MT         // Type of the matrix
-        , ptrdiff_t... BAs >  // Compile time band arguments
+template< typename MT          // Type of the matrix
+        , ptrdiff_t... CBAs >  // Compile time band arguments
 struct BandTrait
 {
  private:
@@ -119,7 +119,7 @@ struct BandTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , BandTrait< Decay_<MT>, BAs... >
+                            , BandTrait< Decay_<MT>, CBAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -140,9 +140,9 @@ struct BandTrait
    using Type2 = BandTrait_<MT>;
    \endcode
 */
-template< typename MT         // Type of the matrix
-        , ptrdiff_t... BAs >  // Compile time band arguments
-using BandTrait_ = typename BandTrait<MT,BAs...>::Type;
+template< typename MT          // Type of the matrix
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+using BandTrait_ = typename BandTrait<MT,CBAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

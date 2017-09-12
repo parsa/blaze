@@ -66,8 +66,8 @@ namespace blaze {
 // type. In case the given type is neither a dense nor a sparse matrix type, the resulting data
 // type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT         // Type of the matrix operand
-        , ptrdiff_t... BAs >  // Compile time band arguments
+template< typename MT          // Type of the matrix operand
+        , ptrdiff_t... CBAs >  // Compile time band arguments
 struct BandExprTrait
 {
  private:
@@ -79,7 +79,7 @@ struct BandExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct CompileTime { using Type = decltype( band<BAs...>( std::declval<MT>() ) ); };
+   struct CompileTime { using Type = decltype( band<CBAs...>( std::declval<MT>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -93,7 +93,7 @@ struct BandExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsMatrix< RemoveReference_<MT> >
-                            , IfTrue_< ( sizeof...( BAs ) > 0UL )
+                            , IfTrue_< ( sizeof...( CBAs ) > 0UL )
                                      , CompileTime
                                      , Runtime >
                             , Failure >::Type;
@@ -116,9 +116,41 @@ struct BandExprTrait
    using Type2 = BandExprTrait_<MT>;
    \endcode
 */
-template< typename MT         // Type of the matrix operand
-        , ptrdiff_t... BAs >  // Compile time band arguments
-using BandExprTrait_ = typename BandExprTrait<MT,BAs...>::Type;
+template< typename MT          // Type of the matrix operand
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+using BandExprTrait_ = typename BandExprTrait<MT,CBAs...>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Evaluation of the expression type type of a diagonal operation.
+// \ingroup math_traits
+//
+// Via this type trait it is possible to evaluate the return type of a diagonal operation. Given
+// the dense or sparse matrix type \a MT, the nested type \a Type corresponds to the resulting
+// return type. In case the given type is neither a dense nor a sparse matrix type, the resulting
+// data type \a Type is set to \a INVALID_TYPE.
+*/
+template< typename MT >  // Type of the matrix operand
+using DiagonalExprTrait = BandExprTrait<MT,0L>;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the DiagonalExprTrait type trait.
+// \ingroup math_traits
+//
+// The DiagonalExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// \a Type of the DiagonalExprTrait class template. For instance, given the matrix type \a MT the
+// following two type definitions are identical:
+
+   \code
+   using Type1 = typename DiagonalExprTrait<MT>::Type;
+   using Type2 = DiagonalExprTrait_<MT>;
+   \endcode
+*/
+template< typename MT >  // Type of the matrix operand
+using DiagonalExprTrait_ = typename DiagonalExprTrait<MT>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

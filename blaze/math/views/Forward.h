@@ -130,22 +130,22 @@ template< typename MT, bool SO >
 decltype(auto) column( Matrix<MT,SO>&&, size_t );
 
 template< ptrdiff_t I, typename MT, bool SO >
-Band<MT,I> band( Matrix<MT,SO>& );
+decltype(auto) band( Matrix<MT,SO>& );
 
 template< ptrdiff_t I, typename MT, bool SO >
-const Band<const MT,I> band( const Matrix<MT,SO>& );
+decltype(auto) band( const Matrix<MT,SO>& );
 
 template< ptrdiff_t I, typename MT, bool SO >
-Band<MT,I> band( Matrix<MT,SO>&& );
+decltype(auto) band( Matrix<MT,SO>&& );
 
 template< typename MT, bool SO >
-Band<MT> band( Matrix<MT,SO>&, ptrdiff_t );
+decltype(auto) band( Matrix<MT,SO>&, ptrdiff_t );
 
 template< typename MT, bool SO >
-const Band<const MT> band( const Matrix<MT,SO>&, ptrdiff_t );
+decltype(auto) band( const Matrix<MT,SO>&, ptrdiff_t );
 
 template< typename MT, bool SO >
-Band<MT> band( Matrix<MT,SO>&&, ptrdiff_t );
+decltype(auto) band( Matrix<MT,SO>&&, ptrdiff_t );
 
 template< typename MT, bool SO >
 decltype(auto) diagonal( Matrix<MT,SO>& );

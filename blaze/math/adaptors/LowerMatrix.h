@@ -2226,10 +2226,10 @@ struct ColumnTrait< LowerMatrix<MT,SO,DF>, CCAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, ptrdiff_t... BAs >
-struct BandTrait< LowerMatrix<MT,SO,DF>, BAs... >
+template< typename MT, bool SO, bool DF, ptrdiff_t... CBAs >
+struct BandTrait< LowerMatrix<MT,SO,DF>, CBAs... >
 {
-   using Type = BandTrait_<MT,BAs...>;
+   using Type = BandTrait_<MT,CBAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

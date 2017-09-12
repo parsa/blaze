@@ -55,15 +55,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the data members of the BandImpl class.
+/*!\brief Auxiliary class template for the data members of the Band class.
 // \ingroup band
 //
 // The auxiliary BandData class template represents an abstraction of the data members of the
-// BandImpl class template. The necessary set of data member is selected depending on the number
+// Band class template. The necessary set of data member is selected depending on the number
 // of compile time band arguments.
 */
-template< typename MT         // Type of the matrix
-        , ptrdiff_t... BAs >  // Compile time band arguments
+template< typename MT          // Type of the matrix
+        , ptrdiff_t... CBAs >  // Compile time band arguments
 struct BandData
 {};
 //*************************************************************************************************

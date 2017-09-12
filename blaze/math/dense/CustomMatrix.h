@@ -6637,8 +6637,8 @@ struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO, ptrdiff_t... BAs >
-struct BandTrait< CustomMatrix<T,AF,PF,SO>, BAs... >
+template< typename T, bool AF, bool PF, bool SO, ptrdiff_t... CBAs >
+struct BandTrait< CustomMatrix<T,AF,PF,SO>, CBAs... >
 {
    using Type = DynamicVector<T,defaultTransposeFlag>;
 };

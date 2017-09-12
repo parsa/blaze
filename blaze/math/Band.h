@@ -67,11 +67,11 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense bands.
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-class Rand< BandImpl<MT,TF,true,MF,BAs...> >
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+class Rand< Band<MT,TF,true,MF,CBAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -96,12 +96,12 @@ class Rand< BandImpl<MT,TF,true,MF,BAs...> >
 // \param band The band to be randomized.
 // \return void
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename BT >       // Type of the band
-inline void Rand< BandImpl<MT,TF,true,MF,BAs...> >::randomize( BT&& band ) const
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename BT >        // Type of the band
+inline void Rand< Band<MT,TF,true,MF,CBAs...> >::randomize( BT&& band ) const
 {
    using blaze::randomize;
 
@@ -127,13 +127,13 @@ inline void Rand< BandImpl<MT,TF,true,MF,BAs...> >::randomize( BT&& band ) const
 // \param max The largest possible value for a band element.
 // \return void
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename BT         // Type of the band
-        , typename Arg >      // Min/max argument type
-inline void Rand< BandImpl<MT,TF,true,MF,BAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename BT          // Type of the band
+        , typename Arg >       // Min/max argument type
+inline void Rand< Band<MT,TF,true,MF,CBAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -165,11 +165,11 @@ inline void Rand< BandImpl<MT,TF,true,MF,BAs...> >::randomize( BT&& band, const 
 //
 // This specialization of the Rand class randomizes sparse bands.
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-class Rand< BandImpl<MT,TF,false,MF,BAs...> >
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+class Rand< Band<MT,TF,false,MF,CBAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -200,12 +200,12 @@ class Rand< BandImpl<MT,TF,false,MF,BAs...> >
 // \param band The band to be randomized.
 // \return void
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename BT >       // Type of the band
-inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band ) const
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename BT >        // Type of the band
+inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;
@@ -239,12 +239,12 @@ inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band ) cons
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename BT >       // Type of the band
-inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, size_t nonzeros ) const
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename BT >        // Type of the band
+inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, size_t nonzeros ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;
@@ -280,13 +280,13 @@ inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, size_
 // \param max The largest possible value for a band element.
 // \return void
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename BT         // Type of the band
-        , typename Arg >      // Min/max argument type
-inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename BT          // Type of the band
+        , typename Arg >       // Min/max argument type
+inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;
@@ -322,14 +322,14 @@ inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, const
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename BT         // Type of the band
-        , typename Arg >      // Min/max argument type
-inline void Rand< BandImpl<MT,TF,false,MF,BAs...> >::randomize( BT&& band, size_t nonzeros,
-                                                                const Arg& min, const Arg& max ) const
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< typename BT          // Type of the band
+        , typename Arg >       // Min/max argument type
+inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, size_t nonzeros,
+                                                             const Arg& min, const Arg& max ) const
 {
    using BandType    = RemoveReference_<BT>;
    using ElementType = ElementType_<BandType>;

@@ -3362,10 +3362,10 @@ struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs, ptrdiff_t... BAs >
-struct BandTrait< Submatrix<MT,AF,SO,DF,CSAs...>, BAs... >
+template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs, ptrdiff_t... CBAs >
+struct BandTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CBAs... >
 {
-   using Type = BandTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, BAs... >;
+   using Type = BandTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CBAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

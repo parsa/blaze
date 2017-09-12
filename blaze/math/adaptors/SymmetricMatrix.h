@@ -1583,10 +1583,10 @@ struct ColumnTrait< SymmetricMatrix<MT,SO,DF,NF>, CCAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF, ptrdiff_t... BAs >
-struct BandTrait< SymmetricMatrix<MT,SO,DF,NF>, BAs... >
+template< typename MT, bool SO, bool DF, bool NF, ptrdiff_t... CBAs >
+struct BandTrait< SymmetricMatrix<MT,SO,DF,NF>, CBAs... >
 {
-   using Type = BandTrait_<MT,BAs...>;
+   using Type = BandTrait_<MT,CBAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

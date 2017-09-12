@@ -115,11 +115,11 @@ namespace blaze {
 template< ptrdiff_t I  // Band index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Band<MT,I> band( Matrix<MT,SO>& matrix )
+inline decltype(auto) band( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<MT,I>( ~matrix );
+   return Band_<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -154,11 +154,11 @@ inline Band<MT,I> band( Matrix<MT,SO>& matrix )
 template< ptrdiff_t I  // Band index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const Band<const MT,I> band( const Matrix<MT,SO>& matrix )
+inline decltype(auto) band( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<const MT,I>( ~matrix );
+   return Band_<const MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -179,11 +179,11 @@ inline const Band<const MT,I> band( const Matrix<MT,SO>& matrix )
 template< ptrdiff_t I  // Band index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Band<MT,I> band( Matrix<MT,SO>&& matrix )
+inline decltype(auto) band( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<MT,I>( ~matrix );
+   return Band_<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -218,11 +218,11 @@ inline Band<MT,I> band( Matrix<MT,SO>&& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Band<MT> band( Matrix<MT,SO>& matrix, ptrdiff_t index )
+inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<MT>( ~matrix, index );
+   return Band_<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -257,11 +257,11 @@ inline Band<MT> band( Matrix<MT,SO>& matrix, ptrdiff_t index )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const Band<const MT> band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
+inline decltype(auto) band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<const MT>( ~matrix, index );
+   return Band_<const MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -282,11 +282,11 @@ inline const Band<const MT> band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Band<MT> band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
+inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band<MT>( ~matrix, index );
+   return Band_<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -415,7 +415,7 @@ template< bool AF         // Alignment flag
         , bool DF         // Density flag
         , bool MF         // Multiplication flag
         , ptrdiff_t I2 >  // Band index
-inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,I2>& b )
+inline decltype(auto) subvector( Band<MT,TF,DF,MF,I2>& b )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -445,7 +445,7 @@ template< bool AF      // Alignment flag
         , bool TF      // Transpose flag
         , bool DF      // Density flag
         , bool MF >    // Multiplication flag
-inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF>& b )
+inline decltype(auto) subvector( Band<MT,TF,DF,MF>& b )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -467,13 +467,13 @@ inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF>& b )
 //
 // This function returns an expression representing the specified subvector of the given band.
 */
-template< bool AF             // Alignment flag
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,BAs...>& b, size_t index, size_t size )
+template< bool AF              // Alignment flag
+        , typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline decltype(auto) subvector( Band<MT,TF,DF,MF,CBAs...>& b, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -502,7 +502,7 @@ template< bool AF         // Alignment flag
         , bool DF         // Density flag
         , bool MF         // Multiplication flag
         , ptrdiff_t I2 >  // Band index
-inline decltype(auto) subvector( const BandImpl<MT,TF,DF,MF,I2>& b )
+inline decltype(auto) subvector( const Band<MT,TF,DF,MF,I2>& b )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -533,7 +533,7 @@ template< bool AF      // Alignment flag
         , bool TF      // Transpose flag
         , bool DF      // Density flag
         , bool MF >    // Multiplication flag
-inline decltype(auto) subvector( const BandImpl<MT,TF,DF,MF>& b )
+inline decltype(auto) subvector( const Band<MT,TF,DF,MF>& b )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -556,13 +556,13 @@ inline decltype(auto) subvector( const BandImpl<MT,TF,DF,MF>& b )
 // This function returns an expression representing the specified subvector of the given constant
 // band.
 */
-template< bool AF             // Alignment flag
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline decltype(auto) subvector( const BandImpl<MT,TF,DF,MF,BAs...>& b, size_t index, size_t size )
+template< bool AF              // Alignment flag
+        , typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline decltype(auto) subvector( const Band<MT,TF,DF,MF,CBAs...>& b, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -591,7 +591,7 @@ template< bool AF         // Alignment flag
         , bool DF         // Density flag
         , bool MF         // Multiplication flag
         , ptrdiff_t I2 >  // Band index
-inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,I2>&& b )
+inline decltype(auto) subvector( Band<MT,TF,DF,MF,I2>&& b )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -622,7 +622,7 @@ template< bool AF      // Alignment flag
         , bool TF      // Transpose flag
         , bool DF      // Density flag
         , bool MF >    // Multiplication flag
-inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF>&& b )
+inline decltype(auto) subvector( Band<MT,TF,DF,MF>&& b )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -645,13 +645,13 @@ inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF>&& b )
 // This function returns an expression representing the specified subvector of the given temporary
 // band.
 */
-template< bool AF             // Alignment flag
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline decltype(auto) subvector( BandImpl<MT,TF,DF,MF,BAs...>&& b, size_t index, size_t size )
+template< bool AF              // Alignment flag
+        , typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline decltype(auto) subvector( Band<MT,TF,DF,MF,CBAs...>&& b, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1245,12 +1245,12 @@ inline decltype(auto) band( const MatTransExpr<MT>& matrix, ptrdiff_t index )
 // \param band The band to be resetted.
 // \return void
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline void reset( BandImpl<MT,TF,DF,MF,BAs...>& band )
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline void reset( Band<MT,TF,DF,MF,CBAs...>& band )
 {
    band.reset();
 }
@@ -1266,12 +1266,12 @@ inline void reset( BandImpl<MT,TF,DF,MF,BAs...>& band )
 // \param band The temporary band to be resetted.
 // \return void
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline void reset( BandImpl<MT,TF,DF,MF,BAs...>&& band )
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline void reset( Band<MT,TF,DF,MF,CBAs...>&& band )
 {
    band.reset();
 }
@@ -1289,12 +1289,12 @@ inline void reset( BandImpl<MT,TF,DF,MF,BAs...>&& band )
 //
 // Clearing a band is equivalent to resetting it via the reset() function.
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline void clear( BandImpl<MT,TF,DF,MF,BAs...>& band )
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline void clear( Band<MT,TF,DF,MF,CBAs...>& band )
 {
    band.reset();
 }
@@ -1312,12 +1312,12 @@ inline void clear( BandImpl<MT,TF,DF,MF,BAs...>& band )
 //
 // Clearing a band is equivalent to resetting it via the reset() function.
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline void clear( BandImpl<MT,TF,DF,MF,BAs...>&& band )
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline void clear( Band<MT,TF,DF,MF,CBAs...>&& band )
 {
    band.reset();
 }
@@ -1351,12 +1351,12 @@ inline void clear( BandImpl<MT,TF,DF,MF,BAs...>&& band )
    if( isDefault<relaxed>( band( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF             // Relaxation flag
-        , typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline bool isDefault( const BandImpl<MT,TF,true,MF,BAs...>& band )
+template< bool RF              // Relaxation flag
+        , typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline bool isDefault( const Band<MT,TF,true,MF,CBAs...>& band )
 {
    using blaze::isDefault;
 
@@ -1394,12 +1394,12 @@ inline bool isDefault( const BandImpl<MT,TF,true,MF,BAs...>& band )
    if( isDefault<relaxed>( band( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF             // Relaxation flag
-        , typename MT         // Type of the sparse matrix
-        , bool TF             // Transpose flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline bool isDefault( const BandImpl<MT,TF,false,MF,BAs...>& band )
+template< bool RF              // Relaxation flag
+        , typename MT          // Type of the sparse matrix
+        , bool TF              // Transpose flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline bool isDefault( const Band<MT,TF,false,MF,CBAs...>& band )
 {
    using blaze::isDefault;
 
@@ -1429,12 +1429,12 @@ inline bool isDefault( const BandImpl<MT,TF,false,MF,BAs...>& band )
    if( isIntact( band( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-inline bool isIntact( const BandImpl<MT,TF,DF,MF,BAs...>& band ) noexcept
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline bool isIntact( const Band<MT,TF,DF,MF,CBAs...>& band ) noexcept
 {
    const ptrdiff_t index( band.band() );
 
@@ -1459,16 +1459,16 @@ inline bool isIntact( const BandImpl<MT,TF,DF,MF,BAs...>& band ) noexcept
 // bands. In case both bands represent the same observable state, the function returns \a true,
 // otherwise it returns \a false.
 */
-template< typename MT1         // Type of the matrix of the left-hand side band
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
-        , typename MT2         // Type of the matrix of the right-hand side band
-        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
+template< typename MT1          // Type of the matrix of the left-hand side band
+        , bool TF               // Transpose flag
+        , bool DF               // Density flag
+        , bool MF               // Multiplication flag
+        , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
+        , typename MT2          // Type of the matrix of the right-hand side band
+        , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
 inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
-                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
+   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.band() == b.band() ) );
 }
@@ -1489,16 +1489,16 @@ inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // band being a band on a submatrix. In case both bands represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1         // Type of the submatrix of the left-hand side band
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
-        , typename MT2         // Type of the matrix of the right-hand side band
-        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
+template< typename MT1          // Type of the submatrix of the left-hand side band
+        , bool TF               // Transpose flag
+        , bool DF               // Density flag
+        , bool MF               // Multiplication flag
+        , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
+        , typename MT2          // Type of the matrix of the right-hand side band
+        , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
 inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
-   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
-                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
+   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1522,16 +1522,16 @@ inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
 // band being a band on a submatrix. In case both bands represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1         // Type of the matrix of the left-hand side band
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
-        , typename MT2         // Type of the submatrix of the right-hand side band
-        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
+template< typename MT1          // Type of the matrix of the left-hand side band
+        , bool TF               // Transpose flag
+        , bool DF               // Density flag
+        , bool MF               // Multiplication flag
+        , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
+        , typename MT2          // Type of the submatrix of the right-hand side band
+        , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
 inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
-                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
+   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1555,16 +1555,16 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // being bands on submatrices. In case both bands represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1         // Type of the submatrix of the left-hand side band
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
-        , typename MT2         // Type of the submatrix of the right-hand side band
-        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
+template< typename MT1          // Type of the submatrix of the left-hand side band
+        , bool TF               // Transpose flag
+        , bool DF               // Density flag
+        , bool MF               // Multiplication flag
+        , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
+        , typename MT2          // Type of the submatrix of the right-hand side band
+        , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
 inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
-                   const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
+   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1588,15 +1588,15 @@ inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // range of the same matrix. In case both bands represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1         // Type of the matrix of the left-hand side band
-        , bool TF              // Transpose flag
-        , bool DF              // Density flag
-        , bool MF              // Multiplication flag
-        , ptrdiff_t... BAs1    // Compile time band arguments of the left-hand side band
-        , typename MT2         // Type of the matrix of the right-hand side band
-        , ptrdiff_t... BAs2 >  // Compile time band arguments of the right-hand side band
-inline bool isSame( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
-                    const BandImpl<MT2,TF,DF,MF,BAs2...>& b ) noexcept
+template< typename MT1          // Type of the matrix of the left-hand side band
+        , bool TF               // Transpose flag
+        , bool DF               // Density flag
+        , bool MF               // Multiplication flag
+        , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
+        , typename MT2          // Type of the matrix of the right-hand side band
+        , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
+inline bool isSame( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                    const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
    return isSame_backend( a, b );
 }
@@ -1619,13 +1619,13 @@ inline bool isSame( const BandImpl<MT1,TF,DF,MF,BAs1...>& a,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the matrix
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , bool MF           // Multiplication flag
-        , ptrdiff_t... BAs  // Compile time band arguments
-        , typename VT >     // Type of the right-hand side vector
-inline bool tryAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                        const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1652,13 +1652,13 @@ inline bool tryAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the matrix
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , bool MF           // Multiplication flag
-        , ptrdiff_t... BAs  // Compile time band arguments
-        , typename VT >     // Type of the right-hand side vector
-inline bool tryAddAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryAddAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1685,13 +1685,13 @@ inline bool tryAddAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the matrix
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , bool MF           // Multiplication flag
-        , ptrdiff_t... BAs  // Compile time band arguments
-        , typename VT >     // Type of the right-hand side vector
-inline bool trySubAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename VT >      // Type of the right-hand side vector
+inline bool trySubAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1718,13 +1718,13 @@ inline bool trySubAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the matrix
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , bool MF           // Multiplication flag
-        , ptrdiff_t... BAs  // Compile time band arguments
-        , typename VT >     // Type of the right-hand side vector
-inline bool tryMultAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryMultAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                            const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1751,13 +1751,13 @@ inline bool tryMultAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the matrix
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , bool MF           // Multiplication flag
-        , ptrdiff_t... BAs  // Compile time band arguments
-        , typename VT >     // Type of the right-hand side vector
-inline bool tryDivAssign( const BandImpl<MT,TF,DF,MF,BAs...>& lhs,
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryDivAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1789,7 +1789,7 @@ template< typename MT    // Type of the matrix
         , bool DF        // Density flag
         , bool MF        // Multiplication flag
         , ptrdiff_t I >  // Band index
-inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF,I>& b )
+inline decltype(auto) derestrict( Band<MT,TF,DF,MF,I>& b )
 {
    return band<I>( derestrict( b.operand() ) );
 }
@@ -1817,7 +1817,7 @@ template< typename MT    // Type of the matrix
         , bool DF        // Density flag
         , bool MF        // Multiplication flag
         , ptrdiff_t I >  // Band index
-inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF,I>&& b )
+inline decltype(auto) derestrict( Band<MT,TF,DF,MF,I>&& b )
 {
    return band<I>( derestrict( b.operand() ) );
 }
@@ -1844,7 +1844,7 @@ template< typename MT  // Type of the matrix
         , bool TF      // Transpose flag
         , bool DF      // Density flag
         , bool MF >    // Multiplication flag
-inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF>& b )
+inline decltype(auto) derestrict( Band<MT,TF,DF,MF>& b )
 {
    return band( derestrict( b.operand() ), b.band() );
 }
@@ -1871,7 +1871,7 @@ template< typename MT  // Type of the matrix
         , bool TF      // Transpose flag
         , bool DF      // Density flag
         , bool MF >    // Multiplication flag
-inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF>&& b )
+inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 {
    return band( derestrict( b.operand() ), b.band() );
 }
@@ -1889,8 +1889,8 @@ inline decltype(auto) derestrict( BandImpl<MT,TF,DF,MF>&& b )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs >
-struct IsRestricted< BandImpl<MT,TF,DF,MF,BAs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs >
+struct IsRestricted< Band<MT,TF,DF,MF,CBAs...> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
@@ -1907,8 +1907,8 @@ struct IsRestricted< BandImpl<MT,TF,DF,MF,BAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool TF, bool MF, ptrdiff_t... BAs >
-struct HasConstDataAccess< BandImpl<MT,TF,true,MF,BAs...> >
+template< typename MT, bool TF, bool MF, ptrdiff_t... CBAs >
+struct HasConstDataAccess< Band<MT,TF,true,MF,CBAs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1925,8 +1925,8 @@ struct HasConstDataAccess< BandImpl<MT,TF,true,MF,BAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool TF, bool MF, ptrdiff_t... BAs >
-struct HasMutableDataAccess< BandImpl<MT,TF,true,MF,BAs...> >
+template< typename MT, bool TF, bool MF, ptrdiff_t... CBAs >
+struct HasMutableDataAccess< Band<MT,TF,true,MF,CBAs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1943,8 +1943,8 @@ struct HasMutableDataAccess< BandImpl<MT,TF,true,MF,BAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs >
-struct IsOpposedView< BandImpl<MT,TF,DF,MF,BAs...> >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs >
+struct IsOpposedView< Band<MT,TF,DF,MF,CBAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1961,10 +1961,10 @@ struct IsOpposedView< BandImpl<MT,TF,DF,MF,BAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs, size_t... CSAs >
-struct SubvectorTrait< BandImpl<MT,TF,DF,MF,BAs...>, CSAs... >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs, size_t... CSAs >
+struct SubvectorTrait< Band<MT,TF,DF,MF,CBAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< BandImpl<MT,TF,DF,MF,BAs...> >, CSAs... >;
+   using Type = SubvectorTrait_< ResultType_< Band<MT,TF,DF,MF,CBAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

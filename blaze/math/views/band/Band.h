@@ -82,14 +82,25 @@
    auto band2 = band( A, 2L );
    \endcode
 
-// The \c band() function returns an expression representing the band view. This view can be
-// treated as any other vector, i.e. it can be assigned to, it can be copied from, and it can
-// be used in arithmetic operations. By default, bands are considered column vectors, but this
-// setting can be changed via the \c defaultTransposeFlag switch. The reference can also be used
-// on both sides of an assignment: The band can either be used as an alias to grant write access
-// to a specific band of a matrix primitive on the left-hand side of an assignment or to grant
-// read-access to a specific band of a matrix primitive or expression on the right-hand side of
-// an assignment. The following example demonstrates this in detail:
+// The \c band() function returns an expression representing the band view. The type of this
+// expression depends on the given band arguments, primarily the type of the matrix and the
+// compile time arguments. If the type is required, it can be determined via \c decltype or
+// via the \c BandExprTrait class template:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using BandType1 = decltype( blaze::band<1L>( std::declval<MatrixType>() ) );
+   using BandType2 = blaze::BandExprTrait<MatrixType,1L>::Type;
+   \endcode
+
+// The resulting view can be treated as any other vector, i.e. it can be assigned to, it can be
+// copied from, and it can be used in arithmetic operations. By default, bands are considered
+// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
+// reference can also be used on both sides of an assignment: The band can either be used as an
+// alias to grant write access to a specific band of a matrix primitive on the left-hand side of
+// an assignment or to grant read-access to a specific band of a matrix primitive or expression
+// on the right-hand side of an assignment. The following example demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
@@ -307,14 +318,26 @@
    auto diag = diagonal( A );
    \endcode
 
-// The resulting reference can be treated as any other vector, i.e. it can be assigned to, it
-// can be copied from, and it can be used in arithmetic operations. By default, diagonals are
-// considered column vectors, but this setting can be changed via the \c defaultTransposeFlag
-// switch. The reference can also be used on both sides of an assignment: The diagonal can either
-// be used as an alias to grant write access to a specific diagonal of a matrix primitive on the
-// left-hand side of an assignment or to grant read-access to a specific diagonal of a matrix
-// primitive or expression on the right-hand side of an assignment. The following example
-// demonstrates this in detail:
+// The \c diagonal() function returns an expression representing the diagonal view. The type of
+// this expression depends on the given diagonal arguments, primarily the type of the matrix and
+// the compile time arguments. If the type is required, it can be determined via \c decltype or
+// via the \c DiagonalExprTrait class template:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using DiagonalType1 = decltype( blaze::diagonal( std::declval<MatrixType>() ) );
+   using DiagonalType2 = blaze::DiagonalExprTrait<MatrixType>::Type;
+   \endcode
+
+// The resulting view can be treated as any other vector, i.e. it can be assigned to, it can be
+// copied from, and it can be used in arithmetic operations. By default, diagonals are considered
+// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
+// reference can also be used on both sides of an assignment: The diagonal can either be used as
+// an alias to grant write access to a specific diagonal of a matrix primitive on the left-hand
+// side of an assignment or to grant read-access to a specific diagonal of a matrix primitive or
+// expression on the right-hand side of an assignment. The following example demonstrates this
+// in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
