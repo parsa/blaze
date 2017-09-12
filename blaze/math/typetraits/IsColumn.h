@@ -95,11 +95,11 @@ struct IsColumn
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsColumn type trait for 'ColumnImpl'.
+/*!\brief Specialization of the IsColumn type trait for 'Column'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CAs >
-struct IsColumn< ColumnImpl<MT,SO,DF,SF,CAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+struct IsColumn< Column<MT,SO,DF,SF,CCAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -108,11 +108,11 @@ struct IsColumn< ColumnImpl<MT,SO,DF,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsColumn type trait for 'const ColumnImpl'.
+/*!\brief Specialization of the IsColumn type trait for 'const Column'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CAs >
-struct IsColumn< const ColumnImpl<MT,SO,DF,SF,CAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+struct IsColumn< const Column<MT,SO,DF,SF,CCAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -121,11 +121,11 @@ struct IsColumn< const ColumnImpl<MT,SO,DF,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsColumn type trait for 'volatile ColumnImpl'.
+/*!\brief Specialization of the IsColumn type trait for 'volatile Column'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CAs >
-struct IsColumn< volatile ColumnImpl<MT,SO,DF,SF,CAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+struct IsColumn< volatile Column<MT,SO,DF,SF,CCAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -134,11 +134,11 @@ struct IsColumn< volatile ColumnImpl<MT,SO,DF,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsColumn type trait for 'const volatile ColumnImpl'.
+/*!\brief Specialization of the IsColumn type trait for 'const volatile Column'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CAs >
-struct IsColumn< const volatile ColumnImpl<MT,SO,DF,SF,CAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+struct IsColumn< const volatile Column<MT,SO,DF,SF,CCAs...> >
    : public TrueType
 {};
 /*! \endcond */

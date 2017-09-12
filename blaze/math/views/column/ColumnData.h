@@ -55,15 +55,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the data members of the ColumnImpl class.
+/*!\brief Auxiliary class template for the data members of the Column class.
 // \ingroup column
 //
 // The auxiliary ColumnData class template represents an abstraction of the data members of
-// the ColumnImpl class template. The necessary set of data members is selected depending on
-// the number of compile time column arguments.
+// the Column class template. The necessary set of data members is selected depending on the
+// number of compile time column arguments.
 */
-template< typename MT      // Type of the matrix
-        , size_t... CAs >  // Compile time column arguments
+template< typename MT       // Type of the matrix
+        , size_t... CCAs >  // Compile time column arguments
 struct ColumnData
 {};
 //*************************************************************************************************

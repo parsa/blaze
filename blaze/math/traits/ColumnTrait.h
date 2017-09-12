@@ -78,8 +78,8 @@ namespace blaze {
 // following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO, size_t... CAs >
-   struct ColumnTrait< DynamicMatrix<T1,SO>, CAs... >
+   template< typename T1, bool SO, size_t... CCAs >
+   struct ColumnTrait< DynamicMatrix<T1,SO>, CCAs... >
    {
       using Type = DynamicVector<T1,true>;
    };
@@ -103,8 +103,8 @@ namespace blaze {
    using ResultType2 = typename blaze::ColumnTrait<MatrixType2>::Type;
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , size_t... CAs >  // Compile time column arguments
+template< typename MT       // Type of the matrix
+        , size_t... CCAs >  // Compile time column arguments
 struct ColumnTrait
 {
  private:
@@ -118,7 +118,7 @@ struct ColumnTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , ColumnTrait< Decay_<MT>, CAs... >
+                            , ColumnTrait< Decay_<MT>, CCAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -139,9 +139,9 @@ struct ColumnTrait
    using Type2 = ColumnTrait_<MT>;
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , size_t... CAs >  // Compile time column arguments
-using ColumnTrait_ = typename ColumnTrait<MT,CAs...>::Type;
+template< typename MT       // Type of the matrix
+        , size_t... CCAs >  // Compile time column arguments
+using ColumnTrait_ = typename ColumnTrait<MT,CCAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

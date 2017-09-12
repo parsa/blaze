@@ -112,22 +112,22 @@ template< typename MT, bool SO >
 decltype(auto) row( Matrix<MT,SO>&&, size_t );
 
 template< size_t I, typename MT, bool SO >
-Column<MT,I> column( Matrix<MT,SO>& );
+decltype(auto) column( Matrix<MT,SO>& );
 
 template< size_t I, typename MT, bool SO >
-const Column<const MT,I> column( const Matrix<MT,SO>& );
+decltype(auto) column( const Matrix<MT,SO>& );
 
 template< size_t I, typename MT, bool SO >
-Column<MT,I> column( Matrix<MT,SO>&& );
+decltype(auto) column( Matrix<MT,SO>&& );
 
 template< typename MT, bool SO >
-Column<MT> column( Matrix<MT,SO>&, size_t );
+decltype(auto) column( Matrix<MT,SO>&, size_t );
 
 template< typename MT, bool SO >
-const Column<const MT> column( const Matrix<MT,SO>&, size_t );
+decltype(auto) column( const Matrix<MT,SO>&, size_t );
 
 template< typename MT, bool SO >
-Column<MT> column( Matrix<MT,SO>&&, size_t );
+decltype(auto) column( Matrix<MT,SO>&&, size_t );
 
 template< ptrdiff_t I, typename MT, bool SO >
 Band<MT,I> band( Matrix<MT,SO>& );

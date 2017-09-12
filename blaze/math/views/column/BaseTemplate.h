@@ -55,12 +55,12 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-class ColumnImpl
+template< typename MT                               // Type of the matrix
+        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
+        , bool DF = IsDenseMatrix<MT>::value        // Density flag
+        , bool SF = IsSymmetric<MT>::value          // Symmetry flag
+        , size_t... CCAs >                          // Compile time column arguments
+class Column
 {};
 //*************************************************************************************************
 
@@ -74,69 +74,21 @@ class ColumnImpl
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief View on a specific column of a dense or sparse matrix.
-// \ingroup column
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the Row class template.
+// \ingroup row
 //
-// The DenseColumn template represents a reference to a specific column of a dense or sparse
-// matrix primitive.
+// The Row_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Row class template.
 */
-template< typename MT      // Type of the matrix
-        , size_t... CAs >  // Compile time column arguments
-using Column = ColumnImpl< MT
-                         , IsColumnMajorMatrix<MT>::value
-                         , IsDenseMatrix<MT>::value
-                         , IsSymmetric<MT>::value
-                         , CAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific column of a dense matrix.
-// \ingroup column
-//
-// The DenseColumn template represents a reference to a specific column of a dense matrix primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... CAs >  // Compile time column arguments
-using DenseColumn = ColumnImpl< MT
-                              , IsColumnMajorMatrix<MT>::value
-                              , true
-                              , IsSymmetric<MT>::value
-                              , CAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific column of a sparse matrix.
-// \ingroup column
-//
-// The SparseColumn template represents a reference to a specific column of a sparse matrix
-// primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... CAs >  // Compile time column arguments
-using SparseColumn = ColumnImpl< MT
-                               , IsColumnMajorMatrix<MT>::value
-                               , false
-                               , IsSymmetric<MT>::value
-                               , CAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific column of a row-major, non-symmetric matrix.
-// \ingroup column
-//
-// The OpposingColumn template represents a reference to a specific column of a row-major,
-// non-symmetric matrix primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... CAs >  // Compile time column arguments
-using OpposingColumn = ColumnImpl< MT
-                                 , false
-                                 , IsDenseMatrix<MT>::value
-                                 , false
-                                 , CAs... >;
+template< typename MT       // Type of the matrix
+        , size_t... CCAs >  // Compile time column arguments
+using Column_ = Column< MT
+                      , IsColumnMajorMatrix<MT>::value
+                      , IsDenseMatrix<MT>::value
+                      , IsSymmetric<MT>::value
+                      , CCAs... >;
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

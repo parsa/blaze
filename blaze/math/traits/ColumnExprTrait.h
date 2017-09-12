@@ -66,8 +66,8 @@ namespace blaze {
 // type. In case the given type is neither a dense nor a sparse matrix type, the resulting data
 // type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT      // Type of the matrix operand
-        , size_t... CAs >  // Compile time column arguments
+template< typename MT       // Type of the matrix operand
+        , size_t... CCAs >  // Compile time column arguments
 struct ColumnExprTrait
 {
  private:
@@ -79,7 +79,7 @@ struct ColumnExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct CompileTime { using Type = decltype( column<CAs...>( std::declval<MT>() ) ); };
+   struct CompileTime { using Type = decltype( column<CCAs...>( std::declval<MT>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -93,7 +93,7 @@ struct ColumnExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsMatrix< RemoveReference_<MT> >
-                            , IfTrue_< ( sizeof...( CAs ) > 0UL )
+                            , IfTrue_< ( sizeof...( CCAs ) > 0UL )
                                      , CompileTime
                                      , Runtime >
                             , Failure >::Type;
@@ -116,9 +116,9 @@ struct ColumnExprTrait
    using Type2 = ColumnExprTrait_<MT>;
    \endcode
 */
-template< typename MT      // Type of the matrix operand
-        , size_t... CAs >  // Compile time column arguments
-using ColumnExprTrait_ = typename ColumnExprTrait<MT,CAs...>::Type;
+template< typename MT       // Type of the matrix operand
+        , size_t... CCAs >  // Compile time column arguments
+using ColumnExprTrait_ = typename ColumnExprTrait<MT,CCAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

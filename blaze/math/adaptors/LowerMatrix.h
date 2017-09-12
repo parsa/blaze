@@ -2207,10 +2207,10 @@ struct RowTrait< LowerMatrix<MT,SO,DF>, CRAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CAs >
-struct ColumnTrait< LowerMatrix<MT,SO,DF>, CAs... >
+template< typename MT, bool SO, bool DF, size_t... CCAs >
+struct ColumnTrait< LowerMatrix<MT,SO,DF>, CCAs... >
 {
-   using Type = ColumnTrait_<MT,CAs...>;
+   using Type = ColumnTrait_<MT,CCAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -7195,8 +7195,8 @@ struct RowTrait< DynamicMatrix<T,SO>, CRAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CAs >
-struct ColumnTrait< DynamicMatrix<T,SO>, CAs... >
+template< typename T, bool SO, size_t... CCAs >
+struct ColumnTrait< DynamicMatrix<T,SO>, CCAs... >
 {
    using Type = DynamicVector<T,false>;
 };

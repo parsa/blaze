@@ -6618,8 +6618,8 @@ struct RowTrait< CustomMatrix<T,AF,PF,SO>, CRAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO, size_t... CAs >
-struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CAs... >
+template< typename T, bool AF, bool PF, bool SO, size_t... CCAs >
+struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
 {
    using Type = DynamicVector<T,false>;
 };

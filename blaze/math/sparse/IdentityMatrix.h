@@ -2634,8 +2634,8 @@ struct RowTrait< IdentityMatrix<T,SO>, CRAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CAs >
-struct ColumnTrait< IdentityMatrix<T,SO>, CAs... >
+template< typename T, bool SO, size_t... CCAs >
+struct ColumnTrait< IdentityMatrix<T,SO>, CCAs... >
 {
    using Type = CompressedVector<T,false>;
 };

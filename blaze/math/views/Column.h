@@ -117,11 +117,11 @@ namespace blaze {
 template< size_t I     // Column index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Column<MT,I> column( Matrix<MT,SO>& matrix )
+inline decltype(auto) column( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column<MT,I>( ~matrix );
+   return Column_<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -157,11 +157,11 @@ inline Column<MT,I> column( Matrix<MT,SO>& matrix )
 template< size_t I     // Column index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const Column<const MT,I> column( const Matrix<MT,SO>& matrix )
+inline decltype(auto) column( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column<const MT,I>( ~matrix );
+   return Column_<const MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -182,11 +182,11 @@ inline const Column<const MT,I> column( const Matrix<MT,SO>& matrix )
 template< size_t I     // Column index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Column<MT,I> column( Matrix<MT,SO>&& matrix )
+inline decltype(auto) column( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column<MT,I>( ~matrix );
+   return Column_<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -222,11 +222,11 @@ inline Column<MT,I> column( Matrix<MT,SO>&& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Column<MT> column( Matrix<MT,SO>& matrix, size_t index )
+inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column<MT>( ~matrix, index );
+   return Column_<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -262,11 +262,11 @@ inline Column<MT> column( Matrix<MT,SO>& matrix, size_t index )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const Column<const MT> column( const Matrix<MT,SO>& matrix, size_t index )
+inline decltype(auto) column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column<const MT>( ~matrix, index );
+   return Column_<const MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -287,11 +287,11 @@ inline const Column<const MT> column( const Matrix<MT,SO>& matrix, size_t index 
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Column<MT> column( Matrix<MT,SO>&& matrix, size_t index )
+inline decltype(auto) column( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column<MT>( ~matrix, index );
+   return Column_<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -922,12 +922,12 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, size_t index )
 // \param column The column to be resetted.
 // \return void
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-inline void reset( ColumnImpl<MT,SO,DF,SF,CAs...>& column )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline void reset( Column<MT,SO,DF,SF,CCAs...>& column )
 {
    column.reset();
 }
@@ -943,12 +943,12 @@ inline void reset( ColumnImpl<MT,SO,DF,SF,CAs...>& column )
 // \param column The temporary column to be resetted.
 // \return void
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-inline void reset( ColumnImpl<MT,SO,DF,SF,CAs...>&& column )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline void reset( Column<MT,SO,DF,SF,CCAs...>&& column )
 {
    column.reset();
 }
@@ -966,12 +966,12 @@ inline void reset( ColumnImpl<MT,SO,DF,SF,CAs...>&& column )
 //
 // Clearing a column is equivalent to resetting it via the reset() function.
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-inline void clear( ColumnImpl<MT,SO,DF,SF,CAs...>& column )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline void clear( Column<MT,SO,DF,SF,CCAs...>& column )
 {
    column.reset();
 }
@@ -989,12 +989,12 @@ inline void clear( ColumnImpl<MT,SO,DF,SF,CAs...>& column )
 //
 // Clearing a column is equivalent to resetting it via the reset() function.
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-inline void clear( ColumnImpl<MT,SO,DF,SF,CAs...>&& column )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline void clear( Column<MT,SO,DF,SF,CCAs...>&& column )
 {
    column.reset();
 }
@@ -1028,12 +1028,12 @@ inline void clear( ColumnImpl<MT,SO,DF,SF,CAs...>&& column )
    if( isDefault<relaxed>( column( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF          // Relaxation flag
-        , typename MT      // Type of the dense matrix
-        , bool SO          // Storage order
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-inline bool isDefault( const ColumnImpl<MT,SO,true,SF,CAs...>& column )
+template< bool RF           // Relaxation flag
+        , typename MT       // Type of the dense matrix
+        , bool SO           // Storage order
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline bool isDefault( const Column<MT,SO,true,SF,CCAs...>& column )
 {
    using blaze::isDefault;
 
@@ -1071,12 +1071,12 @@ inline bool isDefault( const ColumnImpl<MT,SO,true,SF,CAs...>& column )
    if( isDefault<relaxed>( column( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF          // Relaxation flag
-        , typename MT      // Type of the sparse matrix
-        , bool SO          // Storage order
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-inline bool isDefault( const ColumnImpl<MT,SO,false,SF,CAs...>& column )
+template< bool RF           // Relaxation flag
+        , typename MT       // Type of the sparse matrix
+        , bool SO           // Storage order
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline bool isDefault( const Column<MT,SO,false,SF,CCAs...>& column )
 {
    using blaze::isDefault;
 
@@ -1106,12 +1106,12 @@ inline bool isDefault( const ColumnImpl<MT,SO,false,SF,CAs...>& column )
    if( isIntact( column( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-inline bool isIntact( const ColumnImpl<MT,SO,DF,SF,CAs...>& column ) noexcept
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline bool isIntact( const Column<MT,SO,DF,SF,CCAs...>& column ) noexcept
 {
    return ( column.column() < column.operand().columns() &&
             isIntact( column.operand() ) );
@@ -1133,17 +1133,17 @@ inline bool isIntact( const ColumnImpl<MT,SO,DF,SF,CAs...>& column ) noexcept
 // regular columns. In case both columns represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the matrix of the left-hand side column
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side column
-        , size_t... CAs1    // Compile time column arguments of the left-hand side column
-        , typename MT2      // Type of the matrix of the right-hand side column
-        , bool SF2          // Symmetry flag of the right-hand side column
-        , size_t... CAs2 >  // Compile time column arguments of the right-hand side column
+template< typename MT1       // Type of the matrix of the left-hand side column
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side column
+        , size_t... CCAs1    // Compile time column arguments of the left-hand side column
+        , typename MT2       // Type of the matrix of the right-hand side column
+        , bool SF2           // Symmetry flag of the right-hand side column
+        , size_t... CCAs2 >  // Compile time column arguments of the right-hand side column
 inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const ColumnImpl<MT1,SO,DF,SF1,CAs1...>& a,
-                   const ColumnImpl<MT2,SO,DF,SF2,CAs2...>& b ) noexcept
+   isSame_backend( const Column<MT1,SO,DF,SF1,CCAs1...>& a,
+                   const Column<MT2,SO,DF,SF2,CCAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.column() == b.column() ) );
 }
@@ -1164,17 +1164,17 @@ inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // column being a column on a submatrix. In case both columns represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the submatrix of the left-hand side column
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side column
-        , size_t... CAs1    // Compile time column arguments of the left-hand side column
-        , typename MT2      // Type of the matrix of the right-hand side column
-        , bool SF2          // Symmetry flag of the right-hand side column
-        , size_t... CAs2 >  // Compile time column arguments of the right-hand side column
+template< typename MT1       // Type of the submatrix of the left-hand side column
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side column
+        , size_t... CCAs1    // Compile time column arguments of the left-hand side column
+        , typename MT2       // Type of the matrix of the right-hand side column
+        , bool SF2           // Symmetry flag of the right-hand side column
+        , size_t... CCAs2 >  // Compile time column arguments of the right-hand side column
 inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
-   isSame_backend( const ColumnImpl<MT1,SO,DF,SF1,CAs1...>& a,
-                   const ColumnImpl<MT2,SO,DF,SF2,CAs2...>& b ) noexcept
+   isSame_backend( const Column<MT1,SO,DF,SF1,CCAs1...>& a,
+                   const Column<MT2,SO,DF,SF2,CCAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1197,17 +1197,17 @@ inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
 // column being a column on a submatrix. In case both columns represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the matrix of the left-hand side column
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side column
-        , size_t... CAs1    // Compile time column arguments of the left-hand side column
-        , typename MT2      // Type of the submatrix of the right-hand side column
-        , bool SF2          // Symmetry flag of the right-hand side column
-        , size_t... CAs2 >  // Compile time column arguments of the right-hand side column
+template< typename MT1       // Type of the matrix of the left-hand side column
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side column
+        , size_t... CCAs1    // Compile time column arguments of the left-hand side column
+        , typename MT2       // Type of the submatrix of the right-hand side column
+        , bool SF2           // Symmetry flag of the right-hand side column
+        , size_t... CCAs2 >  // Compile time column arguments of the right-hand side column
 inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const ColumnImpl<MT1,SO,DF,SF1,CAs1...>& a,
-                   const ColumnImpl<MT2,SO,DF,SF2,CAs2...>& b ) noexcept
+   isSame_backend( const Column<MT1,SO,DF,SF1,CCAs1...>& a,
+                   const Column<MT2,SO,DF,SF2,CCAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1230,17 +1230,17 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // being columns on submatrices. In case both columns represent the same observable state, the
 // function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the submatrix of the left-hand side column
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side column
-        , size_t... CAs1    // Compile time column arguments of the left-hand side column
-        , typename MT2      // Type of the submatrix of the right-hand side column
-        , bool SF2          // Symmetry flag of the right-hand side column
-        , size_t... CAs2 >  // Compile time column arguments of the right-hand side column
+template< typename MT1       // Type of the submatrix of the left-hand side column
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side column
+        , size_t... CCAs1    // Compile time column arguments of the left-hand side column
+        , typename MT2       // Type of the submatrix of the right-hand side column
+        , bool SF2           // Symmetry flag of the right-hand side column
+        , size_t... CCAs2 >  // Compile time column arguments of the right-hand side column
 inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const ColumnImpl<MT1,SO,DF,SF1,CAs1...>& a,
-                   const ColumnImpl<MT2,SO,DF,SF2,CAs2...>& b ) noexcept
+   isSame_backend( const Column<MT1,SO,DF,SF1,CCAs1...>& a,
+                   const Column<MT2,SO,DF,SF2,CCAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1264,16 +1264,16 @@ inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // same range of the same matrix. In case both columns represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the matrix of the left-hand side column
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side column
-        , size_t... CAs1    // Compile time column arguments of the left-hand side column
-        , typename MT2      // Type of the matrix of the right-hand side column
-        , bool SF2          // Symmetry flag of the right-hand side column
-        , size_t... CAs2 >  // Compile time column arguments of the right-hand side column
-inline bool isSame( const ColumnImpl<MT1,SO,DF,SF1,CAs1...>& a,
-                    const ColumnImpl<MT2,SO,DF,SF2,CAs2...>& b ) noexcept
+template< typename MT1       // Type of the matrix of the left-hand side column
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side column
+        , size_t... CCAs1    // Compile time column arguments of the left-hand side column
+        , typename MT2       // Type of the matrix of the right-hand side column
+        , bool SF2           // Symmetry flag of the right-hand side column
+        , size_t... CCAs2 >  // Compile time column arguments of the right-hand side column
+inline bool isSame( const Column<MT1,SO,DF,SF1,CCAs1...>& a,
+                    const Column<MT2,SO,DF,SF2,CCAs2...>& b ) noexcept
 {
    return isSame_backend( a, b );
 }
@@ -1296,13 +1296,13 @@ inline bool isSame( const ColumnImpl<MT1,SO,DF,SF1,CAs1...>& a,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... CAs  // Compile time column arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAssign( const ColumnImpl<MT,SO,DF,SF,CAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CCAs  // Compile time column arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                        const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1329,13 +1329,13 @@ inline bool tryAssign( const ColumnImpl<MT,SO,DF,SF,CAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... CAs  // Compile time column arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAddAssign( const ColumnImpl<MT,SO,SF,SF,CAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CCAs  // Compile time column arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryAddAssign( const Column<MT,SO,SF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1362,13 +1362,13 @@ inline bool tryAddAssign( const ColumnImpl<MT,SO,SF,SF,CAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... CAs  // Compile time column arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool trySubAssign( const ColumnImpl<MT,SO,DF,SF,CAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CCAs  // Compile time column arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool trySubAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1395,13 +1395,13 @@ inline bool trySubAssign( const ColumnImpl<MT,SO,DF,SF,CAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... CAs  // Compile time column arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryMultAssign( const ColumnImpl<MT,SO,DF,SF,CAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CCAs  // Compile time column arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryMultAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                            const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1428,13 +1428,13 @@ inline bool tryMultAssign( const ColumnImpl<MT,SO,DF,SF,CAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... CAs  // Compile time column arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryDivAssign( const ColumnImpl<MT,SO,DF,SF,CAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CCAs  // Compile time column arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryDivAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1466,7 +1466,7 @@ template< typename MT  // Type of the matrix
         , bool DF      // Density flag
         , bool SF      // Symmetry flag
         , size_t I >   // Compile time column arguments
-inline decltype(auto) derestrict( ColumnImpl<MT,SO,DF,SF,I>& c )
+inline decltype(auto) derestrict( Column<MT,SO,DF,SF,I>& c )
 {
    return column<I>( derestrict( c.operand() ) );
 }
@@ -1494,7 +1494,7 @@ template< typename MT  // Type of the matrix
         , bool DF      // Density flag
         , bool SF      // Symmetry flag
         , size_t I >   // Compile time column arguments
-inline decltype(auto) derestrict( ColumnImpl<MT,SO,DF,SF,I>&& c )
+inline decltype(auto) derestrict( Column<MT,SO,DF,SF,I>&& c )
 {
    return column<I>( derestrict( c.operand() ) );
 }
@@ -1521,7 +1521,7 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( ColumnImpl<MT,SO,DF,SF>& c )
+inline decltype(auto) derestrict( Column<MT,SO,DF,SF>& c )
 {
    return column( derestrict( c.operand() ), c.column() );
 }
@@ -1548,7 +1548,7 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( ColumnImpl<MT,SO,DF,SF>&& c )
+inline decltype(auto) derestrict( Column<MT,SO,DF,SF>&& c )
 {
    return column( derestrict( c.operand() ), c.column() );
 }
@@ -1566,8 +1566,8 @@ inline decltype(auto) derestrict( ColumnImpl<MT,SO,DF,SF>&& c )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CAs >
-struct IsRestricted< ColumnImpl<MT,SO,DF,SF,CAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+struct IsRestricted< Column<MT,SO,DF,SF,CCAs...> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
@@ -1584,8 +1584,8 @@ struct IsRestricted< ColumnImpl<MT,SO,DF,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... CAs >
-struct HasConstDataAccess< ColumnImpl<MT,SO,true,SF,CAs...> >
+template< typename MT, bool SO, bool SF, size_t... CCAs >
+struct HasConstDataAccess< Column<MT,SO,true,SF,CCAs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1602,8 +1602,8 @@ struct HasConstDataAccess< ColumnImpl<MT,SO,true,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... CAs >
-struct HasMutableDataAccess< ColumnImpl<MT,SO,true,SF,CAs...> >
+template< typename MT, bool SO, bool SF, size_t... CCAs >
+struct HasMutableDataAccess< Column<MT,SO,true,SF,CCAs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1620,8 +1620,8 @@ struct HasMutableDataAccess< ColumnImpl<MT,SO,true,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... CAs >
-struct IsAligned< ColumnImpl<MT,SO,true,SF,CAs...> >
+template< typename MT, bool SO, bool SF, size_t... CCAs >
+struct IsAligned< Column<MT,SO,true,SF,CCAs...> >
    : public BoolConstant< And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1638,8 +1638,8 @@ struct IsAligned< ColumnImpl<MT,SO,true,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... CAs >
-struct IsPadded< ColumnImpl<MT,SO,true,SF,CAs...> >
+template< typename MT, bool SO, bool SF, size_t... CCAs >
+struct IsPadded< Column<MT,SO,true,SF,CCAs...> >
    : public BoolConstant< And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1656,8 +1656,8 @@ struct IsPadded< ColumnImpl<MT,SO,true,SF,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool DF, size_t... CAs >
-struct IsOpposedView< ColumnImpl<MT,false,DF,false,CAs...> >
+template< typename MT, bool DF, size_t... CCAs >
+struct IsOpposedView< Column<MT,false,DF,false,CCAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1674,10 +1674,10 @@ struct IsOpposedView< ColumnImpl<MT,false,DF,false,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CAs, size_t... CSAs >
-struct SubvectorTrait< ColumnImpl<MT,SO,DF,SF,CAs...>, CSAs... >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CSAs >
+struct SubvectorTrait< Column<MT,SO,DF,SF,CCAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< ColumnImpl<MT,SO,DF,SF,CAs...> >, CSAs... >;
+   using Type = SubvectorTrait_< ResultType_< Column<MT,SO,DF,SF,CCAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
