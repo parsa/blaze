@@ -3012,10 +3012,10 @@ struct LowType< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... SAs >
-struct SubmatrixTrait< UniLowerMatrix<MT,SO,DF>, SAs... >
+template< typename MT, bool SO, bool DF, size_t... CSAs >
+struct SubmatrixTrait< UniLowerMatrix<MT,SO,DF>, CSAs... >
 {
-   using Type = SubmatrixTrait_<MT,SAs...>;
+   using Type = SubmatrixTrait_<MT,CSAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

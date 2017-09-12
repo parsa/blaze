@@ -55,12 +55,12 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-template< typename MT      // Type of the matrix
-        , bool AF          // Alignment flag
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , size_t... SAs >  // Compile time submatrix arguments
-class SubmatrixImpl
+template< typename MT                               // Type of the matrix
+        , bool AF = unaligned                       // Alignment flag
+        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
+        , bool DF = IsDenseMatrix<MT>::value        // Density flag
+        , size_t... CSAs >                          // Compile time submatrix arguments
+class Submatrix
 {};
 //*************************************************************************************************
 
@@ -74,90 +74,22 @@ class SubmatrixImpl
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief View on a specific submatrix of a dense or sparse matrix.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the Submatrix class template.
 // \ingroup submatrix
 //
-// The Submatrix template represents a reference to a specific submatrix of a dense or sparse
-// matrix primitive.
+// The Submatrix_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Submatrix class template.
 */
 template< typename MT          // Type of the matrix
         , bool AF = unaligned  // Alignment flag
-        , size_t... SAs >      // Compile time submatrix arguments
-using Submatrix = SubmatrixImpl< MT
-                               , AF
-                               , IsColumnMajorMatrix<MT>::value
-                               , IsDenseMatrix<MT>::value
-                               , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific submatrix of a dense matrix.
-// \ingroup submatrix
-//
-// The DenseSubmatrix template represents a reference to a specific submatrix of a dense matrix
-// primitive.
-*/
-template< typename MT          // Type of the matrix
-        , bool AF = unaligned  // Alignment flag
-        , size_t... SAs >      // Compile time submatrix arguments
-using DenseSubmatrix = SubmatrixImpl< MT
-                                    , AF
-                                    , IsColumnMajorMatrix<MT>::value
-                                    , true
-                                    , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific submatrix of a sparse matrix.
-// \ingroup submatrix
-//
-// The SparseSubmatrix template represents a reference to a specific submatrix of a sparse matrix
-// primitive.
-*/
-template< typename MT          // Type of the matrix
-        , bool AF = unaligned  // Alignment flag
-        , size_t... SAs >      // Compile time submatrix arguments
-using SparseSubmatrix = SubmatrixImpl< MT
-                                     , AF
-                                     , IsColumnMajorMatrix<MT>::value
-                                     , true
-                                     , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific unaligned submatrix of a matrix.
-// \ingroup submatrix
-//
-// The UnalignedSubmatrix template represents a reference to a specific unaligned submatrix of a
-// matrix primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-using UnalignedSubmatrix = SubmatrixImpl< MT
-                                        , unaligned
-                                        , IsColumnMajorMatrix<MT>::value
-                                        , IsDenseMatrix<MT>::value
-                                        , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific aligned submatrix of a matrix.
-// \ingroup submatrix
-//
-// The AlignedSubmatrix template represents a reference to a specific aligned submatrix of a
-// matrix primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-using AlignedSubmatrix = SubmatrixImpl< MT
-                                      , aligned
-                                      , IsColumnMajorMatrix<MT>::value
-                                      , IsDenseMatrix<MT>::value
-                                      , SAs... >;
+        , size_t... CSAs >     // Compile time submatrix arguments
+using Submatrix_ = Submatrix< MT
+                            , AF
+                            , IsColumnMajorMatrix<MT>::value
+                            , IsDenseMatrix<MT>::value
+                            , CSAs... >;
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

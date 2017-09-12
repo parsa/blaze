@@ -55,15 +55,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the data members of the SubmatrixImpl class.
+/*!\brief Auxiliary class template for the data members of the Submatrix class.
 // \ingroup submatrix
 //
 // The auxiliary SubmatrixData class template represents an abstraction of the data members of
-// the SubmatrixImpl class template. The necessary set of data members is selected depending on
-// the number of compile time submatrix arguments.
+// the Submatrix class template. The necessary set of data members is selected depending on the
+// number of compile time submatrix arguments.
 */
-template< typename MT      // Type of the matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 struct SubmatrixData
 {};
 //*************************************************************************************************

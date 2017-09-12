@@ -104,8 +104,8 @@ namespace blaze {
    using ResultType2 = typename blaze::SubmatrixTrait<MatrixType2>::Type;
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 struct SubmatrixTrait
 {
  private:
@@ -119,7 +119,7 @@ struct SubmatrixTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , SubmatrixTrait< Decay_<MT>, SAs... >
+                            , SubmatrixTrait< Decay_<MT>, CSAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -140,9 +140,9 @@ struct SubmatrixTrait
    using Type2 = SubmatrixTrait_<MT>;
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-using SubmatrixTrait_ = typename SubmatrixTrait<MT,SAs...>::Type;
+template< typename MT       // Type of the matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+using SubmatrixTrait_ = typename SubmatrixTrait<MT,CSAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

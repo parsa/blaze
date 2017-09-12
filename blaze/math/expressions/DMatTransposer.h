@@ -2298,10 +2298,10 @@ struct IsPadded< DMatTransposer<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, size_t... SAs >
-struct SubmatrixTrait< DMatTransposer<MT,SO>, SAs... >
+template< typename MT, bool SO, size_t... CSAs >
+struct SubmatrixTrait< DMatTransposer<MT,SO>, CSAs... >
 {
-   using Type = SubmatrixTrait_< ResultType_< DMatTransposer<MT,SO> >, SAs... >;
+   using Type = SubmatrixTrait_< ResultType_< DMatTransposer<MT,SO> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

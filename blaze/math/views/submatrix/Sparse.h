@@ -88,6 +88,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -105,37 +106,37 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubmatrixImpl for row-major sparse submatrices.
+/*!\brief Specialization of Submatrix for row-major sparse submatrices.
 // \ingroup submatrix
 //
-// This specialization of SubmatrixImpl adapts the class template to the requirements of row-major
+// This specialization of Submatrix adapts the class template to the requirements of row-major
 // sparse submatrices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-class SubmatrixImpl<MT,AF,false,false,SAs...>
-   : public View< SparseMatrix< SubmatrixImpl<MT,AF,false,false,SAs...>, false > >
-   , private SubmatrixData<MT,SAs...>
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+class Submatrix<MT,AF,false,false,CSAs...>
+   : public View< SparseMatrix< Submatrix<MT,AF,false,false,CSAs...>, false > >
+   , private SubmatrixData<MT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,SAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubmatrixImpl instance.
-   using This = SubmatrixImpl<MT,AF,false,false,SAs...>;
+   //! Type of this Submatrix instance.
+   using This = Submatrix<MT,AF,false,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;    //!< Base type of this SubmatrixImpl instance.
-   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
+   using BaseType      = SparseMatrix<This,false>;    //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubmatrixImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -441,8 +442,8 @@ class SubmatrixImpl<MT,AF,false,false,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixImpl( MT& matrix );
-   explicit inline SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -470,19 +471,19 @@ class SubmatrixImpl<MT,AF,false,false,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SubmatrixImpl& operator=( const SubmatrixImpl& rhs );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator= ( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator+=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator-=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator%=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator*=( const Matrix<MT2,SO>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SubmatrixImpl >& operator*=( Other rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator= ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator%=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SubmatrixImpl >& operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -548,10 +549,10 @@ class SubmatrixImpl<MT,AF,false,false,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   inline SubmatrixImpl& transpose();
-   inline SubmatrixImpl& ctranspose();
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
 
-   template< typename Other > inline SubmatrixImpl& scale( const Other& scalar );
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -608,44 +609,24 @@ class SubmatrixImpl<MT,AF,false,false,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with compile time arguments.
+/*!\brief The constructor for row-major sparse submatrices.
 //
 // \param matrix The sparse matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
 // In case the submatrix is not properly specified (i.e. if the specified submatrix is not
 // contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,false,false,SAs...>::SubmatrixImpl( MT& matrix )
-   : DataType( matrix )  // Base class initialization
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with runtime arguments.
-//
-// \param matrix The sparse matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given sparse matrix.
-// \param cindex The index of the first column of the submatrix in the given sparse matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,false,false,SAs...>::SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( matrix, rindex, cindex, m, n )  // Base class initialization
-{}
+template< typename MT         // Type of the sparse matrix
+        , bool AF             // Alignment flag
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( matrix, args... )  // Base class initialization
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -669,11 +650,11 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>::SubmatrixImpl( MT& matrix, size_
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Reference
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator()( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Reference
+   Submatrix<MT,AF,false,false,CSAs...>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -695,11 +676,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstReference
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator()( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstReference
+   Submatrix<MT,AF,false,false,CSAs...>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -722,11 +703,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Reference
-   SubmatrixImpl<MT,AF,false,false,SAs...>::at( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Reference
+   Submatrix<MT,AF,false,false,CSAs...>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -752,11 +733,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstReference
-   SubmatrixImpl<MT,AF,false,false,SAs...>::at( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstReference
+   Submatrix<MT,AF,false,false,CSAs...>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -782,11 +763,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstReference
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::begin( size_t i )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -811,11 +792,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::begin( size_t i ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,false,false,CSAs...>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -840,11 +821,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::cbegin( size_t i ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,false,false,CSAs...>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -869,11 +850,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::end( size_t i )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -898,11 +879,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::end( size_t i ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,false,false,CSAs...>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -927,11 +908,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::cend( size_t i ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,false,false,CSAs...>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid sparse submatrix row access index" );
 
@@ -967,11 +948,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator=( const SubmatrixImpl& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::operator=( const Submatrix& rhs )
 {
    using blaze::assign;
 
@@ -1024,13 +1005,13 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1081,13 +1062,13 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1136,13 +1117,13 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1191,13 +1172,13 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1246,13 +1227,13 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator*=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -1305,10 +1286,10 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,false,false,SAs...> >&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator*=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false,CSAs...> >&
+   Submatrix<MT,AF,false,false,CSAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1344,10 +1325,10 @@ inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,false,false,SAs...> >&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,false,false,SAs...> >&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::operator/=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false,CSAs...> >&
+   Submatrix<MT,AF,false,false,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1394,10 +1375,10 @@ inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,false,false,SAs...> >&
 //
 // \return The capacity of the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::capacity() const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,false,false,CSAs...>::capacity() const noexcept
 {
    return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
@@ -1417,10 +1398,10 @@ inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::capacity() const noexcept
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::capacity( size_t i ) const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,false,false,CSAs...>::capacity( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return nonZeros( i ) + matrix_.capacity( row()+i ) - matrix_.nonZeros( row()+i );
@@ -1435,10 +1416,10 @@ inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::capacity( size_t i ) cons
 //
 // \return The number of non-zero elements in the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::nonZeros() const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,false,false,CSAs...>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -1463,10 +1444,10 @@ inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::nonZeros() const
 // elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
 // the number of non-zero elements in column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::nonZeros( size_t i ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,false,false,CSAs...>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return end(i) - begin(i);
@@ -1481,10 +1462,10 @@ inline size_t SubmatrixImpl<MT,AF,false,false,SAs...>::nonZeros( size_t i ) cons
 //
 // \return void
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::reset()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,false,false,CSAs...>::reset()
 {
    for( size_t i=row(); i<row()+rows(); ++i )
    {
@@ -1518,10 +1499,10 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::reset()
 // the storage order is set to \a columnMajor the function resets the values in column \a i.
 // Note that the capacity of the row/column remains unchanged.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::reset( size_t i )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,false,false,CSAs...>::reset( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1555,10 +1536,10 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::reset( size_t i )
 // The current values of the submatrix elements and the individual capacities of the submatrix
 // rows are preserved.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::reserve( size_t nonzeros )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,false,false,CSAs...>::reserve( size_t nonzeros )
 {
    const size_t current( capacity() );
 
@@ -1586,10 +1567,10 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::reserve( size_t nonzeros )
 // is set to \a columnMajor, the function reserves capacity for column \a i and the index has
 // to be in the range \f$[0..N-1]\f$.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-void SubmatrixImpl<MT,AF,false,false,SAs...>::reserve( size_t i, size_t nonzeros )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+void Submatrix<MT,AF,false,false,CSAs...>::reserve( size_t i, size_t nonzeros )
 {
    const size_t current( capacity( i ) );
    const size_t index  ( row() + i );
@@ -1613,10 +1594,10 @@ void SubmatrixImpl<MT,AF,false,false,SAs...>::reserve( size_t i, size_t nonzeros
 // matrix) or columns (in case of a columnMajor matrix). Note that this function does not
 // remove the overall capacity but only reduces the capacity per row/column.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-void SubmatrixImpl<MT,AF,false,false,SAs...>::trim()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+void Submatrix<MT,AF,false,false,CSAs...>::trim()
 {
    for( size_t i=0UL; i<rows(); ++i )
       trim( i );
@@ -1637,10 +1618,10 @@ void SubmatrixImpl<MT,AF,false,false,SAs...>::trim()
 // or column (in case of a columnMajor matrix). The excessive capacity is assigned to the
 // subsequent row/column.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-void SubmatrixImpl<MT,AF,false,false,SAs...>::trim( size_t i )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+void Submatrix<MT,AF,false,false,CSAs...>::trim( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    matrix_.trim( row() + i );
@@ -1659,10 +1640,10 @@ void SubmatrixImpl<MT,AF,false,false,SAs...>::trim( size_t i )
 // its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
 // \a false.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::hasOverlap() const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,AF,false,false,CSAs...>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -1695,11 +1676,11 @@ inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::hasOverlap() const noexcept
 // already contains an element with row index \a i and column index \a j its value is modified,
 // else a new element with the given \a value is inserted.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::set( size_t i, size_t j, const ElementType& value )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::set( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.set( row()+i, column()+j, value ), column() );
 }
@@ -1721,11 +1702,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // not allowed. In case the sparse submatrix already contains an element with row index \a i and
 // column index \a j, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::insert( size_t i, size_t j, const ElementType& value )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::insert( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.insert( row()+i, column()+j, value ), column() );
 }
@@ -1777,10 +1758,10 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,false,false,CSAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
    if( column() + columns() == matrix_.columns() ) {
       matrix_.append( row() + i, column() + j, value, check );
@@ -1807,10 +1788,10 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::append( size_t i, size_t j,
 // \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::finalize( size_t i )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,false,false,CSAs...>::finalize( size_t i )
 {
    matrix_.trim( row() + i );
 }
@@ -1836,10 +1817,10 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::finalize( size_t i )
 //
 // This function erases an element from the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::erase( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -1862,11 +1843,11 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::erase( size_t i, size_t j )
 // to \a rowMajor the function erases an element from row \a i, in case the storage flag is set
 // to \a columnMajor the function erases an element from column \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::erase( size_t i, Iterator pos )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator pos )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return Iterator( matrix_.erase( row()+i, pos.base() ), column() );
@@ -1889,11 +1870,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // the storage flag is set to \a columnMajor the function erases a range of elements from column
 // \a i.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::erase( size_t i, Iterator first, Iterator last )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return Iterator( matrix_.erase( row()+i, first.base(), last.base() ), column() );
@@ -1925,11 +1906,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename Pred >  // Type of the unary predicate
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::erase( Pred predicate )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename Pred >   // Type of the unary predicate
+inline void Submatrix<MT,AF,false,false,CSAs...>::erase( Pred predicate )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
       matrix_.erase( row()+i, begin(i).base(), end(i).base(), predicate );
@@ -1968,11 +1949,11 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::erase( Pred predicate )
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename Pred >  // Type of the unary predicate
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename Pred >   // Type of the unary predicate
+inline void Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    matrix_.erase( row()+i, first.base(), last.base(), predicate );
@@ -2005,11 +1986,11 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::erase( size_t i, Iterator f
 // is subject to invalidation due to inserting operations via the function call operator or
 // the insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::find( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::find( size_t i, size_t j )
 {
    const Iterator_<MT> pos( matrix_.find( row() + i, column() + j ) );
 
@@ -2038,11 +2019,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // is subject to invalidation due to inserting operations via the function call operator or
 // the insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::find( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,false,false,CSAs...>::find( size_t i, size_t j ) const
 {
    const ConstIterator_<MT> pos( matrix_.find( row() + i, column() + j ) );
 
@@ -2071,11 +2052,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::lowerBound( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::lowerBound( size_t i, size_t j )
 {
    return Iterator( matrix_.lowerBound( row() + i, column() + j ), column() );
 }
@@ -2099,11 +2080,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::lowerBound( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,false,false,CSAs...>::lowerBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.lowerBound( row() + i, column() + j ), column() );
 }
@@ -2127,11 +2108,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::upperBound( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
+   Submatrix<MT,AF,false,false,CSAs...>::upperBound( size_t i, size_t j )
 {
    return Iterator( matrix_.upperBound( row() + i, column() + j ), column() );
 }
@@ -2155,11 +2136,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::Iterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,false,false,SAs...>::upperBound( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,false,false,CSAs...>::upperBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.upperBound( row() + i, column() + j ), column() );
 }
@@ -2193,11 +2174,11 @@ inline typename SubmatrixImpl<MT,AF,false,false,SAs...>::ConstIterator
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::transpose()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::transpose()
 {
    using blaze::assign;
 
@@ -2238,11 +2219,11 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::ctranspose()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::ctranspose()
 {
    using blaze::assign;
 
@@ -2280,10 +2261,10 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
-inline SubmatrixImpl<MT,AF,false,false,SAs...>&
-   SubmatrixImpl<MT,AF,false,false,SAs...>::scale( const Other& scalar )
+inline Submatrix<MT,AF,false,false,CSAs...>&
+   Submatrix<MT,AF,false,false,CSAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -2320,9 +2301,9 @@ inline SubmatrixImpl<MT,AF,false,false,SAs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,false,false,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2343,9 +2324,9 @@ inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::canAlias( const Other* alia
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,false,false,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2364,10 +2345,10 @@ inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::isAliased( const Other* ali
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the matrix).
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::canSMPAssign() const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,AF,false,false,CSAs...>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -2387,12 +2368,12 @@ inline bool SubmatrixImpl<MT,AF,false,false,SAs...>::canSMPAssign() const noexce
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::assign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2429,11 +2410,11 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::assign( const DenseMatrix<M
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::assign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2470,11 +2451,11 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::assign( const SparseMatrix<
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::assign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -2524,12 +2505,12 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::assign( const SparseMatrix<
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::addAssign( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,false,false,CSAs...>::addAssign( const Matrix<MT2,SO>& rhs )
 {
    using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
 
@@ -2558,12 +2539,12 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::addAssign( const Matrix<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::subAssign( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,false,false,CSAs...>::subAssign( const Matrix<MT2,SO>& rhs )
 {
    using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
 
@@ -2592,12 +2573,12 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::subAssign( const Matrix<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline void SubmatrixImpl<MT,AF,false,false,SAs...>::schurAssign( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,false,false,CSAs...>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
    using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
 
@@ -2629,37 +2610,37 @@ inline void SubmatrixImpl<MT,AF,false,false,SAs...>::schurAssign( const Matrix<M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubmatrixImpl for column-major sparse submatrices.
+/*!\brief Specialization of Submatrix for column-major sparse submatrices.
 // \ingroup submatrix
 //
-// This specialization of SubmatrixImpl adapts the class template to the requirements of column-major
+// This specialization of Submatrix adapts the class template to the requirements of column-major
 // sparse submatrices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-class SubmatrixImpl<MT,AF,true,false,SAs...>
-   : public View< SparseMatrix< SubmatrixImpl<MT,AF,true,false,SAs...>, true > >
-   , private SubmatrixData<MT,SAs...>
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+class Submatrix<MT,AF,true,false,CSAs...>
+   : public View< SparseMatrix< Submatrix<MT,AF,true,false,CSAs...>, true > >
+   , private SubmatrixData<MT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,SAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubmatrixImpl instance.
-   using This = SubmatrixImpl<MT,AF,true,false,SAs...>;
+   //! Type of this Submatrix instance.
+   using This = Submatrix<MT,AF,true,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;     //!< Base type of this SubmatrixImpl instance.
-   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
+   using BaseType      = SparseMatrix<This,true>;     //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubmatrixImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -2965,8 +2946,8 @@ class SubmatrixImpl<MT,AF,true,false,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixImpl( MT& matrix );
-   explicit inline SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2994,19 +2975,19 @@ class SubmatrixImpl<MT,AF,true,false,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SubmatrixImpl& operator=( const SubmatrixImpl& rhs );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator= ( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator+=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator-=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator%=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline SubmatrixImpl& operator*=( const Matrix<MT2,SO>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SubmatrixImpl >& operator*=( Other rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator= ( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator%=( const Matrix<MT2,SO>& rhs );
+   template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, SubmatrixImpl >& operator/=( Other rhs );
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
+
+   template< typename Other >
+   inline EnableIf_<IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3072,10 +3053,10 @@ class SubmatrixImpl<MT,AF,true,false,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   inline SubmatrixImpl& transpose();
-   inline SubmatrixImpl& ctranspose();
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
 
-   template< typename Other > inline SubmatrixImpl& scale( const Other& scalar );
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -3132,44 +3113,24 @@ class SubmatrixImpl<MT,AF,true,false,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with compile time arguments.
+/*!\brief The constructor for column-major sparse submatrices.
 //
 // \param matrix The sparse matrix containing the submatrix.
+// \param args The runtime submatrix arguments
 // \exception std::invalid_argument Invalid submatrix specification.
 //
 // In case the submatrix is not properly specified (i.e. if the specified submatrix is not
 // contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,true,false,SAs...>::SubmatrixImpl( MT& matrix )
-   : DataType( matrix )  // Base class initialization
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with runtime arguments.
-//
-// \param matrix The sparse matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given sparse matrix.
-// \param cindex The index of the first column of the submatrix in the given sparse matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,true,false,SAs...>::SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( matrix, rindex, cindex, m, n )  // Base class initialization
-{}
+template< typename MT         // Type of the sparse matrix
+        , bool AF             // Alignment flag
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( matrix, args... )  // Base class initialization
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3193,11 +3154,11 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>::SubmatrixImpl( MT& matrix, size_t
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Reference
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator()( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Reference
+   Submatrix<MT,AF,true,false,CSAs...>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -3219,11 +3180,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstReference
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator()( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstReference
+   Submatrix<MT,AF,true,false,CSAs...>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -3246,11 +3207,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Reference
-   SubmatrixImpl<MT,AF,true,false,SAs...>::at( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Reference
+   Submatrix<MT,AF,true,false,CSAs...>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3276,11 +3237,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstReference
-   SubmatrixImpl<MT,AF,true,false,SAs...>::at( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstReference
+   Submatrix<MT,AF,true,false,CSAs...>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3301,11 +3262,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstReference
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::begin( size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3325,11 +3286,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::begin( size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,true,false,CSAs...>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3349,11 +3310,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::cbegin( size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,true,false,CSAs...>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3373,11 +3334,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-  SubmatrixImpl<MT,AF,true,false,SAs...>::end( size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+  Submatrix<MT,AF,true,false,CSAs...>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3397,11 +3358,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::end( size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,true,false,CSAs...>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3421,11 +3382,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::cend( size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,true,false,CSAs...>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid sparse submatrix column access index" );
 
@@ -3461,11 +3422,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator=( const SubmatrixImpl& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::operator=( const Submatrix& rhs )
 {
    using blaze::assign;
 
@@ -3518,13 +3479,13 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3575,13 +3536,13 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3630,13 +3591,13 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3685,13 +3646,13 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3740,13 +3701,13 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator*=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::assign;
 
@@ -3799,10 +3760,10 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,true,false,SAs...> >&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator*=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false,CSAs...> >&
+   Submatrix<MT,AF,true,false,CSAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3838,10 +3799,10 @@ inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,true,false,SAs...> >&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,true,false,SAs...> >&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::operator/=( Other rhs )
+inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false,CSAs...> >&
+   Submatrix<MT,AF,true,false,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -3888,10 +3849,10 @@ inline EnableIf_<IsNumeric<Other>, SubmatrixImpl<MT,AF,true,false,SAs...> >&
 //
 // \return The capacity of the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::capacity() const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,true,false,CSAs...>::capacity() const noexcept
 {
    return nonZeros() + matrix_.capacity() - matrix_.nonZeros();
 }
@@ -3906,10 +3867,10 @@ inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::capacity() const noexcept
 // \param j The index of the column.
 // \return The current capacity of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::capacity( size_t j ) const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,true,false,CSAs...>::capacity( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return nonZeros( j ) + matrix_.capacity( column()+j ) - matrix_.nonZeros( column()+j );
@@ -3924,10 +3885,10 @@ inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::capacity( size_t j ) const
 //
 // \return The number of non-zero elements in the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::nonZeros() const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,true,false,CSAs...>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -3947,10 +3908,10 @@ inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::nonZeros() const
 // \param j The index of the column.
 // \return The number of non-zero elements of column \a j.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::nonZeros( size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,AF,true,false,CSAs...>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return end(j) - begin(j);
@@ -3965,10 +3926,10 @@ inline size_t SubmatrixImpl<MT,AF,true,false,SAs...>::nonZeros( size_t j ) const
 //
 // \return void
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::reset()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,true,false,CSAs...>::reset()
 {
    for( size_t j=column(); j<column()+columns(); ++j )
    {
@@ -3997,10 +3958,10 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::reset()
 // \param j The index of the column.
 // \return void
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::reset( size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,true,false,CSAs...>::reset( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4034,10 +3995,10 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::reset( size_t j )
 // The current values of the submatrix elements and the individual capacities of the submatrix
 // rows are preserved.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::reserve( size_t nonzeros )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,true,false,CSAs...>::reserve( size_t nonzeros )
 {
    const size_t current( capacity() );
 
@@ -4061,10 +4022,10 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::reserve( size_t nonzeros )
 // \a nonzeros elements, but not beyond the current number of rows. The current values of
 // the sparse submatrix and all other individual row/column capacities are preserved.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-void SubmatrixImpl<MT,AF,true,false,SAs...>::reserve( size_t j, size_t nonzeros )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+void Submatrix<MT,AF,true,false,CSAs...>::reserve( size_t j, size_t nonzeros )
 {
    const size_t current( capacity( j ) );
    const size_t index  ( column() + j );
@@ -4087,10 +4048,10 @@ void SubmatrixImpl<MT,AF,true,false,SAs...>::reserve( size_t j, size_t nonzeros 
 // It removes all excessive capacity from all columns. Note that this function does not remove
 // the overall capacity but only reduces the capacity per column.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-void SubmatrixImpl<MT,AF,true,false,SAs...>::trim()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+void Submatrix<MT,AF,true,false,CSAs...>::trim()
 {
    for( size_t j=0UL; j<columns(); ++j )
       trim( j );
@@ -4110,10 +4071,10 @@ void SubmatrixImpl<MT,AF,true,false,SAs...>::trim()
 // removes all excessive capacity from the specified column. The excessive capacity is assigned
 // to the subsequent column.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-void SubmatrixImpl<MT,AF,true,false,SAs...>::trim( size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+void Submatrix<MT,AF,true,false,CSAs...>::trim( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    matrix_.trim( column() + j );
@@ -4132,10 +4093,10 @@ void SubmatrixImpl<MT,AF,true,false,SAs...>::trim( size_t j )
 // its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
 // \a false.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::hasOverlap() const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,AF,true,false,CSAs...>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -4168,11 +4129,11 @@ inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::hasOverlap() const noexcept
 // already contains an element with row index \a i and column index \a j its value is modified,
 // else a new element with the given \a value is inserted.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::set( size_t i, size_t j, const ElementType& value )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::set( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.set( row()+i, column()+j, value ), row() );
 }
@@ -4194,11 +4155,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // not allowed. In case the sparse submatrix already contains an element with row index \a i and
 // column index \a j, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::insert( size_t i, size_t j, const ElementType& value )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::insert( size_t i, size_t j, const ElementType& value )
 {
    return Iterator( matrix_.insert( row()+i, column()+j, value ), row() );
 }
@@ -4250,10 +4211,10 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,true,false,CSAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
    if( row() + rows() == matrix_.rows() ) {
       matrix_.append( row() + i, column() + j, value, check );
@@ -4280,10 +4241,10 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::append( size_t i, size_t j, 
 // \note Although finalize() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::finalize( size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,true,false,CSAs...>::finalize( size_t j )
 {
    matrix_.trim( column() + j );
 }
@@ -4309,10 +4270,10 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::finalize( size_t j )
 //
 // This function erases an element from the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::erase( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,AF,true,false,CSAs...>::erase( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4333,11 +4294,11 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::erase( size_t i, size_t j )
 //
 // This function erases an element from column \a j of the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::erase( size_t j, Iterator pos )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator pos )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return Iterator( matrix_.erase( column()+j, pos.base() ), row() );
@@ -4357,11 +4318,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 //
 // This function erases a range of elements from column \a j of the sparse submatrix.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::erase( size_t j, Iterator first, Iterator last )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator first, Iterator last )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return Iterator( matrix_.erase( column()+j, first.base(), last.base() ), row() );
@@ -4393,11 +4354,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename Pred >  // Type of the unary predicate
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::erase( Pred predicate )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename Pred >   // Type of the unary predicate
+inline void Submatrix<MT,AF,true,false,CSAs...>::erase( Pred predicate )
 {
    for( size_t j=0UL; j<columns(); ++j ) {
       matrix_.erase( column()+j, begin(j).base(), end(j).base(), predicate );
@@ -4433,11 +4394,11 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::erase( Pred predicate )
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename Pred >  // Type of the unary predicate
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename Pred >   // Type of the unary predicate
+inline void Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    matrix_.erase( column()+j, first.base(), last.base(), predicate );
@@ -4470,11 +4431,11 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::erase( size_t j, Iterator fi
 // is subject to invalidation due to inserting operations via the function call operator or
 // the insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::find( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::find( size_t i, size_t j )
 {
    const Iterator_<MT> pos( matrix_.find( row() + i, column() + j ) );
 
@@ -4503,11 +4464,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // is subject to invalidation due to inserting operations via the function call operator or
 // the insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::find( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,true,false,CSAs...>::find( size_t i, size_t j ) const
 {
    const ConstIterator_<MT> pos( matrix_.find( row() + i, column() + j ) );
 
@@ -4536,11 +4497,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::lowerBound( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::lowerBound( size_t i, size_t j )
 {
    return Iterator( matrix_.lowerBound( row() + i, column() + j ), row() );
 }
@@ -4564,11 +4525,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::lowerBound( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,true,false,CSAs...>::lowerBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.lowerBound( row() + i, column() + j ), row() );
 }
@@ -4592,11 +4553,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::upperBound( size_t i, size_t j )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
+   Submatrix<MT,AF,true,false,CSAs...>::upperBound( size_t i, size_t j )
 {
    return Iterator( matrix_.upperBound( row() + i, column() + j ), row() );
 }
@@ -4620,11 +4581,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::Iterator
 // is subject to invalidation due to inserting operations via the function call operator or the
 // insert() function!
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
-   SubmatrixImpl<MT,AF,true,false,SAs...>::upperBound( size_t i, size_t j ) const
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
+   Submatrix<MT,AF,true,false,CSAs...>::upperBound( size_t i, size_t j ) const
 {
    return ConstIterator( matrix_.upperBound( row() + i, column() + j ), row() );
 }
@@ -4658,11 +4619,11 @@ inline typename SubmatrixImpl<MT,AF,true,false,SAs...>::ConstIterator
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::transpose()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::transpose()
 {
    using blaze::assign;
 
@@ -4703,11 +4664,11 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::ctranspose()
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::ctranspose()
 {
    using blaze::assign;
 
@@ -4745,10 +4706,10 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
-inline SubmatrixImpl<MT,AF,true,false,SAs...>&
-   SubmatrixImpl<MT,AF,true,false,SAs...>::scale( const Other& scalar )
+inline Submatrix<MT,AF,true,false,CSAs...>&
+   Submatrix<MT,AF,true,false,CSAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -4785,9 +4746,9 @@ inline SubmatrixImpl<MT,AF,true,false,SAs...>&
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,true,false,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4808,9 +4769,9 @@ inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::canAlias( const Other* alias
 */
 template< typename MT       // Type of the sparse matrix
         , bool AF           // Alignment flag
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,AF,true,false,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -4829,10 +4790,10 @@ inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::isAliased( const Other* alia
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the matrix).
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::canSMPAssign() const noexcept
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,AF,true,false,CSAs...>::canSMPAssign() const noexcept
 {
    return false;
 }
@@ -4852,12 +4813,12 @@ inline bool SubmatrixImpl<MT,AF,true,false,SAs...>::canSMPAssign() const noexcep
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side dense matrix
-        , bool SO >        // Storage order of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::assign( const DenseMatrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order of the right-hand side dense matrix
+inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -4894,11 +4855,11 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::assign( const DenseMatrix<MT
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::assign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -4934,11 +4895,11 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::assign( const SparseMatrix<M
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::assign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -4988,12 +4949,12 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::assign( const SparseMatrix<M
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::addAssign( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,true,false,CSAs...>::addAssign( const Matrix<MT2,SO>& rhs )
 {
    using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
 
@@ -5022,12 +4983,12 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::addAssign( const Matrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::subAssign( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,true,false,CSAs...>::subAssign( const Matrix<MT2,SO>& rhs )
 {
    using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
 
@@ -5056,12 +5017,12 @@ inline void SubmatrixImpl<MT,AF,true,false,SAs...>::subAssign( const Matrix<MT2,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the sparse matrix
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline void SubmatrixImpl<MT,AF,true,false,SAs...>::schurAssign( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline void Submatrix<MT,AF,true,false,CSAs...>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
    using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
 

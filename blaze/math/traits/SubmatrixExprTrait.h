@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
@@ -65,9 +66,9 @@ namespace blaze {
 // \a Type corresponds to the resulting return type. In case the given type is neither a
 // dense nor a sparse matrix type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT      // Type of the matrix operand
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT          // Type of the matrix operand
+        , bool AF = unaligned  // Alignment flag
+        , size_t... CSAs >     // Compile time submatrix arguments
 struct SubmatrixExprTrait
 {
  private:
@@ -79,7 +80,7 @@ struct SubmatrixExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct CompileTime { using Type = decltype( submatrix<AF,SAs...>( std::declval<MT>() ) ); };
+   struct CompileTime { using Type = decltype( submatrix<AF,CSAs...>( std::declval<MT>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -97,7 +98,7 @@ struct SubmatrixExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsMatrix< RemoveReference_<MT> >
-                            , IfTrue_< ( sizeof...( SAs ) > 0UL )
+                            , IfTrue_< ( sizeof...( CSAs ) > 0UL )
                                      , CompileTime
                                      , Runtime >
                             , Failure >::Type;
@@ -120,10 +121,10 @@ struct SubmatrixExprTrait
    using Type2 = SubmatrixExprTrait_<MT,AF>;
    \endcode
 */
-template< typename MT      // Type of the matrix operand
-        , bool AF          // Alignment flag
-        , size_t... SAs >  // Compile time submatrix arguments
-using SubmatrixExprTrait_ = typename SubmatrixExprTrait<MT,AF,SAs...>::Type;
+template< typename MT          // Type of the matrix operand
+        , bool AF = unaligned  // Alignment flag
+        , size_t... CSAs >     // Compile time submatrix arguments
+using SubmatrixExprTrait_ = typename SubmatrixExprTrait<MT,AF,CSAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

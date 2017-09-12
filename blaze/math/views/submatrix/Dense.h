@@ -104,6 +104,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -122,37 +123,37 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubmatrixImpl for unaligned row-major dense submatrices.
+/*!\brief Specialization of Submatrix for unaligned row-major dense submatrices.
 // \ingroup submatrix
 //
-// This Specialization of SubmatrixImpl adapts the class template to the requirements of unaligned
+// This Specialization of Submatrix adapts the class template to the requirements of unaligned
 // row-major dense submatrices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-class SubmatrixImpl<MT,unaligned,false,true,SAs...>
-   : public View< DenseMatrix< SubmatrixImpl<MT,unaligned,false,true,SAs...>, false > >
-   , private SubmatrixData<MT,SAs...>
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+class Submatrix<MT,unaligned,false,true,CSAs...>
+   : public View< DenseMatrix< Submatrix<MT,unaligned,false,true,CSAs...>, false > >
+   , private SubmatrixData<MT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,SAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubmatrixImpl instance.
-   using This = SubmatrixImpl<MT,unaligned,false,true,SAs...>;
+   //! Type of this Submatrix instance.
+   using This = Submatrix<MT,unaligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;     //!< Base type of this SubmatrixImpl instance.
-   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
+   using BaseType      = DenseMatrix<This,false>;     //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubmatrixImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -584,8 +585,8 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixImpl( MT& matrix );
-   explicit inline SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -617,45 +618,45 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SubmatrixImpl& operator=( const ElementType& rhs );
-   inline SubmatrixImpl& operator=( initializer_list< initializer_list<ElementType> > list );
-   inline SubmatrixImpl& operator=( const SubmatrixImpl& rhs );
+   inline Submatrix& operator=( const ElementType& rhs );
+   inline Submatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
    template< typename MT2, bool SO2 >
-   inline SubmatrixImpl& operator=( const Matrix<MT2,SO2>& rhs );
+   inline Submatrix& operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline SubmatrixImpl& operator*=( const Matrix<MT2,SO2>& rhs );
+   inline Submatrix& operator*=( const Matrix<MT2,SO2>& rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -681,10 +682,10 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   inline SubmatrixImpl& transpose();
-   inline SubmatrixImpl& ctranspose();
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
 
-   template< typename Other > inline SubmatrixImpl& scale( const Other& scalar );
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -746,14 +747,14 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -833,7 +834,7 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -860,46 +861,25 @@ class SubmatrixImpl<MT,unaligned,false,true,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with compile time arguments.
+/*!\brief The constructor for unaligned row-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
 // In case the submatrix is not properly specified (i.e. if the specified submatrix is not
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>::SubmatrixImpl( MT& matrix )
-   : DataType( matrix )  // Base class initialization
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( matrix, args... )  // Base class initialization
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with runtime arguments.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given dense matrix.
-// \param cindex The index of the first column of the submatrix in the given dense matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>::SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( matrix, rindex, cindex, m, n )  // Base class initialization
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{}
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -923,10 +903,10 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>::SubmatrixImpl( MT& matrix,
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Reference
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator()( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Reference
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -948,10 +928,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator()( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstReference
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -974,10 +954,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Reference
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::at( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Reference
+   Submatrix<MT,unaligned,false,true,CSAs...>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1003,10 +983,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::at( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstReference
+   Submatrix<MT,unaligned,false,true,CSAs...>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1030,10 +1010,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstReference
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Pointer
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::data() noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Pointer
+   Submatrix<MT,unaligned,false,true,CSAs...>::data() noexcept
 {
    return matrix_.data() + row()*spacing() + column();
 }
@@ -1051,10 +1031,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Pointer
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::data() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstPointer
+   Submatrix<MT,unaligned,false,true,CSAs...>::data() const noexcept
 {
    return matrix_.data() + row()*spacing() + column();
 }
@@ -1071,10 +1051,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Pointer
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::data( size_t i ) noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Pointer
+   Submatrix<MT,unaligned,false,true,CSAs...>::data( size_t i ) noexcept
 {
    return matrix_.data() + (row()+i)*spacing() + column();
 }
@@ -1091,10 +1071,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::data( size_t i ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstPointer
+   Submatrix<MT,unaligned,false,true,CSAs...>::data( size_t i ) const noexcept
 {
    return matrix_.data() + (row()+i)*spacing() + column();
 }
@@ -1114,10 +1094,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstPointer
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Iterator
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::begin( size_t i )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Iterator
+   Submatrix<MT,unaligned,false,true,CSAs...>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return Iterator( matrix_.begin( row() + i ) + column(), isAligned_ );
@@ -1138,10 +1118,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Iterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::begin( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,false,true,CSAs...>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ConstIterator( matrix_.cbegin( row() + i ) + column(), isAligned_ );
@@ -1162,10 +1142,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::cbegin( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,false,true,CSAs...>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ConstIterator( matrix_.cbegin( row() + i ) + column(), isAligned_ );
@@ -1186,10 +1166,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Iterator
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::end( size_t i )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Iterator
+   Submatrix<MT,unaligned,false,true,CSAs...>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return Iterator( matrix_.begin( row() + i ) + column() + columns(), isAligned_ );
@@ -1210,10 +1190,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::Iterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::end( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,false,true,CSAs...>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ConstIterator( matrix_.cbegin( row() + i ) + column() + columns(), isAligned_ );
@@ -1234,10 +1214,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::cend( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,false,true,CSAs...>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ConstIterator( matrix_.cbegin( row() + i ) + column() + columns(), isAligned_ );
@@ -1265,10 +1245,10 @@ inline typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::ConstIterator
 // case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
 // of the underlying matrix are modified.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator=( const ElementType& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( row() + rows() );
 
@@ -1308,10 +1288,10 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 // of the top-level initializer list exceeds the number of rows or the size of any nested list
 // exceeds the number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
@@ -1345,10 +1325,10 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator=( const SubmatrixImpl& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator=( const Submatrix& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1397,12 +1377,12 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
@@ -1453,12 +1433,12 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1510,12 +1490,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1562,12 +1542,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1619,12 +1599,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1671,12 +1651,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1729,12 +1709,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1784,12 +1764,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO2 >       // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator*=( const Matrix<MT2,SO2>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator*=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1834,10 +1814,10 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 // attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,false,true,SAs...> >&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true,CSAs...> >&
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1864,10 +1844,10 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,false,true,SAs...
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,false,true,SAs...> >&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true,CSAs...> >&
+   Submatrix<MT,unaligned,false,true,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -1901,9 +1881,9 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,false,true,SAs...
 // the function returns the spacing between two rows, in case the storage flag is set to
 // \a columnMajor the function returns the spacing between two columns.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::spacing() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -1916,9 +1896,9 @@ inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::spacing() const noe
 //
 // \return The capacity of the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::capacity() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::capacity() const noexcept
 {
    return rows() * columns();
 }
@@ -1938,9 +1918,9 @@ inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::capacity() const no
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::capacity( size_t i ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
 
@@ -1958,9 +1938,9 @@ inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::capacity( size_t i 
 //
 // \return The number of non-zero elements in the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::nonZeros() const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::nonZeros() const
 {
    const size_t iend( row() + rows() );
    const size_t jend( column() + columns() );
@@ -1989,9 +1969,9 @@ inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::nonZeros() const
 // elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
 // the number of non-zero elements in column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::nonZeros( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -2014,9 +1994,9 @@ inline size_t SubmatrixImpl<MT,unaligned,false,true,SAs...>::nonZeros( size_t i 
 //
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::reset()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::reset()
 {
    using blaze::clear;
 
@@ -2053,9 +2033,9 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::reset()
 // the storage order is set to \a columnMajor the function resets the values in column \a i.
 // Note that the capacity of the row/column remains unchanged.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::reset( size_t i )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::reset( size_t i )
 {
    using blaze::clear;
 
@@ -2089,9 +2069,9 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::reset( size_t i )
 // its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
 // \a false.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::hasOverlap() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,unaligned,false,true,CSAs...>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -2129,10 +2109,10 @@ inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::hasOverlap() const no
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::transpose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::transpose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -2170,10 +2150,10 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::ctranspose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::ctranspose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -2207,10 +2187,10 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 // such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
-inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::scale( const Other& scalar )
+inline Submatrix<MT,unaligned,false,true,CSAs...>&
+   Submatrix<MT,unaligned,false,true,CSAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -2259,9 +2239,9 @@ inline SubmatrixImpl<MT,unaligned,false,true,SAs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,unaligned,false,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2280,14 +2260,14 @@ inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::canAlias( const Other
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,unaligned,false,true,CSAs...>::canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -2311,9 +2291,9 @@ inline bool
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,unaligned,false,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -2332,14 +2312,14 @@ inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::isAliased( const Othe
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,unaligned,false,true,CSAs...>::isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -2361,9 +2341,9 @@ inline bool
 // i.e. whether the beginning and the end of each row/column of the submatrix are guaranteed to
 // conform to the alignment restrictions of the underlying element type.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::isAligned() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,unaligned,false,true,CSAs...>::isAligned() const noexcept
 {
    return isAligned_;
 }
@@ -2382,9 +2362,9 @@ inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::isAligned() const noe
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the submatrix).
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::canSMPAssign() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,unaligned,false,true,CSAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -2408,10 +2388,10 @@ inline bool SubmatrixImpl<MT,unaligned,false,true,SAs...>::canSMPAssign() const 
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::load( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,false,true,CSAs...>::SIMDType
+   Submatrix<MT,unaligned,false,true,CSAs...>::load( size_t i, size_t j ) const noexcept
 {
    if( isAligned_ )
       return loada( i, j );
@@ -2438,10 +2418,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::SIMD
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::loada( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,false,true,CSAs...>::SIMDType
+   Submatrix<MT,unaligned,false,true,CSAs...>::loada( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2472,10 +2452,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::SIMD
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::loadu( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,false,true,CSAs...>::SIMDType
+   Submatrix<MT,unaligned,false,true,CSAs...>::loadu( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2507,10 +2487,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::SIMD
 // for the performance optimized evaluation of expression templates. Calling this function
 // explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,false,true,CSAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( isAligned_ )
       storea( i, j, value );
@@ -2538,10 +2518,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,false,true,CSAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2573,10 +2553,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,false,true,CSAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2608,10 +2588,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,false,true,CSAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2641,11 +2621,11 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2679,11 +2659,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2750,10 +2730,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -2790,10 +2770,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const DenseMa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2818,10 +2798,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const SparseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -2848,11 +2828,11 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::assign( const SparseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2892,11 +2872,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2950,10 +2930,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -2990,10 +2970,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const Dens
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -3018,10 +2998,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const Spar
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -3048,11 +3028,11 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::addAssign( const Spar
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -3092,11 +3072,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3150,10 +3130,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -3190,10 +3170,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const Dens
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -3218,10 +3198,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const Spar
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -3248,11 +3228,11 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::subAssign( const Spar
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -3286,11 +3266,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3336,10 +3316,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,false,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -3376,10 +3356,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const De
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
 {
    using blaze::reset;
 
@@ -3418,10 +3398,10 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const Sp
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
 {
    using blaze::reset;
 
@@ -3464,37 +3444,37 @@ inline void SubmatrixImpl<MT,unaligned,false,true,SAs...>::schurAssign( const Sp
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubmatrixImpl for unaligned column-major dense submatrices.
+/*!\brief Specialization of Submatrix for unaligned column-major dense submatrices.
 // \ingroup submatrix
 //
-// This Specialization of SubmatrixImpl adapts the class template to the requirements of unaligned
+// This Specialization of Submatrix adapts the class template to the requirements of unaligned
 // column-major dense submatrices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-class SubmatrixImpl<MT,unaligned,true,true,SAs...>
-   : public View< DenseMatrix< SubmatrixImpl<MT,unaligned,true,true,SAs...>, true > >
-   , private SubmatrixData<MT,SAs...>
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+class Submatrix<MT,unaligned,true,true,CSAs...>
+   : public View< DenseMatrix< Submatrix<MT,unaligned,true,true,CSAs...>, true > >
+   , private SubmatrixData<MT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,SAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubmatrixImpl instance.
-   using This = SubmatrixImpl<MT,unaligned,true,true,SAs...>;
+   //! Type of this Submatrix instance.
+   using This = Submatrix<MT,unaligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this SubmatrixImpl instance.
-   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
+   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubmatrixImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -3928,8 +3908,8 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixImpl( MT& matrix );
-   explicit inline SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -3961,45 +3941,45 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SubmatrixImpl& operator=( const ElementType& rhs );
-   inline SubmatrixImpl& operator=( initializer_list< initializer_list<ElementType> > list );
-   inline SubmatrixImpl& operator=( const SubmatrixImpl& rhs );
+   inline Submatrix& operator=( const ElementType& rhs );
+   inline Submatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
    template< typename MT2, bool SO >
-   inline SubmatrixImpl& operator=( const Matrix<MT2,SO>& rhs );
+   inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline SubmatrixImpl& operator*=( const Matrix<MT2,SO>& rhs );
+   inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -4025,10 +4005,10 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   inline SubmatrixImpl& transpose();
-   inline SubmatrixImpl& ctranspose();
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
 
-   template< typename Other > inline SubmatrixImpl& scale( const Other& scalar );
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -4090,14 +4070,14 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -4177,7 +4157,7 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4204,46 +4184,25 @@ class SubmatrixImpl<MT,unaligned,true,true,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with compile time arguments.
+/*!\brief The constructor for unaligned column-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
 // In case the submatrix is not properly specified (i.e. if the specified submatrix is not
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>::SubmatrixImpl( MT& matrix )
-   : DataType( matrix )  // Base class initialization
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( matrix, args... )  // Base class initialization
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with runtime arguments.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given dense matrix.
-// \param cindex The index of the first column of the submatrix in the given dense matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>::SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( matrix, rindex, cindex, m, n )  // Base class initialization
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{}
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -4267,10 +4226,10 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>::SubmatrixImpl( MT& matrix, 
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Reference
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator()( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Reference
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4292,10 +4251,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator()( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstReference
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4318,10 +4277,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Reference
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::at( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Reference
+   Submatrix<MT,unaligned,true,true,CSAs...>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4347,10 +4306,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::at( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstReference
+   Submatrix<MT,unaligned,true,true,CSAs...>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -4374,10 +4333,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstReference
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Pointer
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::data() noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Pointer
+   Submatrix<MT,unaligned,true,true,CSAs...>::data() noexcept
 {
    return matrix_.data() + row() + column()*spacing();
 }
@@ -4395,10 +4354,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Pointer
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::data() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstPointer
+   Submatrix<MT,unaligned,true,true,CSAs...>::data() const noexcept
 {
    return matrix_.data() + row() + column()*spacing();
 }
@@ -4415,10 +4374,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Pointer
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::data( size_t j ) noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Pointer
+   Submatrix<MT,unaligned,true,true,CSAs...>::data( size_t j ) noexcept
 {
    return matrix_.data() + row() + (column()+j)*spacing();
 }
@@ -4435,10 +4394,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::data( size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstPointer
+   Submatrix<MT,unaligned,true,true,CSAs...>::data( size_t j ) const noexcept
 {
    return matrix_.data() + row() + (column()+j)*spacing();
 }
@@ -4453,10 +4412,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstPointer
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Iterator
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::begin( size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Iterator
+   Submatrix<MT,unaligned,true,true,CSAs...>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return Iterator( matrix_.begin( column() + j ) + row(), isAligned_ );
@@ -4472,10 +4431,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Iterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::begin( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,true,true,CSAs...>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ConstIterator( matrix_.cbegin( column() + j ) + row(), isAligned_ );
@@ -4491,10 +4450,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::cbegin( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,true,true,CSAs...>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ConstIterator( matrix_.cbegin( column() + j ) + row(), isAligned_ );
@@ -4510,10 +4469,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Iterator
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::end( size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Iterator
+   Submatrix<MT,unaligned,true,true,CSAs...>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return Iterator( matrix_.begin( column() + j ) + row() + rows(), isAligned_ );
@@ -4529,10 +4488,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::Iterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::end( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,true,true,CSAs...>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ConstIterator( matrix_.cbegin( column() + j ) + row() + rows(), isAligned_ );
@@ -4548,10 +4507,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::cend( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,unaligned,true,true,CSAs...>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ConstIterator( matrix_.cbegin( column() + j ) + row() + rows(), isAligned_ );
@@ -4579,10 +4538,10 @@ inline typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::ConstIterator
 // case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
 // of the underlying matrix are modified.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator=( const ElementType& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t jend( column() + columns() );
 
@@ -4622,10 +4581,10 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 // of the top-level initializer list exceeds the number of rows or the size of any nested list
 // exceeds the number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
@@ -4666,10 +4625,10 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator=( const SubmatrixImpl& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator=( const Submatrix& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -4718,12 +4677,12 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
@@ -4774,12 +4733,12 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -4831,12 +4790,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -4883,12 +4842,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -4940,12 +4899,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -4992,12 +4951,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -5050,12 +5009,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,unaligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -5105,12 +5064,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator*=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -5155,10 +5114,10 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 // attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,true,true,SAs...> >&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true,CSAs...> >&
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5185,10 +5144,10 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,true,true,SAs...>
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,true,true,SAs...> >&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true,CSAs...> >&
+   Submatrix<MT,unaligned,true,true,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5220,9 +5179,9 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,unaligned,true,true,SAs...>
 // This function returns the spacing between the beginning of two columns, i.e. the total
 // number of elements of a column.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::spacing() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,true,true,CSAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -5236,9 +5195,9 @@ inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::spacing() const noex
 //
 // \return The capacity of the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::capacity() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,true,true,CSAs...>::capacity() const noexcept
 {
    return rows() * columns();
 }
@@ -5253,9 +5212,9 @@ inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::capacity() const noe
 // \param j The index of the column.
 // \return The current capacity of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::capacity( size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,true,true,CSAs...>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
 
@@ -5273,9 +5232,9 @@ inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::capacity( size_t j )
 //
 // \return The number of non-zero elements in the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::nonZeros() const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,true,true,CSAs...>::nonZeros() const
 {
    const size_t iend( row() + rows() );
    const size_t jend( column() + columns() );
@@ -5299,9 +5258,9 @@ inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::nonZeros() const
 // \param j The index of the column.
 // \return The number of non-zero elements of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::nonZeros( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,unaligned,true,true,CSAs...>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -5324,9 +5283,9 @@ inline size_t SubmatrixImpl<MT,unaligned,true,true,SAs...>::nonZeros( size_t j )
 //
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::reset()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::reset()
 {
    using blaze::clear;
 
@@ -5358,9 +5317,9 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::reset()
 // \param j The index of the column.
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::reset( size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::reset( size_t j )
 {
    using blaze::clear;
 
@@ -5394,9 +5353,9 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::reset( size_t j )
 // its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
 // \a false.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::hasOverlap() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,unaligned,true,true,CSAs...>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -5434,10 +5393,10 @@ inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::hasOverlap() const noe
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::transpose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::transpose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -5475,10 +5434,10 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::ctranspose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::ctranspose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -5512,10 +5471,10 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 // such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
-inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::scale( const Other& scalar )
+inline Submatrix<MT,unaligned,true,true,CSAs...>&
+   Submatrix<MT,unaligned,true,true,CSAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -5564,9 +5523,9 @@ inline SubmatrixImpl<MT,unaligned,true,true,SAs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,unaligned,true,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5585,14 +5544,14 @@ inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::canAlias( const Other*
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,unaligned,true,true,CSAs...>::canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -5616,9 +5575,9 @@ inline bool
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,unaligned,true,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -5637,14 +5596,14 @@ inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::isAliased( const Other
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,unaligned,true,true,CSAs...>::isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -5666,9 +5625,9 @@ inline bool
 // i.e. whether the beginning and the end of each column of the submatrix are guaranteed to
 // conform to the alignment restrictions of the underlying element type.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::isAligned() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,unaligned,true,true,CSAs...>::isAligned() const noexcept
 {
    return isAligned_;
 }
@@ -5687,9 +5646,9 @@ inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::isAligned() const noex
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the submatrix).
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::canSMPAssign() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,unaligned,true,true,CSAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -5712,10 +5671,10 @@ inline bool SubmatrixImpl<MT,unaligned,true,true,SAs...>::canSMPAssign() const n
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::load( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,true,true,CSAs...>::SIMDType
+   Submatrix<MT,unaligned,true,true,CSAs...>::load( size_t i, size_t j ) const noexcept
 {
    if( isAligned_ )
       return loada( i, j );
@@ -5741,10 +5700,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::SIMDT
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::loada( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,true,true,CSAs...>::SIMDType
+   Submatrix<MT,unaligned,true,true,CSAs...>::loada( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5774,10 +5733,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::SIMDT
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::loadu( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,true,true,CSAs...>::SIMDType
+   Submatrix<MT,unaligned,true,true,CSAs...>::loadu( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5808,10 +5767,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::SIMDT
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,true,true,CSAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( isAligned_ )
       storea( i, j, value );
@@ -5838,10 +5797,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,true,true,CSAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5872,10 +5831,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,true,true,CSAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5907,10 +5866,10 @@ BLAZE_ALWAYS_INLINE void
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,unaligned,true,true,CSAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5940,11 +5899,11 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -5978,11 +5937,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6049,10 +6008,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -6089,10 +6048,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const DenseMat
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6117,10 +6076,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const SparseMa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -6147,11 +6106,11 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::assign( const SparseMa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6191,11 +6150,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6249,10 +6208,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -6289,10 +6248,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const Dense
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6317,10 +6276,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const Spars
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -6347,11 +6306,11 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::addAssign( const Spars
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6391,11 +6350,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6449,10 +6408,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -6489,10 +6448,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const Dense
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6517,10 +6476,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const Spars
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -6547,11 +6506,11 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::subAssign( const Spars
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6586,11 +6545,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6636,10 +6595,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,unaligned,true,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -6676,10 +6635,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const Den
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
 {
    using blaze::reset;
 
@@ -6718,10 +6677,10 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const Spa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
 {
    using blaze::reset;
 
@@ -6764,37 +6723,37 @@ inline void SubmatrixImpl<MT,unaligned,true,true,SAs...>::schurAssign( const Spa
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubmatrixImpl for aligned row-major dense submatrices.
+/*!\brief Specialization of Submatrix for aligned row-major dense submatrices.
 // \ingroup submatrix
 //
-// This Specialization of SubmatrixImpl adapts the class template to the requirements of aligned
+// This Specialization of Submatrix adapts the class template to the requirements of aligned
 // row-major dense submatrices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-class SubmatrixImpl<MT,aligned,false,true,SAs...>
-   : public View< DenseMatrix< SubmatrixImpl<MT,aligned,false,true,SAs...>, false > >
-   , private SubmatrixData<MT,SAs...>
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+class Submatrix<MT,aligned,false,true,CSAs...>
+   : public View< DenseMatrix< Submatrix<MT,aligned,false,true,CSAs...>, false > >
+   , private SubmatrixData<MT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,SAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubmatrixImpl instance.
-   using This = SubmatrixImpl<MT,aligned,false,true,SAs...>;
+   //! Type of this Submatrix instance.
+   using This = Submatrix<MT,aligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;     //!< Base type of this SubmatrixImpl instance.
-   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
+   using BaseType      = DenseMatrix<This,false>;     //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubmatrixImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -6826,8 +6785,8 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixImpl( MT& matrix );
-   explicit inline SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -6859,45 +6818,45 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SubmatrixImpl& operator=( const ElementType& rhs );
-   inline SubmatrixImpl& operator=( initializer_list< initializer_list<ElementType> > list );
-   inline SubmatrixImpl& operator=( const SubmatrixImpl& rhs );
+   inline Submatrix& operator=( const ElementType& rhs );
+   inline Submatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
    template< typename MT2, bool SO >
-   inline SubmatrixImpl& operator=( const Matrix<MT2,SO>& rhs );
+   inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline SubmatrixImpl& operator*=( const Matrix<MT2,SO>& rhs );
+   inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -6923,10 +6882,10 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   inline SubmatrixImpl& transpose();
-   inline SubmatrixImpl& ctranspose();
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
 
-   template< typename Other > inline SubmatrixImpl& scale( const Other& scalar );
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -6988,14 +6947,14 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -7064,7 +7023,7 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -7091,47 +7050,23 @@ class SubmatrixImpl<MT,aligned,false,true,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with compile time arguments.
+/*!\brief The constructor for aligned row-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
 // In case the submatrix is not properly specified (i.e. if the specified submatrix is not
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>::SubmatrixImpl( MT& matrix )
-   : DataType( matrix )  // Base class initialization
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( matrix, args... )  // Base class initialization
 {
-   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-       ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with runtime arguments.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given dense matrix.
-// \param cindex The index of the first column of the submatrix in the given dense matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>::SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( matrix, rindex, cindex, m, n )  // Base class initialization
-{
    if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
@@ -7160,10 +7095,10 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>::SubmatrixImpl( MT& matrix, s
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Reference
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator()( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::Reference
+   Submatrix<MT,aligned,false,true,CSAs...>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -7185,10 +7120,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator()( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstReference
+   Submatrix<MT,aligned,false,true,CSAs...>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -7211,10 +7146,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Reference
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::at( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::Reference
+   Submatrix<MT,aligned,false,true,CSAs...>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -7240,10 +7175,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::at( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstReference
+   Submatrix<MT,aligned,false,true,CSAs...>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -7267,10 +7202,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstReference
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Pointer
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::data() noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::Pointer
+   Submatrix<MT,aligned,false,true,CSAs...>::data() noexcept
 {
    return matrix_.data() + row()*spacing() + column();
 }
@@ -7288,10 +7223,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Pointer
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::data() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstPointer
+   Submatrix<MT,aligned,false,true,CSAs...>::data() const noexcept
 {
    return matrix_.data() + row()*spacing() + column();
 }
@@ -7308,10 +7243,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstPointer
 //
 // This function returns a pointer to the internal storage of the dense submatrix in row \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Pointer
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::data( size_t i ) noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::Pointer
+   Submatrix<MT,aligned,false,true,CSAs...>::data( size_t i ) noexcept
 {
    return matrix_.data() + (row()+i)*spacing() + column();
 }
@@ -7328,10 +7263,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Pointer
 //
 // This function returns a pointer to the internal storage of the dense submatrix in row \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::data( size_t i ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstPointer
+   Submatrix<MT,aligned,false,true,CSAs...>::data( size_t i ) const noexcept
 {
    return matrix_.data() + (row()+i)*spacing() + column();
 }
@@ -7351,10 +7286,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstPointer
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Iterator
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::begin( size_t i )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::Iterator
+   Submatrix<MT,aligned,false,true,CSAs...>::begin( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.begin( row() + i ) + column() );
@@ -7375,10 +7310,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Iterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::begin( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,false,true,CSAs...>::begin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row() + i ) + column() );
@@ -7399,10 +7334,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
 // non-zero element of row \a i, in case the storage flag is set to \a columnMajor the function
 // returns an iterator to the first non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::cbegin( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,false,true,CSAs...>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row() + i ) + column() );
@@ -7423,10 +7358,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Iterator
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::end( size_t i )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::Iterator
+   Submatrix<MT,aligned,false,true,CSAs...>::end( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.begin( row() + i ) + column() + columns() );
@@ -7447,10 +7382,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::Iterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::end( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,false,true,CSAs...>::end( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row() + i ) + column() + columns() );
@@ -7471,10 +7406,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
 // past the last non-zero element of row \a i, in case the storage flag is set to \a columnMajor
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::cend( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,false,true,CSAs...>::cend( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense submatrix row access index" );
    return ( matrix_.cbegin( row() + i ) + column() + columns() );
@@ -7502,10 +7437,10 @@ inline typename SubmatrixImpl<MT,aligned,false,true,SAs...>::ConstIterator
 // case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
 // of the underlying matrix are modified.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator=( const ElementType& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( row() + rows() );
 
@@ -7545,10 +7480,10 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 // of the top-level initializer list exceeds the number of rows or the size of any nested list
 // exceeds the number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
@@ -7582,10 +7517,10 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator=( const SubmatrixImpl& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::operator=( const Submatrix& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -7634,12 +7569,12 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
@@ -7690,12 +7625,12 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+   Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -7747,12 +7682,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+   Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -7799,12 +7734,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+   Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -7856,12 +7791,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+   Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -7908,12 +7843,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+   Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -7966,12 +7901,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,false,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+   Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -8021,12 +7956,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator*=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -8071,10 +8006,10 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 // attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,false,true,SAs...> >&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true,CSAs...> >&
+   Submatrix<MT,aligned,false,true,CSAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -8101,10 +8036,10 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,false,true,SAs...> 
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,false,true,SAs...> >&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true,CSAs...> >&
+   Submatrix<MT,aligned,false,true,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -8138,9 +8073,9 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,false,true,SAs...> 
 // the function returns the spacing between two rows, in case the storage flag is set to
 // \a columnMajor the function returns the spacing between two columns.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::spacing() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,false,true,CSAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -8154,9 +8089,9 @@ inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::spacing() const noexc
 //
 // \return The capacity of the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::capacity() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,false,true,CSAs...>::capacity() const noexcept
 {
    return rows() * columns();
 }
@@ -8176,9 +8111,9 @@ inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::capacity() const noex
 // in case the storage flag is set to \a columnMajor the function returns the capacity
 // of column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::capacity( size_t i ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,false,true,CSAs...>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
 
@@ -8196,9 +8131,9 @@ inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::capacity( size_t i ) 
 //
 // \return The number of non-zero elements in the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::nonZeros() const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,false,true,CSAs...>::nonZeros() const
 {
    const size_t iend( row() + rows() );
    const size_t jend( column() + columns() );
@@ -8227,9 +8162,9 @@ inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::nonZeros() const
 // elements in row \a i, in case the storage flag is set to \a columnMajor the function returns
 // the number of non-zero elements in column \a i.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::nonZeros( size_t i ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,false,true,CSAs...>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -8252,9 +8187,9 @@ inline size_t SubmatrixImpl<MT,aligned,false,true,SAs...>::nonZeros( size_t i ) 
 //
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::reset()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,aligned,false,true,CSAs...>::reset()
 {
    using blaze::clear;
 
@@ -8291,9 +8226,9 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::reset()
 // the storage order is set to \a columnMajor the function resets the values in column \a i.
 // Note that the capacity of the row/column remains unchanged.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::reset( size_t i )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,aligned,false,true,CSAs...>::reset( size_t i )
 {
    using blaze::clear;
 
@@ -8327,9 +8262,9 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::reset( size_t i )
 // its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
 // \a false.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::hasOverlap() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,aligned,false,true,CSAs...>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -8367,10 +8302,10 @@ inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::hasOverlap() const noex
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::transpose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::transpose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -8408,10 +8343,10 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::ctranspose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::ctranspose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -8445,10 +8380,10 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 // such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
-inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::scale( const Other& scalar )
+inline Submatrix<MT,aligned,false,true,CSAs...>&
+   Submatrix<MT,aligned,false,true,CSAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -8497,9 +8432,9 @@ inline SubmatrixImpl<MT,aligned,false,true,SAs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,aligned,false,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -8518,14 +8453,14 @@ inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::canAlias( const Other* 
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,aligned,false,true,CSAs...>::canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -8549,9 +8484,9 @@ inline bool
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,aligned,false,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -8570,14 +8505,14 @@ inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::isAliased( const Other*
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,aligned,false,true,CSAs...>::isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -8599,9 +8534,9 @@ inline bool
 // i.e. whether the beginning and the end of each row of the submatrix are guaranteed to conform
 // to the alignment restrictions of the underlying element type.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::isAligned() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,aligned,false,true,CSAs...>::isAligned() const noexcept
 {
    return true;
 }
@@ -8620,9 +8555,9 @@ inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::isAligned() const noexc
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the submatrix).
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::canSMPAssign() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,aligned,false,true,CSAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -8646,10 +8581,10 @@ inline bool SubmatrixImpl<MT,aligned,false,true,SAs...>::canSMPAssign() const no
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,false,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::load( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,false,true,CSAs...>::SIMDType
+   Submatrix<MT,aligned,false,true,CSAs...>::load( size_t i, size_t j ) const noexcept
 {
    return loada( i, j );
 }
@@ -8673,10 +8608,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,false,true,SAs...>::SIMDTy
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,false,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::loada( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,false,true,CSAs...>::SIMDType
+   Submatrix<MT,aligned,false,true,CSAs...>::loada( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8707,10 +8642,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,false,true,SAs...>::SIMDTy
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,false,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::loadu( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,false,true,CSAs...>::SIMDType
+   Submatrix<MT,aligned,false,true,CSAs...>::loadu( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8742,10 +8677,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,false,true,SAs...>::SIMDTy
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,false,true,CSAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    return storea( i, j, value );
 }
@@ -8770,10 +8705,10 @@ BLAZE_ALWAYS_INLINE void
 // the performance optimized evaluation of expression templates. Calling this function explicitly
 // might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,false,true,CSAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8805,10 +8740,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,false,true,CSAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8841,10 +8776,10 @@ BLAZE_ALWAYS_INLINE void
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,false,true,CSAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8871,11 +8806,11 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -8909,11 +8844,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8980,10 +8915,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -9020,10 +8955,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const DenseMatr
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9048,10 +8983,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const SparseMat
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -9078,11 +9013,11 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::assign( const SparseMat
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9122,11 +9057,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9180,10 +9115,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -9220,10 +9155,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const DenseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9248,10 +9183,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const Sparse
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -9278,11 +9213,11 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::addAssign( const Sparse
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9322,11 +9257,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9380,10 +9315,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -9420,10 +9355,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const DenseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9448,10 +9383,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const Sparse
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -9478,11 +9413,11 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::subAssign( const Sparse
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9516,11 +9451,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_T
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9566,10 +9501,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,false,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -9606,10 +9541,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const Dens
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
 {
    using blaze::reset;
 
@@ -9648,10 +9583,10 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const Spar
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
 {
    using blaze::reset;
 
@@ -9694,37 +9629,37 @@ inline void SubmatrixImpl<MT,aligned,false,true,SAs...>::schurAssign( const Spar
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubmatrixImpl for aligned column-major dense submatrices.
+/*!\brief Specialization of Submatrix for aligned column-major dense submatrices.
 // \ingroup submatrix
 //
-// This Specialization of SubmatrixImpl adapts the class template to the requirements of aligned
+// This Specialization of Submatrix adapts the class template to the requirements of aligned
 // column-major dense submatrices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-class SubmatrixImpl<MT,aligned,true,true,SAs...>
-   : public View< DenseMatrix< SubmatrixImpl<MT,aligned,true,true,SAs...>, true > >
-   , private SubmatrixData<MT,SAs...>
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+class Submatrix<MT,aligned,true,true,CSAs...>
+   : public View< DenseMatrix< Submatrix<MT,aligned,true,true,CSAs...>, true > >
+   , private SubmatrixData<MT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,SAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubmatrixImpl instance.
-   using This = SubmatrixImpl<MT,aligned,true,true,SAs...>;
+   //! Type of this Submatrix instance.
+   using This = Submatrix<MT,aligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this SubmatrixImpl instance.
-   using ViewedType    = MT;                          //!< The type viewed by this SubmatrixImpl instance.
+   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubmatrixImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -9756,8 +9691,8 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixImpl( MT& matrix );
-   explicit inline SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -9789,45 +9724,45 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline SubmatrixImpl& operator=( const ElementType& rhs );
-   inline SubmatrixImpl& operator=( initializer_list< initializer_list<ElementType> > list );
-   inline SubmatrixImpl& operator=( const SubmatrixImpl& rhs );
+   inline Submatrix& operator=( const ElementType& rhs );
+   inline Submatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+   inline Submatrix& operator=( const Submatrix& rhs );
 
    template< typename MT2, bool SO >
-   inline SubmatrixImpl& operator=( const Matrix<MT2,SO>& rhs );
+   inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl& >
+   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline SubmatrixImpl& operator*=( const Matrix<MT2,SO>& rhs );
+   inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubmatrixImpl >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Submatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -9853,10 +9788,10 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   inline SubmatrixImpl& transpose();
-   inline SubmatrixImpl& ctranspose();
+   inline Submatrix& transpose();
+   inline Submatrix& ctranspose();
 
-   template< typename Other > inline SubmatrixImpl& scale( const Other& scalar );
+   template< typename Other > inline Submatrix& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -9918,14 +9853,14 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... SAs2 >
-   inline bool isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept;
+   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -9994,7 +9929,7 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... SAs2 > friend class SubmatrixImpl;
+   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -10021,47 +9956,23 @@ class SubmatrixImpl<MT,aligned,true,true,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with compile time arguments.
+/*!\brief The constructor for aligned column-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
 // In case the submatrix is not properly specified (i.e. if the specified submatrix is not
 // contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>::SubmatrixImpl( MT& matrix )
-   : DataType( matrix )  // Base class initialization
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( matrix, args... )  // Base class initialization
 {
-   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-       ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for submatrices with runtime arguments.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given dense matrix.
-// \param cindex The index of the first column of the submatrix in the given dense matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>::SubmatrixImpl( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( matrix, rindex, cindex, m, n )  // Base class initialization
-{
    if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
@@ -10090,10 +10001,10 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>::SubmatrixImpl( MT& matrix, si
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Reference
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator()( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::Reference
+   Submatrix<MT,aligned,true,true,CSAs...>::operator()( size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -10115,10 +10026,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator()( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstReference
+   Submatrix<MT,aligned,true,true,CSAs...>::operator()( size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -10141,10 +10052,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Reference
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::at( size_t i, size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::Reference
+   Submatrix<MT,aligned,true,true,CSAs...>::at( size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -10170,10 +10081,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access indices.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstReference
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::at( size_t i, size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstReference
+   Submatrix<MT,aligned,true,true,CSAs...>::at( size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -10197,10 +10108,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstReference
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Pointer
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::data() noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::Pointer
+   Submatrix<MT,aligned,true,true,CSAs...>::data() noexcept
 {
    return matrix_.data() + row() + column()*spacing();
 }
@@ -10218,10 +10129,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Pointer
 // you can NOT assume that all matrix elements lie adjacent to each other! The dense submatrix
 // may use techniques such as padding to improve the alignment of the data.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::data() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstPointer
+   Submatrix<MT,aligned,true,true,CSAs...>::data() const noexcept
 {
    return matrix_.data() + row() + column()*spacing();
 }
@@ -10238,10 +10149,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstPointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Pointer
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::data( size_t j ) noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::Pointer
+   Submatrix<MT,aligned,true,true,CSAs...>::data( size_t j ) noexcept
 {
    return matrix_.data() + row() + (column()+j)*spacing();
 }
@@ -10258,10 +10169,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Pointer
 //
 // This function returns a pointer to the internal storage for the elements in column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstPointer
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::data( size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstPointer
+   Submatrix<MT,aligned,true,true,CSAs...>::data( size_t j ) const noexcept
 {
    return matrix_.data() + row() + (column()+j)*spacing();
 }
@@ -10276,10 +10187,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstPointer
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Iterator
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::begin( size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::Iterator
+   Submatrix<MT,aligned,true,true,CSAs...>::begin( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ( matrix_.begin( column() + j ) + row() );
@@ -10295,10 +10206,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Iterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::begin( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,true,true,CSAs...>::begin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ( matrix_.cbegin( column() + j ) + row() );
@@ -10314,10 +10225,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator to the first non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::cbegin( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,true,true,CSAs...>::cbegin( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ( matrix_.cbegin( column() + j ) + row() );
@@ -10333,10 +10244,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Iterator
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::end( size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::Iterator
+   Submatrix<MT,aligned,true,true,CSAs...>::end( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ( matrix_.begin( column() + j ) + row() + rows() );
@@ -10352,10 +10263,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::Iterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::end( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,true,true,CSAs...>::end( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ( matrix_.cbegin( column() + j ) + row() + rows() );
@@ -10371,10 +10282,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
 // \param j The column index.
 // \return Iterator just past the last non-zero element of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::cend( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstIterator
+   Submatrix<MT,aligned,true,true,CSAs...>::cend( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid dense submatrix column access index" );
    return ( matrix_.cbegin( column() + j ) + row() + rows() );
@@ -10402,10 +10313,10 @@ inline typename SubmatrixImpl<MT,aligned,true,true,SAs...>::ConstIterator
 // case the underlying dense matrix is a lower/upper matrix only lower/upper and diagonal elements
 // of the underlying matrix are modified.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator=( const ElementType& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t jend( column() + columns() );
 
@@ -10445,10 +10356,10 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 // of the top-level initializer list exceeds the number of rows or the size of any nested list
 // exceeds the number of columns, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
@@ -10489,10 +10400,10 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 // and the assignment would violate its lower, upper, or symmetry property, respectively, a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator=( const SubmatrixImpl& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::operator=( const Submatrix& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10540,12 +10451,12 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 // thrown. Also, if the underlying matrix \a MT is a symmetric matrix and the assignment
 // would violate its symmetry, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
@@ -10596,12 +10507,12 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+   Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10653,12 +10564,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator+=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+   Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10705,12 +10616,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+   Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10762,12 +10673,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator-=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+   Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10814,12 +10725,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+   Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10872,12 +10783,12 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixIm
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO  >       // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImpl<MT,aligned,true,true,SAs...>& >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator%=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO  >        // Storage order of the right-hand side matrix
+inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+   Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10927,12 +10838,12 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, SubmatrixImp
 // symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
 // respectively, a \a std::invalid_argument exception is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2     // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator*=( const Matrix<MT2,SO>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2      // Type of the right-hand side matrix
+        , bool SO >         // Storage order of the right-hand side matrix
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -10977,10 +10888,10 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 // attempt to scale such a submatrix results in a compilation error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,true,true,SAs...> >&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true,CSAs...> >&
+   Submatrix<MT,aligned,true,true,CSAs...>::operator*=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -11007,10 +10918,10 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,true,true,SAs...> >
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,true,true,SAs...> >&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true,CSAs...> >&
+   Submatrix<MT,aligned,true,true,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -11042,9 +10953,9 @@ inline EnableIf_< IsNumeric<Other>, SubmatrixImpl<MT,aligned,true,true,SAs...> >
 // This function returns the spacing between the beginning of two columns, i.e. the total
 // number of elements of a column.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::spacing() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,true,true,CSAs...>::spacing() const noexcept
 {
    return matrix_.spacing();
 }
@@ -11058,9 +10969,9 @@ inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::spacing() const noexce
 //
 // \return The capacity of the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::capacity() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,true,true,CSAs...>::capacity() const noexcept
 {
    return rows() * columns();
 }
@@ -11075,9 +10986,9 @@ inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::capacity() const noexc
 // \param j The index of the column.
 // \return The current capacity of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::capacity( size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,true,true,CSAs...>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
 
@@ -11095,9 +11006,9 @@ inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::capacity( size_t j ) c
 //
 // \return The number of non-zero elements in the dense submatrix.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::nonZeros() const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,true,true,CSAs...>::nonZeros() const
 {
    const size_t iend( row() + rows() );
    const size_t jend( column() + columns() );
@@ -11121,9 +11032,9 @@ inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::nonZeros() const
 // \param j The index of the column.
 // \return The number of non-zero elements of column \a j.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::nonZeros( size_t j ) const
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline size_t Submatrix<MT,aligned,true,true,CSAs...>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -11146,9 +11057,9 @@ inline size_t SubmatrixImpl<MT,aligned,true,true,SAs...>::nonZeros( size_t j ) c
 //
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::reset()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,aligned,true,true,CSAs...>::reset()
 {
    using blaze::clear;
 
@@ -11180,9 +11091,9 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::reset()
 // \param j The index of the column.
 // \return void
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::reset( size_t j )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline void Submatrix<MT,aligned,true,true,CSAs...>::reset( size_t j )
 {
    using blaze::clear;
 
@@ -11216,9 +11127,9 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::reset( size_t j )
 // its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
 // \a false.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::hasOverlap() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,aligned,true,true,CSAs...>::hasOverlap() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
 
@@ -11256,10 +11167,10 @@ inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::hasOverlap() const noexc
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::transpose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::transpose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -11297,10 +11208,10 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::ctranspose()
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::ctranspose()
 {
    if( rows() != columns() ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic submatrix" );
@@ -11334,10 +11245,10 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 // such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
-inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::scale( const Other& scalar )
+inline Submatrix<MT,aligned,true,true,CSAs...>&
+   Submatrix<MT,aligned,true,true,CSAs...>::scale( const Other& scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -11386,9 +11297,9 @@ inline SubmatrixImpl<MT,aligned,true,true,SAs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Submatrix<MT,aligned,true,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -11407,14 +11318,14 @@ inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::canAlias( const Other* a
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::canAlias( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,aligned,true,true,CSAs...>::canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -11438,9 +11349,9 @@ inline bool
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Submatrix<MT,aligned,true,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return matrix_.isAliased( alias );
 }
@@ -11459,14 +11370,14 @@ inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::isAliased( const Other* 
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... SAs >   // Compile time submatrix arguments
-template< typename MT2      // Data type of the foreign dense submatrix
-        , bool AF2          // Alignment flag of the foreign dense submatrix
-        , bool SO2          // Storage order of the foreign dense submatrix
-        , size_t... SAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
+template< typename MT        // Type of the dense matrix
+        , size_t... CSAs >   // Compile time submatrix arguments
+template< typename MT2       // Data type of the foreign dense submatrix
+        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , bool SO2           // Storage order of the foreign dense submatrix
+        , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::isAliased( const SubmatrixImpl<MT2,AF2,SO2,true,SAs2...>* alias ) const noexcept
+   Submatrix<MT,aligned,true,true,CSAs...>::isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept
 {
    return ( matrix_.isAliased( &alias->matrix_ ) &&
             ( row() + rows() > alias->row() ) &&
@@ -11488,9 +11399,9 @@ inline bool
 // i.e. whether the beginning and the end of each column of the submatrix are guaranteed to
 // conform to the alignment restrictions of the underlying element type.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::isAligned() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,aligned,true,true,CSAs...>::isAligned() const noexcept
 {
    return true;
 }
@@ -11509,9 +11420,9 @@ inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::isAligned() const noexce
 // function additionally provides runtime information (as for instance the current number of
 // rows and/or columns of the submatrix).
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::canSMPAssign() const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline bool Submatrix<MT,aligned,true,true,CSAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -11534,10 +11445,10 @@ inline bool SubmatrixImpl<MT,aligned,true,true,SAs...>::canSMPAssign() const noe
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,true,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::load( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,true,true,CSAs...>::SIMDType
+   Submatrix<MT,aligned,true,true,CSAs...>::load( size_t i, size_t j ) const noexcept
 {
    return loada( i, j );
 }
@@ -11560,10 +11471,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,true,true,SAs...>::SIMDTyp
 // used internally for the performance optimized evaluation of expression templates. Calling
 // this function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,true,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::loada( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,true,true,CSAs...>::SIMDType
+   Submatrix<MT,aligned,true,true,CSAs...>::loada( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11593,10 +11504,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,true,true,SAs...>::SIMDTyp
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,true,true,SAs...>::SIMDType
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::loadu( size_t i, size_t j ) const noexcept
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,true,true,CSAs...>::SIMDType
+   Submatrix<MT,aligned,true,true,CSAs...>::loadu( size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11627,10 +11538,10 @@ BLAZE_ALWAYS_INLINE typename SubmatrixImpl<MT,aligned,true,true,SAs...>::SIMDTyp
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,true,true,CSAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    storea( i, j, value );
 }
@@ -11654,10 +11565,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,true,true,CSAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11688,10 +11599,10 @@ BLAZE_ALWAYS_INLINE void
 // internally for the performance optimized evaluation of expression templates. Calling this
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,true,true,CSAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11723,10 +11634,10 @@ BLAZE_ALWAYS_INLINE void
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 BLAZE_ALWAYS_INLINE void
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   Submatrix<MT,aligned,true,true,CSAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11753,11 +11664,11 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -11791,11 +11702,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11862,10 +11773,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -11902,10 +11813,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const DenseMatri
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -11930,10 +11841,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const SparseMatr
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -11960,11 +11871,11 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::assign( const SparseMatr
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -12004,11 +11915,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -12062,10 +11973,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -12102,10 +12013,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const DenseMa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -12130,10 +12041,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const SparseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -12160,11 +12071,11 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::addAssign( const SparseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -12204,11 +12115,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -12262,10 +12173,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -12302,10 +12213,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const DenseMa
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -12330,10 +12241,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const SparseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -12360,11 +12271,11 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::subAssign( const SparseM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -12399,11 +12310,11 @@ inline DisableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
-   SubmatrixImpl<MT,aligned,true,true,SAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+   Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -12449,10 +12360,10 @@ inline EnableIf_< typename SubmatrixImpl<MT,aligned,true,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side dense matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
@@ -12489,10 +12400,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::schurAssign( const Dense
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const SparseMatrix<MT2,true>& rhs )
 {
    using blaze::reset;
 
@@ -12531,10 +12442,10 @@ inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::schurAssign( const Spars
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT      // Type of the dense matrix
-        , size_t... SAs >  // Compile time submatrix arguments
-template< typename MT2 >   // Type of the right-hand side sparse matrix
-inline void SubmatrixImpl<MT,aligned,true,true,SAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+template< typename MT2 >    // Type of the right-hand side sparse matrix
+inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const SparseMatrix<MT2,false>& rhs )
 {
    using blaze::reset;
 

@@ -80,9 +80,21 @@
    auto sm2 = submatrix( A, 0UL, 4UL, 8UL, 16UL );
    \endcode
 
-// This view can be treated as any other dense or sparse matrix, i.e. it can be assigned to, it
-// can be copied from, and it can be used in arithmetic operations. A submatrix created from a
-// row-major matrix will itself be a row-major matrix, a submatrix created from a column-major
+// The \c submatrix() function returns an expression representing the submatrix view. The type of
+// this expression depends on the given submatrix arguments, primarily the type of the matrix and
+// the compile time arguments. If the type is required, it can be determined via \c decltype or
+// via the \c SubmatrixExprTrait class template:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using SubmatrixType1 = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
+   using SubmatrixType2 = blaze::SubmatrixExprTrait<VectorType,3UL,0UL,4UL,8UL>::Type;
+   \endcode
+
+// The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
+// to, it can be copied from, and it can be used in arithmetic operations. A submatrix created from
+// a row-major matrix will itself be a row-major matrix, a submatrix created from a column-major
 // matrix will be a column-major matrix. The view can also be used on both sides of an assignment:
 // The submatrix can either be used as an alias to grant write access to a specific submatrix
 // of a matrix primitive on the left-hand side of an assignment or to grant read-access to
