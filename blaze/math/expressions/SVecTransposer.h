@@ -518,10 +518,10 @@ inline void reset( SVecTransposer<VT,TF>& v )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, size_t... SAs >
-struct SubvectorTrait< SVecTransposer<VT,TF>, SAs... >
+template< typename VT, bool TF, size_t... CSAs >
+struct SubvectorTrait< SVecTransposer<VT,TF>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< SVecTransposer<VT,TF> >, SAs... >;
+   using Type = SubvectorTrait_< ResultType_< SVecTransposer<VT,TF> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

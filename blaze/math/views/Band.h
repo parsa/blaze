@@ -1961,10 +1961,10 @@ struct IsOpposedView< BandImpl<MT,TF,DF,MF,BAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs, size_t... SAs >
-struct SubvectorTrait< BandImpl<MT,TF,DF,MF,BAs...>, SAs... >
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... BAs, size_t... CSAs >
+struct SubvectorTrait< BandImpl<MT,TF,DF,MF,BAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< BandImpl<MT,TF,DF,MF,BAs...> >, SAs... >;
+   using Type = SubvectorTrait_< ResultType_< BandImpl<MT,TF,DF,MF,BAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

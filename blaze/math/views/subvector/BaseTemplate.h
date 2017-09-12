@@ -55,12 +55,12 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-template< typename VT      // Type of the vector
-        , bool AF          // Alignment flag
-        , bool TF          // Transpose flag
-        , bool DF          // Density flag
-        , size_t... SAs >  // Compile time subvector arguments
-class SubvectorImpl
+template< typename VT                         // Type of the vector
+        , bool AF = unaligned                 // Alignment flag
+        , bool TF = IsRowVector<VT>::value    // Transpose flag
+        , bool DF = IsDenseVector<VT>::value  // Density flag
+        , size_t... CSAs >                    // Compile time subvector arguments
+class Subvector
 {};
 //*************************************************************************************************
 
@@ -74,90 +74,22 @@ class SubvectorImpl
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief View on a specific subvector of a dense or sparse vector.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the Subvector class template.
 // \ingroup subvector
 //
-// The Subvector template represents a reference to a specific subvector of a dense or sparse
-// vector primitive.
+// The Subvector_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Subvector class template.
 */
 template< typename VT          // Type of the vector
         , bool AF = unaligned  // Alignment flag
-        , size_t... SAs >      // Compile time subvector arguments
-using Subvector = SubvectorImpl< VT
-                               , AF
-                               , IsRowVector<VT>::value
-                               , IsDenseVector<VT>::value
-                               , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific subvector of a dense vector.
-// \ingroup subvector
-//
-// The DenseSubvector template represents a reference to a specific subvector of a dense vector
-// primitive.
-*/
-template< typename VT          // Type of the vector
-        , bool AF = unaligned  // Alignment flag
-        , size_t... SAs >      // Compile time subvector arguments
-using DenseSubvector = SubvectorImpl< VT
-                                    , AF
-                                    , IsRowVector<VT>::value
-                                    , true
-                                    , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific subvector of a sparse vector.
-// \ingroup subvector
-//
-// The SparseSubvector template represents a reference to a specific subvector of a sparse vector
-// primitive.
-*/
-template< typename VT          // Type of the vector
-        , bool AF = unaligned  // Alignment flag
-        , size_t... SAs >      // Compile time subvector arguments
-using SparseSubvector = SubvectorImpl< VT
-                                     , AF
-                                     , IsRowVector<VT>::value
-                                     , false
-                                     , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific unaligned subvector of a vector.
-// \ingroup subvector
-//
-// The UnalignedSubvector template represents a reference to a specific unaligned subvector of a
-// vector primitive.
-*/
-template< typename VT      // Type of the vector
-        , size_t... SAs >  // Compile time subvector arguments
-using UnalignedSubvector = SubvectorImpl< VT
-                                        , unaligned
-                                        , IsRowVector<VT>::value
-                                        , IsDenseVector<VT>::value
-                                        , SAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific aligned subvector of a vector.
-// \ingroup subvector
-//
-// The AlignedSubvector template represents a reference to a specific aligned subvector of a
-// vector primitive.
-*/
-template< typename VT      // Type of the vector
-        , size_t... SAs >  // Compile time subvector arguments
-using AlignedSubvector = SubvectorImpl< VT
-                                      , aligned
-                                      , IsRowVector<VT>::value
-                                      , IsDenseVector<VT>::value
-                                      , SAs... >;
+        , size_t... CSAs >     // Compile time subvector arguments
+using Subvector_ = Subvector< VT
+                            , AF
+                            , IsRowVector<VT>::value
+                            , IsDenseVector<VT>::value
+                            , CSAs... >;
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

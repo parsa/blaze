@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/views/subvector/Dense.h
-//  \brief SubvectorImpl specialization for dense vectors
+//  \brief Subvector specialization for dense vectors
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -60,6 +60,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CrossTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
@@ -82,6 +83,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -98,37 +100,37 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubvectorImpl for unaligned dense subvectors.
+/*!\brief Specialization of Subvector for unaligned dense subvectors.
 // \ingroup subvector
 //
-// This specialization of SubvectorImpl adapts the class template to the requirements of unaligned
+// This specialization of Subvector adapts the class template to the requirements of unaligned
 // dense subvectors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-class SubvectorImpl<VT,unaligned,TF,true,SAs...>
-   : public View< DenseVector< SubvectorImpl<VT,unaligned,TF,true,SAs...>, TF > >
-   , private SubvectorData<VT,SAs...>
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+class Subvector<VT,unaligned,TF,true,CSAs...>
+   : public View< DenseVector< Subvector<VT,unaligned,TF,true,CSAs...>, TF > >
+   , private SubvectorData<VT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<VT,SAs...>;  //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<VT,CSAs...>;  //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubvectorImpl instance.
-   using This = SubvectorImpl<VT,unaligned,TF,true,SAs...>;
+   //! Type of this Subvector instance.
+   using This = Subvector<VT,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
-   using ViewedType    = VT;                          //!< The type viewed by this SubvectorImpl instance.
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Subvector instance.
+   using ViewedType    = VT;                          //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_<VT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<VT>;            //!< Type of the subvector elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the subvector elements.
    using ReturnType    = ReturnType_<VT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubvectorImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Subvector&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
    using ConstReference = ConstReference_<VT>;
@@ -562,8 +564,8 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubvectorImpl( VT& vector );
-   explicit inline SubvectorImpl( VT& vector, size_t index, size_t n );
+   template< typename... RSAs >
+   explicit inline Subvector( VT& vector, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -593,22 +595,21 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                            inline SubvectorImpl& operator= ( const ElementType& rhs );
-                            inline SubvectorImpl& operator= ( initializer_list<ElementType> list );
-                            inline SubvectorImpl& operator= ( const SubvectorImpl& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator= ( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator+=( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator-=( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator*=( const DenseVector<VT2,TF>&  rhs );
-   template< typename VT2 > inline SubvectorImpl& operator*=( const SparseVector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator/=( const DenseVector<VT2,TF>&  rhs );
-   template< typename VT2 > inline SubvectorImpl& operator%=( const Vector<VT2,TF>& rhs );
+                            inline Subvector& operator= ( const ElementType& rhs );
+                            inline Subvector& operator= ( initializer_list<ElementType> list );
+                            inline Subvector& operator= ( const Subvector& rhs );
+   template< typename VT2 > inline Subvector& operator= ( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator+=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator-=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator*=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline Subvector& operator%=( const Vector<VT2,TF>& rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubvectorImpl >& operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Subvector >& operator*=( Other rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubvectorImpl >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Subvector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -629,7 +630,7 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   template< typename Other > inline SubvectorImpl& scale( const Other& scalar );
+   template< typename Other > inline Subvector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -700,14 +701,14 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... SAs2 >
-   inline bool canAlias( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept;
+   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   inline bool canAlias( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... SAs2 >
-   inline bool isAliased( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept;
+   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   inline bool isAliased( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -778,7 +779,7 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... SAs2 > friend class SubvectorImpl;
+   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... CSAs2 > friend class Subvector;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -803,46 +804,26 @@ class SubvectorImpl<VT,unaligned,TF,true,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for subvectors with compile time arguments.
+/*!\brief The constructor for unaligned dense subvectors.
 //
 // \param vector The dense vector containing the subvector.
+// \param args The runtime subvector arguments.
 // \exception std::invalid_argument Invalid subvector specification.
 //
 // In case the subvector is not properly specified (i.e. if the specified offset is larger than
 // the size of the given vector or the subvector is specified beyond the size of the vector) a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>::SubvectorImpl( VT& vector )
-   : DataType( vector )  // Base class initialization
+template< typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , size_t... CSAs >    // Compile time subvector arguments
+template< typename... RSAs >  // Runtime subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... args )
+   : DataType( vector, args... )  // Base class initialization
    , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for subvectors with runtime arguments.
-//
-// \param vector The dense vector containing the subvector.
-// \param index The offset of the subvector within the given vector.
-// \param n The size of the subvector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// In case the subvector is not properly specified (i.e. if the specified offset is larger than
-// the size of the given vector or the subvector is specified beyond the size of the vector) a
-// \a std::invalid_argument exception is thrown.
-*/
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>::SubvectorImpl( VT& vector, size_t index, size_t n )
-   : DataType( vector, index, n )  // Base class initialization
-   , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
-{}
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 2UL );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -865,11 +846,11 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>::SubvectorImpl( VT& vector, si
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Reference
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator[]( size_t index )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Reference
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return vector_[offset()+index];
@@ -888,11 +869,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstReference
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator[]( size_t index ) const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstReference
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return const_cast<const VT&>( vector_ )[offset()+index];
@@ -912,11 +893,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Reference
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::at( size_t index )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Reference
+   Subvector<VT,unaligned,TF,true,CSAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
@@ -938,11 +919,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstReference
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::at( size_t index ) const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstReference
+   Subvector<VT,unaligned,TF,true,CSAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
@@ -961,11 +942,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstReference
 //
 // This function returns a pointer to the internal storage of the dense subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Pointer
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::data() noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Pointer
+   Subvector<VT,unaligned,TF,true,CSAs...>::data() noexcept
 {
    return vector_.data() + offset();
 }
@@ -981,11 +962,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Pointer
 //
 // This function returns a pointer to the internal storage of the dense subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstPointer
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::data() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstPointer
+   Subvector<VT,unaligned,TF,true,CSAs...>::data() const noexcept
 {
    return vector_.data() + offset();
 }
@@ -1001,11 +982,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstPointer
 //
 // This function returns an iterator to the first element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Iterator
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::begin()
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Iterator
+   Subvector<VT,unaligned,TF,true,CSAs...>::begin()
 {
    return Iterator( vector_.begin() + offset(), isAligned_ );
 }
@@ -1021,11 +1002,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Iterator
 //
 // This function returns an iterator to the first element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::begin() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,unaligned,TF,true,CSAs...>::begin() const
 {
    return ConstIterator( vector_.cbegin() + offset(), isAligned_ );
 }
@@ -1041,11 +1022,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
 //
 // This function returns an iterator to the first element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::cbegin() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,unaligned,TF,true,CSAs...>::cbegin() const
 {
    return ConstIterator( vector_.cbegin() + offset(), isAligned_ );
 }
@@ -1061,11 +1042,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Iterator
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::end()
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Iterator
+   Subvector<VT,unaligned,TF,true,CSAs...>::end()
 {
    return Iterator( vector_.begin() + offset() + size(), isAligned_ );
 }
@@ -1081,11 +1062,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::Iterator
 //
 // This function returns an iterator just past the last element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::end() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,unaligned,TF,true,CSAs...>::end() const
 {
    return ConstIterator( vector_.cbegin() + offset() + size(), isAligned_ );
 }
@@ -1101,11 +1082,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::cend() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,unaligned,TF,true,CSAs...>::cend() const
 {
    return ConstIterator( vector_.cbegin() + offset() + size(), isAligned_ );
 }
@@ -1128,11 +1109,11 @@ inline typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::ConstIterator
 // \param rhs Scalar value to be assigned to all subvector elements.
 // \return Reference to the assigned subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator=( const ElementType& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( offset() + size() );
 
@@ -1158,11 +1139,11 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // of the initializer list exceeds the size of the subvector, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator=( initializer_list<ElementType> list )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
@@ -1190,11 +1171,11 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // In case the current sizes of the two subvectors don't match, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator=( const SubvectorImpl& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator=( const Subvector& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1240,12 +1221,12 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -1293,12 +1274,12 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator+=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator+=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -1344,12 +1325,12 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator-=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator-=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -1385,10 +1366,10 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a dense vector
+/*!\brief Multiplication assignment operator for the multiplication of a vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side dense vector to be multiplied with the dense subvector.
+// \param rhs The right-hand side vector to be multiplied with the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted vector.
@@ -1396,12 +1377,12 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator*=( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator*=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -1437,51 +1418,6 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
-//        (\f$ \vec{a}*=\vec{b} \f$).
-//
-// \param rhs The right-hand side sparse vector to be multiplied with the dense subvector.
-// \return Reference to the assigned subvector.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted vector.
-//
-// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator*=( const SparseVector<VT2,TF>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-   if( size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
-   const ResultType tmp( *this * (~rhs) );
-
-   if( !tryAssign( vector_, tmp, offset() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -1492,12 +1428,12 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -1544,12 +1480,12 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 // In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator%=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator%=( const Vector<VT2,TF>& rhs )
 {
    using blaze::assign;
 
@@ -1594,10 +1530,10 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,unaligned,TF,true,SAs...> >&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator*=( Other rhs )
 {
    decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
@@ -1620,10 +1556,10 @@ inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,unaligned,TF,true,SAs...> >
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,unaligned,TF,true,SAs...> >&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
+   Subvector<VT,unaligned,TF,true,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
@@ -1653,10 +1589,10 @@ inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,unaligned,TF,true,SAs...> >
 // This function returns the minimum capacity of the dense subvector, which corresponds to the
 // current size plus padding.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline size_t SubvectorImpl<VT,unaligned,TF,true,SAs...>::spacing() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline size_t Subvector<VT,unaligned,TF,true,CSAs...>::spacing() const noexcept
 {
    return vector_.spacing() - offset();
 }
@@ -1670,10 +1606,10 @@ inline size_t SubvectorImpl<VT,unaligned,TF,true,SAs...>::spacing() const noexce
 //
 // \return The maximum capacity of the dense subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline size_t SubvectorImpl<VT,unaligned,TF,true,SAs...>::capacity() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline size_t Subvector<VT,unaligned,TF,true,CSAs...>::capacity() const noexcept
 {
    return vector_.capacity() - offset();
 }
@@ -1690,10 +1626,10 @@ inline size_t SubvectorImpl<VT,unaligned,TF,true,SAs...>::capacity() const noexc
 // Note that the number of non-zero elements is always less than or equal to the current size
 // of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline size_t SubvectorImpl<VT,unaligned,TF,true,SAs...>::nonZeros() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline size_t Subvector<VT,unaligned,TF,true,CSAs...>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
@@ -1715,10 +1651,10 @@ inline size_t SubvectorImpl<VT,unaligned,TF,true,SAs...>::nonZeros() const
 //
 // \return void
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::reset()
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline void Subvector<VT,unaligned,TF,true,CSAs...>::reset()
 {
    using blaze::clear;
 
@@ -1751,10 +1687,10 @@ inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::reset()
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the scalar value
-inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::scale( const Other& scalar )
+inline Subvector<VT,unaligned,TF,true,CSAs...>&
+   Subvector<VT,unaligned,TF,true,CSAs...>::scale( const Other& scalar )
 {
    const size_t iend( offset() + size() );
    for( size_t i=offset(); i<iend; ++i )
@@ -1786,9 +1722,9 @@ inline SubvectorImpl<VT,unaligned,TF,true,SAs...>&
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Subvector<VT,unaligned,TF,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -1807,15 +1743,15 @@ inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::canAlias( const Other* a
 // In contrast to the isAliased() function this function is allowed to use compile time
 // expressions to optimize the evaluation.
 */
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
-template< typename VT2      // Data type of the foreign dense subvector
-        , bool AF2          // Alignment flag of the foreign dense subvector
-        , bool TF2          // Transpose flag of the foreign dense subvector
-        , size_t... SAs2 >  // Compile time subvector arguments of the foreign dense subvector
+template< typename VT        // Type of the dense vector
+        , bool TF            // Transpose flag
+        , size_t... CSAs >   // Compile time subvector arguments
+template< typename VT2       // Data type of the foreign dense subvector
+        , bool AF2           // Alignment flag of the foreign dense subvector
+        , bool TF2           // Transpose flag of the foreign dense subvector
+        , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::canAlias( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept
+   Subvector<VT,unaligned,TF,true,CSAs...>::canAlias( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset() + size() > alias->offset() ) &&
@@ -1838,9 +1774,9 @@ inline bool
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Subvector<VT,unaligned,TF,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -1859,15 +1795,15 @@ inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::isAliased( const Other* 
 // In contrast to the canAlias() function this function is not allowed to use compile time
 // expressions to optimize the evaluation.
 */
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
-template< typename VT2      // Data type of the foreign dense subvector
-        , bool AF2          // Alignment flag of the foreign dense subvector
-        , bool TF2          // Transpose flag of the foreign dense subvector
-        , size_t... SAs2 >  // Compile time subvector arguments of the foreign dense subvector
+template< typename VT        // Type of the dense vector
+        , bool TF            // Transpose flag
+        , size_t... CSAs >   // Compile time subvector arguments
+template< typename VT2       // Data type of the foreign dense subvector
+        , bool AF2           // Alignment flag of the foreign dense subvector
+        , bool TF2           // Transpose flag of the foreign dense subvector
+        , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::isAliased( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept
+   Subvector<VT,unaligned,TF,true,CSAs...>::isAliased( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset() + size() > alias->offset() ) &&
@@ -1887,10 +1823,10 @@ inline bool
 // i.e. whether the beginning and the end of the subvector are guaranteed to conform to the
 // alignment restrictions of the underlying element type.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::isAligned() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline bool Subvector<VT,unaligned,TF,true,CSAs...>::isAligned() const noexcept
 {
    return isAligned_;
 }
@@ -1909,10 +1845,10 @@ inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::isAligned() const noexce
 // function additionally provides runtime information (as for instance the current size of the
 // subvector).
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::canSMPAssign() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline bool Subvector<VT,unaligned,TF,true,CSAs...>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -1934,11 +1870,11 @@ inline bool SubvectorImpl<VT,unaligned,TF,true,SAs...>::canSMPAssign() const noe
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::SIMDType
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::load( size_t index ) const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+BLAZE_ALWAYS_INLINE typename Subvector<VT,unaligned,TF,true,CSAs...>::SIMDType
+   Subvector<VT,unaligned,TF,true,CSAs...>::load( size_t index ) const noexcept
 {
    if( isAligned_ )
       return loada( index );
@@ -1963,11 +1899,11 @@ BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::SIMDTyp
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::SIMDType
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::loada( size_t index ) const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+BLAZE_ALWAYS_INLINE typename Subvector<VT,unaligned,TF,true,CSAs...>::SIMDType
+   Subvector<VT,unaligned,TF,true,CSAs...>::loada( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1995,11 +1931,11 @@ BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::SIMDTyp
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::SIMDType
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::loadu( size_t index ) const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+BLAZE_ALWAYS_INLINE typename Subvector<VT,unaligned,TF,true,CSAs...>::SIMDType
+   Subvector<VT,unaligned,TF,true,CSAs...>::loadu( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2028,11 +1964,11 @@ BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::SIMDTyp
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::store( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,unaligned,TF,true,CSAs...>::store( size_t index, const SIMDType& value ) noexcept
 {
    if( isAligned_ )
       storea( index, value );
@@ -2058,11 +1994,11 @@ BLAZE_ALWAYS_INLINE void
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::storea( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,unaligned,TF,true,CSAs...>::storea( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2091,11 +2027,11 @@ BLAZE_ALWAYS_INLINE void
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::storeu( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,unaligned,TF,true,CSAs...>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2124,11 +2060,11 @@ BLAZE_ALWAYS_INLINE void
 // evaluation of expression templates. Calling this function explicitly might result in
 // erroneous results and/or in compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::stream( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,unaligned,TF,true,CSAs...>::stream( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2157,12 +2093,12 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::assign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2191,12 +2127,12 @@ inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::assign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2252,11 +2188,11 @@ inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::assign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,unaligned,TF,true,CSAs...>::assign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2279,12 +2215,12 @@ inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::assign( const SparseVect
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2313,12 +2249,12 @@ inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2360,11 +2296,11 @@ inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::addAssign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2387,12 +2323,12 @@ inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::addAssign( const SparseV
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2421,12 +2357,12 @@ inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2468,11 +2404,11 @@ inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::subAssign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2495,12 +2431,12 @@ inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::subAssign( const SparseV
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2529,12 +2465,12 @@ inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2576,20 +2512,29 @@ inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEM
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::multAssign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const SparseVector<VT2,TF>& rhs )
 {
+   using blaze::reset;
+
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( serial( *this ) );
+   size_t i( 0UL );
 
-   reset();
+   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      for( ; i<index; ++i )
+         reset( vector_[offset()+i] );
+      vector_[offset()+i] *= element->value();
+      ++i;
+   }
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[offset()+element->index()] = tmp[element->index()] * element->value();
+   for( ; i<size(); ++i ) {
+      reset( vector_[offset()+i] );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2607,12 +2552,12 @@ inline void SubvectorImpl<VT,unaligned,TF,true,SAs...>::multAssign( const Sparse
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2641,12 +2586,12 @@ inline DisableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TE
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
-   SubvectorImpl<VT,unaligned,TF,true,SAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   Subvector<VT,unaligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2690,37 +2635,37 @@ inline EnableIf_< typename SubvectorImpl<VT,unaligned,TF,true,SAs...>::BLAZE_TEM
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubvectorImpl for aligned dense subvectors.
+/*!\brief Specialization of Subvector for aligned dense subvectors.
 // \ingroup subvector
 //
-// This specialization of SubvectorImpl adapts the class template to the requirements of aligned
+// This specialization of Subvector adapts the class template to the requirements of aligned
 // dense subvectors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-class SubvectorImpl<VT,aligned,TF,true,SAs...>
-   : public View< DenseVector< SubvectorImpl<VT,aligned,TF,true,SAs...>, TF > >
-   , private SubvectorData<VT,SAs...>
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+class Subvector<VT,aligned,TF,true,CSAs...>
+   : public View< DenseVector< Subvector<VT,aligned,TF,true,CSAs...>, TF > >
+   , private SubvectorData<VT,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<VT,SAs...>;  //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<VT,CSAs...>;  //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubvectorImpl instance.
-   using This = SubvectorImpl<VT,aligned,TF,true>;
+   //! Type of this Subvector instance.
+   using This = Subvector<VT,aligned,TF,true>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
-   using ViewedType    = VT;                          //!< The type viewed by this SubvectorImpl instance.
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Subvector instance.
+   using ViewedType    = VT;                          //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_<VT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<VT>;            //!< Type of the subvector elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the subvector elements.
    using ReturnType    = ReturnType_<VT>;             //!< Return type for expression template evaluations
-   using CompositeType = const SubvectorImpl&;        //!< Data type for composite expression templates.
+   using CompositeType = const Subvector&;            //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
    using ConstReference = ConstReference_<VT>;
@@ -2752,8 +2697,8 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubvectorImpl( VT& vector );
-   explicit inline SubvectorImpl( VT& vector, size_t index, size_t n );
+   template< typename... RSAs >
+   explicit inline Subvector( VT& vector, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2783,22 +2728,21 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                            inline SubvectorImpl& operator= ( const ElementType& rhs );
-                            inline SubvectorImpl& operator= ( initializer_list<ElementType> list );
-                            inline SubvectorImpl& operator= ( const SubvectorImpl& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator= ( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator+=( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator-=( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator*=( const DenseVector<VT2,TF>&  rhs );
-   template< typename VT2 > inline SubvectorImpl& operator*=( const SparseVector<VT2,TF>& rhs );
-   template< typename VT2 > inline SubvectorImpl& operator/=( const DenseVector<VT2,TF>&  rhs );
-   template< typename VT2 > inline SubvectorImpl& operator%=( const Vector<VT2,TF>&  rhs );
+                            inline Subvector& operator= ( const ElementType& rhs );
+                            inline Subvector& operator= ( initializer_list<ElementType> list );
+                            inline Subvector& operator= ( const Subvector& rhs );
+   template< typename VT2 > inline Subvector& operator= ( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator+=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator-=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator*=( const Vector<VT2,TF>& rhs );
+   template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline Subvector& operator%=( const Vector<VT2,TF>&  rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubvectorImpl >& operator*=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Subvector >& operator*=( Other rhs );
 
    template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SubvectorImpl >& operator/=( Other rhs );
+   inline EnableIf_< IsNumeric<Other>, Subvector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -2819,7 +2763,7 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   template< typename Other > inline SubvectorImpl& scale( const Other& scalar );
+   template< typename Other > inline Subvector& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -2890,14 +2834,14 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... SAs2 >
-   inline bool canAlias( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept;
+   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   inline bool canAlias( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... SAs2 >
-   inline bool isAliased( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept;
+   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   inline bool isAliased( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
@@ -2957,7 +2901,7 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... SAs2 > friend class SubvectorImpl;
+   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... CSAs2 > friend class Subvector;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2982,48 +2926,25 @@ class SubvectorImpl<VT,aligned,TF,true,SAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for subvectors with compile time arguments.
+/*!\brief The constructor for aligned dense subvectors.
 //
 // \param vector The dense vector containing the subvector.
+// \param args The runtime subvector arguments.
 // \exception std::invalid_argument Invalid subvector specification.
 //
 // In case the subvector is not properly specified (i.e. if the specified offset is larger than
 // the size of the given vector or the subvector is specified beyond the size of the vector) a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>::SubvectorImpl( VT& vector )
-   : DataType( vector )  // Base class initialization
+template< typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , size_t... CSAs >    // Compile time subvector arguments
+template< typename... RSAs >  // Runtime subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... args )
+   : DataType( vector, args... )  // Base class initialization
 {
-   if( simdEnabled && vector_.data() != nullptr && !checkAlignment( data() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 2UL );
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for subvectors with runtime arguments.
-//
-// \param vector The dense vector containing the subvector.
-// \param index The offset of the subvector in the given vector.
-// \param n The size of the subvector.
-// \exception std::invalid_argument Invalid subvector specification.
-//
-// In case the subvector is not properly specified (i.e. if the specified offset is larger than
-// the size of the given vector or the subvector is specified beyond the size of the vector) a
-// \a std::invalid_argument exception is thrown.
-*/
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>::SubvectorImpl( VT& vector, size_t index, size_t n )
-   : DataType( vector, index, n )  // Base class initialization
-{
    if( simdEnabled && vector_.data() != nullptr && !checkAlignment( data() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
    }
@@ -3047,11 +2968,11 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>::SubvectorImpl( VT& vector, size
 // \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Reference
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator[]( size_t index )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::Reference
+   Subvector<VT,aligned,TF,true,CSAs...>::operator[]( size_t index )
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return vector_[offset()+index];
@@ -3067,11 +2988,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Reference
 // \param index Access index. The index must be smaller than the number of subvector columns.
 // \return Reference to the accessed value.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstReference
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator[]( size_t index ) const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstReference
+   Subvector<VT,aligned,TF,true,CSAs...>::operator[]( size_t index ) const
 {
    BLAZE_USER_ASSERT( index < size(), "Invalid subvector access index" );
    return const_cast<const VT&>( vector_ )[offset()+index];
@@ -3091,11 +3012,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Reference
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::at( size_t index )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::Reference
+   Subvector<VT,aligned,TF,true,CSAs...>::at( size_t index )
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
@@ -3117,11 +3038,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstReference
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::at( size_t index ) const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstReference
+   Subvector<VT,aligned,TF,true,CSAs...>::at( size_t index ) const
 {
    if( index >= size() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid subvector access index" );
@@ -3140,11 +3061,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstReference
 //
 // This function returns a pointer to the internal storage of the dense subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Pointer
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::data() noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::Pointer
+   Subvector<VT,aligned,TF,true,CSAs...>::data() noexcept
 {
    return vector_.data() + offset();
 }
@@ -3160,11 +3081,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Pointer
 //
 // This function returns a pointer to the internal storage of the dense subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstPointer
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::data() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstPointer
+   Subvector<VT,aligned,TF,true,CSAs...>::data() const noexcept
 {
    return vector_.data() + offset();
 }
@@ -3180,11 +3101,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstPointer
 //
 // This function returns an iterator to the first element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Iterator
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::begin()
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::Iterator
+   Subvector<VT,aligned,TF,true,CSAs...>::begin()
 {
    return ( vector_.begin() + offset() );
 }
@@ -3200,11 +3121,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Iterator
 //
 // This function returns an iterator to the first element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::begin() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,aligned,TF,true,CSAs...>::begin() const
 {
    return ( vector_.cbegin() + offset() );
 }
@@ -3220,11 +3141,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
 //
 // This function returns an iterator to the first element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::cbegin() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,aligned,TF,true,CSAs...>::cbegin() const
 {
    return ( vector_.cbegin() + offset() );
 }
@@ -3240,11 +3161,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Iterator
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::end()
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::Iterator
+   Subvector<VT,aligned,TF,true,CSAs...>::end()
 {
    return ( vector_.begin() + offset() + size() );
 }
@@ -3260,11 +3181,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::Iterator
 //
 // This function returns an iterator just past the last element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::end() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,aligned,TF,true,CSAs...>::end() const
 {
    return ( vector_.cbegin() + offset() + size() );
 }
@@ -3280,11 +3201,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::cend() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::ConstIterator
+   Subvector<VT,aligned,TF,true,CSAs...>::cend() const
 {
    return ( vector_.cbegin() + offset() + size() );
 }
@@ -3307,11 +3228,11 @@ inline typename SubvectorImpl<VT,aligned,TF,true,SAs...>::ConstIterator
 // \param rhs Scalar value to be assigned to all subvector elements.
 // \return Reference to the assigned subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator=( const ElementType& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( offset() + size() );
 
@@ -3337,11 +3258,11 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // of the initializer list exceeds the size of the subvector, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator=( initializer_list<ElementType> list )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator=( initializer_list<ElementType> list )
 {
    if( list.size() > size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
@@ -3369,11 +3290,11 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // In case the current sizes of the two subvectors don't match, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator=( const SubvectorImpl& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator=( const Subvector& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -3419,12 +3340,12 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -3472,12 +3393,12 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator+=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator+=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -3523,12 +3444,12 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator-=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator-=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -3564,10 +3485,10 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a dense vector
+/*!\brief Multiplication assignment operator for the multiplication of a vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side dense vector to be multiplied with the dense subvector.
+// \param rhs The right-hand side vector to be multiplied with the dense subvector.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted vector.
@@ -3575,12 +3496,12 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator*=( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator*=( const Vector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -3616,51 +3537,6 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
-//        (\f$ \vec{a}*=\vec{b} \f$).
-//
-// \param rhs The right-hand side sparse vector to be multiplied with the dense subvector.
-// \return Reference to the assigned subvector.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted vector.
-//
-// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator*=( const SparseVector<VT2,TF>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-   if( size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
-   const ResultType tmp( *this * (~rhs) );
-
-   if( !tryAssign( vector_, tmp, offset() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Division assignment operator for the division of a dense vector (\f$ \vec{a}/=\vec{b} \f$).
 //
 // \param rhs The right-hand side dense vector divisor.
@@ -3671,12 +3547,12 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
@@ -3723,12 +3599,12 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 // In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side vector
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator%=( const Vector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side vector
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator%=( const Vector<VT2,TF>& rhs )
 {
    using blaze::assign;
 
@@ -3773,10 +3649,10 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,aligned,TF,true,SAs...> >&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator*=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator*=( Other rhs )
 {
    decltype(auto) left( derestrict( *this ) );
    smpAssign( left, (*this) * rhs );
@@ -3799,10 +3675,10 @@ inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,aligned,TF,true,SAs...> >&
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,aligned,TF,true,SAs...> >&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::operator/=( Other rhs )
+inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
+   Subvector<VT,aligned,TF,true,CSAs...>::operator/=( Other rhs )
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
@@ -3832,10 +3708,10 @@ inline EnableIf_< IsNumeric<Other>, SubvectorImpl<VT,aligned,TF,true,SAs...> >&
 // This function returns the minimum capacity of the dense subvector, which corresponds to the
 // current size plus padding.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline size_t SubvectorImpl<VT,aligned,TF,true,SAs...>::spacing() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline size_t Subvector<VT,aligned,TF,true,CSAs...>::spacing() const noexcept
 {
    return vector_.spacing() - offset();
 }
@@ -3849,10 +3725,10 @@ inline size_t SubvectorImpl<VT,aligned,TF,true,SAs...>::spacing() const noexcept
 //
 // \return The maximum capacity of the dense subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline size_t SubvectorImpl<VT,aligned,TF,true,SAs...>::capacity() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline size_t Subvector<VT,aligned,TF,true,CSAs...>::capacity() const noexcept
 {
    return vector_.capacity() - offset();
 }
@@ -3869,10 +3745,10 @@ inline size_t SubvectorImpl<VT,aligned,TF,true,SAs...>::capacity() const noexcep
 // Note that the number of non-zero elements is always less than or equal to the current size
 // of the subvector.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline size_t SubvectorImpl<VT,aligned,TF,true,SAs...>::nonZeros() const
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline size_t Subvector<VT,aligned,TF,true,CSAs...>::nonZeros() const
 {
    size_t nonzeros( 0 );
 
@@ -3894,10 +3770,10 @@ inline size_t SubvectorImpl<VT,aligned,TF,true,SAs...>::nonZeros() const
 //
 // \return void
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::reset()
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline void Subvector<VT,aligned,TF,true,CSAs...>::reset()
 {
    using blaze::clear;
 
@@ -3930,10 +3806,10 @@ inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::reset()
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the scalar value
-inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::scale( const Other& scalar )
+inline Subvector<VT,aligned,TF,true,CSAs...>&
+   Subvector<VT,aligned,TF,true,CSAs...>::scale( const Other& scalar )
 {
    const size_t iend( offset() + size() );
    for( size_t i=offset(); i<iend; ++i )
@@ -3965,9 +3841,9 @@ inline SubvectorImpl<VT,aligned,TF,true,SAs...>&
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::canAlias( const Other* alias ) const noexcept
+inline bool Subvector<VT,aligned,TF,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -3986,15 +3862,15 @@ inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::canAlias( const Other* ali
 // In contrast to the isAliased() function this function is allowed to use compile time
 // expressions to optimize the evaluation.
 */
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
-template< typename VT2      // Data type of the foreign dense subvector
-        , bool AF2          // Alignment flag of the foreign dense subvector
-        , bool TF2          // Transpose flag of the foreign dense subvector
-        , size_t... SAs2 >  // Compile time subvector arguments of the foreign dense subvector
+template< typename VT        // Type of the dense vector
+        , bool TF            // Transpose flag
+        , size_t... CSAs >   // Compile time subvector arguments
+template< typename VT2       // Data type of the foreign dense subvector
+        , bool AF2           // Alignment flag of the foreign dense subvector
+        , bool TF2           // Transpose flag of the foreign dense subvector
+        , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::canAlias( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept
+   Subvector<VT,aligned,TF,true,CSAs...>::canAlias( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset() + size() > alias->offset() ) &&
@@ -4017,9 +3893,9 @@ inline bool
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::isAliased( const Other* alias ) const noexcept
+inline bool Subvector<VT,aligned,TF,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
    return vector_.isAliased( alias );
 }
@@ -4038,15 +3914,15 @@ inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::isAliased( const Other* al
 // In contrast to the canAlias() function this function is not allowed to use compile time
 // expressions to optimize the evaluation.
 */
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... SAs >   // Compile time subvector arguments
-template< typename VT2      // Data type of the foreign dense subvector
-        , bool AF2          // Alignment flag of the foreign dense subvector
-        , bool TF2          // Transpose flag of the foreign dense subvector
-        , size_t... SAs2 >  // Compile time subvector arguments of the foreign dense subvector
+template< typename VT        // Type of the dense vector
+        , bool TF            // Transpose flag
+        , size_t... CSAs >   // Compile time subvector arguments
+template< typename VT2       // Data type of the foreign dense subvector
+        , bool AF2           // Alignment flag of the foreign dense subvector
+        , bool TF2           // Transpose flag of the foreign dense subvector
+        , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::isAliased( const SubvectorImpl<VT2,AF2,TF2,true,SAs2...>* alias ) const noexcept
+   Subvector<VT,aligned,TF,true,CSAs...>::isAliased( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset() + size() > alias->offset() ) &&
@@ -4066,10 +3942,10 @@ inline bool
 // i.e. whether the beginning and the end of the subvector are guaranteed to conform to the
 // alignment restrictions of the underlying element type.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::isAligned() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline bool Subvector<VT,aligned,TF,true,CSAs...>::isAligned() const noexcept
 {
    return true;
 }
@@ -4088,10 +3964,10 @@ inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::isAligned() const noexcept
 // function additionally provides runtime information (as for instance the current size of the
 // subvector).
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::canSMPAssign() const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline bool Subvector<VT,aligned,TF,true,CSAs...>::canSMPAssign() const noexcept
 {
    return ( size() > SMP_DVECASSIGN_THRESHOLD );
 }
@@ -4113,11 +3989,11 @@ inline bool SubvectorImpl<VT,aligned,TF,true,SAs...>::canSMPAssign() const noexc
 // Calling this function explicitly might result in erroneous results and/or in compilation
 // errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,aligned,TF,true,SAs...>::SIMDType
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::load( size_t index ) const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+BLAZE_ALWAYS_INLINE typename Subvector<VT,aligned,TF,true,CSAs...>::SIMDType
+   Subvector<VT,aligned,TF,true,CSAs...>::load( size_t index ) const noexcept
 {
    return loada( index );
 }
@@ -4139,11 +4015,11 @@ BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,aligned,TF,true,SAs...>::SIMDType
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,aligned,TF,true,SAs...>::SIMDType
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::loada( size_t index ) const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+BLAZE_ALWAYS_INLINE typename Subvector<VT,aligned,TF,true,CSAs...>::SIMDType
+   Subvector<VT,aligned,TF,true,CSAs...>::loada( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4171,11 +4047,11 @@ BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,aligned,TF,true,SAs...>::SIMDType
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,aligned,TF,true,SAs...>::SIMDType
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::loadu( size_t index ) const noexcept
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+BLAZE_ALWAYS_INLINE typename Subvector<VT,aligned,TF,true,CSAs...>::SIMDType
+   Subvector<VT,aligned,TF,true,CSAs...>::loadu( size_t index ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4204,11 +4080,11 @@ BLAZE_ALWAYS_INLINE typename SubvectorImpl<VT,aligned,TF,true,SAs...>::SIMDType
 // Calling this function explicitly might result in erroneous results and/or in compilation
 // errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::store( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,aligned,TF,true,CSAs...>::store( size_t index, const SIMDType& value ) noexcept
 {
    storea( index, value );
 }
@@ -4231,11 +4107,11 @@ BLAZE_ALWAYS_INLINE void
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::storea( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,aligned,TF,true,CSAs...>::storea( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4264,11 +4140,11 @@ BLAZE_ALWAYS_INLINE void
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::storeu( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,aligned,TF,true,CSAs...>::storeu( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4297,11 +4173,11 @@ BLAZE_ALWAYS_INLINE void
 // evaluation of expression templates. Calling this function explicitly might result in
 // erroneous results and/or in compilation errors.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 BLAZE_ALWAYS_INLINE void
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::stream( size_t index, const SIMDType& value ) noexcept
+   Subvector<VT,aligned,TF,true,CSAs...>::stream( size_t index, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4327,12 +4203,12 @@ BLAZE_ALWAYS_INLINE void
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::assign( const DenseVector<VT2,TF>& rhs )
+inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4361,12 +4237,12 @@ inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMP
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::assign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4420,11 +4296,11 @@ inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPL
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::assign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,aligned,TF,true,CSAs...>::assign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4447,12 +4323,12 @@ inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::assign( const SparseVector
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4481,12 +4357,12 @@ inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMP
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4528,11 +4404,11 @@ inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPL
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::addAssign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4555,12 +4431,12 @@ inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::addAssign( const SparseVec
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4589,12 +4465,12 @@ inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMP
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4636,11 +4512,11 @@ inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPL
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::subAssign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4663,12 +4539,12 @@ inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::subAssign( const SparseVec
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4697,12 +4573,12 @@ inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMP
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4744,20 +4620,29 @@ inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPL
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side sparse vector
-inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::multAssign( const SparseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side sparse vector
+inline void Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const SparseVector<VT2,TF>& rhs )
 {
+   using blaze::reset;
+
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( serial( *this ) );
+   size_t i( 0UL );
 
-   reset();
+   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      for( ; i<index; ++i )
+         reset( vector_[offset()+i] );
+      vector_[offset()+i] *= element->value();
+      ++i;
+   }
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      vector_[offset()+element->index()] = tmp[element->index()] * element->value();
+   for( ; i<size(); ++i ) {
+      reset( vector_[offset()+i] );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4775,12 +4660,12 @@ inline void SubvectorImpl<VT,aligned,TF,true,SAs...>::multAssign( const SparseVe
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -4809,12 +4694,12 @@ inline DisableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMP
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT      // Type of the dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-template< typename VT2 >   // Type of the right-hand side dense vector
-inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
-   SubvectorImpl<VT,aligned,TF,true,SAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+template< typename VT2 >    // Type of the right-hand side dense vector
+inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+   Subvector<VT,aligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -4858,34 +4743,34 @@ inline EnableIf_< typename SubvectorImpl<VT,aligned,TF,true,SAs...>::BLAZE_TEMPL
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubvectorImpl for dense vector/dense vector cross products.
+/*!\brief Specialization of Subvector for dense vector/dense vector cross products.
 // \ingroup subvector
 //
-// This specialization of SubvectorImpl adapts the class template to the special case of dense
+// This specialization of Subvector adapts the class template to the special case of dense
 // vector/dense vector cross products.
 */
-template< typename VT1     // Type of the left-hand side dense vector
-        , typename VT2     // Type of the right-hand side dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-class SubvectorImpl< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >
-   : public View< DenseVector< SubvectorImpl< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >, TF > >
-   , private SubvectorData< DVecDVecCrossExpr<VT1,VT2,TF>, SAs... >
+template< typename VT1      // Type of the left-hand side dense vector
+        , typename VT2      // Type of the right-hand side dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
+   : public View< DenseVector< Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
+   , private SubvectorData< DVecDVecCrossExpr<VT1,VT2,TF>, CSAs... >
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,SAs...>;      //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CPE,CSAs...>;     //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubvectorImpl instance.
-   using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
+   //! Type of this Subvector instance.
+   using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.
@@ -4906,7 +4791,7 @@ class SubvectorImpl< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    //
    // \param vector The dense vector/dense vector cross product expression.
    */
-   explicit inline SubvectorImpl( const CPE& vector ) noexcept
+   explicit inline Subvector( const CPE& vector ) noexcept
       : DataType( vector )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -4918,7 +4803,7 @@ class SubvectorImpl< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline SubvectorImpl( const CPE& vector, size_t index, size_t n ) noexcept
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
       : DataType( vector, index, n )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -5003,34 +4888,34 @@ class SubvectorImpl< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubvectorImpl for dense vector/sparse vector cross products.
+/*!\brief Specialization of Subvector for dense vector/sparse vector cross products.
 // \ingroup subvector
 //
-// This specialization of SubvectorImpl adapts the class template to the special case of dense
+// This specialization of Subvector adapts the class template to the special case of dense
 // vector/sparse vector cross products.
 */
-template< typename VT1     // Type of the left-hand side dense vector
-        , typename VT2     // Type of the right-hand side sparse vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-class SubvectorImpl< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >
-   : public View< DenseVector< SubvectorImpl< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >, TF > >
-   , private SubvectorData< DVecSVecCrossExpr<VT1,VT2,TF>, SAs... >
+template< typename VT1      // Type of the left-hand side dense vector
+        , typename VT2      // Type of the right-hand side sparse vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
+   : public View< DenseVector< Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
+   , private SubvectorData< DVecSVecCrossExpr<VT1,VT2,TF>, CSAs... >
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,SAs...>;      //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CPE,CSAs...>;      //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubvectorImpl instance.
-   using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
+   //! Type of this Subvector instance.
+   using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.
@@ -5051,7 +4936,7 @@ class SubvectorImpl< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    //
    // \param vector The dense vector/sparse vector cross product expression.
    */
-   explicit inline SubvectorImpl( const CPE& vector ) noexcept
+   explicit inline Subvector( const CPE& vector ) noexcept
       : DataType( vector )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -5063,7 +4948,7 @@ class SubvectorImpl< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline SubvectorImpl( const CPE& vector, size_t index, size_t n ) noexcept
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
       : DataType( vector, index, n )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -5148,34 +5033,34 @@ class SubvectorImpl< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubvectorImpl for sparse vector/dense vector cross products.
+/*!\brief Specialization of Subvector for sparse vector/dense vector cross products.
 // \ingroup subvector
 //
-// This specialization of SubvectorImpl adapts the class template to the special case of sparse
+// This specialization of Subvector adapts the class template to the special case of sparse
 // vector/dense vector cross products.
 */
-template< typename VT1     // Type of the left-hand side sparse vector
-        , typename VT2     // Type of the right-hand side dense vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-class SubvectorImpl< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >
-   : public View< DenseVector< SubvectorImpl< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >, TF > >
-   , private SubvectorData< SVecDVecCrossExpr<VT1,VT2,TF>, SAs... >
+template< typename VT1      // Type of the left-hand side sparse vector
+        , typename VT2      // Type of the right-hand side dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
+   : public View< DenseVector< Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
+   , private SubvectorData< SVecDVecCrossExpr<VT1,VT2,TF>, CSAs... >
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,SAs...>;      //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CPE,CSAs...>;      //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubvectorImpl instance.
-   using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
+   //! Type of this Subvector instance.
+   using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.
@@ -5196,7 +5081,7 @@ class SubvectorImpl< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    //
    // \param vector The sparse vector/dense vector cross product expression.
    */
-   explicit inline SubvectorImpl( const CPE& vector ) noexcept
+   explicit inline Subvector( const CPE& vector ) noexcept
       : DataType( vector )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -5208,7 +5093,7 @@ class SubvectorImpl< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline SubvectorImpl( const CPE& vector, size_t index, size_t n ) noexcept
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
       : DataType( vector, index, n )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -5293,34 +5178,34 @@ class SubvectorImpl< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SubvectorImpl for sparse vector/sparse vector cross products.
+/*!\brief Specialization of Subvector for sparse vector/sparse vector cross products.
 // \ingroup subvector
 //
-// This specialization of SubvectorImpl adapts the class template to the special case of sparse
+// This specialization of Subvector adapts the class template to the special case of sparse
 // vector/sparse vector cross products.
 */
-template< typename VT1     // Type of the left-hand side sparse vector
-        , typename VT2     // Type of the right-hand side sparse vector
-        , bool TF          // Transpose flag
-        , size_t... SAs >  // Compile time subvector arguments
-class SubvectorImpl< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >
-   : public View< DenseVector< SubvectorImpl< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... >, TF > >
-   , private SubvectorData< SVecSVecCrossExpr<VT1,VT2,TF>, SAs... >
+template< typename VT1      // Type of the left-hand side sparse vector
+        , typename VT2      // Type of the right-hand side sparse vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
+   : public View< DenseVector< Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
+   , private SubvectorData< SVecSVecCrossExpr<VT1,VT2,TF>, CSAs... >
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,SAs...>;      //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CPE,CSAs...>;      //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this SubvectorImpl instance.
-   using This = SubvectorImpl<CPE,unaligned,TF,true,SAs...>;
+   //! Type of this Subvector instance.
+   using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this SubvectorImpl instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this SubvectorImpl instance.
+   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                         //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_<RT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<CPE>;           //!< Type of the subvector elements.
@@ -5341,7 +5226,7 @@ class SubvectorImpl< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    //
    // \param vector The sparse vector/sparse vector cross product expression.
    */
-   explicit inline SubvectorImpl( const CPE& vector ) noexcept
+   explicit inline Subvector( const CPE& vector ) noexcept
       : DataType( vector )  // Base class initialization
    {}
    //**********************************************************************************************
@@ -5353,7 +5238,7 @@ class SubvectorImpl< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, SAs... 
    // \param index The offset of the subvector in the given expression.
    // \param n The size of the subvector.
    */
-   explicit inline SubvectorImpl( const CPE& vector, size_t index, size_t n ) noexcept
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
       : DataType( vector, index, n )  // Base class initialization
    {}
    //**********************************************************************************************

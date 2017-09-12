@@ -81,6 +81,7 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
@@ -503,8 +504,7 @@ class BandImpl<MT,TF,true,false,BAs...>
    template< typename VT > inline BandImpl& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline BandImpl& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline BandImpl& operator-=( const Vector<VT,TF>& rhs );
-   template< typename VT > inline BandImpl& operator*=( const DenseVector<VT,TF>&  rhs );
-   template< typename VT > inline BandImpl& operator*=( const SparseVector<VT,TF>& rhs );
+   template< typename VT > inline BandImpl& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline BandImpl& operator/=( const DenseVector<VT,TF>&  rhs );
    template< typename VT > inline BandImpl& operator%=( const Vector<VT,TF>& rhs );
 
@@ -1195,10 +1195,10 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a dense vector
+/*!\brief Multiplication assignment operator for the multiplication of a vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side dense vector to be multiplied with the dense band.
+// \param rhs The right-hand side vector to be multiplied with the dense band.
 // \return Reference to the assigned band.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted matrix.
@@ -1209,11 +1209,14 @@ inline BandImpl<MT,TF,true,false,BAs...>&
 template< typename MT         // Type of the dense matrix
         , bool TF             // Transpose flag
         , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side dense vector
+template< typename VT >       // Type of the right-hand side vector
 inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator*=( const DenseVector<VT,TF>& rhs )
+   BandImpl<MT,TF,true,false,BAs...>::operator*=( const Vector<VT,TF>& rhs )
 {
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
    if( size() != (~rhs).size() ) {
@@ -1236,52 +1239,6 @@ inline BandImpl<MT,TF,true,false,BAs...>&
    else {
       smpMultAssign( left, right );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
-//        (\f$ \vec{a}*=\vec{b} \f$).
-//
-// \param rhs The right-hand side sparse vector to be multiplied with the dense band.
-// \return Reference to the assigned band.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename MT         // Type of the dense matrix
-        , bool TF             // Transpose flag
-        , ptrdiff_t... BAs >  // Compile time band arguments
-template< typename VT >       // Type of the right-hand side sparse vector
-inline BandImpl<MT,TF,true,false,BAs...>&
-   BandImpl<MT,TF,true,false,BAs...>::operator*=( const SparseVector<VT,TF>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-   if( size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
-   const ResultType right( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, right );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -1998,15 +1955,22 @@ template< typename MT         // Type of the dense matrix
 template< typename VT >       // Type of the right-hand side sparse vector
 inline void BandImpl<MT,TF,true,false,BAs...>::multAssign( const SparseVector<VT,TF>& rhs )
 {
+   using blaze::reset;
+
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( serial( *this ) );
-
-   reset();
+   size_t i( 0UL );
 
    for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
-      matrix_(row()+index,column()+index) = tmp[index] * element->value();
+      for( ; i<index; ++i )
+         reset( matrix_(row()+i,column()+i) );
+      matrix_(row()+index,column()+index) *= element->value();
+      ++i;
+   }
+
+   for( ; i<size(); ++i ) {
+      reset( matrix_(row()+i,column()+i) );
    }
 }
 /*! \endcond */

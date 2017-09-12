@@ -211,8 +211,7 @@ class ColumnImpl<MT,true,true,SF,CAs...>
    template< typename VT > inline ColumnImpl& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline ColumnImpl& operator*=( const DenseVector<VT,false>&  rhs );
-   template< typename VT > inline ColumnImpl& operator*=( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline ColumnImpl& operator*=( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator/=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline ColumnImpl& operator%=( const Vector<VT,false>& rhs );
 
@@ -995,10 +994,10 @@ inline ColumnImpl<MT,true,true,SF,CAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a dense vector
+/*!\brief Multiplication assignment operator for the multiplication of a vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side dense vector to be multiplied with the dense column.
+// \param rhs The right-hand side vector to be multiplied with the dense column.
 // \return Reference to the assigned column.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted matrix.
@@ -1009,9 +1008,9 @@ inline ColumnImpl<MT,true,true,SF,CAs...>&
 template< typename MT      // Type of the dense matrix
         , bool SF          // Symmetry flag
         , size_t... CAs >  // Compile time column arguments
-template< typename VT >    // Type of the right-hand side dense vector
+template< typename VT >    // Type of the right-hand side vector
 inline ColumnImpl<MT,true,true,SF,CAs...>&
-   ColumnImpl<MT,true,true,SF,CAs...>::operator*=( const DenseVector<VT,false>& rhs )
+   ColumnImpl<MT,true,true,SF,CAs...>::operator*=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -1036,52 +1035,6 @@ inline ColumnImpl<MT,true,true,SF,CAs...>&
    else {
       smpMultAssign( left, right );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
-//        (\f$ \vec{a}*=\vec{b} \f$).
-//
-// \param rhs The right-hand side sparse vector to be multiplied with the dense column.
-// \return Reference to the assigned column.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename MT      // Type of the dense matrix
-        , bool SF          // Symmetry flag
-        , size_t... CAs >  // Compile time column arguments
-template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,true,true,SF,CAs...>&
-   ColumnImpl<MT,true,true,SF,CAs...>::operator*=( const SparseVector<VT,false>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-   if( size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
-   const ResultType right( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, right, 0UL, column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, right );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -2176,14 +2129,23 @@ template< typename MT      // Type of the dense matrix
 template< typename VT >    // Type of the right-hand side sparse vector
 inline void ColumnImpl<MT,true,true,SF,CAs...>::multAssign( const SparseVector<VT,false>& rhs )
 {
+   using blaze::reset;
+
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( serial( *this ) );
+   size_t i( 0UL );
 
-   reset();
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      for( ; i<index; ++i )
+         reset( matrix_(i,column()) );
+      matrix_(i,column()) *= element->value();
+      ++i;
+   }
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      matrix_(element->index(),column()) = tmp[element->index()] * element->value();
+   for( ; i<size(); ++i ) {
+      reset( matrix_(i,column()) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2680,8 +2642,7 @@ class ColumnImpl<MT,false,true,false,CAs...>
    template< typename VT > inline ColumnImpl& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline ColumnImpl& operator*=( const DenseVector<VT,false>&  rhs );
-   template< typename VT > inline ColumnImpl& operator*=( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline ColumnImpl& operator*=( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator/=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline ColumnImpl& operator%=( const Vector<VT,false>& rhs );
 
@@ -3348,10 +3309,10 @@ inline ColumnImpl<MT,false,true,false,CAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a dense vector
+/*!\brief Multiplication assignment operator for the multiplication of a vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side dense vector to be multiplied with the dense column.
+// \param rhs The right-hand side vector to be multiplied with the dense column.
 // \return Reference to the assigned column.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted matrix.
@@ -3361,9 +3322,9 @@ inline ColumnImpl<MT,false,true,false,CAs...>&
 */
 template< typename MT      // Type of the dense matrix
         , size_t... CAs >  // Compile time column arguments
-template< typename VT >    // Type of the right-hand side dense vector
+template< typename VT >    // Type of the right-hand side vector
 inline ColumnImpl<MT,false,true,false,CAs...>&
-   ColumnImpl<MT,false,true,false,CAs...>::operator*=( const DenseVector<VT,false>& rhs )
+   ColumnImpl<MT,false,true,false,CAs...>::operator*=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -3388,51 +3349,6 @@ inline ColumnImpl<MT,false,true,false,CAs...>&
    else {
       smpMultAssign( left, right );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
-//        (\f$ \vec{a}*=\vec{b} \f$).
-//
-// \param rhs The right-hand side sparse vector to be multiplied with the dense column.
-// \return Reference to the assigned column.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename MT      // Type of the dense matrix
-        , size_t... CAs >  // Compile time column arguments
-template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,false,true,false,CAs...>&
-   ColumnImpl<MT,false,true,false,CAs...>::operator*=( const SparseVector<VT,false>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-   if( size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
-   const ResultType right( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, right, 0UL, column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, right );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4127,14 +4043,23 @@ template< typename MT      // Type of the dense matrix
 template< typename VT >    // Type of the right-hand side sparse vector
 inline void ColumnImpl<MT,false,true,false,CAs...>::multAssign( const SparseVector<VT,false>& rhs )
 {
+   using blaze::reset;
+
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( serial( *this ) );
+   size_t i( 0UL );
 
-   reset();
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      for( ; i<index; ++i )
+         reset( matrix_(i,column()) );
+      matrix_(i,column()) *= element->value();
+      ++i;
+   }
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      matrix_(element->index(),column()) = tmp[element->index()] * element->value();
+   for( ; i<size(); ++i ) {
+      reset( matrix_(i,column()) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4284,8 +4209,7 @@ class ColumnImpl<MT,false,true,true,CAs...>
    template< typename VT > inline ColumnImpl& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator-=( const Vector<VT,false>& rhs );
-   template< typename VT > inline ColumnImpl& operator*=( const DenseVector<VT,false>&  rhs );
-   template< typename VT > inline ColumnImpl& operator*=( const SparseVector<VT,false>& rhs );
+   template< typename VT > inline ColumnImpl& operator*=( const Vector<VT,false>& rhs );
    template< typename VT > inline ColumnImpl& operator/=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline ColumnImpl& operator%=( const Vector<VT,false>& rhs );
 
@@ -5045,10 +4969,10 @@ inline ColumnImpl<MT,false,true,true,CAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a dense vector
+/*!\brief Multiplication assignment operator for the multiplication of a vector
 //        (\f$ \vec{a}*=\vec{b} \f$).
 //
-// \param rhs The right-hand side dense vector to be multiplied with the dense column.
+// \param rhs The right-hand side vector to be multiplied with the dense column.
 // \return Reference to the assigned column.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted matrix.
@@ -5058,9 +4982,9 @@ inline ColumnImpl<MT,false,true,true,CAs...>&
 */
 template< typename MT      // Type of the dense matrix
         , size_t... CAs >  // Compile time column arguments
-template< typename VT >    // Type of the right-hand side dense vector
+template< typename VT >    // Type of the right-hand side vector
 inline ColumnImpl<MT,false,true,true,CAs...>&
-   ColumnImpl<MT,false,true,true,CAs...>::operator*=( const DenseVector<VT,false>& rhs )
+   ColumnImpl<MT,false,true,true,CAs...>::operator*=( const Vector<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
@@ -5085,51 +5009,6 @@ inline ColumnImpl<MT,false,true,true,CAs...>&
    else {
       smpMultAssign( left, right );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a sparse vector
-//        (\f$ \vec{a}*=\vec{b} \f$).
-//
-// \param rhs The right-hand side sparse vector to be multiplied with the dense column.
-// \return Reference to the assigned column.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename MT      // Type of the dense matrix
-        , size_t... CAs >  // Compile time column arguments
-template< typename VT >    // Type of the right-hand side sparse vector
-inline ColumnImpl<MT,false,true,true,CAs...>&
-   ColumnImpl<MT,false,true,true,CAs...>::operator*=( const SparseVector<VT,false>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-   if( size() != (~rhs).size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
-   }
-
-   const ResultType right( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, right, 0UL, column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, right );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -6189,14 +6068,23 @@ template< typename MT      // Type of the dense matrix
 template< typename VT >    // Type of the right-hand side sparse vector
 inline void ColumnImpl<MT,false,true,true,CAs...>::multAssign( const SparseVector<VT,false>& rhs )
 {
+   using blaze::reset;
+
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   const ResultType tmp( serial( *this ) );
+   size_t j( 0UL );
 
-   reset();
+   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+      const size_t index( element->index() );
+      for( ; j<index; ++j )
+         reset( matrix_(column(),j) );
+      matrix_(column(),j) *= element->value();
+      ++j;
+   }
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-      matrix_(column(),element->index()) = tmp[element->index()] * element->value();
+   for( ; j<size(); ++j ) {
+      reset( matrix_(column(),j) );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

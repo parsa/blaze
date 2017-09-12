@@ -2998,8 +2998,8 @@ struct LowType< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, size_t... SAs >
-struct SubvectorTrait< StaticVector<T,N,TF>, SAs... >
+template< typename T, size_t N, bool TF, size_t... CSAs >
+struct SubvectorTrait< StaticVector<T,N,TF>, CSAs... >
 {
    using Type = HybridVector<T,N,TF>;
 };

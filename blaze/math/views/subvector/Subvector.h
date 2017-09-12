@@ -79,12 +79,23 @@
    auto sv2 = subvector( x, 8UL, 16UL );
    \endcode
 
-// The \c subvector() function returns an expression representing the subvector view. This view
-// can be treated as any other dense or sparse vector, i.e. it can be assigned to, it can be
-// copied from, and it can be used in arithmetic operations. A subvector created from a row
-// vector can be used as any other row vector, a subvector created from a column vector can be
-// used as any other column vector. The view can also be used on both sides of an assignment: The
-// subvector can either be used as an alias to grant write access to a specific subvector of a
+// The \c subvector() function returns an expression representing the subvector view. The type of
+// this expression depends on the given subvector arguments, primarily the type of the vector and
+// the compile time arguments. If the type is required, it can be determined via \c decltype or
+// via the \c SubvectorExprTrait class template:
+
+   \code
+   using VectorType = blaze::DynamicVector<int>;
+
+   using SubvectorType1 = decltype( blaze::subvector<4UL,12UL>( std::declval<VectorType>() ) );
+   using SubvectorType2 = blaze::SubvectorExprTrait<VectorType,4UL,12UL>::Type;
+   \endcode
+
+// The resulting view can be treated as any other dense or sparse vector, i.e. it can be assigned
+// to, it can be copied from, and it can be used in arithmetic operations. A subvector created
+// from a row vector can be used as any other row vector, a subvector created from a column vector
+// can be used as any other column vector. The view can also be used on both sides of an assignment:
+// The subvector can either be used as an alias to grant write access to a specific subvector of a
 // vector primitive on the left-hand side of an assignment or to grant read-access to a specific
 // subvector of a vector primitive or expression on the right-hand side of an assignment. The
 // following example demonstrates this in detail:

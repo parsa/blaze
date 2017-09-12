@@ -1670,10 +1670,10 @@ struct IsOpposedView< RowImpl<MT,false,DF,false,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... RAs, size_t... SAs >
-struct SubvectorTrait< RowImpl<MT,SO,DF,SF,RAs...>, SAs... >
+template< typename MT, bool SO, bool DF, bool SF, size_t... RAs, size_t... CSAs >
+struct SubvectorTrait< RowImpl<MT,SO,DF,SF,RAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< RowImpl<MT,SO,DF,SF,RAs...> >, SAs... >;
+   using Type = SubvectorTrait_< ResultType_< RowImpl<MT,SO,DF,SF,RAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -79,8 +79,8 @@ namespace blaze {
 // class template:
 
    \code
-   template< typename T1, bool TF, size_t... SAs >
-   struct SubvectorTrait< DynamicVector<T1,TF>, SAs... >
+   template< typename T1, bool TF, size_t... CSAs >
+   struct SubvectorTrait< DynamicVector<T1,TF>, CSAs... >
    {
       using Type = DynamicVector<T1,TF>;
    };
@@ -104,8 +104,8 @@ namespace blaze {
    using ResultType2 = typename blaze::SubvectorTrait<VectorType2>::Type;
    \endcode
 */
-template< typename VT      // Type of the vector
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the vector
+        , size_t... CSAs >  // Compile time subvector arguments
 struct SubvectorTrait
 {
  private:
@@ -119,7 +119,7 @@ struct SubvectorTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , SubvectorTrait< Decay_<VT>, SAs... >
+                            , SubvectorTrait< Decay_<VT>, CSAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -140,9 +140,9 @@ struct SubvectorTrait
    using Type2 = SubvectorTrait_<VT>;
    \endcode
 */
-template< typename VT      // Type of the vector
-        , size_t... SAs >  // Compile time subvector arguments
-using SubvectorTrait_ = typename SubvectorTrait<VT,SAs...>::Type;
+template< typename VT       // Type of the vector
+        , size_t... CSAs >  // Compile time subvector arguments
+using SubvectorTrait_ = typename SubvectorTrait<VT,CSAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

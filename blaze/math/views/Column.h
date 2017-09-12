@@ -1674,10 +1674,10 @@ struct IsOpposedView< ColumnImpl<MT,false,DF,false,CAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CAs, size_t... SAs >
-struct SubvectorTrait< ColumnImpl<MT,SO,DF,SF,CAs...>, SAs... >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CAs, size_t... CSAs >
+struct SubvectorTrait< ColumnImpl<MT,SO,DF,SF,CAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< ColumnImpl<MT,SO,DF,SF,CAs...> >, SAs... >;
+   using Type = SubvectorTrait_< ResultType_< ColumnImpl<MT,SO,DF,SF,CAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

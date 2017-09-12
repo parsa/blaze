@@ -55,15 +55,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the data members of the SubvectorImpl class.
+/*!\brief Auxiliary class template for the data members of the Subvector class.
 // \ingroup subvector
 //
 // The auxiliary SubvectorData class template represents an abstraction of the data members of
-// the SubvectorImpl class template. The necessary set of data members is selected depending on
-// the number of compile time subvector arguments.
+// the Subvector class template. The necessary set of data members is selected depending on the
+// number of compile time subvector arguments.
 */
-template< typename VT      // Type of the vector
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT       // Type of the vector
+        , size_t... CSAs >  // Compile time subvector arguments
 struct SubvectorData
 {};
 //*************************************************************************************************

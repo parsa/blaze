@@ -859,10 +859,10 @@ struct IsPadded< DVecTransposer<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, size_t... SAs >
-struct SubvectorTrait< DVecTransposer<VT,TF>, SAs... >
+template< typename VT, bool TF, size_t... CSAs >
+struct SubvectorTrait< DVecTransposer<VT,TF>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< DVecTransposer<VT,TF> >, SAs... >;
+   using Type = SubvectorTrait_< ResultType_< DVecTransposer<VT,TF> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

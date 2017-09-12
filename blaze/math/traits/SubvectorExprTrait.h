@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/views/Forward.h>
 #include <blaze/util/InvalidType.h>
@@ -65,9 +66,9 @@ namespace blaze {
 // \a Type corresponds to the resulting return type. In case the given type is neither a
 // dense nor a sparse vector type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename VT      // Type of the vector operand
-        , bool AF          // Alignment Flag
-        , size_t... SAs >  // Compile time subvector arguments
+template< typename VT          // Type of the vector operand
+        , bool AF = unaligned  // Alignment Flag
+        , size_t... CSAs >     // Compile time subvector arguments
 struct SubvectorExprTrait
 {
  private:
@@ -79,7 +80,7 @@ struct SubvectorExprTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct CompileTime { using Type = decltype( subvector<AF,SAs...>( std::declval<VT>() ) ); };
+   struct CompileTime { using Type = decltype( subvector<AF,CSAs...>( std::declval<VT>() ) ); };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -95,7 +96,7 @@ struct SubvectorExprTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< IsVector< RemoveReference_<VT> >
-                            , IfTrue_< ( sizeof...( SAs ) > 0UL )
+                            , IfTrue_< ( sizeof...( CSAs ) > 0UL )
                                      , CompileTime
                                      , Runtime >
                             , Failure >::Type;
@@ -118,10 +119,10 @@ struct SubvectorExprTrait
    using Type2 = SubvectorExprTrait_<VT,AF>;
    \endcode
 */
-template< typename VT      // Type of the vector operand
-        , bool AF          // Alignment Flag
-        , size_t... SAs >  // Compile time subvector arguments
-using SubvectorExprTrait_ = typename SubvectorExprTrait<VT,AF,SAs...>::Type;
+template< typename VT          // Type of the vector operand
+        , bool AF = unaligned  // Alignment Flag
+        , size_t... CSAs >     // Compile time subvector arguments
+using SubvectorExprTrait_ = typename SubvectorExprTrait<VT,AF,CSAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
