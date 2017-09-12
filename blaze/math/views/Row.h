@@ -117,11 +117,11 @@ namespace blaze {
 template< size_t I     // Row index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Row<MT,I> row( Matrix<MT,SO>& matrix )
+inline decltype(auto) row( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row<MT,I>( ~matrix );
+   return Row_<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -157,11 +157,11 @@ inline Row<MT,I> row( Matrix<MT,SO>& matrix )
 template< size_t I     // Row index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const Row<const MT,I> row( const Matrix<MT,SO>& matrix )
+inline decltype(auto) row( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row<const MT,I>( ~matrix );
+   return Row_<const MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -182,11 +182,11 @@ inline const Row<const MT,I> row( const Matrix<MT,SO>& matrix )
 template< size_t I     // Row index
         , typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Row<MT,I> row( Matrix<MT,SO>&& matrix )
+inline decltype(auto) row( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row<MT,I>( ~matrix );
+   return Row_<MT,I>( ~matrix );
 }
 //*************************************************************************************************
 
@@ -222,11 +222,11 @@ inline Row<MT,I> row( Matrix<MT,SO>&& matrix )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Row<MT> row( Matrix<MT,SO>& matrix, size_t index )
+inline decltype(auto) row( Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row<MT>( ~matrix, index );
+   return Row_<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -262,11 +262,11 @@ inline Row<MT> row( Matrix<MT,SO>& matrix, size_t index )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline const Row<const MT> row( const Matrix<MT,SO>& matrix, size_t index )
+inline decltype(auto) row( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row<const MT>( ~matrix, index );
+   return Row_<const MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -287,11 +287,11 @@ inline const Row<const MT> row( const Matrix<MT,SO>& matrix, size_t index )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-inline Row<MT> row( Matrix<MT,SO>&& matrix, size_t index )
+inline decltype(auto) row( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row<MT>( ~matrix, index );
+   return Row_<MT>( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -918,12 +918,12 @@ inline decltype(auto) row( const MatTransExpr<MT>& matrix, size_t index )
 // \param row The row to be resetted.
 // \return void
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-inline void reset( RowImpl<MT,SO,DF,SF,RAs...>& row )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline void reset( Row<MT,SO,DF,SF,CRAs...>& row )
 {
    row.reset();
 }
@@ -939,12 +939,12 @@ inline void reset( RowImpl<MT,SO,DF,SF,RAs...>& row )
 // \param row The temporary row to be resetted.
 // \return void
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-inline void reset( RowImpl<MT,SO,DF,SF,RAs...>&& row )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline void reset( Row<MT,SO,DF,SF,CRAs...>&& row )
 {
    row.reset();
 }
@@ -962,12 +962,12 @@ inline void reset( RowImpl<MT,SO,DF,SF,RAs...>&& row )
 //
 // Clearing a row is equivalent to resetting it via the reset() function.
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-inline void clear( RowImpl<MT,SO,DF,SF,RAs...>& row )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline void clear( Row<MT,SO,DF,SF,CRAs...>& row )
 {
    row.reset();
 }
@@ -985,12 +985,12 @@ inline void clear( RowImpl<MT,SO,DF,SF,RAs...>& row )
 //
 // Clearing a row is equivalent to resetting it via the reset() function.
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-inline void clear( RowImpl<MT,SO,DF,SF,RAs...>&& row )
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline void clear( Row<MT,SO,DF,SF,CRAs...>&& row )
 {
    row.reset();
 }
@@ -1024,12 +1024,12 @@ inline void clear( RowImpl<MT,SO,DF,SF,RAs...>&& row )
    if( isDefault<relaxed>( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF          // Relaxation flag
-        , typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-inline bool isDefault( const RowImpl<MT,SO,true,SF,RAs...>& row )
+template< bool RF           // Relaxation flag
+        , typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline bool isDefault( const Row<MT,SO,true,SF,CRAs...>& row )
 {
    using blaze::isDefault;
 
@@ -1067,12 +1067,12 @@ inline bool isDefault( const RowImpl<MT,SO,true,SF,RAs...>& row )
    if( isDefault<relaxed>( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< bool RF          // Relaxation flag
-        , typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-inline bool isDefault( const RowImpl<MT,SO,false,SF,RAs...>& row )
+template< bool RF           // Relaxation flag
+        , typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline bool isDefault( const Row<MT,SO,false,SF,CRAs...>& row )
 {
    using blaze::isDefault;
 
@@ -1102,12 +1102,12 @@ inline bool isDefault( const RowImpl<MT,SO,false,SF,RAs...>& row )
    if( isIntact( row( A, 0UL ) ) ) { ... }
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-inline bool isIntact( const RowImpl<MT,SO,DF,SF,RAs...>& row ) noexcept
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline bool isIntact( const Row<MT,SO,DF,SF,CRAs...>& row ) noexcept
 {
    return ( row.row() < row.operand().rows() &&
             isIntact( row.operand() ) );
@@ -1129,17 +1129,17 @@ inline bool isIntact( const RowImpl<MT,SO,DF,SF,RAs...>& row ) noexcept
 // rows. In case both rows represent the same observable state, the function returns \a true,
 // otherwise it returns \a false.
 */
-template< typename MT1      // Type of the matrix of the left-hand side row
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side row
-        , size_t... RAs1    // Compile time row arguments of the left-hand side row
-        , typename MT2      // Type of the matrix of the right-hand side row
-        , bool SF2          // Symmetry flag of the right-hand side row
-        , size_t... RAs2 >  // Compile time row arguments of the right-hand side row
+template< typename MT1       // Type of the matrix of the left-hand side row
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side row
+        , size_t... CRAs1    // Compile time row arguments of the left-hand side row
+        , typename MT2       // Type of the matrix of the right-hand side row
+        , bool SF2           // Symmetry flag of the right-hand side row
+        , size_t... CRAs2 >  // Compile time row arguments of the right-hand side row
 inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const RowImpl<MT1,SO,DF,SF1,RAs1...>& a,
-                   const RowImpl<MT2,SO,DF,SF2,RAs2...>& b ) noexcept
+   isSame_backend( const Row<MT1,SO,DF,SF1,CRAs1...>& a,
+                   const Row<MT2,SO,DF,SF2,CRAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.row() == b.row() ) );
 }
@@ -1160,17 +1160,17 @@ inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // being a row on a submatrix. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the submatrix of the left-hand side row
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side row
-        , size_t... RAs1    // Compile time row arguments of the left-hand side row
-        , typename MT2      // Type of the matrix of the right-hand side row
-        , bool SF2          // Symmetry flag of the right-hand side row
-        , size_t... RAs2 >  // Compile time row arguments of the right-hand side row
+template< typename MT1       // Type of the submatrix of the left-hand side row
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side row
+        , size_t... CRAs1    // Compile time row arguments of the left-hand side row
+        , typename MT2       // Type of the matrix of the right-hand side row
+        , bool SF2           // Symmetry flag of the right-hand side row
+        , size_t... CRAs2 >  // Compile time row arguments of the right-hand side row
 inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
-   isSame_backend( const RowImpl<MT1,SO,DF,SF1,RAs1...>& a,
-                   const RowImpl<MT2,SO,DF,SF2,RAs2...>& b ) noexcept
+   isSame_backend( const Row<MT1,SO,DF,SF1,CRAs1...>& a,
+                   const Row<MT2,SO,DF,SF2,CRAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1193,17 +1193,17 @@ inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
 // being a row on a submatrix. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the matrix of the left-hand side row
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side row
-        , size_t... RAs1    // Compile time row arguments of the left-hand side row
-        , typename MT2      // Type of the submatrix of the right-hand side row
-        , bool SF2          // Symmetry flag of the right-hand side row
-        , size_t... RAs2 >  // Compile time row arguments of the right-hand side row
+template< typename MT1       // Type of the matrix of the left-hand side row
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side row
+        , size_t... CRAs1    // Compile time row arguments of the left-hand side row
+        , typename MT2       // Type of the submatrix of the right-hand side row
+        , bool SF2           // Symmetry flag of the right-hand side row
+        , size_t... CRAs2 >  // Compile time row arguments of the right-hand side row
 inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const RowImpl<MT1,SO,DF,SF1,RAs1...>& a,
-                   const RowImpl<MT2,SO,DF,SF2,RAs2...>& b ) noexcept
+   isSame_backend( const Row<MT1,SO,DF,SF1,CRAs1...>& a,
+                   const Row<MT2,SO,DF,SF2,CRAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1226,17 +1226,17 @@ inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
 // being rows on submatrices. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the submatrix of the left-hand side row
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side row
-        , size_t... RAs1    // Compile time row arguments of the left-hand side row
-        , typename MT2      // Type of the submatrix of the right-hand side row
-        , bool SF2          // Symmetry flag of the right-hand side row
-        , size_t... RAs2 >  // Compile time row arguments of the right-hand side row
+template< typename MT1       // Type of the submatrix of the left-hand side row
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side row
+        , size_t... CRAs1    // Compile time row arguments of the left-hand side row
+        , typename MT2       // Type of the submatrix of the right-hand side row
+        , bool SF2           // Symmetry flag of the right-hand side row
+        , size_t... CRAs2 >  // Compile time row arguments of the right-hand side row
 inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
-   isSame_backend( const RowImpl<MT1,SO,DF,SF1,RAs1...>& a,
-                   const RowImpl<MT2,SO,DF,SF2,RAs2...>& b ) noexcept
+   isSame_backend( const Row<MT1,SO,DF,SF1,CRAs1...>& a,
+                   const Row<MT2,SO,DF,SF2,CRAs2...>& b ) noexcept
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1260,16 +1260,16 @@ inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
 // range of the same matrix. In case both rows represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1      // Type of the matrix of the left-hand side row
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF1          // Symmetry flag of the left-hand side row
-        , size_t... RAs1    // Compile time row arguments of the left-hand side row
-        , typename MT2      // Type of the matrix of the right-hand side row
-        , bool SF2          // Symmetry flag of the right-hand side row
-        , size_t... RAs2 >  // Compile time row arguments of the right-hand side row
-inline bool isSame( const RowImpl<MT1,SO,DF,SF1,RAs1...>& a,
-                    const RowImpl<MT2,SO,DF,SF2,RAs2...>& b ) noexcept
+template< typename MT1       // Type of the matrix of the left-hand side row
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , bool SF1           // Symmetry flag of the left-hand side row
+        , size_t... CRAs1    // Compile time row arguments of the left-hand side row
+        , typename MT2       // Type of the matrix of the right-hand side row
+        , bool SF2           // Symmetry flag of the right-hand side row
+        , size_t... CRAs2 >  // Compile time row arguments of the right-hand side row
+inline bool isSame( const Row<MT1,SO,DF,SF1,CRAs1...>& a,
+                    const Row<MT2,SO,DF,SF2,CRAs2...>& b ) noexcept
 {
    return isSame_backend( a, b );
 }
@@ -1292,13 +1292,13 @@ inline bool isSame( const RowImpl<MT1,SO,DF,SF1,RAs1...>& a,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... RAs  // Compile time row arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                        const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1325,13 +1325,13 @@ inline bool tryAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... RAs  // Compile time row arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryAddAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryAddAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1358,13 +1358,13 @@ inline bool tryAddAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... RAs  // Compile time row arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool trySubAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool trySubAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1391,13 +1391,13 @@ inline bool trySubAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... RAs  // Compile time row arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryMultAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryMultAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1424,13 +1424,13 @@ inline bool tryMultAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT    // Type of the matrix
-        , bool SO        // Storage order
-        , bool DF        // Density flag
-        , bool SF        // Symmetry flag
-        , size_t... RAs  // Compile time row arguments
-        , typename VT >  // Type of the right-hand side vector
-inline bool tryDivAssign( const RowImpl<MT,SO,DF,SF,RAs...>& lhs,
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename VT >   // Type of the right-hand side vector
+inline bool tryDivAssign( const Row<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
@@ -1462,7 +1462,7 @@ template< typename MT  // Type of the matrix
         , bool DF      // Density flag
         , bool SF      // Symmetry flag
         , size_t I >   // Row index
-inline decltype(auto) derestrict( RowImpl<MT,SO,DF,SF,I>& r )
+inline decltype(auto) derestrict( Row<MT,SO,DF,SF,I>& r )
 {
    return row<I>( derestrict( r.operand() ) );
 }
@@ -1490,7 +1490,7 @@ template< typename MT  // Type of the matrix
         , bool DF      // Density flag
         , bool SF      // Symmetry flag
         , size_t I >   // Row index
-inline decltype(auto) derestrict( RowImpl<MT,SO,DF,SF,I>&& r )
+inline decltype(auto) derestrict( Row<MT,SO,DF,SF,I>&& r )
 {
    return row<I>( derestrict( r.operand() ) );
 }
@@ -1517,7 +1517,7 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( RowImpl<MT,SO,DF,SF>& r )
+inline decltype(auto) derestrict( Row<MT,SO,DF,SF>& r )
 {
    return row( derestrict( r.operand() ), r.row() );
 }
@@ -1544,7 +1544,7 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( RowImpl<MT,SO,DF,SF>&& r )
+inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
 {
    return row( derestrict( r.operand() ), r.row() );
 }
@@ -1562,8 +1562,8 @@ inline decltype(auto) derestrict( RowImpl<MT,SO,DF,SF>&& r )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... RAs >
-struct IsRestricted< RowImpl<MT,SO,DF,SF,RAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct IsRestricted< Row<MT,SO,DF,SF,CRAs...> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
 /*! \endcond */
@@ -1580,8 +1580,8 @@ struct IsRestricted< RowImpl<MT,SO,DF,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... RAs >
-struct HasConstDataAccess< RowImpl<MT,SO,true,SF,RAs...> >
+template< typename MT, bool SO, bool SF, size_t... CRAs >
+struct HasConstDataAccess< Row<MT,SO,true,SF,CRAs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1598,8 +1598,8 @@ struct HasConstDataAccess< RowImpl<MT,SO,true,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... RAs >
-struct HasMutableDataAccess< RowImpl<MT,SO,true,SF,RAs...> >
+template< typename MT, bool SO, bool SF, size_t... CRAs >
+struct HasMutableDataAccess< Row<MT,SO,true,SF,CRAs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
 /*! \endcond */
@@ -1616,8 +1616,8 @@ struct HasMutableDataAccess< RowImpl<MT,SO,true,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... RAs >
-struct IsAligned< RowImpl<MT,SO,true,SF,RAs...> >
+template< typename MT, bool SO, bool SF, size_t... CRAs >
+struct IsAligned< Row<MT,SO,true,SF,CRAs...> >
    : public BoolConstant< And< IsAligned<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1634,8 +1634,8 @@ struct IsAligned< RowImpl<MT,SO,true,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... RAs >
-struct IsPadded< RowImpl<MT,SO,true,SF,RAs...> >
+template< typename MT, bool SO, bool SF, size_t... CRAs >
+struct IsPadded< Row<MT,SO,true,SF,CRAs...> >
    : public BoolConstant< And< IsPadded<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >::value >
 {};
 /*! \endcond */
@@ -1652,8 +1652,8 @@ struct IsPadded< RowImpl<MT,SO,true,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool DF, size_t... RAs >
-struct IsOpposedView< RowImpl<MT,false,DF,false,RAs...> >
+template< typename MT, bool DF, size_t... CRAs >
+struct IsOpposedView< Row<MT,false,DF,false,CRAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -1670,10 +1670,10 @@ struct IsOpposedView< RowImpl<MT,false,DF,false,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... RAs, size_t... CSAs >
-struct SubvectorTrait< RowImpl<MT,SO,DF,SF,RAs...>, CSAs... >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs, size_t... CSAs >
+struct SubvectorTrait< Row<MT,SO,DF,SF,CRAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< RowImpl<MT,SO,DF,SF,RAs...> >, CSAs... >;
+   using Type = SubvectorTrait_< ResultType_< Row<MT,SO,DF,SF,CRAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

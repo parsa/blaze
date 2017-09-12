@@ -6810,8 +6810,8 @@ struct SubmatrixTrait< StaticMatrix<T,M,N,SO>, CSAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... RAs >
-struct RowTrait< StaticMatrix<T,M,N,SO>, RAs... >
+template< typename T, size_t M, size_t N, bool SO, size_t... CRAs >
+struct RowTrait< StaticMatrix<T,M,N,SO>, CRAs... >
 {
    using Type = StaticVector<T,N,true>;
 };

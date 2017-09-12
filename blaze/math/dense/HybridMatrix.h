@@ -7210,8 +7210,8 @@ struct SubmatrixTrait< HybridMatrix<T,M,N,SO>, CSAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... RAs >
-struct RowTrait< HybridMatrix<T,M,N,SO>, RAs... >
+template< typename T, size_t M, size_t N, bool SO, size_t... CRAs >
+struct RowTrait< HybridMatrix<T,M,N,SO>, CRAs... >
 {
    using Type = HybridVector<T,N,true>;
 };

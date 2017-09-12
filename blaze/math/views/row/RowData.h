@@ -55,15 +55,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the data members of the RowImpl class.
+/*!\brief Auxiliary class template for the data members of the Row class.
 // \ingroup row
 //
 // The auxiliary RowData class template represents an abstraction of the data members of the
-// RowImpl class template. The necessary set of data members is selected depending on the number
+// Row class template. The necessary set of data members is selected depending on the number
 // of compile time row arguments.
 */
-template< typename MT      // Type of the matrix
-        , size_t... RAs >  // Compile time row arguments
+template< typename MT       // Type of the matrix
+        , size_t... CRAs >  // Compile time row arguments
 struct RowData
 {};
 //*************************************************************************************************

@@ -94,22 +94,22 @@ template< bool AF, typename MT, bool SO >
 decltype(auto) submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t );
 
 template< size_t I, typename MT, bool SO >
-Row<MT,I> row( Matrix<MT,SO>& );
+decltype(auto) row( Matrix<MT,SO>& );
 
 template< size_t I, typename MT, bool SO >
-const Row<const MT,I> row( const Matrix<MT,SO>& );
+decltype(auto) row( const Matrix<MT,SO>& );
 
 template< size_t I, typename MT, bool SO >
-Row<MT,I> row( Matrix<MT,SO>&& );
+decltype(auto) row( Matrix<MT,SO>&& );
 
 template< typename MT, bool SO >
-Row<MT> row( Matrix<MT,SO>&, size_t );
+decltype(auto) row( Matrix<MT,SO>&, size_t );
 
 template< typename MT, bool SO >
-const Row<const MT> row( const Matrix<MT,SO>&, size_t );
+decltype(auto) row( const Matrix<MT,SO>&, size_t );
 
 template< typename MT, bool SO >
-Row<MT> row( Matrix<MT,SO>&&, size_t );
+decltype(auto) row( Matrix<MT,SO>&&, size_t );
 
 template< size_t I, typename MT, bool SO >
 Column<MT,I> column( Matrix<MT,SO>& );

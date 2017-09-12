@@ -55,12 +55,12 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-template< typename MT      // Type of the matrix
-        , bool SO          // Storage order
-        , bool DF          // Density flag
-        , bool SF          // Symmetry flag
-        , size_t... RAs >  // Compile time row arguments
-class RowImpl
+template< typename MT                            // Type of the matrix
+        , bool SO = IsRowMajorMatrix<MT>::value  // Storage order
+        , bool DF = IsDenseMatrix<MT>::value     // Density flag
+        , bool SF = IsSymmetric<MT>::value       // Symmetry flag
+        , size_t... CRAs >                       // Compile time row arguments
+class Row
 {};
 //*************************************************************************************************
 
@@ -74,67 +74,21 @@ class RowImpl
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief View on a specific row of a dense or sparse matrix.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the Row class template.
 // \ingroup row
 //
-// The Row template represents a reference to a specific row of a dense or sparse matrix primitive.
+// The Row_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Row class template.
 */
-template< typename MT      // Type of the matrix
-        , size_t... RAs >  // Compile time row arguments
-using Row = RowImpl< MT
-                   , IsRowMajorMatrix<MT>::value
-                   , IsDenseMatrix<MT>::value
-                   , IsSymmetric<MT>::value
-                   , RAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific row of a dense matrix.
-// \ingroup row
-//
-// The DenseRow template represents a reference to a specific row of a dense matrix primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... RAs >  // Compile time row arguments
-using DenseRow = RowImpl< MT
-                        , IsRowMajorMatrix<MT>::value
-                        , true
-                        , IsSymmetric<MT>::value
-                        , RAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific row of a sparse matrix.
-// \ingroup row
-//
-// The SparseRow template represents a reference to a specific row of a sparse matrix primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... RAs >  // Compile time row arguments
-using SparseRow = RowImpl< MT
-                         , IsRowMajorMatrix<MT>::value
-                         , false
-                         , IsSymmetric<MT>::value
-                         , RAs... >;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief View on a specific row of a column-major, non-symmetric matrix.
-// \ingroup row
-//
-// The OpposingRow template represents a reference to a specific row of a column-major,
-// non-symmetric matrix primitive.
-*/
-template< typename MT      // Type of the matrix
-        , size_t... RAs >  // Compile time row arguments
-using OpposingRow = RowImpl< MT
-                           , false
-                           , IsDenseMatrix<MT>::value
-                           , false
-                           , RAs... >;
+template< typename MT       // Type of the matrix
+        , size_t... CRAs >  // Compile time row arguments
+using Row_ = Row< MT
+                , IsRowMajorMatrix<MT>::value
+                , IsDenseMatrix<MT>::value
+                , IsSymmetric<MT>::value
+                , CRAs... >;
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

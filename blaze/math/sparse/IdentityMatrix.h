@@ -2615,8 +2615,8 @@ struct SubmatrixTrait< IdentityMatrix<T,SO>, CSAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... RAs >
-struct RowTrait< IdentityMatrix<T,SO>, RAs... >
+template< typename T, bool SO, size_t... CRAs >
+struct RowTrait< IdentityMatrix<T,SO>, CRAs... >
 {
    using Type = CompressedVector<T,true>;
 };

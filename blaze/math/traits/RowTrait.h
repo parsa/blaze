@@ -79,8 +79,8 @@ namespace blaze {
 // following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO, size_t... RAs >
-   struct RowTrait< DynamicMatrix<T1,SO>, RAs... >
+   template< typename T1, bool SO, size_t... CRAs >
+   struct RowTrait< DynamicMatrix<T1,SO>, CRAs... >
    {
       using Type = DynamicVector<T1,true>;
    };
@@ -104,8 +104,8 @@ namespace blaze {
    using ResultType2 = typename blaze::RowTrait<MatrixType2>::Type;
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , size_t... RAs >  // Compile time row arguments
+template< typename MT       // Type of the matrix
+        , size_t... CRAs >  // Compile time row arguments
 struct RowTrait
 {
  private:
@@ -119,7 +119,7 @@ struct RowTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , RowTrait< Decay_<MT>, RAs... >
+                            , RowTrait< Decay_<MT>, CRAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
@@ -140,9 +140,9 @@ struct RowTrait
    using Type2 = RowTrait_<MT>;
    \endcode
 */
-template< typename MT      // Type of the matrix
-        , size_t... RAs >  // Compile time row arguments
-using RowTrait_ = typename RowTrait<MT,RAs...>::Type;
+template< typename MT       // Type of the matrix
+        , size_t... CRAs >  // Compile time row arguments
+using RowTrait_ = typename RowTrait<MT,CRAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

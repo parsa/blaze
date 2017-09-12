@@ -95,11 +95,11 @@ struct IsRow
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsRow type trait for 'RowImpl'.
+/*!\brief Specialization of the IsRow type trait for 'Row'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... RAs >
-struct IsRow< RowImpl<MT,SO,DF,SF,RAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct IsRow< Row<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -108,11 +108,11 @@ struct IsRow< RowImpl<MT,SO,DF,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsRow type trait for 'const RowImpl'.
+/*!\brief Specialization of the IsRow type trait for 'const Row'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... RAs >
-struct IsRow< const RowImpl<MT,SO,DF,SF,RAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct IsRow< const Row<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -121,11 +121,11 @@ struct IsRow< const RowImpl<MT,SO,DF,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsRow type trait for 'volatile RowImpl'.
+/*!\brief Specialization of the IsRow type trait for 'volatile Row'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... RAs >
-struct IsRow< volatile RowImpl<MT,SO,DF,SF,RAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct IsRow< volatile Row<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -134,11 +134,11 @@ struct IsRow< volatile RowImpl<MT,SO,DF,SF,RAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the IsRow type trait for 'const volatile RowImpl'.
+/*!\brief Specialization of the IsRow type trait for 'const volatile Row'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... RAs >
-struct IsRow< const volatile RowImpl<MT,SO,DF,SF,RAs...> >
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct IsRow< const volatile Row<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
 /*! \endcond */

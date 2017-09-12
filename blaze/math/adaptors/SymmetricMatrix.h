@@ -1545,10 +1545,10 @@ struct SubmatrixTrait< SymmetricMatrix<MT,SO,DF,NF>, CSAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF, size_t... RAs >
-struct RowTrait< SymmetricMatrix<MT,SO,DF,NF>, RAs... >
+template< typename MT, bool SO, bool DF, bool NF, size_t... CRAs >
+struct RowTrait< SymmetricMatrix<MT,SO,DF,NF>, CRAs... >
 {
-   using Type = RowTrait_<MT,RAs...>;
+   using Type = RowTrait_<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -3031,10 +3031,10 @@ struct SubmatrixTrait< UniLowerMatrix<MT,SO,DF>, CSAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... RAs >
-struct RowTrait< UniLowerMatrix<MT,SO,DF>, RAs... >
+template< typename MT, bool SO, bool DF, size_t... CRAs >
+struct RowTrait< UniLowerMatrix<MT,SO,DF>, CRAs... >
 {
-   using Type = RowTrait_<MT,RAs...>;
+   using Type = RowTrait_<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

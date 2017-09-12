@@ -80,13 +80,24 @@
    auto row2 = row( A, 2UL );
    \endcode
 
-// The \c row() function returns an expression representing the row view. This view can be treated
-// as any other row vector, i.e. it can be assigned to, it can be copied from, and it can be used
-// in arithmetic operations. The reference can also be used on both sides of an assignment: The
-// row can either be used as an alias to grant write access to a specific row of a matrix primitive
-// on the left-hand side of an assignment or to grant read-access to a specific row of a matrix
-// primitive or expression on the right-hand side of an assignment. The following example
-// demonstrates this in detail:
+// The \c row() function returns an expression representing the row view. The type of this
+// expression depends on the given row arguments, primarily the type of the matrix and the compile
+// time arguments. If the type is required, it can be determined via \c decltype or via the
+// \c RowExprTrait class template:
+
+   \code
+   using MatrixType = blaze::DynamicMatrix<int>;
+
+   using RowType1 = decltype( blaze::row<1UL>( std::declval<MatrixType>() ) );
+   using RowType2 = blaze::RowExprTrait<MatrixType,1UL>::Type;
+   \endcode
+
+// The resulting view can be treated as any other row vector, i.e. it can be assigned to, it can
+// be copied from, and it can be used in arithmetic operations. The reference can also be used on
+// both sides of an assignment: The row can either be used as an alias to grant write access to a
+// specific row of a matrix primitive on the left-hand side of an assignment or to grant read-access
+// to a specific row of a matrix primitive or expression on the right-hand side of an assignment.
+// The following example demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
