@@ -40,9 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Exception.h>
-#include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -62,8 +59,7 @@ namespace blaze {
 // the Submatrix class template. The necessary set of data members is selected depending on the
 // number of compile time submatrix arguments.
 */
-template< typename MT       // Type of the matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
+template< size_t... CSAs >  // Compile time submatrix arguments
 struct SubmatrixData
 {};
 //*************************************************************************************************
@@ -85,19 +81,14 @@ struct SubmatrixData
 // This specialization of SubmatrixData adapts the class template to the requirements of zero
 // compile time submatrix arguments.
 */
-template< typename MT >  // Type of the matrix
-struct SubmatrixData<MT>
+template<>
+struct SubmatrixData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixData( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n );
+   explicit inline constexpr SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -113,19 +104,17 @@ struct SubmatrixData<MT>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Operand operand() const noexcept;
-   inline size_t  row    () const noexcept;
-   inline size_t  column () const noexcept;
-   inline size_t  rows   () const noexcept;
-   inline size_t  columns() const noexcept;
+   inline constexpr size_t row    () const noexcept;
+   inline constexpr size_t column () const noexcept;
+   inline constexpr size_t rows   () const noexcept;
+   inline constexpr size_t columns() const noexcept;
    //@}
    //**********************************************************************************************
 
- protected:
+ private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand      matrix_;  //!< The matrix containing the submatrix.
    const size_t row_;     //!< The first row of the submatrix.
    const size_t column_;  //!< The first column of the submatrix.
    const size_t m_;       //!< The number of rows of the submatrix.
@@ -139,38 +128,17 @@ struct SubmatrixData<MT>
 //*************************************************************************************************
 /*!\brief The constructor for SubmatrixData.
 //
-// \param matrix The matrix containing the submatrix.
 // \param rindex The index of the first row of the submatrix in the given matrix.
 // \param cindex The index of the first column of the submatrix in the given matrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
 */
-template< typename MT >  // Type of the matrix
-inline SubmatrixData<MT>::SubmatrixData( Operand matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : matrix_( matrix )  // The matrix containing the submatrix
-   , row_   ( rindex )  // The first row of the submatrix
+inline constexpr SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n )
+   : row_   ( rindex )  // The first row of the submatrix
    , column_( cindex )  // The first column of the submatrix
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
-{
-   if( ( row_ + m_ > matrix_.rows() ) || ( column_ + n_ > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the submatrix.
-//
-// \return The matrix containing the submatrix.
-*/
-template< typename MT >  // Type of the matrix
-inline typename SubmatrixData<MT>::Operand SubmatrixData<MT>::operand() const noexcept
-{
-   return matrix_;
-}
+{}
 //*************************************************************************************************
 
 
@@ -179,8 +147,7 @@ inline typename SubmatrixData<MT>::Operand SubmatrixData<MT>::operand() const no
 //
 // \return The index of the first row.
 */
-template< typename MT >  // Type of the matrix
-inline size_t SubmatrixData<MT>::row() const noexcept
+inline constexpr size_t SubmatrixData<>::row() const noexcept
 {
    return row_;
 }
@@ -192,8 +159,7 @@ inline size_t SubmatrixData<MT>::row() const noexcept
 //
 // \return The index of the first column.
 */
-template< typename MT >  // Type of the matrix
-inline size_t SubmatrixData<MT>::column() const noexcept
+inline constexpr size_t SubmatrixData<>::column() const noexcept
 {
    return column_;
 }
@@ -205,8 +171,7 @@ inline size_t SubmatrixData<MT>::column() const noexcept
 //
 // \return The number of rows of the submatrix.
 */
-template< typename MT >  // Type of the matrix
-inline size_t SubmatrixData<MT>::rows() const noexcept
+inline constexpr size_t SubmatrixData<>::rows() const noexcept
 {
    return m_;
 }
@@ -218,8 +183,7 @@ inline size_t SubmatrixData<MT>::rows() const noexcept
 //
 // \return The number of columns of the submatrix.
 */
-template< typename MT >  // Type of the matrix
-inline size_t SubmatrixData<MT>::columns() const noexcept
+inline constexpr size_t SubmatrixData<>::columns() const noexcept
 {
    return n_;
 }
@@ -242,23 +206,17 @@ inline size_t SubmatrixData<MT>::columns() const noexcept
 // This specialization of SubmatrixData adapts the class template to the requirements of two
 // compile time arguments.
 */
-template< typename MT  // Type of the matrix
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
-struct SubmatrixData<MT,I,J,M,N>
+template< size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+struct SubmatrixData<I,J,M,N>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubmatrixData( Operand matrix );
+   explicit inline constexpr SubmatrixData();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -274,19 +232,10 @@ struct SubmatrixData<MT,I,J,M,N>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Operand operand() const noexcept;
-   inline size_t  row    () const noexcept;
-   inline size_t  column () const noexcept;
-   inline size_t  rows   () const noexcept;
-   inline size_t  columns() const noexcept;
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   Operand matrix_;  //!< The matrix containing the submatrix.
+   inline constexpr size_t row    () const noexcept;
+   inline constexpr size_t column () const noexcept;
+   inline constexpr size_t rows   () const noexcept;
+   inline constexpr size_t columns() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -295,40 +244,13 @@ struct SubmatrixData<MT,I,J,M,N>
 
 //*************************************************************************************************
 /*!\brief The constructor for SubmatrixData.
-//
-// \param matrix The matrix containing the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
 */
-template< typename MT  // Type of the matrix
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
-inline SubmatrixData<MT,I,J,M,N>::SubmatrixData( Operand matrix )
-   : matrix_( matrix )  // The matrix containing the submatrix
-{
-   if( ( I + M > matrix_.rows() ) || ( J + N > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the submatrix.
-//
-// \return The matrix containing the submatrix.
-*/
-template< typename MT  // Type of the matrix
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
-inline typename SubmatrixData<MT,I,J,M,N>::Operand
-   SubmatrixData<MT,I,J,M,N>::operand() const noexcept
-{
-   return matrix_;
-}
+template< size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr SubmatrixData<I,J,M,N>::SubmatrixData()
+{}
 //*************************************************************************************************
 
 
@@ -337,12 +259,11 @@ inline typename SubmatrixData<MT,I,J,M,N>::Operand
 //
 // \return The index of the first row.
 */
-template< typename MT  // Type of the matrix
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
-inline size_t SubmatrixData<MT,I,J,M,N>::row() const noexcept
+template< size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubmatrixData<I,J,M,N>::row() const noexcept
 {
    return I;
 }
@@ -354,12 +275,11 @@ inline size_t SubmatrixData<MT,I,J,M,N>::row() const noexcept
 //
 // \return The index of the first column.
 */
-template< typename MT  // Type of the matrix
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
-inline size_t SubmatrixData<MT,I,J,M,N>::column() const noexcept
+template< size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubmatrixData<I,J,M,N>::column() const noexcept
 {
    return J;
 }
@@ -371,12 +291,11 @@ inline size_t SubmatrixData<MT,I,J,M,N>::column() const noexcept
 //
 // \return The number of rows of the submatrix.
 */
-template< typename MT  // Type of the matrix
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
-inline size_t SubmatrixData<MT,I,J,M,N>::rows() const noexcept
+template< size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubmatrixData<I,J,M,N>::rows() const noexcept
 {
    return M;
 }
@@ -388,12 +307,11 @@ inline size_t SubmatrixData<MT,I,J,M,N>::rows() const noexcept
 //
 // \return The number of columns of the submatrix.
 */
-template< typename MT  // Type of the matrix
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
-inline size_t SubmatrixData<MT,I,J,M,N>::columns() const noexcept
+template< size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubmatrixData<I,J,M,N>::columns() const noexcept
 {
    return N;
 }

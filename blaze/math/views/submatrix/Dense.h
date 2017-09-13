@@ -104,7 +104,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -133,11 +132,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,unaligned,false,true,CSAs...>
    : public View< DenseMatrix< Submatrix<MT,unaligned,false,true,CSAs...>, false > >
-   , private SubmatrixData<MT,CSAs...>
+   , private SubmatrixData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -663,19 +663,19 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
    using DataType::column;
    using DataType::rows;
    using DataType::columns;
 
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
+   inline Operand operand() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -821,8 +821,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   using DataType::matrix_;
-
+   Operand matrix_;        //!< The matrix containing the submatrix.
    const bool isAligned_;  //!< Memory alignment flag.
                            /*!< The alignment flag indicates whether the submatrix is fully aligned
                                 with respect to the given element type and the available instruction
@@ -874,11 +873,14 @@ template< typename MT         // Type of the dense matrix
         , size_t... CSAs >    // Compile time submatrix arguments
 template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
-   : DataType( matrix, args... )  // Base class initialization
+   : DataType  ( args... )  // Base class initialization
+   , matrix_   ( matrix  )  // The matrix containing the submatrix
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1872,6 +1874,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Operand
+   Submatrix<MT,unaligned,false,true,CSAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the spacing between the beginning of two rows/columns.
 //
 // \return The spacing between the beginning of two rows/columns.
@@ -1887,6 +1906,7 @@ inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::spacing() const noexce
 {
    return matrix_.spacing();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -3454,11 +3474,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,unaligned,true,true,CSAs...>
    : public View< DenseMatrix< Submatrix<MT,unaligned,true,true,CSAs...>, true > >
-   , private SubmatrixData<MT,CSAs...>
+   , private SubmatrixData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -3986,19 +4007,19 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
    using DataType::column;
    using DataType::rows;
    using DataType::columns;
 
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
+   inline Operand operand() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -4144,8 +4165,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   using DataType::matrix_;
-
+   Operand matrix_;        //!< The matrix containing the submatrix.
    const bool isAligned_;  //!< Memory alignment flag.
                            /*!< The alignment flag indicates whether the submatrix is fully aligned
                                 with respect to the given element type and the available instruction
@@ -4197,11 +4217,14 @@ template< typename MT         // Type of the dense matrix
         , size_t... CSAs >    // Compile time submatrix arguments
 template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
-   : DataType( matrix, args... )  // Base class initialization
+   : DataType  ( args... )  // Base class initialization
+   , matrix_   ( matrix  )  // The matrix containing the submatrix
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5169,6 +5192,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Operand
+   Submatrix<MT,unaligned,true,true,CSAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -6733,11 +6773,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,aligned,false,true,CSAs...>
    : public View< DenseMatrix< Submatrix<MT,aligned,false,true,CSAs...>, false > >
-   , private SubmatrixData<MT,CSAs...>
+   , private SubmatrixData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -6863,19 +6904,19 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
    using DataType::column;
    using DataType::rows;
    using DataType::columns;
 
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
+   inline Operand operand() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -7019,7 +7060,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   Operand matrix_;  //!< The matrix containing the submatrix.
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -7063,9 +7104,12 @@ template< typename MT         // Type of the dense matrix
         , size_t... CSAs >    // Compile time submatrix arguments
 template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
-   : DataType( matrix, args... )  // Base class initialization
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 
    if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
@@ -8061,6 +8105,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,false,true,CSAs...>::Operand
+   Submatrix<MT,aligned,false,true,CSAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -9639,11 +9700,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,aligned,true,true,CSAs...>
    : public View< DenseMatrix< Submatrix<MT,aligned,true,true,CSAs...>, true > >
-   , private SubmatrixData<MT,CSAs...>
+   , private SubmatrixData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -9769,19 +9831,19 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
    using DataType::column;
    using DataType::rows;
    using DataType::columns;
 
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
+   inline Operand operand() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -9925,7 +9987,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   Operand matrix_;  //!< The matrix containing the submatrix.
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -9969,9 +10031,12 @@ template< typename MT         // Type of the dense matrix
         , size_t... CSAs >    // Compile time submatrix arguments
 template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
-   : DataType( matrix, args... )  // Base class initialization
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 
    if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
        ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
@@ -10943,6 +11008,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,aligned,true,true,CSAs...>::Operand
+   Submatrix<MT,aligned,true,true,CSAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

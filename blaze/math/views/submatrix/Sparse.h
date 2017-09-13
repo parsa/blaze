@@ -88,7 +88,6 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -117,11 +116,12 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,AF,false,false,CSAs...>
    : public View< SparseMatrix< Submatrix<MT,AF,false,false,CSAs...>, false > >
-   , private SubmatrixData<MT,CSAs...>
+   , private SubmatrixData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -490,22 +490,22 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
    using DataType::column;
    using DataType::rows;
    using DataType::columns;
 
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
-   inline void   reserve( size_t nonzeros );
-          void   reserve( size_t i, size_t nonzeros );
-   inline void   trim();
-   inline void   trim( size_t i );
+   inline Operand operand() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
+   inline void    reserve( size_t nonzeros );
+          void    reserve( size_t i, size_t nonzeros );
+   inline void    trim();
+   inline void    trim( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -582,7 +582,7 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   Operand matrix_;  //!< The matrix containing the submatrix.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -623,9 +623,12 @@ template< typename MT         // Type of the sparse matrix
         , size_t... CSAs >    // Compile time submatrix arguments
 template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, RSAs... args )
-   : DataType( matrix, args... )  // Base class initialization
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1368,6 +1371,24 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,false,false,CSAs...>::Operand
+   Submatrix<MT,AF,false,false,CSAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2621,11 +2642,12 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,AF,true,false,CSAs...>
    : public View< SparseMatrix< Submatrix<MT,AF,true,false,CSAs...>, true > >
-   , private SubmatrixData<MT,CSAs...>
+   , private SubmatrixData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<MT,CSAs...>;  //!< The type of the SubmatrixData base class.
+   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2994,22 +3016,22 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
    using DataType::column;
    using DataType::rows;
    using DataType::columns;
 
-   inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t i ) const noexcept;
-   inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t i ) const;
-   inline void   reset();
-   inline void   reset( size_t i );
-   inline void   reserve( size_t nonzeros );
-          void   reserve( size_t i, size_t nonzeros );
-   inline void   trim();
-   inline void   trim( size_t j );
+   inline Operand operand() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  capacity( size_t i ) const noexcept;
+   inline size_t  nonZeros() const;
+   inline size_t  nonZeros( size_t i ) const;
+   inline void    reset();
+   inline void    reset( size_t i );
+   inline void    reserve( size_t nonzeros );
+          void    reserve( size_t i, size_t nonzeros );
+   inline void    trim();
+   inline void    trim( size_t j );
    //@}
    //**********************************************************************************************
 
@@ -3086,7 +3108,7 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   Operand matrix_;  //!< The matrix containing the submatrix.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -3127,9 +3149,12 @@ template< typename MT         // Type of the sparse matrix
         , size_t... CSAs >    // Compile time submatrix arguments
 template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, RSAs... args )
-   : DataType( matrix, args... )  // Base class initialization
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 4UL );
+   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3842,6 +3867,24 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool AF           // Alignment flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline typename Submatrix<MT,AF,true,false,CSAs...>::Operand
+   Submatrix<MT,AF,true,false,CSAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
