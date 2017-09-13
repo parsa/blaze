@@ -210,9 +210,6 @@ struct SubvectorData<I,N>
 
 //*************************************************************************************************
 /*!\brief The constructor for SubvectorData.
-//
-// \param vector The vector containing the subvector.
-// \exception std::invalid_argument Invalid subvector specification.
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements

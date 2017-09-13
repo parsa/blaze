@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/views/band/BaseTemplate.h>
 #include <blaze/math/views/column/BaseTemplate.h>
@@ -57,22 +58,22 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< bool AF, size_t I, size_t N, typename VT, bool TF >
+template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF >
 decltype(auto) subvector( Vector<VT,TF>& );
 
-template< bool AF, size_t I, size_t N, typename VT, bool TF >
+template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF >
 decltype(auto) subvector( const Vector<VT,TF>& );
 
-template< bool AF, size_t I, size_t N, typename VT, bool TF >
+template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF >
 decltype(auto) subvector( Vector<VT,TF>&& );
 
-template< bool AF, typename VT, bool TF >
+template< AlignmentFlag AF, typename VT, bool TF >
 decltype(auto) subvector( Vector<VT,TF>&, size_t, size_t );
 
-template< bool AF, typename VT, bool TF >
+template< AlignmentFlag AF, typename VT, bool TF >
 decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t );
 
-template< bool AF, typename VT, bool TF >
+template< AlignmentFlag AF, typename VT, bool TF >
 decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t );
 
 template< bool AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >

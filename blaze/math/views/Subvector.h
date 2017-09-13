@@ -281,16 +281,17 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , size_t I     // Index of the first subvector element
-        , size_t N     // Size of the subvector
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first subvector element
+        , size_t N          // Size of the subvector
+        , typename VT       // Type of the dense vector
+        , bool TF >         // Transpose flag
 inline decltype(auto) subvector( Vector<VT,TF>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Subvector_<VT,AF,I,N>( ~vector );
+   using ReturnType = Subvector_<VT,AF,I,N>;
+   return ReturnType( ~vector );
 }
 //*************************************************************************************************
 
@@ -351,16 +352,17 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , size_t I     // Index of the first subvector element
-        , size_t N     // Size of the subvector
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first subvector element
+        , size_t N          // Size of the subvector
+        , typename VT       // Type of the dense vector
+        , bool TF >         // Transpose flag
 inline decltype(auto) subvector( const Vector<VT,TF>& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Subvector_<const VT,AF,I,N>( ~vector );
+   using ReturnType = const Subvector_<const VT,AF,I,N>;
+   return ReturnType( ~vector );
 }
 //*************************************************************************************************
 
@@ -380,16 +382,17 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector )
 // the vector) or any alignment restrictions are violated, a \a std::invalid_argument exception
 // is thrown.
 */
-template< bool AF      // Alignment flag
-        , size_t I     // Index of the first subvector element
-        , size_t N     // Size of the subvector
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first subvector element
+        , size_t N          // Size of the subvector
+        , typename VT       // Type of the dense vector
+        , bool TF >         // Transpose flag
 inline decltype(auto) subvector( Vector<VT,TF>&& vector )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Subvector_<VT,AF,I,N>( ~vector );
+   using ReturnType = Subvector_<VT,AF,I,N>;
+   return ReturnType( ~vector );
 }
 //*************************************************************************************************
 
@@ -598,14 +601,15 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< AlignmentFlag AF  // Alignment flag
+        , typename VT       // Type of the dense vector
+        , bool TF >         // Transpose flag
 inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Subvector_<VT,AF>( ~vector, index, size );
+   using ReturnType = Subvector_<VT,AF>;
+   return ReturnType( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -668,14 +672,15 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< AlignmentFlag AF  // Alignment flag
+        , typename VT       // Type of the dense vector
+        , bool TF >         // Transpose flag
 inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Subvector_<const VT,AF>( ~vector, index, size );
+   using ReturnType = const Subvector_<const VT,AF>;
+   return ReturnType( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -697,14 +702,15 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size
 // the vector) or any alignment restrictions are violated, a \a std::invalid_argument exception
 // is thrown.
 */
-template< bool AF      // Alignment flag
-        , typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
+template< AlignmentFlag AF  // Alignment flag
+        , typename VT       // Type of the dense vector
+        , bool TF >         // Transpose flag
 inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Subvector_<VT,AF>( ~vector, index, size );
+   using ReturnType = Subvector_<VT,AF>;
+   return ReturnType( ~vector, index, size );
 }
 //*************************************************************************************************
 
@@ -723,47 +729,22 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
 // \ingroup subvector
 //
 // \param vector The constant vector/vector addition.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the addition.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector addition.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecAddExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecVecAddExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,N>( (~vector).leftOperand() ) +
-          subvector<AF,I,N>( (~vector).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/vector addition.
-// \ingroup subvector
-//
-// \param vector The constant vector/vector addition.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the addition.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/vector addition.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecAddExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF>( (~vector).leftOperand() , index, size ) +
-          subvector<AF>( (~vector).rightOperand(), index, size );
+   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) +
+          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -775,47 +756,22 @@ inline decltype(auto) subvector( const VecVecAddExpr<VT>& vector, size_t index, 
 // \ingroup subvector
 //
 // \param vector The constant vector/vector subtraction.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the subtraction.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector subtraction.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecSubExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecVecSubExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,N>( (~vector).leftOperand() ) -
-          subvector<AF,I,N>( (~vector).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/vector subtraction.
-// \ingroup subvector
-//
-// \param vector The constant vector/vector subtraction.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the subtraction.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/vector subtraction.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecSubExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF>( (~vector).leftOperand() , index, size ) -
-          subvector<AF>( (~vector).rightOperand(), index, size );
+   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) -
+          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -827,47 +783,22 @@ inline decltype(auto) subvector( const VecVecSubExpr<VT>& vector, size_t index, 
 // \ingroup subvector
 //
 // \param vector The constant vector/vector multiplication.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector multiplication.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,N>( (~vector).leftOperand() ) *
-          subvector<AF,I,N>( (~vector).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/vector multiplication.
-// \ingroup subvector
-//
-// \param vector The constant vector/vector multiplication.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/vector multiplication.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF>( (~vector).leftOperand() , index, size ) *
-          subvector<AF>( (~vector).rightOperand(), index, size );
+   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) *
+          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -879,47 +810,22 @@ inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector, size_t index,
 // \ingroup subvector
 //
 // \param vector The constant vector/vector division.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the division.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector division.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecDivExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecVecDivExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,N>( (~vector).leftOperand() ) /
-          subvector<AF,I,N>( (~vector).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/vector division.
-// \ingroup subvector
-//
-// \param vector The constant vector/vector division.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the division.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/vector division.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecDivExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF>( (~vector).leftOperand() , index, size ) /
-          subvector<AF>( (~vector).rightOperand(), index, size );
+   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) /
+          subvector<AF,CSAs...>( (~vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -931,45 +837,22 @@ inline decltype(auto) subvector( const VecVecDivExpr<VT>& vector, size_t index, 
 // \ingroup subvector
 //
 // \param vector The constant vector/vector cross product.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the cross product.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/vector cross product.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const CrossExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const CrossExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Subvector_< VectorType_<VT>, AF, I, N >( ~vector );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/vector cross product.
-// \ingroup subvector
-//
-// \param vector The constant vector/vector cross product.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the cross product.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/vector cross product.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const CrossExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return Subvector_< VectorType_<VT>, AF >( ~vector, index, size );
+   using ReturnType = Subvector_< VectorType_<VT>, AF, CSAs... >;
+   return ReturnType( ~vector, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -981,45 +864,21 @@ inline decltype(auto) subvector( const CrossExpr<VT>& vector, size_t index, size
 // \ingroup subvector
 //
 // \param vector The constant vector/scalar multiplication.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar multiplication.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecScalarMultExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecScalarMultExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,N>( (~vector).leftOperand() ) * (~vector).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/scalar multiplication.
-// \ingroup subvector
-//
-// \param vector The constant vector/scalar multiplication.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/scalar multiplication.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecScalarMultExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF>( (~vector).leftOperand(), index, size ) * (~vector).rightOperand();
+   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) * (~vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1031,45 +890,21 @@ inline decltype(auto) subvector( const VecScalarMultExpr<VT>& vector, size_t ind
 // \ingroup subvector
 //
 // \param vector The constant vector/scalar division.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the division.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/scalar division.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecScalarDivExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecScalarDivExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,N>( (~vector).leftOperand() ) / (~vector).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/scalar division.
-// \ingroup subvector
-//
-// \param vector The constant vector/scalar division.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the division.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/scalar division.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecScalarDivExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF>( (~vector).leftOperand(), index, size ) / (~vector).rightOperand();
+   return subvector<AF,CSAs...>( (~vector).leftOperand(), args... ) / (~vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1081,45 +916,21 @@ inline decltype(auto) subvector( const VecScalarDivExpr<VT>& vector, size_t inde
 // \ingroup subvector
 //
 // \param vector The constant unary vector map operation.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the unary map operation.
 //
 // This function returns an expression representing the specified subvector of the given unary
 // vector map operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecMapExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecMapExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subvector<AF,I,N>( (~vector).operand() ), (~vector).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given unary vector map operation.
-// \ingroup subvector
-//
-// \param vector The constant unary vector map operation.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the unary map operation.
-//
-// This function returns an expression representing the specified subvector of the given unary
-// vector map operation.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecMapExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( subvector<AF>( (~vector).operand(), index, size ), (~vector).operation() );
+   return map( subvector<AF,CSAs...>( (~vector).operand(), args... ), (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1131,48 +942,22 @@ inline decltype(auto) subvector( const VecMapExpr<VT>& vector, size_t index, siz
 // \ingroup subvector
 //
 // \param vector The constant binary vector map operation.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the binary map operation.
 //
 // This function returns an expression representing the specified subvector of the given binary
 // vector map operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecMapExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecVecMapExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subvector<AF,I,N>( (~vector).leftOperand() ),
-               subvector<AF,I,N>( (~vector).rightOperand() ),
-               (~vector).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given binary vector map operation.
-// \ingroup subvector
-//
-// \param vector The constant binary vector map operation.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the binary map operation.
-//
-// This function returns an expression representing the specified subvector of the given binary
-// vector map operation.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecVecMapExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( subvector<AF>( (~vector).leftOperand() , index, size ),
-               subvector<AF>( (~vector).rightOperand(), index, size ),
+   return map( subvector<AF,CSAs...>( (~vector).leftOperand(), args... ),
+               subvector<AF,CSAs...>( (~vector).rightOperand(), args... ),
                (~vector).operation() );
 }
 /*! \endcond */
@@ -1185,45 +970,21 @@ inline decltype(auto) subvector( const VecVecMapExpr<VT>& vector, size_t index, 
 // \ingroup subvector
 //
 // \param vector The constant vector evaluation operation.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the evaluation operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // evaluation operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecEvalExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecEvalExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( subvector<AF,I,N>( (~vector).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector evaluation operation.
-// \ingroup subvector
-//
-// \param vector The constant vector evaluation operation.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the evaluation operation.
-//
-// This function returns an expression representing the specified subvector of the given vector
-// evaluation operation.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecEvalExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return eval( subvector<AF>( (~vector).operand(), index, size ) );
+   return eval( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1235,45 +996,21 @@ inline decltype(auto) subvector( const VecEvalExpr<VT>& vector, size_t index, si
 // \ingroup subvector
 //
 // \param vector The constant vector serialization operation.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the serialization operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // serialization operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecSerialExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecSerialExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( subvector<AF,I,N>( (~vector).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector serialization operation.
-// \ingroup subvector
-//
-// \param vector The constant vector serialization operation.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the serialization operation.
-//
-// This function returns an expression representing the specified subvector of the given vector
-// serialization operation.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecSerialExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return serial( subvector<AF>( (~vector).operand(), index, size ) );
+   return serial( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1285,45 +1022,21 @@ inline decltype(auto) subvector( const VecSerialExpr<VT>& vector, size_t index, 
 // \ingroup subvector
 //
 // \param vector The constant vector transpose operation.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the transpose operation.
 //
 // This function returns an expression representing the specified subvector of the given vector
 // transpose operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecTransExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecTransExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( subvector<AF,I,N>( (~vector).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector transpose operation.
-// \ingroup subvector
-//
-// \param vector The constant vector transpose operation.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the transpose operation.
-//
-// This function returns an expression representing the specified subvector of the given vector
-// transpose operation.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const VecTransExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( subvector<AF>( (~vector).operand(), index, size ) );
+   return trans( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1339,13 +1052,13 @@ inline decltype(auto) subvector( const VecTransExpr<VT>& vector, size_t index, s
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
-template< bool AF1     // Required alignment flag
-        , size_t I     // Index of the first subvector element
-        , size_t N     // Size of the subvector
-        , typename VT  // Type of the vector
-        , bool AF2     // Present alignment flag
-        , bool TF      // Transpose flag
-        , bool DF >    // Density flag
+template< AlignmentFlag AF1  // Required alignment flag
+        , size_t I           // Index of the first subvector element
+        , size_t N           // Size of the subvector
+        , typename VT        // Type of the vector
+        , bool AF2           // Present alignment flag
+        , bool TF            // Transpose flag
+        , bool DF >          // Density flag
 inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1370,15 +1083,15 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv )
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
-template< bool AF1     // Required alignment flag
-        , size_t I1    // Required subvector offset
-        , size_t N1    // Required size of the subvector
-        , typename VT  // Type of the vector
-        , bool AF2     // Present alignment flag
-        , bool TF      // Transpose flag
-        , bool DF      // Density flag
-        , size_t I2    // Present subvector offset
-        , size_t N2 >  // Present size of the subvector
+template< AlignmentFlag AF1  // Required alignment flag
+        , size_t I1          // Required subvector offset
+        , size_t N1          // Required size of the subvector
+        , typename VT        // Type of the vector
+        , bool AF2           // Present alignment flag
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , size_t I2          // Present subvector offset
+        , size_t N2 >        // Present size of the subvector
 inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF,I2,N2>& sv )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1405,12 +1118,12 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF,I2,N2>& sv )
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
-template< bool AF1          // Required alignment flag
-        , typename VT       // Type of the dense vector
-        , bool AF2          // Present alignment flag
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CSAs >  // Compile time subvector arguments
+template< AlignmentFlag AF1  // Required alignment flag
+        , typename VT        // Type of the dense vector
+        , bool AF2           // Present alignment flag
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , size_t... CSAs >   // Compile time subvector arguments
 inline decltype(auto)
    subvector( const Subvector<VT,AF2,TF,DF,CSAs...>& sv, size_t index, size_t size )
 {

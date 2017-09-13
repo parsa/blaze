@@ -779,77 +779,39 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param vector The constant matrix/vector multiplication.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
 //
 // This function returns an expression representing the specified subvector of the given
 // matrix/vector multiplication.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using MT = RemoveReference_< LeftOperand_< VectorType_<VT> > >;
 
-   decltype(auto) left ( (~vector).leftOperand()  );
-   decltype(auto) right( (~vector).rightOperand() );
-
-   const size_t column( ( IsUpper<MT>::value )
-                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( I + 1UL ):( I ) )
-                        :( 0UL ) );
-   const size_t n( ( IsLower<MT>::value )
-                   ?( ( IsUpper<MT>::value )?( N )
-                                            :( ( IsStrictlyLower<MT>::value && N > 0UL )
-                                               ?( I + N - 1UL )
-                                               :( I + N ) ) )
-                   :( ( IsUpper<MT>::value )?( left.columns() - column )
-                                            :( left.columns() ) ) );
-
-   return submatrix<AF>( left, I, column, N, n ) * subvector<AF>( right, column, n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given matrix/vector multiplication.
-// \ingroup submatrix
-//
-// \param vector The constant matrix/vector multiplication.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// matrix/vector multiplication.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using MT = RemoveReference_< LeftOperand_< VectorType_<VT> > >;
+   const SubvectorData<CSAs...> sd( args... );
 
    decltype(auto) left ( (~vector).leftOperand()  );
    decltype(auto) right( (~vector).rightOperand() );
 
    const size_t column( ( IsUpper<MT>::value )
-                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( index + 1UL ):( index ) )
+                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
                         :( 0UL ) );
    const size_t n( ( IsLower<MT>::value )
-                   ?( ( IsUpper<MT>::value )?( size )
-                                            :( ( IsStrictlyLower<MT>::value && size > 0UL )
-                                               ?( index + size - 1UL )
-                                               :( index + size ) ) )
+                   ?( ( IsUpper<MT>::value )?( sd.size() )
+                                            :( ( IsStrictlyLower<MT>::value && sd.size() > 0UL )
+                                               ?( sd.offset() + sd.size() - 1UL )
+                                               :( sd.offset() + sd.size() ) ) )
                    :( ( IsUpper<MT>::value )?( left.columns() - column )
                                             :( left.columns() ) ) );
 
-   return submatrix<AF>( left, index, column, size, n ) * subvector<AF>( right, column, n );
+   return submatrix<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -861,77 +823,39 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, size_t index,
 // \ingroup submatrix
 //
 // \param vector The constant vector/matrix multiplication.
+// \param args The runtime subvector arguments.
 // \return View on the specified subvector of the multiplication.
 //
 // This function returns an expression representing the specified subvector of the given
 // vector/matrix multiplication.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first subvector element
-        , size_t N       // Size of the subvector
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using MT = RemoveReference_< RightOperand_< VectorType_<VT> > >;
 
-   decltype(auto) left ( (~vector).leftOperand()  );
-   decltype(auto) right( (~vector).rightOperand() );
-
-   const size_t row( ( IsLower<MT>::value )
-                     ?( ( !AF && IsStrictlyLower<MT>::value )?( I + 1UL ):( I ) )
-                     :( 0UL ) );
-   const size_t m( ( IsUpper<MT>::value )
-                   ?( ( IsLower<MT>::value )?( N )
-                                            :( ( IsStrictlyUpper<MT>::value && N > 0UL )
-                                               ?( I + N - 1UL )
-                                               :( I + N ) ) )
-                   :( ( IsLower<MT>::value )?( right.rows() - row )
-                                            :( right.rows() ) ) );
-
-   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, I, m, N );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/matrix multiplication.
-// \ingroup submatrix
-//
-// \param vector The constant vector/matrix multiplication.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/matrix multiplication.
-*/
-template< bool AF        // Alignment flag
-        , typename VT >  // Vector base type of the expression
-inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, size_t index, size_t size )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using MT = RemoveReference_< RightOperand_< VectorType_<VT> > >;
+   const SubvectorData<CSAs...> sd( args... );
 
    decltype(auto) left ( (~vector).leftOperand()  );
    decltype(auto) right( (~vector).rightOperand() );
 
    const size_t row( ( IsLower<MT>::value )
-                     ?( ( !AF && IsStrictlyLower<MT>::value )?( index + 1UL ):( index ) )
+                     ?( ( !AF && IsStrictlyLower<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
                      :( 0UL ) );
    const size_t m( ( IsUpper<MT>::value )
-                   ?( ( IsLower<MT>::value )?( size )
-                                            :( ( IsStrictlyUpper<MT>::value && size > 0UL )
-                                               ?( index + size - 1UL )
-                                               :( index + size ) ) )
+                   ?( ( IsLower<MT>::value )?( sd.size() )
+                                            :( ( IsStrictlyUpper<MT>::value && sd.size() > 0UL )
+                                               ?( sd.offset() + sd.size() - 1UL )
+                                               :( sd.offset() + sd.size() ) ) )
                    :( ( IsLower<MT>::value )?( right.rows() - row )
                                             :( right.rows() ) ) );
 
-   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, index, m, size );
+   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, sd.offset(), m, sd.size() );
 }
 /*! \endcond */
 //*************************************************************************************************
