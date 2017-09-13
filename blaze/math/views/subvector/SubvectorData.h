@@ -40,9 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Exception.h>
-#include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -62,8 +59,7 @@ namespace blaze {
 // the Subvector class template. The necessary set of data members is selected depending on the
 // number of compile time subvector arguments.
 */
-template< typename VT       // Type of the vector
-        , size_t... CSAs >  // Compile time subvector arguments
+template< size_t... CSAs >  // Compile time subvector arguments
 struct SubvectorData
 {};
 //*************************************************************************************************
@@ -85,19 +81,14 @@ struct SubvectorData
 // This specialization of SubvectorData adapts the class template to the requirements of zero
 // compile time subvector arguments.
 */
-template< typename VT >  // Type of the vector
-struct SubvectorData<VT>
+template<>
+struct SubvectorData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the matrix expression.
-   using Operand = If_< IsExpression<VT>, VT, VT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubvectorData( Operand vector, size_t index, size_t n );
+   explicit inline constexpr SubvectorData( size_t index, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -113,19 +104,17 @@ struct SubvectorData<VT>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Operand operand() const noexcept;
-   inline size_t  offset () const noexcept;
-   inline size_t  size   () const noexcept;
+   inline constexpr size_t offset() const noexcept;
+   inline constexpr size_t size  () const noexcept;
    //@}
    //**********************************************************************************************
 
- protected:
+ private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand      vector_;   //!< The vector containing the subvector.
-   const size_t offset_;   //!< The offset of the subvector within the vector.
-   const size_t size_;     //!< The size of the subvector.
+   const size_t offset_;  //!< The offset of the subvector within the vector.
+   const size_t size_;    //!< The size of the subvector.
    //@}
    //**********************************************************************************************
 };
@@ -135,34 +124,13 @@ struct SubvectorData<VT>
 //*************************************************************************************************
 /*!\brief The constructor for SubvectorData.
 //
-// \param vector The vector containing the subvector.
 // \param index The offset of the subvector within the given vector.
 // \param n The size of the subvector.
-// \exception std::invalid_argument Invalid subvector specification.
 */
-template< typename VT >  // Type of the vector
-inline SubvectorData<VT>::SubvectorData( Operand vector, size_t index, size_t n )
-   : vector_   ( vector )  // The vector containing the subvector
-   , offset_   ( index  )  // The offset of the subvector within the vector
-   , size_     ( n      )  // The size of the subvector
-{
-   if( index + n > vector.size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the vector containing the subvector.
-//
-// \return The vector containing the subvector.
-*/
-template< typename VT >  // Type of the vector
-inline typename SubvectorData<VT>::Operand SubvectorData<VT>::operand() const noexcept
-{
-   return vector_;
-}
+inline constexpr SubvectorData<>::SubvectorData( size_t index, size_t n )
+   : offset_( index )  // The offset of the subvector within the vector
+   , size_  ( n     )  // The size of the subvector
+{}
 //*************************************************************************************************
 
 
@@ -171,8 +139,7 @@ inline typename SubvectorData<VT>::Operand SubvectorData<VT>::operand() const no
 //
 // \return The offset of the subvector.
 */
-template< typename VT >  // Type of the vector
-inline size_t SubvectorData<VT>::offset() const noexcept
+inline constexpr size_t SubvectorData<>::offset() const noexcept
 {
    return offset_;
 }
@@ -185,8 +152,7 @@ inline size_t SubvectorData<VT>::offset() const noexcept
 //
 // \return The size of the subvector.
 */
-template< typename VT >  // Type of the vector
-inline size_t SubvectorData<VT>::size() const noexcept
+inline constexpr size_t SubvectorData<>::size() const noexcept
 {
    return size_;
 }
@@ -210,21 +176,15 @@ inline size_t SubvectorData<VT>::size() const noexcept
 // This specialization of SubvectorData adapts the class template to the requirements of two
 // compile time arguments.
 */
-template< typename VT  // Type of the vector
-        , size_t I     // Index of the first element
-        , size_t N >   // Number of elements
-struct SubvectorData<VT,I,N>
+template< size_t I    // Index of the first element
+        , size_t N >  // Number of elements
+struct SubvectorData<I,N>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the matrix expression.
-   using Operand = If_< IsExpression<VT>, VT, VT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SubvectorData( Operand vector );
+   explicit inline constexpr SubvectorData();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -240,17 +200,8 @@ struct SubvectorData<VT,I,N>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Operand operand() const noexcept;
-   inline size_t  offset () const noexcept;
-   inline size_t  size   () const noexcept;
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   Operand vector_;  //!< The vector containing the subvector.
+   inline constexpr size_t offset() const noexcept;
+   inline constexpr size_t size  () const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -263,31 +214,10 @@ struct SubvectorData<VT,I,N>
 // \param vector The vector containing the subvector.
 // \exception std::invalid_argument Invalid subvector specification.
 */
-template< typename VT  // Type of the vector
-        , size_t I     // Index of the first element
-        , size_t N >   // Number of elements
-inline SubvectorData<VT,I,N>::SubvectorData( Operand vector )
-   : vector_( vector )  // The vector containing the subvector
-{
-   if( I + N > vector.size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the vector containing the subvector.
-//
-// \return The vector containing the subvector.
-*/
-template< typename VT  // Type of the vector
-        , size_t I     // Index of the first element
-        , size_t N >   // Number of elements
-inline typename SubvectorData<VT,I,N>::Operand SubvectorData<VT,I,N>::operand() const noexcept
-{
-   return vector_;
-}
+template< size_t I    // Index of the first element
+        , size_t N >  // Number of elements
+inline constexpr SubvectorData<I,N>::SubvectorData()
+{}
 //*************************************************************************************************
 
 
@@ -296,10 +226,9 @@ inline typename SubvectorData<VT,I,N>::Operand SubvectorData<VT,I,N>::operand() 
 //
 // \return The offset of the subvector.
 */
-template< typename VT  // Type of the vector
-        , size_t I     // Index of the first element
-        , size_t N >   // Number of elements
-inline size_t SubvectorData<VT,I,N>::offset() const noexcept
+template< size_t I    // Index of the first element
+        , size_t N >  // Number of elements
+inline constexpr size_t SubvectorData<I,N>::offset() const noexcept
 {
    return I;
 }
@@ -312,10 +241,9 @@ inline size_t SubvectorData<VT,I,N>::offset() const noexcept
 //
 // \return The size of the subvector.
 */
-template< typename VT  // Type of the vector
-        , size_t I     // Index of the first element
-        , size_t N >   // Number of elements
-inline size_t SubvectorData<VT,I,N>::size() const noexcept
+template< size_t I    // Index of the first element
+        , size_t N >  // Number of elements
+inline constexpr size_t SubvectorData<I,N>::size() const noexcept
 {
    return N;
 }

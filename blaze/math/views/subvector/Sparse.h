@@ -70,7 +70,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -102,11 +101,12 @@ template< typename VT       // Type of the sparse vector
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector<VT,AF,TF,false,CSAs...>
    : public View< SparseVector< Subvector<VT,AF,TF,false,CSAs...>, TF > >
-   , private SubvectorData<VT,CSAs...>
+   , private SubvectorData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<VT,CSAs...>;  //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CSAs...>;            //!< The type of the SubvectorData base class.
+   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -474,14 +474,14 @@ class Subvector<VT,AF,TF,false,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::offset;
    using DataType::size;
 
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
-   inline void   reserve( size_t n );
+   inline Operand operand() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
+   inline void    reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -547,7 +547,7 @@ class Subvector<VT,AF,TF,false,CSAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::vector_;
+   Operand vector_;  //!< The vector containing the subvector.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -588,9 +588,12 @@ template< typename VT         // Type of the sparse vector
         , size_t... CSAs >    // Compile time subvector arguments
 template< typename... RSAs >  // Runtime subvector arguments
 inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, RSAs... args )
-   : DataType( vector, args... )  // Base class initialization
+   : DataType( args... )  // Base class initialization
+   , vector_ ( vector  )  // The vector containing the subvector
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 2UL );
+   if( offset() + size() > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1325,6 +1328,25 @@ inline EnableIf_<IsNumeric<Other>, Subvector<VT,AF,TF,false,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,AF,TF,false,CSAs...>::Operand
+   Subvector<VT,AF,TF,false,CSAs...>::operand() const noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

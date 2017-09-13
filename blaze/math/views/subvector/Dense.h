@@ -83,7 +83,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -111,11 +110,12 @@ template< typename VT       // Type of the dense vector
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector<VT,unaligned,TF,true,CSAs...>
    : public View< DenseVector< Subvector<VT,unaligned,TF,true,CSAs...>, TF > >
-   , private SubvectorData<VT,CSAs...>
+   , private SubvectorData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<VT,CSAs...>;  //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CSAs...>;            //!< The type of the SubvectorData base class.
+   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -616,14 +616,14 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::offset;
    using DataType::size;
 
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -766,8 +766,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   using DataType::vector_;
-
+   Operand vector_;        //!< The vector containing the subvector.
    const bool isAligned_;  //!< Memory alignment flag.
                            /*!< The alignment flag indicates whether the subvector is fully aligned
                                 with respect to the given element type and the available instruction
@@ -819,10 +818,13 @@ template< typename VT         // Type of the dense vector
         , size_t... CSAs >    // Compile time subvector arguments
 template< typename... RSAs >  // Runtime subvector arguments
 inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... args )
-   : DataType( vector, args... )  // Base class initialization
+   : DataType  ( args... )  // Base class initialization
+   , vector_   ( vector  )  // The vector containing the subvector
    , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 2UL );
+   if( offset() + size() > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1579,6 +1581,24 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Operand
+   Subvector<VT,unaligned,TF,true,CSAs...>::operand() const noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2646,11 +2666,12 @@ template< typename VT       // Type of the dense vector
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector<VT,aligned,TF,true,CSAs...>
    : public View< DenseVector< Subvector<VT,aligned,TF,true,CSAs...>, TF > >
-   , private SubvectorData<VT,CSAs...>
+   , private SubvectorData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<VT,CSAs...>;  //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CSAs...>;            //!< The type of the SubvectorData base class.
+   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -2749,14 +2770,14 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::offset;
    using DataType::size;
 
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -2897,7 +2918,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::vector_;
+   Operand vector_;  //!< The vector containing the subvector.
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -2941,9 +2962,12 @@ template< typename VT         // Type of the dense vector
         , size_t... CSAs >    // Compile time subvector arguments
 template< typename... RSAs >  // Runtime subvector arguments
 inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... args )
-   : DataType( vector, args... )  // Base class initialization
+   : DataType( args... )  // Base class initialization
+   , vector_ ( vector  )  // The vector containing the subvector
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) + sizeof...( RSAs ) == 2UL );
+   if( offset() + size() > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
 
    if( simdEnabled && vector_.data() != nullptr && !checkAlignment( data() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
@@ -3698,6 +3722,24 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline typename Subvector<VT,aligned,TF,true,CSAs...>::Operand
+   Subvector<VT,aligned,TF,true,CSAs...>::operand() const noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -4755,13 +4797,13 @@ template< typename VT1      // Type of the left-hand side dense vector
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    : public View< DenseVector< Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
-   , private SubvectorData< DVecDVecCrossExpr<VT1,VT2,TF>, CSAs... >
+   , private SubvectorData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,CSAs...>;     //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
@@ -4787,24 +4829,15 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with compile time arguments.
+   /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The dense vector/dense vector cross product expression.
+   // \param args The runtime subvector arguments.
    */
-   explicit inline Subvector( const CPE& vector ) noexcept
-      : DataType( vector )  // Base class initialization
-   {}
-   //**********************************************************************************************
-
-   //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with runtime arguments.
-   //
-   // \param vector The dense vector/dense vector cross product expression.
-   // \param index The offset of the subvector in the given expression.
-   // \param n The size of the subvector.
-   */
-   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
-      : DataType( vector, index, n )  // Base class initialization
+   template< typename... RSAs >
+   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
+      : DataType( args... )  // Base class initialization
+      , vector_ ( vector  )  // The dense vector/dense vector cross product expression
    {}
    //**********************************************************************************************
 
@@ -4836,9 +4869,18 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   using DataType::operand;
    using DataType::offset;
    using DataType::size;
+   //**********************************************************************************************
+
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
+   //
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -4867,7 +4909,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
  private:
    //**Member variables****************************************************************************
-   using DataType::vector_;
+   CPE vector_;  //!< The dense vector/dense vector cross product expression.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -4900,13 +4942,13 @@ template< typename VT1      // Type of the left-hand side dense vector
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    : public View< DenseVector< Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
-   , private SubvectorData< DVecSVecCrossExpr<VT1,VT2,TF>, CSAs... >
+   , private SubvectorData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,CSAs...>;      //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
@@ -4932,24 +4974,15 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with compile time arguments.
+   /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The dense vector/sparse vector cross product expression.
+   // \param args The runtime subvector arguments.
    */
-   explicit inline Subvector( const CPE& vector ) noexcept
-      : DataType( vector )  // Base class initialization
-   {}
-   //**********************************************************************************************
-
-   //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with runtime arguments.
-   //
-   // \param vector The dense vector/sparse vector cross product expression.
-   // \param index The offset of the subvector in the given expression.
-   // \param n The size of the subvector.
-   */
-   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
-      : DataType( vector, index, n )  // Base class initialization
+   template< typename... RSAs >
+   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
+      : DataType( args... )  // Base class initialization
+      , vector_ ( vector  )  // The dense vector/sparse vector cross product expression
    {}
    //**********************************************************************************************
 
@@ -4981,9 +5014,18 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   using DataType::operand;
    using DataType::offset;
    using DataType::size;
+   //**********************************************************************************************
+
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
+   //
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -5012,7 +5054,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
  private:
    //**Member variables****************************************************************************
-   using DataType::vector_;
+   CPE vector_;  //!< The dense vector/sparse vector cross product expression.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5045,13 +5087,13 @@ template< typename VT1      // Type of the left-hand side sparse vector
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    : public View< DenseVector< Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
-   , private SubvectorData< SVecDVecCrossExpr<VT1,VT2,TF>, CSAs... >
+   , private SubvectorData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,CSAs...>;      //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
@@ -5077,24 +5119,15 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with compile time arguments.
+   /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The sparse vector/dense vector cross product expression.
+   // \param args The runtime subvector arguments.
    */
-   explicit inline Subvector( const CPE& vector ) noexcept
-      : DataType( vector )  // Base class initialization
-   {}
-   //**********************************************************************************************
-
-   //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with compile time arguments.
-   //
-   // \param vector The sparse vector/dense vector cross product expression.
-   // \param index The offset of the subvector in the given expression.
-   // \param n The size of the subvector.
-   */
-   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
-      : DataType( vector, index, n )  // Base class initialization
+   template< typename... RSAs >
+   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
+      : DataType( args... )  // Base class initialization
+      , vector_ ( vector  )  // The sparse vector/dense vector cross product expression
    {}
    //**********************************************************************************************
 
@@ -5126,9 +5159,18 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   using DataType::operand;
    using DataType::offset;
    using DataType::size;
+   //**********************************************************************************************
+
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
+   //
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -5157,7 +5199,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
  private:
    //**Member variables****************************************************************************
-   using DataType::vector_;
+   CPE vector_;  //!< The sparse vector/dense vector cross product expression.
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -5190,13 +5232,13 @@ template< typename VT1      // Type of the left-hand side sparse vector
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    : public View< DenseVector< Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >, TF > >
-   , private SubvectorData< SVecSVecCrossExpr<VT1,VT2,TF>, CSAs... >
+   , private SubvectorData<CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
    using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
-   using DataType = SubvectorData<CPE,CSAs...>;      //!< The type of the SubvectorData base class.
+   using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
  public:
@@ -5222,24 +5264,15 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with compile time arguments.
+   /*!\brief Constructor for the Subvector specialization class.
    //
    // \param vector The sparse vector/sparse vector cross product expression.
+   // \param args The runtime subvector arguments.
    */
-   explicit inline Subvector( const CPE& vector ) noexcept
-      : DataType( vector )  // Base class initialization
-   {}
-   //**********************************************************************************************
-
-   //**Constructor*********************************************************************************
-   /*!\brief The constructor for subvectors with runtime arguments.
-   //
-   // \param vector The sparse vector/sparse vector cross product expression.
-   // \param index The offset of the subvector in the given expression.
-   // \param n The size of the subvector.
-   */
-   explicit inline Subvector( const CPE& vector, size_t index, size_t n ) noexcept
-      : DataType( vector, index, n )  // Base class initialization
+   template< typename... RSAs >
+   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
+      : DataType( args... )  // Base class initialization
+      , vector_ ( vector  )  // The sparse vector/sparse vector cross product expression
    {}
    //**********************************************************************************************
 
@@ -5271,9 +5304,18 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   using DataType::operand;
    using DataType::offset;
    using DataType::size;
+   //**********************************************************************************************
+
+   //**Operand access******************************************************************************
+   /*!\brief Returns the cross product expression containing the subvector.
+   //
+   // \return The cross product expression containing the subvector.
+   */
+   inline CPE operand() const noexcept {
+      return vector_;
+   }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -5302,7 +5344,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
  private:
    //**Member variables****************************************************************************
-   using DataType::vector_;
+   CPE vector_;  //!< The sparse vector/sparse vector cross product expression.
    //**********************************************************************************************
 };
 /*! \endcond */
