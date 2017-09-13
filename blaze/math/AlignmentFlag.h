@@ -40,16 +40,16 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  ALIGNMENT FLAG VALUES
+//  ALIGNMENT FLAG
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Alignment flag for unaligned vectors and matrices.
+/*!\brief Alignment flag for (un-)aligned vectors and matrices.
 // \ingroup math
 //
-// Via this flag it is possible to specify subvectors, submatrices, custom vectors and matrices
-// as unaligned. The following example demonstrates the setup of an unaligned subvector:
+// Via these flags it is possible to specify subvectors, submatrices, custom vectors and matrices
+// as unaligned or aligned. The following example demonstrates the setup of an unaligned subvector:
 
    \code
    using blaze::columnVector;
@@ -59,26 +59,11 @@ namespace blaze {
    auto sv = subvector<unaligned>( v, 10UL, 20UL );
    \endcode
 */
-constexpr bool unaligned = false;
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Alignment flag for aligned vectors and matrices.
-// \ingroup math
-//
-// Via this flag it is possible to specify subvectors, submatrices, custom vectors and matrices
-// as aligned. The following example demonstrates the setup of an aligned subvector:
-
-   \code
-   using blaze::columnVector;
-   using blaze::aligned;
-
-   blaze::DynamicVector<int,columnVector> v( 100UL );
-   auto sv = subvector<aligned>( v, 8UL, 32UL );
-   \endcode
-*/
-constexpr bool aligned = true;
+enum AlignmentFlag : bool
+{
+   unaligned = false,  //!< Flag for unaligned vectors and matrices.
+   aligned   = true    //!< Flag for aligned vectors and matrices.
+};
 //*************************************************************************************************
 
 } // namespace blaze
