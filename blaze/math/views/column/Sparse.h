@@ -113,11 +113,12 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 class Column<MT,true,false,SF,CCAs...>
    : public View< SparseVector< Column<MT,true,false,SF,CCAs...>, false > >
-   , private ColumnData<MT,CCAs...>
+   , private ColumnData<CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CCAs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -206,14 +207,14 @@ class Column<MT,true,false,SF,CCAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::column;
 
-   inline size_t size() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
-   inline void   reserve( size_t n );
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
+   inline void    reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -284,7 +285,10 @@ class Column<MT,true,false,SF,CCAs...>
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the column.
+   //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -321,8 +325,13 @@ template< typename MT         // Type of the sparse matrix
         , size_t... CCAs >    // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Column<MT,true,false,SF,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the column
+{
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1237,6 +1246,24 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,true,false,SF,CCAs...> >&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline typename Column<MT,true,false,SF,CCAs...>::Operand
+   Column<MT,true,false,SF,CCAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current size/dimension of the sparse column.
 //
 // \return The size of the sparse column.
@@ -2069,11 +2096,12 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 class Column<MT,false,false,false,CCAs...>
    : public View< SparseVector< Column<MT,false,false,false,CCAs...>, false > >
-   , private ColumnData<MT,CCAs...>
+   , private ColumnData<CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CCAs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2468,14 +2496,14 @@ class Column<MT,false,false,false,CCAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::column;
 
-   inline size_t size() const;
-   inline size_t capacity() const;
-   inline size_t nonZeros() const;
-   inline void   reset();
-   inline void   reserve( size_t n );
+   inline Operand operand() const noexcept;
+   inline size_t  size() const;
+   inline size_t  capacity() const;
+   inline size_t  nonZeros() const;
+   inline void    reset();
+   inline void    reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -2537,7 +2565,10 @@ class Column<MT,false,false,false,CCAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the column.
+   //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2574,8 +2605,13 @@ template< typename MT         // Type of the sparse matrix
         , size_t... CCAs >    // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Column<MT,false,false,false,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the column
+{
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3260,6 +3296,23 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,false,CCAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline typename Column<MT,false,false,false,CCAs...>::Operand
+   Column<MT,false,false,false,CCAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -4041,11 +4094,12 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 class Column<MT,false,false,true,CCAs...>
    : public View< SparseVector< Column<MT,false,false,true,CCAs...>, false > >
-   , private ColumnData<MT,CCAs...>
+   , private ColumnData<CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CCAs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -4134,14 +4188,14 @@ class Column<MT,false,false,true,CCAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::column;
 
-   inline size_t size() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
-   inline void   reserve( size_t n );
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
+   inline void    reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -4212,7 +4266,10 @@ class Column<MT,false,false,true,CCAs...>
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the column.
+   //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4249,8 +4306,13 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Column<MT,false,false,true,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the column
+{
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -5140,6 +5202,23 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,true,CCAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline typename Column<MT,false,false,true,CCAs...>::Operand
+   Column<MT,false,false,true,CCAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

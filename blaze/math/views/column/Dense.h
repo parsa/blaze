@@ -122,11 +122,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 class Column<MT,true,true,SF,CCAs...>
    : public View< DenseVector< Column<MT,true,true,SF,CCAs...>, false > >
-   , private ColumnData<MT,CCAs...>
+   , private ColumnData<CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CCAs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -226,14 +227,14 @@ class Column<MT,true,true,SF,CCAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::column;
 
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -374,7 +375,10 @@ class Column<MT,true,true,SF,CCAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the column.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -415,8 +419,13 @@ template< typename MT         // Type of the dense matrix
         , size_t... CCAs >    // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Column<MT,true,true,SF,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the column
+{
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1195,6 +1204,24 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,true,true,SF,CCAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the dense matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline typename Column<MT,true,true,SF,CCAs...>::Operand
+   Column<MT,true,true,SF,CCAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2241,11 +2268,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 class Column<MT,false,true,false,CCAs...>
    : public View< DenseVector< Column<MT,false,true,false,CCAs...>, false > >
-   , private ColumnData<MT,CCAs...>
+   , private ColumnData<CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CCAs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2641,14 +2669,14 @@ class Column<MT,false,true,false,CCAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::column;
 
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -2691,7 +2719,10 @@ class Column<MT,false,true,false,CCAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the column.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -2732,8 +2763,13 @@ template< typename MT         // Type of the dense matrix
         , size_t... CCAs >    // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Column<MT,false,true,false,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the column
+{
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3493,6 +3529,23 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,false,CCAs...> >&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline typename Column<MT,false,true,false,CCAs...>::Operand
+   Column<MT,false,true,false,CCAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current size/dimension of the column.
 //
 // \return The size of the column.
@@ -4089,11 +4142,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 class Column<MT,false,true,true,CCAs...>
    : public View< DenseVector< Column<MT,false,true,true,CCAs...>, false > >
-   , private ColumnData<MT,CCAs...>
+   , private ColumnData<CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<MT,CCAs...>;  //!< The type of the ColumnData base class.
+   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -4193,14 +4247,14 @@ class Column<MT,false,true,true,CCAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::column;
 
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -4341,7 +4395,10 @@ class Column<MT,false,true,true,CCAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the column.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -4382,8 +4439,13 @@ template< typename MT         // Type of the dense matrix
         , size_t... CCAs >    // Compile time column arguments
 template< typename... RCAs >  // Runtime column arguments
 inline Column<MT,false,true,true,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the column
+{
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -5135,6 +5197,23 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,true,CCAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline typename Column<MT,false,true,true,CCAs...>::Operand
+   Column<MT,false,true,true,CCAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

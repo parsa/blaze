@@ -40,9 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Exception.h>
-#include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -62,8 +59,7 @@ namespace blaze {
 // the Column class template. The necessary set of data members is selected depending on the
 // number of compile time column arguments.
 */
-template< typename MT       // Type of the matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< size_t... CCAs >  // Compile time column arguments
 struct ColumnData
 {};
 //*************************************************************************************************
@@ -84,19 +80,14 @@ struct ColumnData
 // This specialization of ColumnData adapts the class template to the requirements of zero compile
 // time column arguments.
 */
-template< typename MT >  // Type of the matrix
-struct ColumnData<MT>
+template<>
+struct ColumnData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline ColumnData( Operand matrix, size_t index );
+   explicit inline constexpr ColumnData( size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -112,16 +103,14 @@ struct ColumnData<MT>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Operand operand() const noexcept;
-   inline size_t  column () const noexcept;
+   inline constexpr size_t column() const noexcept;
    //@}
    //**********************************************************************************************
 
- protected:
+ private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand      matrix_;  //!< The matrix containing the column.
    const size_t column_;  //!< The index of the column in the matrix.
    //@}
    //**********************************************************************************************
@@ -132,32 +121,11 @@ struct ColumnData<MT>
 //*************************************************************************************************
 /*!\brief The constructor for ColumnData.
 //
-// \param matrix The matrix containing the column.
 // \param index The index of the column.
-// \exception std::invalid_argument Invalid column access index.
 */
-template< typename MT >  // Type of the matrix
-inline ColumnData<MT>::ColumnData( Operand matrix, size_t index )
-   : matrix_( matrix )  // The matrix containing the column
-   , column_( index  )  // The index of the column in the matrix
-{
-   if( matrix_.columns() <= column() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the column.
-//
-// \return The matrix containing the column.
-*/
-template< typename MT >  // Type of the matrix
-inline typename ColumnData<MT>::Operand ColumnData<MT>::operand() const noexcept
-{
-   return matrix_;
-}
+inline constexpr ColumnData<>::ColumnData( size_t index )
+   : column_( index )  // The index of the column in the matrix
+{}
 //*************************************************************************************************
 
 
@@ -166,8 +134,7 @@ inline typename ColumnData<MT>::Operand ColumnData<MT>::operand() const noexcept
 //
 // \return The index of the column.
 */
-template< typename MT >  // Type of the matrix
-inline size_t ColumnData<MT>::column() const noexcept
+inline constexpr size_t ColumnData<>::column() const noexcept
 {
    return column_;
 }
@@ -189,20 +156,14 @@ inline size_t ColumnData<MT>::column() const noexcept
 // This specialization of ColumnData adapts the class template to the requirements of a single
 // compile time column argument.
 */
-template< typename MT  // Type of the matrix
-        , size_t I >   // Compile time column index
-struct ColumnData<MT,I>
+template< size_t I >   // Compile time column index
+struct ColumnData<I>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline ColumnData( Operand matrix );
+   explicit inline constexpr ColumnData();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -218,16 +179,7 @@ struct ColumnData<MT,I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline           Operand   operand() const noexcept;
-   inline constexpr size_t    column () const noexcept;
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   Operand matrix_;  //!< The matrix containing the column.
+   inline constexpr size_t column() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -236,33 +188,10 @@ struct ColumnData<MT,I>
 
 //*************************************************************************************************
 /*!\brief The constructor for ColumnData.
-//
-// \param matrix The matrix containing the column.
-// \exception std::invalid_argument Invalid column access index.
 */
-template< typename MT  // Type of the matrix
-        , size_t I >   // Compile time column index
-inline ColumnData<MT,I>::ColumnData( Operand matrix )
-   : matrix_( matrix )  // The matrix containing the column
-{
-   if( matrix_.columns() <= column() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the column.
-//
-// \return The matrix containing the column.
-*/
-template< typename MT  // Type of the matrix
-        , size_t I >   // Compile time column index
-inline typename ColumnData<MT,I>::Operand ColumnData<MT,I>::operand() const noexcept
-{
-   return matrix_;
-}
+template< size_t I >  // Compile time column index
+inline constexpr ColumnData<I>::ColumnData()
+{}
 //*************************************************************************************************
 
 
@@ -271,9 +200,8 @@ inline typename ColumnData<MT,I>::Operand ColumnData<MT,I>::operand() const noex
 //
 // \return The index of the column.
 */
-template< typename MT  // Type of the matrix
-        , size_t I >   // Compile time column index
-inline constexpr size_t ColumnData<MT,I>::column() const noexcept
+template< size_t I >  // Compile time column index
+inline constexpr size_t ColumnData<I>::column() const noexcept
 {
    return I;
 }
