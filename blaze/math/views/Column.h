@@ -121,7 +121,8 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column_<MT,I>( ~matrix );
+   using ReturnType = Column_<MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -161,7 +162,8 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column_<const MT,I>( ~matrix );
+   using ReturnType = const Column_<const MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -186,7 +188,8 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column_<MT,I>( ~matrix );
+   using ReturnType = Column_<MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -226,7 +229,8 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column_<MT>( ~matrix, index );
+   using ReturnType = Column_<MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -266,7 +270,8 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column_<const MT>( ~matrix, index );
+   using ReturnType = const Column_<const MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -291,7 +296,8 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Column_<MT>( ~matrix, index );
+   using ReturnType = Column_<MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -310,41 +316,21 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix/matrix addition.
+// \param args The runtime column arguments.
 // \return View on the specified column of the addition.
 //
 // This function returns an expression representing the specified column of the given matrix/matrix
 // addition.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatAddExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatMatAddExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<I>( (~matrix).leftOperand() ) + column<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix/matrix addition.
-// \ingroup column
-//
-// \param matrix The constant matrix/matrix addition.
-// \param index The index of the column.
-// \return View on the specified column of the addition.
-//
-// This function returns an expression representing the specified column of the given matrix/matrix
-// addition.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatAddExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( (~matrix).leftOperand(), index ) + column( (~matrix).rightOperand(), index );
+   return column<CCAs...>( (~matrix).leftOperand(), args... ) +
+          column<CCAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -356,41 +342,21 @@ inline decltype(auto) column( const MatMatAddExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix/matrix subtraction.
+// \param args The runtime column arguments.
 // \return View on the specified column of the subtraction.
 //
 // This function returns an expression representing the specified column of the given matrix/matrix
 // subtraction.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatSubExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatMatSubExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<I>( (~matrix).leftOperand() ) - column<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix/matrix subtraction.
-// \ingroup column
-//
-// \param matrix The constant matrix/matrix subtraction.
-// \param index The index of the column.
-// \return View on the specified column of the subtraction.
-//
-// This function returns an expression representing the specified column of the given matrix/matrix
-// subtraction.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatSubExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( (~matrix).leftOperand(), index ) - column( (~matrix).rightOperand(), index );
+   return column<CCAs...>( (~matrix).leftOperand(), args... ) -
+          column<CCAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -402,41 +368,21 @@ inline decltype(auto) column( const MatMatSubExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant Schur product.
+// \param args The runtime column arguments.
 // \return View on the specified column of the Schur product.
 //
 // This function returns an expression representing the specified column of the given Schur
 // product.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const SchurExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const SchurExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<I>( (~matrix).leftOperand() ) * column<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given Schur product.
-// \ingroup column
-//
-// \param matrix The constant Schur product.
-// \param index The index of the column.
-// \return View on the specified column of the Schur product.
-//
-// This function returns an expression representing the specified column of the given Schur
-// product.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const SchurExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( (~matrix).leftOperand(), index ) * column( (~matrix).rightOperand(), index );
+   return column<CCAs...>( (~matrix).leftOperand(), args... ) *
+          column<CCAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -448,41 +394,20 @@ inline decltype(auto) column( const SchurExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix/matrix multiplication.
+// \param args The runtime column arguments.
 // \return View on the specified column of the multiplication.
 //
 // This function returns an expression representing the specified column of the given matrix/matrix
 // multiplication.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatMultExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return (~matrix).leftOperand() * column<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix/matrix multiplication.
-// \ingroup column
-//
-// \param matrix The constant matrix/matrix multiplication.
-// \param index The index of the column.
-// \return View on the specified column of the multiplication.
-//
-// This function returns an expression representing the specified column of the given matrix/matrix
-// multiplication.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return (~matrix).leftOperand() * column( (~matrix).rightOperand(), index );
+   return (~matrix).leftOperand() * column<CCAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -540,41 +465,20 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix/scalar multiplication.
+// \param args The runtime column arguments.
 // \return View on the specified column of the multiplication.
 //
 // This function returns an expression representing the specified column of the given matrix/scalar
 // multiplication.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<I>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix/scalar multiplication.
-// \ingroup column
-//
-// \param matrix The constant matrix/scalar multiplication.
-// \param index The index of the column.
-// \return View on the specified column of the multiplication.
-//
-// This function returns an expression representing the specified column of the given matrix/scalar
-// multiplication.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( (~matrix).leftOperand(), index ) * (~matrix).rightOperand();
+   return column<CCAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -586,41 +490,20 @@ inline decltype(auto) column( const MatScalarMultExpr<MT>& matrix, size_t index 
 // \ingroup column
 //
 // \param matrix The constant matrix/scalar division.
+// \param args The runtime column arguments.
 // \return View on the specified column of the division.
 //
 // This function returns an expression representing the specified column of the given matrix/scalar
 // division.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<I>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix/scalar division.
-// \ingroup column
-//
-// \param matrix The constant matrix/scalar division.
-// \param index The index of the column.
-// \return View on the specified column of the division.
-//
-// This function returns an expression representing the specified column of the given matrix/scalar
-// division.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( (~matrix).leftOperand(), index ) / (~matrix).rightOperand();
+   return column<CCAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -632,41 +515,20 @@ inline decltype(auto) column( const MatScalarDivExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant unary matrix map operation.
+// \param args The runtime column arguments.
 // \return View on the specified column of the unary map operation.
 //
 // This function returns an expression representing the specified column of the given unary
 // matrix map operation.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMapExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( column<I>( (~matrix).operand() ), (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given unary matrix map operation.
-// \ingroup column
-//
-// \param matrix The constant unary matrix map operation.
-// \param index The index of the column.
-// \return View on the specified column of the unary map operation.
-//
-// This function returns an expression representing the specified column of the given unary
-// matrix map operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMapExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( column( (~matrix).operand(), index ), (~matrix).operation() );
+   return map( column<CCAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -678,44 +540,21 @@ inline decltype(auto) column( const MatMapExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant binary matrix map operation.
+// \param args The runtime column arguments.
 // \return View on the specified column of the binary map operation.
 //
 // This function returns an expression representing the specified column of the given binary
 // matrix map operation.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatMapExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatMatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( column<I>( (~matrix).leftOperand() ),
-               column<I>( (~matrix).rightOperand() ),
-               (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given binary matrix map operation.
-// \ingroup column
-//
-// \param matrix The constant binary matrix map operation.
-// \param index The index of the column.
-// \return View on the specified column of the binary map operation.
-//
-// This function returns an expression representing the specified column of the given binary
-// matrix map operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatMatMapExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( column( (~matrix).leftOperand() , index ),
-               column( (~matrix).rightOperand(), index ),
+   return map( column<CCAs...>( (~matrix).leftOperand(), args... ),
+               column<CCAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
 }
 /*! \endcond */
@@ -728,41 +567,20 @@ inline decltype(auto) column( const MatMatMapExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix evaluation operation.
+// \param args The runtime column arguments.
 // \return View on the specified column of the evaluation operation.
 //
 // This function returns an expression representing the specified column of the given matrix
 // evaluation operation.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatEvalExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatEvalExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( column<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix evaluation operation.
-// \ingroup column
-//
-// \param matrix The constant matrix evaluation operation.
-// \param index The index of the column.
-// \return View on the specified column of the evaluation operation.
-//
-// This function returns an expression representing the specified column of the given matrix
-// evaluation operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatEvalExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return eval( column( (~matrix).operand(), index ) );
+   return eval( column<CCAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -774,41 +592,20 @@ inline decltype(auto) column( const MatEvalExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix serialization operation.
+// \param args The runtime column arguments.
 // \return View on the specified column of the serialization operation.
 //
 // This function returns an expression representing the specified column of the given matrix
 // serialization operation.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatSerialExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatSerialExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( column<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix serialization operation.
-// \ingroup column
-//
-// \param matrix The constant matrix serialization operation.
-// \param index The index of the column.
-// \return View on the specified column of the serialization operation.
-//
-// This function returns an expression representing the specified column of the given matrix
-// serialization operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatSerialExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return serial( column( (~matrix).operand(), index ) );
+   return serial( column<CCAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -820,41 +617,20 @@ inline decltype(auto) column( const MatSerialExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix declaration operation.
+// \param args The runtime column arguments.
 // \return View on the specified column of the declaration operation.
 //
 // This function returns an expression representing the specified column of the given matrix
 // declaration operation.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const DeclExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const DeclExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return column<I>( (~matrix).operand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix declaration operation.
-// \ingroup column
-//
-// \param matrix The constant matrix declaration operation.
-// \param index The index of the column.
-// \return View on the specified column of the declaration operation.
-//
-// This function returns an expression representing the specified column of the given matrix
-// declaration operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const DeclExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return column( (~matrix).operand(), index );
+   return column<CCAs...>( (~matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -866,41 +642,20 @@ inline decltype(auto) column( const DeclExpr<MT>& matrix, size_t index )
 // \ingroup column
 //
 // \param matrix The constant matrix transpose operation.
+// \param args The runtime column arguments.
 // \return View on the specified column of the transpose operation.
 //
 // This function returns an expression representing the specified column of the given matrix
 // transpose operation.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatTransExpr<MT>& matrix )
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatTransExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( row<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given matrix transpose operation.
-// \ingroup column
-//
-// \param matrix The constant matrix transpose operation.
-// \param index The index of the column.
-// \return View on the specified column of the transpose operation.
-//
-// This function returns an expression representing the specified column of the given matrix
-// transpose operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const MatTransExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( row( (~matrix).operand(), index ) );
+   return trans( row<CCAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
