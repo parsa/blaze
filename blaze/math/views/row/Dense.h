@@ -121,11 +121,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
 class Row<MT,true,true,SF,CRAs...>
    : public View< DenseVector< Row<MT,true,true,SF,CRAs...>, true > >
-   , private RowData<MT,CRAs...>
+   , private RowData<CRAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<MT,CRAs...>;  //!< The type of the RowData base class.
+   using DataType = RowData<CRAs...>;                  //!< The type of the RowData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -225,14 +226,14 @@ class Row<MT,true,true,SF,CRAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
 
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -373,7 +374,10 @@ class Row<MT,true,true,SF,CRAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the row.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -414,8 +418,13 @@ template< typename MT         // Type of the dense matrix
         , size_t... CRAs >    // Compile time row arguments
 template< typename... RRAs >  // Runtime row arguments
 inline Row<MT,true,true,SF,CRAs...>::Row( MT& matrix, RRAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the row
+{
+   if( matrix_.rows() <= row() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1194,6 +1203,24 @@ inline EnableIf_< IsNumeric<Other>, Row<MT,true,true,SF,CRAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the dense matrix
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline typename Row<MT,true,true,SF,CRAs...>::Operand
+   Row<MT,true,true,SF,CRAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2242,11 +2269,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
 class Row<MT,false,true,false,CRAs...>
    : public View< DenseVector< Row<MT,false,true,false,CRAs...>, true > >
-   , private RowData<MT,CRAs...>
+   , private RowData<CRAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<MT,CRAs...>;  //!< The type of the RowData base class.
+   using DataType = RowData<CRAs...>;                  //!< The type of the RowData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2642,14 +2670,14 @@ class Row<MT,false,true,false,CRAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
 
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -2692,7 +2720,10 @@ class Row<MT,false,true,false,CRAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the row.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -2733,8 +2764,13 @@ template< typename MT         // Type of the dense matrix
         , size_t... CRAs >    // Compile time row arguments
 template< typename... RRAs >  // Runtime row arguments
 inline Row<MT,false,true,false,CRAs...>::Row( MT& matrix, RRAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the row
+{
+   if( matrix_.rows() <= row() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3494,6 +3530,23 @@ inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,false,CRAs...> >&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline typename Row<MT,false,true,false,CRAs...>::Operand
+   Row<MT,false,true,false,CRAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current size/dimension of the row.
 //
 // \return The size of the row.
@@ -4090,11 +4143,12 @@ template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
 class Row<MT,false,true,true,CRAs...>
    : public View< DenseVector< Row<MT,false,true,true,CRAs...>, true > >
-   , private RowData<MT,CRAs...>
+   , private RowData<CRAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<MT,CRAs...>;  //!< The type of the RowData base class.
+   using DataType = RowData<CRAs...>;                  //!< The type of the RowData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -4194,14 +4248,14 @@ class Row<MT,false,true,true,CRAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::row;
 
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -4342,7 +4396,10 @@ class Row<MT,false,true,true,CRAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the row.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -4383,8 +4440,13 @@ template< typename MT         // Type of the dense matrix
         , size_t... CRAs >    // Compile time row arguments
 template< typename... RRAs >  // Runtime row arguments
 inline Row<MT,false,true,true,CRAs...>::Row( MT& matrix, RRAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the row
+{
+   if( matrix_.rows() <= row() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -5136,6 +5198,23 @@ inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,true,CRAs...> >&
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline typename Row<MT,false,true,true,CRAs...>::Operand
+   Row<MT,false,true,true,CRAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

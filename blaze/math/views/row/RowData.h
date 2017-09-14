@@ -40,9 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Exception.h>
-#include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -62,8 +59,7 @@ namespace blaze {
 // Row class template. The necessary set of data members is selected depending on the number
 // of compile time row arguments.
 */
-template< typename MT       // Type of the matrix
-        , size_t... CRAs >  // Compile time row arguments
+template< size_t... CRAs >  // Compile time row arguments
 struct RowData
 {};
 //*************************************************************************************************
@@ -84,19 +80,14 @@ struct RowData
 // This specialization of RowData adapts the class template to the requirements of zero compile
 // time row arguments.
 */
-template< typename MT >  // Type of the matrix
-struct RowData<MT>
+template<>
+struct RowData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline RowData( Operand matrix, size_t index );
+   explicit inline constexpr RowData( size_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -112,17 +103,15 @@ struct RowData<MT>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Operand operand() const noexcept;
-   inline size_t  row    () const noexcept;
+   inline constexpr size_t row() const noexcept;
    //@}
    //**********************************************************************************************
 
- protected:
+ private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand      matrix_;  //!< The matrix containing the row.
-   const size_t row_;     //!< The index of the row in the matrix.
+   const size_t row_;  //!< The index of the row in the matrix.
    //@}
    //**********************************************************************************************
 };
@@ -132,32 +121,11 @@ struct RowData<MT>
 //*************************************************************************************************
 /*!\brief The constructor for RowData.
 //
-// \param matrix The matrix containing the row.
 // \param index The index of the row.
-// \exception std::invalid_argument Invalid row access index.
 */
-template< typename MT >  // Type of the matrix
-inline RowData<MT>::RowData( Operand matrix, size_t index )
-   : matrix_( matrix )  // The matrix containing the row
-   , row_   ( index  )  // The index of the row in the matrix
-{
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the row.
-//
-// \return The matrix containing the row.
-*/
-template< typename MT >  // Type of the matrix
-inline typename RowData<MT>::Operand RowData<MT>::operand() const noexcept
-{
-   return matrix_;
-}
+inline constexpr RowData<>::RowData( size_t index )
+   : row_( index )  // The index of the row in the matrix
+{}
 //*************************************************************************************************
 
 
@@ -166,8 +134,7 @@ inline typename RowData<MT>::Operand RowData<MT>::operand() const noexcept
 //
 // \return The index of the row.
 */
-template< typename MT >  // Type of the matrix
-inline size_t RowData<MT>::row() const noexcept
+inline constexpr size_t RowData<>::row() const noexcept
 {
    return row_;
 }
@@ -189,20 +156,14 @@ inline size_t RowData<MT>::row() const noexcept
 // This specialization of RowData adapts the class template to the requirements of a single
 // compile time row argument.
 */
-template< typename MT     // Type of the matrix
-        , size_t Index >  // Compile time row index
-struct RowData<MT,Index>
+template< size_t Index >  // Compile time row index
+struct RowData<Index>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline RowData( Operand matrix );
+   explicit inline constexpr RowData();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -218,16 +179,7 @@ struct RowData<MT,Index>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline           Operand   operand() const noexcept;
-   inline constexpr size_t    row    () const noexcept;
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   Operand matrix_;  //!< The matrix containing the row.
+   inline constexpr size_t row() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -236,33 +188,10 @@ struct RowData<MT,Index>
 
 //*************************************************************************************************
 /*!\brief The constructor for RowData.
-//
-// \param matrix The matrix containing the row.
-// \exception std::invalid_argument Invalid row access index.
 */
-template< typename MT     // Type of the matrix
-        , size_t Index >  // Compile time row index
-inline RowData<MT,Index>::RowData( Operand matrix )
-   : matrix_( matrix )  // The matrix containing the row
-{
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the row.
-//
-// \return The matrix containing the row.
-*/
-template< typename MT     // Type of the matrix
-        , size_t Index >  // Compile time row index
-inline typename RowData<MT,Index>::Operand RowData<MT,Index>::operand() const noexcept
-{
-   return matrix_;
-}
+template< size_t Index >  // Compile time row index
+inline constexpr RowData<Index>::RowData()
+{}
 //*************************************************************************************************
 
 
@@ -271,9 +200,8 @@ inline typename RowData<MT,Index>::Operand RowData<MT,Index>::operand() const no
 //
 // \return The index of the row.
 */
-template< typename MT     // Type of the matrix
-        , size_t Index >  // Compile time row index
-inline constexpr size_t RowData<MT,Index>::row() const noexcept
+template< size_t Index >  // Compile time row index
+inline constexpr size_t RowData<Index>::row() const noexcept
 {
    return Index;
 }
