@@ -547,7 +547,10 @@ class Subvector<VT,AF,TF,false,CSAs...>
 
  private:
    //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
    Operand vector_;  //!< The vector containing the subvector.
+   //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

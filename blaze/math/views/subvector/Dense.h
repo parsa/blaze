@@ -2918,7 +2918,10 @@ class Subvector<VT,aligned,TF,true,CSAs...>
 
  private:
    //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
    Operand vector_;  //!< The vector containing the subvector.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
