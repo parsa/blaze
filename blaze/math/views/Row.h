@@ -121,7 +121,8 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row_<MT,I>( ~matrix );
+   using ReturnType = Row_<MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -161,7 +162,8 @@ inline decltype(auto) row( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row_<const MT,I>( ~matrix );
+   using ReturnType = const Row_<const MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -186,7 +188,8 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row_<MT,I>( ~matrix );
+   using ReturnType = Row_<MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -226,7 +229,8 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row_<MT>( ~matrix, index );
+   using ReturnType = Row_<MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -266,7 +270,8 @@ inline decltype(auto) row( const Matrix<MT,SO>& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row_<const MT>( ~matrix, index );
+   using ReturnType = const Row_<const MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -291,7 +296,8 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, size_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Row_<MT>( ~matrix, index );
+   using ReturnType = Row_<MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -310,41 +316,21 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix/matrix addition.
+// \param args The runtime row arguments.
 // \return View on the specified row of the addition.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // addition.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatAddExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<I>( (~matrix).leftOperand() ) + row<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix/matrix addition.
-// \ingroup row
-//
-// \param matrix The constant matrix/matrix addition.
-// \param index The index of the row.
-// \return View on the specified row of the addition.
-//
-// This function returns an expression representing the specified row of the given matrix/matrix
-// addition.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( (~matrix).leftOperand(), index ) + row( (~matrix).rightOperand(), index );
+   return row<CRAs...>( (~matrix).leftOperand(), args... ) +
+          row<CRAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -356,41 +342,21 @@ inline decltype(auto) row( const MatMatAddExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix/matrix subtraction.
+// \param args The runtime row arguments.
 // \return View on the specified row of the subtraction.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // subtraction.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatSubExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<I>( (~matrix).leftOperand() ) - row<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix/matrix subtraction.
-// \ingroup row
-//
-// \param matrix The constant matrix/matrix subtraction.
-// \param index The index of the row.
-// \return View on the specified row of the subtraction.
-//
-// This function returns an expression representing the specified row of the given matrix/matrix
-// subtraction.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( (~matrix).leftOperand(), index ) - row( (~matrix).rightOperand(), index );
+   return row<CRAs...>( (~matrix).leftOperand(), args... ) -
+          row<CRAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -402,39 +368,20 @@ inline decltype(auto) row( const MatMatSubExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant Schur product.
+// \param args The runtime row arguments.
 // \return View on the specified row of the Schur product.
 //
 // This function returns an expression representing the specified row of the given Schur product.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const SchurExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const SchurExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<I>( (~matrix).leftOperand() ) * row<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given Schur product.
-// \ingroup row
-//
-// \param matrix The constant Schur product.
-// \param index The index of the row.
-// \return View on the specified row of the Schur product.
-//
-// This function returns an expression representing the specified row of the given Schur product.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const SchurExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( (~matrix).leftOperand(), index ) * row( (~matrix).rightOperand(), index );
+   return row<CRAs...>( (~matrix).leftOperand(), args... ) *
+          row<CRAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -446,41 +393,20 @@ inline decltype(auto) row( const SchurExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix/matrix multiplication.
+// \param args The runtime row arguments
 // \return View on the specified row of the multiplication.
 //
 // This function returns an expression representing the specified row of the given matrix/matrix
 // multiplication.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatMultExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<I>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix/matrix multiplication.
-// \ingroup row
-//
-// \param matrix The constant matrix/matrix multiplication.
-// \param index The index of the row.
-// \return View on the specified row of the multiplication.
-//
-// This function returns an expression representing the specified row of the given matrix/matrix
-// multiplication.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( (~matrix).leftOperand(), index ) * (~matrix).rightOperand();
+   return row<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -536,41 +462,20 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix/scalar multiplication.
+// \param args The runtime row arguments
 // \return View on the specified row of the multiplication.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
 // multiplication.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<I>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix/scalar multiplication.
-// \ingroup row
-//
-// \param matrix The constant matrix/scalar multiplication.
-// \param index The index of the row.
-// \return View on the specified row of the multiplication.
-//
-// This function returns an expression representing the specified row of the given matrix/scalar
-// multiplication.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( (~matrix).leftOperand(), index ) * (~matrix).rightOperand();
+   return row<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -582,41 +487,20 @@ inline decltype(auto) row( const MatScalarMultExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix/scalar division.
+// \param args The runtime row arguments
 // \return View on the specified row of the division.
 //
 // This function returns an expression representing the specified row of the given matrix/scalar
 // division.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<I>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix/scalar division.
-// \ingroup row
-//
-// \param matrix The constant matrix/scalar division.
-// \param index The index of the row.
-// \return View on the specified row of the division.
-//
-// This function returns an expression representing the specified row of the given matrix/scalar
-// division.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( (~matrix).leftOperand(), index ) / (~matrix).rightOperand();
+   return row<CRAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -628,41 +512,20 @@ inline decltype(auto) row( const MatScalarDivExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant unary matrix map operation.
+// \param args The runtime row arguments
 // \return View on the specified row of the unary map operation.
 //
 // This function returns an expression representing the specified row of the given unary matrix
 // map operation.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMapExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( row<I>( (~matrix).operand() ), (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given unary matrix map operation.
-// \ingroup row
-//
-// \param matrix The constant unary matrix map operation.
-// \param index The index of the row.
-// \return View on the specified row of the unary map operation.
-//
-// This function returns an expression representing the specified row of the given unary matrix
-// map operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMapExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( row( (~matrix).operand(), index ), (~matrix).operation() );
+   return map( row<CRAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -674,44 +537,21 @@ inline decltype(auto) row( const MatMapExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant binary matrix map operation.
+// \param args The runtime row arguments
 // \return View on the specified row of the binary map operation.
 //
 // This function returns an expression representing the specified row of the given binary matrix
 // map operation.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatMapExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( row<I>( (~matrix).leftOperand() ),
-               row<I>( (~matrix).rightOperand() ),
-               (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given binary matrix map operation.
-// \ingroup row
-//
-// \param matrix The constant binary matrix map operation.
-// \param index The index of the row.
-// \return View on the specified row of the binary map operation.
-//
-// This function returns an expression representing the specified row of the given binary matrix
-// map operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( row( (~matrix).leftOperand() , index ),
-               row( (~matrix).rightOperand(), index ),
+   return map( row<CRAs...>( (~matrix).leftOperand(), args... ),
+               row<CRAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
 }
 /*! \endcond */
@@ -724,41 +564,20 @@ inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix evaluation operation.
+// \param args The runtime row arguments
 // \return View on the specified row of the evaluation operation.
 //
 // This function returns an expression representing the specified row of the given matrix
 // evaluation operation.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatEvalExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatEvalExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( row<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix evaluation operation.
-// \ingroup row
-//
-// \param matrix The constant matrix evaluation operation.
-// \param index The index of the row.
-// \return View on the specified row of the evaluation operation.
-//
-// This function returns an expression representing the specified row of the given matrix
-// evaluation operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatEvalExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return eval( row( (~matrix).operand(), index ) );
+   return eval( row<CRAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -770,41 +589,20 @@ inline decltype(auto) row( const MatEvalExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix serialization operation.
+// \param args The runtime row arguments
 // \return View on the specified row of the serialization operation.
 //
 // This function returns an expression representing the specified row of the given matrix
 // serialization operation.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatSerialExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatSerialExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( row<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix serialization operation.
-// \ingroup row
-//
-// \param matrix The constant matrix serialization operation.
-// \param index The index of the row.
-// \return View on the specified row of the serialization operation.
-//
-// This function returns an expression representing the specified row of the given matrix
-// serialization operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatSerialExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return serial( row( (~matrix).operand(), index ) );
+   return serial( row<CRAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -816,41 +614,20 @@ inline decltype(auto) row( const MatSerialExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix declaration operation.
+// \param args The runtime row arguments
 // \return View on the specified row of the declaration operation.
 //
 // This function returns an expression representing the specified row of the given matrix
 // declaration operation.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const DeclExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const DeclExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return row<I>( (~matrix).operand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix declaration operation.
-// \ingroup row
-//
-// \param matrix The constant matrix declaration operation.
-// \param index The index of the row.
-// \return View on the specified row of the declaration operation.
-//
-// This function returns an expression representing the specified row of the given matrix
-// declaration operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const DeclExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return row( (~matrix).operand(), index );
+   return row<CRAs...>( (~matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -862,41 +639,20 @@ inline decltype(auto) row( const DeclExpr<MT>& matrix, size_t index )
 // \ingroup row
 //
 // \param matrix The constant matrix transpose operation.
+// \param args The runtime row arguments
 // \return View on the specified row of the transpose operation.
 //
 // This function returns an expression representing the specified row of the given matrix
 // transpose operation.
 */
-template< size_t I       // Row index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatTransExpr<MT>& matrix )
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatTransExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( column<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given matrix transpose operation.
-// \ingroup row
-//
-// \param matrix The constant matrix transpose operation.
-// \param index The index of the row.
-// \return View on the specified row of the transpose operation.
-//
-// This function returns an expression representing the specified row of the given matrix
-// transpose operation.
-*/
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) row( const MatTransExpr<MT>& matrix, size_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( column( (~matrix).operand(), index ) );
+   return trans( column<CRAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
