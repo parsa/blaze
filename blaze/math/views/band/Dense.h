@@ -112,12 +112,13 @@ template< typename MT          // Type of the dense matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 class Band<MT,TF,true,false,CBAs...>
    : public View< DenseVector< Band<MT,TF,true,false,CBAs...>, TF > >
-   , private BandData<MT,CBAs...>
+   , private BandData<CBAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT       = ResultType_<MT>;       //!< Result type of the dense matrix expression.
-   using DataType = BandData<MT,CBAs...>;  //!< The type of the BandData base class.
+   using RT       = ResultType_<MT>;                   //!< Result type of the dense matrix expression.
+   using DataType = BandData<CBAs...>;                 //!< The type of the BandData base class.
+   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -519,16 +520,16 @@ class Band<MT,TF,true,false,CBAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::operand;
    using DataType::band;
    using DataType::row;
    using DataType::column;
 
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
+   inline Operand operand() const noexcept;
+   inline size_t  size() const noexcept;
+   inline size_t  spacing() const noexcept;
+   inline size_t  capacity() const noexcept;
+   inline size_t  nonZeros() const;
+   inline void    reset();
    //@}
    //**********************************************************************************************
 
@@ -571,7 +572,10 @@ class Band<MT,TF,true,false,CBAs...>
 
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   /*!\name Member variables */
+   //@{
+   Operand matrix_;  //!< The matrix containing the band.
+   //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
@@ -611,8 +615,14 @@ template< typename MT          // Type of the dense matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 template< typename... RBAs >   // Runtime band arguments
 inline Band<MT,TF,true,false,CBAs...>::Band( MT& matrix, RBAs... args )
-   : DataType( matrix, args... )  // Base class initialization
-{}
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the band
+{
+   if( ( band() > 0L && column() >= matrix.columns() ) ||
+       ( band() < 0L && row() >= matrix.rows() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+   }
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1402,6 +1412,24 @@ inline EnableIf_< IsNumeric<Other>, Band<MT,TF,true,false,CBAs...> >&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the band.
+//
+// \return The matrix containing the band.
+*/
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline typename Band<MT,TF,true,false,CBAs...>::Operand
+   Band<MT,TF,true,false,CBAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the current size/dimension of the band.
 //
 // \return The size of the band.
@@ -2015,13 +2043,13 @@ template< typename MT          // Type of the dense matrix multiplication
         , ptrdiff_t... CBAs >  // Compile time band arguments
 class Band<MT,TF,true,true,CBAs...>
    : public View< DenseVector< Band<MT,TF,true,true,CBAs...>, TF > >
-   , private BandData<MT,CBAs...>
+   , private BandData<CBAs...>
    , private Computation
 {
  private:
    //**Type definitions****************************************************************************
    //! The type of the BandData base class.
-   using DataType = BandData<MT,CBAs...>;
+   using DataType = BandData<CBAs...>;
 
    //! The type of the left-hand side matrix operand.
    using LeftOperand = RemoveReference_< LeftOperand_<MT> >;
@@ -2076,22 +2104,13 @@ class Band<MT,TF,true,true,CBAs...>
    /*!\brief Constructor for the Band specialization.
    //
    // \param mmm The matrix multiplication containing the band.
+   // \param args The runtime band arguments.
    // \exception std::invalid_argument Invalid band access index.
    */
-   explicit inline Band( const MT& mmm )
-      : DataType( mmm )  // Base class initialization
-   {}
-   //**********************************************************************************************
-
-   //**Constructor*********************************************************************************
-   /*!\brief Constructor for the Band specialization.
-   //
-   // \param mmm The matrix multiplication containing the band.
-   // \param index The index of the band.
-   // \exception std::invalid_argument Invalid band access index.
-   */
-   explicit inline Band( const MT& mmm, ptrdiff_t index )
-      : DataType( mmm, index )  // Base class initialization
+   template< typename... RBAs >
+   explicit inline Band( const MT& mmm, RBAs... args )
+      : DataType( args... )  // Base class initialization
+      , matrix_ ( mmm     )  // The matrix multiplication containing the band
    {}
    //**********************************************************************************************
 
@@ -2133,6 +2152,22 @@ class Band<MT,TF,true,true,CBAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
+   using DataType::band;
+   using DataType::row;
+   using DataType::column;
+   //**********************************************************************************************
+
+   //**Operand access******************************************************************************
+   /*!\brief Returns the matrix multiplication expression containing the band.
+   //
+   // \return The matrix multiplication expression containing the band.
+   */
+   inline MT operand() const noexcept {
+      return matrix_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns whether the expression can alias with the given address \a alias.
    //
    // \param alias The alias to be checked.
@@ -2166,16 +2201,9 @@ class Band<MT,TF,true,true,CBAs...>
    }
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   using DataType::operand;
-   using DataType::band;
-   using DataType::row;
-   using DataType::column;
-   //**********************************************************************************************
-
  private:
    //**Member variables****************************************************************************
-   using DataType::matrix_;
+   MT matrix_;  //!< The matrix multiplication containing the band.
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************

@@ -40,9 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Exception.h>
-#include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
 
@@ -62,8 +59,7 @@ namespace blaze {
 // Band class template. The necessary set of data member is selected depending on the number
 // of compile time band arguments.
 */
-template< typename MT          // Type of the matrix
-        , ptrdiff_t... CBAs >  // Compile time band arguments
+template< ptrdiff_t... CBAs >  // Compile time band arguments
 struct BandData
 {};
 //*************************************************************************************************
@@ -84,19 +80,14 @@ struct BandData
 // This specialization of BandData adapts the class template to the requirements of zero compile
 // time band arguments.
 */
-template< typename MT >  // Type of the matrix
-struct BandData<MT>
+template<>
+struct BandData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline BandData( Operand matrix, ptrdiff_t index );
+   explicit inline constexpr BandData( ptrdiff_t index );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -112,18 +103,16 @@ struct BandData<MT>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline Operand   operand() const noexcept;
-   inline ptrdiff_t band   () const noexcept;
-   inline size_t    row    () const noexcept;
-   inline size_t    column () const noexcept;
+   inline constexpr ptrdiff_t band  () const noexcept;
+   inline constexpr size_t    row   () const noexcept;
+   inline constexpr size_t    column() const noexcept;
    //@}
    //**********************************************************************************************
 
- protected:
+ private:
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand         matrix_;  //!< The matrix containing the band.
    const ptrdiff_t band_;    //!< The band index.
    const size_t    row_;     //!< The index of the row containing the first element of the band.
    const size_t    column_;  //!< The index of the column containing the first element of the band.
@@ -136,35 +125,13 @@ struct BandData<MT>
 //*************************************************************************************************
 /*!\brief The constructor for BandData.
 //
-// \param matrix The matrix containing the band.
 // \param index The index of the band.
-// \exception std::invalid_argument Invalid band access index.
 */
-template< typename MT >  // Type of the matrix
-inline BandData<MT>::BandData( Operand matrix, ptrdiff_t index )
-   : matrix_( matrix )                        // The matrix containing the band
-   , band_  ( index  )                        // The band index
+inline constexpr BandData<>::BandData( ptrdiff_t index )
+   : band_  ( index  )                        // The band index
    , row_   ( index >= 0L ?   0UL : -index )  // The index of the row containing the first element of the band
    , column_( index >= 0L ? index :    0UL )  // The index of the column containing the first element of the band
-{
-   if( ( band() > 0L && column() >= matrix.columns() ) ||
-       ( band() < 0L && row() >= matrix.rows() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the band.
-//
-// \return The matrix containing the band.
-*/
-template< typename MT >  // Type of the matrix
-inline typename BandData<MT>::Operand BandData<MT>::operand() const noexcept
-{
-   return matrix_;
-}
+{}
 //*************************************************************************************************
 
 
@@ -173,8 +140,7 @@ inline typename BandData<MT>::Operand BandData<MT>::operand() const noexcept
 //
 // \return The index of the band.
 */
-template< typename MT >  // Type of the matrix
-inline ptrdiff_t BandData<MT>::band() const noexcept
+inline constexpr ptrdiff_t BandData<>::band() const noexcept
 {
    return band_;
 }
@@ -186,8 +152,7 @@ inline ptrdiff_t BandData<MT>::band() const noexcept
 //
 // \return The first row index.
 */
-template< typename MT >  // Type of the matrix
-inline size_t BandData<MT>::row() const noexcept
+inline constexpr size_t BandData<>::row() const noexcept
 {
    return row_;
 }
@@ -199,8 +164,7 @@ inline size_t BandData<MT>::row() const noexcept
 //
 // \return The first column index.
 */
-template< typename MT >  // Type of the matrix
-inline size_t BandData<MT>::column() const noexcept
+inline constexpr size_t BandData<>::column() const noexcept
 {
    return column_;
 }
@@ -222,20 +186,14 @@ inline size_t BandData<MT>::column() const noexcept
 // This specialization of BandData adapts the class template to the requirements of a single
 // compile time band argument.
 */
-template< typename MT    // Type of the matrix
-        , ptrdiff_t I >  // Compile time band index
-struct BandData<MT,I>
+template< ptrdiff_t I >  // Compile time band index
+struct BandData<I>
 {
  public:
-   //**Type definitions****************************************************************************
-   //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, MT, MT& >;
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline BandData( Operand matrix );
+   explicit inline constexpr BandData();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -251,18 +209,9 @@ struct BandData<MT,I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline           Operand   operand() const noexcept;
-   inline constexpr ptrdiff_t band   () const noexcept;
-   inline constexpr size_t    row    () const noexcept;
-   inline constexpr size_t    column () const noexcept;
-   //@}
-   //**********************************************************************************************
-
- protected:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   Operand matrix_;  //!< The matrix containing the band.
+   inline constexpr ptrdiff_t band  () const noexcept;
+   inline constexpr size_t    row   () const noexcept;
+   inline constexpr size_t    column() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -271,34 +220,10 @@ struct BandData<MT,I>
 
 //*************************************************************************************************
 /*!\brief The constructor for BandData.
-//
-// \param matrix The matrix containing the band.
-// \exception std::invalid_argument Invalid band access index.
 */
-template< typename MT    // Type of the matrix
-        , ptrdiff_t I >  // Compile time band index
-inline BandData<MT,I>::BandData( Operand matrix )
-   : matrix_( matrix )  // The matrix containing the band
-{
-   if( ( band() > 0L && column() >= matrix.columns() ) ||
-       ( band() < 0L && row() >= matrix.rows() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the matrix containing the band.
-//
-// \return The matrix containing the band.
-*/
-template< typename MT    // Type of the matrix
-        , ptrdiff_t I >  // Compile time band index
-inline typename BandData<MT,I>::Operand BandData<MT,I>::operand() const noexcept
-{
-   return matrix_;
-}
+template< ptrdiff_t I >  // Compile time band index
+inline constexpr BandData<I>::BandData()
+{}
 //*************************************************************************************************
 
 
@@ -307,9 +232,8 @@ inline typename BandData<MT,I>::Operand BandData<MT,I>::operand() const noexcept
 //
 // \return The index of the band.
 */
-template< typename MT    // Type of the matrix
-        , ptrdiff_t I >  // Compile time band index
-inline constexpr ptrdiff_t BandData<MT,I>::band() const noexcept
+template< ptrdiff_t I >  // Compile time band index
+inline constexpr ptrdiff_t BandData<I>::band() const noexcept
 {
    return I;
 }
@@ -321,9 +245,8 @@ inline constexpr ptrdiff_t BandData<MT,I>::band() const noexcept
 //
 // \return The first row index.
 */
-template< typename MT    // Type of the matrix
-        , ptrdiff_t I >  // Compile time band index
-inline constexpr size_t BandData<MT,I>::row() const noexcept
+template< ptrdiff_t I >  // Compile time band index
+inline constexpr size_t BandData<I>::row() const noexcept
 {
    return ( I >= 0L ? 0UL : -I );
 }
@@ -335,9 +258,8 @@ inline constexpr size_t BandData<MT,I>::row() const noexcept
 //
 // \return The first column index.
 */
-template< typename MT    // Type of the matrix
-        , ptrdiff_t I >  // Compile time band index
-inline constexpr size_t BandData<MT,I>::column() const noexcept
+template< ptrdiff_t I >  // Compile time band index
+inline constexpr size_t BandData<I>::column() const noexcept
 {
    return ( I >= 0L ? I : 0UL );
 }
