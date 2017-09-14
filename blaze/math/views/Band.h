@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/expressions/DeclExpr.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
@@ -120,7 +119,8 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band_<MT,I>( ~matrix );
+   using ReturnType = Band_<MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -159,7 +159,8 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band_<const MT,I>( ~matrix );
+   using ReturnType = const Band_<const MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -184,7 +185,8 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band_<MT,I>( ~matrix );
+   using ReturnType = Band_<MT,I>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -223,7 +225,8 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band_<MT>( ~matrix, index );
+   using ReturnType = Band_<MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -262,7 +265,8 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band_<const MT>( ~matrix, index );
+   using ReturnType = const Band_<const MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -287,7 +291,8 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Band_<MT>( ~matrix, index );
+   using ReturnType = Band_<MT>;
+   return ReturnType( ~matrix, index );
 }
 //*************************************************************************************************
 
@@ -493,41 +498,21 @@ inline decltype(auto) subvector( const Band<MT,TF,DF,MF,CBAs...>& b, size_t inde
 // \ingroup band
 //
 // \param matrix The constant matrix/matrix addition.
+// \param args The runtime band arguments.
 // \return View on the specified band of the addition.
 //
 // This function returns an expression representing the specified band of the given matrix/matrix
 // addition.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMatAddExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatMatAddExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<I>( (~matrix).leftOperand() ) + band<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix/matrix addition.
-// \ingroup band
-//
-// \param matrix The constant matrix/matrix addition.
-// \param index The band index.
-// \return View on the specified band of the addition.
-//
-// This function returns an expression representing the specified band of the given matrix/matrix
-// addition.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMatAddExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return band( (~matrix).leftOperand(), index ) + band( (~matrix).rightOperand(), index );
+   return band<CBAs...>( (~matrix).leftOperand(), args... ) +
+          band<CBAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -539,41 +524,21 @@ inline decltype(auto) band( const MatMatAddExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant matrix/matrix subtraction.
+// \param args The runtime band arguments.
 // \return View on the specified band of the subtraction.
 //
 // This function returns an expression representing the specified band of the given matrix/matrix
 // subtraction.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMatSubExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatMatSubExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<I>( (~matrix).leftOperand() ) - band<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix/matrix subtraction.
-// \ingroup band
-//
-// \param matrix The constant matrix/matrix subtraction.
-// \param index The band index.
-// \return View on the specified band of the subtraction.
-//
-// This function returns an expression representing the specified band of the given matrix/matrix
-// subtraction.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMatSubExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return band( (~matrix).leftOperand(), index ) - band( (~matrix).rightOperand(), index );
+   return band<CBAs...>( (~matrix).leftOperand(), args... ) -
+          band<CBAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -585,39 +550,20 @@ inline decltype(auto) band( const MatMatSubExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant Schur product.
+// \param args The runtime band arguments.
 // \return View on the specified band of the Schur product.
 //
 // This function returns an expression representing the specified band of the given Schur product.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const SchurExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const SchurExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<I>( (~matrix).leftOperand() ) * band<I>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given Schur product.
-// \ingroup band
-//
-// \param matrix The constant Schur product.
-// \param index The band index.
-// \return View on the specified band of the Schur product.
-//
-// This function returns an expression representing the specified band of the given Schur product.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const SchurExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return band( (~matrix).leftOperand(), index ) * band( (~matrix).rightOperand(), index );
+   return band<CBAs...>( (~matrix).leftOperand(), args... ) *
+          band<CBAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -689,41 +635,20 @@ inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant matrix/scalar multiplication.
+// \param args The runtime band arguments.
 // \return View on the specified band of the multiplication.
 //
 // This function returns an expression representing the specified band of the given matrix/scalar
 // multiplication.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<I>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix/scalar multiplication.
-// \ingroup band
-//
-// \param matrix The constant matrix/scalar multiplication.
-// \param index The band index.
-// \return View on the specified band of the multiplication.
-//
-// This function returns an expression representing the specified band of the given matrix/scalar
-// multiplication.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return band( (~matrix).leftOperand(), index ) * (~matrix).rightOperand();
+   return band<CBAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -735,41 +660,20 @@ inline decltype(auto) band( const MatScalarMultExpr<MT>& matrix, ptrdiff_t index
 // \ingroup band
 //
 // \param matrix The constant matrix/scalar division.
+// \param args The runtime band arguments.
 // \return View on the specified band of the division.
 //
 // This function returns an expression representing the specified band of the given matrix/scalar
 // division.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<I>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix/scalar division.
-// \ingroup band
-//
-// \param matrix The constant matrix/scalar division.
-// \param index The band index.
-// \return View on the specified band of the division.
-//
-// This function returns an expression representing the specified band of the given matrix/scalar
-// division.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return band( (~matrix).leftOperand(), index ) / (~matrix).rightOperand();
+   return band<CBAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -781,41 +685,20 @@ inline decltype(auto) band( const MatScalarDivExpr<MT>& matrix, ptrdiff_t index 
 // \ingroup band
 //
 // \param matrix The constant unary matrix map operation.
+// \param args The runtime band arguments.
 // \return View on the specified band of the unary map operation.
 //
 // This function returns an expression representing the specified band of the given unary matrix
 // map operation.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMapExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatMapExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( band<I>( (~matrix).operand() ), (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given unary matrix map operation.
-// \ingroup band
-//
-// \param matrix The constant unary matrix map operation.
-// \param index The band index.
-// \return View on the specified band of the unary map operation.
-//
-// This function returns an expression representing the specified band of the given unary matrix
-// map operation.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMapExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( band( (~matrix).operand(), index ), (~matrix).operation() );
+   return map( band<CBAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -827,44 +710,21 @@ inline decltype(auto) band( const MatMapExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant binary matrix map operation.
+// \param args The runtime band arguments.
 // \return View on the specified band of the binary map operation.
 //
 // This function returns an expression representing the specified band of the given binary matrix
 // map operation.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMatMapExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatMatMapExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( band<I>( (~matrix).leftOperand() ),
-               band<I>( (~matrix).rightOperand() ),
-               (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given binary matrix map operation.
-// \ingroup band
-//
-// \param matrix The constant binary matrix map operation.
-// \param index The band index.
-// \return View on the specified band of the binary map operation.
-//
-// This function returns an expression representing the specified band of the given binary matrix
-// map operation.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatMatMapExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( band( (~matrix).leftOperand(), index ),
-               band( (~matrix).rightOperand(), index ),
+   return map( band<CBAs...>( (~matrix).leftOperand(), args... ),
+               band<CBAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
 }
 /*! \endcond */
@@ -877,41 +737,20 @@ inline decltype(auto) band( const MatMatMapExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant matrix evaluation operation.
+// \param args The runtime band arguments.
 // \return View on the specified band of the evaluation operation.
 //
 // This function returns an expression representing the specified band of the given matrix
 // evaluation operation.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatEvalExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatEvalExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( band<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix evaluation operation.
-// \ingroup band
-//
-// \param matrix The constant matrix evaluation operation.
-// \param index The band index.
-// \return View on the specified band of the evaluation operation.
-//
-// This function returns an expression representing the specified band of the given matrix
-// evaluation operation.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatEvalExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return eval( band( (~matrix).operand(), index ) );
+   return eval( band<CBAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -923,41 +762,20 @@ inline decltype(auto) band( const MatEvalExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant matrix serialization operation.
+// \param args The runtime band arguments.
 // \return View on the specified band of the serialization operation.
 //
 // This function returns an expression representing the specified band of the given matrix
 // serialization operation.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatSerialExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatSerialExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( band<I>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix serialization operation.
-// \ingroup band
-//
-// \param matrix The constant matrix serialization operation.
-// \param index The band index.
-// \return View on the specified band of the serialization operation.
-//
-// This function returns an expression representing the specified band of the given matrix
-// serialization operation.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatSerialExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return serial( band( (~matrix).operand(), index ) );
+   return serial( band<CBAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -969,41 +787,20 @@ inline decltype(auto) band( const MatSerialExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant matrix declaration operation.
+// \param args The runtime band arguments.
 // \return View on the specified band of the declaration operation.
 //
 // This function returns an expression representing the specified band of the given matrix
 // declaration operation.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const DeclExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const DeclExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<I>( (~matrix).operand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix declaration operation.
-// \ingroup band
-//
-// \param matrix The constant matrix declaration operation.
-// \param index The band index.
-// \return View on the specified band of the declaration operation.
-//
-// This function returns an expression representing the specified band of the given matrix
-// declaration operation.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const DeclExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return band( (~matrix).operand(), index );
+   return band<CBAs...>( (~matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1015,41 +812,20 @@ inline decltype(auto) band( const DeclExpr<MT>& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The constant matrix transpose operation.
+// \param args The runtime band arguments.
 // \return View on the specified band of the transpose operation.
 //
 // This function returns an expression representing the specified band of the given matrix
 // transpose operation.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatTransExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatTransExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<-I>( (~matrix).operand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given matrix transpose operation.
-// \ingroup band
-//
-// \param matrix The constant matrix declaration operation.
-// \param index The band index.
-// \return View on the specified band of the declaration operation.
-//
-// This function returns an expression representing the specified band of the given matrix
-// declaration operation.
-*/
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const MatTransExpr<MT>& matrix, ptrdiff_t index )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return band( (~matrix).operand(), -index );
+   return band<-CBAs...>( (~matrix).operand(), -args... );
 }
 /*! \endcond */
 //*************************************************************************************************
