@@ -308,18 +308,19 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N     // Number of columns
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first row
+        , size_t J          // Index of the first column
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Submatrix_<MT,AF,I,J,M,N>( ~matrix );
+   using ReturnType = Submatrix_<MT,AF,I,J,M,N>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -381,18 +382,19 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N     // Number of columns
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first row
+        , size_t J          // Index of the first column
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Submatrix_<const MT,AF,I,J,M,N>( ~matrix );
+   using ReturnType = const Submatrix_<const MT,AF,I,J,M,N>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -412,18 +414,19 @@ inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
 // beyond the number of rows or columns of the matrix) or any alignment restrictions are
 // violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N     // Number of columns
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first row
+        , size_t J          // Index of the first column
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Submatrix_<MT,AF,I,J,M,N>( ~matrix );
+   using ReturnType = Submatrix_<MT,AF,I,J,M,N>;
+   return ReturnType( ~matrix );
 }
 //*************************************************************************************************
 
@@ -646,15 +649,16 @@ inline decltype(auto)
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< AlignmentFlag AF  // Alignment flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto)
    submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Submatrix_<MT,AF>( ~matrix, row, column, m, n );
+   using ReturnType = Submatrix_<MT,AF>;
+   return ReturnType( ~matrix, row, column, m, n );
 }
 //*************************************************************************************************
 
@@ -720,15 +724,16 @@ inline decltype(auto)
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< AlignmentFlag AF  // Alignment flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto)
    submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Submatrix_<const MT,AF>( ~matrix, row, column, m, n );
+   using ReturnType = const Submatrix_<const MT,AF>;
+   return ReturnType( ~matrix, row, column, m, n );
 }
 //*************************************************************************************************
 
@@ -752,15 +757,16 @@ inline decltype(auto)
 // beyond the number of rows or columns of the matrix) or any alignment restrictions are
 // violated, a \a std::invalid_argument exception is thrown.
 */
-template< bool AF      // Alignment flag
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< AlignmentFlag AF  // Alignment flag
+        , typename MT       // Type of the dense matrix
+        , bool SO >         // Storage order
 inline decltype(auto)
    submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return Submatrix_<MT,AF>( ~matrix, row, column, m, n );
+   using ReturnType = Submatrix_<MT,AF>;
+   return ReturnType( ~matrix, row, column, m, n );
 }
 //*************************************************************************************************
 
@@ -867,52 +873,22 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 // \ingroup submatrix
 //
 // \param matrix The constant matrix/matrix addition.
+// \param args The runtime submatrix arguments
 // \return View on the specified submatrix of the addition.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix addition.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatMatAddExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatMatAddExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,I,J,M,N>( (~matrix).leftOperand() ) +
-          submatrix<AF,I,J,M,N>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix/matrix addition.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix/matrix addition.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the addition.
-//
-// This function returns an expression representing the specified submatrix of the given
-// matrix/matrix addition.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatMatAddExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return submatrix<AF>( (~matrix).leftOperand() , row, column, m, n ) +
-          submatrix<AF>( (~matrix).rightOperand(), row, column, m, n );
+   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) +
+          submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -924,52 +900,22 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix/matrix subtraction.
+// \param args The runtime submatrix arguments
 // \return View on the specified submatrix of the subtraction.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix subtraction.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatMatSubExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatMatSubExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,I,J,M,N>( (~matrix).leftOperand() ) -
-          submatrix<AF,I,J,M,N>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix/matrix subtraction.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix/matrix subtraction.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the subtraction.
-//
-// This function returns an expression representing the specified submatrix of the given
-// matrix/matrix subtraction.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatMatSubExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return submatrix<AF>( (~matrix).leftOperand() , row, column, m, n ) -
-          submatrix<AF>( (~matrix).rightOperand(), row, column, m, n );
+   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) -
+          submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -981,52 +927,22 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant Schur product.
+// \param args The runtime submatrix arguments
 // \return View on the specified submatrix of the Schur product.
 //
 // This function returns an expression representing the specified submatrix of the given Schur
 // product.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const SchurExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const SchurExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,I,J,M,N>( (~matrix).leftOperand() ) %
-          submatrix<AF,I,J,M,N>( (~matrix).rightOperand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given Schur product.
-// \ingroup submatrix
-//
-// \param matrix The constant Schur product.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the Schur product.
-//
-// This function returns an expression representing the specified submatrix of the given Schur
-// product.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const SchurExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return submatrix<AF>( (~matrix).leftOperand() , row, column, m, n ) %
-          submatrix<AF>( (~matrix).rightOperand(), row, column, m, n );
+   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) %
+          submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1038,94 +954,53 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix/matrix multiplication.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the multiplication.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/matrix multiplication.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using MT1 = RemoveReference_< LeftOperand_< MatrixType_<MT> > >;
    using MT2 = RemoveReference_< RightOperand_< MatrixType_<MT> > >;
 
-   decltype(auto) left ( (~matrix).leftOperand()  );
-   decltype(auto) right( (~matrix).rightOperand() );
-
-   const size_t begin( max( ( IsUpper<MT1>::value )
-                            ?( ( !AF && IsStrictlyUpper<MT1>::value )?( I + 1UL ):( I ) )
-                            :( 0UL )
-                          , ( IsLower<MT2>::value )
-                            ?( ( !AF && IsStrictlyLower<MT2>::value )?( J + 1UL ):( J ) )
-                            :( 0UL ) ) );
-   const size_t end( min( ( IsLower<MT1>::value )
-                          ?( ( IsStrictlyLower<MT1>::value && M > 0UL )?( I + M - 1UL ):( I + M ) )
-                          :( left.columns() )
-                        , ( IsUpper<MT2>::value )
-                          ?( ( IsStrictlyUpper<MT2>::value && N > 0UL )?( J + N - 1UL ):( J + N ) )
-                          :( left.columns() ) ) );
-
-   const size_t diff( ( begin < end )?( end - begin ):( 0UL ) );
-
-   return submatrix<AF>( left, I, begin, M, diff ) *
-          submatrix<AF>( right, begin, J, diff, N );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix/matrix multiplication.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix/matrix multiplication.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the multiplication.
-//
-// This function returns an expression representing the specified submatrix of the given
-// matrix/matrix multiplication.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatMatMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using MT1 = RemoveReference_< LeftOperand_< MatrixType_<MT> > >;
-   using MT2 = RemoveReference_< RightOperand_< MatrixType_<MT> > >;
+   const SubmatrixData<CSAs...> sd( args... );
 
    decltype(auto) left ( (~matrix).leftOperand()  );
    decltype(auto) right( (~matrix).rightOperand() );
 
    const size_t begin( max( ( IsUpper<MT1>::value )
-                            ?( ( !AF && IsStrictlyUpper<MT1>::value )?( row + 1UL ):( row ) )
+                            ?( ( !AF && IsStrictlyUpper<MT1>::value )
+                               ?( sd.row() + 1UL )
+                               :( sd.row() ) )
                             :( 0UL )
                           , ( IsLower<MT2>::value )
-                            ?( ( !AF && IsStrictlyLower<MT2>::value )?( column + 1UL ):( column ) )
+                            ?( ( !AF && IsStrictlyLower<MT2>::value )
+                               ?( sd.column() + 1UL )
+                               :( sd.column() ) )
                             :( 0UL ) ) );
    const size_t end( min( ( IsLower<MT1>::value )
-                          ?( ( IsStrictlyLower<MT1>::value && m > 0UL )?( row + m - 1UL ):( row + m ) )
+                          ?( ( IsStrictlyLower<MT1>::value && sd.rows() > 0UL )
+                             ?( sd.row() + sd.rows() - 1UL )
+                             :( sd.row() + sd.rows() ) )
                           :( left.columns() )
                         , ( IsUpper<MT2>::value )
-                          ?( ( IsStrictlyUpper<MT2>::value && n > 0UL )?( column + n - 1UL ):( column + n ) )
+                          ?( ( IsStrictlyUpper<MT2>::value && sd.columns() > 0UL )
+                             ?( sd.column() + sd.columns() - 1UL )
+                             :( sd.column() + sd.columns() ) )
                           :( left.columns() ) ) );
 
    const size_t diff( ( begin < end )?( end - begin ):( 0UL ) );
 
-   return submatrix<AF>( left, row, begin, m, diff ) *
-          submatrix<AF>( right, begin, column, diff, n );
+   return submatrix<AF>( left, sd.row(), begin, sd.rows(), diff ) *
+          submatrix<AF>( right, begin, sd.column(), diff, sd.columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1142,12 +1017,12 @@ inline decltype(auto)
 // This function returns an expression representing the specified submatrix of the given
 // outer product.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first row
+        , size_t J          // Index of the first column
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , typename MT >     // Matrix base type of the expression
 inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1174,8 +1049,8 @@ inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix )
 // This function returns an expression representing the specified submatrix of the given
 // outer product.
 */
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
+template< AlignmentFlag AF  // Alignment flag
+        , typename MT >     // Matrix base type of the expression
 inline decltype(auto)
    submatrix( const VecTVecMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
 {
@@ -1194,50 +1069,21 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix/scalar multiplication.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the multiplication.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/scalar multiplication.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatScalarMultExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatScalarMultExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,I,J,M,N>( (~matrix).leftOperand() ) * (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix/scalar multiplication.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix/scalar multiplication.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the multiplication.
-//
-// This function returns an expression representing the specified submatrix of the given
-// matrix/scalar multiplication.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatScalarMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return submatrix<AF>( (~matrix).leftOperand(), row, column, m, n ) * (~matrix).rightOperand();
+   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1249,50 +1095,21 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix/scalar division.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the division.
 //
 // This function returns an expression representing the specified submatrix of the given
 // matrix/scalar division.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatScalarDivExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatScalarDivExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,I,J,M,N>( (~matrix).leftOperand() ) / (~matrix).rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix/scalar division.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix/scalar division.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the division.
-//
-// This function returns an expression representing the specified submatrix of the given
-// matrix/scalar division.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatScalarDivExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return submatrix<AF>( (~matrix).leftOperand(), row, column, m, n ) / (~matrix).rightOperand();
+   return submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1304,50 +1121,21 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant unary matrix map operation.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the unary map operation.
 //
 // This function returns an expression representing the specified submatrix of the given unary
 // matrix map operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatMapExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatMapExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( submatrix<AF,I,J,M,N>( (~matrix).operand() ), (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given unary matrix map operation.
-// \ingroup submatrix
-//
-// \param matrix The constant unary matrix map operation.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the unary map operation.
-//
-// This function returns an expression representing the specified submatrix of the given unary
-// matrix map operation.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatMapExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( submatrix<AF>( (~matrix).operand(), row, column, m, n ), (~matrix).operation() );
+   return map( submatrix<AF,CSAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1359,53 +1147,22 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant binary matrix map operation.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the binary map operation.
 //
 // This function returns an expression representing the specified submatrix of the given binary
 // matrix map operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatMatMapExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatMatMapExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( submatrix<AF,I,J,M,N>( (~matrix).leftOperand() ),
-               submatrix<AF,I,J,M,N>( (~matrix).rightOperand() ),
-               (~matrix).operation() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given binary matrix map operation.
-// \ingroup submatrix
-//
-// \param matrix The constant binary matrix map operation.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the binary map operation.
-//
-// This function returns an expression representing the specified submatrix of the given binary
-// matrix map operation.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatMatMapExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return map( submatrix<AF>( (~matrix).leftOperand() , row, column, m, n ),
-               submatrix<AF>( (~matrix).rightOperand(), row, column, m, n ),
+   return map( submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ),
+               submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
 }
 /*! \endcond */
@@ -1418,50 +1175,21 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix evaluation operation.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the evaluation operation.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // evaluation operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatEvalExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatEvalExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( submatrix<AF,I,J,M,N>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix evaluation operation.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix evaluation operation.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the evaluation operation.
-//
-// This function returns an expression representing the specified submatrix of the given matrix
-// evaluation operation.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatEvalExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return eval( submatrix<AF>( (~matrix).operand(), row, column, m, n ) );
+   return eval( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1473,50 +1201,21 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix serialization operation.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the serialization operation.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // serialization operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatSerialExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatSerialExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( submatrix<AF,I,J,M,N>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix serialization operation.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix serialization operation.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the serialization operation.
-//
-// This function returns an expression representing the specified submatrix of the given matrix
-// serialization operation.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatSerialExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return serial( submatrix<AF>( (~matrix).operand(), row, column, m, n ) );
+   return serial( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1528,50 +1227,21 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix declaration operation.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the declaration operation.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // declaration operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const DeclExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const DeclExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<AF,I,J,M,N>( (~matrix).operand() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix declaration operation.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix declaration operation.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the declaration operation.
-//
-// This function returns an expression representing the specified submatrix of the given matrix
-// declaration operation.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const DeclExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return submatrix<AF>( (~matrix).operand(), row, column, m, n );
+   return submatrix<AF,CSAs...>( (~matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1583,50 +1253,21 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param matrix The constant matrix transpose operation.
+// \param args The runtime submatrix arguments.
 // \return View on the specified submatrix of the transpose operation.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // transpose operation.
 */
-template< bool AF        // Alignment flag
-        , size_t I       // Index of the first row
-        , size_t J       // Index of the first column
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) submatrix( const MatTransExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatTransExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( submatrix<AF,I,J,M,N>( (~matrix).operand() ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of the given matrix transpose operation.
-// \ingroup submatrix
-//
-// \param matrix The constant matrix transpose operation.
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \return View on the specified submatrix of the transpose operation.
-//
-// This function returns an expression representing the specified submatrix of the given matrix
-// transpose operation.
-*/
-template< bool AF        // Alignment flag
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto)
-   submatrix( const MatTransExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( submatrix<AF>( (~matrix).operand(), column, row, n, m ) );
+   return trans( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1642,52 +1283,19 @@ inline decltype(auto)
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< bool AF1     // Required alignment flag
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N     // Number of columns
-        , typename MT  // Type of the sparse submatrix
-        , bool AF2     // Present alignment flag
-        , bool SO      // Storage order
-        , bool DF >    // Density flag
-inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-   }
-
-   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix
-// \return View on the specified submatrix of the other submatrix.
-//
-// This function returns an expression representing the specified submatrix of the given submatrix.
-*/
-template< bool AF1     // Required alignment flag
-        , size_t I1    // Required index of the first row
-        , size_t J1    // Required index of the first column
-        , size_t M1    // Required number of rows
-        , size_t N1    // Required number of columns
-        , typename MT  // Type of the sparse submatrix
-        , bool AF2     // Present alignment flag
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , size_t I2    // Present index of the first row
-        , size_t J2    // Present index of the first column
-        , size_t M2    // Present number of rows
-        , size_t N2 >  // Present number of columns
+template< AlignmentFlag AF1  // Required alignment flag
+        , size_t I1          // Required index of the first row
+        , size_t J1          // Required index of the first column
+        , size_t M1          // Required number of rows
+        , size_t N1          // Required number of columns
+        , typename MT        // Type of the sparse submatrix
+        , bool AF2           // Present alignment flag
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , size_t I2          // Present index of the first row
+        , size_t J2          // Present index of the first column
+        , size_t M2          // Present number of rows
+        , size_t N2 >        // Present number of columns
 inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1708,6 +1316,39 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm )
 // \ingroup submatrix
 //
 // \param sm The constant submatrix
+// \return View on the specified submatrix of the other submatrix.
+//
+// This function returns an expression representing the specified submatrix of the given submatrix.
+*/
+template< AlignmentFlag AF1  // Required alignment flag
+        , size_t I           // Index of the first row
+        , size_t J           // Index of the first column
+        , size_t M           // Number of rows
+        , size_t N           // Number of columns
+        , typename MT        // Type of the sparse submatrix
+        , bool AF2           // Present alignment flag
+        , bool SO            // Storage order
+        , bool DF >          // Density flag
+inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   }
+
+   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of another submatrix.
+// \ingroup submatrix
+//
+// \param sm The constant submatrix
 // \param row The index of the first row of the submatrix.
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
@@ -1716,12 +1357,12 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm )
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< bool AF1          // Required alignment flag
-        , typename MT       // Type of the sparse submatrix
-        , bool AF2          // Present alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , size_t... CSAs >  // Compile time submatrix arguments
+template< AlignmentFlag AF1  // Required alignment flag
+        , typename MT        // Type of the sparse submatrix
+        , bool AF2           // Present alignment flag
+        , bool SO            // Storage order
+        , bool DF            // Density flag
+        , size_t... CSAs >   // Compile time submatrix arguments
 inline decltype(auto)
    submatrix( const Submatrix<MT,AF2,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n )
 {

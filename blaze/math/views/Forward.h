@@ -76,22 +76,22 @@ decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t );
 template< AlignmentFlag AF, typename VT, bool TF >
 decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t );
 
-template< bool AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
+template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
 decltype(auto) submatrix( Matrix<MT,SO>& );
 
-template< bool AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
+template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
 decltype(auto) submatrix( const Matrix<MT,SO>& );
 
-template< bool AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
+template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
 decltype(auto) submatrix( Matrix<MT,SO>&& );
 
-template< bool AF, typename MT, bool SO >
+template< AlignmentFlag AF, typename MT, bool SO >
 decltype(auto) submatrix( Matrix<MT,SO>&, size_t, size_t, size_t, size_t );
 
-template< bool AF, typename MT, bool SO >
+template< AlignmentFlag AF, typename MT, bool SO >
 decltype(auto) submatrix( const Matrix<MT,SO>&, size_t, size_t, size_t, size_t );
 
-template< bool AF, typename MT, bool SO >
+template< AlignmentFlag AF, typename MT, bool SO >
 decltype(auto) submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t );
 
 template< size_t I, typename MT, bool SO >
