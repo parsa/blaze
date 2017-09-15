@@ -7323,7 +7323,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, Unchecke
    BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
    BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( rows <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+   BLAZE_INTERNAL_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7388,7 +7388,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, size_t r
    BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
    BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( rows <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+   BLAZE_INTERNAL_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -10346,7 +10346,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, Unchecked
    BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
    BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( rows <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+   BLAZE_INTERNAL_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -10411,7 +10411,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, size_t ri
    BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
    BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( rows <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+   BLAZE_INTERNAL_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
 }
 /*! \endcond */
 //*************************************************************************************************
