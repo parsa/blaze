@@ -84,6 +84,7 @@ namespace blaze {
 // \ingroup subvector
 //
 // \param vector The vector containing the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -125,15 +126,16 @@ namespace blaze {
 // Note however that in this case the given compile time arguments \a I and \a N are subject to
 // additional checks to guarantee proper alignment.
 */
-template< size_t I     // Index of the first subvector element
-        , size_t N     // Size of the subvector
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>& vector )
+template< size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned,I,N>( ~vector );
+   return subvector<unaligned,I,N>( ~vector, args... );
 }
 //*************************************************************************************************
 
@@ -143,6 +145,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector )
 // \ingroup subvector
 //
 // \param vector The constant vector containing the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -184,15 +187,16 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector )
 // Note however that in this case the given compile time arguments \a I and \a N are subject to
 // additional checks to guarantee proper alignment.
 */
-template< size_t I     // Index of the first subvector element
-        , size_t N     // Size of the subvector
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) subvector( const Vector<VT,TF>& vector )
+template< size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const Vector<VT,TF>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned,I,N>( ~vector );
+   return subvector<unaligned,I,N>( ~vector, args... );
 }
 //*************************************************************************************************
 
@@ -202,6 +206,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector )
 // \ingroup subvector
 //
 // \param vector The temporary vector containing the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -210,15 +215,16 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector )
 // first index is greater than the total size of the given vector or the subvector is specified
 // beyond the size of the vector) a \a std::invalid_argument exception is thrown.
 */
-template< size_t I     // Index of the first subvector element
-        , size_t N     // Size of the subvector
-        , typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>&& vector )
+template< size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>&& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned,I,N>( ~vector );
+   return subvector<unaligned,I,N>( ~vector, args... );
 }
 //*************************************************************************************************
 
@@ -228,6 +234,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector )
 // \ingroup subvector
 //
 // \param vector The vector containing the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -281,17 +288,18 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , size_t I          // Index of the first subvector element
-        , size_t N          // Size of the subvector
-        , typename VT       // Type of the dense vector
-        , bool TF >         // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF,I,N>;
-   return ReturnType( ~vector );
+   return ReturnType( ~vector, args... );
 }
 //*************************************************************************************************
 
@@ -301,6 +309,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector )
 // \ingroup subvector
 //
 // \param vector The constant vector containing the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -352,17 +361,18 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , size_t I          // Index of the first subvector element
-        , size_t N          // Size of the subvector
-        , typename VT       // Type of the dense vector
-        , bool TF >         // Transpose flag
-inline decltype(auto) subvector( const Vector<VT,TF>& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const Vector<VT,TF>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Subvector_<const VT,AF,I,N>;
-   return ReturnType( ~vector );
+   return ReturnType( ~vector, args... );
 }
 //*************************************************************************************************
 
@@ -372,6 +382,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector )
 // \ingroup subvector
 //
 // \param vector The temporary vector containing the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -382,17 +393,18 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector )
 // the vector) or any alignment restrictions are violated, a \a std::invalid_argument exception
 // is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , size_t I          // Index of the first subvector element
-        , size_t N          // Size of the subvector
-        , typename VT       // Type of the dense vector
-        , bool TF >         // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>&& vector )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>&& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF,I,N>;
-   return ReturnType( ~vector );
+   return ReturnType( ~vector, args... );
 }
 //*************************************************************************************************
 
@@ -404,6 +416,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector )
 // \param vector The vector containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -445,13 +458,14 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector )
 // Note however that in this case the given \a index and \a size are subject to additional checks
 // to guarantee proper alignment.
 */
-template< typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t size )
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t size, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned>( ~vector, index, size );
+   return subvector<unaligned>( ~vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -463,6 +477,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
 // \param vector The constant vector containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -504,13 +519,14 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
 // Note however that in this case the given \a index and \a size are subject to additional checks
 // to guarantee proper alignment.
 */
-template< typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size_t size, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned>( ~vector, index, size );
+   return subvector<unaligned>( ~vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -522,6 +538,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size
 // \param vector The temporary vector containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -530,13 +547,14 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size
 // first index is greater than the total size of the given vector or the subvector is specified
 // beyond the size of the vector) a \a std::invalid_argument exception is thrown.
 */
-template< typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t size, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<unaligned>( ~vector, index, size );
+   return subvector<unaligned>( ~vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -548,6 +566,7 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
 // \param vector The vector containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -601,15 +620,16 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , typename VT       // Type of the dense vector
-        , bool TF >         // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t size )
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t size, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF>;
-   return ReturnType( ~vector, index, size );
+   return ReturnType( ~vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -621,6 +641,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
 // \param vector The constant vector containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -672,15 +693,16 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , typename VT       // Type of the dense vector
-        , bool TF >         // Transpose flag
-inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size_t size )
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size_t size, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Subvector_<const VT,AF>;
-   return ReturnType( ~vector, index, size );
+   return ReturnType( ~vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -692,6 +714,7 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size
 // \param vector The temporary vector containing the subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
+// \param args Optional subvector arguments.
 // \return View on the specific subvector of the vector.
 // \exception std::invalid_argument Invalid subvector specification.
 //
@@ -702,15 +725,16 @@ inline decltype(auto) subvector( const Vector<VT,TF>& vector, size_t index, size
 // the vector) or any alignment restrictions are violated, a \a std::invalid_argument exception
 // is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , typename VT       // Type of the dense vector
-        , bool TF >         // Transpose flag
-inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t size )
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t size, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subvector_<VT,AF>;
-   return ReturnType( ~vector, index, size );
+   return ReturnType( ~vector, index, size, args... );
 }
 //*************************************************************************************************
 
@@ -1625,7 +1649,8 @@ template< typename VT  // Type of the vector
         , size_t N >   // Number of elements
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF,I,N>& sv )
 {
-   return subvector<I,N>( derestrict( sv.operand() ) );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return subvector<alignment,I,N>( derestrict( sv.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1654,7 +1679,8 @@ template< typename VT  // Type of the vector
         , size_t N >   // Number of elements
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF,I,N>&& sv )
 {
-   return subvector<I,N>( derestrict( sv.operand() ) );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return subvector<alignment,I,N>( derestrict( sv.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1681,7 +1707,8 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>& sv )
 {
-   return subvector( derestrict( sv.operand() ), sv.offset(), sv.size() );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return subvector<alignment>( derestrict( sv.operand() ), sv.offset(), sv.size() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1708,7 +1735,8 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
 {
-   return subvector( derestrict( sv.operand() ), sv.offset(), sv.size() );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return subvector<alignment>( derestrict( sv.operand() ), sv.offset(), sv.size() );
 }
 /*! \endcond */
 //*************************************************************************************************

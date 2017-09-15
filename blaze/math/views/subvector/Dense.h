@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/SubvectorData.h>
+#include <blaze/math/views/Unchecked.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -83,6 +84,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -564,8 +566,10 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... RSAs >
-   explicit inline Subvector( VT& vector, RSAs... args );
+   explicit inline Subvector( VT& vector );
+   explicit inline Subvector( VT& vector, Unchecked ) noexcept;
+   explicit inline Subvector( VT& vector, size_t index, size_t n );
+   explicit inline Subvector( VT& vector, size_t index, size_t n, Unchecked ) noexcept;
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -803,28 +807,109 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for unaligned dense subvectors.
+/*!\brief Constructor for checked unaligned dense subvectors.
 //
 // \param vector The dense vector containing the subvector.
-// \param args The runtime subvector arguments.
 // \exception std::invalid_argument Invalid subvector specification.
 //
 // In case the subvector is not properly specified (i.e. if the specified offset is larger than
 // the size of the given vector or the subvector is specified beyond the size of the vector) a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename VT         // Type of the dense vector
-        , bool TF             // Transpose flag
-        , size_t... CSAs >    // Compile time subvector arguments
-template< typename... RSAs >  // Runtime subvector arguments
-inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... args )
-   : DataType  ( args... )  // Base class initialization
-   , vector_   ( vector  )  // The vector containing the subvector
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector )
+   : DataType  ()          // Base class initialization
+   , vector_   ( vector )  // The vector containing the subvector
    , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
 {
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
    if( offset() + size() > vector.size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked unaligned dense subvectors.
+//
+// \param vector The dense vector containing the subvector.
+//
+// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, Unchecked ) noexcept
+   : DataType  ()          // Base class initialization
+   , vector_   ( vector )  // The vector containing the subvector
+   , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+   BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked unaligned dense subvectors.
+//
+// \param vector The dense vector containing the subvector.
+// \param index The offset of the subvector within the given vector.
+// \param n The size of the subvector.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// In case the subvector is not properly specified (i.e. if the specified offset is larger than
+// the size of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, size_t index, size_t n )
+   : DataType  ( index, n )  // Base class initialization
+   , vector_   ( vector   )  // The vector containing the subvector
+   , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+   if( offset() + size() > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked unaligned dense subvectors.
+//
+// \param vector The dense vector containing the subvector.
+// \param index The offset of the subvector within the given vector.
+// \param n The size of the subvector.
+//
+// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, size_t index, size_t n, Unchecked ) noexcept
+   : DataType  ( index, n )  // Base class initialization
+   , vector_   ( vector   )  // The vector containing the subvector
+   , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+   BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2718,8 +2803,10 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... RSAs >
-   explicit inline Subvector( VT& vector, RSAs... args );
+   explicit inline Subvector( VT& vector );
+   explicit inline Subvector( VT& vector, Unchecked ) noexcept;
+   explicit inline Subvector( VT& vector, size_t index, size_t n );
+   explicit inline Subvector( VT& vector, size_t index, size_t n, Unchecked ) noexcept;
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2950,24 +3037,24 @@ class Subvector<VT,aligned,TF,true,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for aligned dense subvectors.
+/*!\brief Constructor for checked aligned dense subvectors.
 //
 // \param vector The dense vector containing the subvector.
-// \param args The runtime subvector arguments.
 // \exception std::invalid_argument Invalid subvector specification.
 //
 // In case the subvector is not properly specified (i.e. if the specified offset is larger than
 // the size of the given vector or the subvector is specified beyond the size of the vector) a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename VT         // Type of the dense vector
-        , bool TF             // Transpose flag
-        , size_t... CSAs >    // Compile time subvector arguments
-template< typename... RSAs >  // Runtime subvector arguments
-inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... args )
-   : DataType( args... )  // Base class initialization
-   , vector_ ( vector  )  // The vector containing the subvector
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector )
+   : DataType()          // Base class initialization
+   , vector_ ( vector )  // The vector containing the subvector
 {
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
    if( offset() + size() > vector.size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
@@ -2975,6 +3062,90 @@ inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... arg
    if( simdEnabled && vector_.data() != nullptr && !checkAlignment( data() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked aligned dense subvectors.
+//
+// \param vector The dense vector containing the subvector.
+//
+// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, Unchecked ) noexcept
+   : DataType()          // Base class initialization
+   , vector_ ( vector )  // The vector containing the subvector
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+   BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   BLAZE_INTERNAL_ASSERT( !simdEnabled || vector_.data() == nullptr || checkAlignment( data() ), "Invalid subvector alignment" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked aligned dense subvectors.
+//
+// \param vector The dense vector containing the subvector.
+// \param index The offset of the subvector within the given vector.
+// \param n The size of the subvector.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// In case the subvector is not properly specified (i.e. if the specified offset is larger than
+// the size of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, size_t index, size_t n )
+   : DataType( index, n )  // Base class initialization
+   , vector_ ( vector   )  // The vector containing the subvector
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+   if( offset() + size() > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
+
+   if( simdEnabled && vector_.data() != nullptr && !checkAlignment( data() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked aligned dense subvectors.
+//
+// \param vector The dense vector containing the subvector.
+// \param index The offset of the subvector within the given vector.
+// \param n The size of the subvector.
+//
+// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, size_t index, size_t n, Unchecked ) noexcept
+   : DataType( index, n )  // Base class initialization
+   , vector_ ( vector   )  // The vector containing the subvector
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+   BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   BLAZE_INTERNAL_ASSERT( !simdEnabled || vector_.data() == nullptr || checkAlignment( data() ), "Invalid subvector alignment" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4832,16 +5003,73 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the Subvector specialization class.
+   /*!\brief Constructor for checked unaligned dense subvectors.
    //
    // \param vector The dense vector/dense vector cross product expression.
-   // \param args The runtime subvector arguments.
+   // \exception std::invalid_argument Invalid subvector specification.
    */
-   template< typename... RSAs >
-   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
-      : DataType( args... )  // Base class initialization
-      , vector_ ( vector  )  // The dense vector/dense vector cross product expression
-   {}
+   explicit inline Subvector( const CPE& vector )
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The dense vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The dense vector/dense vector cross product expression.
+   */
+   explicit inline Subvector( const CPE& vector, Unchecked ) noexcept
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The dense vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for checked unaligned dense subvectors.
+   //
+   // \param vector The dense vector/dense vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   // \exception std::invalid_argument Invalid subvector specification.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n )
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The dense vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The dense vector/dense vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n, Unchecked ) noexcept
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The dense vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
    //**********************************************************************************************
 
    //**Subscript operator**************************************************************************
@@ -4977,16 +5205,73 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the Subvector specialization class.
+   /*!\brief Constructor for checked unaligned dense subvectors.
    //
    // \param vector The dense vector/sparse vector cross product expression.
-   // \param args The runtime subvector arguments.
+   // \exception std::invalid_argument Invalid subvector specification.
    */
-   template< typename... RSAs >
-   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
-      : DataType( args... )  // Base class initialization
-      , vector_ ( vector  )  // The dense vector/sparse vector cross product expression
-   {}
+   explicit inline Subvector( const CPE& vector )
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The dense vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The dense vector/sparse vector cross product expression.
+   */
+   explicit inline Subvector( const CPE& vector, Unchecked ) noexcept
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The dense vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for checked unaligned dense subvectors.
+   //
+   // \param vector The dense vector/sparse vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   // \exception std::invalid_argument Invalid subvector specification.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n )
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The dense vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The dense vector/sparse vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n, Unchecked ) noexcept
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The dense vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
    //**********************************************************************************************
 
    //**Subscript operator**************************************************************************
@@ -5122,16 +5407,73 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the Subvector specialization class.
+   /*!\brief Constructor for checked unaligned dense subvectors.
    //
    // \param vector The sparse vector/dense vector cross product expression.
-   // \param args The runtime subvector arguments.
+   // \exception std::invalid_argument Invalid subvector specification.
    */
-   template< typename... RSAs >
-   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
-      : DataType( args... )  // Base class initialization
-      , vector_ ( vector  )  // The sparse vector/dense vector cross product expression
-   {}
+   explicit inline Subvector( const CPE& vector )
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The sparse vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The sparse vector/dense vector cross product expression.
+   */
+   explicit inline Subvector( const CPE& vector, Unchecked ) noexcept
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The sparse vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for checked unaligned dense subvectors.
+   //
+   // \param vector The sparse vector/dense vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   // \exception std::invalid_argument Invalid subvector specification.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n )
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The sparse vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The sparse vector/dense vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n, Unchecked ) noexcept
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The sparse vector/dense vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
    //**********************************************************************************************
 
    //**Subscript operator**************************************************************************
@@ -5267,16 +5609,73 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the Subvector specialization class.
+   /*!\brief Constructor for checked unaligned dense subvectors.
    //
    // \param vector The sparse vector/sparse vector cross product expression.
-   // \param args The runtime subvector arguments.
+   // \exception std::invalid_argument Invalid subvector specification.
    */
-   template< typename... RSAs >
-   explicit inline Subvector( const CPE& vector, RSAs... args ) noexcept
-      : DataType( args... )  // Base class initialization
-      , vector_ ( vector  )  // The sparse vector/sparse vector cross product expression
-   {}
+   explicit inline Subvector( const CPE& vector )
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The sparse vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The sparse vector/sparse vector cross product expression.
+   */
+   explicit inline Subvector( const CPE& vector, Unchecked ) noexcept
+      : DataType()          // Base class initialization
+      , vector_ ( vector )  // The sparse vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for checked unaligned dense subvectors.
+   //
+   // \param vector The sparse vector/sparse vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   // \exception std::invalid_argument Invalid subvector specification.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n )
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The sparse vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      if( offset() + size() > vector.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked unaligned dense subvectors.
+   //
+   // \param vector The sparse vector/sparse vector cross product expression.
+   // \param index The offset of the subvector within the given vector.
+   // \param n The size of the subvector.
+   */
+   explicit inline Subvector( const CPE& vector, size_t index, size_t n, Unchecked ) noexcept
+      : DataType( index, n )  // Base class initialization
+      , vector_ ( vector )    // The sparse vector/sparse vector cross product expression
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+      BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+   }
    //**********************************************************************************************
 
    //**Subscript operator**************************************************************************

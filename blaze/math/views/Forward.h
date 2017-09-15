@@ -58,23 +58,23 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF >
-decltype(auto) subvector( Vector<VT,TF>& );
+template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&, RSAs... );
 
-template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF >
-decltype(auto) subvector( const Vector<VT,TF>& );
+template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( const Vector<VT,TF>&, RSAs... );
 
-template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF >
-decltype(auto) subvector( Vector<VT,TF>&& );
+template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&&, RSAs... );
 
-template< AlignmentFlag AF, typename VT, bool TF >
-decltype(auto) subvector( Vector<VT,TF>&, size_t, size_t );
+template< AlignmentFlag AF, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&, size_t, size_t, RSAs... );
 
-template< AlignmentFlag AF, typename VT, bool TF >
-decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t );
+template< AlignmentFlag AF, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t, RSAs... );
 
-template< AlignmentFlag AF, typename VT, bool TF >
-decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t );
+template< AlignmentFlag AF, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t, RSAs... );
 
 template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
 decltype(auto) submatrix( Matrix<MT,SO>& );

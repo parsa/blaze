@@ -66,10 +66,12 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/SubvectorData.h>
+#include <blaze/math/views/Unchecked.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -426,8 +428,10 @@ class Subvector<VT,AF,TF,false,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... RSAs >
-   explicit inline Subvector( VT& vector, RSAs... args );
+   explicit inline Subvector( VT& vector );
+   explicit inline Subvector( VT& vector, Unchecked ) noexcept;
+   explicit inline Subvector( VT& vector, size_t index, size_t n );
+   explicit inline Subvector( VT& vector, size_t index, size_t n, Unchecked ) noexcept;
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -575,28 +579,113 @@ class Subvector<VT,AF,TF,false,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for sparse subvectors.
+/*!\brief Constructor for checked sparse subvectors.
 //
 // \param vector The sparse vector containing the subvector.
-// \params args The runtime subvector arguments.
 // \exception std::invalid_argument Invalid subvector specification.
 //
 // In case the subvector is not properly specified (i.e. if the specified first index is larger
 // than the size of the given vector or the subvector is specified beyond the size of the vector)
 // a \a std::invalid_argument exception is thrown.
 */
-template< typename VT         // Type of the sparse vector
-        , bool AF             // Alignment flag
-        , bool TF             // Transpose flag
-        , size_t... CSAs >    // Compile time subvector arguments
-template< typename... RSAs >  // Runtime subvector arguments
-inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, RSAs... args )
-   : DataType( args... )  // Base class initialization
-   , vector_ ( vector  )  // The vector containing the subvector
+template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector )
+   : DataType()          // Base class initialization
+   , vector_ ( vector )  // The vector containing the subvector
 {
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
    if( offset() + size() > vector.size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked sparse subvectors.
+//
+// \param vector The sparse vector containing the subvector.
+//
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the size of the given vector or the subvector is specified beyond the size of the vector)
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, Unchecked ) noexcept
+   : DataType()          // Base class initialization
+   , vector_ ( vector )  // The vector containing the subvector
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 2UL );
+
+   BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked sparse subvectors.
+//
+// \param vector The sparse vector containing the subvector.
+// \param index The offset of the subvector within the given vector.
+// \param n The size of the subvector.
+// \exception std::invalid_argument Invalid subvector specification.
+//
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the size of the given vector or the subvector is specified beyond the size of the vector)
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, size_t index, size_t n )
+   : DataType( index, n )  // Base class initialization
+   , vector_ ( vector   )  // The vector containing the subvector
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+   if( offset() + size() > vector.size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked sparse subvectors.
+//
+// \param vector The sparse vector containing the subvector.
+// \param index The offset of the subvector within the given vector.
+// \param n The size of the subvector.
+//
+// In case the subvector is not properly specified (i.e. if the specified first index is larger
+// than the size of the given vector or the subvector is specified beyond the size of the vector)
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT       // Type of the sparse vector
+        , bool AF           // Alignment flag
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, size_t index, size_t n, Unchecked ) noexcept
+   : DataType( index, n )  // Base class initialization
+   , vector_ ( vector   )  // The vector containing the subvector
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
+
+   BLAZE_INTERNAL_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
 }
 /*! \endcond */
 //*************************************************************************************************
