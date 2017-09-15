@@ -76,23 +76,23 @@ decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t, RSAs... );
 template< AlignmentFlag AF, typename VT, bool TF, typename... RSAs >
 decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t, RSAs... );
 
-template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
-decltype(auto) submatrix( Matrix<MT,SO>& );
+template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&, RSAs... );
 
-template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
-decltype(auto) submatrix( const Matrix<MT,SO>& );
+template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( const Matrix<MT,SO>&, RSAs... );
 
-template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO >
-decltype(auto) submatrix( Matrix<MT,SO>&& );
+template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&&, RSAs... );
 
-template< AlignmentFlag AF, typename MT, bool SO >
-decltype(auto) submatrix( Matrix<MT,SO>&, size_t, size_t, size_t, size_t );
+template< AlignmentFlag AF, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&, size_t, size_t, size_t, size_t, RSAs... );
 
-template< AlignmentFlag AF, typename MT, bool SO >
-decltype(auto) submatrix( const Matrix<MT,SO>&, size_t, size_t, size_t, size_t );
+template< AlignmentFlag AF, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( const Matrix<MT,SO>&, size_t, size_t, size_t, size_t, RSAs... );
 
-template< AlignmentFlag AF, typename MT, bool SO >
-decltype(auto) submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t );
+template< AlignmentFlag AF, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t, RSAs... );
 
 template< size_t I, typename MT, bool SO >
 decltype(auto) row( Matrix<MT,SO>& );

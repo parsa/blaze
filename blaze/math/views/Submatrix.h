@@ -102,6 +102,7 @@ namespace blaze {
 // \ingroup submatrix
 //
 // \param matrix The matrix containing the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -144,17 +145,18 @@ namespace blaze {
 // Note however that in this case the given compile time arguments \a I, \a J, \a M, and \a N are
 // subject to additional checks to guarantee proper alignment.
 */
-template< size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N     // Number of columns
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto) submatrix( Matrix<MT,SO>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned,I,J,M,N>( ~matrix );
+   return submatrix<unaligned,I,J,M,N>( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -164,6 +166,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
 // \ingroup submatrix
 //
 // \param matrix The constant matrix containing the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -205,17 +208,18 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
 // Note however that in this case the given compile time arguments \a I, \a J, \a M, and \a N are
 // subject to additional checks to guarantee proper alignment.
 */
-template< size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N     // Number of columns
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
+inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned,I,J,M,N>( ~matrix );
+   return submatrix<unaligned,I,J,M,N>( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -225,6 +229,7 @@ inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
 // \ingroup submatrix
 //
 // \param matrix The temporary matrix containing the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -234,17 +239,18 @@ inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
 // the submatrix is specified beyond the number of rows or columns of the matrix) a
 // \a std::invalid_argument exception is thrown.
 */
-template< size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N     // Number of columns
-        , typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
+inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned,I,J,M,N>( ~matrix );
+   return submatrix<unaligned,I,J,M,N>( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -254,6 +260,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
 // \ingroup submatrix
 //
 // \param matrix The matrix containing the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -308,19 +315,20 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , size_t I          // Index of the first row
-        , size_t J          // Index of the first column
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , typename MT       // Type of the dense matrix
-        , bool SO >         // Storage order
-inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
+inline decltype(auto) submatrix( Matrix<MT,SO>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF,I,J,M,N>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -330,6 +338,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
 // \ingroup submatrix
 //
 // \param matrix The constant matrix containing the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -382,19 +391,20 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix )
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , size_t I          // Index of the first row
-        , size_t J          // Index of the first column
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , typename MT       // Type of the dense matrix
-        , bool SO >         // Storage order
-inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
+inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Submatrix_<const MT,AF,I,J,M,N>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -404,6 +414,7 @@ inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
 // \ingroup submatrix
 //
 // \param matrix The temporary matrix containing the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -414,19 +425,20 @@ inline decltype(auto) submatrix( const Matrix<MT,SO>& matrix )
 // beyond the number of rows or columns of the matrix) or any alignment restrictions are
 // violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , size_t I          // Index of the first row
-        , size_t J          // Index of the first column
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , typename MT       // Type of the dense matrix
-        , bool SO >         // Storage order
-inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
+inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF,I,J,M,N>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -440,6 +452,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -482,14 +495,15 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix )
 // Note however that in this case the given arguments \a row, \a column, \a m, and \a n are
 // subject to additional checks to guarantee proper alignment.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
 inline decltype(auto)
-   submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+   submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned>( ~matrix, row, column, m, n );
+   return submatrix<unaligned>( ~matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -503,6 +517,7 @@ inline decltype(auto)
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -544,14 +559,15 @@ inline decltype(auto)
 // Note however that in this case the given arguments \a row, \a column, \a m, and \a n are
 // subject to additional checks to guarantee proper alignment.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
 inline decltype(auto)
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned>( ~matrix, row, column, m, n );
+   return submatrix<unaligned>( ~matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -565,6 +581,7 @@ inline decltype(auto)
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -574,14 +591,15 @@ inline decltype(auto)
 // the submatrix is specified beyond the number of rows or columns of the matrix) a
 // \a std::invalid_argument exception is thrown.
 */
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
+template< typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
 inline decltype(auto)
-   submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
+   submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned>( ~matrix, row, column, m, n );
+   return submatrix<unaligned>( ~matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -595,6 +613,7 @@ inline decltype(auto)
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -649,16 +668,17 @@ inline decltype(auto)
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , typename MT       // Type of the dense matrix
-        , bool SO >         // Storage order
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
 inline decltype(auto)
-   submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+   submatrix( Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF>;
-   return ReturnType( ~matrix, row, column, m, n );
+   return ReturnType( ~matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -672,6 +692,7 @@ inline decltype(auto)
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -724,16 +745,17 @@ inline decltype(auto)
 
 // In case any alignment restrictions are violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , typename MT       // Type of the dense matrix
-        , bool SO >         // Storage order
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
 inline decltype(auto)
-   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const Matrix<MT,SO>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Submatrix_<const MT,AF>;
-   return ReturnType( ~matrix, row, column, m, n );
+   return ReturnType( ~matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -747,6 +769,7 @@ inline decltype(auto)
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
 // \return View on the specific submatrix of the matrix.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
@@ -757,16 +780,17 @@ inline decltype(auto)
 // beyond the number of rows or columns of the matrix) or any alignment restrictions are
 // violated, a \a std::invalid_argument exception is thrown.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , typename MT       // Type of the dense matrix
-        , bool SO >         // Storage order
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , typename... RSAs >  // Option submatrix arguments
 inline decltype(auto)
-   submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n )
+   submatrix( Matrix<MT,SO>&& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Submatrix_<MT,AF>;
-   return ReturnType( ~matrix, row, column, m, n );
+   return ReturnType( ~matrix, row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -2697,7 +2721,8 @@ template< typename MT  // Type of the matrix
         , size_t N >   // Number of columns
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>& dm )
 {
-   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ) );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return submatrix<alignment,I,J,M,N>( derestrict( dm.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2728,7 +2753,8 @@ template< typename MT  // Type of the matrix
         , size_t N >   // Number of columns
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>&& dm )
 {
-   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ) );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return submatrix<alignment,I,J,M,N>( derestrict( dm.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2755,7 +2781,8 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
 {
-   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return submatrix<alignment>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2782,7 +2809,8 @@ template< typename MT  // Type of the matrix
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& dm )
 {
-   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
+   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
+   return submatrix<alignment>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
