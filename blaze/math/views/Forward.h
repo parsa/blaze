@@ -94,23 +94,23 @@ decltype(auto) submatrix( const Matrix<MT,SO>&, size_t, size_t, size_t, size_t, 
 template< AlignmentFlag AF, typename MT, bool SO, typename... RSAs >
 decltype(auto) submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t, RSAs... );
 
-template< size_t I, typename MT, bool SO >
-decltype(auto) row( Matrix<MT,SO>& );
+template< size_t I, typename MT, bool SO, typename... RRAs >
+decltype(auto) row( Matrix<MT,SO>&, size_t, RRAs... );
 
-template< size_t I, typename MT, bool SO >
-decltype(auto) row( const Matrix<MT,SO>& );
+template< size_t I, typename MT, bool SO, typename... RRAs >
+decltype(auto) row( const Matrix<MT,SO>&, size_t, RRAs... );
 
-template< size_t I, typename MT, bool SO >
-decltype(auto) row( Matrix<MT,SO>&& );
+template< size_t I, typename MT, bool SO, typename... RRAs >
+decltype(auto) row( Matrix<MT,SO>&&, size_t, RRAs... );
 
-template< typename MT, bool SO >
-decltype(auto) row( Matrix<MT,SO>&, size_t );
+template< typename MT, bool SO, typename... RRAs >
+decltype(auto) row( Matrix<MT,SO>&, size_t, size_t, RRAs... );
 
-template< typename MT, bool SO >
-decltype(auto) row( const Matrix<MT,SO>&, size_t );
+template< typename MT, bool SO, typename... RRAs >
+decltype(auto) row( const Matrix<MT,SO>&, size_t, size_t, RRAs... );
 
-template< typename MT, bool SO >
-decltype(auto) row( Matrix<MT,SO>&&, size_t );
+template< typename MT, bool SO, typename... RRAs >
+decltype(auto) row( Matrix<MT,SO>&&, size_t, size_t, RRAs... );
 
 template< size_t I, typename MT, bool SO >
 decltype(auto) column( Matrix<MT,SO>& );
