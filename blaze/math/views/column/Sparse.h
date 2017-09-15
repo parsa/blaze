@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/math/views/column/ColumnData.h>
+#include <blaze/math/views/Unchecked.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -83,6 +84,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -155,8 +157,10 @@ class Column<MT,true,false,SF,CCAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... RCAs >
-   explicit inline Column( MT& matrix, RCAs... args );
+   explicit inline Column( MT& matrix );
+   explicit inline Column( MT& matrix, Unchecked ) noexcept;
+   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( MT& matrix, size_t index, Unchecked ) noexcept;
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -314,23 +318,91 @@ class Column<MT,true,false,SF,CCAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for columns on column-major sparse matrices.
+/*!\brief Constructor for checked columns on column-major sparse matrices.
 //
 // \param matrix The matrix containing the column.
-// \param args The runtime column arguments
 // \exception std::invalid_argument Invalid column access index.
 */
-template< typename MT         // Type of the sparse matrix
-        , bool SF             // Symmetry flag
-        , size_t... CCAs >    // Compile time column arguments
-template< typename... RCAs >  // Runtime column arguments
-inline Column<MT,true,false,SF,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( args... )  // Base class initialization
-   , matrix_ ( matrix  )  // The matrix containing the column
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,true,false,SF,CCAs...>::Column( MT& matrix )
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
 {
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 1UL );
+
    if( matrix_.columns() <= column() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked columns on column-major sparse matrices.
+//
+// \param matrix The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,true,false,SF,CCAs...>::Column( MT& matrix, Unchecked ) noexcept
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 1UL );
+
+   BLAZE_INTERNAL_ASSERT( column() < matrix_.columns(), "Invalid column access index" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked columns on column-major sparse matrices.
+//
+// \param matrix The matrix containing the column.
+// \param index The index of the column.
+// \exception std::invalid_argument Invalid column access index.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,true,false,SF,CCAs...>::Column( MT& matrix, size_t index )
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 0UL );
+
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked columns on column-major sparse matrices.
+//
+// \param matrix The matrix containing the column.
+// \param index The index of the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,true,false,SF,CCAs...>::Column( MT& matrix, size_t index, Unchecked ) noexcept
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 0UL );
+
+   BLAZE_INTERNAL_ASSERT( column() < matrix_.columns(), "Invalid column access index" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2448,8 +2520,10 @@ class Column<MT,false,false,false,CCAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... RCAs >
-   explicit inline Column( MT& matrix, RCAs... args );
+   explicit inline Column( MT& matrix );
+   explicit inline Column( MT& matrix, Unchecked ) noexcept;
+   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( MT& matrix, size_t index, Unchecked ) noexcept;
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2595,22 +2669,87 @@ class Column<MT,false,false,false,CCAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for columns on row-major sparse matrices.
+/*!\brief Constructor for checked columns on row-major sparse matrices.
 //
 // \param matrix The matrix containing the column.
-// \param args The runtime column arguments.
 // \exception std::invalid_argument Invalid column access index.
 */
-template< typename MT         // Type of the sparse matrix
-        , size_t... CCAs >    // Compile time column arguments
-template< typename... RCAs >  // Runtime column arguments
-inline Column<MT,false,false,false,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( args... )  // Base class initialization
-   , matrix_ ( matrix  )  // The matrix containing the column
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,false,CCAs...>::Column( MT& matrix )
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
 {
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 1UL );
+
    if( matrix_.columns() <= column() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked columns on row-major sparse matrices.
+//
+// \param matrix The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,false,CCAs...>::Column( MT& matrix, Unchecked ) noexcept
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 1UL );
+
+   BLAZE_INTERNAL_ASSERT( column() < matrix_.columns(), "Invalid column access index" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked columns on row-major sparse matrices.
+//
+// \param matrix The matrix containing the column.
+// \param index The index of the column.
+// \exception std::invalid_argument Invalid column access index.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,false,CCAs...>::Column( MT& matrix, size_t index )
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 0UL );
+
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked columns on row-major sparse matrices.
+//
+// \param matrix The matrix containing the column.
+// \param index The index of the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,false,CCAs...>::Column( MT& matrix, size_t index, Unchecked ) noexcept
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 0UL );
+
+   BLAZE_INTERNAL_ASSERT( column() < matrix_.columns(), "Invalid column access index" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4136,8 +4275,10 @@ class Column<MT,false,false,true,CCAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... RCAs >
-   explicit inline Column( MT& matrix, RCAs... args );
+   explicit inline Column( MT& matrix );
+   explicit inline Column( MT& matrix, Unchecked ) noexcept;
+   explicit inline Column( MT& matrix, size_t index );
+   explicit inline Column( MT& matrix, size_t index, Unchecked ) noexcept;
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4296,22 +4437,87 @@ class Column<MT,false,false,true,CCAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for columns on row-major symmetric sparse matrices.
+/*!\brief Constructor for checked columns on row-major symmetric sparse matrices.
 //
 // \param matrix The matrix containing the column.
-// \param args The runtime column arguments.
 // \exception std::invalid_argument Invalid column access index.
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
-template< typename... RCAs >  // Runtime column arguments
-inline Column<MT,false,false,true,CCAs...>::Column( MT& matrix, RCAs... args )
-   : DataType( args... )  // Base class initialization
-   , matrix_ ( matrix  )  // The matrix containing the column
+inline Column<MT,false,false,true,CCAs...>::Column( MT& matrix )
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
 {
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 1UL );
+
    if( matrix_.columns() <= column() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked columns on row-major symmetric sparse matrices.
+//
+// \param matrix The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,true,CCAs...>::Column( MT& matrix, Unchecked ) noexcept
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 1UL );
+
+   BLAZE_INTERNAL_ASSERT( column() < matrix_.columns(), "Invalid column access index" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked columns on row-major symmetric sparse matrices.
+//
+// \param matrix The matrix containing the column.
+// \param index The index of the column.
+// \exception std::invalid_argument Invalid column access index.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,true,CCAs...>::Column( MT& matrix, size_t index )
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 0UL );
+
+   if( matrix_.columns() <= column() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked columns on row-major symmetric sparse matrices.
+//
+// \param matrix The matrix containing the column.
+// \param index The index of the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,true,CCAs...>::Column( MT& matrix, size_t index, Unchecked ) noexcept
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the column
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CCAs ) == 0UL );
+
+   BLAZE_INTERNAL_ASSERT( column() < matrix_.columns(), "Invalid column access index" );
 }
 /*! \endcond */
 //*************************************************************************************************

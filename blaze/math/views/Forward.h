@@ -112,23 +112,23 @@ decltype(auto) row( const Matrix<MT,SO>&, size_t, size_t, RRAs... );
 template< typename MT, bool SO, typename... RRAs >
 decltype(auto) row( Matrix<MT,SO>&&, size_t, size_t, RRAs... );
 
-template< size_t I, typename MT, bool SO >
-decltype(auto) column( Matrix<MT,SO>& );
+template< size_t I, typename MT, bool SO, typename... RCAs >
+decltype(auto) column( Matrix<MT,SO>&, RCAs... );
 
-template< size_t I, typename MT, bool SO >
-decltype(auto) column( const Matrix<MT,SO>& );
+template< size_t I, typename MT, bool SO, typename... RCAs >
+decltype(auto) column( const Matrix<MT,SO>&, RCAs... );
 
-template< size_t I, typename MT, bool SO >
-decltype(auto) column( Matrix<MT,SO>&& );
+template< size_t I, typename MT, bool SO, typename... RCAs >
+decltype(auto) column( Matrix<MT,SO>&&, RCAs... );
 
-template< typename MT, bool SO >
-decltype(auto) column( Matrix<MT,SO>&, size_t );
+template< typename MT, bool SO, typename... RCAs >
+decltype(auto) column( Matrix<MT,SO>&, size_t, RCAs... );
 
-template< typename MT, bool SO >
-decltype(auto) column( const Matrix<MT,SO>&, size_t );
+template< typename MT, bool SO, typename... RCAs >
+decltype(auto) column( const Matrix<MT,SO>&, size_t, RCAs... );
 
-template< typename MT, bool SO >
-decltype(auto) column( Matrix<MT,SO>&&, size_t );
+template< typename MT, bool SO, typename... RCAs >
+decltype(auto) column( Matrix<MT,SO>&&, size_t, RCAs... );
 
 template< ptrdiff_t I, typename MT, bool SO >
 decltype(auto) band( Matrix<MT,SO>& );

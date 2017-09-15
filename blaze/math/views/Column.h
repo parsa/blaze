@@ -91,6 +91,7 @@ namespace blaze {
 // \ingroup column
 //
 // \param matrix The matrix containing the column.
+// \param args Optional column arguments.
 // \return View on the specified column of the matrix.
 // \exception std::invalid_argument Invalid column access index.
 //
@@ -114,15 +115,16 @@ namespace blaze {
 // equal to the total number of the columns in the given matrix) a \a std::invalid_argument
 // exception is thrown.
 */
-template< size_t I     // Column index
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) column( Matrix<MT,SO>& matrix )
+template< size_t I            // Column index
+        , typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Matrix<MT,SO>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT,I>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -132,6 +134,7 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix )
 // \ingroup column
 //
 // \param matrix The constant matrix containing the column.
+// \param args Optional column arguments.
 // \return View on the specified column of the matrix.
 // \exception std::invalid_argument Invalid column access index.
 //
@@ -155,15 +158,16 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix )
 // equal to the total number of the columns in the given matrix) a \a std::invalid_argument
 // exception is thrown.
 */
-template< size_t I     // Column index
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) column( const Matrix<MT,SO>& matrix )
+template< size_t I            // Column index
+        , typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const Matrix<MT,SO>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Column_<const MT,I>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -173,6 +177,7 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix )
 // \ingroup column
 //
 // \param matrix The temporary matrix containing the column.
+// \param args Optional column arguments.
 // \return View on the specified column of the matrix.
 // \exception std::invalid_argument Invalid column access index.
 //
@@ -181,15 +186,16 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix )
 // than or equal to the total number of the columns in the given matrix) a \a std::invalid_argument
 // exception is thrown.
 */
-template< size_t I     // Column index
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) column( Matrix<MT,SO>&& matrix )
+template< size_t I            // Column index
+        , typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Matrix<MT,SO>&& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT,I>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -200,6 +206,7 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix )
 //
 // \param matrix The matrix containing the column.
 // \param index The index of the column.
+// \param args Optional column arguments.
 // \return View on the specified column of the matrix.
 // \exception std::invalid_argument Invalid column access index.
 //
@@ -223,14 +230,15 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix )
 // equal to the total number of the columns in the given matrix) a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT>;
-   return ReturnType( ~matrix, index );
+   return ReturnType( ~matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -241,6 +249,7 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index )
 //
 // \param matrix The constant matrix containing the column.
 // \param index The index of the column.
+// \param args Optional column arguments.
 // \return View on the specified column of the matrix.
 // \exception std::invalid_argument Invalid column access index.
 //
@@ -264,14 +273,15 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index )
 // equal to the total number of the columns in the given matrix) a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) column( const Matrix<MT,SO>& matrix, size_t index )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const Matrix<MT,SO>& matrix, size_t index, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Column_<const MT>;
-   return ReturnType( ~matrix, index );
+   return ReturnType( ~matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -282,6 +292,7 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix, size_t index )
 //
 // \param matrix The temporary matrix containing the column.
 // \param index The index of the column.
+// \param args Optional column arguments.
 // \return View on the specified column of the matrix.
 // \exception std::invalid_argument Invalid column access index.
 //
@@ -290,14 +301,15 @@ inline decltype(auto) column( const Matrix<MT,SO>& matrix, size_t index )
 // than or equal to the total number of the columns in the given matrix) a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) column( Matrix<MT,SO>&& matrix, size_t index )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Matrix<MT,SO>&& matrix, size_t index, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Column_<MT>;
-   return ReturnType( ~matrix, index );
+   return ReturnType( ~matrix, index, args... );
 }
 //*************************************************************************************************
 
