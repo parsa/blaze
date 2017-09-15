@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/band/BandData.h>
 #include <blaze/math/views/band/BaseTemplate.h>
+#include <blaze/math/views/Unchecked.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -81,6 +82,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -472,8 +474,10 @@ class Band<MT,TF,false,false,CBAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... RBAs >
-   explicit inline Band( MT& matrix, RBAs... args );
+   explicit inline Band( MT& matrix );
+   explicit inline Band( MT& matrix, Unchecked ) noexcept;
+   explicit inline Band( MT& matrix, ptrdiff_t index );
+   explicit inline Band( MT& matrix, ptrdiff_t index, Unchecked ) noexcept;
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -619,24 +623,95 @@ class Band<MT,TF,false,false,CBAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for bands on sparse matrices.
+/*!\brief Constructor for checked bands on sparse matrices.
 //
 // \param matrix The matrix containing the band.
-// \param args The runtime band arguments.
 // \exception std::invalid_argument Invalid band access index.
 */
 template< typename MT          // Type of the sparse matrix
         , bool TF              // Transpose flag
         , ptrdiff_t... CBAs >  // Compile time band arguments
-template< typename... RBAs >   // Runtime band arguments
-inline Band<MT,TF,false,false,CBAs...>::Band( MT& matrix, RBAs... args )
-   : DataType( args... )  // Base class initialization
-   , matrix_ ( matrix  )  // The matrix containing the band
+inline Band<MT,TF,false,false,CBAs...>::Band( MT& matrix )
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the band
 {
+   BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 1UL );
+
    if( ( band() > 0L && column() >= matrix.columns() ) ||
        ( band() < 0L && row() >= matrix.rows() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
    }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked bands on sparse matrices.
+//
+// \param matrix The matrix containing the band.
+*/
+template< typename MT          // Type of the sparse matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline Band<MT,TF,false,false,CBAs...>::Band( MT& matrix, Unchecked ) noexcept
+   : DataType()          // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the band
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 1UL );
+
+   BLAZE_INTERNAL_ASSERT( band() < 0L || column() < matrix.columns(), "Invalid band access index" );
+   BLAZE_INTERNAL_ASSERT( band() > 0L || row() < matrix.rows(), "Invalid band access index" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for checked bands on sparse matrices.
+//
+// \param matrix The matrix containing the band.
+// \param index The index of the band.
+// \exception std::invalid_argument Invalid band access index.
+*/
+template< typename MT          // Type of the sparse matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline Band<MT,TF,false,false,CBAs...>::Band( MT& matrix, ptrdiff_t index )
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the band
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 0UL );
+
+   if( ( band() > 0L && column() >= matrix.columns() ) ||
+       ( band() < 0L && row() >= matrix.rows() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for unchecked bands on sparse matrices.
+//
+// \param matrix The matrix containing the band.
+// \param index The index of the band.
+*/
+template< typename MT          // Type of the sparse matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline Band<MT,TF,false,false,CBAs...>::Band( MT& matrix, ptrdiff_t index, Unchecked ) noexcept
+   : DataType( index  )  // Base class initialization
+   , matrix_ ( matrix )  // The matrix containing the band
+{
+   BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 0UL );
+
+   BLAZE_INTERNAL_ASSERT( band() < 0L || column() < matrix.columns(), "Invalid band access index" );
+   BLAZE_INTERNAL_ASSERT( band() > 0L || row() < matrix.rows(), "Invalid band access index" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2243,17 +2318,75 @@ class Band<MT,TF,false,true,CBAs...>
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the Band specialization.
+   /*!\brief Constructor for checked bands on sparse matrix multiplications.
    //
    // \param mmm The matrix multiplication containing the band.
-   // \param args The runtime band arguments.
    // \exception std::invalid_argument Invalid band access index.
    */
-   template< typename... RBAs >
-   explicit inline Band( const MT& mmm, RBAs... args )
-      : DataType( args... )  // Base class initialization
-      , matrix_ ( mmm     )  // The matrix multiplication containing the band
-   {}
+   explicit inline Band( const MT& mmm )
+      : DataType()       // Base class initialization
+      , matrix_ ( mmm )  // The matrix multiplication containing the band
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 1UL );
+
+      if( ( band() > 0L && column() >= mmm.columns() ) ||
+          ( band() < 0L && row() >= mmm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked bands on sparse matrix multiplications.
+   //
+   // \param mmm The matrix multiplication containing the band.
+   */
+   explicit inline Band( const MT& mmm, Unchecked ) noexcept
+      : DataType()       // Base class initialization
+      , matrix_ ( mmm )  // The matrix multiplication containing the band
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 1UL );
+
+      BLAZE_INTERNAL_ASSERT( band() < 0L || column() < mmm.columns(), "Invalid band access index" );
+      BLAZE_INTERNAL_ASSERT( band() > 0L || row() < mmm.rows(), "Invalid band access index" );
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for checked bands on sparse matrix multiplications.
+   //
+   // \param mmm The matrix multiplication containing the band.
+   // \param index The index of the band.
+   // \exception std::invalid_argument Invalid band access index.
+   */
+   explicit inline Band( const MT& mmm, ptrdiff_t index )
+      : DataType( index )  // Base class initialization
+      , matrix_ ( mmm   )  // The matrix multiplication containing the band
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 0UL );
+
+      if( ( band() > 0L && column() >= mmm.columns() ) ||
+          ( band() < 0L && row() >= mmm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
+      }
+   }
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for unchecked bands on sparse matrix multiplications.
+   //
+   // \param mmm The matrix multiplication containing the band.
+   // \param index The index of the band.
+   */
+   explicit inline Band( const MT& mmm, ptrdiff_t index, Unchecked ) noexcept
+      : DataType( index )  // Base class initialization
+      , matrix_ ( mmm   )  // The matrix multiplication containing the band
+   {
+      BLAZE_STATIC_ASSERT( sizeof...( CBAs ) == 0UL );
+
+      BLAZE_INTERNAL_ASSERT( band() < 0L || column() < mmm.columns(), "Invalid band access index" );
+      BLAZE_INTERNAL_ASSERT( band() > 0L || row() < mmm.rows(), "Invalid band access index" );
+   }
    //**********************************************************************************************
 
    //**Subscript operator**************************************************************************

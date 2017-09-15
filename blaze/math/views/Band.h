@@ -90,6 +90,7 @@ namespace blaze {
 // \ingroup band
 //
 // \param matrix The matrix containing the band.
+// \param args Optional band arguments.
 // \return View on the specified band of the matrix.
 // \exception std::invalid_argument Invalid band access index.
 //
@@ -112,15 +113,16 @@ namespace blaze {
 // In case the band is not properly specified (i.e. if the specified index does not correspond
 // to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
 */
-template< ptrdiff_t I  // Band index
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) band( Matrix<MT,SO>& matrix )
+template< ptrdiff_t I         // Band index
+        , typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RBAs >  // Optional band arguments
+inline decltype(auto) band( Matrix<MT,SO>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT,I>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -130,6 +132,7 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix )
 // \ingroup band
 //
 // \param matrix The constant matrix containing the band.
+// \param args Optional band arguments.
 // \return View on the specified band of the matrix.
 // \exception std::invalid_argument Invalid band access index.
 //
@@ -152,15 +155,16 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix )
 // In case the band is not properly specified (i.e. if the specified index does not correspond
 // to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
 */
-template< ptrdiff_t I  // Band index
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) band( const Matrix<MT,SO>& matrix )
+template< ptrdiff_t I         // Band index
+        , typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RBAs >  // Optional band arguments
+inline decltype(auto) band( const Matrix<MT,SO>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Band_<const MT,I>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -170,6 +174,7 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix )
 // \ingroup band
 //
 // \param matrix The temporary matrix containing the band.
+// \param args Optional band arguments.
 // \return View on the specified band of the matrix.
 // \exception std::invalid_argument Invalid band access index.
 //
@@ -178,15 +183,16 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix )
 // correspond to a valid band in the given matrix) a \a std::invalid_argument exception is
 // thrown.
 */
-template< ptrdiff_t I  // Band index
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) band( Matrix<MT,SO>&& matrix )
+template< ptrdiff_t I         // Band index
+        , typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RBAs >  // Optional band arguments
+inline decltype(auto) band( Matrix<MT,SO>&& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT,I>;
-   return ReturnType( ~matrix );
+   return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -197,6 +203,7 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix )
 //
 // \param matrix The matrix containing the band.
 // \param index The band index.
+// \param args Optional band arguments.
 // \return View on the specified band of the matrix.
 // \exception std::invalid_argument Invalid band access index.
 //
@@ -219,14 +226,15 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix )
 // In case the band is not properly specified (i.e. if the specified index does not correspond
 // to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RBAs >  // Optional band arguments
+inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT>;
-   return ReturnType( ~matrix, index );
+   return ReturnType( ~matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -237,6 +245,7 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index )
 //
 // \param matrix The constant matrix containing the band.
 // \param index The band index.
+// \param args Optional band arguments.
 // \return View on the specified band of the matrix.
 // \exception std::invalid_argument Invalid band access index.
 //
@@ -259,14 +268,15 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index )
 // In case the band is not properly specified (i.e. if the specified index does not correspond
 // to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RBAs >  // Optional band arguments
+inline decltype(auto) band( const Matrix<MT,SO>& matrix, ptrdiff_t index, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Band_<const MT>;
-   return ReturnType( ~matrix, index );
+   return ReturnType( ~matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -277,6 +287,7 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
 //
 // \param matrix The temporary matrix containing the band.
 // \param index The band index.
+// \param args Optional band arguments.
 // \return View on the specified band of the matrix.
 // \exception std::invalid_argument Invalid band access index.
 //
@@ -285,14 +296,15 @@ inline decltype(auto) band( const Matrix<MT,SO>& matrix, ptrdiff_t index )
 // correspond to a valid band in the given matrix) a \a std::invalid_argument exception is
 // thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RBAs >  // Optional band arguments
+inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Band_<MT>;
-   return ReturnType( ~matrix, index );
+   return ReturnType( ~matrix, index, args... );
 }
 //*************************************************************************************************
 
@@ -302,6 +314,7 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
 // \ingroup band
 //
 // \param matrix The matrix containing the diagonal.
+// \param args Optional diagonal arguments.
 // \return View on the diagonal of the matrix.
 // \exception std::invalid_argument Invalid diagonal access index.
 //
@@ -324,13 +337,14 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index )
 // In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
 // or zero columns) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) diagonal( Matrix<MT,SO>& matrix )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RDAs >  // Optional diagonal arguments
+inline decltype(auto) diagonal( Matrix<MT,SO>& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix );
+   return band<0L>( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -340,6 +354,7 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix )
 // \ingroup band
 //
 // \param matrix The constant matrix containing the diagonal.
+// \param args Optional diagonal arguments.
 // \return View on the diagonal of the matrix.
 // \exception std::invalid_argument Invalid diagonal access index.
 //
@@ -361,13 +376,14 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix )
 // In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
 // or zero columns) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RDAs >  // Optional diagonal arguments
+inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix );
+   return band<0L>( ~matrix, args... );
 }
 //*************************************************************************************************
 
@@ -377,6 +393,7 @@ inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix )
 // \ingroup band
 //
 // \param matrix The temporary matrix containing the diagonal.
+// \param args Optional diagonal arguments.
 // \return View on the diagonal of the matrix.
 // \exception std::invalid_argument Invalid diagonal access index.
 //
@@ -384,13 +401,14 @@ inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix )
 // In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
 // or zero columns) a \a std::invalid_argument exception is thrown.
 */
-template< typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename... RDAs >  // Optional diagonal arguments
+inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix );
+   return band<0L>( ~matrix, args... );
 }
 //*************************************************************************************************
 
