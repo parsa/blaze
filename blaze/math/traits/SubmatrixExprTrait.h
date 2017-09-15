@@ -66,9 +66,9 @@ namespace blaze {
 // \a Type corresponds to the resulting return type. In case the given type is neither a
 // dense nor a sparse matrix type, the resulting data type \a Type is set to \a INVALID_TYPE.
 */
-template< typename MT          // Type of the matrix operand
-        , bool AF = unaligned  // Alignment flag
-        , size_t... CSAs >     // Compile time submatrix arguments
+template< typename MT                   // Type of the matrix operand
+        , AlignmentFlag AF = unaligned  // Alignment flag
+        , size_t... CSAs >              // Compile time submatrix arguments
 struct SubmatrixExprTrait
 {
  private:
@@ -121,9 +121,9 @@ struct SubmatrixExprTrait
    using Type2 = SubmatrixExprTrait_<MT,AF>;
    \endcode
 */
-template< typename MT          // Type of the matrix operand
-        , bool AF = unaligned  // Alignment flag
-        , size_t... CSAs >     // Compile time submatrix arguments
+template< typename MT                   // Type of the matrix operand
+        , AlignmentFlag AF = unaligned  // Alignment flag
+        , size_t... CSAs >              // Compile time submatrix arguments
 using SubmatrixExprTrait_ = typename SubmatrixExprTrait<MT,AF,CSAs...>::Type;
 //*************************************************************************************************
 
