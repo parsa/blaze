@@ -35,6 +35,37 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
+**15.9.2017**: Attention early adopters: We have spent the last weeks to update all available views.
+One highlight of this refactoring is that it is now possible to provide the arguments of views as
+template arguments! As an example, consider the following two code snippets that demonstrate the setup
+of subvectors and submatrices, respectively:
+
+```
+#!c++
+blaze::DynamicVector<double,blaze::rowVector> x;
+// ... Resizing and initialization
+
+// Create a subvector from index 4 with a size of 12 (i.e. in the range [4..15]) (compile time arguments)
+auto sv1 = subvector<4UL,12UL>( x );
+
+// Create a subvector from index 8 with a size of 16 (i.e. in the range [8..23]) (runtime arguments)
+auto sv2 = subvector( x, 8UL, 16UL );
+```
+
+```
+#!c++
+blaze::DynamicMatrix<double,blaze::rowMajor> A;
+// ... Resizing and initialization
+
+// Creating a dense submatrix of size 4x8, starting in row 3 and column 0 (compile time arguments)
+auto sm1 = submatrix<3UL,0UL,4UL,8UL>( A );
+
+// Creating a dense submatrix of size 8x16, starting in row 0 and column 4 (runtime arguments)
+auto sm2 = submatrix( A, 0UL, 4UL, 8UL, 16UL );
+```
+
+The same works with rows, columns and bands. We are happy to share this new feature with you and welcome any kind of feedback you might have at this time.
+
 **18.8.2017**: Today, after nearly six month of hard work, we officially release **Blaze** 3.2! This version is dedicated to several of the most anticipated features: **Blaze** finally provides [CMake support](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration%20and%20Installation) and an [advanced configuration system](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration Files), which allows you to configure each single detail of **Blaze** from the command line. Additionally, **Blaze** finally provides complete support of AVX-512 and introduces the [`IdentityMatrix`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types#!identitymatrix) class. Furthermore, **Blaze** finally features [binary custom operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-operations) and the [componentwise matrix multiplication (Schur Product)](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!componentwise-multiplication-schur-product). Of course we have also spent time on a lot of smaller features and tweaked countless little details. We hope you enjoy this new release and the ton of new features.
 
 We don't want to miss the opportunity to thank our many contributors: Thanks a lot for your efforts to make **Blaze** a better library!
