@@ -98,7 +98,7 @@ namespace blaze {
 // subvectors.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 class Subvector<VT,AF,TF,false,CSAs...>
@@ -589,7 +589,7 @@ class Subvector<VT,AF,TF,false,CSAs...>
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector )
@@ -617,7 +617,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector )
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, Unchecked ) noexcept
@@ -646,7 +646,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, Unchecked ) noe
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, size_t index, size_t n )
@@ -676,7 +676,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, size_t index, s
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, size_t index, size_t n, Unchecked ) noexcept
@@ -710,7 +710,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, size_t index, s
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Reference
@@ -734,7 +734,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstReference
@@ -759,7 +759,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstReference
 // access index.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Reference
@@ -786,7 +786,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Reference
 // access index.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstReference
@@ -810,7 +810,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstReference
 // This function returns an iterator to the first element of the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -834,7 +834,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // This function returns an iterator to the first element of the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
@@ -858,7 +858,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 // This function returns an iterator to the first element of the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
@@ -882,7 +882,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 // This function returns an iterator just past the last element of the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -906,7 +906,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // This function returns an iterator just past the last element of the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
@@ -930,7 +930,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 // This function returns an iterator just past the last element of the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
@@ -966,7 +966,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 // exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline Subvector<VT,AF,TF,false,CSAs...>&
@@ -1021,7 +1021,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side vector
@@ -1077,7 +1077,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side vector
@@ -1131,7 +1131,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side vector
@@ -1186,7 +1186,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side vector
@@ -1240,7 +1240,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
@@ -1297,7 +1297,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side vector
@@ -1351,7 +1351,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // scalar built-in data type.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the right-hand side scalar
@@ -1381,7 +1381,7 @@ inline EnableIf_<IsNumeric<Other>, Subvector<VT,AF,TF,false,CSAs...> >&
 // type.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the right-hand side scalar
@@ -1428,7 +1428,7 @@ inline EnableIf_<IsNumeric<Other>, Subvector<VT,AF,TF,false,CSAs...> >&
 // \return The vector containing the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Operand
@@ -1447,7 +1447,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Operand
 // \return The capacity of the sparse subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline size_t Subvector<VT,AF,TF,false,CSAs...>::capacity() const noexcept
@@ -1467,7 +1467,7 @@ inline size_t Subvector<VT,AF,TF,false,CSAs...>::capacity() const noexcept
 // Note that the number of non-zero elements is always smaller than the size of the subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline size_t Subvector<VT,AF,TF,false,CSAs...>::nonZeros() const
@@ -1485,7 +1485,7 @@ inline size_t Subvector<VT,AF,TF,false,CSAs...>::nonZeros() const
 // \return void
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline void Subvector<VT,AF,TF,false,CSAs...>::reset()
@@ -1507,7 +1507,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::reset()
 // current values of the subvector elements are preserved.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 void Subvector<VT,AF,TF,false,CSAs...>::reserve( size_t n )
@@ -1543,7 +1543,7 @@ void Subvector<VT,AF,TF,false,CSAs...>::reserve( size_t n )
 // the given \a value is inserted.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -1569,7 +1569,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // a \a std::invalid_argument exception is thrown.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -1607,7 +1607,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // returned by the end() functions!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline void Subvector<VT,AF,TF,false,CSAs...>::append( size_t index, const ElementType& value, bool check )
@@ -1639,7 +1639,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::append( size_t index, const Eleme
 // This function erases an element from the sparse subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline void Subvector<VT,AF,TF,false,CSAs...>::erase( size_t index )
@@ -1660,7 +1660,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::erase( size_t index )
 // This function erases an element from the sparse subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -1683,7 +1683,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // This function erases a range of elements from the sparse subvector.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -1719,7 +1719,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename Pred     // Type of the unary predicate
@@ -1759,7 +1759,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::erase( Pred predicate )
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename Pred >   // Type of the unary predicate
@@ -1794,7 +1794,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::erase( Iterator first, Iterator l
 // via the subscript operator or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -1826,7 +1826,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // via the subscript operator or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
@@ -1857,7 +1857,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 // or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -1883,7 +1883,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
@@ -1909,7 +1909,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 // or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
@@ -1935,7 +1935,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::Iterator
 // or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
@@ -1967,7 +1967,7 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 // as using the multiplication assignment operator.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the scalar value
@@ -2002,7 +2002,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 // to optimize the evaluation.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the foreign expression
@@ -2026,7 +2026,7 @@ inline bool Subvector<VT,AF,TF,false,CSAs...>::canAlias( const Other* alias ) co
 // expressions to optimize the evaluation.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename Other >  // Data type of the foreign expression
@@ -2050,7 +2050,7 @@ inline bool Subvector<VT,AF,TF,false,CSAs...>::isAliased( const Other* alias ) c
 // vector).
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 inline bool Subvector<VT,AF,TF,false,CSAs...>::canSMPAssign() const noexcept
@@ -2074,7 +2074,7 @@ inline bool Subvector<VT,AF,TF,false,CSAs...>::canSMPAssign() const noexcept
 // assignment operator.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
@@ -2106,7 +2106,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::assign( const DenseVector<VT2,TF>
 // assignment operator.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side sparse vector
@@ -2138,7 +2138,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::assign( const SparseVector<VT2,TF
 // assignment operator.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
@@ -2173,7 +2173,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::addAssign( const DenseVector<VT2,
 // assignment operator.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side sparse vector
@@ -2208,7 +2208,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::addAssign( const SparseVector<VT2
 // assignment operator.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
@@ -2243,7 +2243,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::subAssign( const DenseVector<VT2,
 // assignment operator.
 */
 template< typename VT       // Type of the sparse vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side sparse vector

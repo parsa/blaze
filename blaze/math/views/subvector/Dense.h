@@ -705,13 +705,13 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   template< typename VT2, AlignmentFlag AF2, bool TF2, size_t... CSAs2 >
    inline bool canAlias( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   template< typename VT2, AlignmentFlag AF2, bool TF2, size_t... CSAs2 >
    inline bool isAliased( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -782,7 +782,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... CSAs2 > friend class Subvector;
+   template< typename VT2, AlignmentFlag AF2, bool TF2, bool DF2, size_t... CSAs2 > friend class Subvector;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -1852,7 +1852,7 @@ template< typename VT        // Type of the dense vector
         , bool TF            // Transpose flag
         , size_t... CSAs >   // Compile time subvector arguments
 template< typename VT2       // Data type of the foreign dense subvector
-        , bool AF2           // Alignment flag of the foreign dense subvector
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense subvector
         , bool TF2           // Transpose flag of the foreign dense subvector
         , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool
@@ -1904,7 +1904,7 @@ template< typename VT        // Type of the dense vector
         , bool TF            // Transpose flag
         , size_t... CSAs >   // Compile time subvector arguments
 template< typename VT2       // Data type of the foreign dense subvector
-        , bool AF2           // Alignment flag of the foreign dense subvector
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense subvector
         , bool TF2           // Transpose flag of the foreign dense subvector
         , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool
@@ -2762,7 +2762,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
  public:
    //**Type definitions****************************************************************************
    //! Type of this Subvector instance.
-   using This = Subvector<VT,aligned,TF,true>;
+   using This = Subvector<VT,aligned,TF,true,CSAs...>;
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this Subvector instance.
    using ViewedType    = VT;                          //!< The type viewed by this Subvector instance.
@@ -2942,13 +2942,13 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   template< typename VT2, AlignmentFlag AF2, bool TF2, size_t... CSAs2 >
    inline bool canAlias( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename VT2, bool AF2, bool TF2, size_t... CSAs2 >
+   template< typename VT2, AlignmentFlag AF2, bool TF2, size_t... CSAs2 >
    inline bool isAliased( const Subvector<VT2,AF2,TF2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -3012,7 +3012,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename VT2, bool AF2, bool TF2, bool DF2, size_t... CSAs2 > friend class Subvector;
+   template< typename VT2, AlignmentFlag AF2, bool TF2, bool DF2, size_t... CSAs2 > friend class Subvector;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -4082,7 +4082,7 @@ template< typename VT        // Type of the dense vector
         , bool TF            // Transpose flag
         , size_t... CSAs >   // Compile time subvector arguments
 template< typename VT2       // Data type of the foreign dense subvector
-        , bool AF2           // Alignment flag of the foreign dense subvector
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense subvector
         , bool TF2           // Transpose flag of the foreign dense subvector
         , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool
@@ -4134,7 +4134,7 @@ template< typename VT        // Type of the dense vector
         , bool TF            // Transpose flag
         , size_t... CSAs >   // Compile time subvector arguments
 template< typename VT2       // Data type of the foreign dense subvector
-        , bool AF2           // Alignment flag of the foreign dense subvector
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense subvector
         , bool TF2           // Transpose flag of the foreign dense subvector
         , size_t... CSAs2 >  // Compile time subvector arguments of the foreign dense subvector
 inline bool

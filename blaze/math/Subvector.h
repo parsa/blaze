@@ -69,7 +69,7 @@ namespace blaze {
 // This specialization of the Rand class randomizes dense subvectors.
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 class Rand< Subvector<VT,AF,TF,true,CSAs...> >
@@ -98,7 +98,7 @@ class Rand< Subvector<VT,AF,TF,true,CSAs...> >
 // \return void
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename SVT >    // Type of the subvector
@@ -129,7 +129,7 @@ inline void Rand< Subvector<VT,AF,TF,true,CSAs...> >::randomize( SVT&& subvector
 // \return void
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename SVT      // Type of the subvector
@@ -167,7 +167,7 @@ inline void Rand< Subvector<VT,AF,TF,true,CSAs...> >::randomize( SVT&& subvector
 // This specialization of the Rand class randomizes sparse subvectors.
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 class Rand< Subvector<VT,AF,TF,false,CSAs...> >
@@ -202,7 +202,7 @@ class Rand< Subvector<VT,AF,TF,false,CSAs...> >
 // \return void
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename SVT >    // Type of the subvector
@@ -241,7 +241,7 @@ inline void Rand< Subvector<VT,AF,TF,false,CSAs...> >::randomize( SVT&& subvecto
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename SVT >    // Type of the subvector
@@ -282,7 +282,7 @@ inline void Rand< Subvector<VT,AF,TF,false,CSAs...> >::randomize( SVT&& subvecto
 // \return void
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename SVT      // Type of the subvector
@@ -325,7 +325,7 @@ inline void Rand< Subvector<VT,AF,TF,false,CSAs...> >::randomize( SVT&& subvecto
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename VT       // Type of the vector
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename SVT      // Type of the subvector

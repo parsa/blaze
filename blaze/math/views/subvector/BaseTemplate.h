@@ -56,7 +56,7 @@ namespace blaze {
 
 //*************************************************************************************************
 template< typename VT                         // Type of the vector
-        , bool AF = unaligned                 // Alignment flag
+        , AlignmentFlag AF = unaligned        // Alignment flag
         , bool TF = IsRowVector<VT>::value    // Transpose flag
         , bool DF = IsDenseVector<VT>::value  // Density flag
         , size_t... CSAs >                    // Compile time subvector arguments
@@ -81,9 +81,9 @@ class Subvector
 // The Subvector_ alias declaration represents a convenient shortcut for the specification of the
 // non-derived template arguments of the Subvector class template.
 */
-template< typename VT          // Type of the vector
-        , bool AF = unaligned  // Alignment flag
-        , size_t... CSAs >     // Compile time subvector arguments
+template< typename VT                   // Type of the vector
+        , AlignmentFlag AF = unaligned  // Alignment flag
+        , size_t... CSAs >              // Compile time subvector arguments
 using Subvector_ = Subvector< VT
                             , AF
                             , IsRowVector<VT>::value
