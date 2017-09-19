@@ -69,7 +69,7 @@ namespace blaze {
 // This specialization of the Rand class randomizes dense submatrices.
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 class Rand< Submatrix<MT,AF,SO,true,CSAs...> >
@@ -98,7 +98,7 @@ class Rand< Submatrix<MT,AF,SO,true,CSAs...> >
 // \return void
 */
 template< typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename SMT >    // Type of the submatrix
@@ -140,7 +140,7 @@ inline void Rand< Submatrix<MT,AF,SO,true,CSAs...> >::randomize( SMT&& submatrix
 // \return void
 */
 template< typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename SMT      // Type of the submatrix
@@ -190,7 +190,7 @@ inline void Rand< Submatrix<MT,AF,SO,true,CSAs...> >::randomize( SMT&& submatrix
 // This specialization of the Rand class randomizes sparse submatrices.
 */
 template< typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 class Rand< Submatrix<MT,AF,SO,false,CSAs...> >
@@ -225,7 +225,7 @@ class Rand< Submatrix<MT,AF,SO,false,CSAs...> >
 // \return void
 */
 template< typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename SMT >    // Type of the submatrix
@@ -265,7 +265,7 @@ inline void Rand< Submatrix<MT,AF,SO,false,CSAs...> >::randomize( SMT&& submatri
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename SMT >    // Type of the submatrix
@@ -307,7 +307,7 @@ inline void Rand< Submatrix<MT,AF,SO,false,CSAs...> >::randomize( SMT&& submatri
 // \return void
 */
 template< typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename SMT      // Type of the submatrix
@@ -351,7 +351,7 @@ inline void Rand< Submatrix<MT,AF,SO,false,CSAs...> >::randomize( SMT&& submatri
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
 template< typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename SMT      // Type of the submatrix

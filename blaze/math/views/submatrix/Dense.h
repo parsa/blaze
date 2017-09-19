@@ -751,13 +751,13 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -837,7 +837,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
+   template< typename MT2, AlignmentFlag AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -2373,7 +2373,7 @@ inline bool Submatrix<MT,unaligned,false,true,CSAs...>::canAlias( const Other* a
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
@@ -2425,7 +2425,7 @@ inline bool Submatrix<MT,unaligned,false,true,CSAs...>::isAliased( const Other* 
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
@@ -4183,13 +4183,13 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -4269,7 +4269,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
+   template< typename MT2, AlignmentFlag AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -5765,7 +5765,7 @@ inline bool Submatrix<MT,unaligned,true,true,CSAs...>::canAlias( const Other* al
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
@@ -5817,7 +5817,7 @@ inline bool Submatrix<MT,unaligned,true,true,CSAs...>::isAliased( const Other* a
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
@@ -7168,13 +7168,13 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -7247,7 +7247,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
+   template< typename MT2, AlignmentFlag AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -8791,7 +8791,7 @@ inline bool Submatrix<MT,aligned,false,true,CSAs...>::canAlias( const Other* ali
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
@@ -8843,7 +8843,7 @@ inline bool Submatrix<MT,aligned,false,true,CSAs...>::isAliased( const Other* al
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
@@ -10191,13 +10191,13 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    template< typename Other >
    inline bool canAlias( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool canAlias( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
-   template< typename MT2, bool AF2, bool SO2, size_t... CSAs2 >
+   template< typename MT2, AlignmentFlag AF2, bool SO2, size_t... CSAs2 >
    inline bool isAliased( const Submatrix<MT2,AF2,SO2,true,CSAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
@@ -10270,7 +10270,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
+   template< typename MT2, AlignmentFlag AF2, bool SO2, bool DF2, size_t... CSAs2 > friend class Submatrix;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -11773,7 +11773,7 @@ inline bool Submatrix<MT,aligned,true,true,CSAs...>::canAlias( const Other* alia
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool
@@ -11825,7 +11825,7 @@ inline bool Submatrix<MT,aligned,true,true,CSAs...>::isAliased( const Other* ali
 template< typename MT        // Type of the dense matrix
         , size_t... CSAs >   // Compile time submatrix arguments
 template< typename MT2       // Data type of the foreign dense submatrix
-        , bool AF2           // Alignment flag of the foreign dense submatrix
+        , AlignmentFlag AF2  // Alignment flag of the foreign dense submatrix
         , bool SO2           // Storage order of the foreign dense submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the foreign dense submatrix
 inline bool

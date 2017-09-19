@@ -56,7 +56,7 @@ namespace blaze {
 
 //*************************************************************************************************
 template< typename MT                               // Type of the matrix
-        , bool AF = unaligned                       // Alignment flag
+        , AlignmentFlag AF = unaligned              // Alignment flag
         , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
         , bool DF = IsDenseMatrix<MT>::value        // Density flag
         , size_t... CSAs >                          // Compile time submatrix arguments
@@ -81,9 +81,9 @@ class Submatrix
 // The Submatrix_ alias declaration represents a convenient shortcut for the specification of the
 // non-derived template arguments of the Submatrix class template.
 */
-template< typename MT          // Type of the matrix
-        , bool AF = unaligned  // Alignment flag
-        , size_t... CSAs >     // Compile time submatrix arguments
+template< typename MT                   // Type of the matrix
+        , AlignmentFlag AF = unaligned  // Alignment flag
+        , size_t... CSAs >              // Compile time submatrix arguments
 using Submatrix_ = Submatrix< MT
                             , AF
                             , IsColumnMajorMatrix<MT>::value

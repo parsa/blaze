@@ -114,7 +114,7 @@ namespace blaze {
 // sparse submatrices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,AF,false,false,CSAs...>
    : public View< SparseMatrix< Submatrix<MT,AF,false,false,CSAs...>, false > >
@@ -625,7 +625,7 @@ class Submatrix<MT,AF,false,false,CSAs...>
 // contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix )
    : DataType()          // Base class initialization
@@ -650,7 +650,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix )
 // This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
    : DataType()          // Base class initialization
@@ -680,7 +680,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, Unchecked ) 
 // contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : DataType( rindex, cindex, m, n )  // Base class initialization
@@ -709,7 +709,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, size_t rinde
 // This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
    : DataType( rindex, cindex, m, n )  // Base class initialization
@@ -744,7 +744,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, size_t rinde
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Reference
    Submatrix<MT,AF,false,false,CSAs...>::operator()( size_t i, size_t j )
@@ -770,7 +770,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Reference
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstReference
    Submatrix<MT,AF,false,false,CSAs...>::operator()( size_t i, size_t j ) const
@@ -797,7 +797,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstReference
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Reference
    Submatrix<MT,AF,false,false,CSAs...>::at( size_t i, size_t j )
@@ -827,7 +827,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Reference
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstReference
    Submatrix<MT,AF,false,false,CSAs...>::at( size_t i, size_t j ) const
@@ -857,7 +857,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstReference
 // returns an iterator to the first non-zero element of column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::begin( size_t i )
@@ -886,7 +886,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // returns an iterator to the first non-zero element of column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,false,false,CSAs...>::begin( size_t i ) const
@@ -915,7 +915,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // returns an iterator to the first non-zero element of column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,false,false,CSAs...>::cbegin( size_t i ) const
@@ -944,7 +944,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::end( size_t i )
@@ -973,7 +973,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,false,false,CSAs...>::end( size_t i ) const
@@ -1002,7 +1002,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // the function returns an iterator just past the last non-zero element of column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,false,false,CSAs...>::cend( size_t i ) const
@@ -1042,7 +1042,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>&
    Submatrix<MT,AF,false,false,CSAs...>::operator=( const Submatrix& rhs )
@@ -1099,7 +1099,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -1156,7 +1156,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -1211,7 +1211,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -1266,7 +1266,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -1321,7 +1321,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -1378,7 +1378,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // built-in data type.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
 inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false,CSAs...> >&
@@ -1417,7 +1417,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false,CSAs...> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
 inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false,CSAs...> >&
@@ -1469,7 +1469,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,false,false,CSAs...> >&
 // \return The matrix containing the submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Operand
    Submatrix<MT,AF,false,false,CSAs...>::operand() const noexcept
@@ -1487,7 +1487,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Operand
 // \return The capacity of the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,false,false,CSAs...>::capacity() const noexcept
 {
@@ -1510,7 +1510,7 @@ inline size_t Submatrix<MT,AF,false,false,CSAs...>::capacity() const noexcept
 // of column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,false,false,CSAs...>::capacity( size_t i ) const noexcept
 {
@@ -1528,7 +1528,7 @@ inline size_t Submatrix<MT,AF,false,false,CSAs...>::capacity( size_t i ) const n
 // \return The number of non-zero elements in the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,false,false,CSAs...>::nonZeros() const
 {
@@ -1556,7 +1556,7 @@ inline size_t Submatrix<MT,AF,false,false,CSAs...>::nonZeros() const
 // the number of non-zero elements in column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,false,false,CSAs...>::nonZeros( size_t i ) const
 {
@@ -1574,7 +1574,7 @@ inline size_t Submatrix<MT,AF,false,false,CSAs...>::nonZeros( size_t i ) const
 // \return void
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,false,false,CSAs...>::reset()
 {
@@ -1611,7 +1611,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::reset()
 // Note that the capacity of the row/column remains unchanged.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,false,false,CSAs...>::reset( size_t i )
 {
@@ -1648,7 +1648,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::reset( size_t i )
 // rows are preserved.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,false,false,CSAs...>::reserve( size_t nonzeros )
 {
@@ -1679,7 +1679,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::reserve( size_t nonzeros )
 // to be in the range \f$[0..N-1]\f$.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 void Submatrix<MT,AF,false,false,CSAs...>::reserve( size_t i, size_t nonzeros )
 {
@@ -1706,7 +1706,7 @@ void Submatrix<MT,AF,false,false,CSAs...>::reserve( size_t i, size_t nonzeros )
 // remove the overall capacity but only reduces the capacity per row/column.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 void Submatrix<MT,AF,false,false,CSAs...>::trim()
 {
@@ -1730,7 +1730,7 @@ void Submatrix<MT,AF,false,false,CSAs...>::trim()
 // subsequent row/column.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 void Submatrix<MT,AF,false,false,CSAs...>::trim( size_t i )
 {
@@ -1752,7 +1752,7 @@ void Submatrix<MT,AF,false,false,CSAs...>::trim( size_t i )
 // \a false.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,AF,false,false,CSAs...>::hasOverlap() const noexcept
 {
@@ -1788,7 +1788,7 @@ inline bool Submatrix<MT,AF,false,false,CSAs...>::hasOverlap() const noexcept
 // else a new element with the given \a value is inserted.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::set( size_t i, size_t j, const ElementType& value )
@@ -1814,7 +1814,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // column index \a j, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::insert( size_t i, size_t j, const ElementType& value )
@@ -1870,7 +1870,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // returned by the end() functions!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,false,false,CSAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
@@ -1900,7 +1900,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::append( size_t i, size_t j, co
 // returned by the end() functions!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,false,false,CSAs...>::finalize( size_t i )
 {
@@ -1929,7 +1929,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::finalize( size_t i )
 // This function erases an element from the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, size_t j )
 {
@@ -1955,7 +1955,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, size_t j )
 // to \a columnMajor the function erases an element from column \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator pos )
@@ -1982,7 +1982,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // \a i.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator first, Iterator last )
@@ -2018,7 +2018,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Pred >   // Type of the unary predicate
 inline void Submatrix<MT,AF,false,false,CSAs...>::erase( Pred predicate )
@@ -2061,7 +2061,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::erase( Pred predicate )
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Pred >   // Type of the unary predicate
 inline void Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
@@ -2098,7 +2098,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator firs
 // the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::find( size_t i, size_t j )
@@ -2131,7 +2131,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,false,false,CSAs...>::find( size_t i, size_t j ) const
@@ -2164,7 +2164,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::lowerBound( size_t i, size_t j )
@@ -2192,7 +2192,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,false,false,CSAs...>::lowerBound( size_t i, size_t j ) const
@@ -2220,7 +2220,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
    Submatrix<MT,AF,false,false,CSAs...>::upperBound( size_t i, size_t j )
@@ -2248,7 +2248,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,false,false,CSAs...>::upperBound( size_t i, size_t j ) const
@@ -2286,7 +2286,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>&
    Submatrix<MT,AF,false,false,CSAs...>::transpose()
@@ -2331,7 +2331,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,false,false,CSAs...>&
    Submatrix<MT,AF,false,false,CSAs...>::ctranspose()
@@ -2371,7 +2371,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
 inline Submatrix<MT,AF,false,false,CSAs...>&
@@ -2411,7 +2411,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,false,false,CSAs...>::canAlias( const Other* alias ) const noexcept
@@ -2434,7 +2434,7 @@ inline bool Submatrix<MT,AF,false,false,CSAs...>::canAlias( const Other* alias )
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,false,false,CSAs...>::isAliased( const Other* alias ) const noexcept
@@ -2457,7 +2457,7 @@ inline bool Submatrix<MT,AF,false,false,CSAs...>::isAliased( const Other* alias 
 // rows and/or columns of the matrix).
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,AF,false,false,CSAs...>::canSMPAssign() const noexcept
 {
@@ -2480,7 +2480,7 @@ inline bool Submatrix<MT,AF,false,false,CSAs...>::canSMPAssign() const noexcept
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side dense matrix
         , bool SO >         // Storage order of the right-hand side dense matrix
@@ -2522,7 +2522,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const DenseMatrix<MT2,
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
@@ -2563,7 +2563,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
@@ -2617,7 +2617,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -2651,7 +2651,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::addAssign( const Matrix<MT2,SO
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -2685,7 +2685,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::subAssign( const Matrix<MT2,SO
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -2728,7 +2728,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::schurAssign( const Matrix<MT2,
 // sparse submatrices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 class Submatrix<MT,AF,true,false,CSAs...>
    : public View< SparseMatrix< Submatrix<MT,AF,true,false,CSAs...>, true > >
@@ -3239,7 +3239,7 @@ class Submatrix<MT,AF,true,false,CSAs...>
 // contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix )
    : DataType()          // Base class initialization
@@ -3264,7 +3264,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix )
 // This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
    : DataType()          // Base class initialization
@@ -3294,7 +3294,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, Unchecked ) n
 // contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
    : DataType( rindex, cindex, m, n )  // Base class initialization
@@ -3323,7 +3323,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, size_t rindex
 // This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
    : DataType( rindex, cindex, m, n )  // Base class initialization
@@ -3358,7 +3358,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, size_t rindex
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Reference
    Submatrix<MT,AF,true,false,CSAs...>::operator()( size_t i, size_t j )
@@ -3384,7 +3384,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Reference
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstReference
    Submatrix<MT,AF,true,false,CSAs...>::operator()( size_t i, size_t j ) const
@@ -3411,7 +3411,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstReference
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Reference
    Submatrix<MT,AF,true,false,CSAs...>::at( size_t i, size_t j )
@@ -3441,7 +3441,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Reference
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstReference
    Submatrix<MT,AF,true,false,CSAs...>::at( size_t i, size_t j ) const
@@ -3466,7 +3466,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstReference
 // \return Iterator to the first non-zero element of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::begin( size_t j )
@@ -3490,7 +3490,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // \return Iterator to the first non-zero element of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,true,false,CSAs...>::begin( size_t j ) const
@@ -3514,7 +3514,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // \return Iterator to the first non-zero element of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,true,false,CSAs...>::cbegin( size_t j ) const
@@ -3538,7 +3538,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // \return Iterator just past the last non-zero element of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
   Submatrix<MT,AF,true,false,CSAs...>::end( size_t j )
@@ -3562,7 +3562,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // \return Iterator just past the last non-zero element of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,true,false,CSAs...>::end( size_t j ) const
@@ -3586,7 +3586,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // \return Iterator just past the last non-zero element of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,true,false,CSAs...>::cend( size_t j ) const
@@ -3626,7 +3626,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>&
    Submatrix<MT,AF,true,false,CSAs...>::operator=( const Submatrix& rhs )
@@ -3683,7 +3683,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -3740,7 +3740,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -3795,7 +3795,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -3850,7 +3850,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -3905,7 +3905,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // respectively, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -3962,7 +3962,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // built-in data type.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
 inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false,CSAs...> >&
@@ -4001,7 +4001,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false,CSAs...> >&
 // \note A division by zero is only checked by an user assert.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the right-hand side scalar
 inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false,CSAs...> >&
@@ -4053,7 +4053,7 @@ inline EnableIf_<IsNumeric<Other>, Submatrix<MT,AF,true,false,CSAs...> >&
 // \return The matrix containing the submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Operand
    Submatrix<MT,AF,true,false,CSAs...>::operand() const noexcept
@@ -4071,7 +4071,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Operand
 // \return The capacity of the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,true,false,CSAs...>::capacity() const noexcept
 {
@@ -4089,7 +4089,7 @@ inline size_t Submatrix<MT,AF,true,false,CSAs...>::capacity() const noexcept
 // \return The current capacity of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,true,false,CSAs...>::capacity( size_t j ) const noexcept
 {
@@ -4107,7 +4107,7 @@ inline size_t Submatrix<MT,AF,true,false,CSAs...>::capacity( size_t j ) const no
 // \return The number of non-zero elements in the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,true,false,CSAs...>::nonZeros() const
 {
@@ -4130,7 +4130,7 @@ inline size_t Submatrix<MT,AF,true,false,CSAs...>::nonZeros() const
 // \return The number of non-zero elements of column \a j.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,AF,true,false,CSAs...>::nonZeros( size_t j ) const
 {
@@ -4148,7 +4148,7 @@ inline size_t Submatrix<MT,AF,true,false,CSAs...>::nonZeros( size_t j ) const
 // \return void
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,true,false,CSAs...>::reset()
 {
@@ -4180,7 +4180,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::reset()
 // \return void
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,true,false,CSAs...>::reset( size_t j )
 {
@@ -4217,7 +4217,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::reset( size_t j )
 // rows are preserved.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,true,false,CSAs...>::reserve( size_t nonzeros )
 {
@@ -4244,7 +4244,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::reserve( size_t nonzeros )
 // the sparse submatrix and all other individual row/column capacities are preserved.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 void Submatrix<MT,AF,true,false,CSAs...>::reserve( size_t j, size_t nonzeros )
 {
@@ -4270,7 +4270,7 @@ void Submatrix<MT,AF,true,false,CSAs...>::reserve( size_t j, size_t nonzeros )
 // the overall capacity but only reduces the capacity per column.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 void Submatrix<MT,AF,true,false,CSAs...>::trim()
 {
@@ -4293,7 +4293,7 @@ void Submatrix<MT,AF,true,false,CSAs...>::trim()
 // to the subsequent column.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 void Submatrix<MT,AF,true,false,CSAs...>::trim( size_t j )
 {
@@ -4315,7 +4315,7 @@ void Submatrix<MT,AF,true,false,CSAs...>::trim( size_t j )
 // \a false.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,AF,true,false,CSAs...>::hasOverlap() const noexcept
 {
@@ -4351,7 +4351,7 @@ inline bool Submatrix<MT,AF,true,false,CSAs...>::hasOverlap() const noexcept
 // else a new element with the given \a value is inserted.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::set( size_t i, size_t j, const ElementType& value )
@@ -4377,7 +4377,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // column index \a j, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::insert( size_t i, size_t j, const ElementType& value )
@@ -4433,7 +4433,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // returned by the end() functions!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,true,false,CSAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
@@ -4463,7 +4463,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::append( size_t i, size_t j, con
 // returned by the end() functions!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,true,false,CSAs...>::finalize( size_t j )
 {
@@ -4492,7 +4492,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::finalize( size_t j )
 // This function erases an element from the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline void Submatrix<MT,AF,true,false,CSAs...>::erase( size_t i, size_t j )
 {
@@ -4516,7 +4516,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::erase( size_t i, size_t j )
 // This function erases an element from column \a j of the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator pos )
@@ -4540,7 +4540,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // This function erases a range of elements from column \a j of the sparse submatrix.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator first, Iterator last )
@@ -4576,7 +4576,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Pred >   // Type of the unary predicate
 inline void Submatrix<MT,AF,true,false,CSAs...>::erase( Pred predicate )
@@ -4616,7 +4616,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::erase( Pred predicate )
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Pred >   // Type of the unary predicate
 inline void Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
@@ -4653,7 +4653,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator first
 // the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::find( size_t i, size_t j )
@@ -4686,7 +4686,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,true,false,CSAs...>::find( size_t i, size_t j ) const
@@ -4719,7 +4719,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::lowerBound( size_t i, size_t j )
@@ -4747,7 +4747,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,true,false,CSAs...>::lowerBound( size_t i, size_t j ) const
@@ -4775,7 +4775,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
    Submatrix<MT,AF,true,false,CSAs...>::upperBound( size_t i, size_t j )
@@ -4803,7 +4803,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // insert() function!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
    Submatrix<MT,AF,true,false,CSAs...>::upperBound( size_t i, size_t j ) const
@@ -4841,7 +4841,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>&
    Submatrix<MT,AF,true,false,CSAs...>::transpose()
@@ -4886,7 +4886,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // In all cases, a \a std::logic_error is thrown.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,AF,true,false,CSAs...>&
    Submatrix<MT,AF,true,false,CSAs...>::ctranspose()
@@ -4926,7 +4926,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // such a submatrix results in a compile time error!
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the scalar value
 inline Submatrix<MT,AF,true,false,CSAs...>&
@@ -4966,7 +4966,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,true,false,CSAs...>::canAlias( const Other* alias ) const noexcept
@@ -4989,7 +4989,7 @@ inline bool Submatrix<MT,AF,true,false,CSAs...>::canAlias( const Other* alias ) 
 // optimize the evaluation.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,AF,true,false,CSAs...>::isAliased( const Other* alias ) const noexcept
@@ -5012,7 +5012,7 @@ inline bool Submatrix<MT,AF,true,false,CSAs...>::isAliased( const Other* alias )
 // rows and/or columns of the matrix).
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,AF,true,false,CSAs...>::canSMPAssign() const noexcept
 {
@@ -5035,7 +5035,7 @@ inline bool Submatrix<MT,AF,true,false,CSAs...>::canSMPAssign() const noexcept
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side dense matrix
         , bool SO >         // Storage order of the right-hand side dense matrix
@@ -5077,7 +5077,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const DenseMatrix<MT2,S
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,true>& rhs )
@@ -5117,7 +5117,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side sparse matrix
 inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,false>& rhs )
@@ -5171,7 +5171,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -5205,7 +5205,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::addAssign( const Matrix<MT2,SO>
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
@@ -5239,7 +5239,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::subAssign( const Matrix<MT2,SO>
 // assignment operator.
 */
 template< typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix

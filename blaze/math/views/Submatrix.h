@@ -1348,7 +1348,7 @@ template< AlignmentFlag AF1  // Required alignment flag
         , size_t M1          // Required number of rows
         , size_t N1          // Required number of columns
         , typename MT        // Type of the sparse submatrix
-        , bool AF2           // Present alignment flag
+        , AlignmentFlag AF2  // Present alignment flag
         , bool SO            // Storage order
         , bool DF            // Density flag
         , size_t I2          // Present index of the first row
@@ -1385,7 +1385,7 @@ template< AlignmentFlag AF1  // Required alignment flag
         , size_t M           // Number of rows
         , size_t N           // Number of columns
         , typename MT        // Type of the sparse submatrix
-        , bool AF2           // Present alignment flag
+        , AlignmentFlag AF2  // Present alignment flag
         , bool SO            // Storage order
         , bool DF >          // Density flag
 inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm )
@@ -1418,7 +1418,7 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm )
 */
 template< AlignmentFlag AF1  // Required alignment flag
         , typename MT        // Type of the sparse submatrix
-        , bool AF2           // Present alignment flag
+        , AlignmentFlag AF2  // Present alignment flag
         , bool SO            // Storage order
         , bool DF            // Density flag
         , size_t... CSAs >   // Compile time submatrix arguments
@@ -1454,7 +1454,7 @@ inline decltype(auto)
 // \return void
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1475,7 +1475,7 @@ inline void reset( Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 // \return void
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1502,7 +1502,7 @@ inline void reset( Submatrix<MT,AF,SO,DF,CSAs...>&& sm )
 // \a i. Note that the capacity of the row/column remains unchanged.
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1525,7 +1525,7 @@ inline void reset( Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i )
 // Clearing a submatrix is equivalent to resetting it via the reset() function.
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1548,7 +1548,7 @@ inline void clear( Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 // Clearing a submatrix is equivalent to resetting it via the reset() function.
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1588,7 +1588,7 @@ inline void clear( Submatrix<MT,AF,SO,DF,CSAs...>&& sm )
 */
 template< bool RF           // Relaxation flag
         , typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isDefault( const Submatrix<MT,AF,SO,true,CSAs...>& sm )
@@ -1642,7 +1642,7 @@ inline bool isDefault( const Submatrix<MT,AF,SO,true,CSAs...>& sm )
 */
 template< bool RF           // Relaxation flag
         , typename MT       // Type of the sparse matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isDefault( const Submatrix<MT,AF,SO,false,CSAs...>& sm )
@@ -1682,7 +1682,7 @@ inline bool isDefault( const Submatrix<MT,AF,SO,false,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1718,7 +1718,7 @@ inline bool isIntact( const Submatrix<MT,AF,SO,DF,CSAs...>& sm ) noexcept
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1756,7 +1756,7 @@ inline bool isSymmetric( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1804,7 +1804,7 @@ inline bool isHermitian( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1851,7 +1851,7 @@ inline bool isLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1898,7 +1898,7 @@ inline bool isUniLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1946,7 +1946,7 @@ inline bool isStrictlyLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -1993,7 +1993,7 @@ inline bool isUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -2040,7 +2040,7 @@ inline bool isUniUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
    \endcode
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -2070,7 +2070,7 @@ inline bool isStrictlyUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 // \a true, otherwise it returns \a false.
 */
 template< typename MT       // Type of the matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -2099,7 +2099,7 @@ inline bool isSame( const Submatrix<MT,AF,SO,DF,CSAs...>& a, const Matrix<MT,SO>
 */
 template< typename MT       // Type of the matrix
         , bool SO           // Storage order
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isSame( const Matrix<MT,SO>& a, const Submatrix<MT,AF,SO,DF,CSAs...>& b ) noexcept
@@ -2126,12 +2126,12 @@ inline bool isSame( const Matrix<MT,SO>& a, const Submatrix<MT,AF,SO,DF,CSAs...>
 // the function returns \a true, otherwise it returns \a false.
 */
 template< typename MT1       // Type of the matrix of the left-hand side submatrix
-        , bool AF1           // Alignment flag of the left-hand side submatrix
+        , AlignmentFlag AF1  // Alignment flag of the left-hand side submatrix
         , bool SO1           // Storage order of the left-hand side submatrix
         , bool DF1           // Density flag of the left-hand side submatrix
         , size_t... CSAs1    // Compile time submatrix arguments of the left-hand side submatrix
         , typename MT2       // Type of the matrix of the right-hand side submatrix
-        , bool AF2           // Alignment flag of the right-hand side submatrix
+        , AlignmentFlag AF2  // Alignment flag of the right-hand side submatrix
         , bool SO2           // Storage order of the right-hand side submatrix
         , bool DF2           // Density flag of the right-hand side submatrix
         , size_t... CSAs2 >  // Compile time submatrix arguments of the right-hand side submatrix
@@ -2181,7 +2181,7 @@ inline bool isSame( const Submatrix<MT1,AF1,SO1,DF1,CSAs1...>& a,
 */
 template< InversionFlag IF  // Inversion algorithm
         , typename MT       // Type of the dense matrix
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
 inline DisableIf_< HasMutableDataAccess<MT> > invert( Submatrix<MT,AF,SO,true,CSAs...>& sm )
@@ -2215,13 +2215,13 @@ inline DisableIf_< HasMutableDataAccess<MT> > invert( Submatrix<MT,AF,SO,true,CS
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                        const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
@@ -2253,13 +2253,13 @@ inline bool tryAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                        const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2291,13 +2291,13 @@ inline bool tryAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool tryAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
                        const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -2328,13 +2328,13 @@ inline bool tryAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryAddAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
@@ -2367,13 +2367,13 @@ inline bool tryAddAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryAddAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2405,13 +2405,13 @@ inline bool tryAddAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool tryAddAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -2442,13 +2442,13 @@ inline bool tryAddAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool trySubAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
@@ -2481,13 +2481,13 @@ inline bool trySubAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool trySubAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2519,13 +2519,13 @@ inline bool trySubAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool trySubAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -2556,13 +2556,13 @@ inline bool trySubAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                            const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
@@ -2595,13 +2595,13 @@ inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                            const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2633,13 +2633,13 @@ inline bool tryMultAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool trySchurAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -2670,13 +2670,13 @@ inline bool trySchurAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryDivAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
@@ -2709,13 +2709,13 @@ inline bool tryDivAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool AF         // Alignment flag
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , size_t... CSAs  // Compile time submatrix arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryDivAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2746,14 +2746,14 @@ inline bool tryDivAssign( const Submatrix<MT,AF,SO,DF,CSAs...>& lhs,
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t I          // Index of the first row
+        , size_t J          // Index of the first column
+        , size_t M          // Number of rows
+        , size_t N >        // Number of columns
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>& dm )
 {
    constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
@@ -2778,14 +2778,14 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>& dm )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , size_t I     // Index of the first row
-        , size_t J     // Index of the first column
-        , size_t M     // Number of rows
-        , size_t N >   // Number of columns
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t I          // Index of the first row
+        , size_t J          // Index of the first column
+        , size_t M          // Number of rows
+        , size_t N >        // Number of columns
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>&& dm )
 {
    constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
@@ -2810,10 +2810,10 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>&& dm )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , bool DF >    // Density flag
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF >         // Density flag
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
 {
    constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
@@ -2838,10 +2838,10 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool AF      // Alignment flag
-        , bool SO      // Storage order
-        , bool DF >    // Density flag
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF >         // Density flag
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& dm )
 {
    constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
@@ -2861,7 +2861,7 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct Rows< Submatrix<MT,AF,SO,DF,I,J,M,N> >
    : public PtrdiffT<M>
 {};
@@ -2879,7 +2879,7 @@ struct Rows< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct Columns< Submatrix<MT,AF,SO,DF,I,J,M,N> >
    : public PtrdiffT<N>
 {};
@@ -2897,7 +2897,7 @@ struct Columns< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs >
 struct IsRestricted< Submatrix<MT,AF,SO,DF,CSAs...> >
    : public BoolConstant< IsRestricted<MT>::value >
 {};
@@ -2915,7 +2915,7 @@ struct IsRestricted< Submatrix<MT,AF,SO,DF,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, size_t... CSAs >
+template< typename MT, AlignmentFlag AF, bool SO, size_t... CSAs >
 struct HasConstDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
    : public BoolConstant< HasConstDataAccess<MT>::value >
 {};
@@ -2933,7 +2933,7 @@ struct HasConstDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, size_t... CSAs >
+template< typename MT, AlignmentFlag AF, bool SO, size_t... CSAs >
 struct HasMutableDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
    : public BoolConstant< HasMutableDataAccess<MT>::value >
 {};
@@ -2952,7 +2952,7 @@ struct HasMutableDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, size_t... CSAs >
-struct IsAligned< Submatrix<MT,true,SO,true,CSAs...> >
+struct IsAligned< Submatrix<MT,aligned,SO,true,CSAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2969,7 +2969,7 @@ struct IsAligned< Submatrix<MT,true,SO,true,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs1, size_t... CSAs2 >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs1, size_t... CSAs2 >
 struct SubmatrixTrait< Submatrix<MT,AF,SO,DF,CSAs1...>, CSAs2... >
 {
    using Type = SubmatrixTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs1...> >, CSAs2... >;
@@ -2988,7 +2988,7 @@ struct SubmatrixTrait< Submatrix<MT,AF,SO,DF,CSAs1...>, CSAs2... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs, size_t... CRAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CRAs >
 struct RowTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 {
    using Type = RowTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
@@ -3007,7 +3007,7 @@ struct RowTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs, size_t... CCAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CCAs >
 struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 {
    using Type = ColumnTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
@@ -3026,7 +3026,7 @@ struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs, ptrdiff_t... CBAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, ptrdiff_t... CBAs >
 struct BandTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CBAs... >
 {
    using Type = BandTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CBAs... >;
