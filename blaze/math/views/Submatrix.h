@@ -67,6 +67,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
+#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -75,6 +76,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/submatrix/Dense.h>
 #include <blaze/math/views/submatrix/Sparse.h>
@@ -1277,21 +1279,54 @@ inline decltype(auto) submatrix( const DeclExpr<MT>& matrix, RSAs... args )
 // \ingroup submatrix
 //
 // \param matrix The constant matrix transpose operation.
-// \param args The runtime submatrix arguments.
+// \param args Optional submatrix arguments.
 // \return View on the specified submatrix of the transpose operation.
 //
 // This function returns an expression representing the specified submatrix of the given matrix
 // transpose operation.
 */
 template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time submatrix arguments
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
         , typename MT         // Matrix base type of the expression
-        , typename... RSAs >  // Runtime submatrix arguments
+        , typename... RSAs >  // Optional submatrix arguments
 inline decltype(auto) submatrix( const MatTransExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
+   return trans( submatrix<AF,J,I,N,M>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix transpose operation.
+// \ingroup submatrix
+//
+// \param matrix The constant matrix transpose operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
+// \return View on the specified submatrix of the transpose operation.
+//
+// This function returns an expression representing the specified submatrix of the given matrix
+// transpose operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto)
+   submatrix( const MatTransExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( submatrix<AF>( (~matrix).operand(), column, row, n, m, args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
