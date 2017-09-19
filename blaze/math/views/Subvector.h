@@ -61,6 +61,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/Dense.h>
 #include <blaze/math/views/subvector/Sparse.h>
@@ -1738,6 +1739,24 @@ inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
    constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
    return subvector<alignment>( derestrict( sv.operand() ), sv.offset(), sv.size() );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool AF, bool TF, bool DF, size_t I, size_t N >
+struct Size< Subvector<VT,AF,TF,DF,I,N> >
+   : public PtrdiffT<N>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
