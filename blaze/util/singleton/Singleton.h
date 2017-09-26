@@ -568,7 +568,7 @@ class Singleton
    using SingletonType = Singleton<T,D1,D2,D3,D4,D5,D6,D7,D8>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_8( D1, D2, D3, D4, D5, D6, D7, D8 );
+   using Dependencies = TypeList< D1, D2, D3, D4, D5, D6, D7, D8 >;
    //**********************************************************************************************
 
  protected:
@@ -677,7 +677,7 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,D7,NullType>
    using SingletonType = Singleton<T,D1,D2,D3,D4,D5,D6,D7,NullType>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_7( D1, D2, D3, D4, D5, D6, D7 );
+   using Dependencies = TypeList< D1, D2, D3, D4, D5, D6, D7 >;
    //**********************************************************************************************
 
  protected:
@@ -782,7 +782,7 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,NullType,NullType>
    using SingletonType = Singleton<T,D1,D2,D3,D4,D5,D6,NullType,NullType>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_6( D1, D2, D3, D4, D5, D6 );
+   using Dependencies = TypeList< D1, D2, D3, D4, D5, D6 >;
    //**********************************************************************************************
 
  protected:
@@ -882,7 +882,7 @@ class Singleton<T,D1,D2,D3,D4,D5,NullType,NullType,NullType>
    using SingletonType = Singleton<T,D1,D2,D3,D4,D5,NullType,NullType,NullType>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_5( D1, D2, D3, D4, D5 );
+   using Dependencies = TypeList< D1, D2, D3, D4, D5 >;
    //**********************************************************************************************
 
  protected:
@@ -977,7 +977,7 @@ class Singleton<T,D1,D2,D3,D4,NullType,NullType,NullType,NullType>
    using SingletonType = Singleton<T,D1,D2,D3,D4,NullType,NullType,NullType,NullType>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_4( D1, D2, D3, D4 );
+   using Dependencies = TypeList< D1, D2, D3, D4 >;
    //**********************************************************************************************
 
  protected:
@@ -1067,7 +1067,7 @@ class Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType>
    using SingletonType = Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_3( D1, D2, D3 );
+   using Dependencies = TypeList< D1, D2, D3 >;
    //**********************************************************************************************
 
  protected:
@@ -1152,7 +1152,7 @@ class Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType>
    using SingletonType = Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_2( D1, D2 );
+   using Dependencies = TypeList< D1, D2 >;
    //**********************************************************************************************
 
  protected:
@@ -1232,7 +1232,7 @@ class Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullT
    using SingletonType = Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullType>;
 
    //! Type list of all lifetime dependencies.
-   using Dependencies = BLAZE_TYPELIST_1( D1 );
+   using Dependencies = TypeList< D1 >;
    //**********************************************************************************************
 
  protected:

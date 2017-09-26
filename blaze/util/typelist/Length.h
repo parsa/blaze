@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/TypeList.h
-//  \brief Header file for the type list functionality
+//  \file blaze/util/typelist/Length.h
+//  \brief Header file for the Length class template
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,23 +32,58 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_TYPELIST_H_
-#define _BLAZE_UTIL_TYPELIST_H_
+#ifndef _BLAZE_UTIL_TYPELIST_LENGTH_H_
+#define _BLAZE_UTIL_TYPELIST_LENGTH_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/typelist/Append.h>
-#include <blaze/util/typelist/Contains.h>
-#include <blaze/util/typelist/ContainsRelated.h>
-#include <blaze/util/typelist/Erase.h>
-#include <blaze/util/typelist/EraseAll.h>
-#include <blaze/util/typelist/IndexOf.h>
-#include <blaze/util/typelist/Length.h>
-#include <blaze/util/typelist/TypeAt.h>
+#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/typelist/TypeList.h>
-#include <blaze/util/typelist/Unique.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Calculating the length of a type list.
+// \ingroup typelist
+//
+// The Length class can be used to obtain the length of a type list (i.e. the number
+// of contained types). In order to obtain the length of a type list, the Length class
+// has to be instantiated for a particular type list. The length of the type list can
+// be obtained using the member enumeration \a value. The following example gives an
+// impression of the use of the Length class:
+
+   \code
+   using Floats = blaze::TypeList< float, double, long double >;  // Defining a new type list
+   const int length = blaze::Length< Floats >::value;             // The length of the type list
+   \endcode
+*/
+template< typename TL >  // Type of the type list
+struct Length;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Spezialization of the Length class for type lists.
+// \ingroup typelist
+*/
+template< typename... Ts >  // Type list elements
+struct Length< TypeList<Ts...> >
+   : public SizeT< sizeof...( Ts ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
