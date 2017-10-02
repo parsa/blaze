@@ -76,7 +76,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/band/BandData.h>
 #include <blaze/math/views/band/BaseTemplate.h>
-#include <blaze/math/views/Unchecked.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/views/Unchecked.h
-//  \brief Header file for the blaze::unchecked instance
+//  \file blaze/math/views/Check.h
+//  \brief Header file for the blaze::checked and blaze::unchecked instances
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_VIEWS_UNCHECKED_H_
-#define _BLAZE_MATH_VIEWS_UNCHECKED_H_
+#ifndef _BLAZE_MATH_VIEWS_CHECK_H_
+#define _BLAZE_MATH_VIEWS_CHECK_H_
 
 
 namespace blaze {
@@ -45,20 +45,20 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Type of the blaze::unchecked instance.
+/*!\brief Template for the blaze::checked and blaze::unchecked instances.
 // \ingroup math
 //
-// blaze::Unchecked is the type of the blaze::unchecked instance, which is an optional token
-// for the creation of views. It can be used to skip all runtime checks during the creation of
-// a view (subvectors, submatrices, rows, columns, bands, ...).
+// blaze::Check is the template for the blaze::checked and blaze::unchecked instance, which is
+// an optional token for the creation of views. It can be used to enforce or skip all runtime
+// checks during the creation of a view (subvectors, submatrices, rows, columns, bands, ...).
 */
-struct Unchecked
+template< bool C >
+struct Check
 {
- public:
    //**Constructor*********************************************************************************
    /*!\name Constructor */
    //@{
-   explicit inline constexpr Unchecked() {}
+   explicit inline constexpr Check() {}
    //@}
    //**********************************************************************************************
 };
@@ -69,9 +69,58 @@ struct Unchecked
 
 //=================================================================================================
 //
-//  GLOBAL UNCHECKED INSTANCE
+//  TYPE ALIASES
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Type of the blaze::checked instance.
+// \ingroup math
+//
+// blaze::Checked is the type of the blaze::checked instance, which is an optional token for the
+// creation of views. It can be used to enforce runtime checks during the creation of a view
+// (subvectors, submatrices, rows, columns, bands, ...).
+*/
+using Checked = Check<true>;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Type of the blaze::unchecked instance.
+// \ingroup math
+//
+// blaze::Unchecked is the type of the blaze::unchecked instance, which is an optional token for
+// the creation of views. It can be used to skip all runtime checks during the creation of a view
+// (subvectors, submatrices, rows, columns, bands, ...).
+*/
+using Unchecked = Check<false>;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL CHECK INSTANCES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Global Checked instance.
+// \ingroup math
+//
+// The blaze::checked instance is an optional token for the creation of views. It can be used
+// used to enforce runtime checks during the creation of a view (subvectors, submatrices, rows,
+// columns, bands, ...). The following example demonstrates the setup of a checked subvector:
+
+   \code
+   blaze::DynamicVector<int> v( 100UL );
+   auto sv = subvector( v, 10UL, 20UL, checked );  // Creating an checked subvector
+   \endcode
+*/
+constexpr Checked checked;
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Global Unchecked instance.

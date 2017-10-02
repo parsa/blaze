@@ -71,7 +71,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/SubvectorData.h>
-#include <blaze/math/views/Unchecked.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>

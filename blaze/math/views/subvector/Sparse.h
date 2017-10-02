@@ -66,7 +66,7 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/SubvectorData.h>
-#include <blaze/math/views/Unchecked.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>

@@ -79,7 +79,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/RowData.h>
-#include <blaze/math/views/Unchecked.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>

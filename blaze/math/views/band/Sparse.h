@@ -73,7 +73,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/views/band/BandData.h>
 #include <blaze/math/views/band/BaseTemplate.h>
-#include <blaze/math/views/Unchecked.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
