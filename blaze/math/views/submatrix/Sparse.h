@@ -79,9 +79,9 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/submatrix/SubmatrixData.h>
-#include <blaze/math/views/Check.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -89,7 +89,7 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/StaticAssert.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -444,10 +444,8 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Submatrix( MT& matrix );
-   explicit inline Submatrix( MT& matrix, Unchecked ) noexcept;
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept;
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -616,109 +614,34 @@ class Submatrix<MT,AF,false,false,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked row-major sparse submatrices.
+/*!\brief Constructor for row-major sparse submatrices.
 //
 // \param matrix The sparse matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix is
+// not properly specified (i.e. if the specified submatrix is not contained in the given sparse
+// matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by providing
+// the optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix )
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
+template< typename MT         // Type of the sparse matrix
+        , AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked row-major sparse submatrices.
-//
-// \param matrix The sparse matrix containing the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked row-major sparse submatrices.
-//
-// \param matrix The sparse matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   else {
+      BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked row-major sparse submatrices.
-//
-// \param matrix The sparse matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3058,10 +2981,8 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Submatrix( MT& matrix );
-   explicit inline Submatrix( MT& matrix, Unchecked ) noexcept;
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept;
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -3230,109 +3151,34 @@ class Submatrix<MT,AF,true,false,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked column-major sparse submatrices.
+/*!\brief Constructor for column-major sparse submatrices.
 //
 // \param matrix The sparse matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix is
+// not properly specified (i.e. if the specified submatrix is not contained in the given sparse
+// matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by providing
+// the optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix )
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
+template< typename MT         // Type of the sparse matrix
+        , AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked column-major sparse submatrices.
-//
-// \param matrix The sparse matrix containing the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked column-major sparse submatrices.
-//
-// \param matrix The sparse matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given sparse matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   else {
+      BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked column-major sparse submatrices.
-//
-// \param matrix The sparse matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 }
 /*! \endcond */
 //*************************************************************************************************

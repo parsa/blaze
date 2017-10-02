@@ -84,9 +84,9 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/submatrix/SubmatrixData.h>
-#include <blaze/math/views/Check.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
@@ -105,8 +105,8 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -587,10 +587,8 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Submatrix( MT& matrix );
-   explicit inline Submatrix( MT& matrix, Unchecked ) noexcept;
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept;
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -864,113 +862,35 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked unaligned row-major dense submatrices.
+/*!\brief Constructor for unaligned row-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix is
+// not properly specified (i.e. if the specified submatrix is not contained in the given dense
+// matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by providing
+// the optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix )
-   : DataType  ()          // Base class initialization
-   , matrix_   ( matrix )  // The matrix containing the submatrix
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType  ( args... )  // Base class initialization
+   , matrix_   ( matrix  )  // The matrix containing the submatrix
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked unaligned row-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
-   : DataType  ()          // Base class initialization
-   , matrix_   ( matrix )  // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked unaligned row-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType  ( rindex, cindex, m, n )  // Base class initialization
-   , matrix_   ( matrix )                // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   else {
+      BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked unaligned row-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
-   : DataType  ( rindex, cindex, m, n )  // Base class initialization
-   , matrix_   ( matrix )                // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4019,10 +3939,8 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Submatrix( MT& matrix );
-   explicit inline Submatrix( MT& matrix, Unchecked ) noexcept;
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept;
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4296,113 +4214,35 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for checked unaligned column-major dense submatrices.
+/*!\brief The constructor for unaligned column-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix is
+// not properly specified (i.e. if the specified submatrix is not contained in the given dense
+// matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by providing
+// the optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix )
-   : DataType  ()          // Base class initialization
-   , matrix_   ( matrix )  // The matrix containing the submatrix
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType  ( args... )  // Base class initialization
+   , matrix_   ( matrix  )  // The matrix containing the submatrix
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for unchecked unaligned column-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
-   : DataType  ()          // Base class initialization
-   , matrix_   ( matrix )  // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for checked unaligned column-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType  ( rindex, cindex, m, n )  // Base class initialization
-   , matrix_   ( matrix )                // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   else {
+      BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for unchecked unaligned column-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
-   : DataType  ( rindex, cindex, m, n )  // Base class initialization
-   , matrix_   ( matrix )                // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
-                 ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -7004,10 +6844,8 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Submatrix( MT& matrix );
-   explicit inline Submatrix( MT& matrix, Unchecked ) noexcept;
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept;
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -7274,121 +7112,40 @@ class Submatrix<MT,aligned,false,true,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked aligned row-major dense submatrices.
+/*!\brief Constructor for aligned row-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix is
+// not properly specified (i.e. if the specified submatrix is not contained in the given dense
+// matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by providing
+// the optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix )
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
+      if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
+          ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
+      }
    }
+   else {
+      BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
-   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-       ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked aligned row-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-
-   BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked aligned row-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-   }
-
-   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-       ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked aligned row-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-
-   BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -10027,10 +9784,8 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Submatrix( MT& matrix );
-   explicit inline Submatrix( MT& matrix, Unchecked ) noexcept;
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n );
-   explicit inline Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept;
+   template< typename... RSAs >
+   explicit inline Submatrix( MT& matrix, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -10297,121 +10052,42 @@ class Submatrix<MT,aligned,true,true,CSAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked aligned column-major dense submatrices.
+/*!\brief Constructor for aligned column-major dense submatrices.
 //
 // \param matrix The dense matrix containing the submatrix.
+// \param args The runtime submatrix arguments.
 // \exception std::invalid_argument Invalid submatrix specification.
 //
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix is
+// not properly specified (i.e. if the specified submatrix is not contained in the given dense
+// matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by providing
+// the optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix )
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
+template< typename MT         // Type of the dense matrix
+        , size_t... CSAs >    // Compile time submatrix arguments
+template< typename... RSAs >  // Runtime submatrix arguments
+inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
+   if( !Contains< TypeList<RSAs...>, Unchecked >::value )
+   {
+      if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
 
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
+          ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
+      }
    }
+   else {
+      BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
-   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-       ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
+      BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
+      BLAZE_INTERNAL_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked aligned column-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, Unchecked ) noexcept
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 4UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-
-   BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked aligned column-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// In case the submatrix is not properly specified (i.e. if the specified submatrix is not
-// contained in the given dense matrix) a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n )
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-   }
-
-   if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-       ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked aligned column-major dense submatrices.
-//
-// \param matrix The dense matrix containing the submatrix.
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-//
-// This constructor only performs a setup check in case BLAZE_INTERNAL_ASSERT() is active.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, size_t rindex, size_t cindex, size_t m, size_t n, Unchecked ) noexcept
-   : DataType( rindex, cindex, m, n )  // Base class initialization
-   , matrix_ ( matrix )                // The matrix containing the submatrix
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CSAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-   BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
-
-   BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-   BLAZE_INTERNAL_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -86,7 +86,9 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -123,11 +125,17 @@ namespace blaze {
    auto ssm = submatrix<2UL,4UL,7UL,3UL>( S );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix<0UL,16UL,8UL,4UL>( D, unchecked );
+   auto ssm = submatrix<2UL,4UL,7UL,3UL>( S, unchecked );
+   \endcode
+
 // Please note that this function creates an unaligned dense or sparse submatrix. For instance,
 // the creation of the dense submatrix is equivalent to the following function call:
 
@@ -186,11 +194,17 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix, RSAs... args )
    auto ssm = submatrix<2UL,4UL,7UL,3UL>( S );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix<0UL,16UL,8UL,4UL>( D, unchecked );
+   auto ssm = submatrix<2UL,4UL,7UL,3UL>( S, unchecked );
+   \endcode
+
 // Please note that this function creates an unaligned dense or sparse submatrix. For instance,
 // the creation of the dense submatrix is equivalent to the following three function calls:
 
@@ -282,11 +296,17 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix, RSAs... args )
    auto ssm = submatrix<unaligned,2UL,4UL,7UL,3UL>( S );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix<aligned,0UL,16UL,8UL,4UL>( D, unchecked );
+   auto ssm = submatrix<unaligned,2UL,4UL,7UL,3UL>( S, unchecked );
+   \endcode
+
 // In contrast to unaligned submatrices, which provide full flexibility, aligned submatrices
 // pose additional alignment restrictions and the given \a I, and \a J arguments are subject
 // to additional checks to guarantee proper alignment. However, especially in case of dense
@@ -359,11 +379,17 @@ inline decltype(auto) submatrix( Matrix<MT,SO>& matrix, RSAs... args )
    auto ssm = submatrix<unaligned,2UL,4UL,7UL,3UL>( S );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix<aligned,0UL,16UL,8UL,4UL>( D, unchecked );
+   auto ssm = submatrix<unaligned,2UL,4UL,7UL,3UL>( S, unchecked );
+   \endcode
+
 // In contrast to unaligned submatrices, which provide full flexibility, aligned submatrices
 // pose additional alignment restrictions and the given \a I, and \a J arguments are subject
 // to additional checks to guarantee proper alignment. However, especially in case of dense
@@ -473,11 +499,17 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix, RSAs... args )
    auto ssm = submatrix( S, 2UL, 4UL, 7UL, 3UL );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix( D, 0UL, 16UL, 8UL, 4UL, unchecked );
+   auto ssm = submatrix( S, 2UL, 4UL, 7UL, 3UL, unchecked );
+   \endcode
+
 // Please note that this function creates an unaligned dense or sparse submatrix. For instance,
 // the creation of the dense submatrix is equivalent to the following function call:
 
@@ -537,11 +569,17 @@ inline decltype(auto)
    auto ssm = submatrix( S, 2UL, 4UL, 7UL, 3UL );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix( D, 0UL, 16UL, 8UL, 4UL, unchecked );
+   auto ssm = submatrix( S, 2UL, 4UL, 7UL, 3UL, unchecked );
+   \endcode
+
 // Please note that this function creates an unaligned dense or sparse submatrix. For instance,
 // the creation of the dense submatrix is equivalent to the following three function calls:
 
@@ -635,11 +673,17 @@ inline decltype(auto)
    auto ssm = submatrix<unaligned>( S, 2UL, 4UL, 7UL, 3UL );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix<aligned>( D, 0UL, 16UL, 8UL, 4UL, unchecked );
+   auto ssm = submatrix<unaligned>( S, 2UL, 4UL, 7UL, 3UL, unchecked );
+   \endcode
+
 // In contrast to unaligned submatrices, which provide full flexibility, aligned submatrices pose
 // additional alignment restrictions and the given \a row, and \a column arguments are subject to
 // additional checks to guarantee proper alignment. However, especially in case of dense submatrices
@@ -713,11 +757,17 @@ inline decltype(auto)
    auto ssm = submatrix<unaligned>( S, 2UL, 4UL, 7UL, 3UL );
    \endcode
 
-// In case the submatrix is not properly specified (i.e. if the specified row or column is larger
-// than the total number of rows or columns of the given matrix or the submatrix is specified
-// beyond the number of rows or columns of the matrix) a \a std::invalid_argument exception is
-// thrown.
-//
+// By default, the provided submatrix arguments are checked at runtime. In case the submatrix
+// is not properly specified (i.e. if the specified row or column is larger than the total number
+// of rows or columns of the given matrix or the submatrix is specified beyond the number of rows
+// or columns of the matrix) a \a std::invalid_argument exception is thrown. The checks can be
+// skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto dsm = submatrix<aligned>( D, 0UL, 16UL, 8UL, 4UL, unchecked );
+   auto ssm = submatrix<unaligned>( S, 2UL, 4UL, 7UL, 3UL, unchecked );
+   \endcode
+
 // In contrast to unaligned submatrices, which provide full flexibility, aligned submatrices pose
 // additional alignment restrictions and the given \a row, and \a column arguments are subject to
 // additional checks to guarantee proper alignment. However, especially in case of dense submatrices
@@ -1338,32 +1388,33 @@ inline decltype(auto)
 // \ingroup submatrix
 //
 // \param sm The constant submatrix
+// \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< AlignmentFlag AF1  // Required alignment flag
-        , size_t I1          // Required index of the first row
-        , size_t J1          // Required index of the first column
-        , size_t M1          // Required number of rows
-        , size_t N1          // Required number of columns
-        , typename MT        // Type of the sparse submatrix
-        , AlignmentFlag AF2  // Present alignment flag
-        , bool SO            // Storage order
-        , bool DF            // Density flag
-        , size_t I2          // Present index of the first row
-        , size_t J2          // Present index of the first column
-        , size_t M2          // Present number of rows
-        , size_t N2 >        // Present number of columns
-inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm )
+template< AlignmentFlag AF1   // Required alignment flag
+        , size_t I1           // Required index of the first row
+        , size_t J1           // Required index of the first column
+        , size_t M1           // Required number of rows
+        , size_t N1           // Required number of columns
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF2   // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I2           // Present index of the first row
+        , size_t J2           // Present index of the first column
+        , size_t M2           // Present number of rows
+        , size_t N2           // Present number of columns
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( ( I1 + M1 > M2 ) || ( J1 + N1 > N2 ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-   }
+   BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid submatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid submatrix specification" );
 
-   return submatrix<AF1,I1+I2,J1+J2,M1,N1>( sm.operand() );
+   return submatrix<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1375,28 +1426,38 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm )
 // \ingroup submatrix
 //
 // \param sm The constant submatrix
+// \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< AlignmentFlag AF1  // Required alignment flag
-        , size_t I           // Index of the first row
-        , size_t J           // Index of the first column
-        , size_t M           // Number of rows
-        , size_t N           // Number of columns
-        , typename MT        // Type of the sparse submatrix
-        , AlignmentFlag AF2  // Present alignment flag
-        , bool SO            // Storage order
-        , bool DF >          // Density flag
-inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm )
+template< AlignmentFlag AF1   // Required alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF2   // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( I + M <= sm.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N );
+   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1412,26 +1473,37 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm )
 // \param column The index of the first column of the submatrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< AlignmentFlag AF1  // Required alignment flag
-        , typename MT        // Type of the sparse submatrix
-        , AlignmentFlag AF2  // Present alignment flag
-        , bool SO            // Storage order
-        , bool DF            // Density flag
-        , size_t... CSAs >   // Compile time submatrix arguments
+template< AlignmentFlag AF1   // Required alignment flag
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF2   // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename... RSAs >  // Optional submatrix arguments
 inline decltype(auto)
-   submatrix( const Submatrix<MT,AF2,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const Submatrix<MT,AF2,SO,DF,CSAs...>& sm, size_t row, size_t column,
+              size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( row    + m <= sm.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n );
+   return submatrix<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************

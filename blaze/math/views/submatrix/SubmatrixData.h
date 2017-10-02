@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -74,6 +75,7 @@ struct SubmatrixData
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SubmatrixData class template for zero compile time submatrix
 //        arguments.
 // \ingroup submatrix
@@ -88,7 +90,8 @@ struct SubmatrixData<>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n );
+   template< typename... RSAs >
+   explicit inline constexpr SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -122,27 +125,35 @@ struct SubmatrixData<>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for SubmatrixData.
 //
 // \param rindex The index of the first row of the submatrix in the given matrix.
 // \param cindex The index of the first column of the submatrix in the given matrix.
 // \param m The number of rows of the submatrix.
 // \param n The number of columns of the submatrix.
+// \param args The optional submatrix arguments.
 */
-inline constexpr SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n )
+template< typename... RSAs >  // Optional submatrix arguments
+inline constexpr SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args )
    : row_   ( rindex )  // The first row of the submatrix
    , column_( cindex )  // The first column of the submatrix
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
-{}
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first row of the submatrix in the underlying matrix.
 //
 // \return The index of the first row.
@@ -151,10 +162,12 @@ inline constexpr size_t SubmatrixData<>::row() const noexcept
 {
    return row_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first column of the submatrix in the underlying matrix.
 //
 // \return The index of the first column.
@@ -163,10 +176,12 @@ inline constexpr size_t SubmatrixData<>::column() const noexcept
 {
    return column_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the submatrix.
 //
 // \return The number of rows of the submatrix.
@@ -175,10 +190,12 @@ inline constexpr size_t SubmatrixData<>::rows() const noexcept
 {
    return m_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of columns of the submatrix.
 //
 // \return The number of columns of the submatrix.
@@ -187,6 +204,7 @@ inline constexpr size_t SubmatrixData<>::columns() const noexcept
 {
    return n_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -199,6 +217,7 @@ inline constexpr size_t SubmatrixData<>::columns() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SubmatrixData class template for four compile time submatrix
 //        arguments.
 // \ingroup submatrix
@@ -216,7 +235,8 @@ struct SubmatrixData<I,J,M,N>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr SubmatrixData();
+   template< typename... RSAs >
+   explicit inline constexpr SubmatrixData( RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -239,22 +259,31 @@ struct SubmatrixData<I,J,M,N>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for SubmatrixData.
+//
+// \param args The optional submatrix arguments.
 */
-template< size_t I    // Index of the first row
-        , size_t J    // Index of the first column
-        , size_t M    // Number of rows
-        , size_t N >  // Number of columns
-inline constexpr SubmatrixData<I,J,M,N>::SubmatrixData()
-{}
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N >          // Number of columns
+template< typename... RSAs >  // Optional submatrix arguments
+inline constexpr SubmatrixData<I,J,M,N>::SubmatrixData( RSAs... args )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first row of the submatrix in the underlying matrix.
 //
 // \return The index of the first row.
@@ -267,10 +296,12 @@ inline constexpr size_t SubmatrixData<I,J,M,N>::row() const noexcept
 {
    return I;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the first column of the submatrix in the underlying matrix.
 //
 // \return The index of the first column.
@@ -283,10 +314,12 @@ inline constexpr size_t SubmatrixData<I,J,M,N>::column() const noexcept
 {
    return J;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of rows of the submatrix.
 //
 // \return The number of rows of the submatrix.
@@ -299,10 +332,12 @@ inline constexpr size_t SubmatrixData<I,J,M,N>::rows() const noexcept
 {
    return M;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the number of columns of the submatrix.
 //
 // \return The number of columns of the submatrix.
@@ -315,6 +350,7 @@ inline constexpr size_t SubmatrixData<I,J,M,N>::columns() const noexcept
 {
    return N;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
