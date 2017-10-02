@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -74,6 +75,7 @@ struct SubvectorData
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SubvectorData class template for zero compile time subvector
 //        arguments.
 // \ingroup subvector
@@ -88,7 +90,8 @@ struct SubvectorData<>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr SubvectorData( size_t index, size_t n );
+   template< typename... RSAs >
+   explicit inline constexpr SubvectorData( size_t index, size_t n, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -118,23 +121,31 @@ struct SubvectorData<>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for SubvectorData.
 //
 // \param index The offset of the subvector within the given vector.
 // \param n The size of the subvector.
+// \param args The optional subvector arguments.
 */
-inline constexpr SubvectorData<>::SubvectorData( size_t index, size_t n )
+template< typename... RSAs >  // Optional subvector arguments
+inline constexpr SubvectorData<>::SubvectorData( size_t index, size_t n, RSAs... args )
    : offset_( index )  // The offset of the subvector within the vector
    , size_  ( n     )  // The size of the subvector
-{}
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the offset of the subvector within the underlying vector.
 //
 // \return The offset of the subvector.
@@ -143,6 +154,7 @@ inline constexpr size_t SubvectorData<>::offset() const noexcept
 {
    return offset_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -169,6 +181,7 @@ inline constexpr size_t SubvectorData<>::size() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the SubvectorData class template for two compile time subvector
 //        arguments.
 // \ingroup subvector
@@ -184,7 +197,8 @@ struct SubvectorData<I,N>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr SubvectorData();
+   template< typename... RSAs >
+   explicit inline constexpr SubvectorData( RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -205,20 +219,29 @@ struct SubvectorData<I,N>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for SubvectorData.
+//
+// \param args The optional subvector arguments.
 */
-template< size_t I    // Index of the first element
-        , size_t N >  // Number of elements
-inline constexpr SubvectorData<I,N>::SubvectorData()
-{}
+template< size_t I            // Index of the first element
+        , size_t N >          // Number of elements
+template< typename... RSAs >  // Optional subvector arguments
+inline constexpr SubvectorData<I,N>::SubvectorData( RSAs... args )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the offset of the subvector within the underlying vector.
 //
 // \return The offset of the subvector.
@@ -229,6 +252,7 @@ inline constexpr size_t SubvectorData<I,N>::offset() const noexcept
 {
    return I;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 

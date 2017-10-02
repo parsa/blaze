@@ -62,12 +62,15 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/Dense.h>
 #include <blaze/math/views/subvector/Sparse.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -104,10 +107,17 @@ namespace blaze {
    auto ssv = subvector<5UL,7UL>( s );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-//
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector<4UL,8UL>( d, unchecked );
+   auto ssv = subvector<5UL,7UL>( s, unchecked );
+   \endcode
+
 // Please note that this function creates an unaligned dense or sparse subvector. For instance,
 // the creation of the dense subvector is equivalent to the following function call:
 
@@ -165,9 +175,16 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, RSAs... args )
    auto ssv = subvector<5UL,7UL>( s );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector<4UL,8UL>( d, unchecked );
+   auto ssv = subvector<5UL,7UL>( s, unchecked );
+   \endcode
 //
 // Please note that this function creates an unaligned dense or sparse subvector. For instance,
 // the creation of the dense subvector is equivalent to the following function call:
@@ -255,10 +272,17 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, RSAs... args )
    auto ssv = subvector<unaligned,3UL,7UL>( s );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-//
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector<aligned,4UL,8UL>( d, unchecked );
+   auto ssv = subvector<unaligned,3UL,7UL>( s, unchecked );
+   \endcode
+
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
 // additional alignment restrictions and the given index \a I is subject to additional checks to
 // guarantee proper alignment. However, especially in case of dense subvectors this may result
@@ -329,10 +353,17 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, RSAs... args )
    auto ssv = subvector<unaligned,3UL,7UL>( s );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-//
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector<aligned,4UL,8UL>( d, unchecked );
+   auto ssv = subvector<unaligned,3UL,7UL>( s, unchecked );
+   \endcode
+
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
 // additional alignment restrictions and the given index \a I is subject to additional checks to
 // guarantee proper alignment. However, especially in case of dense subvectors this may result
@@ -436,10 +467,17 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, RSAs... args )
    auto ssv = subvector( s, 5UL, 7UL );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-//
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector( d, 4UL, 8UL, unchecked );
+   auto ssv = subvector( s, 5UL, 7UL, unchecked );
+   \endcode
+
 // Please note that this function creates an unaligned dense or sparse subvector. For instance,
 // the creation of the dense subvector is equivalent to the following function call:
 
@@ -497,9 +535,16 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
    auto ssv = subvector( s, 5UL, 7UL );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector( d, 4UL, 8UL, unchecked );
+   auto ssv = subvector( s, 5UL, 7UL, unchecked );
+   \endcode
 //
 // Please note that this function creates an unaligned dense or sparse subvector. For instance,
 // the creation of the dense subvector is equivalent to the following function call:
@@ -587,10 +632,17 @@ inline decltype(auto) subvector( Vector<VT,TF>&& vector, size_t index, size_t si
    auto ssv = subvector<unaligned>( s, 3UL, 7UL );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
-//
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector<aligned>( d, 4UL, 8UL, unchecked );
+   auto ssv = subvector<unaligned>( s, 3UL, 7UL, unchecked );
+   \endcode
+
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
 // additional alignment restrictions and the given \a index is subject to additional checks to
 // guarantee proper alignment. However, especially in case of dense subvectors this may result
@@ -661,9 +713,16 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
    auto ssv = subvector<unaligned>( s, 3UL, 7UL );
    \endcode
 
-// In case the subvector is not properly specified (i.e. if the specified first index is greater
-// than the total size of the given vector or the subvector is specified beyond the size of the
-// vector) a \a std::invalid_argument exception is thrown.
+// By default, the provided subvector arguments are checked at runtime. In case the subvector
+// is not properly specified (i.e. if the specified first index is greater than the total size
+// of the given vector or the subvector is specified beyond the size of the vector) a
+// \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
+
+   \code
+   auto dsv = subvector<aligned>( d, 4UL, 8UL, unchecked );
+   auto ssv = subvector<unaligned>( s, 3UL, 7UL, unchecked );
+   \endcode
 //
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
 // additional alignment restrictions and the given \a index is subject to additional checks to
@@ -1073,26 +1132,28 @@ inline decltype(auto) subvector( const VecTransExpr<VT>& vector, RSAs... args )
 // \ingroup subvector
 //
 // \param sv The constant subvector.
+// \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
-template< AlignmentFlag AF1  // Required alignment flag
-        , size_t I           // Index of the first subvector element
-        , size_t N           // Size of the subvector
-        , typename VT        // Type of the vector
-        , AlignmentFlag AF2  // Present alignment flag
-        , bool TF            // Transpose flag
-        , bool DF >          // Density flag
-inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv )
+template< AlignmentFlag AF1   // Required alignment flag
+        , size_t I1           // Required subvector offset
+        , size_t N1           // Required size of the subvector
+        , typename VT         // Type of the vector
+        , AlignmentFlag AF2   // Present alignment flag
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t I2           // Present subvector offset
+        , size_t N2           // Present size of the subvector
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF,I2,N2>& sv, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( I + N > sv.size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
-   }
+   BLAZE_STATIC_ASSERT_MSG( I1 + N1 <= N2, "Invalid subvector specification" );
 
-   return subvector<AF1>( sv.operand(), sv.offset() + I, N );
+   return subvector<AF1,I1+I2,N1>( sv.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1104,28 +1165,35 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv )
 // \ingroup subvector
 //
 // \param sv The constant subvector.
+// \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
-template< AlignmentFlag AF1  // Required alignment flag
-        , size_t I1          // Required subvector offset
-        , size_t N1          // Required size of the subvector
-        , typename VT        // Type of the vector
-        , AlignmentFlag AF2  // Present alignment flag
-        , bool TF            // Transpose flag
-        , bool DF            // Density flag
-        , size_t I2          // Present subvector offset
-        , size_t N2 >        // Present size of the subvector
-inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF,I2,N2>& sv )
+template< AlignmentFlag AF1   // Required alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the vector
+        , AlignmentFlag AF2   // Present alignment flag
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( I1 + N1 > N2 ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( I + N > sv.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( I + N <= sv.size(), "Invalid subvector specification" );
    }
 
-   return subvector<AF1,I1+I2,N1>( sv.operand() );
+   return subvector<AF1>( sv.operand(), sv.offset() + I, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1139,26 +1207,35 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF,I2,N2>& sv )
 // \param sv The constant subvector.
 // \param index The index of the first element of the subvector.
 // \param size The size of the subvector.
+// \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
-template< AlignmentFlag AF1  // Required alignment flag
-        , typename VT        // Type of the dense vector
-        , AlignmentFlag AF2  // Present alignment flag
-        , bool TF            // Transpose flag
-        , bool DF            // Density flag
-        , size_t... CSAs >   // Compile time subvector arguments
+template< AlignmentFlag AF1   // Required alignment flag
+        , typename VT         // Type of the dense vector
+        , AlignmentFlag AF2   // Present alignment flag
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename... RSAs >  // Optional subvector arguments
 inline decltype(auto)
-   subvector( const Subvector<VT,AF2,TF,DF,CSAs...>& sv, size_t index, size_t size )
+   subvector( const Subvector<VT,AF2,TF,DF,CSAs...>& sv, size_t index, size_t size, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( index + size > sv.size() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( index + size > sv.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index + size <= sv.size(), "Invalid subvector specification" );
    }
 
-   return subvector<AF1>( sv.operand(), sv.offset() + index, size );
+   return subvector<AF1>( sv.operand(), sv.offset() + index, size, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
