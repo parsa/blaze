@@ -77,9 +77,9 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/RowData.h>
-#include <blaze/math/views/Check.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -93,8 +93,8 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -175,10 +175,8 @@ class Row<MT,true,true,SF,CRAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix );
-   explicit inline Row( MT& matrix, Unchecked ) noexcept;
-   explicit inline Row( MT& matrix, size_t index );
-   explicit inline Row( MT& matrix, size_t index, Unchecked ) noexcept;
+   template< typename... RRAs >
+   explicit inline Row( MT& matrix, RRAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -411,91 +409,33 @@ class Row<MT,true,true,SF,CRAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked rows on row-major dense matrices.
+/*!\brief Constructor for rows on row-major dense matrices.
 //
 // \param matrix The matrix containing the row.
+// \param args The runtime row arguments.
 // \exception std::invalid_argument Invalid row access index.
+//
+// By default, the provided row arguments are checked at runtime. In case the row is not properly
+// specified (i.e. if the specified index is greater than the number of rows of the given matrix)
+// a \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,true,true,SF,CRAs...>::Row( MT& matrix )
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
+template< typename MT         // Type of the dense matrix
+        , bool SF             // Symmetry flag
+        , size_t... CRAs >    // Compile time row arguments
+template< typename... RRAs >  // Runtime row arguments
+inline Row<MT,true,true,SF,CRAs...>::Row( MT& matrix, RRAs... args )
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the row
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 1UL );
-
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+      if( matrix_.rows() <= row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked rows on row-major dense matrices.
-//
-// \param matrix The matrix containing the row.
-*/
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,true,true,SF,CRAs...>::Row( MT& matrix, Unchecked ) noexcept
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 1UL );
-
-   BLAZE_INTERNAL_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked rows on row-major dense matrices.
-//
-// \param matrix The matrix containing the row.
-// \param index The index of the row.
-// \exception std::invalid_argument Invalid row access index.
-*/
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,true,true,SF,CRAs...>::Row( MT& matrix, size_t index )
-   : DataType( index  )  // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 0UL );
-
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   else {
+      BLAZE_USER_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked rows on row-major dense matrices.
-//
-// \param matrix The matrix containing the row.
-// \param index The index of the row.
-*/
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,true,true,SF,CRAs...>::Row( MT& matrix, size_t index, Unchecked ) noexcept
-   : DataType( index  )  // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2689,10 +2629,8 @@ class Row<MT,false,true,false,CRAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix );
-   explicit inline Row( MT& matrix, Unchecked ) noexcept;
-   explicit inline Row( MT& matrix, size_t index );
-   explicit inline Row( MT& matrix, size_t index, Unchecked ) noexcept;
+   template< typename... RRAs >
+   explicit inline Row( MT& matrix, RRAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -2828,87 +2766,32 @@ class Row<MT,false,true,false,CRAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked rows on column-major dense matrices.
+/*!\brief Constructor for rows on column-major dense matrices.
 //
 // \param matrix The matrix containing the row.
+// \param args The runtime row arguments.
 // \exception std::invalid_argument Invalid row access index.
+//
+// By default, the provided row arguments are checked at runtime. In case the row is not properly
+// specified (i.e. if the specified index is greater than the number of rows of the given matrix)
+// a \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,false,CRAs...>::Row( MT& matrix )
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
+template< typename MT         // Type of the dense matrix
+        , size_t... CRAs >    // Compile time row arguments
+template< typename... RRAs >  // Runtime row arguments
+inline Row<MT,false,true,false,CRAs...>::Row( MT& matrix, RRAs... args )
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the row
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 1UL );
-
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+      if( matrix_.rows() <= row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked rows on column-major dense matrices.
-//
-// \param matrix The matrix containing the row.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,false,CRAs...>::Row( MT& matrix, Unchecked ) noexcept
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 1UL );
-
-   BLAZE_INTERNAL_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked rows on column-major dense matrices.
-//
-// \param matrix The matrix containing the row.
-// \param index The index of the row.
-// \exception std::invalid_argument Invalid row access index.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,false,CRAs...>::Row( MT& matrix, size_t index )
-   : DataType( index  )  // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 0UL );
-
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   else {
+      BLAZE_USER_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked rows on column-major dense matrices.
-//
-// \param matrix The matrix containing the row.
-// \param index The index of the row.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,false,CRAs...>::Row( MT& matrix, size_t index, Unchecked ) noexcept
-   : DataType( index  )  // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4334,10 +4217,8 @@ class Row<MT,false,true,true,CRAs...>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline Row( MT& matrix );
-   explicit inline Row( MT& matrix, Unchecked ) noexcept;
-   explicit inline Row( MT& matrix, size_t index );
-   explicit inline Row( MT& matrix, size_t index, Unchecked ) noexcept;
+   template< typename... RRAs >
+   explicit inline Row( MT& matrix, RRAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -4571,87 +4452,32 @@ class Row<MT,false,true,true,CRAs...>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked rows on column-major symmetric dense matrices.
+/*!\brief Constructor for rows on column-major symmetric dense matrices.
 //
 // \param matrix The matrix containing the row.
+// \param args The runtime row arguments.
 // \exception std::invalid_argument Invalid row access index.
+//
+// By default, the provided row arguments are checked at runtime. In case the row is not properly
+// specified (i.e. if the specified index is greater than the number of rows of the given matrix)
+// a \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
+// optional \a blaze::unchecked argument.
 */
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,true,CRAs...>::Row( MT& matrix )
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
+template< typename MT         // Type of the dense matrix
+        , size_t... CRAs >    // Compile time row arguments
+template< typename... RRAs >  // Runtime row arguments
+inline Row<MT,false,true,true,CRAs...>::Row( MT& matrix, RRAs... args )
+   : DataType( args... )  // Base class initialization
+   , matrix_ ( matrix  )  // The matrix containing the row
 {
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 1UL );
-
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+      if( matrix_.rows() <= row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked rows on column-major symmetric dense matrices.
-//
-// \param matrix The matrix containing the row.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,true,CRAs...>::Row( MT& matrix, Unchecked ) noexcept
-   : DataType()          // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 1UL );
-
-   BLAZE_INTERNAL_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for checked rows on column-major symmetric dense matrices.
-//
-// \param matrix The matrix containing the row.
-// \param index The index of the row.
-// \exception std::invalid_argument Invalid row access index.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,true,CRAs...>::Row( MT& matrix, size_t index )
-   : DataType( index  )  // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 0UL );
-
-   if( matrix_.rows() <= row() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+   else {
+      BLAZE_USER_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
    }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for unchecked rows on column-major symmetric dense matrices.
-//
-// \param matrix The matrix containing the row.
-// \param index The index of the row.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-inline Row<MT,false,true,true,CRAs...>::Row( MT& matrix, size_t index, Unchecked ) noexcept
-   : DataType( index  )  // Base class initialization
-   , matrix_ ( matrix )  // The matrix containing the row
-{
-   BLAZE_STATIC_ASSERT( sizeof...( CRAs ) == 0UL );
-
-   BLAZE_INTERNAL_ASSERT( row() < matrix_.rows(), "Invalid row access index" );
 }
 /*! \endcond */
 //*************************************************************************************************

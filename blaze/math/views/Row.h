@@ -111,9 +111,15 @@ namespace blaze {
    auto row4 = row<4UL>( S );
    \endcode
 
-// In case the row is not properly specified (i.e. if the specified index is greater than or equal
-// to the total number of the rows in the given matrix) a \a std::invalid_argument exception is
-// thrown.
+// By default, the provided row arguments are checked at runtime. In case the row is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rows
+// in the given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped
+// by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto row3 = row<3UL>( D, unchecked );
+   auto row4 = row<4UL>( S, unchecked );
+   \endcode
 */
 template< size_t I            // Row index
         , typename MT         // Type of the matrix
@@ -154,9 +160,15 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix, RRAs... args )
    auto row4 = row<4UL>( S );
    \endcode
 
-// In case the row is not properly specified (i.e. if the specified index is greater than or equal
-// to the total number of the rows in the given matrix) a \a std::invalid_argument exception is
-// thrown.
+// By default, the provided row arguments are checked at runtime. In case the row is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rows
+// in the given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped
+// by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto row3 = row<3UL>( D, unchecked );
+   auto row4 = row<4UL>( S, unchecked );
+   \endcode
 */
 template< size_t I            // Row index
         , typename MT         // Type of the matrix
@@ -226,9 +238,15 @@ inline decltype(auto) row( Matrix<MT,SO>&& matrix, RRAs... args )
    auto row4 = row( S, 4UL );
    \endcode
 
-// In case the row is not properly specified (i.e. if the specified index is greater than or equal
-// to the total number of the rows in the given matrix) a \a std::invalid_argument exception is
-// thrown.
+// By default, the provided row arguments are checked at runtime. In case the row is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rows
+// in the given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped
+// by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto row3 = row( D, 3UL, unchecked );
+   auto row4 = row( S, 4UL, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order
@@ -269,9 +287,15 @@ inline decltype(auto) row( Matrix<MT,SO>& matrix, size_t index, RRAs... args )
    auto row4 = row( S, 4UL );
    \endcode
 
-// In case the row is not properly specified (i.e. if the specified index is greater than or equal
-// to the total number of the rows in the given matrix) a \a std::invalid_argument exception is
-// thrown.
+// By default, the provided row arguments are checked at runtime. In case the row is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rows
+// in the given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped
+// by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto row3 = row( D, 3UL, unchecked );
+   auto row4 = row( S, 4UL, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order

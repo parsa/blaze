@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -74,6 +75,7 @@ struct RowData
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the RowData class template for zero compile time row arguments.
 // \ingroup row
 //
@@ -87,7 +89,8 @@ struct RowData<>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr RowData( size_t index );
+   template< typename... RRAs >
+   explicit inline constexpr RowData( size_t index, RRAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -115,21 +118,29 @@ struct RowData<>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for RowData.
 //
 // \param index The index of the row.
+// \param args The optional row arguments.
 */
-inline constexpr RowData<>::RowData( size_t index )
+template< typename... RRAs >  // Optional row arguments
+inline constexpr RowData<>::RowData( size_t index, RRAs... args )
    : row_( index )  // The index of the row in the matrix
-{}
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the row of the underlying dense matrix.
 //
 // \return The index of the row.
@@ -138,6 +149,7 @@ inline constexpr size_t RowData<>::row() const noexcept
 {
    return row_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -150,6 +162,7 @@ inline constexpr size_t RowData<>::row() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the RowData class template for a single compile time row argument.
 // \ingroup row
 //
@@ -163,7 +176,8 @@ struct RowData<Index>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr RowData();
+   template< typename... RRAs >
+   explicit inline constexpr RowData( RRAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -183,19 +197,28 @@ struct RowData<Index>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for RowData.
+//
+// \param args The optional row arguments.
 */
-template< size_t Index >  // Compile time row index
-inline constexpr RowData<Index>::RowData()
-{}
+template< size_t Index >      // Compile time row index
+template< typename... RRAs >  // Optional row arguments
+inline constexpr RowData<Index>::RowData( RRAs... args )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the row of the underlying dense matrix.
 //
 // \return The index of the row.
@@ -205,6 +228,7 @@ inline constexpr size_t RowData<Index>::row() const noexcept
 {
    return Index;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
