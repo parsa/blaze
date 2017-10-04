@@ -254,7 +254,7 @@ set(BLAZE_SHARED_MEMORY_PARALLELIZATION ON CACHE BOOL "Enable/Disable the shared
 if (BLAZE_SHARED_MEMORY_PARALLELIZATION)
    set(BLAZE_SHARED_MEMORY_PARALLELIZATION 1)
    set(BLAZE_SMP_THREADS "OpenMP" CACHE STRING "Specify which thread library is used for shared-memory parallelization.")
-   set_property(CACHE BLAZE_SMP_THREADS PROPERTY STRINGS "OpenMP;C++11;Boost")
+   set_property(CACHE BLAZE_SMP_THREADS PROPERTY STRINGS "OpenMP;C++11;Boost;HPX")
 else ()
    set(BLAZE_SHARED_MEMORY_PARALLELIZATION 0)
    unset(BLAZE_SMP_THREADS CACHE)
@@ -280,6 +280,11 @@ elseif (BLAZE_SMP_THREADS STREQUAL "Boost")
    target_include_directories(blaze INTERFACE ${Boost_INCLUDE_DIRS})
    target_compile_definitions(blaze INTERFACE BOOST_ALL_DYN_LINK ) # Needed for Visual Studio 2015
    target_link_libraries(blaze INTERFACE ${Boost_LIBRARIES})
+elseif (BLAZE_SMP_THREADS STREQUAL "HPX")
+   find_package(HPX REQUIRED)
+   target_compile_definitions(blaze INTERFACE BLAZE_USE_HPX_THREADS)
+   target_include_directories(blaze INTERFACE ${HPX_INCLUDE_DIRS})
+   target_link_libraries(blaze INTERFACE ${HPX_LIBRARIES})
 endif ()
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/SMP.h.in"

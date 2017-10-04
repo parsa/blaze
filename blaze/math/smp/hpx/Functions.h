@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/smp/default/Functions.h
-//  \brief Header file for the default SMP utility functions
+//  \file blaze/math/smp/hpx/Functions.h
+//  \brief Header file for the HPX-based SMP utility functions
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,21 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SMP_DEFAULT_FUNCTIONS_H_
-#define _BLAZE_MATH_SMP_DEFAULT_FUNCTIONS_H_
+#ifndef _BLAZE_MATH_SMP_HPX_FUNCTIONS_H_
+#define _BLAZE_MATH_SMP_HPX_FUNCTIONS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
+#include <hpx/runtime/get_os_thread_count.hpp>
+
+#include <blaze/math/Exception.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/SMP.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -56,52 +58,49 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name SMP utility functions */
-//@{
-BLAZE_ALWAYS_INLINE size_t getNumThreads  ();
-BLAZE_ALWAYS_INLINE void   setNumThreads  ( size_t number );
-BLAZE_ALWAYS_INLINE void   shutDownThreads();
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the number of threads used for thread parallel operations.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of threads used for OpenMP parallel operations.
 // \ingroup smp
 //
-// \return The number of threads used for thread parallel operations.
+// \return The number of threads used for OpenMP parallel operations.
 //
-// Via this function the number of threads used for thread parallel operations can be queried.
-// Note that in case no parallelization is active the function will always return 1.
+// Via this function the number of threads used for OpenMP parallel operations can be queried.
+// The function generally reflects the number of threads as set by the OMP_NUM_THREADS environment
+// variable, the \c omp_set_num_threads() library function, or the blaze::setNumThreads() function.
 */
 BLAZE_ALWAYS_INLINE size_t getNumThreads()
 {
-   return 1UL;
+   return 4 * hpx::get_os_thread_count();
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Sets the number of threads to be used for thread parallel operations.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Sets the number of threads to be used for OpenMP parallel operations.
 // \ingroup smp
 //
 // \param number The given number of threads \f$[1..\infty)\f$.
 // \return void
 // \exception std::invalid_argument Invalid number of threads.
 //
-// Via this function the maximum number of threads for thread parallel operations can be specified.
-// Note that the given \a number must be in the range \f$[1..\infty)\f$. In case an invalid
-// number of threads is specified, a \a std::invalid_argument exception is thrown. Also note that
-// in case no parallelization is active, the function has no effect.
+// Via this function the maximum number of threads for OpenMP parallel operations can be specified.
+// Note that the given \a number must be in the range \f$[1..infty)\f$. In case an invalid
+// number of threads is specified, a \a std::invalid_argument exception is thrown.
 */
 BLAZE_ALWAYS_INLINE void setNumThreads( size_t number )
 {
-   UNUSED_PARAMETER( number );
+   if( number == 0UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of threads" );
+   }
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Provides a reliable shutdown of C++11 threads for Visual Studio compilers.
 // \ingroup smp
 //
@@ -127,6 +126,7 @@ BLAZE_ALWAYS_INLINE void setNumThreads( size_t number )
 */
 BLAZE_ALWAYS_INLINE void shutDownThreads()
 {}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -134,7 +134,7 @@ BLAZE_ALWAYS_INLINE void shutDownThreads()
 
 //=================================================================================================
 //
-//  COMPILE TIME CONSTRAINT
+//  COMPILE TIME CONSTRAINTS
 //
 //=================================================================================================
 
@@ -142,9 +142,7 @@ BLAZE_ALWAYS_INLINE void shutDownThreads()
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( !BLAZE_OPENMP_PARALLEL_MODE      );
-BLAZE_STATIC_ASSERT( !BLAZE_CPP_THREADS_PARALLEL_MODE );
-BLAZE_STATIC_ASSERT( !BLAZE_HPX_PARALLEL_MODE );
+BLAZE_STATIC_ASSERT( BLAZE_HPX_PARALLEL_MODE );
 
 }
 /*! \endcond */

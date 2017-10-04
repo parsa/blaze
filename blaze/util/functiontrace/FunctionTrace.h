@@ -46,6 +46,8 @@
 #  include <thread>
 #elif BLAZE_BOOST_THREADS_PARALLEL_MODE
 #  include <boost/thread/thread.hpp>
+#elif BLAZE_HPX_PARALLEL_MODE
+#  include <hpx/include/threads.hpp>
 #endif
 
 #include <iostream>
@@ -150,6 +152,8 @@ inline FunctionTrace::FunctionTrace( const std::string& file, const std::string&
    oss << "[Thread " << std::this_thread::get_id() << "]";
 #elif BLAZE_BOOST_THREADS_PARALLEL_MODE
    oss << "[Thread " << boost::this_thread::get_id() << "]";
+#elif BLAZE_HPX_PARALLEL_MODE
+   oss << "[Thread " << hpx::this_thread::get_id() << "]";
 #endif
 
    oss << " Entering function '" << function_ << "' in file '" << file_ << "'\n";
@@ -180,6 +184,8 @@ inline FunctionTrace::~FunctionTrace()
    oss << "[Thread " << std::this_thread::get_id() << "]";
 #elif BLAZE_BOOST_THREADS_PARALLEL_MODE
    oss << "[Thread " << boost::this_thread::get_id() << "]";
+#elif BLAZE_HPX_PARALLEL_MODE
+   oss << "[Thread " << hpx::this_thread::get_id() << "]";
 #endif
 
    oss << " Leaving function '" << function_ << "' in file '" << file_ << "'\n";

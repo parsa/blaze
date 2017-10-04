@@ -46,6 +46,8 @@
 #include <blaze/math/smp/openmp/Functions.h>
 #elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
 #include <blaze/math/smp/threads/Functions.h>
+#elif BLAZE_HPX_PARALLEL_MODE
+#include <blaze/math/smp/hpx/Functions.h>
 #else
 #include <blaze/math/smp/default/Functions.h>
 #endif
