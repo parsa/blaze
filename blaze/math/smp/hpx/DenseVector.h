@@ -76,14 +76,14 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP assignment of a dense vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be assigned.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP assignment of a dense
+// This function is the backend implementation of the HPX-based SMP assignment of a dense
 // vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -151,14 +151,14 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP assignment of a sparse vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP assignment of a sparse vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be assigned.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP assignment of a sparse
+// This function is the backend implementation of the HPX-based SMP assignment of a sparse
 // vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -200,14 +200,14 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense vector.
+/*!\brief Default implementation of the HPX-based SMP assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be assigned.
 // \return void
 //
-// This function implements the default OpenMP-based SMP assignment to a dense vector. Due to
+// This function implements the default HPX-based SMP assignment to a dense vector. Due to
 // the explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands are
 // not SMP-assignable.\n
@@ -237,14 +237,14 @@ inline EnableIf_< And< IsDenseVector<VT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment to a dense vector.
+/*!\brief Implementation of the HPX-based SMP assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be assigned.
 // \return void
 //
-// This function performs the OpenMP-based SMP assignment to a dense vector. Due to the
+// This function performs the HPX-based SMP assignment to a dense vector. Due to the
 // explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n
@@ -291,14 +291,14 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP addition assignment of a dense vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP addition assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be added.
 // \return void
 //
-// This function is the backend implementation the OpenMP-based SMP addition assignment of a
+// This function is the backend implementation the HPX-based SMP addition assignment of a
 // dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -366,14 +366,14 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP addition assignment of a sparse vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP addition assignment of a sparse vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be added.
 // \return void
 //
-// This function is the backend implementation the OpenMP-based SMP addition assignment of a
+// This function is the backend implementation the HPX-based SMP addition assignment of a
 // sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -415,14 +415,14 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense vector.
+/*!\brief Default implementation of the HPX-based SMP addition assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be added.
 // \return void
 //
-// This function implements the default OpenMP-based SMP addition assignment to a dense vector.
+// This function implements the default HPX-based SMP addition assignment to a dense vector.
 // Due to the explicit application of the SFINAE principle, this function can only be selected
 // by the compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n
@@ -452,14 +452,14 @@ inline EnableIf_< And< IsDenseVector<VT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment to a dense vector.
+/*!\brief Implementation of the HPX-based SMP addition assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be added.
 // \return void
 //
-// This function implements the OpenMP-based SMP addition assignment to a dense vector. Due to
+// This function implements the HPX-based SMP addition assignment to a dense vector. Due to
 // the explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands are
 // not SMP-assignable.\n
@@ -506,14 +506,14 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a dense vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP subtraction assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be subtracted.
 // \return void
 //
-// This function is the backend implementation the OpenMP-based SMP subtraction assignment of a
+// This function is the backend implementation the HPX-based SMP subtraction assignment of a
 // dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -581,14 +581,14 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a sparse vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP subtraction assignment of a sparse vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP subtraction assignment of
+// This function is the backend implementation of the HPX-based SMP subtraction assignment of
 // a sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -630,14 +630,14 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP subtraction assignment to a dense vector.
+/*!\brief Default implementation of the HPX-based SMP subtraction assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be subtracted.
 // \return void
 //
-// This function implements the default OpenMP-based SMP subtraction assignment of a vector to
+// This function implements the default HPX-based SMP subtraction assignment of a vector to
 // a dense vector. Due to the explicit application of the SFINAE principle, this function can
 // only be selected by the compiler in case both operands are SMP-assignable and the element
 // types of both operands are not SMP-assignable.\n
@@ -667,14 +667,14 @@ inline EnableIf_< And< IsDenseVector<VT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtraction assignment to a dense vector.
+/*!\brief Implementation of the HPX-based SMP subtraction assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be subtracted.
 // \return void
 //
-// This function implements the OpenMP-based SMP subtraction assignment to a dense vector. Due
+// This function implements the HPX-based SMP subtraction assignment to a dense vector. Due
 // to the explicit application of the SFINAE principle, this function can only be selected by
 // the compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n
@@ -721,7 +721,7 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP multiplication assignment of a dense vector to a
+/*!\brief Backend of the HPX-based SMP multiplication assignment of a dense vector to a
 //        dense vector.
 // \ingroup smp
 //
@@ -729,7 +729,7 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP multiplication assignment
+// This function is the backend implementation of the HPX-based SMP multiplication assignment
 // of a dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -797,7 +797,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP multiplication assignment of a sparse vector to a
+/*!\brief Backend of the HPX-based SMP multiplication assignment of a sparse vector to a
 //        dense vector.
 // \ingroup smp
 //
@@ -805,7 +805,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
 // \param rhs The right-hand side sparse vector to be multiplied.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP multiplication assignment
+// This function is the backend implementation of the HPX-based SMP multiplication assignment
 // of a sparse vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -847,14 +847,14 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment to a dense vector.
+/*!\brief Default implementation of the HPX-based SMP multiplication assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector to be multiplied.
 // \return void
 //
-// This function implements the default OpenMP-based SMP multiplication assignment to a dense
+// This function implements the default HPX-based SMP multiplication assignment to a dense
 // vector. Due to the explicit application of the SFINAE principle, this function can only be
 // selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
@@ -884,14 +884,14 @@ inline EnableIf_< And< IsDenseVector<VT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP multiplication assignment to a dense vector.
+/*!\brief Implementation of the HPX-based SMP multiplication assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be multiplied.
 // \return void
 //
-// This function implements the OpenMP-based SMP multiplication assignment to a dense vector.
+// This function implements the HPX-based SMP multiplication assignment to a dense vector.
 // Due to the explicit application of the SFINAE principle, this function can only be selected
 // by the compiler in case both operands are SMP-assignable and the element types of both
 // operands are not SMP-assignable.\n
@@ -938,14 +938,14 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP division assignment of a dense vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP division assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector divisor.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP division assignment of
+// This function is the backend implementation of the HPX-based SMP division assignment of
 // a dense vector to a dense vector.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -1013,14 +1013,14 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP division assignment to a dense vector.
+/*!\brief Default implementation of the HPX-based SMP division assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side vector divisor.
 // \return void
 //
-// This function implements the default OpenMP-based SMP division assignment to a dense vector.
+// This function implements the default HPX-based SMP division assignment to a dense vector.
 // Due to the explicit application of the SFINAE principle, this function can only be selected
 // by the compiler in case both operands are SMP-assignable and the element types of both
 // operands are not SMP-assignable.\n
@@ -1050,14 +1050,14 @@ inline EnableIf_< And< IsDenseVector<VT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP division assignment to a dense vector.
+/*!\brief Implementation of the HPX-based SMP division assignment to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector divisor.
 // \return void
 //
-// This function implements the OpenMP-based SMP division assignment to a dense vector. Due to
+// This function implements the HPX-based SMP division assignment to a dense vector. Due to
 // the explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n

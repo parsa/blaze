@@ -79,14 +79,14 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP assignment of a dense matrix to a dense matrix.
+/*!\brief Backend of the HPX-based SMP assignment of a dense matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side dense matrix to be assigned.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP assignment of a dense
+// This function is the backend implementation of the HPX-based SMP assignment of a dense
 // matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -163,14 +163,14 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP assignment of a sparse matrix to a dense matrix.
+/*!\brief Backend of the HPX-based SMP assignment of a sparse matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side sparse matrix to be assigned.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP assignment of a sparse
+// This function is the backend implementation of the HPX-based SMP assignment of a sparse
 // matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -220,14 +220,14 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP assignment to a dense matrix.
+/*!\brief Default implementation of the HPX-based SMP assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be assigned.
 // \return void
 //
-// This function implements the default OpenMP-based SMP assignment to a dense matrix. Due to
+// This function implements the default HPX-based SMP assignment to a dense matrix. Due to
 // the explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands are
 // not SMP-assignable.\n
@@ -258,14 +258,14 @@ inline EnableIf_< And< IsDenseMatrix<MT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP assignment to a dense matrix.
+/*!\brief Implementation of the HPX-based SMP assignment to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be assigned.
 // \return void
 //
-// This function implements the OpenMP-based SMP assignment to a dense matrix. Due to the
+// This function implements the HPX-based SMP assignment to a dense matrix. Due to the
 // explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n
@@ -313,14 +313,14 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP addition assignment of a dense matrix to a dense matrix.
+/*!\brief Backend of the HPX-based SMP addition assignment of a dense matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side dense matrix to be added.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP addition assignment of a
+// This function is the backend implementation of the HPX-based SMP addition assignment of a
 // dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -397,14 +397,14 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP addition assignment of a sparse matrix to a dense matrix.
+/*!\brief Backend of the HPX-based SMP addition assignment of a sparse matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side sparse matrix to be added.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP addition assignment of a
+// This function is the backend implementation of the HPX-based SMP addition assignment of a
 // sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -454,14 +454,14 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP addition assignment to a dense matrix.
+/*!\brief Default implementation of the HPX-based SMP addition assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be added.
 // \return void
 //
-// This function implements the default OpenMP-based SMP addition assignment to a dense matrix.
+// This function implements the default HPX-based SMP addition assignment to a dense matrix.
 // Due to the explicit application of the SFINAE principle, this function can only be selected
 // by the compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n
@@ -492,14 +492,14 @@ inline EnableIf_< And< IsDenseMatrix<MT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP addition assignment to a dense matrix.
+/*!\brief Implementation of the HPX-based SMP addition assignment to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be added.
 // \return void
 //
-// This function implements the OpenMP-based SMP addition assignment to a dense matrix. Due to
+// This function implements the HPX-based SMP addition assignment to a dense matrix. Due to
 // the explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands are
 // not SMP-assignable.\n
@@ -547,14 +547,14 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a dense matrix to a dense matrix.
+/*!\brief Backend of the HPX-based SMP subtraction assignment of a dense matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side dense matrix to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP subtraction assignment
+// This function is the backend implementation of the HPX-based SMP subtraction assignment
 // of a dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -631,7 +631,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP subtraction assignment of a sparse matrix to a dense
+/*!\brief Backend of the HPX-based SMP subtraction assignment of a sparse matrix to a dense
 //        matrix.
 // \ingroup math
 //
@@ -639,7 +639,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
 // \param rhs The right-hand side sparse matrix to be subtracted.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP subtraction assignment
+// This function is the backend implementation of the HPX-based SMP subtraction assignment
 // of a sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -689,14 +689,14 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
+/*!\brief Default implementation of the HPX-based SMP subtracction assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be subtracted.
 // \return void
 //
-// This function implements the default OpenMP-based SMP subtraction assignment to a dense matrix.
+// This function implements the default HPX-based SMP subtraction assignment to a dense matrix.
 // Due to the explicit application of the SFINAE principle, this function can only be selected by
 // the compiler in case both operands are SMP-assignable and the element types of both operands
 // are not SMP-assignable.\n
@@ -727,14 +727,14 @@ inline EnableIf_< And< IsDenseMatrix<MT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP subtracction assignment to a dense matrix.
+/*!\brief Implementation of the HPX-based SMP subtracction assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be subtracted.
 // \return void
 //
-// This function implements the default OpenMP-based SMP subtraction assignment of a matrix to a
+// This function implements the default HPX-based SMP subtraction assignment of a matrix to a
 // dense matrix. Due to the explicit application of the SFINAE principle, this function can only
 // be selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
@@ -782,7 +782,7 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP Schur product assignment of a dense matrix to a dense
+/*!\brief Backend of the HPX-based SMP Schur product assignment of a dense matrix to a dense
 //        matrix.
 // \ingroup math
 //
@@ -790,7 +790,7 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 // \param rhs The right-hand side dense matrix for the Schur product.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP Schur product assignment
+// This function is the backend implementation of the HPX-based SMP Schur product assignment
 // of a dense matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -867,7 +867,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the OpenMP-based SMP Schur product assignment of a sparse matrix to a dense
+/*!\brief Backend of the HPX-based SMP Schur product assignment of a sparse matrix to a dense
 //        matrix.
 // \ingroup math
 //
@@ -875,7 +875,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
 // \param rhs The right-hand side sparse matrix for the Schur product.
 // \return void
 //
-// This function is the backend implementation of the OpenMP-based SMP Schur product assignment
+// This function is the backend implementation of the HPX-based SMP Schur product assignment
 // of a sparse matrix to a dense matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -925,14 +925,14 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,S
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP Schur product assignment to a dense matrix.
+/*!\brief Default implementation of the HPX-based SMP Schur product assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix for the Schur product.
 // \return void
 //
-// This function implements the default OpenMP-based SMP Schur product assignment to a dense
+// This function implements the default HPX-based SMP Schur product assignment to a dense
 // matrix. Due to the explicit application of the SFINAE principle, this function can only be
 // selected by the compiler in case both operands are SMP-assignable and the element types of
 // both operands are not SMP-assignable.\n
@@ -963,14 +963,14 @@ inline EnableIf_< And< IsDenseMatrix<MT1>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Implementation of the OpenMP-based SMP Schur product assignment to a dense matrix.
+/*!\brief Implementation of the HPX-based SMP Schur product assignment to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix for the Schur product.
 // \return void
 //
-// This function implements the OpenMP-based SMP Schur product assignment to a dense matrix. Due
+// This function implements the HPX-based SMP Schur product assignment to a dense matrix. Due
 // to the explicit application of the SFINAE principle, this function can only be selected by the
 // compiler in case both operands are SMP-assignable and the element types of both operands are
 // not SMP-assignable.\n
@@ -1018,14 +1018,14 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the OpenMP-based SMP multiplication assignment to a dense matrix.
+/*!\brief Default implementation of the HPX-based SMP multiplication assignment to a dense matrix.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side matrix to be multiplied.
 // \return void
 //
-// This function implements the default OpenMP-based SMP multiplication assignment to a dense
+// This function implements the default HPX-based SMP multiplication assignment to a dense
 // matrix.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
