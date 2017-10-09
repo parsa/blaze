@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -74,6 +75,7 @@ struct BandData
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the BandData class template for zero compile time band arguments.
 // \ingroup band
 //
@@ -87,7 +89,8 @@ struct BandData<>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr BandData( ptrdiff_t index );
+   template< typename... RBAs >
+   explicit inline constexpr BandData( ptrdiff_t index, RBAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -119,23 +122,31 @@ struct BandData<>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for BandData.
 //
 // \param index The index of the band.
+// \param args The optional band arguments.
 */
-inline constexpr BandData<>::BandData( ptrdiff_t index )
+template< typename... RBAs >  // Optional band arguments
+inline constexpr BandData<>::BandData( ptrdiff_t index, RBAs... args )
    : band_  ( index  )                        // The band index
    , row_   ( index >= 0L ?   0UL : -index )  // The index of the row containing the first element of the band
    , column_( index >= 0L ? index :    0UL )  // The index of the column containing the first element of the band
-{}
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the band of the underlying dense matrix.
 //
 // \return The index of the band.
@@ -144,10 +155,12 @@ inline constexpr ptrdiff_t BandData<>::band() const noexcept
 {
    return band_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the row containing the first element of the band.
 //
 // \return The first row index.
@@ -156,10 +169,12 @@ inline constexpr size_t BandData<>::row() const noexcept
 {
    return row_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the column containing the first element of the band.
 //
 // \return The first column index.
@@ -168,6 +183,7 @@ inline constexpr size_t BandData<>::column() const noexcept
 {
    return column_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -180,6 +196,7 @@ inline constexpr size_t BandData<>::column() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the BandData class template for a single compile time band argument.
 // \ingroup band
 //
@@ -193,7 +210,8 @@ struct BandData<I>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr BandData();
+   template< typename... RBAs >
+   explicit inline constexpr BandData( RBAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -215,19 +233,28 @@ struct BandData<I>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for BandData.
+//
+// \param args The optional band arguments.
 */
-template< ptrdiff_t I >  // Compile time band index
-inline constexpr BandData<I>::BandData()
-{}
+template< ptrdiff_t I >       // Compile time band index
+template< typename... RBAs >  // Optional band arguments
+inline constexpr BandData<I>::BandData( RBAs... args )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the band of the underlying dense matrix.
 //
 // \return The index of the band.
@@ -237,10 +264,12 @@ inline constexpr ptrdiff_t BandData<I>::band() const noexcept
 {
    return I;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the row containing the first element of the band.
 //
 // \return The first row index.
@@ -250,10 +279,12 @@ inline constexpr size_t BandData<I>::row() const noexcept
 {
    return ( I >= 0L ? 0UL : -I );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the column containing the first element of the band.
 //
 // \return The first column index.
@@ -263,6 +294,7 @@ inline constexpr size_t BandData<I>::column() const noexcept
 {
    return ( I >= 0L ? I : 0UL );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

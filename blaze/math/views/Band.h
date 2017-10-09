@@ -111,8 +111,15 @@ namespace blaze {
    auto lb1 = band<-1L>( S );
    \endcode
 
-// In case the band is not properly specified (i.e. if the specified index does not correspond
-// to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided band arguments are checked at runtime. // In case the band is not
+// properly specified (i.e. if the specified index does not correspond to a valid band in the
+// given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by
+// providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto ub1 = band<1L>( D, unchecked );
+   auto lb1 = band<-1L>( S, unchecked );
+   \endcode
 */
 template< ptrdiff_t I         // Band index
         , typename MT         // Type of the matrix
@@ -153,8 +160,15 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix, RBAs... args )
    auto lb1 = band<-1L>( S );
    \endcode
 
-// In case the band is not properly specified (i.e. if the specified index does not correspond
-// to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided band arguments are checked at runtime. // In case the band is not
+// properly specified (i.e. if the specified index does not correspond to a valid band in the
+// given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by
+// providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto ub1 = band<1L>( D, unchecked );
+   auto lb1 = band<-1L>( S, unchecked );
+   \endcode
 */
 template< ptrdiff_t I         // Band index
         , typename MT         // Type of the matrix
@@ -224,8 +238,15 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, RBAs... args )
    auto lb1 = band( S, -1L );
    \endcode
 
-// In case the band is not properly specified (i.e. if the specified index does not correspond
-// to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided band arguments are checked at runtime. // In case the band is not
+// properly specified (i.e. if the specified index does not correspond to a valid band in the
+// given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by
+// providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto ub1 = band( D, 1L, unchecked );
+   auto lb1 = band( S, -1L, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order
@@ -266,8 +287,15 @@ inline decltype(auto) band( Matrix<MT,SO>& matrix, ptrdiff_t index, RBAs... args
    auto ub1 = band( S, -1L );
    \endcode
 
-// In case the band is not properly specified (i.e. if the specified index does not correspond
-// to a valid band in the given matrix) a \a std::invalid_argument exception is thrown.
+// By default, the provided band arguments are checked at runtime. // In case the band is not
+// properly specified (i.e. if the specified index does not correspond to a valid band in the
+// given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by
+// providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto ub1 = band( D, 1L, unchecked );
+   auto lb1 = band( S, -1L, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order
@@ -317,7 +345,6 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index, RBAs... arg
 // \param matrix The matrix containing the diagonal.
 // \param args Optional diagonal arguments.
 // \return View on the diagonal of the matrix.
-// \exception std::invalid_argument Invalid diagonal access index.
 //
 // This function returns an expression representing the diagonal of the given matrix.
 
@@ -334,9 +361,6 @@ inline decltype(auto) band( Matrix<MT,SO>&& matrix, ptrdiff_t index, RBAs... arg
    // Creating a view on the diagonal of the sparse matrix S
    auto diag2 = diagonal( S );
    \endcode
-
-// In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
-// or zero columns) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order
@@ -357,7 +381,6 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix, RDAs... args )
 // \param matrix The constant matrix containing the diagonal.
 // \param args Optional diagonal arguments.
 // \return View on the diagonal of the matrix.
-// \exception std::invalid_argument Invalid diagonal access index.
 //
 // This function returns an expression representing the diagonal of the given constant matrix.
 
@@ -373,9 +396,6 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix, RDAs... args )
    // Creating a view on the diagonal of the sparse matrix S
    auto diag2 = diagonal( S );
    \endcode
-
-// In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
-// or zero columns) a \a std::invalid_argument exception is thrown.
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order
@@ -396,7 +416,6 @@ inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix, RDAs... args )
 // \param matrix The temporary matrix containing the diagonal.
 // \param args Optional diagonal arguments.
 // \return View on the diagonal of the matrix.
-// \exception std::invalid_argument Invalid diagonal access index.
 //
 // This function returns an expression representing the diagonal of the given temporary matrix.
 // In case the diagonal is not properly specified (i.e. in case the given matrix has zero rows
