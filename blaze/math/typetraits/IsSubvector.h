@@ -98,7 +98,7 @@ struct IsSubvector
 /*!\brief Specialization of the IsSubvector type trait for 'Subvector'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF, size_t... CSAs >
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs >
 struct IsSubvector< Subvector<VT,AF,TF,DF,CSAs...> >
    : public TrueType
 {};
@@ -111,7 +111,7 @@ struct IsSubvector< Subvector<VT,AF,TF,DF,CSAs...> >
 /*!\brief Specialization of the IsSubvector type trait for 'const Subvector'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF, size_t... CSAs >
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs >
 struct IsSubvector< const Subvector<VT,AF,TF,DF,CSAs...> >
    : public TrueType
 {};
@@ -124,7 +124,7 @@ struct IsSubvector< const Subvector<VT,AF,TF,DF,CSAs...> >
 /*!\brief Specialization of the IsSubvector type trait for 'volatile Subvector'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF, size_t... CSAs >
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs >
 struct IsSubvector< volatile Subvector<VT,AF,TF,DF,CSAs...> >
    : public TrueType
 {};
@@ -137,7 +137,7 @@ struct IsSubvector< volatile Subvector<VT,AF,TF,DF,CSAs...> >
 /*!\brief Specialization of the IsSubvector type trait for 'const volatile Subvector'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool AF, bool TF, bool DF, size_t... CSAs >
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs >
 struct IsSubvector< const volatile Subvector<VT,AF,TF,DF,CSAs...> >
    : public TrueType
 {};
