@@ -98,7 +98,7 @@ struct IsSubmatrix
 /*!\brief Specialization of the IsSubmatrix type trait for 'Submatrix'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs >
 struct IsSubmatrix< Submatrix<MT,AF,SO,DF,CSAs...> >
    : public TrueType
 {};
@@ -111,7 +111,7 @@ struct IsSubmatrix< Submatrix<MT,AF,SO,DF,CSAs...> >
 /*!\brief Specialization of the IsSubmatrix type trait for 'const Submatrix'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs >
 struct IsSubmatrix< const Submatrix<MT,AF,SO,DF,CSAs...> >
    : public TrueType
 {};
@@ -124,7 +124,7 @@ struct IsSubmatrix< const Submatrix<MT,AF,SO,DF,CSAs...> >
 /*!\brief Specialization of the IsSubmatrix type trait for 'volatile Submatrix'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs >
 struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF,CSAs...> >
    : public TrueType
 {};
@@ -137,7 +137,7 @@ struct IsSubmatrix< volatile Submatrix<MT,AF,SO,DF,CSAs...> >
 /*!\brief Specialization of the IsSubmatrix type trait for 'const volatile Submatrix'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool AF, bool SO, bool DF, size_t... CSAs >
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs >
 struct IsSubmatrix< const volatile Submatrix<MT,AF,SO,DF,CSAs...> >
    : public TrueType
 {};
