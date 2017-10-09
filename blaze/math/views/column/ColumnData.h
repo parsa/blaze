@@ -90,7 +90,7 @@ struct ColumnData<>
    /*!\name Constructors */
    //@{
    template< typename... RCAs >
-   explicit inline constexpr ColumnData( size_t index, RCAs... args );
+   explicit inline ColumnData( size_t index, RCAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -106,7 +106,7 @@ struct ColumnData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t column() const noexcept;
+   inline size_t column() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -130,7 +130,7 @@ struct ColumnData<>
 // \param args The optional column arguments.
 */
 template< typename... RCAs >  // Optional column arguments
-inline constexpr ColumnData<>::ColumnData( size_t index, RCAs... args )
+inline ColumnData<>::ColumnData( size_t index, RCAs... args )
    : column_( index )  // The index of the column in the matrix
 {
    UNUSED_PARAMETER( args... );
@@ -145,7 +145,7 @@ inline constexpr ColumnData<>::ColumnData( size_t index, RCAs... args )
 //
 // \return The index of the column.
 */
-inline constexpr size_t ColumnData<>::column() const noexcept
+inline size_t ColumnData<>::column() const noexcept
 {
    return column_;
 }
@@ -177,7 +177,7 @@ struct ColumnData<I>
    /*!\name Constructors */
    //@{
    template< typename... RCAs >
-   explicit inline constexpr ColumnData( RCAs... args );
+   explicit inline ColumnData( RCAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -193,7 +193,7 @@ struct ColumnData<I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t column() const noexcept;
+   inline size_t column() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -209,7 +209,7 @@ struct ColumnData<I>
 */
 template< size_t I >          // Compile time column index
 template< typename... RCAs >  // Optional column arguments
-inline constexpr ColumnData<I>::ColumnData( RCAs... args )
+inline ColumnData<I>::ColumnData( RCAs... args )
 {
    UNUSED_PARAMETER( args... );
 }
@@ -224,7 +224,7 @@ inline constexpr ColumnData<I>::ColumnData( RCAs... args )
 // \return The index of the column.
 */
 template< size_t I >  // Compile time column index
-inline constexpr size_t ColumnData<I>::column() const noexcept
+inline size_t ColumnData<I>::column() const noexcept
 {
    return I;
 }

@@ -90,7 +90,7 @@ struct BandData<>
    /*!\name Constructors */
    //@{
    template< typename... RBAs >
-   explicit inline constexpr BandData( ptrdiff_t index, RBAs... args );
+   explicit inline BandData( ptrdiff_t index, RBAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -106,9 +106,9 @@ struct BandData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr ptrdiff_t band  () const noexcept;
-   inline constexpr size_t    row   () const noexcept;
-   inline constexpr size_t    column() const noexcept;
+   inline ptrdiff_t band  () const noexcept;
+   inline size_t    row   () const noexcept;
+   inline size_t    column() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -134,7 +134,7 @@ struct BandData<>
 // \param args The optional band arguments.
 */
 template< typename... RBAs >  // Optional band arguments
-inline constexpr BandData<>::BandData( ptrdiff_t index, RBAs... args )
+inline BandData<>::BandData( ptrdiff_t index, RBAs... args )
    : band_  ( index  )                        // The band index
    , row_   ( index >= 0L ?   0UL : -index )  // The index of the row containing the first element of the band
    , column_( index >= 0L ? index :    0UL )  // The index of the column containing the first element of the band
@@ -151,7 +151,7 @@ inline constexpr BandData<>::BandData( ptrdiff_t index, RBAs... args )
 //
 // \return The index of the band.
 */
-inline constexpr ptrdiff_t BandData<>::band() const noexcept
+inline ptrdiff_t BandData<>::band() const noexcept
 {
    return band_;
 }
@@ -165,7 +165,7 @@ inline constexpr ptrdiff_t BandData<>::band() const noexcept
 //
 // \return The first row index.
 */
-inline constexpr size_t BandData<>::row() const noexcept
+inline size_t BandData<>::row() const noexcept
 {
    return row_;
 }
@@ -179,7 +179,7 @@ inline constexpr size_t BandData<>::row() const noexcept
 //
 // \return The first column index.
 */
-inline constexpr size_t BandData<>::column() const noexcept
+inline size_t BandData<>::column() const noexcept
 {
    return column_;
 }
@@ -211,7 +211,7 @@ struct BandData<I>
    /*!\name Constructors */
    //@{
    template< typename... RBAs >
-   explicit inline constexpr BandData( RBAs... args );
+   explicit inline BandData( RBAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -227,9 +227,9 @@ struct BandData<I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr ptrdiff_t band  () const noexcept;
-   inline constexpr size_t    row   () const noexcept;
-   inline constexpr size_t    column() const noexcept;
+   inline ptrdiff_t band  () const noexcept;
+   inline size_t    row   () const noexcept;
+   inline size_t    column() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -245,7 +245,7 @@ struct BandData<I>
 */
 template< ptrdiff_t I >       // Compile time band index
 template< typename... RBAs >  // Optional band arguments
-inline constexpr BandData<I>::BandData( RBAs... args )
+inline BandData<I>::BandData( RBAs... args )
 {
    UNUSED_PARAMETER( args... );
 }
@@ -260,7 +260,7 @@ inline constexpr BandData<I>::BandData( RBAs... args )
 // \return The index of the band.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline constexpr ptrdiff_t BandData<I>::band() const noexcept
+inline ptrdiff_t BandData<I>::band() const noexcept
 {
    return I;
 }
@@ -275,7 +275,7 @@ inline constexpr ptrdiff_t BandData<I>::band() const noexcept
 // \return The first row index.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline constexpr size_t BandData<I>::row() const noexcept
+inline size_t BandData<I>::row() const noexcept
 {
    return ( I >= 0L ? 0UL : -I );
 }
@@ -290,7 +290,7 @@ inline constexpr size_t BandData<I>::row() const noexcept
 // \return The first column index.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline constexpr size_t BandData<I>::column() const noexcept
+inline size_t BandData<I>::column() const noexcept
 {
    return ( I >= 0L ? I : 0UL );
 }

@@ -91,7 +91,7 @@ struct SubmatrixData<>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline constexpr SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args );
+   explicit inline SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -107,10 +107,10 @@ struct SubmatrixData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t row    () const noexcept;
-   inline constexpr size_t column () const noexcept;
-   inline constexpr size_t rows   () const noexcept;
-   inline constexpr size_t columns() const noexcept;
+   inline size_t row    () const noexcept;
+   inline size_t column () const noexcept;
+   inline size_t rows   () const noexcept;
+   inline size_t columns() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -140,7 +140,7 @@ struct SubmatrixData<>
 // \param args The optional submatrix arguments.
 */
 template< typename... RSAs >  // Optional submatrix arguments
-inline constexpr SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args )
+inline SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args )
    : row_   ( rindex )  // The first row of the submatrix
    , column_( cindex )  // The first column of the submatrix
    , m_     ( m      )  // The number of rows of the submatrix
@@ -158,7 +158,7 @@ inline constexpr SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, s
 //
 // \return The index of the first row.
 */
-inline constexpr size_t SubmatrixData<>::row() const noexcept
+inline size_t SubmatrixData<>::row() const noexcept
 {
    return row_;
 }
@@ -172,7 +172,7 @@ inline constexpr size_t SubmatrixData<>::row() const noexcept
 //
 // \return The index of the first column.
 */
-inline constexpr size_t SubmatrixData<>::column() const noexcept
+inline size_t SubmatrixData<>::column() const noexcept
 {
    return column_;
 }
@@ -186,7 +186,7 @@ inline constexpr size_t SubmatrixData<>::column() const noexcept
 //
 // \return The number of rows of the submatrix.
 */
-inline constexpr size_t SubmatrixData<>::rows() const noexcept
+inline size_t SubmatrixData<>::rows() const noexcept
 {
    return m_;
 }
@@ -200,7 +200,7 @@ inline constexpr size_t SubmatrixData<>::rows() const noexcept
 //
 // \return The number of columns of the submatrix.
 */
-inline constexpr size_t SubmatrixData<>::columns() const noexcept
+inline size_t SubmatrixData<>::columns() const noexcept
 {
    return n_;
 }
@@ -236,7 +236,7 @@ struct SubmatrixData<I,J,M,N>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline constexpr SubmatrixData( RSAs... args );
+   explicit inline SubmatrixData( RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -252,10 +252,10 @@ struct SubmatrixData<I,J,M,N>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t row    () const noexcept;
-   inline constexpr size_t column () const noexcept;
-   inline constexpr size_t rows   () const noexcept;
-   inline constexpr size_t columns() const noexcept;
+   inline size_t row    () const noexcept;
+   inline size_t column () const noexcept;
+   inline size_t rows   () const noexcept;
+   inline size_t columns() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -274,7 +274,7 @@ template< size_t I            // Index of the first row
         , size_t M            // Number of rows
         , size_t N >          // Number of columns
 template< typename... RSAs >  // Optional submatrix arguments
-inline constexpr SubmatrixData<I,J,M,N>::SubmatrixData( RSAs... args )
+inline SubmatrixData<I,J,M,N>::SubmatrixData( RSAs... args )
 {
    UNUSED_PARAMETER( args... );
 }
@@ -292,7 +292,7 @@ template< size_t I    // Index of the first row
         , size_t J    // Index of the first column
         , size_t M    // Number of rows
         , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::row() const noexcept
+inline size_t SubmatrixData<I,J,M,N>::row() const noexcept
 {
    return I;
 }
@@ -310,7 +310,7 @@ template< size_t I    // Index of the first row
         , size_t J    // Index of the first column
         , size_t M    // Number of rows
         , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::column() const noexcept
+inline size_t SubmatrixData<I,J,M,N>::column() const noexcept
 {
    return J;
 }
@@ -328,7 +328,7 @@ template< size_t I    // Index of the first row
         , size_t J    // Index of the first column
         , size_t M    // Number of rows
         , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::rows() const noexcept
+inline size_t SubmatrixData<I,J,M,N>::rows() const noexcept
 {
    return M;
 }
@@ -346,7 +346,7 @@ template< size_t I    // Index of the first row
         , size_t J    // Index of the first column
         , size_t M    // Number of rows
         , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::columns() const noexcept
+inline size_t SubmatrixData<I,J,M,N>::columns() const noexcept
 {
    return N;
 }

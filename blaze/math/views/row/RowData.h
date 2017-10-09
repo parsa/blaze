@@ -90,7 +90,7 @@ struct RowData<>
    /*!\name Constructors */
    //@{
    template< typename... RRAs >
-   explicit inline constexpr RowData( size_t index, RRAs... args );
+   explicit inline RowData( size_t index, RRAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -106,7 +106,7 @@ struct RowData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t row() const noexcept;
+   inline size_t row() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -130,7 +130,7 @@ struct RowData<>
 // \param args The optional row arguments.
 */
 template< typename... RRAs >  // Optional row arguments
-inline constexpr RowData<>::RowData( size_t index, RRAs... args )
+inline RowData<>::RowData( size_t index, RRAs... args )
    : row_( index )  // The index of the row in the matrix
 {
    UNUSED_PARAMETER( args... );
@@ -145,7 +145,7 @@ inline constexpr RowData<>::RowData( size_t index, RRAs... args )
 //
 // \return The index of the row.
 */
-inline constexpr size_t RowData<>::row() const noexcept
+inline size_t RowData<>::row() const noexcept
 {
    return row_;
 }
@@ -177,7 +177,7 @@ struct RowData<Index>
    /*!\name Constructors */
    //@{
    template< typename... RRAs >
-   explicit inline constexpr RowData( RRAs... args );
+   explicit inline RowData( RRAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -193,7 +193,7 @@ struct RowData<Index>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t row() const noexcept;
+   inline size_t row() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -209,7 +209,7 @@ struct RowData<Index>
 */
 template< size_t Index >      // Compile time row index
 template< typename... RRAs >  // Optional row arguments
-inline constexpr RowData<Index>::RowData( RRAs... args )
+inline RowData<Index>::RowData( RRAs... args )
 {
    UNUSED_PARAMETER( args... );
 }
@@ -224,7 +224,7 @@ inline constexpr RowData<Index>::RowData( RRAs... args )
 // \return The index of the row.
 */
 template< size_t Index >  // Compile time row index
-inline constexpr size_t RowData<Index>::row() const noexcept
+inline size_t RowData<Index>::row() const noexcept
 {
    return Index;
 }

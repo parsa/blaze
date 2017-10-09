@@ -91,7 +91,7 @@ struct SubvectorData<>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline constexpr SubvectorData( size_t index, size_t n, RSAs... args );
+   explicit inline SubvectorData( size_t index, size_t n, RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -107,8 +107,8 @@ struct SubvectorData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t offset() const noexcept;
-   inline constexpr size_t size  () const noexcept;
+   inline size_t offset() const noexcept;
+   inline size_t size  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -134,7 +134,7 @@ struct SubvectorData<>
 // \param args The optional subvector arguments.
 */
 template< typename... RSAs >  // Optional subvector arguments
-inline constexpr SubvectorData<>::SubvectorData( size_t index, size_t n, RSAs... args )
+inline SubvectorData<>::SubvectorData( size_t index, size_t n, RSAs... args )
    : offset_( index )  // The offset of the subvector within the vector
    , size_  ( n     )  // The size of the subvector
 {
@@ -150,7 +150,7 @@ inline constexpr SubvectorData<>::SubvectorData( size_t index, size_t n, RSAs...
 //
 // \return The offset of the subvector.
 */
-inline constexpr size_t SubvectorData<>::offset() const noexcept
+inline size_t SubvectorData<>::offset() const noexcept
 {
    return offset_;
 }
@@ -164,7 +164,7 @@ inline constexpr size_t SubvectorData<>::offset() const noexcept
 //
 // \return The size of the subvector.
 */
-inline constexpr size_t SubvectorData<>::size() const noexcept
+inline size_t SubvectorData<>::size() const noexcept
 {
    return size_;
 }
@@ -198,7 +198,7 @@ struct SubvectorData<I,N>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline constexpr SubvectorData( RSAs... args );
+   explicit inline SubvectorData( RSAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -214,8 +214,8 @@ struct SubvectorData<I,N>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t offset() const noexcept;
-   inline constexpr size_t size  () const noexcept;
+   inline size_t offset() const noexcept;
+   inline size_t size  () const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -232,7 +232,7 @@ struct SubvectorData<I,N>
 template< size_t I            // Index of the first element
         , size_t N >          // Number of elements
 template< typename... RSAs >  // Optional subvector arguments
-inline constexpr SubvectorData<I,N>::SubvectorData( RSAs... args )
+inline SubvectorData<I,N>::SubvectorData( RSAs... args )
 {
    UNUSED_PARAMETER( args... );
 }
@@ -248,7 +248,7 @@ inline constexpr SubvectorData<I,N>::SubvectorData( RSAs... args )
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline constexpr size_t SubvectorData<I,N>::offset() const noexcept
+inline size_t SubvectorData<I,N>::offset() const noexcept
 {
    return I;
 }
@@ -264,7 +264,7 @@ inline constexpr size_t SubvectorData<I,N>::offset() const noexcept
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline constexpr size_t SubvectorData<I,N>::size() const noexcept
+inline size_t SubvectorData<I,N>::size() const noexcept
 {
    return N;
 }
