@@ -111,9 +111,15 @@ namespace blaze {
    auto col4 = column<4UL>( S );
    \endcode
 
-// In case the column is not properly specified (i.e. if the specified index is greater than or
-// equal to the total number of the columns in the given matrix) a \a std::invalid_argument
-// exception is thrown.
+// By default, the provided column arguments are checked at runtime. In case the column is not
+// properly specified (i.e. if the specified index is greater than or equal to the total number
+// of the columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto col3 = column<3UL>( D, unchecked );
+   auto col4 = column<4UL>( S, unchecked );
+   \endcode
 */
 template< size_t I            // Column index
         , typename MT         // Type of the matrix
@@ -154,9 +160,15 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix, RCAs... args )
    auto col4 = column<4UL>( S );
    \endcode
 
-// In case the column is not properly specified (i.e. if the specified index is greater than or
-// equal to the total number of the columns in the given matrix) a \a std::invalid_argument
-// exception is thrown.
+// By default, the provided column arguments are checked at runtime. In case the column is not
+// properly specified (i.e. if the specified index is greater than or equal to the total number
+// of the columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto col3 = column<3UL>( D, unchecked );
+   auto col4 = column<4UL>( S, unchecked );
+   \endcode
 */
 template< size_t I            // Column index
         , typename MT         // Type of the matrix
@@ -226,9 +238,15 @@ inline decltype(auto) column( Matrix<MT,SO>&& matrix, RCAs... args )
    auto col4 = column( S, 4UL );
    \endcode
 
-// In case the column is not properly specified (i.e. if the specified index is greater than or
-// equal to the total number of the columns in the given matrix) a \a std::invalid_argument
-// exception is thrown.
+// By default, the provided column arguments are checked at runtime. In case the column is not
+// properly specified (i.e. if the specified index is greater than or equal to the total number
+// of the columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto col3 = column( D, 3UL, unchecked );
+   auto col4 = column( S, 4UL, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order
@@ -269,9 +287,15 @@ inline decltype(auto) column( Matrix<MT,SO>& matrix, size_t index, RCAs... args 
    auto col4 = column( S, 4UL );
    \endcode
 
-// In case the column is not properly specified (i.e. if the specified index is greater than or
-// equal to the total number of the columns in the given matrix) a \a std::invalid_argument
-// exception is thrown.
+// By default, the provided column arguments are checked at runtime. In case the column is not
+// properly specified (i.e. if the specified index is greater than or equal to the total number
+// of the columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto col3 = column( D, 3UL, unchecked );
+   auto col4 = column( S, 4UL, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , bool SO             // Storage order

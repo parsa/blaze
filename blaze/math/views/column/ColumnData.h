@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -74,6 +75,7 @@ struct ColumnData
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the ColumnData class template for zero compile time column arguments.
 // \ingroup column
 //
@@ -87,7 +89,8 @@ struct ColumnData<>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr ColumnData( size_t index );
+   template< typename... RCAs >
+   explicit inline constexpr ColumnData( size_t index, RCAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -115,21 +118,29 @@ struct ColumnData<>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for ColumnData.
 //
 // \param index The index of the column.
+// \param args The optional column arguments.
 */
-inline constexpr ColumnData<>::ColumnData( size_t index )
+template< typename... RCAs >  // Optional column arguments
+inline constexpr ColumnData<>::ColumnData( size_t index, RCAs... args )
    : column_( index )  // The index of the column in the matrix
-{}
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the column of the underlying dense matrix.
 //
 // \return The index of the column.
@@ -138,6 +149,7 @@ inline constexpr size_t ColumnData<>::column() const noexcept
 {
    return column_;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -150,6 +162,7 @@ inline constexpr size_t ColumnData<>::column() const noexcept
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Specialization of the ColumnData class template for a single compile time column argument.
 // \ingroup column
 //
@@ -163,7 +176,8 @@ struct ColumnData<I>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr ColumnData();
+   template< typename... RCAs >
+   explicit inline constexpr ColumnData( RCAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -183,19 +197,28 @@ struct ColumnData<I>
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for ColumnData.
+//
+// \param args The optional column arguments.
 */
-template< size_t I >  // Compile time column index
-inline constexpr ColumnData<I>::ColumnData()
-{}
+template< size_t I >          // Compile time column index
+template< typename... RCAs >  // Optional column arguments
+inline constexpr ColumnData<I>::ColumnData( RCAs... args )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Returns the index of the column of the underlying dense matrix.
 //
 // \return The index of the column.
@@ -205,6 +228,7 @@ inline constexpr size_t ColumnData<I>::column() const noexcept
 {
    return I;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
