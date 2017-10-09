@@ -2264,8 +2264,8 @@ class Band<MT,TF,false,true,CBAs...>
    */
    template< typename... RBAs >  // Runtime band arguments
    explicit inline Band( const MT& mmm, RBAs... args )
-      : DataType()       // Base class initialization
-      , matrix_ ( mmm )  // The matrix multiplication containing the band
+      : DataType( args... )  // Base class initialization
+      , matrix_ ( mmm )      // The matrix multiplication containing the band
    {
       if( !Contains< TypeList<RBAs...>, Unchecked >::value ) {
          if( ( band() > 0L && column() >= mmm.columns() ) ||
