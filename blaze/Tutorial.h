@@ -115,6 +115,7 @@
 //          <li> \ref openmp_parallelization </li>
 //          <li> \ref cpp_threads_parallelization </li>
 //          <li> \ref boost_threads_parallelization </li>
+//          <li> \ref hpx_threads_parallelization </li>
 //          <li> \ref serial_execution </li>
 //       </ul>
 //    </li>
@@ -8964,11 +8965,12 @@
 // core. However, today's CPUs are not single core anymore, but provide several (homogeneous
 // or heterogeneous) compute cores. In order to fully exploit the performance potential of a
 // multicore CPU, computations have to be parallelized across all available cores of a CPU.
-// For this purpose, \b Blaze provides three different shared memory parallelization techniques:
+// For this purpose, \b Blaze provides four different shared memory parallelization techniques:
 //
 //  - \ref openmp_parallelization
 //  - \ref cpp_threads_parallelization
 //  - \ref boost_threads_parallelization
+//  - \ref hpx_threads_parallelization
 //
 // When any of the shared memory parallelization techniques is activated, all arithmetic
 // operations on dense vectors and matrices (including additions, subtractions, multiplications,
@@ -9405,7 +9407,81 @@
 // have been determined using the OpenMP parallelization and require individual adaption for
 // the Boost thread parallelization.
 //
-// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref serial_execution
+// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref hpx_threads_parallelization
+*/
+//*************************************************************************************************
+
+
+//**HPX Thread Parallelization*********************************************************************
+/*!\page hpx_threads_parallelization HPX Thread Parallelization
+//
+// \tableofcontents
+//
+//
+// The fourth and final shared memory parallelization provided with \b Blaze is based on
+// <a href="http://stellar.cct.lsu.edu/projects/hpx/">HPX</a>.
+//
+//
+// \n \section hpx_setup HPX Setup
+// <hr>
+//
+// In order to enable the HPX-based parallelization, the following steps have to be taken: First,
+// the \c BLAZE_USE_HPX_THREADS command line argument has to be explicitly specified during
+// compilation:
+
+   \code
+   ... -DBLAZE_USE_HPX_THREADS ...
+   \endcode
+
+// Second, the HPX library and depending libraries such as Boost, hwloc, etc. have to be linked.
+// And third, the HPX threads have to be initialized by a call to the \c hpx::init() function (see
+// the <a href="http://stellar.cct.lsu.edu/files/hpx_0.9.0/docs/hpx/tutorial.html">HPX tutorial</a>
+// for further details). These three actions will cause the \b Blaze library to automatically try
+// to run all operations in parallel with the specified number of HPX threads.
+//
+// Note that the OpenMP-based, C++11 thread-based, and Boost thread-based parallelizations have
+// priority, i.e. are preferred in case either is enabled in combination with the HPX thread
+// parallelization.
+//
+// The number of threads used by the HPX backend has to be specified via the command line:
+
+   \code
+   ... --hpx:threads 4 ...
+   \endcode
+
+// Please note that the \b Blaze library does not limit the available number of threads. Therefore
+// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
+// though, can be expected if the specified number of threads matches the available number of
+// cores.
+//
+// In order to query the number of threads used for the parallelization of operations, the
+// \c getNumThreads() function can be used:
+
+   \code
+   const size_t threads = blaze::getNumThreads();
+   \endcode
+
+// In the context of HPX threads, the function will return the actual number of threads used by
+// the HPX subsystem.
+//
+//
+// \n \section hpx_configuration HPX Configuration
+// <hr>
+//
+// As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
+// an operation in parallel (see for instance \ref openmp_parallelization). Only in case a given
+// operation is large enough and exceeds a certain threshold the operation is executed in parallel.
+// All thresholds related to the HPX-based parallelization are contained within the configuration
+// file <tt>./blaze/config/Thresholds.h</tt>.
+//
+// Please note that these thresholds are highly sensitiv to the used system architecture and
+// the shared memory parallelization technique. Therefore the default values cannot guarantee
+// maximum performance for all possible situations and configurations. They merely provide a
+// reasonable standard for the current CPU generation. Also note that the provided defaults
+// have been determined using the OpenMP parallelization and require individual adaption for
+// the HPX-based parallelization.
+//
+// \n Previous: \ref boost_threads_parallelization &nbsp; &nbsp; Next: \ref serial_execution
 */
 //*************************************************************************************************
 
@@ -9488,7 +9564,7 @@
 // In case the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION switch is set to 0, the shared memory
 // parallelization is deactivated altogether.
 //
-// \n Previous: \ref boost_threads_parallelization &nbsp; &nbsp; Next: \ref serialization
+// \n Previous: \ref hpx_threads_parallelization &nbsp; &nbsp; Next: \ref serialization
 */
 //*************************************************************************************************
 
