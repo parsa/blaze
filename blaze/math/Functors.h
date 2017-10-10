@@ -78,6 +78,7 @@
 #include <blaze/math/functors/Log10.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
+#include <blaze/math/functors/MultAssign.h>
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Real.h>
