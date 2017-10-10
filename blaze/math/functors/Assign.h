@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Forward.h
-//  \brief Header file for all functor forward declarations
+//  \file blaze/math/functors/Assign.h
+//  \brief Header file for the Assign functor
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,67 +32,53 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
-#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_FUNCTORS_ASSIGN_H_
+#define _BLAZE_MATH_FUNCTORS_ASSIGN_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
-struct Abs;
-struct Acos;
-struct Acosh;
-struct Asin;
-struct Asinh;
-struct Assign;
-struct Atan;
-struct Atanh;
-struct Cbrt;
-struct Ceil;
-template< typename > struct Clamp;
-struct Conj;
-struct Cos;
-struct Cosh;
-struct CTrans;
-struct DeclDiag;
-struct DeclHerm;
-struct DeclId;
-struct DeclLow;
-struct DeclSym;
-struct DeclUpp;
-struct Erf;
-struct Erfc;
-struct Eval;
-struct Exp;
-struct Exp2;
-struct Exp10;
-struct Floor;
-struct Imag;
-struct Inv;
-struct InvCbrt;
-struct InvSqrt;
-struct Log;
-struct Log2;
-struct Log10;
-struct Max;
-struct Min;
-struct Noop;
-template< typename > struct Pow;
-struct Real;
-struct Round;
-struct Serial;
-struct Sin;
-struct Sinh;
-struct Sqrt;
-struct Tan;
-struct Tanh;
-struct Trans;
-struct Trunc;
+//*************************************************************************************************
+/*!\brief Generic wrapper for the assign() function.
+// \ingroup functors
+*/
+struct Assign
+{
+   //**********************************************************************************************
+   /*!\brief Default constructor of the Assign functor.
+   */
+   explicit inline Assign()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Calls the assign() function with the given objects/values.
+   //
+   // \param a The target left-hand side object/value.
+   // \param b The right-hand side object/value to be assigned.
+   // \return void
+   */
+   template< typename T1, typename T2 >
+   BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
+   {
+      assign( a, b );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
 
 } // namespace blaze
 
