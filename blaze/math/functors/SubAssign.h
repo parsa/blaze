@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Forward.h
-//  \brief Header file for all functor forward declarations
+//  \file blaze/math/functors/SubAssign.h
+//  \brief Header file for the SubAssign functor
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,69 +32,53 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
-#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_FUNCTORS_SUBASSIGN_H_
+#define _BLAZE_MATH_FUNCTORS_SUBASSIGN_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
-struct Abs;
-struct Acos;
-struct Acosh;
-struct AddAssign;
-struct Asin;
-struct Asinh;
-struct Assign;
-struct Atan;
-struct Atanh;
-struct Cbrt;
-struct Ceil;
-template< typename > struct Clamp;
-struct Conj;
-struct Cos;
-struct Cosh;
-struct CTrans;
-struct DeclDiag;
-struct DeclHerm;
-struct DeclId;
-struct DeclLow;
-struct DeclSym;
-struct DeclUpp;
-struct Erf;
-struct Erfc;
-struct Eval;
-struct Exp;
-struct Exp2;
-struct Exp10;
-struct Floor;
-struct Imag;
-struct Inv;
-struct InvCbrt;
-struct InvSqrt;
-struct Log;
-struct Log2;
-struct Log10;
-struct Max;
-struct Min;
-struct Noop;
-template< typename > struct Pow;
-struct Real;
-struct Round;
-struct Serial;
-struct Sin;
-struct Sinh;
-struct Sqrt;
-struct SubAssign;
-struct Tan;
-struct Tanh;
-struct Trans;
-struct Trunc;
+//*************************************************************************************************
+/*!\brief Generic wrapper for the subAssign() function.
+// \ingroup functors
+*/
+struct SubAssign
+{
+   //**********************************************************************************************
+   /*!\brief Default constructor of the SubAssign functor.
+   */
+   explicit inline SubAssign()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Calls the subAssign() function with the given objects/values.
+   //
+   // \param a The target left-hand side object/value.
+   // \param b The right-hand side object/value to be subtracted.
+   // \return void
+   */
+   template< typename T1, typename T2 >
+   BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
+   {
+      subAssign( a, b );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
 
 } // namespace blaze
 
