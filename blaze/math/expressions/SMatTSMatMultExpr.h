@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -176,7 +177,7 @@ class SMatTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      return row( lhs_, i ) * column( rhs_, j );
+      return row( lhs_, i, unchecked ) * column( rhs_, j, unchecked );
    }
    //**********************************************************************************************
 

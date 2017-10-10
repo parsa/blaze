@@ -124,20 +124,24 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         assign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         assign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         assign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         assign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         assign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         assign( target, source );
       }
       else {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         assign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         assign( target, source );
       }
    }
 }
@@ -184,8 +188,9 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      auto target( subvector<unaligned>( ~lhs, index, size ) );
-      assign( target, subvector<unaligned>( ~rhs, index, size ) );
+      auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+      const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+      assign( target, source );
    }
 }
 /*! \endcond */
@@ -336,20 +341,24 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         addAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         addAssign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         addAssign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         addAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         addAssign( target, source );
       }
       else {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         addAssign( target, source );
       }
    }
 }
@@ -396,8 +405,9 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      auto target( subvector<unaligned>( ~lhs, index, size ) );
-      addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+      const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+      addAssign( target, source );
    }
 }
 /*! \endcond */
@@ -548,20 +558,24 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         subAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         subAssign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         subAssign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         subAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         subAssign( target, source );
       }
       else {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         subAssign( target, source );
       }
    }
 }
@@ -608,8 +622,9 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      auto target( subvector<unaligned>( ~lhs, index, size ) );
-      subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+      const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+      subAssign( target, source );
    }
 }
 /*! \endcond */
@@ -761,20 +776,24 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         multAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         multAssign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         multAssign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         multAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         multAssign( target, source );
       }
       else {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         multAssign( target, source );
       }
    }
 }
@@ -822,8 +841,9 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
          continue;
 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      auto target( subvector<unaligned>( ~lhs, index, size ) );
-      multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+      auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+      const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+      multAssign( target, source );
    }
 }
 /*! \endcond */
@@ -974,20 +994,24 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         divAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         divAssign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( subvector<aligned>( ~lhs, index, size ) );
-         divAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         divAssign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         divAssign( target, subvector<aligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
+         divAssign( target, source );
       }
       else {
-         auto target( subvector<unaligned>( ~lhs, index, size ) );
-         divAssign( target, subvector<unaligned>( ~rhs, index, size ) );
+         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
+         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
+         divAssign( target, source );
       }
    }
 }

@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/Dense.h>
 #include <blaze/math/views/row/Sparse.h>
@@ -1256,7 +1257,7 @@ template< typename MT  // Type of the matrix
         , size_t I >   // Row index
 inline decltype(auto) derestrict( Row<MT,SO,DF,SF,I>& r )
 {
-   return row<I>( derestrict( r.operand() ) );
+   return row<I>( derestrict( r.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1284,7 +1285,7 @@ template< typename MT  // Type of the matrix
         , size_t I >   // Row index
 inline decltype(auto) derestrict( Row<MT,SO,DF,SF,I>&& r )
 {
-   return row<I>( derestrict( r.operand() ) );
+   return row<I>( derestrict( r.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1311,7 +1312,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Row<MT,SO,DF,SF>& r )
 {
-   return row( derestrict( r.operand() ), r.row() );
+   return row( derestrict( r.operand() ), r.row(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1338,7 +1339,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
 {
-   return row( derestrict( r.operand() ), r.row() );
+   return row( derestrict( r.operand() ), r.row(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

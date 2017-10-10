@@ -94,6 +94,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/system/Debugging.h>
@@ -368,10 +369,11 @@ class DMatDMatMultExpr
 
          const size_t n( end - begin );
 
-         return subvector( row( lhs_, i ), begin, n ) * subvector( column( rhs_, j ), begin, n );
+         return subvector( row( lhs_, i, unchecked ), begin, n, unchecked ) *
+                subvector( column( rhs_, j, unchecked ), begin, n, unchecked );
       }
       else {
-         return row( lhs_, i ) * column( rhs_, j );
+         return row( lhs_, i, unchecked ) * column( rhs_, j, unchecked );
       }
    }
    //**********************************************************************************************

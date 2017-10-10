@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -198,7 +199,7 @@ class TDVecTSMatMultExpr
    */
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
-      return vec_ * column( mat_, index );
+      return vec_ * column( mat_, index, unchecked );
    }
    //**********************************************************************************************
 

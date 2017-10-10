@@ -58,6 +58,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>

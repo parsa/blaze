@@ -60,10 +60,16 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -185,16 +191,18 @@ class TSVecSMatMultExpr
       {
          const size_t begin( IsStrictlyLower<MT>::value ? index+1UL : index );
          const size_t n    ( mat_.rows() - begin );
-         return subvector( vec_, begin, n ) * subvector( column( mat_, index ), begin, n );
+         return subvector( vec_, begin, n, unchecked ) *
+                subvector( column( mat_, index, unchecked ), begin, n, unchecked );
       }
       else if( IsUpper<MT>::value )
       {
          const size_t n( IsStrictlyUpper<MT>::value ? index : index+1UL );
-         return subvector( vec_, 0UL, n ) * subvector( column( mat_, index ), 0UL, n );
+         return subvector( vec_, 0UL, n, unchecked ) *
+                subvector( column( mat_, index, unchecked ), 0UL, n, unchecked );
       }
       else
       {
-         return vec_ * column( mat_, index );
+         return vec_ * column( mat_, index, unchecked );
       }
    }
    //**********************************************************************************************

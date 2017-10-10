@@ -54,6 +54,7 @@
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/typetraits/Columns.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>

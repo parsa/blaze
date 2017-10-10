@@ -1441,7 +1441,7 @@ template< typename MT    // Type of the matrix
         , ptrdiff_t I >  // Band index
 inline decltype(auto) derestrict( Band<MT,TF,DF,MF,I>& b )
 {
-   return band<I>( derestrict( b.operand() ) );
+   return band<I>( derestrict( b.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1469,7 +1469,7 @@ template< typename MT    // Type of the matrix
         , ptrdiff_t I >  // Band index
 inline decltype(auto) derestrict( Band<MT,TF,DF,MF,I>&& b )
 {
-   return band<I>( derestrict( b.operand() ) );
+   return band<I>( derestrict( b.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1496,7 +1496,7 @@ template< typename MT  // Type of the matrix
         , bool MF >    // Multiplication flag
 inline decltype(auto) derestrict( Band<MT,TF,DF,MF>& b )
 {
-   return band( derestrict( b.operand() ), b.band() );
+   return band( derestrict( b.operand() ), b.band(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1523,7 +1523,7 @@ template< typename MT  // Type of the matrix
         , bool MF >    // Multiplication flag
 inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 {
-   return band( derestrict( b.operand() ), b.band() );
+   return band( derestrict( b.operand() ), b.band(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

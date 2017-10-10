@@ -1727,7 +1727,7 @@ template< typename VT       // Type of the vector
         , size_t N >        // Number of elements
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF,I,N>& sv )
 {
-   return subvector<AF,I,N>( derestrict( sv.operand() ) );
+   return subvector<AF,I,N>( derestrict( sv.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1756,7 +1756,7 @@ template< typename VT       // Type of the vector
         , size_t N >        // Number of elements
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF,I,N>&& sv )
 {
-   return subvector<AF,I,N>( derestrict( sv.operand() ) );
+   return subvector<AF,I,N>( derestrict( sv.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1783,7 +1783,7 @@ template< typename VT       // Type of the vector
         , bool DF >         // Density flag
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>& sv )
 {
-   return subvector<AF>( derestrict( sv.operand() ), sv.offset(), sv.size() );
+   return subvector<AF>( derestrict( sv.operand() ), sv.offset(), sv.size(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1810,7 +1810,7 @@ template< typename VT       // Type of the vector
         , bool DF >         // Density flag
 inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
 {
-   return subvector<AF>( derestrict( sv.operand() ), sv.offset(), sv.size() );
+   return subvector<AF>( derestrict( sv.operand() ), sv.offset(), sv.size(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

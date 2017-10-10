@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/math/views/column/Dense.h>
 #include <blaze/math/views/column/Sparse.h>
@@ -1259,7 +1260,7 @@ template< typename MT  // Type of the matrix
         , size_t I >   // Compile time column arguments
 inline decltype(auto) derestrict( Column<MT,SO,DF,SF,I>& c )
 {
-   return column<I>( derestrict( c.operand() ) );
+   return column<I>( derestrict( c.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1287,7 +1288,7 @@ template< typename MT  // Type of the matrix
         , size_t I >   // Compile time column arguments
 inline decltype(auto) derestrict( Column<MT,SO,DF,SF,I>&& c )
 {
-   return column<I>( derestrict( c.operand() ) );
+   return column<I>( derestrict( c.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1314,7 +1315,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Column<MT,SO,DF,SF>& c )
 {
-   return column( derestrict( c.operand() ), c.column() );
+   return column( derestrict( c.operand() ), c.column(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1341,7 +1342,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Column<MT,SO,DF,SF>&& c )
 {
-   return column( derestrict( c.operand() ), c.column() );
+   return column( derestrict( c.operand() ), c.column(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

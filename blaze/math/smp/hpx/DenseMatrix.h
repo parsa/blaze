@@ -139,20 +139,24 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         assign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         assign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         assign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         assign( target, source );
       }
       else {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         assign( target, source );
       }
    } );
 }
@@ -209,8 +213,9 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      assign( target, source );
    } );
 }
 /*! \endcond */
@@ -373,20 +378,24 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         addAssign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         addAssign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         addAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         addAssign( target, source );
       }
       else {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         addAssign( target, source );
       }
    } );
 }
@@ -443,8 +452,9 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      addAssign( target, source );
    } );
 }
 /*! \endcond */
@@ -607,20 +617,24 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         subAssign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         subAssign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         subAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         subAssign( target, source );
       }
       else {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         subAssign( target, source );
       }
    } );
 }
@@ -678,8 +692,9 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      subAssign( target, source );
    } );
 }
 /*! \endcond */
@@ -843,20 +858,24 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
       const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
       if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         schurAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         schurAssign( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
-         auto target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         schurAssign( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         schurAssign( target, submatrix<aligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
+         schurAssign( target, source );
       }
       else {
-         auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+         schurAssign( target, source );
       }
    } );
 }
@@ -914,8 +933,9 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,S
       const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
       const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
 
-      auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
+      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
+      schurAssign( target, source );
    } );
 }
 /*! \endcond */

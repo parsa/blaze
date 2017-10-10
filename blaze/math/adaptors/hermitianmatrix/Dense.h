@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/Column.h>
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/Submatrix.h>
@@ -2469,8 +2470,8 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void HermitianMatrix<MT,SO,true>::reset( size_t i )
 {
-   row   ( matrix_, i ).reset();
-   column( matrix_, i ).reset();
+   row   ( matrix_, i, unchecked ).reset();
+   column( matrix_, i, unchecked ).reset();
 }
 /*! \endcond */
 //*************************************************************************************************

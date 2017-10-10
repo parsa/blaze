@@ -84,6 +84,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/algorithms/Max.h>
@@ -334,10 +335,11 @@ class TDMatTSMatMultExpr
 
          const size_t n( end - begin );
 
-         return subvector( row( lhs_, i ), begin, n ) * subvector( column( rhs_, j ), begin, n );
+         return subvector( row( lhs_, i, unchecked ), begin, n, unchecked ) *
+                subvector( column( rhs_, j, unchecked ), begin, n, unchecked );
       }
       else {
-         return row( lhs_, i ) * column( rhs_, j );
+         return row( lhs_, i, unchecked ) * column( rhs_, j, unchecked );
       }
    }
    //**********************************************************************************************

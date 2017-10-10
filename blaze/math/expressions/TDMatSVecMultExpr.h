@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -74,6 +75,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -260,17 +262,19 @@ class TDMatSVecMultExpr
       else if( IsLower<MT>::value )
       {
          const size_t n( IsStrictlyLower<MT>::value ? index : index+1UL );
-         return subvector( row( mat_, index ), 0UL, n ) * subvector( vec_, 0UL, n );
+         return subvector( row( mat_, index, unchecked ), 0UL, n, unchecked ) *
+                subvector( vec_, 0UL, n, unchecked );
       }
       else if( IsUpper<MT>::value )
       {
          const size_t begin( IsStrictlyUpper<MT>::value ? index+1UL : index );
          const size_t n    ( mat_.columns() - begin );
-         return subvector( row( mat_, index ), begin, n ) * subvector( vec_, begin, n );
+         return subvector( row( mat_, index, unchecked ), begin, n, unchecked ) *
+                subvector( vec_, begin, n, unchecked );
       }
       else
       {
-         return row( mat_, index ) * vec_;
+         return row( mat_, index, unchecked ) * vec_;
       }
    }
    //**********************************************************************************************

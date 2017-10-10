@@ -2399,7 +2399,7 @@ class Band<MT,TF,false,true,CBAs...>
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] = row( A, rhs.row()+i ) * column( B, rhs.column()+i );
+         (~lhs)[i] = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    /*! \endcond */
@@ -2435,7 +2435,7 @@ class Band<MT,TF,false,true,CBAs...>
       size_t nonzeros( 0UL );
 
       for( size_t i=0UL; i<n; ++i ) {
-         tmp = row( A, rhs.row()+i ) * column( B, rhs.column()+i );
+         tmp = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
          if( !isDefault( tmp ) ) {
             if( (~lhs).capacity() <= nonzeros ) {
                (~lhs).reserve( min( max( 2UL*(~lhs).capacity(), 7UL ), (~lhs).size() ) );
@@ -2475,7 +2475,7 @@ class Band<MT,TF,false,true,CBAs...>
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] += row( A, rhs.row()+i ) * column( B, rhs.column()+i );
+         (~lhs)[i] += row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    /*! \endcond */
@@ -2512,7 +2512,7 @@ class Band<MT,TF,false,true,CBAs...>
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] -= row( A, rhs.row()+i ) * column( B, rhs.column()+i );
+         (~lhs)[i] -= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    /*! \endcond */
@@ -2550,7 +2550,7 @@ class Band<MT,TF,false,true,CBAs...>
 
       const size_t n( rhs.size() );
       for( size_t i=0UL; i<n; ++i ) {
-         (~lhs)[i] *= row( A, rhs.row()+i ) * column( B, rhs.column()+i );
+         (~lhs)[i] *= row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
       }
    }
    /*! \endcond */

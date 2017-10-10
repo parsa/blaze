@@ -77,6 +77,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/submatrix/Dense.h>
 #include <blaze/math/views/submatrix/Sparse.h>
@@ -2828,8 +2829,7 @@ template< typename MT       // Type of the matrix
         , size_t N >        // Number of columns
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>& dm )
 {
-   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
-   return submatrix<alignment,I,J,M,N>( derestrict( dm.operand() ) );
+   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2860,8 +2860,7 @@ template< typename MT       // Type of the matrix
         , size_t N >        // Number of columns
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>&& dm )
 {
-   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
-   return submatrix<alignment,I,J,M,N>( derestrict( dm.operand() ) );
+   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2888,8 +2887,7 @@ template< typename MT       // Type of the matrix
         , bool DF >         // Density flag
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
 {
-   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
-   return submatrix<alignment>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
+   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2916,8 +2914,7 @@ template< typename MT       // Type of the matrix
         , bool DF >         // Density flag
 inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& dm )
 {
-   constexpr AlignmentFlag alignment( AF ? aligned : unaligned );
-   return submatrix<alignment>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns() );
+   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

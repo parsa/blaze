@@ -58,11 +58,11 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -202,7 +202,7 @@ class SMatDVecMultExpr
    */
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
-      return row( mat_, index ) * vec_;
+      return row( mat_, index, unchecked ) * vec_;
    }
    //**********************************************************************************************
 
