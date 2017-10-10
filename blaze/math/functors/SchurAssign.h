@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Functors.h
-//  \brief Header file for all functors
+//  \file blaze/math/functors/SchurAssign.h
+//  \brief Header file for the SchurAssign functor
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,65 +32,54 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_H_
-#define _BLAZE_MATH_FUNCTORS_H_
+#ifndef _BLAZE_MATH_FUNCTORS_SCHURASSIGN_H_
+#define _BLAZE_MATH_FUNCTORS_SCHURASSIGN_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/functors/Abs.h>
-#include <blaze/math/functors/Acos.h>
-#include <blaze/math/functors/Acosh.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Asin.h>
-#include <blaze/math/functors/Asinh.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/Atan.h>
-#include <blaze/math/functors/Atanh.h>
-#include <blaze/math/functors/Cbrt.h>
-#include <blaze/math/functors/Ceil.h>
-#include <blaze/math/functors/Clamp.h>
-#include <blaze/math/functors/Conj.h>
-#include <blaze/math/functors/Cos.h>
-#include <blaze/math/functors/Cosh.h>
-#include <blaze/math/functors/CTrans.h>
-#include <blaze/math/functors/DeclDiag.h>
-#include <blaze/math/functors/DeclHerm.h>
-#include <blaze/math/functors/DeclId.h>
-#include <blaze/math/functors/DeclLow.h>
-#include <blaze/math/functors/DeclSym.h>
-#include <blaze/math/functors/DeclUpp.h>
-#include <blaze/math/functors/Erf.h>
-#include <blaze/math/functors/Erfc.h>
-#include <blaze/math/functors/Eval.h>
-#include <blaze/math/functors/Exp.h>
-#include <blaze/math/functors/Exp2.h>
-#include <blaze/math/functors/Exp10.h>
-#include <blaze/math/functors/Floor.h>
-#include <blaze/math/functors/Imag.h>
-#include <blaze/math/functors/Inv.h>
-#include <blaze/math/functors/InvCbrt.h>
-#include <blaze/math/functors/InvSqrt.h>
-#include <blaze/math/functors/Log.h>
-#include <blaze/math/functors/Log2.h>
-#include <blaze/math/functors/Log10.h>
-#include <blaze/math/functors/Max.h>
-#include <blaze/math/functors/Min.h>
-#include <blaze/math/functors/Noop.h>
-#include <blaze/math/functors/Pow.h>
-#include <blaze/math/functors/Real.h>
-#include <blaze/math/functors/Round.h>
-#include <blaze/math/functors/SchurAssign.h>
-#include <blaze/math/functors/Serial.h>
-#include <blaze/math/functors/Sin.h>
-#include <blaze/math/functors/Sinh.h>
-#include <blaze/math/functors/Sqrt.h>
-#include <blaze/math/functors/SubAssign.h>
-#include <blaze/math/functors/Tan.h>
-#include <blaze/math/functors/Tanh.h>
-#include <blaze/math/functors/Trans.h>
-#include <blaze/math/functors/Trunc.h>
+#include <blaze/system/Inline.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Generic wrapper for the schurAssign() function.
+// \ingroup functors
+*/
+struct SchurAssign
+{
+   //**********************************************************************************************
+   /*!\brief Default constructor of the SchurAssign functor.
+   */
+   explicit inline SchurAssign()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Calls the schurAssign() function with the given objects/values.
+   //
+   // \param a The target left-hand side object/value.
+   // \param b The right-hand side object/value to be multiplied.
+   // \return void
+   */
+   template< typename T1, typename T2 >
+   BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
+   {
+      schurAssign( a, b );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

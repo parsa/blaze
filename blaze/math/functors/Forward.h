@@ -86,6 +86,7 @@ struct Noop;
 template< typename > struct Pow;
 struct Real;
 struct Round;
+struct SchurAssign;
 struct Serial;
 struct Sin;
 struct Sinh;
