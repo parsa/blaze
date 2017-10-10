@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <hpx/include/parallel_for_loop.hpp>
-
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -96,6 +95,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
 void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -115,10 +117,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
    const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -143,7 +142,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
          auto target( subvector<unaligned>( ~lhs, index, size ) );
          assign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -171,6 +170,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -179,10 +181,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -192,7 +191,7 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
       auto target( subvector<unaligned>( ~lhs, index, size ) );
       assign( target, subvector<unaligned>( ~rhs, index, size ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -311,6 +310,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
 void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -330,10 +332,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
    const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -358,7 +357,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
          auto target( subvector<unaligned>( ~lhs, index, size ) );
          addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -386,6 +385,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -394,10 +396,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -407,7 +406,7 @@ void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
       auto target( subvector<unaligned>( ~lhs, index, size ) );
       addAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -526,6 +525,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
 void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -545,10 +547,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
    const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -573,7 +572,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
          auto target( subvector<unaligned>( ~lhs, index, size ) );
          subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -601,6 +600,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -609,10 +611,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -622,7 +621,7 @@ void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
       auto target( subvector<unaligned>( ~lhs, index, size ) );
       subAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -742,6 +741,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
 void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -761,10 +763,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
    const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -789,7 +788,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2
          auto target( subvector<unaligned>( ~lhs, index, size ) );
          multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -818,6 +817,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side sparse vector
 void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -826,10 +828,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
    const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
    const size_t sizePerThread( (~lhs).size() / threads + addon );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -839,7 +838,7 @@ void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
       auto target( subvector<unaligned>( ~lhs, index, size ) );
       multAssign( target, subvector<unaligned>( ~rhs, index, size ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -958,6 +957,9 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF2 >    // Transpose flag of the right-hand side dense vector
 void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -977,10 +979,7 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
    const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
    const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t index( i*sizePerThread );
 
@@ -1005,7 +1004,7 @@ void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>
          auto target( subvector<unaligned>( ~lhs, index, size ) );
          divAssign( target, subvector<unaligned>( ~rhs, index, size ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************

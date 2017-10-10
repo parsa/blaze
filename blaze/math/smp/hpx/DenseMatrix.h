@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <hpx/include/parallel_for_loop.hpp>
-
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/SMPAssignable.h>
@@ -99,6 +98,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -125,10 +127,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -155,7 +154,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
          auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -183,6 +182,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side sparse matrix
 void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -196,10 +198,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
    const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
    const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -212,7 +211,7 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
 
       auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       assign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -333,6 +332,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -359,10 +361,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -389,7 +388,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
          auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -417,6 +416,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side sparse matrix
 void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -430,10 +432,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
    const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
    const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -446,7 +445,7 @@ void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
       auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       addAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -567,6 +566,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -593,10 +595,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -623,7 +622,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>
          auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -652,6 +651,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side sparse matrix
 void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -665,10 +667,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
    const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
    const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -681,7 +680,7 @@ void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2
 
       auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       subAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -803,6 +802,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -829,10 +831,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -859,7 +858,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO
          auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
       }
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -888,6 +887,9 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side sparse matrix
 void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
 {
+   using hpx::parallel::for_loop;
+   using hpx::parallel::execution::par;
+
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
@@ -901,10 +903,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,S
    const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
    const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
 
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   for_loop(par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](int i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
@@ -917,7 +916,7 @@ void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,S
 
       auto target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       schurAssign( target, submatrix<unaligned>( ~rhs, row, column, m, n ) );
-   });
+   } );
 }
 /*! \endcond */
 //*************************************************************************************************

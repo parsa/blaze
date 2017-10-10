@@ -64,36 +64,13 @@ namespace blaze {
 //
 // \return The number of threads used for HPX parallel operations.
 //
-// Via this function the number of threads used for HPX parallel operations can be queried.
-// The function generally reflects the number of threads as set by the OMP_NUM_THREADS environment
-// variable, the \c omp_set_num_threads() library function, or the blaze::setNumThreads() function.
+// Via this function the number of threads used for HPX parallel operations can be queried. The
+// function generally reflects the number of threads as set by the \c --hpx::threads environment
+// variable.
 */
 BLAZE_ALWAYS_INLINE size_t getNumThreads()
 {
    return 4 * hpx::get_os_thread_count();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Sets the number of threads to be used for HPX parallel operations.
-// \ingroup smp
-//
-// \param number The given number of threads \f$[1..\infty)\f$.
-// \return void
-// \exception std::invalid_argument Invalid number of threads.
-//
-// Via this function the maximum number of threads for HPX parallel operations can be specified.
-// Note that the given \a number must be in the range \f$[1..infty)\f$. In case an invalid
-// number of threads is specified, a \a std::invalid_argument exception is thrown.
-*/
-BLAZE_ALWAYS_INLINE void setNumThreads( size_t number )
-{
-   if( number == 0UL ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of threads" );
-   }
 }
 /*! \endcond */
 //*************************************************************************************************
