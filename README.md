@@ -180,3 +180,5 @@ Denis Demidov -- Export CMake package configuration
 Jannik Schürg -- AVX-512 support and cache size detection for macOS in CMake
 
 Marcin Copik -- CMake fixes
+
+Hartmut Kaiser -- HPX backend
