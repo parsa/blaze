@@ -45,6 +45,11 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/functors/AddAssign.h>
+#include <blaze/math/functors/Assign.h>
+#include <blaze/math/functors/DivAssign.h>
+#include <blaze/math/functors/MultAssign.h>
+#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -69,17 +74,18 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  PLAIN ASSIGNMENT
+//  HPX-BASED ASSIGNMENT KERNELS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP assignment of a dense vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP (compound) assignment of a dense vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side dense vector to be assigned.
+// \param op The (compound) assignment operation.
 // \return void
 //
 // This function is the backend implementation of the HPX-based SMP assignment of a dense
@@ -89,11 +95,12 @@ namespace blaze {
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
+template< typename VT1   // Type of the left-hand side dense vector
+        , bool TF1       // Transpose flag of the left-hand side dense vector
+        , typename VT2   // Type of the right-hand side dense vector
+        , bool TF2       // Transpose flag of the right-hand side dense vector
+        , typename OP >  // Type of the assignment operation
+void hpxAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs, OP op )
 {
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
@@ -129,22 +136,22 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
       if( simdEnabled && lhsAligned && rhsAligned ) {
          auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
          const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         assign( target, source );
+         op( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
          auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
          const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         assign( target, source );
+         op( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
          auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
          const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         assign( target, source );
+         op( target, source );
       }
       else {
          auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
          const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         assign( target, source );
+         op( target, source );
       }
    } );
 }
@@ -154,11 +161,12 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP assignment of a sparse vector to a dense vector.
+/*!\brief Backend of the HPX-based SMP (compound) assignment of a sparse vector to a dense vector.
 // \ingroup smp
 //
 // \param lhs The target left-hand side dense vector.
 // \param rhs The right-hand side sparse vector to be assigned.
+// \param op The (compound) assignment operation.
 // \return void
 //
 // This function is the backend implementation of the HPX-based SMP assignment of a sparse
@@ -168,11 +176,12 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side sparse vector
-        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
-void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
+template< typename VT1   // Type of the left-hand side dense vector
+        , bool TF1       // Transpose flag of the left-hand side dense vector
+        , typename VT2   // Type of the right-hand side sparse vector
+        , bool TF2       // Transpose flag of the right-hand side sparse vector
+        , typename OP >  // Type of the assignment operation
+void hpxAssign( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs, OP op )
 {
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
@@ -195,12 +204,20 @@ void smpAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& 
       const size_t size( min( sizePerThread, (~lhs).size() - index ) );
       auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
       const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-      assign( target, source );
+      op( target, source );
    } );
 }
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  PLAIN ASSIGNMENT
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -277,7 +294,7 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
          assign( ~lhs, ~rhs );
       }
       else {
-         smpAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, Assign() );
       }
    }
 }
@@ -292,135 +309,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 //  ADDITION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP addition assignment of a dense vector to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side dense vector to be added.
-// \return void
-//
-// This function is the backend implementation the HPX-based SMP addition assignment of a
-// dense vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   using ET1 = ElementType_<VT1>;
-   using ET2 = ElementType_<VT2>;
-
-   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
-
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
-
-   const size_t threads      ( getNumThreads() );
-   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare   ( (~lhs).size() / threads + addon );
-   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t index( i*sizePerThread );
-
-      if( index >= (~lhs).size() )
-         return;
-
-      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-
-      if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         addAssign( target, source );
-      }
-      else if( simdEnabled && lhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         addAssign( target, source );
-      }
-      else if( simdEnabled && rhsAligned ) {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         addAssign( target, source );
-      }
-      else {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         addAssign( target, source );
-      }
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP addition assignment of a sparse vector to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side sparse vector to be added.
-// \return void
-//
-// This function is the backend implementation the HPX-based SMP addition assignment of a
-// sparse vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side sparse vector
-        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
-void smpAddAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   const size_t threads      ( getNumThreads() );
-   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-   const size_t sizePerThread( (~lhs).size() / threads + addon );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t index( i*sizePerThread );
-
-      if( index >= (~lhs).size() )
-         return;
-
-      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-      const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-      addAssign( target, source );
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -497,7 +385,7 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
          addAssign( ~lhs, ~rhs );
       }
       else {
-         smpAddAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, AddAssign() );
       }
    }
 }
@@ -512,135 +400,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 //  SUBTRACTION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP subtraction assignment of a dense vector to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side dense vector to be subtracted.
-// \return void
-//
-// This function is the backend implementation the HPX-based SMP subtraction assignment of a
-// dense vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   using ET1 = ElementType_<VT1>;
-   using ET2 = ElementType_<VT2>;
-
-   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
-
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
-
-   const size_t threads      ( getNumThreads() );
-   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare   ( (~lhs).size() / threads + addon );
-   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t index( i*sizePerThread );
-
-      if( index >= (~lhs).size() )
-         return;
-
-      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-
-      if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         subAssign( target, source );
-      }
-      else if( simdEnabled && lhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         subAssign( target, source );
-      }
-      else if( simdEnabled && rhsAligned ) {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         subAssign( target, source );
-      }
-      else {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         subAssign( target, source );
-      }
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP subtraction assignment of a sparse vector to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side sparse vector to be subtracted.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP subtraction assignment of
-// a sparse vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side sparse vector
-        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
-void smpSubAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   const size_t threads      ( getNumThreads() );
-   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-   const size_t sizePerThread( (~lhs).size() / threads + addon );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t index( i*sizePerThread );
-
-      if( index >= (~lhs).size() )
-         return;
-
-      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-      const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-      subAssign( target, source );
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -717,7 +476,7 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
          subAssign( ~lhs, ~rhs );
       }
       else {
-         smpSubAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, SubAssign() );
       }
    }
 }
@@ -732,137 +491,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 //  MULTIPLICATION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP multiplication assignment of a dense vector to a
-//        dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side dense vector to be multiplied.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP multiplication assignment
-// of a dense vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   using ET1 = ElementType_<VT1>;
-   using ET2 = ElementType_<VT2>;
-
-   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
-
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
-
-   const size_t threads      ( getNumThreads() );
-   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare   ( (~lhs).size() / threads + addon );
-   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t index( i*sizePerThread );
-
-      if( index >= (~lhs).size() )
-         return;
-
-      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-
-      if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         multAssign( target, source );
-      }
-      else if( simdEnabled && lhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         multAssign( target, source );
-      }
-      else if( simdEnabled && rhsAligned ) {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         multAssign( target, source );
-      }
-      else {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         multAssign( target, source );
-      }
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP multiplication assignment of a sparse vector to a
-//        dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side sparse vector to be multiplied.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP multiplication assignment
-// of a sparse vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side sparse vector
-        , bool TF2 >    // Transpose flag of the right-hand side sparse vector
-void smpMultAssign_backend( DenseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   const size_t threads      ( getNumThreads() );
-   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-   const size_t sizePerThread( (~lhs).size() / threads + addon );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t index( i*sizePerThread );
-
-      if( index >= (~lhs).size() )
-         return;
-
-      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-      auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-      const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-      multAssign( target, source );
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -939,7 +567,7 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
          multAssign( ~lhs, ~rhs );
       }
       else {
-         smpMultAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, MultAssign() );
       }
    }
 }
@@ -954,85 +582,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 //  DIVISION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP division assignment of a dense vector to a dense vector.
-// \ingroup smp
-//
-// \param lhs The target left-hand side dense vector.
-// \param rhs The right-hand side dense vector divisor.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP division assignment of
-// a dense vector to a dense vector.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename VT1  // Type of the left-hand side dense vector
-        , bool TF1      // Transpose flag of the left-hand side dense vector
-        , typename VT2  // Type of the right-hand side dense vector
-        , bool TF2 >    // Transpose flag of the right-hand side dense vector
-void smpDivAssign_backend( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   using ET1 = ElementType_<VT1>;
-   using ET2 = ElementType_<VT2>;
-
-   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
-
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
-
-   const size_t threads      ( getNumThreads() );
-   const size_t addon        ( ( ( (~lhs).size() % threads ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare   ( (~lhs).size() / threads + addon );
-   const size_t rest         ( equalShare & ( SIMDSIZE - 1UL ) );
-   const size_t sizePerThread( ( simdEnabled && rest )?( equalShare - rest + SIMDSIZE ):( equalShare ) );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t index( i*sizePerThread );
-
-      if( index >= (~lhs).size() )
-         return;
-
-      const size_t size( min( sizePerThread, (~lhs).size() - index ) );
-
-      if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         divAssign( target, source );
-      }
-      else if( simdEnabled && lhsAligned ) {
-         auto       target( subvector<aligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         divAssign( target, source );
-      }
-      else if( simdEnabled && rhsAligned ) {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<aligned>( ~rhs, index, size, unchecked ) );
-         divAssign( target, source );
-      }
-      else {
-         auto       target( subvector<unaligned>( ~lhs, index, size, unchecked ) );
-         const auto source( subvector<unaligned>( ~rhs, index, size, unchecked ) );
-         divAssign( target, source );
-      }
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -1109,7 +658,7 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
          divAssign( ~lhs, ~rhs );
       }
       else {
-         smpDivAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, DivAssign() );
       }
    }
 }

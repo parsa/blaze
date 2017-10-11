@@ -72,17 +72,18 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  PLAIN ASSIGNMENT
+//  HPX-BASED ASSIGNMENT KERNELS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP assignment of a dense matrix to a dense matrix.
+/*!\brief Backend of the HPX-based SMP (compound) assignment of a dense matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side dense matrix to be assigned.
+// \param op The (compound) assignment operation.
 // \return void
 //
 // This function is the backend implementation of the HPX-based SMP assignment of a dense
@@ -92,11 +93,12 @@ namespace blaze {
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+template< typename MT1   // Type of the left-hand side dense matrix
+        , bool SO1       // Storage order of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side dense matrix
+        , bool SO2       // Storage order of the right-hand side dense matrix
+        , typename OP >  // Type of the assignment operation
+void hpxAssign( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs, OP op )
 {
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
@@ -141,22 +143,22 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
       if( simdEnabled && lhsAligned && rhsAligned ) {
          auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         assign( target, source );
+         op( target, source );
       }
       else if( simdEnabled && lhsAligned ) {
          auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
          const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         assign( target, source );
+         op( target, source );
       }
       else if( simdEnabled && rhsAligned ) {
          auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         assign( target, source );
+         op( target, source );
       }
       else {
          auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
          const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         assign( target, source );
+         op( target, source );
       }
    } );
 }
@@ -166,11 +168,12 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP assignment of a sparse matrix to a dense matrix.
+/*!\brief Backend of the HPX-based SMP (compound) assignment of a sparse matrix to a dense matrix.
 // \ingroup math
 //
 // \param lhs The target left-hand side dense matrix.
 // \param rhs The right-hand side sparse matrix to be assigned.
+// \param op The (compound) assignment operation.
 // \return void
 //
 // This function is the backend implementation of the HPX-based SMP assignment of a sparse
@@ -180,11 +183,12 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand side sparse matrix
-void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
+template< typename MT1   // Type of the left-hand side dense matrix
+        , bool SO1       // Storage order of the left-hand side dense matrix
+        , typename MT2   // Type of the right-hand side sparse matrix
+        , bool SO2       // Storage order of the right-hand side sparse matrix
+        , typename OP >  // Type of the assignment operation
+void hpxAssign( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs, OP op )
 {
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
@@ -215,12 +219,20 @@ void smpAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& 
 
       auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
       const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-      assign( target, source );
+      op( target, source );
    } );
 }
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  PLAIN ASSIGNMENT
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -299,7 +311,7 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
          assign( ~lhs, ~rhs );
       }
       else {
-         smpAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, Assign() );
       }
    }
 }
@@ -314,152 +326,6 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 //  ADDITION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP addition assignment of a dense matrix to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side dense matrix to be added.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP addition assignment of a
-// dense matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   using ET1 = ElementType_<MT1>;
-   using ET2 = ElementType_<MT2>;
-
-   constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
-
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
-
-   const size_t threads    ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
-
-   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
-   const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
-   const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
-
-   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
-   const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
-   const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second ) * colsPerThread );
-
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
-         return;
-
-      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
-
-      if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         addAssign( target, source );
-      }
-      else if( simdEnabled && lhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         addAssign( target, source );
-      }
-      else if( simdEnabled && rhsAligned ) {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         addAssign( target, source );
-      }
-      else {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         addAssign( target, source );
-      }
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP addition assignment of a sparse matrix to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side sparse matrix to be added.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP addition assignment of a
-// sparse matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand side sparse matrix
-void smpAddAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   const size_t threads      ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
-
-   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
-
-   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second ) * colsPerThread );
-
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
-         return;
-
-      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-      addAssign( target, source );
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -538,7 +404,7 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
          addAssign( ~lhs, ~rhs );
       }
       else {
-         smpAddAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, AddAssign() );
       }
    }
 }
@@ -553,153 +419,6 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 //  SUBTRACTION ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP subtraction assignment of a dense matrix to a dense matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side dense matrix to be subtracted.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP subtraction assignment
-// of a dense matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   using ET1 = ElementType_<MT1>;
-   using ET2 = ElementType_<MT2>;
-
-   constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
-
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
-
-   const size_t threads    ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
-
-   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
-   const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
-   const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
-
-   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
-   const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
-   const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second ) * colsPerThread );
-
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
-         return;
-
-      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
-
-      if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         subAssign( target, source );
-      }
-      else if( simdEnabled && lhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         subAssign( target, source );
-      }
-      else if( simdEnabled && rhsAligned ) {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         subAssign( target, source );
-      }
-      else {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         subAssign( target, source );
-      }
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP subtraction assignment of a sparse matrix to a dense
-//        matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side sparse matrix to be subtracted.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP subtraction assignment
-// of a sparse matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand side sparse matrix
-void smpSubAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   const size_t threads      ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
-
-   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
-
-   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second ) * colsPerThread );
-
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
-         return;
-
-      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-      subAssign( target, source );
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -778,7 +497,7 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
          subAssign( ~lhs, ~rhs );
       }
       else {
-         smpSubAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, SubAssign() );
       }
    }
 }
@@ -793,154 +512,6 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
 //  SCHUR PRODUCT ASSIGNMENT
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP Schur product assignment of a dense matrix to a dense
-//        matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side dense matrix for the Schur product.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP Schur product assignment
-// of a dense matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side dense matrix
-        , bool SO2 >    // Storage order of the right-hand side dense matrix
-void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   using ET1 = ElementType_<MT1>;
-   using ET2 = ElementType_<MT2>;
-
-   constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<MT1> >::size );
-
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
-
-   const size_t threads    ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
-
-   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
-   const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
-   const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
-
-   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
-   const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
-   const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second ) * colsPerThread );
-
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
-         return;
-
-      const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
-
-      if( simdEnabled && lhsAligned && rhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         schurAssign( target, source );
-      }
-      else if( simdEnabled && lhsAligned ) {
-         auto       target( submatrix<aligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         schurAssign( target, source );
-      }
-      else if( simdEnabled && rhsAligned ) {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<aligned>( ~rhs, row, column, m, n ) );
-         schurAssign( target, source );
-      }
-      else {
-         auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-         const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-         schurAssign( target, source );
-      }
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Backend of the HPX-based SMP Schur product assignment of a sparse matrix to a dense
-//        matrix.
-// \ingroup math
-//
-// \param lhs The target left-hand side dense matrix.
-// \param rhs The right-hand side sparse matrix for the Schur product.
-// \return void
-//
-// This function is the backend implementation of the HPX-based SMP Schur product assignment
-// of a sparse matrix to a dense matrix.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side sparse matrix
-        , bool SO2 >    // Storage order of the right-hand side sparse matrix
-void smpSchurAssign_backend( DenseMatrix<MT1,SO1>& lhs, const SparseMatrix<MT2,SO2>& rhs )
-{
-   using hpx::parallel::for_loop;
-   using hpx::parallel::execution::par;
-
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
-
-   const size_t threads      ( getNumThreads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
-
-   const size_t addon1       ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t rowsPerThread( (~rhs).rows() / threadmap.first + addon1 );
-
-   const size_t addon2       ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t colsPerThread( (~rhs).columns() / threadmap.second + addon2 );
-
-   for_loop( par, size_t(0), threads, [&](int i)
-   {
-      const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
-      const size_t column( ( i % threadmap.second ) * colsPerThread );
-
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
-         return;
-
-      const size_t m( min( rowsPerThread, (~lhs).rows()    - row    ) );
-      const size_t n( min( colsPerThread, (~lhs).columns() - column ) );
-
-      auto       target( submatrix<unaligned>( ~lhs, row, column, m, n ) );
-      const auto source( submatrix<unaligned>( ~rhs, row, column, m, n ) );
-      schurAssign( target, source );
-   } );
-}
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -1019,7 +590,7 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
          schurAssign( ~lhs, ~rhs );
       }
       else {
-         smpSchurAssign_backend( ~lhs, ~rhs );
+         hpxAssign( ~lhs, ~rhs, SchurAssign() );
       }
    }
 }
