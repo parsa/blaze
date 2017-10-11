@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DeclExpr.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
@@ -76,7 +77,9 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -456,16 +459,26 @@ inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, RCAs... args )
 // \ingroup column
 //
 // \param matrix The constant outer product.
+// \param args Optional column arguments.
 // \return View on the specified column of the outer product.
 //
 // This function returns an expression representing the specified column of the given outer
 // product.
 */
-template< size_t I       // Column index
-        , typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix )
+template< size_t I            // Column index
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( args... );
+
+   if( !Contains< TypeList<RCAs...>, Unchecked >::value ) {
+      if( (~matrix).columns() <= I ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
 
    return (~matrix).leftOperand() * (~matrix).rightOperand()[I];
 }
@@ -480,15 +493,25 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix )
 //
 // \param matrix The constant outer product.
 // \param index The index of the column.
+// \param args Optional column arguments.
 // \return View on the specified column of the outer product.
 //
 // This function returns an expression representing the specified column of the given outer
 // product.
 */
-template< typename MT >  // Matrix base type of the expression
-inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index )
+template< typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( args... );
+
+   if( !Contains< TypeList<RCAs...>, Unchecked >::value ) {
+      if( (~matrix).columns() <= index ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
 
    return (~matrix).leftOperand() * (~matrix).rightOperand()[index];
 }
