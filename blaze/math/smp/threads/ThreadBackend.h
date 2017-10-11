@@ -98,23 +98,8 @@ class ThreadBackend
    //**Thread execution functions******************************************************************
    /*!\name Thread execution functions */
    //@{
-   template< typename Target, typename Source >
-   static inline void scheduleAssign( Target& target, const Source& source );
-
-   template< typename Target, typename Source >
-   static inline void scheduleAddAssign( Target& target, const Source& source );
-
-   template< typename Target, typename Source >
-   static inline void scheduleSubAssign( Target& target, const Source& source );
-
-   template< typename Target, typename Source >
-   static inline void scheduleSchurAssign( Target& target, const Source& source );
-
-   template< typename Target, typename Source >
-   static inline void scheduleMultAssign( Target& target, const Source& source );
-
-   template< typename Target, typename Source >
-   static inline void scheduleDivAssign( Target& target, const Source& source );
+   template< typename Target, typename Source, typename OP >
+   static inline void schedule( Target& target, const Source& source, OP op );
    //@}
    //**********************************************************************************************
 
@@ -122,8 +107,9 @@ class ThreadBackend
    //**Private class Assigner**********************************************************************
    /*!\brief Auxiliary functor for the threaded execution of a plain assignment.
    */
-   template< typename Target    // Type of the target operand
-           , typename Source >  // Type of the source operand
+   template< typename Target  // Type of the target operand
+           , typename Source  // Type of the source operand
+           , typename OP >    // Type of the assignment operation
    struct Assigner
    {
       //**Constructor******************************************************************************
@@ -131,10 +117,12 @@ class ThreadBackend
       //
       // \param target The target operand to be assigned to.
       // \param source The source operand to be assigned to the target.
+      // \param op The (compound) assignment operation.
       */
-      explicit inline Assigner( Target& target, const Source& source )
+      explicit inline Assigner( Target& target, const Source& source, OP op )
          : target_( target )  // The target operand
          , source_( source )  // The source operand
+         , op_    ( op     )  // The (compound) assignment operation
       {}
       //*******************************************************************************************
 
@@ -144,218 +132,14 @@ class ThreadBackend
       // \return void
       */
       inline void operator()() {
-         assign( target_, source_ );
+         op_( target_, source_ );
       }
       //*******************************************************************************************
 
       //**Member variables*************************************************************************
       Target       target_;  //!< The target operand.
       const Source source_;  //!< The source operand.
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Target );
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Source );
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
-   //**Private class AddAssigner*******************************************************************
-   /*!\brief Auxiliary functor for the threaded execution of an addition assignment.
-   */
-   template< typename Target    // Type of the target operand
-           , typename Source >  // Type of the source operand
-   struct AddAssigner
-   {
-      //**Constructor******************************************************************************
-      /*!\brief Constructor for the AddAssigner class template.
-      //
-      // \param target The target operand to be assigned to.
-      // \param source The source operand to be added to the target.
-      */
-      explicit inline AddAssigner( Target& target, const Source& source )
-         : target_( target )  // The target operand
-         , source_( source )  // The source operand
-      {}
-      //*******************************************************************************************
-
-      //**Function call operator*******************************************************************
-      /*!\brief Performs the addition assignment between the two given operands.
-      //
-      // \return void
-      */
-      inline void operator()() {
-         addAssign( target_, source_ );
-      }
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      Target       target_;  //!< The target operand.
-      const Source source_;  //!< The source operand.
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Target );
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Source );
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
-   //**Private class SubAssigner*******************************************************************
-   /*!\brief Auxiliary functor for the threaded execution of a subtraction assignment.
-   */
-   template< typename Target    // Type of the target operand
-           , typename Source >  // Type of the source operand
-   struct SubAssigner
-   {
-      //**Constructor******************************************************************************
-      /*!\brief Constructor for the SubAssigner class template.
-      //
-      // \param target The target operand to be assigned to.
-      // \param source The source operand to be subtracted from the target.
-      */
-      explicit inline SubAssigner( Target& target, const Source& source )
-         : target_( target )  // The target operand
-         , source_( source )  // The source operand
-      {}
-      //*******************************************************************************************
-
-      //**Function call operator*******************************************************************
-      /*!\brief Performs the subtraction assignment between the two given operands.
-      //
-      // \return void
-      */
-      inline void operator()() {
-         subAssign( target_, source_ );
-      }
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      Target       target_;  //!< The target operand.
-      const Source source_;  //!< The source operand.
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Target );
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Source );
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
-   //**Private class SchurAssigner*****************************************************************
-   /*!\brief Auxiliary functor for the threaded execution of an Schur product assignment.
-   */
-   template< typename Target    // Type of the target operand
-           , typename Source >  // Type of the source operand
-   struct SchurAssigner
-   {
-      //**Constructor******************************************************************************
-      /*!\brief Constructor for the SchurAssigner class template.
-      //
-      // \param target The target operand to be assigned to.
-      // \param source The source operand for the Schur product.
-      */
-      explicit inline SchurAssigner( Target& target, const Source& source )
-         : target_( target )  // The target operand
-         , source_( source )  // The source operand
-      {}
-      //*******************************************************************************************
-
-      //**Function call operator*******************************************************************
-      /*!\brief Performs the Schur product assignment between the two given operands.
-      //
-      // \return void
-      */
-      inline void operator()() {
-         schurAssign( target_, source_ );
-      }
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      Target       target_;  //!< The target operand.
-      const Source source_;  //!< The source operand.
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Target );
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Source );
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
-   //**Private class MultAssigner******************************************************************
-   /*!\brief Auxiliary functor for the threaded execution of a multiplication assignment.
-   */
-   template< typename Target    // Type of the target operand
-           , typename Source >  // Type of the source operand
-   struct MultAssigner
-   {
-      //**Constructor******************************************************************************
-      /*!\brief Constructor for the MultAssigner class template.
-      //
-      // \param target The target operand to be assigned to.
-      // \param source The source operand to be multiplied with the target.
-      */
-      explicit inline MultAssigner( Target& target, const Source& source )
-         : target_( target )  // The target operand
-         , source_( source )  // The source operand
-      {}
-      //*******************************************************************************************
-
-      //**Function call operator*******************************************************************
-      /*!\brief Performs the multiplication assignment between the two given operands.
-      //
-      // \return void
-      */
-      inline void operator()() {
-         multAssign( target_, source_ );
-      }
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      Target       target_;  //!< The target operand.
-      const Source source_;  //!< The source operand.
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Target );
-      BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE( Source );
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
-   //**Private class DivAssigner*******************************************************************
-   /*!\brief Auxiliary functor for the threaded execution of a division assignment.
-   */
-   template< typename Target    // Type of the target operand
-           , typename Source >  // Type of the source operand
-   struct DivAssigner
-   {
-      //**Constructor******************************************************************************
-      /*!\brief Constructor for the DivAssigner class template.
-      //
-      // \param target The target operand to be assigned to.
-      // \param source The source operand to be divided from the target.
-      */
-      explicit inline DivAssigner( Target& target, const Source& source )
-         : target_( target )  // The target operand
-         , source_( source )  // The source operand
-      {}
-      //*******************************************************************************************
-
-      //**Function call operator*******************************************************************
-      /*!\brief Performs the division assignment between the two given operands.
-      //
-      // \return void
-      */
-      inline void operator()() {
-         divAssign( target_, source_ );
-      }
-      //*******************************************************************************************
-
-      //**Member variables*************************************************************************
-      Target       target_;  //!< The target operand.
-      const Source source_;  //!< The source operand.
+      OP           op_;      //!< The (compound) assignment operation.
       //*******************************************************************************************
 
       //**Member variables*************************************************************************
@@ -492,145 +276,22 @@ inline void ThreadBackend<TT,MT,LT,CT>::wait()
 //
 // \param target The target operand to be assigned to.
 // \param source The source operand to be assigned to the target.
+// \param op The (compound) assignment operation.
 // \return void
 //
-// This function schedules a plain assignment of the two given operands for execution.
+// This function schedules a (compound) assignment of the two given operands for execution.
 */
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Target    // Type of the target operand
-        , typename Source >  // Type of the source operand
-inline void ThreadBackend<TT,MT,LT,CT>::scheduleAssign( Target& target, const Source& source )
+template< typename TT      // Type of the encapsulated thread
+        , typename MT      // Type of the synchronization mutex
+        , typename LT      // Type of the mutex lock
+        , typename CT >    // Type of the condition variable
+template< typename Target  // Type of the target operand
+        , typename Source  // Type of the source operand
+        , typename OP >    // Type of the assignment operation
+inline void ThreadBackend<TT,MT,LT,CT>::schedule( Target& target, const Source& source, OP op )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( Target );
-   threadpool_.schedule( Assigner<Target,Source>( target, source ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scheduling an addition assignment of the given operands for execution.
-//
-// \param target The target operand to be assigned to.
-// \param source The source operand to be added to the target.
-// \return void
-//
-// This function schedules an addition assignment of the two given operands for execution.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Target    // Type of the target operand
-        , typename Source >  // Type of the source operand
-inline void ThreadBackend<TT,MT,LT,CT>::scheduleAddAssign( Target& target, const Source& source )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( Target );
-   threadpool_.schedule( AddAssigner<Target,Source>( target, source ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scheduling a subtraction assignment of the given operands for execution.
-//
-// \param target The target operand to be assigned to.
-// \param source The source operand to be subtracted from the target.
-// \return void
-//
-// This function schedules a subtraction assignment of the two given operands for execution.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Target    // Type of the target operand
-        , typename Source >  // Type of the source operand
-inline void ThreadBackend<TT,MT,LT,CT>::scheduleSubAssign( Target& target, const Source& source )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( Target );
-   threadpool_.schedule( SubAssigner<Target,Source>( target, source ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scheduling an Schur product assignment of the given operands for execution.
-//
-// \param target The target operand to be assigned to.
-// \param source The source operand for the Schur product.
-// \return void
-//
-// This function schedules a Schur product assignment of the two given operands for execution.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Target    // Type of the target operand
-        , typename Source >  // Type of the source operand
-inline void ThreadBackend<TT,MT,LT,CT>::scheduleSchurAssign( Target& target, const Source& source )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( Target );
-   threadpool_.schedule( SchurAssigner<Target,Source>( target, source ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scheduling a multiplication assignment of the given operands for execution.
-//
-// \param target The target operand to be assigned to.
-// \param source The source operand to be multiplied with the target.
-// \return void
-//
-// This function schedules a multiplication assignment of the two given operands for execution.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Target    // Type of the target operand
-        , typename Source >  // Type of the source operand
-inline void ThreadBackend<TT,MT,LT,CT>::scheduleMultAssign( Target& target, const Source& source )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( Target );
-   threadpool_.schedule( MultAssigner<Target,Source>( target, source ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Scheduling a division assignment of the given operands for execution.
-//
-// \param target The target operand to be assigned to.
-// \param source The source operand to be divided from the target.
-// \return void
-//
-// This function schedules a division assignment of the two given operands for execution.
-*/
-template< typename TT        // Type of the encapsulated thread
-        , typename MT        // Type of the synchronization mutex
-        , typename LT        // Type of the mutex lock
-        , typename CT >      // Type of the condition variable
-template< typename Target    // Type of the target operand
-        , typename Source >  // Type of the source operand
-inline void ThreadBackend<TT,MT,LT,CT>::scheduleDivAssign( Target& target, const Source& source )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST( Target );
-   threadpool_.schedule( DivAssigner<Target,Source>( target, source ) );
+   threadpool_.schedule( Assigner<Target,Source,OP>( target, source, op ) );
 }
 /*! \endcond */
 //*************************************************************************************************
