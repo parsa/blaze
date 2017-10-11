@@ -71,10 +71,10 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::mtl::dense_vector<element_t>  dense_vector;
-   typedef ::mtl::tag::row_major  row_major;
-   typedef ::mtl::mat::parameters<row_major>  parameters;
-   typedef ::mtl::compressed2D<element_t,parameters>  compressed2D;
+   using dense_vector = ::mtl::dense_vector<element_t>;
+   using row_major    = ::mtl::tag::row_major;
+   using parameters   = ::mtl::mat::parameters<row_major>;
+   using compressed2D = ::mtl::compressed2D<element_t,parameters>;
 
    ::blaze::setSeed( seed );
 

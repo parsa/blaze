@@ -72,8 +72,8 @@ double tdvecdmatmult( size_t N, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::numeric_cast;
 
-   typedef ::flens::DenseVector< ::flens::Array<element_t> >  DenseVector;
-   typedef ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::RowMajor> >  RowGeMatrix;
+   using DenseVector = ::flens::DenseVector< ::flens::Array<element_t> >;
+   using RowGeMatrix = ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::RowMajor> >;
 
    ::blaze::setSeed( seed );
 

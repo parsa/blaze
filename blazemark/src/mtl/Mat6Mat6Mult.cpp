@@ -70,9 +70,9 @@ double mat6mat6mult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::mtl::tag::row_major  row_major;
-   typedef ::mtl::mat::parameters<row_major>  parameters;
-   typedef ::mtl::dense2D<element_t,parameters>  dense2D;
+   using row_major  = ::mtl::tag::row_major;
+   using parameters = ::mtl::mat::parameters<row_major>;
+   using dense2D    = ::mtl::dense2D<element_t,parameters>;
 
    ::blaze::setSeed( seed );
 

@@ -69,7 +69,7 @@ double dvecdvecinner( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::flens::DenseVector< ::flens::Array<element_t> >  DenseVector;
+   using DenseVector = ::flens::DenseVector< ::flens::Array<element_t> >;
 
    ::blaze::setSeed( seed );
 

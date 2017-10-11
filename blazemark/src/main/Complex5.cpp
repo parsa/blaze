@@ -95,7 +95,7 @@ using blazemark::Parser;
 // This type definition specifies the type of a single benchmark run for the complex
 // expression D = ( A * B ) + C.
 */
-typedef DynamicDenseRun  Run;
+using Run = DynamicDenseRun;
 //*************************************************************************************************
 
 

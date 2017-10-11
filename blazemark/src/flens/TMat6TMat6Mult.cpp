@@ -70,7 +70,7 @@ double tmat6tmat6mult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::ColMajor> >  ColGeMatrix;
+   using ColGeMatrix = ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::ColMajor> >;
 
    ::blaze::setSeed( seed );
 

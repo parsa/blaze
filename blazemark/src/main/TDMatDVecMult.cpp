@@ -99,7 +99,7 @@ using blazemark::Parser;
 // This type definition specifies the type of a single benchmark run for the transpose dense
 // matrix/dense vector multiplication benchmark.
 */
-typedef DynamicDenseRun  Run;
+using Run = DynamicDenseRun;
 //*************************************************************************************************
 
 

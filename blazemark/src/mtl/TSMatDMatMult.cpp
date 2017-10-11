@@ -71,11 +71,11 @@ double tsmatdmatmult( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::mtl::tag::row_major  row_major;
-   typedef ::mtl::tag::col_major  col_major;
-   typedef ::mtl::mat::parameters<row_major>  row_parameters;
-   typedef ::mtl::mat::parameters<col_major>  col_parameters;
-   typedef ::mtl::compressed2D<element_t,col_parameters>  compressed2D;
+   using row_major      = ::mtl::tag::row_major;
+   using col_major      = ::mtl::tag::col_major;
+   using row_parameters = ::mtl::mat::parameters<row_major>;
+   using col_parameters = ::mtl::mat::parameters<col_major>;
+   using compressed2D   = ::mtl::compressed2D<element_t,col_parameters>;
 
    ::blaze::setSeed( seed );
 

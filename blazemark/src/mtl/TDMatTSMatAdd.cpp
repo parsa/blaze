@@ -71,10 +71,10 @@ double tdmattsmatadd( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::mtl::tag::col_major  col_major;
-   typedef ::mtl::mat::parameters<col_major>  parameters;
-   typedef ::mtl::dense2D<element_t,parameters>  dense2D;
-   typedef ::mtl::compressed2D<element_t,parameters>  compressed2D;
+   using col_major    = ::mtl::tag::col_major;
+   using parameters   = ::mtl::mat::parameters<col_major>;
+   using dense2D      = ::mtl::dense2D<element_t,parameters>;
+   using compressed2D = ::mtl::compressed2D<element_t,parameters>;
 
    ::blaze::setSeed( seed );
 

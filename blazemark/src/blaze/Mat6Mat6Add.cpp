@@ -72,8 +72,8 @@ double mat6mat6add( size_t N, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::rowMajor;
 
-   typedef ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor>  MatrixType;
-   typedef ::blaze::AlignedAllocator<MatrixType>              AllocatorType;
+   using MatrixType    = ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor>;
+   using AllocatorType = ::blaze::AlignedAllocator<MatrixType>;
 
    ::blaze::setSeed( seed );
 

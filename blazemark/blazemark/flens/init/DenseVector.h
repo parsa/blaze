@@ -75,7 +75,7 @@ void init( ::flens::DenseVector< ::flens::Array<Type> >& v );
 template< typename Type >  // Data type of the vector
 void init( ::flens::DenseVector< ::flens::Array<Type> >& v )
 {
-   typedef typename ::flens::DenseVector< ::flens::Array<Type> >::IndexType  IndexType;
+   using IndexType = typename ::flens::DenseVector< ::flens::Array<Type> >::IndexType;
 
    for( IndexType i=v.firstIndex(); i<=v.lastIndex(); ++i ) {
       v(i) = ::blaze::rand<Type>( 0, 10 );

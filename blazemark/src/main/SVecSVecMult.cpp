@@ -82,7 +82,7 @@ using blazemark::Parser;
 // This type definition specifies the type of a single benchmark run for the sparse
 // vector/sparse vector multiplication benchmark.
 */
-typedef DynamicSparseRun  Run;
+using Run = DynamicSparseRun;
 //*************************************************************************************************
 
 

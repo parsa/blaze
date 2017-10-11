@@ -72,8 +72,8 @@ double tmat3tmat3add( size_t N, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::columnMajor;
 
-   typedef ::blaze::StaticMatrix<element_t,3UL,3UL,columnMajor>  MatrixType;
-   typedef ::blaze::AlignedAllocator<MatrixType>                 AllocatorType;
+   using MatrixType    = ::blaze::StaticMatrix<element_t,3UL,3UL,columnMajor>;
+   using AllocatorType = ::blaze::AlignedAllocator<MatrixType>;
 
    ::blaze::setSeed( seed );
 

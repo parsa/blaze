@@ -82,7 +82,7 @@ using blazemark::StaticSparseRun;
 // This type definition specifies the type of a single benchmark run for the sparse vector/sparse
 // vector cross product benchmark.
 */
-typedef StaticSparseRun<3UL>  Run;
+using Run = StaticSparseRun<3UL>;
 //*************************************************************************************************
 
 
@@ -108,8 +108,8 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
-   typedef blaze::StaticVector<element_t,3UL,columnVector>  VectorType;
-   typedef blaze::AlignedAllocator<VectorType>              AllocatorType;
+   using VectorType    = blaze::StaticVector<element_t,3UL,columnVector>;
+   using AllocatorType = blaze::AlignedAllocator<VectorType>;
 
    blaze::setSeed( blazemark::seed );
 

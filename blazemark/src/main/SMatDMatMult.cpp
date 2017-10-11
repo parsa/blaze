@@ -88,7 +88,7 @@ using blazemark::Parser;
 // This type definition specifies the type of a single benchmark run for the sparse
 // matrix/dense matrix multiplication benchmark.
 */
-typedef DynamicSparseRun  Run;
+using Run = DynamicSparseRun;
 //*************************************************************************************************
 
 

@@ -84,8 +84,8 @@ template< typename Type         // Data type of the matrix
 void init( ::flens::GeCRSMatrix< ::flens::CRS<Type,::flens::IndexBaseZero<IndexType> > >& m
          , size_t rows, size_t columns, size_t nonzeros )
 {
-   typedef ::flens::IndexBaseZero<IndexType>                              IndexBase;
-   typedef ::flens::CoordStorage<Type,::flens::CoordRowColCmp,IndexBase>  Coord;
+   using IndexBase = ::flens::IndexBaseZero<IndexType>;
+   using Coord     = ::flens::CoordStorage<Type,::flens::CoordRowColCmp,IndexBase>;
 
    const IndexType M( rows    );
    const IndexType N( columns );

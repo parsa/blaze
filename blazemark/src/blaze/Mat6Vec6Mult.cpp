@@ -75,10 +75,10 @@ double mat6vec6mult( size_t N, size_t steps )
    using ::blaze::columnVector;
    using ::blaze::rowMajor;
 
-   typedef ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor>  MatrixType;
-   typedef ::blaze::StaticVector<element_t,6UL,columnVector>  VectorType;
-   typedef ::blaze::AlignedAllocator<MatrixType>              MatrixAllocatorType;
-   typedef ::blaze::AlignedAllocator<VectorType>              VectorAllocatorType;
+   using MatrixType          = ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor>;
+   using VectorType          = ::blaze::StaticVector<element_t,6UL,columnVector>;
+   using MatrixAllocatorType = ::blaze::AlignedAllocator<MatrixType>;
+   using VectorAllocatorType = ::blaze::AlignedAllocator<VectorType>;
 
    ::blaze::setSeed( seed );
 

@@ -88,7 +88,7 @@ using blazemark::Parser;
 // This type definition specifies the type of a single benchmark run for the dense vector/dense
 // vector outer product benchmark.
 */
-typedef DynamicDenseRun  Run;
+using Run = DynamicDenseRun;
 //*************************************************************************************************
 
 

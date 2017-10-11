@@ -75,7 +75,7 @@ const double deviation( 5.0 );  //!< Maximum allowed deviation of the average be
 // float, double, long double and complex</a> with the previously named types as element type.
 // The default setting is \a double.
 */
-typedef double  element_t;
+using element_t = double;
 //*************************************************************************************************
 
 
@@ -121,5 +121,5 @@ const size_t seed( 128753984 );  //!< Seed for the random number generator.
 // This type definition offers the possibility to specify the index type for the sparse matrices
 // in all Eigen benchmarks.
 */
-typedef int  EigenSparseIndexType;
+using EigenSparseIndexType = int;
 //*************************************************************************************************

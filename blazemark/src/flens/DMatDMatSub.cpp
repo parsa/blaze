@@ -71,7 +71,7 @@ double dmatdmatsub( size_t N, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::numeric_cast;
 
-   typedef ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::RowMajor> >  RowGeMatrix;
+   using RowGeMatrix = ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::RowMajor> >;
 
    ::blaze::setSeed( seed );
 

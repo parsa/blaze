@@ -71,8 +71,8 @@ double tmat6vec6mult( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::ColMajor> >  ColGeMatrix;
-   typedef ::flens::DenseVector< ::flens::Array<element_t> >  DenseVector;
+   using ColGeMatrix = ::flens::GeMatrix< ::flens::FullStorage<element_t,::flens::ColMajor> >;
+   using DenseVector = ::flens::DenseVector< ::flens::Array<element_t> >;
 
    ::blaze::setSeed( seed );
 

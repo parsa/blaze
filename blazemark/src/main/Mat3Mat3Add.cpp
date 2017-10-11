@@ -91,7 +91,7 @@ using blazemark::StaticDenseRun;
 // This type definition specifies the type of a single benchmark run for the 3-dimensional
 // matrix/matrix addition benchmark.
 */
-typedef StaticDenseRun<3UL>  Run;
+using Run = StaticDenseRun<3UL>;
 //*************************************************************************************************
 
 
@@ -117,8 +117,8 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::rowMajor;
 
-   typedef blaze::StaticMatrix<element_t,3UL,3UL,rowMajor>  MatrixType;
-   typedef blaze::AlignedAllocator<MatrixType>              AllocatorType;
+   using MatrixType    = blaze::StaticMatrix<element_t,3UL,3UL,rowMajor>;
+   using AllocatorType = blaze::AlignedAllocator<MatrixType>;
 
    blaze::setSeed( blazemark::seed );
 

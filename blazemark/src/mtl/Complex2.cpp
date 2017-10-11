@@ -70,10 +70,10 @@ double complex2( size_t N, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::mtl::tag::col_major  col_major;
-   typedef ::mtl::mat::parameters<col_major>  parameters;
-   typedef ::mtl::dense2D<element_t,parameters>  dense2D;
-   typedef ::mtl::dense_vector<element_t>  dense_vector;
+   using col_major    = ::mtl::tag::col_major;
+   using parameters   = ::mtl::mat::parameters<col_major>;
+   using dense2D      = ::mtl::dense2D<element_t,parameters>;
+   using dense_vector = ::mtl::dense_vector<element_t>;
 
    ::blaze::setSeed( seed );
 

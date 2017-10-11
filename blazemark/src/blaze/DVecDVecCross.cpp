@@ -72,8 +72,8 @@ double dvecdveccross( size_t N, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::columnVector;
 
-   typedef ::blaze::StaticVector<element_t,3UL,columnVector>  VectorType;
-   typedef ::blaze::AlignedAllocator<VectorType>              AllocatorType;
+   using VectorType    = ::blaze::StaticVector<element_t,3UL,columnVector>;
+   using AllocatorType = ::blaze::AlignedAllocator<VectorType>;
 
    ::blaze::setSeed( seed );
 

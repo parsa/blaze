@@ -130,9 +130,9 @@ class Parser
 {
  private:
    //**Type definitions****************************************************************************
-   typedef std::stringstream::pos_type   StreamPos;   //!< Stream position.
-   typedef std::pair<StreamPos,size_t>   Pair;        //!< Pair of a stream position and a line.
-   typedef std::vector<Pair>             LineVector;  //!< Vector of position/line pairs.
+   using StreamPos  = std::stringstream::pos_type;  //!< Stream position.
+   using Pair       = std::pair<StreamPos,size_t>;  //!< Pair of a stream position and a line.
+   using LineVector = std::vector<Pair>;            //!< Vector of position/line pairs.
    //**********************************************************************************************
 
  public:

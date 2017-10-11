@@ -78,7 +78,7 @@ void init( ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::ColMajor> >& m 
 template< typename Type >  // Data type of the matrix
 void init( ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::RowMajor> >& m )
 {
-   typedef typename ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::RowMajor> >::IndexType  IndexType;
+   using IndexType = typename ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::RowMajor> >::IndexType;
 
    for( IndexType i=m.firstRow(); i<=m.lastRow(); ++i ) {
       for( IndexType j=m.firstCol(); j<=m.lastCol(); ++j ) {
@@ -100,7 +100,7 @@ void init( ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::RowMajor> >& m 
 template< typename Type >  // Data type of the matrix
 void init( ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::ColMajor> >& m )
 {
-   typedef typename ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::ColMajor> >::IndexType  IndexType;
+   using IndexType = typename ::flens::GeMatrix< ::flens::FullStorage<Type,::flens::ColMajor> >::IndexType;
 
    for( IndexType j=m.firstCol(); j<=m.lastCol(); ++j ) {
       for( IndexType i=m.firstRow(); i<=m.lastRow(); ++i ) {

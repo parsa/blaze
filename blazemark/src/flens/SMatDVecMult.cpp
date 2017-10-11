@@ -73,9 +73,9 @@ double smatdvecmult( size_t N, size_t F, size_t steps )
    using ::blazemark::element_t;
    using ::blaze::numeric_cast;
 
-   typedef ::flens::IndexBaseZero<int>                                IndexBase;
-   typedef ::flens::GeCRSMatrix< ::flens::CRS<element_t,IndexBase> >  RowGeCRSMatrix;
-   typedef ::flens::DenseVector< ::flens::Array<element_t> >          DenseVector;
+   using IndexBase      = ::flens::IndexBaseZero<int>;
+   using RowGeCRSMatrix = ::flens::GeCRSMatrix< ::flens::CRS<element_t,IndexBase> >;
+   using DenseVector    = ::flens::DenseVector< ::flens::Array<element_t> >;
 
    ::blaze::setSeed( seed );
 

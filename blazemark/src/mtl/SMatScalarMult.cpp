@@ -70,9 +70,9 @@ double smatscalarmult( size_t N, size_t F, size_t steps )
 {
    using ::blazemark::element_t;
 
-   typedef ::mtl::tag::row_major  row_major;
-   typedef ::mtl::mat::parameters<row_major>  parameters;
-   typedef ::mtl::compressed2D<element_t,parameters>  compressed2D;
+   using row_major    = ::mtl::tag::row_major;
+   using parameters   = ::mtl::mat::parameters<row_major>;
+   using compressed2D = ::mtl::compressed2D<element_t,parameters>;
 
    ::blaze::setSeed( seed );
 

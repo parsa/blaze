@@ -95,7 +95,7 @@ using blazemark::StaticDenseRun;
 // This type definition specifies the type of a single benchmark run for the 3-dimensional
 // vector/vector addition benchmark.
 */
-typedef StaticDenseRun<3UL>  Run;
+using Run = StaticDenseRun<3UL>;
 //*************************************************************************************************
 
 
@@ -121,8 +121,8 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnVector;
 
-   typedef blaze::StaticVector<element_t,3UL,columnVector>  VectorType;
-   typedef blaze::AlignedAllocator<VectorType>              AllocatorType;
+   using VectorType    = blaze::StaticVector<element_t,3UL,columnVector>;
+   using AllocatorType = blaze::AlignedAllocator<VectorType>;
 
    blaze::setSeed( blazemark::seed );
 

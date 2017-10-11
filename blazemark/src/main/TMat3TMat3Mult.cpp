@@ -95,7 +95,7 @@ using blazemark::StaticDenseRun;
 // This type definition specifies the type of a single benchmark run for the 3D transpose
 // matrix/transpose matrix multiplication benchmark.
 */
-typedef StaticDenseRun<3UL>  Run;
+using Run = StaticDenseRun<3UL>;
 //*************************************************************************************************
 
 
@@ -121,8 +121,8 @@ void estimateSteps( Run& run )
    using blazemark::element_t;
    using blaze::columnMajor;
 
-   typedef blaze::StaticMatrix<element_t,3UL,3UL,columnMajor>  MatrixType;
-   typedef blaze::AlignedAllocator<MatrixType>                 AllocatorType;
+   using MatrixType    = blaze::StaticMatrix<element_t,3UL,3UL,columnMajor>;
+   using AllocatorType = blaze::AlignedAllocator<MatrixType>;
 
    blaze::setSeed( blazemark::seed );
 

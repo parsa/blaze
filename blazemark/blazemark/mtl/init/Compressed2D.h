@@ -86,10 +86,10 @@ template< typename Type >  // Data type of the matrix
 void init( ::mtl::compressed2D< Type, ::mtl::mat::parameters< ::mtl::tag::row_major > >& m
          , size_t nonzeros )
 {
-   typedef ::mtl::tag::row_major                      row_major;
-   typedef ::mtl::mat::parameters<row_major>       row_parameters;
-   typedef ::mtl::compressed2D<Type,row_parameters>   row_compressed2D;
-   typedef ::mtl::mat::inserter<row_compressed2D>  row_inserter;
+   using row_major        = ::mtl::tag::row_major;
+   using row_parameters   = ::mtl::mat::parameters<row_major>;
+   using row_compressed2D = ::mtl::compressed2D<Type,row_parameters>;
+   using row_inserter     = ::mtl::mat::inserter<row_compressed2D>;
 
    const size_t M( num_rows( m ) );
    const size_t N( num_cols( m ) );
@@ -139,10 +139,10 @@ template< typename Type >  // Data type of the matrix
 void init( ::mtl::compressed2D< Type, ::mtl::mat::parameters< ::mtl::tag::col_major > >& m
          , size_t nonzeros )
 {
-   typedef ::mtl::tag::col_major                      col_major;
-   typedef ::mtl::mat::parameters<col_major>       col_parameters;
-   typedef ::mtl::compressed2D<Type,col_parameters>   col_compressed2D;
-   typedef ::mtl::mat::inserter<col_compressed2D>  col_inserter;
+   using col_major        = ::mtl::tag::col_major;
+   using col_parameters   = ::mtl::mat::parameters<col_major>;
+   using col_compressed2D = ::mtl::compressed2D<Type,col_parameters>;
+   using col_inserter     = ::mtl::mat::inserter<col_compressed2D>;
 
    const size_t M( num_rows( m ) );
    const size_t N( num_cols( m ) );

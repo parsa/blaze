@@ -73,10 +73,10 @@ double mat6tmat6mult( size_t N, size_t steps )
    using ::blaze::rowMajor;
    using ::blaze::columnMajor;
 
-   typedef ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor>     RowMajorMatrixType;
-   typedef ::blaze::StaticMatrix<element_t,6UL,6UL,columnMajor>  ColumnMajorMatrixType;
-   typedef ::blaze::AlignedAllocator<RowMajorMatrixType>         RowMajorAllocatorType;
-   typedef ::blaze::AlignedAllocator<ColumnMajorMatrixType>      ColumnMajorAllocatorType;
+   using RowMajorMatrixType       = ::blaze::StaticMatrix<element_t,6UL,6UL,rowMajor>;
+   using ColumnMajorMatrixType    = ::blaze::StaticMatrix<element_t,6UL,6UL,columnMajor>;
+   using RowMajorAllocatorType    = ::blaze::AlignedAllocator<RowMajorMatrixType>;
+   using ColumnMajorAllocatorType = ::blaze::AlignedAllocator<ColumnMajorMatrixType>;
 
    ::blaze::setSeed( seed );
 
