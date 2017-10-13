@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <initializer_list>
+#include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/algorithms/Max.h>
 
 
@@ -70,7 +71,50 @@ using std::initializer_list;
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Determine the maximum number of columns specified by the given initializer list.
+/*!\brief Determines the number of non-zero elements contained in the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The number of non-zeros elements.
+*/
+template< typename Type >
+inline size_t nonZeros( initializer_list<Type> list ) noexcept
+{
+   size_t nonzeros( 0UL );
+
+   for( const Type& element : list ) {
+      if( !isDefault( element ) )
+         ++nonzeros;
+   }
+
+   return nonzeros;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the number of non-zero elements contained in the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The number of non-zeros elements.
+*/
+template< typename Type >
+inline size_t nonZeros( initializer_list< initializer_list<Type> > list ) noexcept
+{
+   size_t nonzeros( 0UL );
+
+   for( const auto& rowList : list ) {
+      nonzeros += nonZeros( rowList );
+   }
+
+   return nonzeros;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the maximum number of columns specified by the given initializer list.
 // \ingroup math
 //
 // \param list The given initializer list
@@ -80,8 +124,10 @@ template< typename Type >
 inline size_t determineColumns( initializer_list< initializer_list<Type> > list ) noexcept
 {
    size_t cols( 0UL );
+
    for( const auto& rowList : list )
       cols = max( cols, rowList.size() );
+
    return cols;
 }
 //*************************************************************************************************
