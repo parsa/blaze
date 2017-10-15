@@ -115,7 +115,7 @@
 //          <li> \ref openmp_parallelization </li>
 //          <li> \ref cpp_threads_parallelization </li>
 //          <li> \ref boost_threads_parallelization </li>
-//          <li> \ref hpx_threads_parallelization </li>
+//          <li> \ref hpx_parallelization </li>
 //          <li> \ref serial_execution </li>
 //       </ul>
 //    </li>
@@ -271,15 +271,15 @@
 // However, in order to achieve maximum performance a customization of at least the following
 // configuration files is required:
 //
-//  - <b><tt>./blaze/config/BLAS.h</tt></b>: Via this configuration file \b Blaze can be enabled
+//  - <b><tt><blaze/config/BLAS.h></tt></b>: Via this configuration file \b Blaze can be enabled
 //    to use a third-party BLAS library for several basic linear algebra functions (such as for
 //    instance dense matrix multiplications). In case no BLAS library is used, all linear algebra
 //    functions use the default implementations of the \b Blaze library and therefore BLAS is not a
 //    requirement for the compilation process. However, please note that performance may be limited.
-//  - <b><tt>./blaze/config/CacheSize.h</tt></b>: This file contains the hardware specific cache
+//  - <b><tt><blaze/config/CacheSize.h></tt></b>: This file contains the hardware specific cache
 //    settings. \b Blaze uses this information to optimize its cache usage. For maximum performance
 //    it is recommended to adapt these setting to a specific target architecture.
-//  - <b><tt>./blaze/config/Thresholds.h</tt></b>: This file contains all thresholds for the
+//  - <b><tt><blaze/config/Thresholds.h></tt></b>: This file contains all thresholds for the
 //    customization of the \b Blaze compute kernels. In order to tune the kernels for a specific
 //    architecture and to maximize performance it can be necessary to adjust the thresholds,
 //    especially for a parallel execution (see \ref shared_memory_parallelization).
@@ -6932,7 +6932,7 @@
    row( A, 3UL ) = subvector( x, 3UL, 10UL );
 
    // Setting x to a subvector of the result of the addition between y and the 1st row of A
-   x = subvector( y + row( A, 1UL ), 2UL, 5UL )
+   x = subvector( y + row( A, 1UL ), 2UL, 5UL );
    \endcode
 
 // \n \section views_subvectors_element_access Element Access
@@ -7117,7 +7117,7 @@
 // may have an arbitrary size (only restricted by the size of the underlying vector). However, in
 // contrast to vectors themselves, which are always properly aligned in memory and therefore can
 // provide maximum performance, this means that subvectors in general have to be considered to be
-// unaligned. This can be made explicit by the \a blaze::unaligned flag:
+// unaligned. This can be made explicit by the \c blaze::unaligned flag:
 
    \code
    using blaze::unaligned;
@@ -7144,7 +7144,7 @@
 // unaligned subvectors in all aspects, except that they may pose additional alignment restrictions
 // and therefore have less flexibility during creation, but don't suffer from performance penalties
 // and provide the same performance as the underlying vector. Aligned subvectors are created by
-// explicitly specifying the blaze::aligned flag:
+// explicitly specifying the \c blaze::aligned flag:
 
    \code
    using blaze::aligned;
@@ -7182,7 +7182,7 @@
 // Note that the discussed alignment restrictions are only valid for aligned dense subvectors.
 // In contrast, aligned sparse subvectors at this time don't pose any additional restrictions.
 // Therefore aligned and unaligned sparse subvectors are truly fully identical. Still, in case
-// the blaze::aligned flag is specified during setup, an aligned subvector is created:
+// the \c blaze::aligned flag is specified during setup, an aligned subvector is created:
 
    \code
    using blaze::aligned;
@@ -7368,17 +7368,17 @@
    // in the submatrix its value is modified.
    sm.set( 2UL, 5UL, -1.2 );
 
-   // An alternative for inserting elements into the submatrix is the \c insert() function. However,
+   // An alternative for inserting elements into the submatrix is the insert() function. However,
    // it inserts the element only in case the element is not already contained in the submatrix.
    sm.insert( 2UL, 6UL, 3.7 );
 
-   // Just as in the case of sparse matrices, elements can also be inserted via the \c append()
-   // function. In case of submatrices, \c append() also requires that the appended element's
+   // Just as in the case of sparse matrices, elements can also be inserted via the append()
+   // function. In case of submatrices, append() also requires that the appended element's
    // index is strictly larger than the currently largest non-zero index in the according row
-   // or column of the submatrix and that the according row's or column's capacity is large enough
-   // to hold the new element. Note however that due to the nature of a submatrix, which may be an
-   // alias to the middle of a sparse matrix, the \c append() function does not work as efficiently
-   // for a submatrix as it does for a matrix.
+   // or column of the submatrix and that the according row's or column's capacity is large
+   // enough to hold the new element. Note however that due to the nature of a submatrix, which
+   // may be an alias to the middle of a sparse matrix, the append() function does not work as
+   // efficiently for a submatrix as it does for a matrix.
    sm.reserve( 2UL, 10UL );
    sm.append( 2UL, 10UL, -2.1 );
    \endcode
@@ -7458,7 +7458,7 @@
 // may have an arbitrary extension (only restricted by the extension of the underlying matrix).
 // However, in contrast to matrices themselves, which are always properly aligned in memory and
 // therefore can provide maximum performance, this means that submatrices in general have to be
-// considered to be unaligned. This can be made explicit by the blaze::unaligned flag:
+// considered to be unaligned. This can be made explicit by the \c blaze::unaligned flag:
 
    \code
    using blaze::unaligned;
@@ -7485,7 +7485,7 @@
 // unaligned submatrices in all aspects, except that they may pose additional alignment restrictions
 // and therefore have less flexibility during creation, but don't suffer from performance penalties
 // and provide the same performance as the underlying matrix. Aligned submatrices are created by
-// explicitly specifying the blaze::aligned flag:
+// explicitly specifying the \c blaze::aligned flag:
 
    \code
    using blaze::aligned;
@@ -7523,7 +7523,7 @@
 // Note that the discussed alignment restrictions are only valid for aligned dense submatrices.
 // In contrast, aligned sparse submatrices at this time don't pose any additional restrictions.
 // Therefore aligned and unaligned sparse submatrices are truly fully identical. Still, in case
-// the blaze::aligned flag is specified during setup, an aligned submatrix is created:
+// the \c blaze::aligned flag is specified during setup, an aligned submatrix is created:
 
    \code
    using blaze::aligned;
@@ -7984,7 +7984,7 @@
 // \n \section views_columns_element_access Element Access
 // <hr>
 //
-// The elements of the dense column can be directly accessed with the subscript operator.
+// The elements of a column can be directly accessed with the subscript operator.
 
    \code
    blaze::DynamicMatrix<double,blaze::columnMajor> A;
@@ -8196,7 +8196,7 @@
    \endcode
 
 // Although \b Blaze performs the resulting matrix/vector multiplication as efficiently as possible
-// using a column-major storage order for matrix B would result in a more efficient evaluation.
+// using a column-major storage order for matrix \c B would result in a more efficient evaluation.
 //
 // \n Previous: \ref views_rows &nbsp; &nbsp; Next: \ref views_bands
 */
@@ -8261,10 +8261,10 @@
    static_assert( blaze::IsSame< decltype(diag1), decltype(diag2) >::value, "Non-identical types detected" );
    \endcode
 
-// Both the \c band() and the diagonal() function return an expression representing the band view.
-// The type of this expression depends on the given arguments, primarily the type of the matrix
-// and the compile time arguments. If the type is required, it can be determined via \c decltype
-// or via the \c BandExprTrait and \c DiagonalExprTrait class templates, respectively:
+// Both the \c band() and the \c diagonal() function return an expression representing the band
+// view. The type of this expression depends on the given arguments, primarily the type of the
+// matrix and the compile time arguments. If the type is required, it can be determined via
+// \c decltype or via the \c BandExprTrait and \c DiagonalExprTrait class templates, respectively:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
@@ -8970,7 +8970,7 @@
 //  - \ref openmp_parallelization
 //  - \ref cpp_threads_parallelization
 //  - \ref boost_threads_parallelization
-//  - \ref hpx_threads_parallelization
+//  - \ref hpx_parallelization
 //
 // When any of the shared memory parallelization techniques is activated, all arithmetic
 // operations on dense vectors and matrices (including additions, subtractions, multiplications,
@@ -8998,7 +8998,7 @@
 // the use of OpenMP on the command line:
 
    \code
-   -fopenmp   // GNU C++ compiler
+   -fopenmp   // GNU/Clang C++ compiler
    -openmp    // Intel C++ compiler
    /openmp    // Visual Studio
    \endcode
@@ -9053,7 +9053,7 @@
 // seriously decrease due to the overhead caused by the thread setup. However, in order to be
 // able to adjust the \b Blaze library to a specific system, it is possible to configure these
 // thresholds manually. All shared memory thresholds are contained within the configuration file
-// <tt>./blaze/config/Thresholds.h</tt>.
+// <tt><blaze/config/Thresholds.h></tt>.
 //
 // Please note that these thresholds are highly sensitiv to the used system architecture and
 // the shared memory parallelization technique (see also \ref cpp_threads_parallelization and
@@ -9296,7 +9296,7 @@
 // Otherwise, the performance could seriously decrease due to the overhead caused by the thread
 // setup. However, in order to be able to adjust the \b Blaze library to a specific system, it
 // is possible to configure these thresholds manually. All thresholds are contained within the
-// configuration file <tt>./blaze/config/Thresholds.h</tt>.
+// configuration file <tt><blaze/config/Thresholds.h></tt>.
 //
 // Please note that these thresholds are highly sensitiv to the used system architecture and
 // the shared memory parallelization technique. Therefore the default values cannot guarantee
@@ -9398,7 +9398,7 @@
 // As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
 // an operation in parallel (see \ref openmp_parallelization or \ref cpp_threads_parallelization).
 // All thresholds related to the Boost thread parallelization are also contained within the
-// configuration file <tt>./blaze/config/Thresholds.h</tt>.
+// configuration file <tt><blaze/config/Thresholds.h></tt>.
 //
 // Please note that these thresholds are highly sensitiv to the used system architecture and
 // the shared memory parallelization technique. Therefore the default values cannot guarantee
@@ -9407,13 +9407,13 @@
 // have been determined using the OpenMP parallelization and require individual adaption for
 // the Boost thread parallelization.
 //
-// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref hpx_threads_parallelization
+// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref hpx_parallelization
 */
 //*************************************************************************************************
 
 
-//**HPX Thread Parallelization*********************************************************************
-/*!\page hpx_threads_parallelization HPX Thread Parallelization
+//**HPX Parallelization****************************************************************************
+/*!\page hpx_parallelization HPX Parallelization
 //
 // \tableofcontents
 //
@@ -9472,7 +9472,7 @@
 // an operation in parallel (see for instance \ref openmp_parallelization). Only in case a given
 // operation is large enough and exceeds a certain threshold the operation is executed in parallel.
 // All thresholds related to the HPX-based parallelization are contained within the configuration
-// file <tt>./blaze/config/Thresholds.h</tt>.
+// file <tt><blaze/config/Thresholds.h></tt>.
 //
 // Please note that these thresholds are highly sensitiv to the used system architecture and
 // the shared memory parallelization technique. Therefore the default values cannot guarantee
@@ -9564,7 +9564,7 @@
 // In case the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION switch is set to 0, the shared memory
 // parallelization is deactivated altogether.
 //
-// \n Previous: \ref hpx_threads_parallelization &nbsp; &nbsp; Next: \ref serialization
+// \n Previous: \ref hpx_parallelization &nbsp; &nbsp; Next: \ref serialization
 */
 //*************************************************************************************************
 
@@ -9951,7 +9951,7 @@
 // \b Blaze kernels for small dense matrix/dense vector multiplications and the BLAS kernels
 // for large multiplications. All thresholds, including the thresholds for the OpenMP- and
 // thread-based parallelization, are contained within the configuration file
-// <tt>./blaze/config/Thresholds.h</tt>.
+// <tt><blaze/config/Thresholds.h></tt>.
 //
 //
 // \n \section padding Padding
