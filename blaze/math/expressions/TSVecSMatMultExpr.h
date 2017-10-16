@@ -58,7 +58,6 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -868,7 +867,7 @@ inline decltype(auto)
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT >
 struct Size< TSVecSMatMultExpr<VT,MT>, 0UL >
-   : public Columns<MT>
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

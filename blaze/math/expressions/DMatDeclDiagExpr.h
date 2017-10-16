@@ -55,7 +55,6 @@
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -1062,23 +1061,10 @@ template< typename MT, bool SO >
 struct Size< DMatDeclDiagExpr<MT,SO>, 0UL >
    : public Size<MT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatDeclDiagExpr<MT,SO> >
-   : public Columns<MT>
+struct Size< DMatDeclDiagExpr<MT,SO>, 1UL >
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

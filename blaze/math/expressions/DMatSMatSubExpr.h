@@ -54,7 +54,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -791,23 +790,10 @@ template< typename MT1, typename MT2, bool SO >
 struct Size< DMatSMatSubExpr<MT1,MT2,SO>, 0UL >
    : public Maximum< Size<MT1,0UL>, Size<MT2,0UL> >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
-struct Columns< DMatSMatSubExpr<MT1,MT2,SO> >
-   : public Maximum< Columns<MT1>, Columns<MT2> >
+struct Size< DMatSMatSubExpr<MT1,MT2,SO>, 1UL >
+   : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -61,7 +61,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -4820,7 +4819,7 @@ inline decltype(auto)
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename MT >
 struct Size< TDVecDMatMultExpr<VT,MT>, 0UL >
-   : public Columns<MT>
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

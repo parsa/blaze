@@ -53,7 +53,6 @@
 #include <blaze/math/expressions/SMatTransposer.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/Transformation.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -839,24 +838,11 @@ inline decltype(auto) trans( const SMatScalarMultExpr<MT,ST,SO>& sm )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct Size< SMatTransExpr<MT,SO>, 0UL >
-   : public Columns<MT>
+   : public Size<MT,1UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< SMatTransExpr<MT,SO> >
+struct Size< SMatTransExpr<MT,SO>, 1UL >
    : public Size<MT,0UL>
 {};
 /*! \endcond */

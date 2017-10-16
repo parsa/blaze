@@ -55,7 +55,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -2441,23 +2440,10 @@ template< typename MT, typename OP, bool SO >
 struct Size< DMatMapExpr<MT,OP,SO>, 0UL >
    : public Size<MT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Columns< DMatMapExpr<MT,OP,SO> >
-   : public Columns<MT>
+struct Size< DMatMapExpr<MT,OP,SO>, 1UL >
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

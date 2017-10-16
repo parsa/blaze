@@ -71,7 +71,6 @@
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -489,23 +488,10 @@ template< typename MT, bool SO, bool DF, bool NF >
 struct Size< SymmetricMatrix<MT,SO,DF,NF>, 0UL >
    : public Size<MT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
-struct Columns< SymmetricMatrix<MT,SO,DF,NF> >
-   : public Columns<MT>
+struct Size< SymmetricMatrix<MT,SO,DF,NF>, 1UL >
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

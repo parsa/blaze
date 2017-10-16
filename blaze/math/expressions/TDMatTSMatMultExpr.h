@@ -65,7 +65,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -2172,23 +2171,10 @@ template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct Size< TDMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF>, 0UL >
    : public Size<MT1,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
-struct Columns< TDMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Columns<MT2>
+struct Size< TDMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF>, 1UL >
+   : public Size<MT2,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

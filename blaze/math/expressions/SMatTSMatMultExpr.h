@@ -54,7 +54,6 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1232,23 +1231,10 @@ template< typename MT1, typename MT2 >
 struct Size< SMatTSMatMultExpr<MT1,MT2>, 0UL >
    : public Size<MT1,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Columns< SMatTSMatMultExpr<MT1,MT2> >
-   : public Columns<MT2>
+struct Size< SMatTSMatMultExpr<MT1,MT2>, 1UL >
+   : public Size<MT2,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

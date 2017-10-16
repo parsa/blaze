@@ -54,7 +54,6 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -1480,23 +1479,10 @@ template< typename MT, typename ST, bool SO >
 struct Size< SMatScalarMultExpr<MT,ST,SO>, 0UL >
    : public Size<MT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Columns< SMatScalarMultExpr<MT,ST,SO> >
-   : public Columns<MT>
+struct Size< SMatScalarMultExpr<MT,ST,SO>, 1UL >
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

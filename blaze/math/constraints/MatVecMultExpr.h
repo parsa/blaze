@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
@@ -109,9 +108,9 @@ namespace blaze {
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_MATVECMULTEXPR(T1,T2) \
    static_assert( ::blaze::And< ::blaze::IsMatrix<T1> \
                               , ::blaze::IsColumnVector<T2> \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::PtrdiffT<-1L> > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,1UL>, ::blaze::PtrdiffT<-1L> > \
                                            , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Size<T2,0UL> > > \
+                                           , ::blaze::Equal< ::blaze::Size<T1,1UL>, ::blaze::Size<T2,0UL> > > \
                               >::value, "Invalid matrix/vector multiplication expression detected" )
 //*************************************************************************************************
 

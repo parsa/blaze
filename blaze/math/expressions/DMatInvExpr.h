@@ -50,7 +50,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatInvExpr.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -490,23 +489,10 @@ template< typename MT, bool SO >
 struct Size< DMatInvExpr<MT,SO>, 0UL >
    : public Size<MT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatInvExpr<MT,SO> >
-   : public Columns<MT>
+struct Size< DMatInvExpr<MT,SO>, 1UL >
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

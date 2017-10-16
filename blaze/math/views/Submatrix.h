@@ -67,7 +67,6 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -2934,22 +2933,9 @@ template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, s
 struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 0UL >
    : public PtrdiffT<M>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct Columns< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 1UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */

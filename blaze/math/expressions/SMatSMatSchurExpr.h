@@ -55,7 +55,6 @@
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1031,23 +1030,10 @@ template< typename MT1, typename MT2 >
 struct Size< SMatSMatSchurExpr<MT1,MT2>, 0UL >
    : public Maximum< Size<MT1,0UL>, Size<MT2,0UL> >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
-struct Columns< SMatSMatSchurExpr<MT1,MT2> >
-   : public Maximum< Columns<MT1>, Columns<MT2> >
+struct Size< SMatSMatSchurExpr<MT1,MT2>, 1UL >
+   : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
 {};
 /*! \endcond */
 //*************************************************************************************************

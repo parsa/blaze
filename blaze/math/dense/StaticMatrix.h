@@ -71,7 +71,6 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -6384,22 +6383,9 @@ template< typename T, size_t M, size_t N, bool SO >
 struct Size< StaticMatrix<T,M,N,SO>, 0UL >
    : public PtrdiffT<M>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
-struct Columns< StaticMatrix<T,M,N,SO> >
+struct Size< StaticMatrix<T,M,N,SO>, 1UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */

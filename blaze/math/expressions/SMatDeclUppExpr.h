@@ -54,7 +54,6 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DeclUppTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -1061,26 +1060,13 @@ inline decltype(auto) declupp( const SMatScalarMultExpr<MT,ST,SO>& sm )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Size< SMatDeclUppExpr<MT,SO>,0UL >
+struct Size< SMatDeclUppExpr<MT,SO>, 0UL >
    : public Size<MT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< SMatDeclUppExpr<MT,SO> >
-   : public Columns<MT>
+struct Size< SMatDeclUppExpr<MT,SO>, 1UL >
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

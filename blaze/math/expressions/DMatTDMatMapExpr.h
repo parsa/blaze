@@ -57,7 +57,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -1261,23 +1260,10 @@ template< typename MT1, typename MT2, typename OP >
 struct Size< DMatTDMatMapExpr<MT1,MT2,OP>, 0UL >
    : public Maximum< Size<MT1,0UL>, Size<MT2,0UL> >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename OP >
-struct Columns< DMatTDMatMapExpr<MT1,MT2,OP> >
-   : public Maximum< Columns<MT1>, Columns<MT2> >
+struct Size< DMatTDMatMapExpr<MT1,MT2,OP>, 1UL >
+   : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
 {};
 /*! \endcond */
 //*************************************************************************************************

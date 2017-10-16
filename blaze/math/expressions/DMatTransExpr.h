@@ -54,7 +54,6 @@
 #include <blaze/math/expressions/Transformation.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/simd/SIMDTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -875,24 +874,11 @@ inline decltype(auto) trans( const DMatScalarMultExpr<MT,ST,SO>& dm )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct Size< DMatTransExpr<MT,SO>, 0UL >
-   : public Columns<MT>
+   : public Size<MT,1UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< DMatTransExpr<MT,SO> >
+struct Size< DMatTransExpr<MT,SO>, 1UL >
    : public Size<MT,0UL>
 {};
 /*! \endcond */

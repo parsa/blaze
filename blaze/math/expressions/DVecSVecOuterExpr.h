@@ -62,7 +62,6 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1474,22 +1473,9 @@ template< typename VT1, typename VT2 >
 struct Size< DVecSVecOuterExpr<VT1,VT2>, 0UL >
    : public Size<VT1,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct Columns< DVecSVecOuterExpr<VT1,VT2> >
+struct Size< DVecSVecOuterExpr<VT1,VT2>, 1UL >
    : public Size<VT2,0UL>
 {};
 /*! \endcond */

@@ -48,7 +48,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -875,23 +874,10 @@ template< typename MT, bool SO >
 struct Size< SMatSerialExpr<MT,SO>, 0UL >
    : public Size<MT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  COLUMNS SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Columns< SMatSerialExpr<MT,SO> >
-   : public Columns<MT>
+struct Size< SMatSerialExpr<MT,SO>, 1UL >
+   : public Size<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
