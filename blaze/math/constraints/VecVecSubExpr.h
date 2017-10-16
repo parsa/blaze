@@ -110,9 +110,9 @@ namespace blaze {
                                                          , ::blaze::IsRowVector<T2> > \
                                            , ::blaze::And< ::blaze::IsColumnVector<T1> \
                                                          , ::blaze::IsColumnVector<T2> > > \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Size<T2> > > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > > \
                               >::value, "Invalid vector/vector subtraction expression detected" )
 //*************************************************************************************************
 

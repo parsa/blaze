@@ -109,9 +109,9 @@ namespace blaze {
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_TVECMATMULTEXPR(T1,T2) \
    static_assert( ::blaze::And< ::blaze::IsRowVector<T1> \
                               , ::blaze::IsMatrix<T2> \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::PtrdiffT<-1L> > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
                                            , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Rows<T2> > > \
+                                           , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Rows<T2> > > \
                               >::value, "Invalid vector/matrix multiplication expression detected" )
 //*************************************************************************************************
 

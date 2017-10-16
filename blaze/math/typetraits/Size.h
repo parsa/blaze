@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/PtrdiffT.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -52,25 +53,30 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time evaluation of the size of a vector.
+/*!\brief Compile time evaluation of the size of vectors and matrices.
 // \ingroup math_type_traits
 //
-// The Size type trait evaluates the size of the given vector type at compile time. In case the
-// given type \a T is a vector type with a fixed size (e.g. StaticVector), the \a value member
-// constant is set to the according size. In all other cases, \a value is set to -1.
+// The Size type trait evaluates the size of a particular dimension of the given vector or matrix
+// type at compile time. In case the given type \a T is a vector or matrix type with a fixed size
+// (e.g. StaticVector or StaticMatrix) and \a N is a valid dimension, the \a value member constant
+// is set to the according size. In all other cases, \a value is set to -1.
 
    \code
    using blaze::StaticVector;
+   using blaze::StaticMatrix;
    using blaze::HybridVector;
    using blaze::DynamicVector;
 
-   blaze::Size< StaticVector<int,3UL> >::value  // Evaluates to 3
-   blaze::Size< HybridVector<int,3UL> >::value  // Evaluates to -1; Only maximum size is fixed!
-   blaze::Size< DynamicVector<int> >::value     // Evaluates to -1; Size not fixed at compile time!
-   blaze::Size< int >::value                    // Evaluates to -1
+   blaze::Size< StaticVector<int,3UL>, 0UL >::value      // Evaluates to 3
+   blaze::Size< StaticMatrix<int,2UL,4UL>, 0UL >::value  // Evaluates to 2 (the number of rows)
+   blaze::Size< StaticMatrix<int,2UL,4UL>, 1UL >::value  // Evaluates to 4 (the number of columns)
+   blaze::Size< StaticVector<int,3UL>, 1UL >::value      // Evaluates to -1; 1 is not a valid vector dimension!
+   blaze::Size< HybridVector<int,3UL>, 0UL >::value      // Evaluates to -1; Only maximum size is fixed!
+   blaze::Size< DynamicVector<int>, 0UL >::value         // Evaluates to -1; Size not fixed at compile time!
+   blaze::Size< int, 0UL >::value                        // Evaluates to -1
    \endcode
 */
-template< typename T >
+template< typename T, size_t N >
 struct Size
    : public PtrdiffT<-1L>
 {};
@@ -82,9 +88,9 @@ struct Size
 /*!\brief Specialization of the Size type trait for const types.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct Size< const T >
-   : public Size<T>
+template< typename T, size_t N >
+struct Size< const T, N >
+   : public Size<T,N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -95,9 +101,9 @@ struct Size< const T >
 /*!\brief Specialization of the Size type trait for volatile types.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct Size< volatile T >
-   : public Size<T>
+template< typename T, size_t N >
+struct Size< volatile T, N >
+   : public Size<T,N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -108,9 +114,9 @@ struct Size< volatile T >
 /*!\brief Specialization of the Size type trait for cv qualified types.
 // \ingroup math_type_traits
 */
-template< typename T >
-struct Size< const volatile T >
-   : public Size<T>
+template< typename T, size_t N >
+struct Size< const volatile T, N >
+   : public Size<T,N>
 {};
 /*! \endcond */
 //*************************************************************************************************

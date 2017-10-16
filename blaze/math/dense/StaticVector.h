@@ -2686,7 +2686,7 @@ inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexc
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
-struct Size< StaticVector<T,N,TF> >
+struct Size< StaticVector<T,N,TF>, 0UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */

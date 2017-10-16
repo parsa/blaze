@@ -1962,7 +1962,7 @@ inline decltype(auto)
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
 struct Rows< DVecDVecOuterExpr<VT1,VT2> >
-   : public Size<VT1>
+   : public Size<VT1,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1980,7 +1980,7 @@ struct Rows< DVecDVecOuterExpr<VT1,VT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
 struct Columns< DVecDVecOuterExpr<VT1,VT2> >
-   : public Size<VT2>
+   : public Size<VT2,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

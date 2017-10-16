@@ -1001,7 +1001,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
-struct Size< TSMatDVecMultExpr<MT,VT> >
+struct Size< TSMatDVecMultExpr<MT,VT>, 0UL >
    : public Rows<MT>
 {};
 /*! \endcond */

@@ -110,8 +110,8 @@ namespace blaze {
    static_assert( ::blaze::And< ::blaze::IsMatrix<T1> \
                               , ::blaze::IsColumnVector<T2> \
                               , ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Size<T2> > > \
+                                           , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Size<T2,0UL> > > \
                               >::value, "Invalid matrix/vector multiplication expression detected" )
 //*************************************************************************************************
 

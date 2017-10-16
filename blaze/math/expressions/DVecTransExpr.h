@@ -878,8 +878,8 @@ inline decltype(auto) trans( const DVecScalarMultExpr<VT,ST,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecTransExpr<VT,TF> >
-   : public Size<VT>
+struct Size< DVecTransExpr<VT,TF>, 0UL >
+   : public Size<VT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

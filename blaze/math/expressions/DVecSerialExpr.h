@@ -797,8 +797,8 @@ inline decltype(auto) serial( const DVecSerialExpr<VT,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecSerialExpr<VT,TF> >
-   : public Size<VT>
+struct Size< DVecSerialExpr<VT,TF>, 0UL >
+   : public Size<VT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -2427,8 +2427,8 @@ inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename OP, bool TF >
-struct Size< DVecMapExpr<VT,OP,TF> >
-   : public Size<VT>
+struct Size< DVecMapExpr<VT,OP,TF>, 0UL >
+   : public Size<VT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

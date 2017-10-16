@@ -775,8 +775,8 @@ inline decltype(auto) eval( const DVecEvalExpr<VT,TF>& dv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
-struct Size< DVecEvalExpr<VT,TF> >
-   : public Size<VT>
+struct Size< DVecEvalExpr<VT,TF>, 0UL >
+   : public Size<VT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

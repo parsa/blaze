@@ -65,9 +65,9 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_EQUAL_SIZE(T1,T2) \
-   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Size<T2> > \
+   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > \
                              >::value, "Invalid size detected" )
 //*************************************************************************************************
 
@@ -90,9 +90,9 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_EQUAL_SIZE(T1,T2) \
-   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Equal< ::blaze::Size<T2>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Not< ::blaze::Equal< ::blaze::Size<T1>, ::blaze::Size<T2> > > \
+   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Not< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > > \
                              >::value, "Invalid size detected" )
 //*************************************************************************************************
 

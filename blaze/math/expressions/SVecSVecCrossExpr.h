@@ -561,7 +561,7 @@ inline decltype(auto) cross( const SparseVector<VT1,TF>& lhs, const SparseVector
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
-struct Size< SVecSVecCrossExpr<VT1,VT2,TF> >
+struct Size< SVecSVecCrossExpr<VT1,VT2,TF>, 0UL >
    : public PtrdiffT<3L>
 {};
 /*! \endcond */

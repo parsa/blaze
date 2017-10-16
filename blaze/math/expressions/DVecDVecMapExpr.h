@@ -1186,8 +1186,8 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename OP, bool TF >
-struct Size< DVecDVecMapExpr<VT1,VT2,OP,TF> >
-   : public Maximum< Size<VT1>, Size<VT2> >
+struct Size< DVecDVecMapExpr<VT1,VT2,OP,TF>, 0UL >
+   : public Maximum< Size<VT1,0UL>, Size<VT2,0UL> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -581,15 +581,15 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
 //
 // \param list The initializer list.
 //
-// This assignment operator provides the option to explicitly initialize the elements of the
-// vector within a constructor call:
+// This constructor provides the option to explicitly initialize the elements of the vector
+// within a constructor call:
 
    \code
    blaze::DynamicVector<double> v1{ 4.2, 6.3, -1.2 };
    \endcode
 
 // The vector is sized according to the size of the initializer list and all its elements are
-// initialized by the values of the given initializer list.
+// initialized by the non-zero elements of the given initializer list.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -611,8 +611,8 @@ inline DynamicVector<Type,TF>::DynamicVector( initializer_list<Type> list )
 // \param n The size of the vector.
 // \param array Dynamic array for the initialization.
 //
-// This assignment operator offers the option to directly initialize the elements of the vector
-// with a dynamic array:
+// This constructor offers the option to directly initialize the elements of the vector with a
+// dynamic array:
 
    \code
    double* array = new double[4];

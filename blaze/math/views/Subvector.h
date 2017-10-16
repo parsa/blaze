@@ -1827,7 +1827,7 @@ inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t I, size_t N >
-struct Size< Subvector<VT,AF,TF,DF,I,N> >
+struct Size< Subvector<VT,AF,TF,DF,I,N>, 0UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */

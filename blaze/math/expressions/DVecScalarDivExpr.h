@@ -1210,8 +1210,8 @@ inline decltype(auto) operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 sc
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
-struct Size< DVecScalarDivExpr<VT,ST,TF> >
-   : public Size<VT>
+struct Size< DVecScalarDivExpr<VT,ST,TF>, 0UL >
+   : public Size<VT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -560,7 +560,7 @@ inline decltype(auto) cross( const DenseVector<VT1,TF>& lhs, const DenseVector<V
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
-struct Size< DVecDVecCrossExpr<VT1,VT2,TF> >
+struct Size< DVecDVecCrossExpr<VT1,VT2,TF>, 0UL >
    : public PtrdiffT<3L>
 {};
 /*! \endcond */
