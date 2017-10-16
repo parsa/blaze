@@ -69,7 +69,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
@@ -1004,7 +1003,7 @@ inline decltype(auto)
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
 struct Size< DMatSVecMultExpr<MT,VT>, 0UL >
-   : public Rows<MT>
+   : public Size<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

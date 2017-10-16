@@ -68,7 +68,7 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -820,7 +820,7 @@ class StrictlyUpperMatrix<MT,SO,true>
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
-   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
+   BLAZE_STATIC_ASSERT( ( Size<MT,0UL>::value == Columns<MT>::value ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2424,7 +2424,7 @@ inline constexpr size_t StrictlyUpperMatrix<MT,SO,true>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
-   return maxNonZeros( Rows<MT>::value );
+   return maxNonZeros( Size<MT,0UL>::value );
 }
 /*! \endcond */
 //*************************************************************************************************

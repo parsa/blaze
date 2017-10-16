@@ -67,7 +67,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -2325,15 +2325,15 @@ inline decltype(auto) imag( const SMatMapExpr<MT,Imag,SO>& sm )
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Rows< SMatMapExpr<MT,OP,SO> >
-   : public Rows<MT>
+struct Size< SMatMapExpr<MT,OP,SO>, 0UL >
+   : public Size<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

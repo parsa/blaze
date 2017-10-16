@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
@@ -905,14 +904,14 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
-struct Rows< SVecSVecOuterExpr<VT1,VT2> >
+struct Size< SVecSVecOuterExpr<VT1,VT2>, 0UL >
    : public Size<VT1,0UL>
 {};
 /*! \endcond */

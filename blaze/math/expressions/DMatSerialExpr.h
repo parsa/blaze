@@ -59,7 +59,7 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -858,15 +858,15 @@ inline decltype(auto) serial( const DMatSerialExpr<MT,SO>& dm )
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
-struct Rows< DMatSerialExpr<MT,SO> >
-   : public Rows<MT>
+struct Size< DMatSerialExpr<MT,SO>, 0UL >
+   : public Size<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

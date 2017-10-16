@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
@@ -65,9 +65,9 @@ namespace blaze {
 // no compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_HAVE_EQUAL_NUMBER_OF_ROWS(T1,T2) \
-   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::Rows<T2> > \
+   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > \
                              >::value, "Invalid number of rows detected" )
 //*************************************************************************************************
 
@@ -90,9 +90,9 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_HAVE_EQUAL_NUMBER_OF_ROWS(T1,T2) \
-   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::PtrdiffT<-1L> > \
-                             , ::blaze::Not< ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::Rows<T2> > > \
+   static_assert( ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                             , ::blaze::Not< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > > \
                              >::value, "Invalid number of rows detected" )
 //*************************************************************************************************
 

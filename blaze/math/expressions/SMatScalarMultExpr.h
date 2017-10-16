@@ -66,7 +66,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -1470,15 +1470,15 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename ST, bool SO >
-struct Rows< SMatScalarMultExpr<MT,ST,SO> >
-   : public Rows<MT>
+struct Size< SMatScalarMultExpr<MT,ST,SO>, 0UL >
+   : public Size<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

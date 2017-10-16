@@ -43,7 +43,6 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsTVecMatMultExpr.h>
-#include <blaze/math/typetraits/Rows.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Equal.h>
@@ -110,8 +109,8 @@ namespace blaze {
    static_assert( ::blaze::And< ::blaze::IsRowVector<T1> \
                               , ::blaze::IsMatrix<T2> \
                               , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Rows<T2> > > \
+                                           , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > > \
                               >::value, "Invalid vector/matrix multiplication expression detected" )
 //*************************************************************************************************
 

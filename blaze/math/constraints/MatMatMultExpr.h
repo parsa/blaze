@@ -43,7 +43,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Or.h>
@@ -109,8 +109,8 @@ namespace blaze {
    static_assert( ::blaze::And< ::blaze::IsMatrix<T1> \
                               , ::blaze::IsMatrix<T2> \
                               , ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Rows<T2> > > \
+                                           , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Size<T2,0UL> > > \
                               >::value, "Invalid matrix/matrix multiplication expression detected" )
 //*************************************************************************************************
 

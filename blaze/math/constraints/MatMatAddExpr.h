@@ -43,7 +43,7 @@
 #include <blaze/math/typetraits/Columns.h>
 #include <blaze/math/typetraits/IsMatMatAddExpr.h>
 #include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Or.h>
@@ -108,9 +108,9 @@ namespace blaze {
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATADDEXPR(T1,T2) \
    static_assert( ::blaze::And< ::blaze::IsMatrix<T1> \
                               , ::blaze::IsMatrix<T2> \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Rows<T2>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Rows<T1>, ::blaze::Rows<T2> > > \
+                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
+                                           , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > > \
                               , ::blaze::Or< ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::PtrdiffT<-1L> > \
                                            , ::blaze::Equal< ::blaze::Columns<T2>, ::blaze::PtrdiffT<-1L> > \
                                            , ::blaze::Equal< ::blaze::Columns<T1>, ::blaze::Columns<T2> > > \

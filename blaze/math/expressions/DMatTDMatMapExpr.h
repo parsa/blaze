@@ -70,7 +70,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -1251,15 +1251,15 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename OP >
-struct Rows< DMatTDMatMapExpr<MT1,MT2,OP> >
-   : public Maximum< Rows<MT1>, Rows<MT2> >
+struct Size< DMatTDMatMapExpr<MT1,MT2,OP>, 0UL >
+   : public Maximum< Size<MT1,0UL>, Size<MT2,0UL> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -68,7 +68,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -2431,15 +2431,15 @@ inline decltype(auto) real( const DMatMapExpr<MT,Real,SO>& dm )
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
-struct Rows< DMatMapExpr<MT,OP,SO> >
-   : public Rows<MT>
+struct Size< DMatMapExpr<MT,OP,SO>, 0UL >
+   : public Size<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -72,7 +72,7 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -807,7 +807,7 @@ class UniLowerMatrix<MT,SO,true>
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
-   BLAZE_STATIC_ASSERT( Rows<MT>::value == Columns<MT>::value );
+   BLAZE_STATIC_ASSERT( ( Size<MT,0UL>::value == Columns<MT>::value ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -2391,7 +2391,7 @@ inline constexpr size_t UniLowerMatrix<MT,SO,true>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
-   return maxNonZeros( Rows<MT>::value );
+   return maxNonZeros( Size<MT,0UL>::value );
 }
 /*! \endcond */
 //*************************************************************************************************

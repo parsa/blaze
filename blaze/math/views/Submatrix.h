@@ -76,7 +76,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/submatrix/Dense.h>
@@ -2924,14 +2924,14 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& dm )
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct Rows< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 0UL >
    : public PtrdiffT<M>
 {};
 /*! \endcond */

@@ -84,7 +84,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -1936,15 +1936,15 @@ inline MT& derestrict( UniUpperMatrix<MT,SO,DF>& m )
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
-struct Rows< UniUpperMatrix<MT,SO,DF> >
-   : public Rows<MT>
+struct Size< UniUpperMatrix<MT,SO,DF>, 0UL >
+   : public Size<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -90,7 +90,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Rows.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Blocking.h>
@@ -13420,15 +13420,15 @@ inline decltype(auto) decldiag( const TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm
 
 //=================================================================================================
 //
-//  ROWS SPECIALIZATIONS
+//  SIZE SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
-struct Rows< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Rows<MT1>
+struct Size< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, 0UL >
+   : public Size<MT1,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
