@@ -60,6 +60,7 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
+#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
@@ -6648,6 +6649,25 @@ template< typename T, bool AF, bool PF, bool SO, size_t... CCAs >
 struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
 {
    using Type = DynamicVector<T,false>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool AF, bool PF, bool SO, size_t... CCAs >
+struct ColumnsTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
+{
+   using Type = DynamicMatrix<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************

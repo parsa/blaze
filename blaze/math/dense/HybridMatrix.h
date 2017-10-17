@@ -60,6 +60,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
+#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
@@ -7265,6 +7266,31 @@ template< typename T, size_t M, size_t N, bool SO, size_t... CCAs >
 struct ColumnTrait< HybridMatrix<T,M,N,SO>, CCAs... >
 {
    using Type = HybridVector<T,M,false>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t M, size_t N, bool SO, size_t... CCAs >
+struct ColumnsTrait< HybridMatrix<T,M,N,SO>, CCAs... >
+{
+   using Type = HybridMatrix<T,M,sizeof...(CCAs),true>;
+};
+
+template< typename T, size_t M, size_t N, bool SO >
+struct ColumnsTrait< HybridMatrix<T,M,N,SO> >
+{
+   using Type = HybridMatrix<T,M,N,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
