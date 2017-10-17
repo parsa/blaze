@@ -60,6 +60,7 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -6655,6 +6656,25 @@ template< typename T, bool SO, size_t... CRAs >
 struct RowTrait< CompressedMatrix<T,SO>, CRAs... >
 {
    using Type = CompressedVector<T,true>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, size_t... CRAs >
+struct RowsTrait< CompressedMatrix<T,SO>, CRAs... >
+{
+   using Type = CompressedMatrix<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************
