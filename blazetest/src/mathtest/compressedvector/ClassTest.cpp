@@ -179,6 +179,31 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
+   // List initialization
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector initializer list constructor (size 5)";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 2, 0, 4, 0 };
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != 0 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 || vec[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 2 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Copy constructor
    //=====================================================================================
 
@@ -195,10 +220,7 @@ void ClassTest::testConstructors()
    {
       test_ = "CompressedVector copy constructor (size 7)";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec1{ 1, 2, 0, 4, 0, 0, 0 };
       blaze::CompressedVector<int,blaze::rowVector> vec2( vec1 );
 
       checkSize    ( vec2, 7UL );
@@ -234,10 +256,7 @@ void ClassTest::testConstructors()
    {
       test_ = "CompressedVector move constructor (size 7)";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec1{ 1, 2, 0, 4, 0, 0, 0 };
       blaze::CompressedVector<int,blaze::rowVector> vec2( std::move( vec1 ) );
 
       checkSize    ( vec2, 7UL );
@@ -289,10 +308,7 @@ void ClassTest::testConstructors()
    {
       test_ = "CompressedVector sparse vector assignment";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 7UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0, 0, 0 };
       blaze::CompressedVector<int,blaze::rowVector> vec2( trans( vec1 ) );
 
       checkSize    ( vec2, 7UL );
@@ -324,16 +340,39 @@ void ClassTest::testConstructors()
 void ClassTest::testAssignment()
 {
    //=====================================================================================
+   // List assignment
+   //=====================================================================================
+
+   {
+      test_ = "CompressedVector initializer list assignment";
+
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+      vec = { 0, 2, 0, 4, 0 };
+
+      checkSize    ( vec, 5UL );
+      checkCapacity( vec, 2UL );
+      checkNonZeros( vec, 2UL );
+
+      if( vec[0] != 0 || vec[1] != 2 || vec[2] != 0 || vec[3] != 4 || vec[4] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 0 2 0 4 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Copy assignment
    //=====================================================================================
 
    {
       test_ = "CompressedVector copy assignment";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec1{ 1, 2, 0, 4, 0, 0, 0 };
       blaze::CompressedVector<int,blaze::rowVector> vec2;
       vec2 = vec1;
 
@@ -388,13 +427,8 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector move assignment";
 
-      blaze::CompressedVector<int,blaze::rowVector> vec1( 7UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
-
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 4UL, 1UL );
-      vec2[2] = 11;
+      blaze::CompressedVector<int,blaze::rowVector> vec1{ 1, 2, 0, 4, 0, 0, 0 };
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 0, 0, 11, 0 };
 
       vec2 = std::move( vec1 );
 
@@ -475,10 +509,7 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector sparse vector assignment";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 7UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0, 0, 0 };
       blaze::CompressedVector<int,blaze::rowVector> vec2;
       vec2 = trans( vec1 );
 
@@ -546,10 +577,7 @@ void ClassTest::testAddAssign()
       test_ = "CompressedVector dense vector addition assignment";
 
       blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
-      vec2[0] = 1;
-      vec2[1] = 2;
-      vec2[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 1, 2, 0, 4, 0 };
 
       vec2 += vec1;
 
@@ -575,13 +603,8 @@ void ClassTest::testAddAssign()
    {
       test_ = "CompressedVector sparse vector addition assignment";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
-      vec2[1] = 5;
-      vec2[2] = 6;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0 };
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 0, 5, 6, 0, 0 };
 
       vec2 += trans( vec1 );
 
@@ -621,10 +644,7 @@ void ClassTest::testSubAssign()
       test_ = "CompressedVector dense vector subtraction assignment";
 
       blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
-      vec2[0] = 1;
-      vec2[1] = 2;
-      vec2[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 1, 2, 0, 4, 0 };
 
       vec2 -= vec1;
 
@@ -650,13 +670,8 @@ void ClassTest::testSubAssign()
    {
       test_ = "CompressedVector sparse vector subtraction assignment";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
-      vec2[1] = 5;
-      vec2[2] = 6;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0 };
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 0, 5, 6, 0, 0 };
 
       vec2 -= trans( vec1 );
 
@@ -696,10 +711,7 @@ void ClassTest::testMultAssign()
       test_ = "CompressedVector dense vector multiplication assignment";
 
       blaze::DynamicVector<int,blaze::rowVector> vec1{ 10, 11, 12, 0, 13 };
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
-      vec2[0] = 1;
-      vec2[1] = 2;
-      vec2[3] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 1, 2, 0, 4, 0 };
 
       vec2 *= vec1;
 
@@ -725,13 +737,8 @@ void ClassTest::testMultAssign()
    {
       test_ = "CompressedVector sparse vector multiplication assignment";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
-      vec2[1] = 5;
-      vec2[2] = 6;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0 };
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 0, 5, 6, 0, 0 };
 
       vec2 *= trans( vec1 );
 
@@ -771,10 +778,7 @@ void ClassTest::testDivAssign()
       test_ = "CompressedVector dense vector division assignment";
 
       blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 2, -3, 4, 1 };
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 3UL );
-      vec2[0] =  2;
-      vec2[2] = -3;
-      vec2[3] =  8;
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 2, 0, -3, 8, 0 };
 
       vec2 /= vec1;
 
@@ -814,9 +818,7 @@ void ClassTest::testCrossAssign()
       test_ = "CompressedVector dense vector cross product assignment";
 
       blaze::DynamicVector<int,blaze::rowVector> vec1{ 1, 0, -2 };
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 3UL, 2UL );
-      vec2[0] =  2;
-      vec2[2] = -1;
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 2, 0, -1 };
 
       vec2 %= vec1;
 
@@ -842,12 +844,8 @@ void ClassTest::testCrossAssign()
    {
       test_ = "CompressedVector sparse vector cross product assignment";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 3UL, 2UL );
-      vec1[0] =  1;
-      vec1[2] = -2;
-      blaze::CompressedVector<int,blaze::rowVector> vec2( 3UL, 2UL );
-      vec2[0] =  2;
-      vec2[2] = -1;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 0, -2 };
+      blaze::CompressedVector<int,blaze::rowVector> vec2{ 2, 0, -1 };
 
       vec2 %= trans( vec1 );
 
@@ -886,10 +884,7 @@ void ClassTest::testScaling()
    {
       test_ = "CompressedVector self-scaling (v*=s)";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0 };
 
       vec1 *= 2;
 
@@ -915,10 +910,7 @@ void ClassTest::testScaling()
    {
       test_ = "CompressedVector self-scaling (v=v*s)";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0 };
 
       vec1 = vec1 * 2;
 
@@ -944,10 +936,7 @@ void ClassTest::testScaling()
    {
       test_ = "CompressedVector self-scaling (v=v*s)";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 1;
-      vec1[1] = 2;
-      vec1[3] = 4;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 1, 2, 0, 4, 0 };
 
       vec1 = 2 * vec1;
 
@@ -973,10 +962,7 @@ void ClassTest::testScaling()
    {
       test_ = "CompressedVector self-scaling (v/=s)";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 2;
-      vec1[1] = 4;
-      vec1[3] = 8;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 2, 4, 0, 8, 0 };
 
       vec1 /= 2;
 
@@ -1002,10 +988,7 @@ void ClassTest::testScaling()
    {
       test_ = "CompressedVector self-scaling (v=v/s)";
 
-      blaze::CompressedVector<int,blaze::columnVector> vec1( 5UL, 3UL );
-      vec1[0] = 2;
-      vec1[1] = 4;
-      vec1[3] = 8;
+      blaze::CompressedVector<int,blaze::columnVector> vec1{ 2, 4, 0, 8, 0 };
 
       vec1 = vec1 / 2;
 
@@ -1032,10 +1015,7 @@ void ClassTest::testScaling()
       test_ = "CompressedVector::scale() (int)";
 
       // Initialization check
-      blaze::CompressedVector<int,blaze::rowVector> vec( 6UL, 3UL );
-      vec[1] = 1;
-      vec[3] = 2;
-      vec[5] = 3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 1, 0, 2, 0, 3 };
 
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 3UL );
@@ -1451,9 +1431,7 @@ void ClassTest::testIterator()
    typedef VectorType::Iterator          Iterator;
    typedef VectorType::ConstIterator     ConstIterator;
 
-   VectorType vec( 4UL, 2UL );
-   vec[1] = -2;
-   vec[2] = -3;
+   VectorType vec{ 0, -2, -3, 0 };
 
    // Testing the Iterator default constructor
    {
@@ -1734,11 +1712,7 @@ void ClassTest::testReset()
    // Resetting an initialized vector
    {
       // Initialization check
-      blaze::CompressedVector<int,blaze::rowVector> vec( 11UL, 4UL );
-      vec[1] = 1;
-      vec[3] = 2;
-      vec[7] = 3;
-      vec[9] = 4;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 1, 0, 2, 0, 0, 0, 3, 0, 4, 0 };
 
       checkSize    ( vec, 11UL );
       checkCapacity( vec,  4UL );
@@ -1808,10 +1782,7 @@ void ClassTest::testClear()
    // Clearing an initialized vector
    {
       // Initialization check
-      blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 3UL );
-      vec[0] = 1;
-      vec[7] = 2;
-      vec[8] = 3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 0, 0, 0, 0, 0, 2, 3 };
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 3UL );
@@ -2069,15 +2040,8 @@ void ClassTest::testSwap()
 {
    test_ = "CompressedVector swap";
 
-   blaze::CompressedVector<int,blaze::rowVector> vec1( 12UL, 4UL );
-   vec1[ 1] = 1;
-   vec1[ 4] = 2;
-   vec1[ 7] = 3;
-   vec1[10] = 4;
-
-   blaze::CompressedVector<int,blaze::rowVector> vec2( 5UL, 2UL );
-   vec2[0] = 4;
-   vec2[4] = 2;
+   blaze::CompressedVector<int,blaze::rowVector> vec1{ 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0 };
+   blaze::CompressedVector<int,blaze::rowVector> vec2{ 4, 0, 0, 0, 2 };
 
    swap( vec1, vec2 );
 
@@ -2531,12 +2495,7 @@ void ClassTest::testErase()
       test_ = "CompressedVector::erase( size_t )";
 
       // Initialization check
-      blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 5UL );
-      vec[0] = 1;
-      vec[2] = 2;
-      vec[5] = 3;
-      vec[7] = 4;
-      vec[8] = 5;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );
@@ -2633,12 +2592,7 @@ void ClassTest::testErase()
       typedef VectorType::Iterator  Iterator;
 
       // Initialization check
-      VectorType vec( 9UL, 5UL );
-      vec[0] = 1;
-      vec[2] = 2;
-      vec[5] = 3;
-      vec[7] = 4;
-      vec[8] = 5;
+      VectorType vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );
@@ -2785,12 +2739,7 @@ void ClassTest::testErase()
       typedef VectorType::Iterator  Iterator;
 
       // Initialization check
-      VectorType vec( 9UL, 5UL );
-      vec[0] = 1;
-      vec[2] = 2;
-      vec[5] = 3;
-      vec[7] = 4;
-      vec[8] = 5;
+      VectorType vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );
@@ -2934,12 +2883,7 @@ void ClassTest::testErase()
       test_ = "CompressedVector::erase( Predicate )";
 
       // Initialization check
-      blaze::CompressedVector<int,blaze::rowVector> vec( 9UL, 5UL );
-      vec[0] = 1;
-      vec[2] = 2;
-      vec[5] = 3;
-      vec[7] = 4;
-      vec[8] = 5;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );
@@ -3001,12 +2945,7 @@ void ClassTest::testErase()
       typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
 
       // Initialization check
-      VectorType vec( 9UL, 5UL );
-      vec[0] = 1;
-      vec[2] = 2;
-      vec[5] = 3;
-      vec[7] = 4;
-      vec[8] = 5;
+      VectorType vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
 
       checkSize    ( vec, 9UL );
       checkCapacity( vec, 5UL );
@@ -3081,10 +3020,7 @@ void ClassTest::testFind()
    typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
 
    // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
-   vec[0] = 1;
-   vec[2] = 2;
-   vec[7] = 3;
+   blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 0, 0, 3 };
 
    checkSize    ( vec, 8UL );
    checkCapacity( vec, 3UL );
@@ -3208,10 +3144,7 @@ void ClassTest::testLowerBound()
    typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
 
    // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
-   vec[0] = 1;
-   vec[2] = 2;
-   vec[7] = 3;
+   blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 0, 0, 3 };
 
    checkSize    ( vec, 8UL );
    checkCapacity( vec, 3UL );
@@ -3371,10 +3304,7 @@ void ClassTest::testUpperBound()
    typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
 
    // Initialization check
-   blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
-   vec[0] = 1;
-   vec[2] = 2;
-   vec[7] = 3;
+   blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 0, 0, 3 };
 
    checkSize    ( vec, 8UL );
    checkCapacity( vec, 3UL );
@@ -3558,8 +3488,7 @@ void ClassTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 1UL );
-      vec[1] = 1;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 1, 0 };
 
       if( isDefault( vec[1] ) != false ) {
          std::ostringstream oss;
