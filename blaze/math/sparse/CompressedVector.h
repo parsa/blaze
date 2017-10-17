@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
@@ -318,13 +319,16 @@ class CompressedVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline CompressedVector() noexcept;
-                           explicit inline CompressedVector( size_t size ) noexcept;
-                           explicit inline CompressedVector( size_t size, size_t nonzeros );
-                                    inline CompressedVector( const CompressedVector& sv );
-                                    inline CompressedVector( CompressedVector&& sv ) noexcept;
-   template< typename VT >          inline CompressedVector( const DenseVector<VT,TF>&  dv );
-   template< typename VT >          inline CompressedVector( const SparseVector<VT,TF>& sv );
+   explicit inline CompressedVector() noexcept;
+   explicit inline CompressedVector( size_t size ) noexcept;
+   explicit inline CompressedVector( size_t size, size_t nonzeros );
+   explicit inline CompressedVector( initializer_list<Type> list );
+
+   inline CompressedVector( const CompressedVector& sv );
+   inline CompressedVector( CompressedVector&& sv ) noexcept;
+
+   template< typename VT > inline CompressedVector( const DenseVector<VT,TF>&  dv );
+   template< typename VT > inline CompressedVector( const SparseVector<VT,TF>& sv );
    //@}
    //**********************************************************************************************
 
@@ -354,6 +358,7 @@ class CompressedVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline CompressedVector& operator=( initializer_list<Type> list );
    inline CompressedVector& operator=( const CompressedVector& rhs );
    inline CompressedVector& operator=( CompressedVector&& rhs ) noexcept;
 
@@ -562,6 +567,40 @@ inline CompressedVector<Type,TF>::CompressedVector( size_t n, size_t nonzeros )
 
 
 //*************************************************************************************************
+/*!\brief List initialization of all vector elements.
+//
+// \param list The initializer list.
+//
+// This assignment operator provides the option to explicitly initialize the elements of the
+// vector within a constructor call:
+
+   \code
+   blaze::CompressedVector<double> v1{ 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector is sized according to the size of the initializer list and all its elements are
+// initialized by the non-zero elements of the given initializer list.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline CompressedVector<Type,TF>::CompressedVector( initializer_list<Type> list )
+   : size_    ( list.size() )                     // The current size/dimension of the compressed vector
+   , capacity_( blaze::nonZeros( list ) )         // The maximum capacity of the compressed vector
+   , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
+   , end_     ( begin_ )                          // Pointer to the last non-zero element of the compressed vector
+{
+   size_t i( 0UL );
+
+   for( const Type& element : list ) {
+      if( !isDefault<strict>( element ) )
+         append( i, element );
+      ++i;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief The copy constructor for CompressedVector.
 //
 // \param sv Compressed vector to be copied.
@@ -612,10 +651,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign dense vector
 inline CompressedVector<Type,TF>::CompressedVector( const DenseVector<VT,TF>& dv )
-   : size_    ( (~dv).size() )  // The current size/dimension of the compressed vector
-   , capacity_( 0UL )           // The maximum capacity of the compressed vector
-   , begin_   ( nullptr )       // Pointer to the first non-zero element of the compressed vector
-   , end_     ( nullptr )       // Pointer to the last non-zero element of the compressed vector
+   : CompressedVector( (~dv).size() )
 {
    using blaze::assign;
    assign( *this, ~dv );
@@ -632,10 +668,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign sparse vector
 inline CompressedVector<Type,TF>::CompressedVector( const SparseVector<VT,TF>& sv )
-   : size_    ( (~sv).size() )                    // The current size/dimension of the compressed vector
-   , capacity_( (~sv).nonZeros() )                // The maximum capacity of the compressed vector
-   , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( begin_ )                          // Pointer to the last non-zero element of the compressed vector
+   : CompressedVector( (~sv).size(), (~sv).nonZeros() )
 {
    using blaze::assign;
    assign( *this, ~sv );
@@ -862,6 +895,45 @@ inline typename CompressedVector<Type,TF>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief List assignment to all vector elements.
+//
+// \param list The initializer list.
+//
+// This assignment operator offers the option to directly assign to all elements of the vector
+// by means of an initializer list:
+
+   \code
+   blaze::CompressedVector<double> v;
+   v = { 4.2, 6.3, -1.2 };
+   \endcode
+
+// The vector is resized according to the size of the initializer list and all its elements are
+// assigned the non-zero values from the given initializer list.
+*/
+template< typename Type  // Data type of the vector
+        , bool TF >      // Transpose flag
+inline CompressedVector<Type,TF>&
+   CompressedVector<Type,TF>::operator=( initializer_list<Type> list )
+{
+   using blaze::nonZeros;
+
+   resize( list.size(), false );
+   reserve( nonZeros( list ) );
+
+   size_t i( 0UL );
+
+   for( const Type& element : list ) {
+      if( !isDefault<strict>( element ) )
+         append( i, element );
+      ++i;
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Copy assignment operator for CompressedVector.
