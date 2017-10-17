@@ -53,6 +53,7 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
+#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
@@ -2664,6 +2665,25 @@ template< typename T, bool SO, size_t... CCAs >
 struct ColumnTrait< IdentityMatrix<T,SO>, CCAs... >
 {
    using Type = CompressedVector<T,false>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, size_t... CCAs >
+struct ColumnsTrait< IdentityMatrix<T,SO>, CCAs... >
+{
+   using Type = CompressedMatrix<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
