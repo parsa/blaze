@@ -189,6 +189,101 @@ void SparseTest::testConstructors()
 void SparseTest::testAssignment()
 {
    //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major initializer list assignment (complete list)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+      sm = { { 1, 0, 3 }, { 0, 5, 0 } };
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != 1 || sm(0,1) != 0 || sm(0,2) != 3 ||
+          sm(1,0) != 0 || sm(1,1) != 5 || sm(1,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 1 0 3 )\n( 0 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 1 || mat_(1,1) !=  0 || mat_(1,2) != 3 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 0 || mat_(2,1) !=  5 || mat_(2,2) != 0 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 1  0  3  0 )\n"
+                                     "( 0  5  0  0 )\n"
+                                     "( 0  4  5 -6 )\n"
+                                     "( 7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major initializer list assignment (incomplete list)";
+
+      initialize();
+
+      SMT sm = blaze::submatrix( mat_, 1UL, 0UL, 2UL, 3UL );
+      sm = { { 1 }, { 4, 0, 6 } };
+
+      checkRows    ( sm  ,  2UL );
+      checkColumns ( sm  ,  3UL );
+      checkNonZeros( sm  ,  3UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkNonZeros( mat_, 10UL );
+
+      if( sm(0,0) != 1 || sm(0,1) != 0 || sm(0,2) != 0 ||
+          sm(1,0) != 4 || sm(1,1) != 0 || sm(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != 0 || mat_(0,1) !=  0 || mat_(0,2) != 0 || mat_(0,3) !=  0 ||
+          mat_(1,0) != 1 || mat_(1,1) !=  0 || mat_(1,2) != 0 || mat_(1,3) !=  0 ||
+          mat_(2,0) != 4 || mat_(2,1) !=  0 || mat_(2,2) != 6 || mat_(2,3) !=  0 ||
+          mat_(3,0) != 0 || mat_(3,1) !=  4 || mat_(3,2) != 5 || mat_(3,3) != -6 ||
+          mat_(4,0) != 7 || mat_(4,1) != -8 || mat_(4,2) != 9 || mat_(4,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( 0  0  0  0 )\n"
+                                     "( 1  0  0  0 )\n"
+                                     "( 4  0  6  0 )\n"
+                                     "( 0  4  5 -6 )\n"
+                                     "( 7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
@@ -500,6 +595,99 @@ void SparseTest::testAssignment()
                                      "( 12 13 14  0 )\n"
                                      "(  0  4  5 -6 )\n"
                                      "(  7 -8  9 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major initializer list assignment (complete list)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      sm = { { 1, 0 }, { 0, 4 }, { 5, 0 } };
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != 1 || sm(0,1) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 4 ||
+          sm(2,0) != 5 || sm(2,1) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 1 0 )\n( 0 4 )\n( 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 1 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) != 4 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 5 || tmat_(2,2) != 0 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  1  0  0  7 )\n"
+                                     "( 0  0  4  4 -8 )\n"
+                                     "( 0  5  0  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major initializer list assignment (incomplete list)";
+
+      initialize();
+
+      OSMT sm = blaze::submatrix( tmat_, 0UL, 1UL, 3UL, 2UL );
+      sm = { { 1 }, {}, { 5, 6 } };
+
+      checkRows    ( sm   ,  3UL );
+      checkColumns ( sm   ,  2UL );
+      checkNonZeros( sm   ,  3UL );
+      checkRows    ( tmat_,  4UL );
+      checkColumns ( tmat_,  5UL );
+      checkNonZeros( tmat_, 10UL );
+
+      if( sm(0,0) != 1 || sm(0,1) != 0 ||
+          sm(1,0) != 0 || sm(1,1) != 0 ||
+          sm(2,0) != 5 || sm(2,1) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n"
+             << "   Expected result:\n( 1 0 )\n( 0 0 )\n( 5 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != 0 || tmat_(0,1) != 1 || tmat_(0,2) != 0 || tmat_(0,3) !=  0 || tmat_(0,4) !=  7 ||
+          tmat_(1,0) != 0 || tmat_(1,1) != 0 || tmat_(1,2) != 0 || tmat_(1,3) !=  4 || tmat_(1,4) != -8 ||
+          tmat_(2,0) != 0 || tmat_(2,1) != 5 || tmat_(2,2) != 6 || tmat_(2,3) !=  5 || tmat_(2,4) !=  9 ||
+          tmat_(3,0) != 0 || tmat_(3,1) != 0 || tmat_(3,2) != 0 || tmat_(3,3) != -6 || tmat_(3,4) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( 0  1  0  0  7 )\n"
+                                     "( 0  0  0  4 -8 )\n"
+                                     "( 0  5  6  5  9 )\n"
+                                     "( 0  0  0 -6 10 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
