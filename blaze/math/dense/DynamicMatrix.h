@@ -66,6 +66,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -7186,6 +7187,25 @@ template< typename T, bool SO, size_t... CRAs >
 struct RowTrait< DynamicMatrix<T,SO>, CRAs... >
 {
    using Type = DynamicVector<T,true>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO, size_t... CRAs >
+struct RowsTrait< DynamicMatrix<T,SO>, CRAs... >
+{
+   using Type = DynamicMatrix<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************
