@@ -65,6 +65,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -3047,6 +3048,25 @@ template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_
 struct RowTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 {
    using Type = RowTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CRAs >
+struct RowsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
+{
+   using Type = RowsTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
