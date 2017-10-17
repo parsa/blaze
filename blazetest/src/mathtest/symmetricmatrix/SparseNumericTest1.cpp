@@ -125,6 +125,59 @@ void SparseNumericTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major SymmetricMatrix initializer list constructor (complete list)";
+
+      const ST sym{ { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 7UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major SymmetricMatrix initializer list constructor (incomplete list)";
+
+      const ST sym{ { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 7UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -350,6 +403,59 @@ void SparseNumericTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major SymmetricMatrix initializer list constructor (complete list)";
+
+      const OST sym{ { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 7UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major SymmetricMatrix initializer list constructor (incomplete list)";
+
+      const OST sym{ { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkCapacity( sym, 7UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy constructor
    //=====================================================================================
 
@@ -555,6 +661,59 @@ void SparseNumericTest::testConstructors()
 */
 void SparseNumericTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major SymmetricMatrix initializer list assignment";
+
+      ST sym;
+      sym = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major SymmetricMatrix initializer list assignment";
+
+      ST sym;
+      sym = { { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1032,6 +1191,59 @@ void SparseNumericTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << sym2 << "\n"
              << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major SymmetricMatrix initializer list assignment";
+
+      OST sym;
+      sym = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major SymmetricMatrix initializer list assignment";
+
+      OST sym;
+      sym = { { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( sym, 3UL );
+      checkColumns ( sym, 3UL );
+      checkNonZeros( sym, 7UL );
+
+      if( sym(0,0) != 1 || sym(0,1) != 2 || sym(0,2) != 3 ||
+          sym(1,0) != 2 || sym(1,1) != 4 || sym(1,2) != 0 ||
+          sym(2,0) != 3 || sym(2,1) != 0 || sym(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sym << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
