@@ -57,6 +57,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseMatrix.h>
@@ -156,6 +157,7 @@ class StrictlyUpperMatrix<MT,SO,false>
    explicit inline StrictlyUpperMatrix( size_t n );
    explicit inline StrictlyUpperMatrix( size_t n, size_t nonzeros );
    explicit inline StrictlyUpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
+   explicit inline StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline StrictlyUpperMatrix( const StrictlyUpperMatrix& m );
    inline StrictlyUpperMatrix( StrictlyUpperMatrix&& m ) noexcept;
@@ -188,6 +190,8 @@ class StrictlyUpperMatrix<MT,SO,false>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline StrictlyUpperMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+
    inline StrictlyUpperMatrix& operator=( const StrictlyUpperMatrix& rhs );
    inline StrictlyUpperMatrix& operator=( StrictlyUpperMatrix&& rhs ) noexcept;
 
@@ -444,6 +448,44 @@ inline StrictlyUpperMatrix<MT,SO,false>::StrictlyUpperMatrix( size_t n, const st
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of strictly upper matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the strictly
+// upper matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,rowMajor> > A{ { 0, 2, 3 },
+                                                                          { 0, 0 },
+                                                                          { 0, 0, 0 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the matrix cannot be resized or the given list does not represent a strictly
+// upper matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyUpperMatrix<MT,SO,false>::StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted sparse matrix
+{
+   if( !isStrictlyUpper( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly upper matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -799,6 +841,52 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to strictly upper matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the strictly
+// upper matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,rowMajor> > A;
+   A = { { 0, 2, 3 },
+         { 0, 0 },
+         { 0, 0, 0 } };
+   \endcode
+
+// The matrix is resized according to the size of the initializer list and all matrix elements
+// are assigned the values from the given list. Missing values are assigned default values.
+// In case the matrix cannot be resized or the given list does not represent a strictly upper
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyUpperMatrix<MT,SO,false>&
+   StrictlyUpperMatrix<MT,SO,false>::operator=( initializer_list< initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isStrictlyUpper( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
