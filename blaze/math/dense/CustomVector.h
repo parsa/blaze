@@ -5255,8 +5255,14 @@ struct BinaryMapTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF>,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool TF, size_t... CSAs >
-struct SubvectorTrait< CustomVector<T,AF,PF,TF>, CSAs... >
+template< typename T, bool AF, bool PF, bool TF, size_t I, size_t N >
+struct SubvectorTrait< CustomVector<T,AF,PF,TF>, I, N >
+{
+   using Type = StaticVector<T,N,TF>;
+};
+
+template< typename T, bool AF, bool PF, bool TF >
+struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
 {
    using Type = DynamicVector<T,TF>;
 };

@@ -3075,8 +3075,14 @@ struct LowType< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, size_t... CSAs >
-struct SubvectorTrait< CompressedVector<T,TF>, CSAs... >
+template< typename T, bool TF, size_t I, size_t N >
+struct SubvectorTrait< CompressedVector<T,TF>, I, N >
+{
+   using Type = StaticVector<T,N,TF>;
+};
+
+template< typename T, bool TF >
+struct SubvectorTrait< CompressedVector<T,TF> >
 {
    using Type = CompressedVector<T,TF>;
 };

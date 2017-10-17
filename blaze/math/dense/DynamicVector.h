@@ -3198,8 +3198,14 @@ struct LowType< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, size_t... CSAs >
-struct SubvectorTrait< DynamicVector<T,TF>, CSAs... >
+template< typename T, bool TF, size_t I, size_t N >
+struct SubvectorTrait< DynamicVector<T,TF>, I, N >
+{
+   using Type = StaticVector<T,N,TF>;
+};
+
+template< typename T, bool TF >
+struct SubvectorTrait< DynamicVector<T,TF> >
 {
    using Type = DynamicVector<T,TF>;
 };
