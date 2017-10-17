@@ -57,6 +57,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -157,6 +158,7 @@ class StrictlyLowerMatrix<MT,SO,false>
    explicit inline StrictlyLowerMatrix( size_t n );
    explicit inline StrictlyLowerMatrix( size_t n, size_t nonzeros );
    explicit inline StrictlyLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
+   explicit inline StrictlyLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline StrictlyLowerMatrix( const StrictlyLowerMatrix& m );
    inline StrictlyLowerMatrix( StrictlyLowerMatrix&& m ) noexcept;
@@ -189,6 +191,8 @@ class StrictlyLowerMatrix<MT,SO,false>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline StrictlyLowerMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+
    inline StrictlyLowerMatrix& operator=( const StrictlyLowerMatrix& rhs );
    inline StrictlyLowerMatrix& operator=( StrictlyLowerMatrix&& rhs ) noexcept;
 
@@ -445,6 +449,44 @@ inline StrictlyLowerMatrix<MT,SO,false>::StrictlyLowerMatrix( size_t n, const st
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of strictly lower matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the strictly
+// lower matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<int,rowMajor> > A{ { },
+                                                                          { 2 },
+                                                                          { 4, 5 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the matrix cannot be resized or the given list does not represent a strictly
+// lower matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyLowerMatrix<MT,SO,false>::StrictlyLowerMatrix( initializer_list< initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted sparse matrix
+{
+   if( !isStrictlyLower( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of strictly lower matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -800,6 +842,52 @@ inline typename StrictlyLowerMatrix<MT,SO,false>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to strictly lower matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the strictly
+// lower matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<int,rowMajor> > A;
+   A = { { },
+         { 2 },
+         { 4, 5 } };
+   \endcode
+
+// The matrix is resized according to the size of the initializer list and all matrix elements
+// are assigned the values from the given list. Missing values are assigned default values.
+// In case the matrix cannot be resized or the given list does not represent a strictly lower
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline StrictlyLowerMatrix<MT,SO,false>&
+   StrictlyLowerMatrix<MT,SO,false>::operator=( initializer_list< initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isStrictlyLower( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */

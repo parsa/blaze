@@ -935,8 +935,8 @@ inline StrictlyLowerMatrix<MT,SO,true>::StrictlyLowerMatrix( size_t n, const Ele
 
 // The matrix is sized according to the size of the initializer list and all matrix elements are
 // initialized with the values from the given list. Missing values are initialized with default
-// values. In case the given list does not represent a diagonal matrix, a \a std::invalid_argument
-// exception is thrown.
+// values. In case the matrix cannot be resized or the given list does not represent a strictly
+// lower matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
@@ -1548,10 +1548,10 @@ inline StrictlyLowerMatrix<MT,SO,true>&
          { 4, 5 } };
    \endcode
 
-// The matrix elements are assigned the values from the given initializer list. Missing values
-// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
-// of the top-level initializer list exceeds the number of rows or the size of any nested list
-// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// The matrix is resized according to the size of the initializer list and all matrix elements
+// are assigned the values from the given list. Missing values are assigned default values.
+// In case the matrix cannot be resized or the given list does not represent a strictly lower
+// matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
