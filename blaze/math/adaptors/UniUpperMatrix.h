@@ -58,6 +58,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
+#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
@@ -3205,6 +3206,25 @@ template< typename MT, bool SO, bool DF, size_t... CCAs >
 struct ColumnTrait< UniUpperMatrix<MT,SO,DF>, CCAs... >
 {
    using Type = ColumnTrait_<MT,CCAs...>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, size_t... CCAs >
+struct ColumnsTrait< UniUpperMatrix<MT,SO,DF>, CCAs... >
+{
+   using Type = ColumnsTrait_<MT,CCAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
