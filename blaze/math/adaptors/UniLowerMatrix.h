@@ -66,6 +66,7 @@
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
@@ -3021,6 +3022,25 @@ template< typename MT, bool SO, bool DF, size_t... CRAs >
 struct RowTrait< UniLowerMatrix<MT,SO,DF>, CRAs... >
 {
    using Type = RowTrait_<MT,CRAs...>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, size_t... CRAs >
+struct RowsTrait< UniLowerMatrix<MT,SO,DF>, CRAs... >
+{
+   using Type = RowsTrait_<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
