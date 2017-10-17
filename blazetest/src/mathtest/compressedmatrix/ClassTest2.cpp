@@ -946,12 +946,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                          Iterator;
       typedef MatrixType::ConstIterator                     ConstIterator;
 
-      MatrixType mat( 3UL, 3UL, 5UL );
-      mat(0,1) =  1;
-      mat(1,0) = -2;
-      mat(1,2) = -3;
-      mat(2,1) =  4;
-      mat(2,2) =  5;
+      MatrixType mat{ {  0, 1,  0 },
+                      { -2, 0, -3 },
+                      {  0, 4,  5 } };
 
       // Testing the Iterator default constructor
       {
@@ -1186,12 +1183,9 @@ void ClassTest::testIterator()
       typedef MatrixType::Iterator                             Iterator;
       typedef MatrixType::ConstIterator                        ConstIterator;
 
-      MatrixType mat( 3UL, 3UL, 0 );
-      mat(1,0) =  1;
-      mat(0,1) = -2;
-      mat(2,1) = -3;
-      mat(1,2) =  4;
-      mat(2,2) =  5;
+      MatrixType mat{ { 0, -2, 0 },
+                      { 1,  0, 4 },
+                      { 0, -3, 5 } };
 
       // Testing the Iterator default constructor
       {
@@ -1565,12 +1559,11 @@ void ClassTest::testReset()
       // Resetting an initialized matrix
       {
          // Initialization check
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 3UL, 5UL );
-         mat(0,0) = 1;
-         mat(1,1) = 2;
-         mat(1,2) = 3;
-         mat(3,1) = 4;
-         mat(3,2) = 5;
+
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 0 },
+                                                           { 0, 2, 3 },
+                                                           { 0, 0, 0 },
+                                                           { 0, 4, 5 } };
 
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 3UL );
@@ -1671,12 +1664,10 @@ void ClassTest::testReset()
       // Resetting an initialized matrix
       {
          // Initialization check
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 5UL );
-         mat(0,0) = 1;
-         mat(1,1) = 2;
-         mat(1,2) = 3;
-         mat(3,1) = 4;
-         mat(3,2) = 5;
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 0 },
+                                                              { 0, 2, 3 },
+                                                              { 0, 0, 0 },
+                                                              { 0, 4, 5 } };
 
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 3UL );
@@ -1786,11 +1777,10 @@ void ClassTest::testClear()
       // Clearing an initialized matrix
       {
          // Initialization check
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 3UL, 4UL );
-         mat(0,0) = 1;
-         mat(1,1) = 2;
-         mat(1,2) = 3;
-         mat(3,1) = 4;
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 0 },
+                                                           { 0, 2, 3 },
+                                                           { 0, 0, 0 },
+                                                           { 0, 4, 0 } };
 
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 3UL );
@@ -1864,11 +1854,10 @@ void ClassTest::testClear()
       // Clearing an initialized matrix
       {
          // Initialization check
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 4UL, 3UL, 4UL );
-         mat(0,0) = 1;
-         mat(1,1) = 2;
-         mat(1,2) = 3;
-         mat(3,1) = 4;
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 0 },
+                                                              { 0, 2, 3 },
+                                                              { 0, 0, 0 },
+                                                              { 0, 4, 0 } };
 
          checkRows    ( mat, 4UL );
          checkColumns ( mat, 3UL );
@@ -2792,14 +2781,15 @@ void ClassTest::testSwap()
    {
       test_ = "Row-major CompressedMatrix swap";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 5UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(3,1) = 2;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 1, 0 },
+                                                         { 0, 0 },
+                                                         { 0, 0 },
+                                                         { 0, 2 },
+                                                         { 0, 0 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 4UL );
-      mat2(0,1) = 3;
-      mat2(0,2) = 4;
-      mat2(2,0) = 5;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 0, 3, 4, 0 },
+                                                         { 0, 0, 0, 0 },
+                                                         { 5, 0, 0, 0 } };
 
       swap( mat1, mat2 );
 
@@ -2817,7 +2807,7 @@ void ClassTest::testSwap()
              << " Error: Swapping the first matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat1 << "\n"
-             << "   Expected result:\n( 0 3 4 )\n( 0 0 0 )\n( 5 0 0 )\n";
+             << "   Expected result:\n( 0 3 4 0 )\n( 0 0 0 0 )\n( 5 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -2850,14 +2840,15 @@ void ClassTest::testSwap()
    {
       test_ = "Column-major CompressedMatrix swap";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 5UL, 2UL );
-      mat1(0,0) = 1;
-      mat1(3,1) = 2;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 1, 0 },
+                                                            { 0, 0 },
+                                                            { 0, 0 },
+                                                            { 0, 2 },
+                                                            { 0, 0 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 4UL );
-      mat2(0,1) = 3;
-      mat2(0,2) = 4;
-      mat2(2,0) = 5;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 0, 3, 4, 0 },
+                                                            { 0, 0, 0, 0 },
+                                                            { 5, 0, 0, 0 } };
 
       swap( mat1, mat2 );
 
@@ -4209,14 +4200,9 @@ void ClassTest::testErase()
       test_ = "Row-major CompressedMatrix::erase( size_t, size_t )";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL );
-      mat(0,0) = 1;
-      mat(0,2) = 2;
-      mat(1,1) = 3;
-      mat(1,2) = 4;
-      mat(1,4) = 5;
-      mat(2,1) = 6;
-      mat(2,4) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 2, 0, 0 },
+                                                        { 0, 3, 4, 0, 5 },
+                                                        { 0, 6, 0, 0, 7 } };
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -4343,14 +4329,9 @@ void ClassTest::testErase()
       typedef MatrixType::Iterator  Iterator;
 
       // Initialization check
-      MatrixType mat( 3UL, 5UL );
-      mat(0,0) = 1;
-      mat(0,2) = 2;
-      mat(1,1) = 3;
-      mat(1,2) = 4;
-      mat(1,4) = 5;
-      mat(2,1) = 6;
-      mat(2,4) = 7;
+      MatrixType mat{ { 1, 0, 2, 0, 0 },
+                      { 0, 3, 4, 0, 5 },
+                      { 0, 6, 0, 0, 7 } };
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -4527,14 +4508,9 @@ void ClassTest::testErase()
       typedef MatrixType::Iterator  Iterator;
 
       // Initialization check
-      MatrixType mat( 3UL, 5UL );
-      mat(0,0) = 1;
-      mat(0,2) = 2;
-      mat(1,1) = 3;
-      mat(1,2) = 4;
-      mat(1,4) = 5;
-      mat(2,1) = 6;
-      mat(2,4) = 7;
+      MatrixType mat{ { 1, 0, 2, 0, 0 },
+                      { 0, 3, 4, 0, 5 },
+                      { 0, 6, 0, 0, 7 } };
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -4708,14 +4684,9 @@ void ClassTest::testErase()
       test_ = "Row-major CompressedMatrix::erase( Predicate )";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL );
-      mat(0,0) = 1;
-      mat(0,2) = 2;
-      mat(1,1) = 3;
-      mat(1,2) = 4;
-      mat(1,4) = 5;
-      mat(2,1) = 6;
-      mat(2,4) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 2, 0, 0 },
+                                                        { 0, 3, 4, 0, 5 },
+                                                        { 0, 6, 0, 0, 7 } };
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -4793,14 +4764,9 @@ void ClassTest::testErase()
       test_ = "Row-major CompressedMatrix::erase( size_t, Iterator, Iterator, Predicate )";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL );
-      mat(0,0) = 1;
-      mat(0,2) = 2;
-      mat(1,1) = 3;
-      mat(1,2) = 4;
-      mat(1,4) = 5;
-      mat(2,1) = 6;
-      mat(2,4) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 2, 0, 0 },
+                                                        { 0, 3, 4, 0, 5 },
+                                                        { 0, 6, 0, 0, 7 } };
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 5UL );
@@ -4879,14 +4845,11 @@ void ClassTest::testErase()
       test_ = "Column-major CompressedMatrix::erase( size_t, size_t )";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL );
-      mat(0,0) = 1;
-      mat(2,0) = 2;
-      mat(1,1) = 3;
-      mat(2,1) = 4;
-      mat(4,1) = 5;
-      mat(1,2) = 6;
-      mat(4,2) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 0 },
+                                                           { 0, 3, 6 },
+                                                           { 2, 4, 0 },
+                                                           { 0, 0, 0 },
+                                                           { 0, 5, 7 } };
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
@@ -5013,14 +4976,11 @@ void ClassTest::testErase()
       typedef MatrixType::Iterator  Iterator;
 
       // Initialization check
-      MatrixType mat( 5UL, 3UL );
-      mat(0,0) = 1;
-      mat(2,0) = 2;
-      mat(1,1) = 3;
-      mat(2,1) = 4;
-      mat(4,1) = 5;
-      mat(1,2) = 6;
-      mat(4,2) = 7;
+      MatrixType mat{ { 1, 0, 0 },
+                      { 0, 3, 6 },
+                      { 2, 4, 0 },
+                      { 0, 0, 0 },
+                      { 0, 5, 7 } };
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
@@ -5197,14 +5157,11 @@ void ClassTest::testErase()
       typedef MatrixType::Iterator  Iterator;
 
       // Initialization check
-      MatrixType mat( 5UL, 3UL );
-      mat(0,0) = 1;
-      mat(2,0) = 2;
-      mat(1,1) = 3;
-      mat(2,1) = 4;
-      mat(4,1) = 5;
-      mat(1,2) = 6;
-      mat(4,2) = 7;
+      MatrixType mat{ { 1, 0, 0 },
+                      { 0, 3, 6 },
+                      { 2, 4, 0 },
+                      { 0, 0, 0 },
+                      { 0, 5, 7 } };
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
@@ -5378,14 +5335,11 @@ void ClassTest::testErase()
       test_ = "Column-major CompressedMatrix::erase( Predicate )";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL );
-      mat(0,0) = 1;
-      mat(2,0) = 2;
-      mat(1,1) = 3;
-      mat(2,1) = 4;
-      mat(4,1) = 5;
-      mat(1,2) = 6;
-      mat(4,2) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 0 },
+                                                           { 0, 3, 6 },
+                                                           { 2, 4, 0 },
+                                                           { 0, 0, 0 },
+                                                           { 0, 5, 7 } };
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
@@ -5463,14 +5417,11 @@ void ClassTest::testErase()
       test_ = "Column-major CompressedMatrix::erase( size_t, Iterator, Iterator, Predicate )";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL );
-      mat(0,0) = 1;
-      mat(2,0) = 2;
-      mat(1,1) = 3;
-      mat(2,1) = 4;
-      mat(4,1) = 5;
-      mat(1,2) = 6;
-      mat(4,2) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 0 },
+                                                           { 0, 3, 6 },
+                                                           { 2, 4, 0 },
+                                                           { 0, 0, 0 },
+                                                           { 0, 5, 7 } };
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 3UL );
@@ -6423,15 +6374,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 2, 0, 3 },
+                                                           { 0, 4, 0, 5, 0 },
+                                                           { 6, 0, 7, 0, 8 } };
 
          transpose( mat );
 
@@ -6459,15 +6404,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 6 },
+                                                           { 0, 4, 0 },
+                                                           { 2, 0, 7 },
+                                                           { 0, 5, 0 },
+                                                           { 3, 0, 8 } };
 
          transpose( mat );
 
@@ -6498,15 +6439,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 2, 0, 3 },
+                                                           { 0, 4, 0, 5, 0 },
+                                                           { 6, 0, 7, 0, 8 } };
 
          mat = trans( mat );
 
@@ -6534,15 +6469,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0, 6 },
+                                                           { 0, 4, 0 },
+                                                           { 2, 0, 7 },
+                                                           { 0, 5, 0 },
+                                                           { 3, 0, 8 } };
 
          mat = trans( mat );
 
@@ -6578,15 +6509,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 2, 0, 3 },
+                                                              { 0, 4, 0, 5, 0 },
+                                                              { 6, 0, 7, 0, 8 } };
 
          transpose( mat );
 
@@ -6612,15 +6537,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 6 },
+                                                              { 0, 4, 0 },
+                                                              { 2, 0, 7 },
+                                                              { 0, 5, 0 },
+                                                              { 3, 0, 8 } };
 
          transpose( mat );
 
@@ -6653,15 +6574,9 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 3x5 matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 2;
-         mat(0,4) = 3;
-         mat(1,1) = 4;
-         mat(1,3) = 5;
-         mat(2,0) = 6;
-         mat(2,2) = 7;
-         mat(2,4) = 8;
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 2, 0, 3 },
+                                                              { 0, 4, 0, 5, 0 },
+                                                              { 6, 0, 7, 0, 8 } };
 
          mat = trans( mat );
 
@@ -6687,15 +6602,11 @@ void ClassTest::testTranspose()
 
       // Self-transpose of a 5x3 matrix
       {
-         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 8UL );
-         mat(0,0) = 1;
-         mat(0,2) = 6;
-         mat(1,1) = 4;
-         mat(2,0) = 2;
-         mat(2,2) = 7;
-         mat(3,1) = 5;
-         mat(4,0) = 3;
-         mat(4,2) = 8;
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0, 6 },
+                                                              { 0, 4, 0 },
+                                                              { 2, 0, 7 },
+                                                              { 0, 5, 0 },
+                                                              { 3, 0, 8 } };
 
          mat = trans( mat );
 

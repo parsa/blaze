@@ -277,6 +277,59 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix initializer list constructor (complete list)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 0, 2, 0 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+
+      if( mat(0,0) != 0 || mat(0,1) != 2 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 2 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix initializer list constructor (incomplete list)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -316,10 +369,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major CompressedMatrix copy constructor (2x3)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 1, 0, 2 },
+                                                         { 0, 3, 0 } };
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
 
@@ -383,10 +434,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major CompressedMatrix move constructor (2x3)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 1, 0, 2 },
+                                                         { 0, 3, 0 } };
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( std::move( mat1 ) );
 
@@ -480,11 +529,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major/row-major CompressedMatrix sparse matrix constructor";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( trans( mat1 ) );
 
@@ -511,11 +557,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix constructor";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 1, 0, 2 },
+                                                            { 0, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( mat1 );
 
@@ -718,6 +761,61 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix initializer list constructor (complete list)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 0, 2, 0 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 0 || mat(0,1) != 2 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 2 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix initializer list constructor (incomplete list)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy constructor
    //=====================================================================================
 
@@ -757,10 +855,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major CompressedMatrix copy constructor (2x3)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 1, 0, 2 },
+                                                            { 0, 3, 0 } };
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
 
@@ -825,10 +921,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major CompressedMatrix move constructor (2x3)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 1, 0, 2 },
+                                                            { 0, 3, 0 } };
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( std::move( mat1 ) );
 
@@ -921,11 +1015,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major/row-major CompressedMatrix sparse matrix constructor";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 1, 0, 2 },
+                                                         { 0, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( mat1 );
 
@@ -951,11 +1042,8 @@ void ClassTest::testConstructors()
    {
       test_ = "Column-major/Column-major CompressedMatrix sparse matrix constructor";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( trans( mat1 ) );
 
@@ -993,16 +1081,69 @@ void ClassTest::testConstructors()
 void ClassTest::testAssignment()
 {
    //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major CompressedMatrix initializer list assignment (complete list)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+      mat = { { 0, 2, 0 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+
+      if( mat(0,0) != 0 || mat(0,1) != 2 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 2 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major CompressedMatrix initializer list assignment (incomplete list)";
+
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+      mat = { { 1 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 2UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
    {
       test_ = "Row-major CompressedMatrix copy assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 1, 0, 2 },
+                                                         { 0, 3, 0 } };
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2;
       mat2 = mat1;
@@ -1063,14 +1204,10 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major CompressedMatrix move assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 1, 0, 2 },
+                                                         { 0, 3, 0 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 4UL, 1UL, 2UL );
-      mat2(1,0) = 11;
-      mat2(3,0) = 12;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ {}, { 11 }, {}, { 12 } };
 
       mat2 = std::move( mat1 );
 
@@ -1356,11 +1493,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major CompressedMatrix sparse matrix assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL );
       mat2 = trans( mat1 );
@@ -1417,11 +1551,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 1, 0, 2 },
+                                                            { 0, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 2UL );
       mat2 = mat1;
@@ -1607,16 +1738,71 @@ void ClassTest::testAssignment()
 
 
    //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major CompressedMatrix initializer list assignment (complete list)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+      mat = { { 0, 2, 0 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 0 || mat(0,1) != 2 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 0 2 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major CompressedMatrix initializer list assignment (incomplete list)";
+
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+      mat = { { 1 }, { 4, 0, 6 } };
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkCapacity( mat, 3UL );
+      checkNonZeros( mat, 3UL );
+      checkNonZeros( mat, 0UL, 2UL );
+      checkNonZeros( mat, 1UL, 0UL );
+      checkNonZeros( mat, 2UL, 1UL );
+
+      if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
+          mat(1,0) != 4 || mat(1,1) != 0 || mat(1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n( 1 0 0 )\n( 4 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy assignment
    //=====================================================================================
 
    {
       test_ = "Column-major CompressedMatrix copy assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 1, 0, 2 },
+                                                            { 0, 3, 0 } };
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2;
       mat2 = mat1;
@@ -1678,14 +1864,10 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major CompressedMatrix move assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 3UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 1, 0, 2 },
+                                                            { 0, 3, 0 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 4UL, 1UL, 2UL );
-      mat2(1,0) = 11;
-      mat2(3,0) = 12;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ {}, { 11 }, {}, { 12 } };
 
       mat2 = std::move( mat1 );
 
@@ -1970,11 +2152,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major CompressedMatrix sparse matrix assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,0) = 1;
-      mat1(0,2) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 1, 0, 2 },
+                                                         { 0, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 2UL );
       mat2 = mat1;
@@ -2030,11 +2209,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/Column-major CompressedMatrix sparse matrix assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL );
       mat2 = trans( mat1 );
@@ -2243,10 +2419,8 @@ void ClassTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
                                                       { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -2274,10 +2448,8 @@ void ClassTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
                                                          { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -2433,16 +2605,11 @@ void ClassTest::testAddAssign()
    {
       test_ = "Row-major/row-major CompressedMatrix sparse matrix addition assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -2467,16 +2634,11 @@ void ClassTest::testAddAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix addition assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -2635,10 +2797,8 @@ void ClassTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
                                                       { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -2667,10 +2827,8 @@ void ClassTest::testAddAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
                                                          { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -2827,16 +2985,11 @@ void ClassTest::testAddAssign()
    {
       test_ = "Column-major/row-major CompressedMatrix sparse matrix addition assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -2862,16 +3015,11 @@ void ClassTest::testAddAssign()
    {
       test_ = "Column-major/column-major CompressedMatrix sparse matrix addition assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 += mat1;
 
@@ -3044,10 +3192,8 @@ void ClassTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
                                                       { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3075,10 +3221,8 @@ void ClassTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
                                                          { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3234,16 +3378,11 @@ void ClassTest::testSubAssign()
    {
       test_ = "Row-major/row-major CompressedMatrix sparse matrix subtraction assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3268,16 +3407,11 @@ void ClassTest::testSubAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix subtraction assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3436,10 +3570,8 @@ void ClassTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
                                                       { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3468,10 +3600,8 @@ void ClassTest::testSubAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
                                                          { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3628,16 +3758,11 @@ void ClassTest::testSubAssign()
    {
       test_ = "Column-major/row-major CompressedMatrix sparse matrix subtraction assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3663,16 +3788,11 @@ void ClassTest::testSubAssign()
    {
       test_ = "Column-major/column-major CompressedMatrix sparse matrix subtraction assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 -= mat1;
 
@@ -3845,10 +3965,8 @@ void ClassTest::testSchurAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
                                                       { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -3876,10 +3994,8 @@ void ClassTest::testSchurAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
                                                          { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -4035,16 +4151,11 @@ void ClassTest::testSchurAssign()
    {
       test_ = "Row-major/row-major CompressedMatrix sparse matrix Schur product assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -4069,16 +4180,11 @@ void ClassTest::testSchurAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix Schur product assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 5, 0, 6 },
+                                                         { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -4237,10 +4343,8 @@ void ClassTest::testSchurAssign()
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
                                                       { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -4269,10 +4373,8 @@ void ClassTest::testSchurAssign()
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
                                                          { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -4429,16 +4531,11 @@ void ClassTest::testSchurAssign()
    {
       test_ = "Column-major/row-major CompressedMatrix sparse matrix Schur product assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 0, 1 },
+                                                         { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -4464,16 +4561,11 @@ void ClassTest::testSchurAssign()
    {
       test_ = "Column-major/column-major CompressedMatrix sparse matrix Schur product assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-      mat1(0,2) = 1;
-      mat1(1,0) = 2;
-      mat1(1,1) = 3;
-      mat1(1,2) = 4;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 0, 1 },
+                                                            { 2, 3, 4 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 2UL, 3UL, 3UL );
-      mat2(0,0) = 5;
-      mat2(0,2) = 6;
-      mat2(1,1) = 7;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 5, 0, 6 },
+                                                            { 0, 7, 0 } };
 
       mat2 %= mat1;
 
@@ -4647,12 +4739,9 @@ void ClassTest::testMultAssign()
                                                       { 1, 3, 0, 4 },
                                                       { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 1, 0, 2 },
+                                                         { 0, 3, 0 },
+                                                         { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4683,12 +4772,9 @@ void ClassTest::testMultAssign()
                                                          { 1, 3, 0, 4 },
                                                          { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 1, 0, 2 },
+                                                         { 0, 3, 0 },
+                                                         { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4720,19 +4806,13 @@ void ClassTest::testMultAssign()
    {
       test_ = "Row-major/row-major CompressedMatrix sparse matrix multiplication assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 5UL );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 2, 0, 0 },
+                                                         { 1, 3, 0, 4 },
+                                                         { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 1, 0, 2 },
+                                                         { 0, 3, 0 },
+                                                         { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4759,19 +4839,13 @@ void ClassTest::testMultAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix multiplication assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 5UL );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 2, 0, 0 },
+                                                            { 1, 3, 0, 4 },
+                                                            { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat2{ { 1, 0, 2 },
+                                                         { 0, 3, 0 },
+                                                         { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4807,12 +4881,9 @@ void ClassTest::testMultAssign()
                                                       { 1, 3, 0, 4 },
                                                       { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 1, 0, 2 },
+                                                            { 0, 3, 0 },
+                                                            { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4844,12 +4915,9 @@ void ClassTest::testMultAssign()
                                                          { 1, 3, 0, 4 },
                                                          { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 1, 0, 2 },
+                                                            { 0, 3, 0 },
+                                                            { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4882,19 +4950,13 @@ void ClassTest::testMultAssign()
    {
       test_ = "Column-major/row-major CompressedMatrix sparse matrix multiplication assignment";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat1( 3UL, 4UL, 5UL );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat1{ { 0, 2, 0, 0 },
+                                                         { 1, 3, 0, 4 },
+                                                         { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 1, 0, 2 },
+                                                            { 0, 3, 0 },
+                                                            { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4922,19 +4984,13 @@ void ClassTest::testMultAssign()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix multiplication assignment";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat1( 3UL, 4UL, 5UL );
-      mat1(0,1) = 2;
-      mat1(1,0) = 1;
-      mat1(1,1) = 3;
-      mat1(1,3) = 4;
-      mat1(2,3) = 5;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat1{ { 0, 2, 0, 0 },
+                                                            { 1, 3, 0, 4 },
+                                                            { 0, 0, 0, 5 } };
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat2( 3UL, 3UL, 5UL );
-      mat2(0,0) = 1;
-      mat2(0,2) = 2;
-      mat2(1,1) = 3;
-      mat2(2,0) = 4;
-      mat2(2,2) = 5;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat2{ { 1, 0, 2 },
+                                                            { 0, 3, 0 },
+                                                            { 4, 0, 5 } };
 
       mat2 *= mat1;
 
@@ -4980,10 +5036,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M*=s)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0, 0, 0 },
+                                                        {  0, 0, 1 },
+                                                        { -2, 0, 3 } };
 
       mat *= 2;
 
@@ -5015,10 +5070,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M*s)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0, 0, 0 },
+                                                        {  0, 0, 1 },
+                                                        { -2, 0, 3 } };
 
       mat = mat * 2;
 
@@ -5050,10 +5104,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=s*M)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0, 0, 0 },
+                                                        {  0, 0, 1 },
+                                                        { -2, 0, 3 } };
 
       mat = 2 * mat;
 
@@ -5085,10 +5138,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M/=s)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0, 0, 0 },
+                                                        {  0, 0, 2 },
+                                                        { -4, 0, 6 } };
 
       mat /= 2;
 
@@ -5120,10 +5172,9 @@ void ClassTest::testScaling()
    {
       test_ = "Row-major self-scaling (M=M/s)";
 
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0, 0, 0 },
+                                                        {  0, 0, 2 },
+                                                        { -4, 0, 6 } };
 
       mat = mat / 2;
 
@@ -5156,10 +5207,9 @@ void ClassTest::testScaling()
       test_ = "Row-major CompressedMatrix::scale() (int)";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 2UL );
-      mat(0,0) = 1;
-      mat(1,0) = 2;
-      mat(2,1) = 3;
+      blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 0 },
+                                                        { 2, 0 },
+                                                        { 0, 3 } };
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
@@ -5258,10 +5308,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M*=s)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0, 0, 0 },
+                                                           {  0, 0, 1 },
+                                                           { -2, 0, 3 } };
 
       mat *= 2;
 
@@ -5293,10 +5342,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M*s)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0, 0, 0 },
+                                                           {  0, 0, 1 },
+                                                           { -2, 0, 3 } };
 
       mat = mat * 2;
 
@@ -5328,10 +5376,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=s*M)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  1;
-      mat(2,0) = -2;
-      mat(2,2) =  3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0, 0, 0 },
+                                                           {  0, 0, 1 },
+                                                           { -2, 0, 3 } };
 
       mat = 2 * mat;
 
@@ -5363,10 +5410,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M/=s)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0, 0, 0 },
+                                                           {  0, 0, 2 },
+                                                           { -4, 0, 6 } };
 
       mat /= 2;
 
@@ -5398,10 +5444,9 @@ void ClassTest::testScaling()
    {
       test_ = "Column-major self-scaling (M=M/s)";
 
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
-      mat(1,2) =  2;
-      mat(2,0) = -4;
-      mat(2,2) =  6;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0, 0, 0 },
+                                                           {  0, 0, 2 },
+                                                           { -4, 0, 6 } };
 
       mat = mat / 2;
 
@@ -5434,10 +5479,9 @@ void ClassTest::testScaling()
       test_ = "Column-major CompressedMatrix::scale() (int)";
 
       // Initialization check
-      blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 2UL );
-      mat(0,0) = 1;
-      mat(1,0) = 2;
-      mat(2,1) = 3;
+      blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 0 },
+                                                           { 2, 0 },
+                                                           { 0, 3 } };
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
