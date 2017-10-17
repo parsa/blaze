@@ -58,6 +58,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -309,6 +310,7 @@ class SymmetricMatrix<MT,SO,false,true>
    explicit inline SymmetricMatrix( size_t n );
    explicit inline SymmetricMatrix( size_t n, size_t nonzeros );
    explicit inline SymmetricMatrix( size_t n, const std::vector<size_t>& nonzeros );
+   explicit inline SymmetricMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline SymmetricMatrix( const SymmetricMatrix& m );
    inline SymmetricMatrix( SymmetricMatrix&& m ) noexcept;
@@ -341,6 +343,8 @@ class SymmetricMatrix<MT,SO,false,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline SymmetricMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+
    inline SymmetricMatrix& operator=( const SymmetricMatrix& rhs );
    inline SymmetricMatrix& operator=( SymmetricMatrix&& rhs ) noexcept;
 
@@ -596,6 +600,44 @@ inline SymmetricMatrix<MT,SO,false,true>::SymmetricMatrix( size_t n, const std::
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of symmetric matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the symmetric
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<int,rowMajor> > A{ { 1,  4,  5 },
+                                                                      { 4,  2, -6 },
+                                                                      { 5, -6,  3 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the matrix cannot be resized or the given list does not represent a symmetric
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline SymmetricMatrix<MT,SO,false,true>::SymmetricMatrix( initializer_list< initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted sparse matrix
+{
+   if( !isSymmetric( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of symmetric matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -968,6 +1010,52 @@ inline typename SymmetricMatrix<MT,SO,false,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to symmetric matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the symmetric
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::SymmetricMatrix< blaze::CompressedMatrix<int,rowMajor> > A;
+   A = { { 1,  4,  5 },
+         { 4,  2, -6 },
+         { 5, -6,  3 } };
+   \endcode
+
+// The matrix is resized according to the size of the initializer list and all matrix elements
+// are assigned the values from the given list. Missing values are assigned default values.
+// In case the matrix cannot be resized or the given list does not represent a symmetric matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline SymmetricMatrix<MT,SO,false,true>&
+   SymmetricMatrix<MT,SO,false,true>::operator=( initializer_list< initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isSymmetric( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
