@@ -138,7 +138,7 @@ class Row<MT,true,true,SF,CRAs...>
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
    using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using ResultType    = RowTrait_<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the row elements.
@@ -2296,7 +2296,7 @@ class Row<MT,false,true,false,CRAs...>
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
    using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using ResultType    = RowTrait_<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
    using ReturnType    = ElementType_<MT>;            //!< Return type for expression template evaluations
@@ -4180,7 +4180,7 @@ class Row<MT,false,true,true,CRAs...>
 
    using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
    using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using ResultType    = RowTrait_<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the row elements.

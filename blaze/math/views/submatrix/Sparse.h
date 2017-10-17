@@ -132,14 +132,14 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,false,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;    //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
+   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -2716,14 +2716,14 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,true,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;     //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
+   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;

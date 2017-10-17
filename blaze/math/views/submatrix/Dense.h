@@ -147,15 +147,15 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;     //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -3501,15 +3501,15 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -6814,15 +6814,15 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;     //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -9758,15 +9758,15 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;            //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;

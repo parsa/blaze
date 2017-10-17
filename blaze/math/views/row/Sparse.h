@@ -131,7 +131,7 @@ class Row<MT,true,false,SF,CRAs...>
 
    using BaseType      = SparseVector<This,true>;     //!< Base type of this Row instance.
    using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using ResultType    = RowTrait_<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -2124,7 +2124,7 @@ class Row<MT,false,false,false,CRAs...>
 
    using BaseType      = SparseVector<This,true>;     //!< Base type of this Row instance.
    using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using ResultType    = RowTrait_<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -4126,7 +4126,7 @@ class Row<MT,false,false,true,CRAs...>
 
    using BaseType      = SparseVector<This,true>;     //!< Base type of this Row instance.
    using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_<MT>;               //!< Result type for expression template evaluations.
+   using ResultType    = RowTrait_<MT,CRAs...>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations

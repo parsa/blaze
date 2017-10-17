@@ -130,7 +130,7 @@ class Column<MT,true,false,SF,CCAs...>
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -2123,7 +2123,7 @@ class Column<MT,false,false,false,CCAs...>
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -4131,7 +4131,7 @@ class Column<MT,false,false,true,CCAs...>
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations

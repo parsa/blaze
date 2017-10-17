@@ -139,7 +139,7 @@ class Column<MT,true,true,SF,CCAs...>
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
@@ -2295,7 +2295,7 @@ class Column<MT,false,true,false,CCAs...>
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -4179,7 +4179,7 @@ class Column<MT,false,true,true,CCAs...>
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT>;            //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
