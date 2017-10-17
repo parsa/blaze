@@ -6777,8 +6777,14 @@ struct LowType< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... CSAs >
-struct SubmatrixTrait< StaticMatrix<T,M,N,SO>, CSAs... >
+template< typename T, size_t M1, size_t N1, bool SO, size_t I, size_t J, size_t M2, size_t N2 >
+struct SubmatrixTrait< StaticMatrix<T,M1,N1,SO>, I, J, M2, N2 >
+{
+   using Type = StaticMatrix<T,M2,N2,SO>;
+};
+
+template< typename T, size_t M, size_t N, bool SO >
+struct SubmatrixTrait< StaticMatrix<T,M,N,SO> >
 {
    using Type = HybridMatrix<T,M,N,SO>;
 };

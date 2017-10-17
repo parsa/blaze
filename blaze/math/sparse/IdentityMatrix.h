@@ -2596,8 +2596,14 @@ struct LowType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CSAs >
-struct SubmatrixTrait< IdentityMatrix<T,SO>, CSAs... >
+template< typename T, bool SO, size_t I, size_t J, size_t M, size_t N >
+struct SubmatrixTrait< IdentityMatrix<T,SO>, I, J, M, N >
+{
+   using Type = StaticMatrix<T,M,N,SO>;
+};
+
+template< typename T, bool SO >
+struct SubmatrixTrait< IdentityMatrix<T,SO> >
 {
    using Type = CompressedMatrix<T,SO>;
 };
