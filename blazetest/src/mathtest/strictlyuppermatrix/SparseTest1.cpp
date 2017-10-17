@@ -125,6 +125,65 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete list initialization
+   {
+      test_ = "Row-major StrictlyUpperMatrix initializer list constructor (complete list)";
+
+      const UT upper{ { 0, 2, 3 }, { 0, 0, 5 }, { 0, 0, 0 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete list initialization
+   {
+      test_ = "Row-major StrictlyUpperMatrix initializer list constructor (incomplete list)";
+
+      const UT upper{ { 0, 2, 3 }, { 0, 0, 5 }, { } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -354,6 +413,65 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete list initialization
+   {
+      test_ = "Column-major StrictlyUpperMatrix initializer list constructor (complete list)";
+
+      const OUT upper{ { 0, 2, 3 }, { 0, 0, 5 }, { 0, 0, 0 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete list initialization
+   {
+      test_ = "Column-major StrictlyUpperMatrix initializer list constructor (incomplete list)";
+
+      const OUT upper{ { 0, 2, 3 }, { 0, 0, 5 }, { } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkCapacity( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy constructor
    //=====================================================================================
 
@@ -563,6 +681,65 @@ void SparseTest::testConstructors()
 */
 void SparseTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major StrictlyUpperMatrix initializer list assignment (complete list)";
+
+      UT upper;
+      upper = { { 0, 2, 3 }, { 0, 0, 5 }, { 0, 0, 0 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Complete initializer list
+   {
+      test_ = "Row-major StrictlyUpperMatrix initializer list assignment (incomplete list)";
+
+      UT upper;
+      upper = { { 0, 2, 3 }, { 0, 0, 5 }, { } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 2UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 0UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1036,6 +1213,65 @@ void SparseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << upper2 << "\n"
              << "   Expected result:\n( 0 -4  7 )\n( 0  0  0 )\n( 0  0  0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major StrictlyUpperMatrix initializer list assignment (complete list)";
+
+      OUT upper;
+      upper = { { 0, 2, 3 }, { 0, 0, 5 }, { 0, 0, 0 } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Complete initializer list
+   {
+      test_ = "Column-major StrictlyUpperMatrix initializer list assignment (incomplete list)";
+
+      OUT upper;
+      upper = { { 0, 2, 3 }, { 0, 0, 5 }, { } };
+
+      checkRows    ( upper, 3UL );
+      checkColumns ( upper, 3UL );
+      checkNonZeros( upper, 3UL );
+      checkNonZeros( upper, 0UL, 0UL );
+      checkNonZeros( upper, 1UL, 1UL );
+      checkNonZeros( upper, 2UL, 2UL );
+
+      if( upper(0,0) != 0 || upper(0,1) != 2 || upper(0,2) != 3 ||
+          upper(1,0) != 0 || upper(1,1) != 0 || upper(1,2) != 5 ||
+          upper(2,0) != 0 || upper(2,1) != 0 || upper(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << upper << "\n"
+             << "   Expected result:\n( 0 2 3 )\n( 0 0 5 )\n( 0 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
