@@ -129,6 +129,65 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major StrictlyLowerMatrix initializer list constructor (complete list)";
+
+      const LT lower{ { 0, 0, 0 }, { 2, 0, 0 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 0UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 2UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major StrictlyLowerMatrix initializer list constructor (incomplete list)";
+
+      const LT lower{ { }, { 2 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 0UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 2UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -358,6 +417,65 @@ void SparseTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major StrictlyLowerMatrix initializer list constructor (complete list)";
+
+      const OLT lower{ { 0, 0, 0 }, { 2, 0, 0 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major StrictlyLowerMatrix initializer list constructor (incomplete list)";
+
+      const OLT lower{ { }, { 2 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkCapacity( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy constructor
    //=====================================================================================
 
@@ -567,6 +685,65 @@ void SparseTest::testConstructors()
 */
 void SparseTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major StrictlyLowerMatrix initializer list assignment (complete list)";
+
+      LT lower;
+      lower = { { 0, 0, 0 }, { 2, 0, 0 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 0UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 2UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major StrictlyLowerMatrix initializer list assignment (incomplete list)";
+
+      LT lower;
+      lower = { {  }, { 2 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 0UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 2UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1040,6 +1217,65 @@ void SparseTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << lower2 << "\n"
              << "   Expected result:\n(  0 0 0 )\n( -4 0 0 )\n(  7 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major StrictlyLowerMatrix initializer list assignment (complete list)";
+
+      OLT lower;
+      lower = { { 0, 0, 0 }, { 2, 0, 0 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major StrictlyLowerMatrix initializer list assignment (incomplete list)";
+
+      OLT lower;
+      lower = { {  }, { 2 }, { 4, 5, 0 } };
+
+      checkRows    ( lower, 3UL );
+      checkColumns ( lower, 3UL );
+      checkNonZeros( lower, 3UL );
+      checkNonZeros( lower, 0UL, 2UL );
+      checkNonZeros( lower, 1UL, 1UL );
+      checkNonZeros( lower, 2UL, 0UL );
+
+      if( lower(0,0) != 0 || lower(0,1) != 0 || lower(0,2) != 0 ||
+          lower(1,0) != 2 || lower(1,1) != 0 || lower(1,2) != 0 ||
+          lower(2,0) != 4 || lower(2,1) != 5 || lower(2,2) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << lower << "\n"
+             << "   Expected result:\n( 0 0 0 )\n( 2 0 0 )\n( 4 5 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
