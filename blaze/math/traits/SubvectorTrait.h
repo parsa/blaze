@@ -99,9 +99,9 @@ namespace blaze {
    using VectorType1 = blaze::DynamicVector<int,columnVector>;
    using ResultType1 = typename blaze::SubvectorTrait<VectorType1>::Type;
 
-   // Definition of the result type of the static row vector
-   using VectorType2 = blaze::StaticVector<int,3UL,rowVector>;
-   using ResultType2 = typename blaze::SubvectorTrait<VectorType2>::Type;
+   // Definition of the result type for the inner two elements of a static row vector
+   using VectorType2 = blaze::StaticVector<int,4UL,rowVector>;
+   using ResultType2 = typename blaze::SubvectorTrait<VectorType2,1UL,2UL>::Type;
    \endcode
 */
 template< typename VT       // Type of the vector
