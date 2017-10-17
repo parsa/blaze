@@ -1293,12 +1293,16 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to submatrix.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the submatrix
 // by means of an initializer list. The submatrix elements are assigned the values from the given
-// initializer list. Missing values are initialized as default. Note that in case the size
-// of the top-level initializer list exceeds the number of rows or the size of any nested list
-// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// initializer list. Missing values are initialized as default. Note that in case the size of the
+// top-level initializer list exceeds the number of rows or the size of any nested list exceeds
+// the number of columns, a \a std::invalid_argument exception is thrown. Also, if the underlying
+// matrix \a MT is a lower triangular, upper triangular, or symmetric matrix and the assignment
+// would violate its lower, upper, or symmetry property, respectively, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -4615,18 +4619,24 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to submatrix.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the submatrix
 // by means of an initializer list. The submatrix elements are assigned the values from the given
-// initializer list. Missing values are initialized as default. Note that in case the size
-// of the top-level initializer list exceeds the number of rows or the size of any nested list
-// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// initializer list. Missing values are initialized as default. Note that in case the size of the
+// top-level initializer list exceeds the number of rows or the size of any nested list exceeds
+// the number of columns, a \a std::invalid_argument exception is thrown. Also, if the underlying
+// matrix \a MT is a lower triangular, upper triangular, or symmetric matrix and the assignment
+// would violate its lower, upper, or symmetry property, respectively, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,unaligned,true,true,CSAs...>&
    Submatrix<MT,unaligned,true,true,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
+   using blaze::reset;
+
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
@@ -4640,7 +4650,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
          ++j;
       }
       for( ; j<columns(); ++j ) {
-         matrix_(row()+i,column()+j) = ElementType();
+         reset( matrix_(row()+i,column()+j) );
       }
       ++i;
    }
@@ -7548,12 +7558,16 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to submatrix.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the submatrix
 // by means of an initializer list. The submatrix elements are assigned the values from the given
-// initializer list. Missing values are initialized as default. Note that in case the size
-// of the top-level initializer list exceeds the number of rows or the size of any nested list
-// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// initializer list. Missing values are initialized as default. Note that in case the size of the
+// top-level initializer list exceeds the number of rows or the size of any nested list exceeds
+// the number of columns, a \a std::invalid_argument exception is thrown. Also, if the underlying
+// matrix \a MT is a lower triangular, upper triangular, or symmetric matrix and the assignment
+// would violate its lower, upper, or symmetry property, respectively, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -10460,18 +10474,24 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to submatrix.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the submatrix
 // by means of an initializer list. The submatrix elements are assigned the values from the given
-// initializer list. Missing values are initialized as default. Note that in case the size
-// of the top-level initializer list exceeds the number of rows or the size of any nested list
-// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// initializer list. Missing values are initialized as default. Note that in case the size of the
+// top-level initializer list exceeds the number of rows or the size of any nested list exceeds
+// the number of columns, a \a std::invalid_argument exception is thrown. Also, if the underlying
+// matrix \a MT is a lower triangular, upper triangular, or symmetric matrix and the assignment
+// would violate its lower, upper, or symmetry property, respectively, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline Submatrix<MT,aligned,true,true,CSAs...>&
    Submatrix<MT,aligned,true,true,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
+   using blaze::reset;
+
    if( list.size() != rows() || determineColumns( list ) > columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
@@ -10485,7 +10505,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
          ++j;
       }
       for( ; j<columns(); ++j ) {
-         matrix_(row()+i,column()+j) = ElementType();
+         reset( matrix_(row()+i,column()+j) );
       }
       ++i;
    }
