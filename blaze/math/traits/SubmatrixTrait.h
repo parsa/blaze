@@ -99,9 +99,9 @@ namespace blaze {
    using MatrixType1 = blaze::DynamicMatrix<int,rowMajor>;
    using ResultType1 = typename blaze::SubmatrixTrait<MatrixType1>::Type;
 
-   // Definition of the result type of a column-major static matrix
-   using MatrixType2 = blaze::StaticMatrix<int,3UL,3UL,columnMajor>;
-   using ResultType2 = typename blaze::SubmatrixTrait<MatrixType2>::Type;
+   // Definition of the result type for the inner four elements of a 4x4 column-major static matrix
+   using MatrixType2 = blaze::StaticMatrix<int,4UL,4UL,columnMajor>;
+   using ResultType2 = typename blaze::SubmatrixTrait<MatrixType2,1UL,1UL,2UL,2UL>::Type;
    \endcode
 */
 template< typename MT       // Type of the matrix
