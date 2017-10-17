@@ -49,6 +49,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
@@ -341,12 +342,15 @@ class CompressedMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                            explicit inline CompressedMatrix();
-                            explicit inline CompressedMatrix( size_t m, size_t n );
-                            explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
-                            explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
-                                     inline CompressedMatrix( const CompressedMatrix& sm );
-                                     inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
+   explicit inline CompressedMatrix();
+   explicit inline CompressedMatrix( size_t m, size_t n );
+   explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
+   explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
+   explicit inline CompressedMatrix( initializer_list< initializer_list<Type> > list );
+
+   inline CompressedMatrix( const CompressedMatrix& sm );
+   inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
+
    template< typename MT, bool SO2 > inline CompressedMatrix( const DenseMatrix<MT,SO2>&  dm );
    template< typename MT, bool SO2 > inline CompressedMatrix( const SparseMatrix<MT,SO2>& sm );
    //@}
@@ -378,6 +382,7 @@ class CompressedMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline CompressedMatrix& operator=( initializer_list< initializer_list<Type> > list );
    inline CompressedMatrix& operator=( const CompressedMatrix& rhs );
    inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) noexcept;
 
@@ -649,6 +654,50 @@ CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, const std::vect
 
 
 //*************************************************************************************************
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+//
+// This constructor provides the option to explicitly initialize the elements of the matrix by
+// means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::CompressedMatrix<int,rowMajor> A{ { 1, 2, 3 },
+                                            { 4, 5 },
+                                            { 7, 8, 9 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all its elements are
+// initialized by the values of the given initializer list. Missing values are considered to
+// be default values.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline CompressedMatrix<Type,SO>::CompressedMatrix( initializer_list< initializer_list<Type> > list )
+   : CompressedMatrix( list.size(), determineColumns( list ), blaze::nonZeros( list ) )
+{
+   size_t i( 0UL );
+
+   for( const auto& rowList : list )
+   {
+      size_t j( 0UL );
+
+      for( const Type& element : rowList ) {
+         if( !isDefault<strict>( element ) )
+            append( i, j, element );
+         ++j;
+      }
+
+      finalize( i );
+      ++i;
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief The copy constructor for CompressedMatrix.
 //
 // \param sm Sparse matrix to be copied.
@@ -707,16 +756,9 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign dense matrix
         , bool SO2 >     // Storage order of the foreign dense matrix
 inline CompressedMatrix<Type,SO>::CompressedMatrix( const DenseMatrix<MT,SO2>& dm )
-   : m_       ( (~dm).rows() )              // The current number of rows of the compressed matrix
-   , n_       ( (~dm).columns() )           // The current number of columns of the compressed matrix
-   , capacity_( m_ )                        // The current capacity of the pointer array
-   , begin_   ( new Iterator[2UL*m_+2UL] )  // Pointers to the first non-zero element of each row
-   , end_     ( begin_+(m_+1UL) )           // Pointers one past the last non-zero element of each row
+   : CompressedMatrix( (~dm).rows(), (~dm).columns() )
 {
    using blaze::assign;
-
-   for( size_t i=0UL; i<2UL*m_+2UL; ++i )
-      begin_[i] = nullptr;
 
    assign( *this, ~dm );
 }
@@ -733,20 +775,9 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign compressed matrix
         , bool SO2 >     // Storage order of the foreign compressed matrix
 inline CompressedMatrix<Type,SO>::CompressedMatrix( const SparseMatrix<MT,SO2>& sm )
-   : m_       ( (~sm).rows() )              // The current number of rows of the compressed matrix
-   , n_       ( (~sm).columns() )           // The current number of columns of the compressed matrix
-   , capacity_( m_ )                        // The current capacity of the pointer array
-   , begin_   ( new Iterator[2UL*m_+2UL] )  // Pointers to the first non-zero element of each row
-   , end_     ( begin_+(m_+1UL) )           // Pointers one past the last non-zero element of each row
+   : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
 {
    using blaze::assign;
-
-   const size_t nonzeros( (~sm).nonZeros() );
-
-   begin_[0UL] = allocate<Element>( nonzeros );
-   for( size_t i=0UL; i<m_; ++i )
-      begin_[i+1UL] = end_[i] = begin_[0UL];
-   end_[m_] = begin_[0UL]+nonzeros;
 
    assign( *this, ~sm );
 }
@@ -1033,6 +1064,58 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+//
+// This assignment operator offers the option to directly assign to all elements of the matrix
+// by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::CompressedMatrix<int,rowMajor> A;
+   A = { { 1, 2, 3 },
+         { 4, 5 },
+         { 7, 8, 9 } };
+   \endcode
+
+// The matrix is resized according to the given initializer list and all its elements are
+// assigned the values from the given initializer list. Missing values are considered to
+// be default values.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline CompressedMatrix<Type,SO>&
+   CompressedMatrix<Type,SO>::operator=( initializer_list< initializer_list<Type> > list )
+{
+   using blaze::nonZeros;
+
+   resize( list.size(), determineColumns( list ), false );
+   reserve( nonZeros( list ) );
+
+   size_t i( 0UL );
+
+   for( const auto& rowList : list )
+   {
+      size_t j( 0UL );
+
+      for( const Type& element : rowList ) {
+         if( !isDefault<strict>( element ) )
+            append( i, j, element );
+         ++j;
+      }
+
+      finalize( i );
+      ++i;
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Copy assignment operator for CompressedMatrix.
@@ -3091,12 +3174,15 @@ class CompressedMatrix<Type,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline CompressedMatrix();
-                           explicit inline CompressedMatrix( size_t m, size_t n );
-                           explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
-                           explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
-                                    inline CompressedMatrix( const CompressedMatrix& sm );
-                                    inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
+   explicit inline CompressedMatrix();
+   explicit inline CompressedMatrix( size_t m, size_t n );
+   explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
+   explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
+   explicit inline CompressedMatrix( initializer_list< initializer_list<Type> > list );
+
+   inline CompressedMatrix( const CompressedMatrix& sm );
+   inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
+
    template< typename MT, bool SO > inline CompressedMatrix( const DenseMatrix<MT,SO>&  dm );
    template< typename MT, bool SO > inline CompressedMatrix( const SparseMatrix<MT,SO>& sm );
    //@}
@@ -3128,6 +3214,7 @@ class CompressedMatrix<Type,true>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline CompressedMatrix& operator=( initializer_list< initializer_list<Type> > list );
    inline CompressedMatrix& operator=( const CompressedMatrix& rhs );
    inline CompressedMatrix& operator=( CompressedMatrix&& rhs ) noexcept;
 
@@ -3404,6 +3491,56 @@ CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, const std::ve
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+//
+// This constructor provides the option to explicitly initialize the elements of the matrix by
+// means of an initializer list:
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::CompressedMatrix<int,columnMajor> A{ { 1, 2, 3 },
+                                               { 4, 5 },
+                                               { 7, 8, 9 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all its elements are
+// initialized by the values of the given initializer list. Missing values are considered to
+// be default values.
+*/
+template< typename Type >  // Data type of the matrix
+inline CompressedMatrix<Type,true>::CompressedMatrix( initializer_list< initializer_list<Type> > list )
+   : CompressedMatrix( list.size(), determineColumns( list ), blaze::nonZeros( list ) )
+{
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      size_t i( 0UL );
+
+      for( const auto& rowList : list )
+      {
+         if( rowList.size() <= j ) {
+            ++i;
+            continue;
+         }
+
+         auto pos( rowList.begin() );
+         std::advance( pos, j );
+         if( !isDefault<strict>( *pos ) )
+            append( i, j, *pos );
+         ++i;
+      }
+
+      finalize( j );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief The copy constructor for CompressedMatrix.
 //
 // \param sm Sparse matrix to be copied.
@@ -3463,16 +3600,9 @@ template< typename Type >  // Data type of the matrix
 template< typename MT      // Type of the foreign dense matrix
         , bool SO >        // Storage order of the foreign dense matrix
 inline CompressedMatrix<Type,true>::CompressedMatrix( const DenseMatrix<MT,SO>& dm )
-   : m_       ( (~dm).rows() )              // The current number of rows of the compressed matrix
-   , n_       ( (~dm).columns() )           // The current number of columns of the compressed matrix
-   , capacity_( n_ )                        // The current capacity of the pointer array
-   , begin_   ( new Iterator[2UL*n_+2UL] )  // Pointers to the first non-zero element of each column
-   , end_     ( begin_+(n_+1UL) )           // Pointers one past the last non-zero element of each column
+   : CompressedMatrix( (~dm).rows(), (~dm).columns() )
 {
    using blaze::assign;
-
-   for( size_t j=0UL; j<2UL*n_+2UL; ++j )
-      begin_[j] = nullptr;
 
    assign( *this, ~dm );
 }
@@ -3490,20 +3620,9 @@ template< typename Type >  // Data type of the matrix
 template< typename MT      // Type of the foreign compressed matrix
         , bool SO >        // Storage order of the foreign compressed matrix
 inline CompressedMatrix<Type,true>::CompressedMatrix( const SparseMatrix<MT,SO>& sm )
-   : m_       ( (~sm).rows() )              // The current number of rows of the compressed matrix
-   , n_       ( (~sm).columns() )           // The current number of columns of the compressed matrix
-   , capacity_( n_ )                        // The current capacity of the pointer array
-   , begin_   ( new Iterator[2UL*n_+2UL] )  // Pointers to the first non-zero element of each column
-   , end_     ( begin_+(n_+1UL) )           // Pointers one past the last non-zero element of each column
+   : CompressedMatrix( (~sm).rows(), (~sm).columns(), (~sm).nonZeros() )
 {
    using blaze::assign;
-
-   const size_t nonzeros( (~sm).nonZeros() );
-
-   begin_[0UL] = allocate<Element>( nonzeros );
-   for( size_t j=0UL; j<n_; ++j )
-      begin_[j+1UL] = end_[j] = begin_[0UL];
-   end_[n_] = begin_[0UL]+nonzeros;
 
    assign( *this, ~sm );
 }
@@ -3772,6 +3891,64 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+//
+// This assignment operator offers the option to directly assign to all elements of the matrix
+// by means of an initializer list:
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::CompressedMatrix<int,columnMajor> A;
+   A = { { 1, 2, 3 },
+         { 4, 5 },
+         { 7, 8, 9 } };
+   \endcode
+
+// The matrix is resized according to the given initializer list and all its elements are
+// assigned the values from the given initializer list. Missing values are considered to
+// be default values.
+*/
+template< typename Type >  // Data type of the matrix
+inline CompressedMatrix<Type,true>&
+   CompressedMatrix<Type,true>::operator=( initializer_list< initializer_list<Type> > list )
+{
+   using blaze::nonZeros;
+
+   resize( list.size(), determineColumns( list ), false );
+   reserve( nonZeros( list ) );
+
+   for( size_t j=0UL; j<n_; ++j )
+   {
+      size_t i( 0UL );
+
+      for( const auto& rowList : list )
+      {
+         if( rowList.size() <= j ) {
+            ++i;
+            continue;
+         }
+
+         auto pos( rowList.begin() );
+         std::advance( pos, j );
+         if( !isDefault<strict>( *pos ) )
+            append( i, j, *pos );
+         ++i;
+      }
+
+      finalize( j );
+   }
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
