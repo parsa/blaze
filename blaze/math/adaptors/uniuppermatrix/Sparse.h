@@ -60,6 +60,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsOne.h>
@@ -310,6 +311,7 @@ class UniUpperMatrix<MT,SO,false>
    explicit inline UniUpperMatrix( size_t n );
    explicit inline UniUpperMatrix( size_t n, size_t nonzeros );
    explicit inline UniUpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
+   explicit inline UniUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline UniUpperMatrix( const UniUpperMatrix& m );
    inline UniUpperMatrix( UniUpperMatrix&& m ) noexcept;
@@ -342,6 +344,8 @@ class UniUpperMatrix<MT,SO,false>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline UniUpperMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+
    inline UniUpperMatrix& operator=( const UniUpperMatrix& rhs );
    inline UniUpperMatrix& operator=( UniUpperMatrix&& rhs ) noexcept;
 
@@ -600,6 +604,44 @@ inline UniUpperMatrix<MT,SO,false>::UniUpperMatrix( size_t n, const std::vector<
    }
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of uniupper matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the uniupper
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UniUpperMatrix< blaze::CompressedMatrix<int,rowMajor> > A{ { 1, 2, 3 },
+                                                                     { 0, 1 },
+                                                                     { 0, 0, 1 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the matrix cannot be resized or the given list does not represent an uniupper
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline UniUpperMatrix<MT,SO,false>::UniUpperMatrix( initializer_list< initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted sparse matrix
+{
+   if( !isUniUpper( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of uniupper matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -953,6 +995,52 @@ inline typename UniUpperMatrix<MT,SO,false>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to uniupper matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the uniupper
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::UniUpperMatrix< blaze::CompressedMatrix<int,rowMajor> > A;
+   A = { { 1, 2, 3 },
+         { 0, 1 },
+         { 0, 0, 1 } };
+   \endcode
+
+// The matrix is resized according to the size of the initializer list and all matrix elements
+// are assigned the values from the given list. Missing values are assigned default values.
+// In case the matrix cannot be resized or the given list does not represent an uniupper matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline UniUpperMatrix<MT,SO,false>&
+   UniUpperMatrix<MT,SO,false>::operator=( initializer_list< initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isUniUpper( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
