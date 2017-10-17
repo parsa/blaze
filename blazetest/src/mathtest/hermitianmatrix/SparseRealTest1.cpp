@@ -125,6 +125,59 @@ void SparseRealTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list constructor (complete list)";
+
+      const HT herm{ { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 7UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list constructor (incomplete list)";
+
+      const HT herm{ { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 7UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -350,6 +403,59 @@ void SparseRealTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list constructor (complete list)";
+
+      const OHT herm{ { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 7UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list constructor (incomplete list)";
+
+      const OHT herm{ { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 7UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy constructor
    //=====================================================================================
 
@@ -555,6 +661,59 @@ void SparseRealTest::testConstructors()
 */
 void SparseRealTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list assignment (complete list)";
+
+      HT herm;
+      herm = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list assignment (incomplete list)";
+
+      HT herm;
+      herm = { { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1032,6 +1191,59 @@ void SparseRealTest::testAssignment()
              << " Details:\n"
              << "   Result:\n" << herm2 << "\n"
              << "   Expected result:\n(  1 -4  7 )\n( -4  2  0 )\n(  7  0  3 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list assignment (complete list)";
+
+      OHT herm;
+      herm = { { 1, 2, 3 }, { 2, 4, 0 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list assignment (incomplete list)";
+
+      OHT herm;
+      herm = { { 1, 2, 3 }, { 2, 4 }, { 3, 0, 6 } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != 1 || herm(0,1) != 2 || herm(0,2) != 3 ||
+          herm(1,0) != 2 || herm(1,1) != 4 || herm(1,2) != 0 ||
+          herm(2,0) != 3 || herm(2,1) != 0 || herm(2,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( 1 2 3 )\n( 2 4 0 )\n( 3 0 6 )\n";
          throw std::runtime_error( oss.str() );
       }
    }

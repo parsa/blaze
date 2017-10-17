@@ -126,6 +126,67 @@ void SparseComplexTest::testConstructors()
 
 
    //=====================================================================================
+   // Row-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list constructor (complete list)";
+
+      const HT herm{ { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                     { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+                     { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list constructor (incomplete list)";
+
+      const HT herm{ { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                     { cplx(2,-2), cplx(4, 0) },
+                     { cplx(3, 3), cplx(0, 0), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 7UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 0) )\n"
+                                     "( (3, 3) (0, 0) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy constructor
    //=====================================================================================
 
@@ -401,6 +462,67 @@ void SparseComplexTest::testConstructors()
 
 
    //=====================================================================================
+   // Column-major list initialization
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list constructor (complete list)";
+
+      const OHT herm{ { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                      { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+                      { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 9UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list constructor (incomplete list)";
+
+      const OHT herm{ { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+                      { cplx(2,-2), cplx(4, 0) },
+                      { cplx(3, 3), cplx(0, 0), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkCapacity( herm, 7UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 0) )\n"
+                                     "( (3, 3) (0, 0) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Column-major copy constructor
    //=====================================================================================
 
@@ -656,6 +778,67 @@ void SparseComplexTest::testConstructors()
 */
 void SparseComplexTest::testAssignment()
 {
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list assignment (complete list)";
+
+      HT herm;
+      herm = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+               { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+               { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Row-major HermitianMatrix initializer list assignment (incomplete list)";
+
+      HT herm;
+      herm = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+               { cplx(2,-2), cplx(4, 0) },
+               { cplx(3, 3), cplx(0, 0), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 0) )\n"
+                                     "( (3, 3) (0, 0) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
    //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
@@ -1293,6 +1476,67 @@ void SparseComplexTest::testAssignment()
              << "   Expected result:\n( ( 1, 0) (-4,-1) (7,3) )\n"
                                      "( (-4, 1) ( 2, 0) (0,0) )\n"
                                      "( ( 7,-3) ( 0, 0) (3,0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   // Complete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list assignment (complete list)";
+
+      OHT herm;
+      herm = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+               { cplx(2,-2), cplx(4, 0), cplx(0, 5) },
+               { cplx(3, 3), cplx(0,-5), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 9UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 5) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0,-5) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 5) )\n"
+                                     "( (3, 3) (0,-5) (6, 0) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Incomplete initializer list
+   {
+      test_ = "Column-major HermitianMatrix initializer list assignment (incomplete list)";
+
+      OHT herm;
+      herm = { { cplx(1, 0), cplx(2, 2), cplx(3,-3) },
+               { cplx(2,-2), cplx(4, 0) },
+               { cplx(3, 3), cplx(0, 0), cplx(6, 0) } };
+
+      checkRows    ( herm, 3UL );
+      checkColumns ( herm, 3UL );
+      checkNonZeros( herm, 7UL );
+
+      if( herm(0,0) != cplx(1, 0) || herm(0,1) != cplx(2, 2) || herm(0,2) != cplx(3,-3) ||
+          herm(1,0) != cplx(2,-2) || herm(1,1) != cplx(4, 0) || herm(1,2) != cplx(0, 0) ||
+          herm(2,0) != cplx(3, 3) || herm(2,1) != cplx(0, 0) || herm(2,2) != cplx(6, 0) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << herm << "\n"
+             << "   Expected result:\n( (1, 0) (2, 2) (3,-3) )\n"
+                                     "( (2,-2) (4, 0) (0, 0) )\n"
+                                     "( (3, 3) (0, 0) (6, 0) )\n";
          throw std::runtime_error( oss.str() );
       }
    }
