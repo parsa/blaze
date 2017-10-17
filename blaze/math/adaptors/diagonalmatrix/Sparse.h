@@ -55,6 +55,7 @@
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseMatrix.h>
@@ -151,6 +152,7 @@ class DiagonalMatrix<MT,SO,false>
    explicit inline DiagonalMatrix( size_t n );
    explicit inline DiagonalMatrix( size_t n, size_t nonzeros );
    explicit inline DiagonalMatrix( size_t n, const std::vector<size_t>& nonzeros );
+   explicit inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline DiagonalMatrix( const DiagonalMatrix& m );
    inline DiagonalMatrix( DiagonalMatrix&& m ) noexcept;
@@ -183,6 +185,8 @@ class DiagonalMatrix<MT,SO,false>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline DiagonalMatrix& operator=( initializer_list< initializer_list<ElementType> > list );
+
    inline DiagonalMatrix& operator=( const DiagonalMatrix& rhs );
    inline DiagonalMatrix& operator=( DiagonalMatrix&& rhs ) noexcept;
 
@@ -429,6 +433,44 @@ inline DiagonalMatrix<MT,SO,false>::DiagonalMatrix( size_t n, const std::vector<
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List initialization of all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid setup of diagonal matrix.
+//
+// This constructor provides the option to explicitly initialize the elements of the diagonal
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DiagonalMatrix< blaze::CompressedMatrix<int,rowMajor> > A{ { 1, 0, 0 },
+                                                                     { 0, 2 },
+                                                                     { 0, 0, 3 } };
+   \endcode
+
+// The matrix is sized according to the size of the initializer list and all matrix elements are
+// initialized with the values from the given list. Missing values are initialized with default
+// values. In case the matrix cannot be resized or the given list does not represent a diagonal
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline DiagonalMatrix<MT,SO,false>::DiagonalMatrix( initializer_list< initializer_list<ElementType> > list )
+   : matrix_( list )  // The adapted sparse matrix
+{
+   if( !isDiagonal( matrix_ ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of diagonal matrix" );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -782,6 +824,52 @@ inline typename DiagonalMatrix<MT,SO,false>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all matrix elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to diagonal matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the diagonal
+// matrix by means of an initializer list:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DiagonalMatrix< blaze::CompressedMatrix<int,rowMajor> > A;
+   A = { { 1, 0, 0 },
+         { 0, 2 },
+         { 0, 0, 3 } };
+   \endcode
+
+// The matrix is resized according to the size of the initializer list and all matrix elements
+// are assigned the values from the given list. Missing values are assigned default values.
+// In case the matrix cannot be resized or the given list does not represent a diagonal matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
+inline DiagonalMatrix<MT,SO,false>&
+   DiagonalMatrix<MT,SO,false>::operator=( initializer_list< initializer_list<ElementType> > list )
+{
+   MT tmp( list );
+
+   if( !isDiagonal( tmp ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
+   }
+
+   matrix_ = std::move( tmp );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
