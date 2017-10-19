@@ -72,10 +72,14 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
@@ -3011,6 +3015,154 @@ struct HasMutableDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
 template< typename MT, bool SO, size_t... CSAs >
 struct IsAligned< Submatrix<MT,aligned,SO,true,CSAs...> >
    : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsSymmetric< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsSymmetric<MT>::value && I == J && M == N ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsHermitian< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsHermitian<MT>::value && I == J && M == N ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsLower<MT>::value && I == J && M == N ) ||
+                          ( IsStrictlyLower<MT>::value && I == J+1UL && M == N ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsUniLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsUniLower<MT>::value && I == J && M == N ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsStrictlyLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsLower<MT>::value && I < J && M == N ) ||
+                          ( IsStrictlyLower<MT>::value && I == J && M == N ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsUpper<MT>::value && I == J && M == N ) ||
+                          ( IsStrictlyUpper<MT>::value && I+1UL == J && M == N ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISUNIUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsUniUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsUniUpper<MT>::value && I == J && M == N ) >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct IsStrictlyUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
+   : public BoolConstant< ( IsUpper<MT>::value && I > J && M == N ) ||
+                          ( IsStrictlyUpper<MT>::value && I == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
