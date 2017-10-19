@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/row/BaseTemplate.h>
 #include <blaze/math/views/row/Dense.h>
@@ -1364,6 +1365,24 @@ inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
 {
    return row( derestrict( r.operand() ), r.row(), unchecked );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct Size< Row<MT,SO,DF,SF,CRAs...>, 0UL >
+   : public Size<MT,1UL>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
