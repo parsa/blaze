@@ -334,7 +334,6 @@ class HybridMatrix
    template< typename MT, bool SO2 > inline HybridMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator-=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline HybridMatrix& operator%=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline HybridMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, HybridMatrix >& operator*=( Other rhs );
@@ -1628,41 +1627,6 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator%=( const M
    else {
       schurAssign( *this, ~rhs );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N       // Number of columns
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator*=( const Matrix<MT,SO2>& rhs )
-{
-   using blaze::assign;
-
-   if( n_ != (~rhs).rows() || (~rhs).columns() > N ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const HybridMatrix tmp( *this * (~rhs) );
-   resize( tmp.rows(), tmp.columns() );
-   assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -3484,7 +3448,6 @@ class HybridMatrix<Type,M,N,true>
    template< typename MT, bool SO > inline HybridMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator-=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline HybridMatrix& operator%=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline HybridMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, HybridMatrix >& operator*=( Other rhs );
@@ -4782,42 +4745,6 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator%=( con
    else {
       schurAssign( *this, ~rhs );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
-*/
-template< typename Type  // Data type of the matrix
-        , size_t M       // Number of rows
-        , size_t N >     // Number of columns
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator*=( const Matrix<MT,SO>& rhs )
-{
-   using blaze::assign;
-
-   if( n_ != (~rhs).rows() || (~rhs).columns() > N ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const HybridMatrix tmp( *this * (~rhs) );
-   resize( tmp.rows(), tmp.columns() );
-   assign( *this, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 

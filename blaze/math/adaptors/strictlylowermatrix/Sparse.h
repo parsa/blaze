@@ -223,9 +223,6 @@ class StrictlyLowerMatrix<MT,SO,false>
    template< typename MT2, bool SO2 >
    inline StrictlyLowerMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO2 >
-   inline StrictlyLowerMatrix& operator*=( const Matrix<MT2,SO2>& rhs );
-
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, StrictlyLowerMatrix >& operator*=( Other rhs );
 
@@ -1226,49 +1223,6 @@ inline StrictlyLowerMatrix<MT,SO,false>&
    }
 
    matrix_ %= ~rhs;
-
-   if( !IsStrictlyLower<MT2>::value )
-      resetUpper();
-
-   BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the matrix.
-// \exception std::invalid_argument Invalid assignment to strictly lower matrix.
-//
-// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown. Also note that the result of the multiplication operation must be a strictly lower
-// matrix. In case it is not, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT   // Type of the adapted sparse matrix
-        , bool SO >     // Storage order of the adapted sparse matrix
-template< typename MT2  // Type of the right-hand side matrix
-        , bool SO2 >    // Storage order of the right-hand side matrix
-inline StrictlyLowerMatrix<MT,SO,false>&
-   StrictlyLowerMatrix<MT,SO,false>::operator*=( const Matrix<MT2,SO2>& rhs )
-{
-   if( matrix_.rows() != (~rhs).columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
-   }
-
-   MT tmp( matrix_ * ~rhs );
-
-   if( !isStrictlyLower( tmp ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
-   }
-
-   matrix_ = std::move( tmp );
 
    if( !IsStrictlyLower<MT2>::value )
       resetUpper();

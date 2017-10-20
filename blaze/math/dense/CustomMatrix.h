@@ -526,7 +526,6 @@ class CustomMatrix
    template< typename MT, bool SO2 > inline CustomMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator-=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator%=( const Matrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CustomMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator*=( Other rhs );
@@ -1571,36 +1570,6 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator%=( con
    else {
       smpSchurAssign( *this, ~rhs );
    }
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
-*/
-template< typename Type  // Data type of the matrix
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator*=( const Matrix<MT,SO2>& rhs )
-{
-   if( m_ != n_ || (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultTrait_< ResultType, ResultType_<MT> > tmp( *this * (~rhs) );
-   smpAssign( *this, tmp );
 
    return *this;
 }
@@ -3410,7 +3379,6 @@ class CustomMatrix<Type,AF,PF,true>
    template< typename MT, bool SO > inline CustomMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator-=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator%=( const Matrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CustomMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator*=( Other rhs );
@@ -4447,38 +4415,6 @@ inline CustomMatrix<Type,AF,PF,true>&
    else {
       smpSchurAssign( *this, ~rhs );
    }
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
-*/
-template< typename Type  // Data type of the matrix
-        , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO >      // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator*=( const Matrix<MT,SO>& rhs )
-{
-   if( m_ != n_ || (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultTrait_< ResultType, ResultType_<MT> > tmp( *this * (~rhs) );
-   smpAssign( *this, tmp );
 
    return *this;
 }

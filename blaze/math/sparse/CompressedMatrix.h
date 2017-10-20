@@ -394,7 +394,6 @@ class CompressedMatrix
    template< typename MT, bool SO2 > inline CompressedMatrix& operator-=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO2>&  rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO2>& rhs );
-   template< typename MT, bool SO2 > inline CompressedMatrix& operator*=( const Matrix<MT,SO2>& rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator*=( Other rhs );
@@ -1391,35 +1390,6 @@ inline CompressedMatrix<Type,SO>&
    }
 
    CompressedMatrix tmp( *this % (~rhs) );
-   swap( tmp );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
-*/
-template< typename Type  // Data type of the matrix
-        , bool SO >      // Storage order
-template< typename MT    // Type of the right-hand side matrix
-        , bool SO2 >     // Storage order of the right-hand side matrix
-inline CompressedMatrix<Type,SO>&
-   CompressedMatrix<Type,SO>::operator*=( const Matrix<MT,SO2>& rhs )
-{
-   if( (~rhs).rows() != n_ ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   CompressedMatrix tmp( *this * (~rhs) );
    swap( tmp );
 
    return *this;
@@ -3226,7 +3196,6 @@ class CompressedMatrix<Type,true>
    template< typename MT, bool SO > inline CompressedMatrix& operator-=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO>&  rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO>& rhs );
-   template< typename MT, bool SO > inline CompressedMatrix& operator*=( const Matrix<MT,SO>& rhs );
 
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator*=( Other rhs );
@@ -4230,36 +4199,6 @@ inline CompressedMatrix<Type,true>&
    }
 
    CompressedMatrix tmp( *this % (~rhs) );
-   swap( tmp );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
-// is thrown.
-*/
-template< typename Type >  // Data type of the matrix
-template< typename MT      // Type of the right-hand side matrix
-        , bool SO >        // Storage order of the right-hand side matrix
-inline CompressedMatrix<Type,true>&
-   CompressedMatrix<Type,true>::operator*=( const Matrix<MT,SO>& rhs )
-{
-   if( (~rhs).rows() != n_ ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   CompressedMatrix tmp( *this * (~rhs) );
    swap( tmp );
 
    return *this;

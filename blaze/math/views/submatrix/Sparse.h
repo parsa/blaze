@@ -481,7 +481,6 @@ class Submatrix<MT,AF,false,false,CSAs...>
    template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator%=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
@@ -718,7 +717,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
@@ -748,7 +747,7 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
@@ -1259,62 +1258,6 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    }
 
    const SchurType tmp( *this % (~rhs) );
-
-   if( !tryAssign( matrix_, tmp, row(), column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   left.reset();
-   assign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the sparse submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
-// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
-// respectively, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline Submatrix<MT,AF,false,false,CSAs...>&
-   Submatrix<MT,AF,false,false,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
-{
-   using blaze::assign;
-
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
-
-   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
-
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
-
-   if( columns() != (~rhs).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultType tmp( *this * (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3065,7 +3008,6 @@ class Submatrix<MT,AF,true,false,CSAs...>
    template< typename MT2, bool SO > inline Submatrix& operator+=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator-=( const Matrix<MT2,SO>& rhs );
    template< typename MT2, bool SO > inline Submatrix& operator%=( const Matrix<MT2,SO>& rhs );
-   template< typename MT2, bool SO > inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
 
    template< typename Other >
    inline EnableIf_<IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
@@ -3302,7 +3244,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
@@ -3332,7 +3274,7 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the sparse matrix
@@ -3813,62 +3755,6 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    }
 
    const SchurType tmp( *this % (~rhs) );
-
-   if( !tryAssign( matrix_, tmp, row(), column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   left.reset();
-   assign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the sparse submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
-// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
-// respectively, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline Submatrix<MT,AF,true,false,CSAs...>&
-   Submatrix<MT,AF,true,false,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
-{
-   using blaze::assign;
-
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
-
-   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
-
-   BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE        ( MultType   );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType   );
-
-   if( columns() != (~rhs).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultType tmp( *this * (~rhs) );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );

@@ -651,9 +651,6 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename MT2, bool SO2 >
-   inline Submatrix& operator*=( const Matrix<MT2,SO2>& rhs );
-
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
@@ -963,7 +960,7 @@ inline typename Submatrix<MT,unaligned,false,true,CSAs...>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -992,7 +989,7 @@ inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -1330,7 +1327,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Copy assignment operator for Submatrix.
 //
-// \param rhs Sparse submatrix to be copied.
+// \param rhs Dense submatrix to be copied.
 // \return Reference to the assigned submatrix.
 // \exception std::invalid_argument Submatrix sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted matrix.
@@ -1752,58 +1749,6 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the dense submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
-// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
-// respectively, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO2 >        // Storage order of the right-hand side matrix
-inline Submatrix<MT,unaligned,false,true,CSAs...>&
-   Submatrix<MT,unaligned,false,true,CSAs...>::operator*=( const Matrix<MT2,SO2>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
-
-   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
-
-   if( columns() != (~rhs).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultType tmp( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, tmp, row(), column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
@@ -4007,9 +3952,6 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
-   template< typename MT2, bool SO >
-   inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
-
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
@@ -4319,7 +4261,7 @@ inline typename Submatrix<MT,unaligned,true,true,CSAs...>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -4348,7 +4290,7 @@ inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -5087,58 +5029,6 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the dense submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
-// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
-// respectively, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline Submatrix<MT,unaligned,true,true,CSAs...>&
-   Submatrix<MT,unaligned,true,true,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
-
-   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
-
-   if( columns() != (~rhs).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultType tmp( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, tmp, row(), column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
@@ -6918,9 +6808,6 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
-   template< typename MT2, bool SO >
-   inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
-
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
@@ -7228,7 +7115,7 @@ inline typename Submatrix<MT,aligned,false,true,CSAs...>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -7257,7 +7144,7 @@ inline typename Submatrix<MT,aligned,false,true,CSAs...>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -8017,58 +7904,6 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the dense submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
-// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
-// respectively, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline Submatrix<MT,aligned,false,true,CSAs...>&
-   Submatrix<MT,aligned,false,true,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
-
-   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
-
-   if( columns() != (~rhs).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultType tmp( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, tmp, row(), column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
@@ -9862,9 +9697,6 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
-   template< typename MT2, bool SO >
-   inline Submatrix& operator*=( const Matrix<MT2,SO>& rhs );
-
    template< typename Other >
    inline EnableIf_< IsNumeric<Other>, Submatrix >& operator*=( Other rhs );
 
@@ -10174,7 +10006,7 @@ inline typename Submatrix<MT,aligned,true,true,CSAs...>::ConstReference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -10203,7 +10035,7 @@ inline typename Submatrix<MT,aligned,true,true,CSAs...>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename MT       // Type of the dense matrix
@@ -10941,58 +10773,6 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix (\f$ A*=B \f$).
-//
-// \param rhs The right-hand side matrix for the multiplication.
-// \return Reference to the dense submatrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted matrix.
-//
-// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
-// is thrown. Also, if the underlying matrix \a MT is a lower triangular, upper triangular, or
-// symmetric matrix and the assignment would violate its lower, upper, or symmetry property,
-// respectively, a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CSAs >  // Compile time submatrix arguments
-template< typename MT2      // Type of the right-hand side matrix
-        , bool SO >         // Storage order of the right-hand side matrix
-inline Submatrix<MT,aligned,true,true,CSAs...>&
-   Submatrix<MT,aligned,true,true,CSAs...>::operator*=( const Matrix<MT2,SO>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
-
-   using MultType = MultTrait_< ResultType, ResultType_<MT2> >;
-
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( MultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
-
-   if( columns() != (~rhs).rows() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   const MultType tmp( *this * (~rhs) );
-
-   if( !tryAssign( matrix_, tmp, row(), column() ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
    decltype(auto) left( derestrict( *this ) );
