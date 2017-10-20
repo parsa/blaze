@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/math/views/column/Dense.h>
