@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/views/Check.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/util/algorithms/Min.h>
@@ -164,7 +165,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
       const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
-      A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock ) );
+      A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock, unchecked ) );
 
       size_t jj( 0UL );
       size_t jblock( 0UL );
@@ -179,7 +180,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
             continue;
          }
 
-         B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jj, kblock, jblock ) );
+         B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jj, kblock, jblock, unchecked ) );
 
          size_t i( 0UL );
 
@@ -454,7 +455,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
       const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
-      A2 = serial( submatrix( A, ibegin, kk, isize, ksize ) );
+      A2 = serial( submatrix( A, ibegin, kk, isize, ksize, unchecked ) );
 
       size_t jj( 0UL );
       size_t jblock( 0UL );
@@ -468,7 +469,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
             continue;
          }
 
-         B2 = serial( submatrix( B, kk, jj, ksize, jblock ) );
+         B2 = serial( submatrix( B, kk, jj, ksize, jblock, unchecked ) );
 
          size_t i( 0UL );
 
@@ -664,7 +665,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
       const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
-      B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize ) );
+      B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize, unchecked ) );
 
       size_t ii( 0UL );
       size_t iblock( 0UL );
@@ -679,7 +680,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
             continue;
          }
 
-         A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ii, kk, iblock, kblock ) );
+         A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ii, kk, iblock, kblock, unchecked ) );
 
          size_t j( 0UL );
 
@@ -938,7 +939,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
       const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
-      B2 = serial( submatrix( B, kk, jbegin, ksize, jsize ) );
+      B2 = serial( submatrix( B, kk, jbegin, ksize, jsize, unchecked ) );
 
       size_t ii( 0UL );
       size_t iblock( 0UL );
@@ -952,7 +953,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
             continue;
          }
 
-         A2 = serial( submatrix( A, ii, kk, iblock, ksize ) );
+         A2 = serial( submatrix( A, ii, kk, iblock, ksize, unchecked ) );
 
          size_t j( 0UL );
 
@@ -1194,7 +1195,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
-      A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock ) );
+      A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock, unchecked ) );
 
       size_t jj( 0UL );
       size_t jblock( 0UL );
@@ -1209,7 +1210,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             continue;
          }
 
-         B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jj, kblock, jblock ) );
+         B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jj, kblock, jblock, unchecked ) );
 
          size_t i( 0UL );
 
@@ -1494,7 +1495,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
-      A2 = serial( submatrix( A, ibegin, kk, isize, ksize ) );
+      A2 = serial( submatrix( A, ibegin, kk, isize, ksize, unchecked ) );
 
       size_t jj( 0UL );
       size_t jblock( 0UL );
@@ -1508,7 +1509,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             continue;
          }
 
-         B2 = serial( submatrix( B, kk, jj, ksize, jblock ) );
+         B2 = serial( submatrix( B, kk, jj, ksize, jblock, unchecked ) );
 
          size_t i( 0UL );
 
@@ -1720,7 +1721,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
-      B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize ) );
+      B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize, unchecked ) );
 
       size_t ii( 0UL );
       size_t iblock( 0UL );
@@ -1735,7 +1736,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             continue;
          }
 
-         A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ii, kk, iblock, kblock ) );
+         A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ii, kk, iblock, kblock, unchecked ) );
 
          size_t j( 0UL );
 
@@ -2000,7 +2001,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
-      B2 = serial( submatrix( B, kk, jbegin, ksize, jsize ) );
+      B2 = serial( submatrix( B, kk, jbegin, ksize, jsize, unchecked ) );
 
       size_t ii( 0UL );
       size_t iblock( 0UL );
@@ -2014,7 +2015,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             continue;
          }
 
-         A2 = serial( submatrix( A, ii, kk, iblock, ksize ) );
+         A2 = serial( submatrix( A, ii, kk, iblock, ksize, unchecked ) );
 
          size_t j( 0UL );
 
@@ -2264,7 +2265,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
-      A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock ) );
+      A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock, unchecked ) );
 
       size_t jj( 0UL );
       size_t jblock( 0UL );
@@ -2279,7 +2280,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             continue;
          }
 
-         B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jj, kblock, jblock ) );
+         B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jj, kblock, jblock, unchecked ) );
 
          size_t i( 0UL );
 
@@ -2560,7 +2561,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
-      A2 = serial( submatrix( A, ibegin, kk, isize, ksize ) );
+      A2 = serial( submatrix( A, ibegin, kk, isize, ksize, unchecked ) );
 
       size_t jj( 0UL );
       size_t jblock( 0UL );
@@ -2574,7 +2575,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
             continue;
          }
 
-         B2 = serial( submatrix( B, kk, jj, ksize, jblock ) );
+         B2 = serial( submatrix( B, kk, jj, ksize, jblock, unchecked ) );
 
          size_t i( 0UL );
 
@@ -2782,7 +2783,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
-      B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize ) );
+      B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize, unchecked ) );
 
       size_t ii( 0UL );
       size_t iblock( 0UL );
@@ -2797,7 +2798,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             continue;
          }
 
-         A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ii, kk, iblock, kblock ) );
+         A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ii, kk, iblock, kblock, unchecked ) );
 
          size_t j( 0UL );
 
@@ -3066,7 +3067,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
-      B2 = serial( submatrix( B, kk, jbegin, ksize, jsize ) );
+      B2 = serial( submatrix( B, kk, jbegin, ksize, jsize, unchecked ) );
 
       size_t ii( 0UL );
       size_t iblock( 0UL );
@@ -3080,7 +3081,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
             continue;
          }
 
-         A2 = serial( submatrix( A, ii, kk, iblock, ksize ) );
+         A2 = serial( submatrix( A, ii, kk, iblock, ksize, unchecked ) );
 
          size_t j( 0UL );
 
