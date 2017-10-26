@@ -76,7 +76,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
@@ -1983,7 +1982,7 @@ struct Size< DVecDVecOuterExpr<VT1,VT2>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
 struct IsAligned< DVecDVecOuterExpr<VT1,VT2> >
-   : public BoolConstant< And< IsAligned<VT1>, IsAligned<VT2> >::value >
+   : public And< IsAligned<VT1>, IsAligned<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2001,7 +2000,7 @@ struct IsAligned< DVecDVecOuterExpr<VT1,VT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2 >
 struct IsPadded< DVecDVecOuterExpr<VT1,VT2> >
-   : public BoolConstant< IsPadded<VT2>::value >
+   : public IsPadded<VT2>
 {};
 /*! \endcond */
 //*************************************************************************************************

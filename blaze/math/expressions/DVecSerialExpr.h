@@ -53,7 +53,6 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
@@ -816,7 +815,7 @@ struct Size< DVecSerialExpr<VT,TF>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsAligned< DVecSerialExpr<VT,TF> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public IsAligned<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

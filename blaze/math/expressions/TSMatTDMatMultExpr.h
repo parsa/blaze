@@ -91,7 +91,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
@@ -2322,7 +2321,7 @@ struct Size< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsAligned< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< IsAligned<MT2>::value >
+   : public IsAligned<MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2340,10 +2339,10 @@ struct IsAligned< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsSymmetric< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< Or< Bool<SF>
-                            , And< Bool<HF>
-                                 , IsBuiltin< ElementType_< TSMatTDMatMultExpr<MT1,MT2,false,true,false,false> > > >
-                            , And< Bool<LF>, Bool<UF> > >::value >
+   : public Or< Bool<SF>
+              , And< Bool<HF>
+                   , IsBuiltin< ElementType_< TSMatTDMatMultExpr<MT1,MT2,false,true,false,false> > > >
+              , And< Bool<LF>, Bool<UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2379,10 +2378,10 @@ struct IsHermitian< TSMatTDMatMultExpr<MT1,MT2,SF,true,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsLower< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< Or< Bool<LF>
-                            , And< IsLower<MT1>, IsLower<MT2> >
-                            , And< Or< Bool<SF>, Bool<HF> >
-                                 , IsUpper<MT1>, IsUpper<MT2> > >::value >
+   : public Or< Bool<LF>
+              , And< IsLower<MT1>, IsLower<MT2> >
+              , And< Or< Bool<SF>, Bool<HF> >
+                   , IsUpper<MT1>, IsUpper<MT2> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2400,9 +2399,9 @@ struct IsLower< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniLower< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< Or< And< IsUniLower<MT1>, IsUniLower<MT2> >
-                            , And< Or< Bool<SF>, Bool<HF> >
-                                 , IsUniUpper<MT1>, IsUniUpper<MT2> > >::value >
+   : public Or< And< IsUniLower<MT1>, IsUniLower<MT2> >
+              , And< Or< Bool<SF>, Bool<HF> >
+                   , IsUniUpper<MT1>, IsUniUpper<MT2> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2420,11 +2419,11 @@ struct IsUniLower< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyLower< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
-                            , And< IsStrictlyLower<MT2>, IsLower<MT1> >
-                            , And< Or< Bool<SF>, Bool<HF> >
-                                 , Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
-                                     , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > > > >::value >
+   : public Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
+              , And< IsStrictlyLower<MT2>, IsLower<MT1> >
+              , And< Or< Bool<SF>, Bool<HF> >
+                   , Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
+                       , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > > > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2442,10 +2441,10 @@ struct IsStrictlyLower< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUpper< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< Or< Bool<UF>
-                            , And< IsUpper<MT1>, IsUpper<MT2> >
-                            , And< Or< Bool<SF>, Bool<HF> >
-                                 , IsLower<MT1>, IsLower<MT2> > >::value >
+   : public Or< Bool<UF>
+              , And< IsUpper<MT1>, IsUpper<MT2> >
+              , And< Or< Bool<SF>, Bool<HF> >
+                   , IsLower<MT1>, IsLower<MT2> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2463,9 +2462,9 @@ struct IsUpper< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniUpper< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< Or< And< IsUniUpper<MT1>, IsUniUpper<MT2> >
-                            , And< Or< Bool<SF>, Bool<HF> >
-                                 , IsUniLower<MT1>, IsUniLower<MT2> > >::value >
+   : public Or< And< IsUniUpper<MT1>, IsUniUpper<MT2> >
+              , And< Or< Bool<SF>, Bool<HF> >
+                   , IsUniLower<MT1>, IsUniLower<MT2> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2483,11 +2482,11 @@ struct IsUniUpper< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyUpper< TSMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
-                            , And< IsStrictlyUpper<MT2>, IsUpper<MT1> >
-                            , And< Or< Bool<SF>, Bool<HF> >
-                                 , Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
-                                     , And< IsStrictlyLower<MT2>, IsLower<MT1> > > > >::value >
+   : public Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
+              , And< IsStrictlyUpper<MT2>, IsUpper<MT1> >
+              , And< Or< Bool<SF>, Bool<HF> >
+                   , Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
+                       , And< IsStrictlyLower<MT2>, IsLower<MT1> > > > >
 {};
 /*! \endcond */
 //*************************************************************************************************

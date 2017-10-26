@@ -42,7 +42,6 @@
 
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Or.h>
 
 
@@ -85,7 +84,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsUniTriangular
-   : public BoolConstant< Or< IsUniLower<T>, IsUniUpper<T> >::value >
+   : public Or< IsUniLower<T>, IsUniUpper<T> >
 {};
 //*************************************************************************************************
 

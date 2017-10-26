@@ -42,7 +42,6 @@
 
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -84,7 +83,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsNumericVector
-   : public BoolConstant< And< IsVector<T>, IsNumeric< UnderlyingElement_<T> > >::value >
+   : public And< IsVector<T>, IsNumeric< UnderlyingElement_<T> > >
 {};
 //*************************************************************************************************
 

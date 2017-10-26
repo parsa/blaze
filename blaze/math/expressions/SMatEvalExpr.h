@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
@@ -875,7 +874,7 @@ struct Size< SMatEvalExpr<MT,SO>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -893,7 +892,7 @@ struct IsSymmetric< SMatEvalExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -911,7 +910,7 @@ struct IsHermitian< SMatEvalExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsLower< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -929,7 +928,7 @@ struct IsLower< SMatEvalExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -947,7 +946,7 @@ struct IsUniLower< SMatEvalExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyLower< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -965,7 +964,7 @@ struct IsStrictlyLower< SMatEvalExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -983,7 +982,7 @@ struct IsUpper< SMatEvalExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1001,7 +1000,7 @@ struct IsUniUpper< SMatEvalExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyUpper< SMatEvalExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -42,7 +42,6 @@
 
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 
 
@@ -88,7 +87,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsDiagonal
-   : public BoolConstant< And< IsLower<T>, IsUpper<T> >::value >
+   : public And< IsLower<T>, IsUpper<T> >
 {};
 //*************************************************************************************************
 

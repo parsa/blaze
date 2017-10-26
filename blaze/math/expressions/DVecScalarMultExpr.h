@@ -76,7 +76,6 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
@@ -1848,7 +1847,7 @@ struct Size< DVecScalarMultExpr<VT,ST,TF>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
 struct IsAligned< DVecScalarMultExpr<VT,ST,TF> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public IsAligned<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1866,7 +1865,7 @@ struct IsAligned< DVecScalarMultExpr<VT,ST,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, typename ST, bool TF >
 struct IsPadded< DVecScalarMultExpr<VT,ST,TF> >
-   : public BoolConstant< IsPadded<VT>::value >
+   : public IsPadded<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

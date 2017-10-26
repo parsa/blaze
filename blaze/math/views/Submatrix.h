@@ -2960,7 +2960,7 @@ struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs >
 struct IsRestricted< Submatrix<MT,AF,SO,DF,CSAs...> >
-   : public BoolConstant< IsRestricted<MT>::value >
+   : public IsRestricted<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2978,7 +2978,7 @@ struct IsRestricted< Submatrix<MT,AF,SO,DF,CSAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, size_t... CSAs >
 struct HasConstDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
-   : public BoolConstant< HasConstDataAccess<MT>::value >
+   : public HasConstDataAccess<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2996,7 +2996,7 @@ struct HasConstDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, size_t... CSAs >
 struct HasMutableDataAccess< Submatrix<MT,AF,SO,true,CSAs...> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
+   : public HasMutableDataAccess<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

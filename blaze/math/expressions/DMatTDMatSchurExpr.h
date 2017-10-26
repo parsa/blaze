@@ -77,7 +77,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
@@ -1309,7 +1308,7 @@ struct Size< DMatTDMatSchurExpr<MT1,MT2>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsAligned< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< And< IsAligned<MT1>, IsAligned<MT2> >::value >
+   : public And< IsAligned<MT1>, IsAligned<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1327,7 +1326,7 @@ struct IsAligned< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsSymmetric< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
+   : public And< IsSymmetric<MT1>, IsSymmetric<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1345,7 +1344,7 @@ struct IsSymmetric< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsHermitian< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
+   : public And< IsHermitian<MT1>, IsHermitian<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1363,7 +1362,7 @@ struct IsHermitian< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsLower< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< Or< IsLower<MT1>, IsLower<MT2> >::value >
+   : public Or< IsLower<MT1>, IsLower<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1381,7 +1380,7 @@ struct IsLower< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniLower< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< And< IsUniLower<MT1>, IsUniLower<MT2> >::value >
+   : public And< IsUniLower<MT1>, IsUniLower<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1399,7 +1398,7 @@ struct IsUniLower< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyLower< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< Or< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >::value >
+   : public Or< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1417,7 +1416,7 @@ struct IsStrictlyLower< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUpper< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< Or< IsUpper<MT1>, IsUpper<MT2> >::value >
+   : public Or< IsUpper<MT1>, IsUpper<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1435,7 +1434,7 @@ struct IsUpper< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniUpper< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< And< IsUniUpper<MT1>, IsUniUpper<MT2> >::value >
+   : public And< IsUniUpper<MT1>, IsUniUpper<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1453,7 +1452,7 @@ struct IsUniUpper< DMatTDMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyUpper< DMatTDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< Or< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >::value >
+   : public Or< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -67,7 +67,6 @@
 #include <blaze/math/views/subvector/Dense.h>
 #include <blaze/math/views/subvector/Sparse.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
@@ -1846,7 +1845,7 @@ struct Size< Subvector<VT,AF,TF,DF,I,N>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs >
 struct IsRestricted< Subvector<VT,AF,TF,DF,CSAs...> >
-   : public BoolConstant< IsRestricted<VT>::value >
+   : public IsRestricted<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1864,7 +1863,7 @@ struct IsRestricted< Subvector<VT,AF,TF,DF,CSAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, size_t... CSAs >
 struct HasConstDataAccess< Subvector<VT,AF,TF,true,CSAs...> >
-   : public BoolConstant< HasConstDataAccess<VT>::value >
+   : public HasConstDataAccess<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1882,7 +1881,7 @@ struct HasConstDataAccess< Subvector<VT,AF,TF,true,CSAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, size_t... CSAs >
 struct HasMutableDataAccess< Subvector<VT,AF,TF,true,CSAs...> >
-   : public BoolConstant< HasMutableDataAccess<VT>::value >
+   : public HasMutableDataAccess<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

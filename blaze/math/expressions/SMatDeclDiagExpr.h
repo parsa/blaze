@@ -69,7 +69,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
@@ -1072,7 +1071,7 @@ struct IsSymmetric< SMatDeclDiagExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< SMatDeclDiagExpr<MT,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1108,7 +1107,7 @@ struct IsLower< SMatDeclDiagExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< SMatDeclDiagExpr<MT,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1126,7 +1125,7 @@ struct IsUniLower< SMatDeclDiagExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyLower< SMatDeclDiagExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1162,7 +1161,7 @@ struct IsUpper< SMatDeclDiagExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< SMatDeclDiagExpr<MT,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1180,7 +1179,7 @@ struct IsUniUpper< SMatDeclDiagExpr<MT,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyUpper< SMatDeclDiagExpr<MT,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

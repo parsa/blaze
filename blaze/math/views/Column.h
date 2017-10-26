@@ -73,7 +73,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
@@ -1402,7 +1401,7 @@ struct Size< Column<MT,SO,DF,SF,CRAs...>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
 struct IsRestricted< Column<MT,SO,DF,SF,CCAs...> >
-   : public BoolConstant< IsRestricted<MT>::value >
+   : public IsRestricted<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1420,7 +1419,7 @@ struct IsRestricted< Column<MT,SO,DF,SF,CCAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct HasConstDataAccess< Column<MT,SO,true,SF,CCAs...> >
-   : public BoolConstant< HasConstDataAccess<MT>::value >
+   : public HasConstDataAccess<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1438,7 +1437,7 @@ struct HasConstDataAccess< Column<MT,SO,true,SF,CCAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct HasMutableDataAccess< Column<MT,SO,true,SF,CCAs...> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
+   : public HasMutableDataAccess<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1456,7 +1455,7 @@ struct HasMutableDataAccess< Column<MT,SO,true,SF,CCAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct IsAligned< Column<MT,SO,true,SF,CCAs...> >
-   : public BoolConstant< And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+   : public And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1474,7 +1473,7 @@ struct IsAligned< Column<MT,SO,true,SF,CCAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct IsPadded< Column<MT,SO,true,SF,CCAs...> >
-   : public BoolConstant< And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >::value >
+   : public And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >
 {};
 /*! \endcond */
 //*************************************************************************************************

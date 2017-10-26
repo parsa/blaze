@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -68,7 +67,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsTemporary
-   : public BoolConstant< And< Not< IsReference<T> >, Not< IsNumeric<T> >, Not< IsExpression<T> > >::value >
+   : public And< Not< IsReference<T> >, Not< IsNumeric<T> >, Not< IsExpression<T> > >
 {};
 //*************************************************************************************************
 

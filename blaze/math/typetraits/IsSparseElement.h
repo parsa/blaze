@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/sparse/SparseElement.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/IsBaseOf.h>
@@ -69,7 +68,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsSparseElement
-   : public BoolConstant< And< IsBaseOf<SparseElement,T>, Not< IsBaseOf<T,SparseElement> > >::value >
+   : public And< IsBaseOf<SparseElement,T>, Not< IsBaseOf<T,SparseElement> > >
 {};
 //*************************************************************************************************
 

@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Transformation.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/IsBaseOf.h>
@@ -69,7 +68,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsTransformation
-   : public BoolConstant< And< IsBaseOf<Transformation,T>, Not< IsBaseOf<T,Transformation> > >::value >
+   : public And< IsBaseOf<Transformation,T>, Not< IsBaseOf<T,Transformation> > >
 {};
 //*************************************************************************************************
 

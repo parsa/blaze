@@ -87,7 +87,6 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -547,7 +546,7 @@ struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsHermitian< SymmetricMatrix<MT,SO,DF,NF> >
-   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
+   : public IsBuiltin< ElementType_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -619,7 +618,7 @@ struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> >
-   : public BoolConstant< IsAligned<MT>::value >
+   : public IsAligned<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -637,7 +636,7 @@ struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsPadded< SymmetricMatrix<MT,SO,DF,NF> >
-   : public BoolConstant< IsPadded<MT>::value >
+   : public IsPadded<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -655,7 +654,7 @@ struct IsPadded< SymmetricMatrix<MT,SO,DF,NF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> >
-   : public BoolConstant< IsResizable<MT>::value >
+   : public IsResizable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -673,7 +672,7 @@ struct IsResizable< SymmetricMatrix<MT,SO,DF,NF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsShrinkable< SymmetricMatrix<MT,SO,DF,NF> >
-   : public BoolConstant< IsShrinkable<MT>::value >
+   : public IsShrinkable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -55,7 +55,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -789,7 +788,7 @@ inline void reset( DVecTransposer<VT,TF>& v )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct HasConstDataAccess< DVecTransposer<VT,TF> >
-   : public BoolConstant< HasConstDataAccess<VT>::value >
+   : public HasConstDataAccess<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -807,7 +806,7 @@ struct HasConstDataAccess< DVecTransposer<VT,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct HasMutableDataAccess< DVecTransposer<VT,TF> >
-   : public BoolConstant< HasMutableDataAccess<VT>::value >
+   : public HasMutableDataAccess<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -825,7 +824,7 @@ struct HasMutableDataAccess< DVecTransposer<VT,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsAligned< DVecTransposer<VT,TF> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public IsAligned<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -843,7 +842,7 @@ struct IsAligned< DVecTransposer<VT,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsPadded< DVecTransposer<VT,TF> >
-   : public BoolConstant< IsPadded<VT>::value >
+   : public IsPadded<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

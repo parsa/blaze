@@ -67,7 +67,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
@@ -1116,7 +1115,7 @@ struct Size< DVecDVecDivExpr<VT1,VT2,TF>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct IsAligned< DVecDVecDivExpr<VT1,VT2,TF> >
-   : public BoolConstant< And< IsAligned<VT1>, IsAligned<VT2> >::value  >
+   : public And< IsAligned<VT1>, IsAligned<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -70,7 +70,6 @@
 #include <blaze/util/constraints/Float.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
@@ -1099,7 +1098,7 @@ struct Size< DVecDVecAddExpr<VT1,VT2,TF>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct IsAligned< DVecDVecAddExpr<VT1,VT2,TF> >
-   : public BoolConstant< And< IsAligned<VT1>, IsAligned<VT2> >::value  >
+   : public And< IsAligned<VT1>, IsAligned<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1117,7 +1116,7 @@ struct IsAligned< DVecDVecAddExpr<VT1,VT2,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, bool TF >
 struct IsPadded< DVecDVecAddExpr<VT1,VT2,TF> >
-   : public BoolConstant< And< IsPadded<VT1>, IsPadded<VT2> >::value  >
+   : public And< IsPadded<VT1>, IsPadded<VT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

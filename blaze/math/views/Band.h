@@ -71,7 +71,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/TrueType.h>
@@ -1541,7 +1540,7 @@ inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs >
 struct IsRestricted< Band<MT,TF,DF,MF,CBAs...> >
-   : public BoolConstant< IsRestricted<MT>::value >
+   : public IsRestricted<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1559,7 +1558,7 @@ struct IsRestricted< Band<MT,TF,DF,MF,CBAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool TF, bool MF, ptrdiff_t... CBAs >
 struct HasConstDataAccess< Band<MT,TF,true,MF,CBAs...> >
-   : public BoolConstant< HasConstDataAccess<MT>::value >
+   : public HasConstDataAccess<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1577,7 +1576,7 @@ struct HasConstDataAccess< Band<MT,TF,true,MF,CBAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool TF, bool MF, ptrdiff_t... CBAs >
 struct HasMutableDataAccess< Band<MT,TF,true,MF,CBAs...> >
-   : public BoolConstant< HasMutableDataAccess<MT>::value >
+   : public HasMutableDataAccess<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -897,7 +897,7 @@ struct Size< DVecTransExpr<VT,TF>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct HasConstDataAccess< DVecTransExpr<VT,TF> >
-   : public BoolConstant< HasConstDataAccess<VT>::value >
+   : public HasConstDataAccess<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -915,7 +915,7 @@ struct HasConstDataAccess< DVecTransExpr<VT,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsAligned< DVecTransExpr<VT,TF> >
-   : public BoolConstant< IsAligned<VT>::value >
+   : public IsAligned<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -933,7 +933,7 @@ struct IsAligned< DVecTransExpr<VT,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF >
 struct IsPadded< DVecTransExpr<VT,TF> >
-   : public BoolConstant< IsPadded<VT>::value >
+   : public IsPadded<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************

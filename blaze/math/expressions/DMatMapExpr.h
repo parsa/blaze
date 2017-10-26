@@ -74,7 +74,6 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
@@ -2461,7 +2460,7 @@ struct Size< DMatMapExpr<MT,OP,SO>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
 struct IsAligned< DMatMapExpr<MT,OP,SO> >
-   : public BoolConstant< IsAligned<MT>::value >
+   : public IsAligned<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2479,7 +2478,7 @@ struct IsAligned< DMatMapExpr<MT,OP,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
 struct IsPadded< DMatMapExpr<MT,OP,SO> >
-   : public BoolConstant< IsPadded<MT>::value >
+   : public IsPadded<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2497,167 +2496,167 @@ struct IsPadded< DMatMapExpr<MT,OP,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Imag,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Sqrt,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,InvSqrt,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Cbrt,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,InvCbrt,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, typename ET, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Pow<ET>,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Exp,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Exp2,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Exp10,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Log,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Log2,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Log10,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Sin,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Asin,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Sinh,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Asinh,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Cos,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Acos,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Cosh,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Acosh,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Tan,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Atan,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Tanh,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Atanh,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Erf,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Erfc,SO> >
-   : public BoolConstant< IsSymmetric<MT>::value >
+   : public IsSymmetric<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2675,167 +2674,167 @@ struct IsSymmetric< DMatMapExpr<MT,Erfc,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Imag,SO> >
-   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
+   : public IsBuiltin< ElementType_<MT> >
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Sqrt,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,InvSqrt,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Cbrt,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,InvCbrt,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, typename ET, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Pow<ET>,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Exp,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Exp2,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Exp10,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Log,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Log2,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Log10,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Sin,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Asin,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Sinh,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Asinh,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Cos,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Acos,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Cosh,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Acosh,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Tan,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Atan,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Tanh,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Atanh,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Erf,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Erfc,SO> >
-   : public BoolConstant< IsHermitian<MT>::value >
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2853,97 +2852,97 @@ struct IsHermitian< DMatMapExpr<MT,Erfc,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Imag,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Sqrt,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Cbrt,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Sin,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Asin,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Sinh,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Asinh,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Tan,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Atan,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Tanh,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Atanh,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Erf,SO> >
-   : public BoolConstant< IsLower<MT>::value >
+   : public IsLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2961,52 +2960,52 @@ struct IsLower< DMatMapExpr<MT,Erf,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Sqrt,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Cbrt,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 
 template< typename MT, typename ET, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Pow<ET>,SO> >
-   : public BoolConstant< IsUniLower<MT>::value >
+   : public IsUniLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -3024,87 +3023,87 @@ struct IsUniLower< DMatMapExpr<MT,Pow<ET>,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Imag,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Sin,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Asin,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Sinh,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Asinh,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Tan,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Atan,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Tanh,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Atanh,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Erf,SO> >
-   : public BoolConstant< IsStrictlyLower<MT>::value >
+   : public IsStrictlyLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -3122,97 +3121,97 @@ struct IsStrictlyLower< DMatMapExpr<MT,Erf,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Imag,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Sqrt,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Cbrt,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Sin,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Asin,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Sinh,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Asinh,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Tan,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Atan,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Tanh,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Atanh,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Erf,SO> >
-   : public BoolConstant< IsUpper<MT>::value >
+   : public IsUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -3230,52 +3229,52 @@ struct IsUpper< DMatMapExpr<MT,Erf,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Sqrt,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Cbrt,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 
 template< typename MT, typename ET, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Pow<ET>,SO> >
-   : public BoolConstant< IsUniUpper<MT>::value >
+   : public IsUniUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -3293,97 +3292,97 @@ struct IsUniUpper< DMatMapExpr<MT,Pow<ET>,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Abs,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Floor,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Ceil,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Trunc,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Round,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Conj,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Real,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Imag,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Sqrt,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Cbrt,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Sin,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Asin,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Sinh,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Asinh,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Tan,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Atan,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Tanh,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Atanh,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Erf,SO> >
-   : public BoolConstant< IsStrictlyUpper<MT>::value >
+   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

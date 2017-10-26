@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/IsReference.h>
 
@@ -70,7 +69,7 @@ namespace blaze {
 */
 template< typename T >
 struct RequiresEvaluation
-   : public BoolConstant< Not< IsReference<typename T::CompositeType> >::value >
+   : public Not< IsReference<typename T::CompositeType> >
 {};
 //*************************************************************************************************
 

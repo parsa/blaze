@@ -42,7 +42,6 @@
 
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Or.h>
 
 
@@ -85,7 +84,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsStrictlyTriangular
-   : public BoolConstant< Or< IsStrictlyLower<T>, IsStrictlyUpper<T> >::value >
+   : public Or< IsStrictlyLower<T>, IsStrictlyUpper<T> >
 {};
 //*************************************************************************************************
 

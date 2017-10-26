@@ -88,7 +88,6 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -955,7 +954,7 @@ struct IsSquare< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
-   : public BoolConstant< IsBuiltin< ElementType_<MT> >::value >
+   : public IsBuiltin< ElementType_<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1045,7 +1044,7 @@ struct HasConstDataAccess< HermitianMatrix<MT,SO,true> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsAligned< HermitianMatrix<MT,SO,DF> >
-   : public BoolConstant< IsAligned<MT>::value >
+   : public IsAligned<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1063,7 +1062,7 @@ struct IsAligned< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsPadded< HermitianMatrix<MT,SO,DF> >
-   : public BoolConstant< IsPadded<MT>::value >
+   : public IsPadded<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1081,7 +1080,7 @@ struct IsPadded< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsResizable< HermitianMatrix<MT,SO,DF> >
-   : public BoolConstant< IsResizable<MT>::value >
+   : public IsResizable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1099,7 +1098,7 @@ struct IsResizable< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsShrinkable< HermitianMatrix<MT,SO,DF> >
-   : public BoolConstant< IsShrinkable<MT>::value >
+   : public IsShrinkable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

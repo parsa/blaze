@@ -43,7 +43,6 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -88,7 +87,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsIdentity
-   : public BoolConstant< And< IsUniLower<T>, IsUniUpper<T> >::value >
+   : public And< IsUniLower<T>, IsUniUpper<T> >
 {};
 //*************************************************************************************************
 

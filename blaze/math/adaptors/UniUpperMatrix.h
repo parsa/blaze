@@ -89,7 +89,6 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
@@ -2058,7 +2057,7 @@ struct HasConstDataAccess< UniUpperMatrix<MT,SO,true> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsAligned< UniUpperMatrix<MT,SO,DF> >
-   : public BoolConstant< IsAligned<MT>::value >
+   : public IsAligned<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2076,7 +2075,7 @@ struct IsAligned< UniUpperMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsPadded< UniUpperMatrix<MT,SO,DF> >
-   : public BoolConstant< IsPadded<MT>::value >
+   : public IsPadded<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2094,7 +2093,7 @@ struct IsPadded< UniUpperMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsResizable< UniUpperMatrix<MT,SO,DF> >
-   : public BoolConstant< IsResizable<MT>::value >
+   : public IsResizable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2112,7 +2111,7 @@ struct IsResizable< UniUpperMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsShrinkable< UniUpperMatrix<MT,SO,DF> >
-   : public BoolConstant< IsShrinkable<MT>::value >
+   : public IsShrinkable<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

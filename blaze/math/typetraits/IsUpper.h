@@ -42,7 +42,6 @@
 
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Or.h>
 
 
@@ -86,7 +85,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsUpper
-   : public BoolConstant< Or< IsUniUpper<T>, IsStrictlyUpper<T> >::value >
+   : public Or< IsUniUpper<T>, IsStrictlyUpper<T> >
 {};
 //*************************************************************************************************
 

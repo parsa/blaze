@@ -76,7 +76,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
@@ -1101,7 +1100,7 @@ struct Size< DMatDMatSubExpr<MT1,MT2,SO>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsAligned< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsAligned<MT1>, IsAligned<MT2> >::value >
+   : public And< IsAligned<MT1>, IsAligned<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1119,7 +1118,7 @@ struct IsAligned< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsPadded< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsPadded<MT1>, IsPadded<MT2> >::value >
+   : public And< IsPadded<MT1>, IsPadded<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1137,7 +1136,7 @@ struct IsPadded< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsSymmetric< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsSymmetric<MT1>::value && IsSymmetric<MT2>::value >
+   : public And< IsSymmetric<MT1>, IsSymmetric<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1155,7 +1154,7 @@ struct IsSymmetric< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsHermitian< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsHermitian<MT1>::value && IsHermitian<MT2>::value >
+   : public And< IsHermitian<MT1>, IsHermitian<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1173,7 +1172,7 @@ struct IsHermitian< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsLower< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsLower<MT1>, IsLower<MT2> >::value >
+   : public And< IsLower<MT1>, IsLower<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1191,7 +1190,7 @@ struct IsLower< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsUniLower< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsUniLower<MT1>, IsStrictlyLower<MT2> >::value >
+   : public And< IsUniLower<MT1>, IsStrictlyLower<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1209,7 +1208,7 @@ struct IsUniLower< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsStrictlyLower< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >::value >
+   : public And< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1227,7 +1226,7 @@ struct IsStrictlyLower< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsUpper< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsUpper<MT1>, IsUpper<MT2> >::value >
+   : public And< IsUpper<MT1>, IsUpper<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1245,7 +1244,7 @@ struct IsUpper< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsUniUpper< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsUniUpper<MT1>, IsStrictlyUpper<MT2> >::value >
+   : public And< IsUniUpper<MT1>, IsStrictlyUpper<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1263,7 +1262,7 @@ struct IsUniUpper< DMatDMatSubExpr<MT1,MT2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsStrictlyUpper< DMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >::value >
+   : public And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

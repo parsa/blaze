@@ -43,7 +43,6 @@
 #include <blaze/math/typetraits/IsBLASCompatible.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -81,13 +80,12 @@ namespace blaze {
 */
 template< typename T >
 struct IsInvertible
-   : public BoolConstant< Or< IsBLASCompatible<T>
-                            , IsLongDouble<T>
-                            , And< IsComplex<T>
-                                 , IsLongDouble< UnderlyingElement_<T> > >
-                            , And< IsDenseMatrix<T>
-                                 , IsBLASCompatible< UnderlyingElement_<T> > >
-                            >::value >
+   : public Or< IsBLASCompatible<T>
+              , IsLongDouble<T>
+              , And< IsComplex<T>
+                   , IsLongDouble< UnderlyingElement_<T> > >
+              , And< IsDenseMatrix<T>
+                   , IsBLASCompatible< UnderlyingElement_<T> > > >
 {};
 //*************************************************************************************************
 
