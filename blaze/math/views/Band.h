@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSubmatrix.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/band/BaseTemplate.h>
 #include <blaze/math/views/band/Dense.h>
 #include <blaze/math/views/band/Sparse.h>
@@ -74,7 +75,10 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Minimum.h>
 #include <blaze/util/mpl/Not.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
@@ -1632,6 +1636,27 @@ inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 {
    return band( derestrict( b.operand() ), b.band(), unchecked );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t I >
+struct Size< Band<MT,TF,DF,MF,I>, 0UL >
+   : public IfTrue_< ( Size<MT,0UL>::value >= 0L && Size<MT,1UL>::value >= 0L )
+                   , Minimum< PtrdiffT< Size<MT,0UL>::value - ( I >= 0L ? 0L : -I ) >
+                            , PtrdiffT< Size<MT,1UL>::value - ( I >= 0L ? I : 0L ) > >
+                   , PtrdiffT<-1L> >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
