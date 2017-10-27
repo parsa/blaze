@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
+#include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/shims/Serial.h>
@@ -1202,6 +1203,38 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Max() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the multi-valued inverse tangent of the dense matrices \a lhs and \a rhs.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \return The resulting dense matrix.
+//
+// This function computes the multi-valued inverse tangent of the two dense matrix \a lhs and
+// \a rhs. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a max() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   // ... Resizing and initialization
+   C = atan2( A, B );
+   \endcode
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   atan2( const DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Atan2() );
 }
 //*************************************************************************************************
 

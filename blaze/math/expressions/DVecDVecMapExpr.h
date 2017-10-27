@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecVecMapExpr.h>
+#include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/shims/Serial.h>
@@ -1136,8 +1137,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecDVecMapExpr<VT1,VT2,Min,TF>;
-   return ReturnType( ~lhs, ~rhs, Min() );
+   return map( ~lhs, ~rhs, Min() );
 }
 //*************************************************************************************************
 
@@ -1168,8 +1168,38 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecDVecMapExpr<VT1,VT2,Max,TF>;
-   return ReturnType( ~lhs, ~rhs, Max() );
+   return map( ~lhs, ~rhs, Max() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the multi-valued inverse tangent of the dense vectors \a lhs and \a rhs.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector operand.
+// \param rhs The right-hand side dense vector operand.
+// \return The resulting dense vector.
+//
+// This function computes the multi-valued inverse tangent of the two dense vectors \a lhs and
+// \a rhs. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a atan2() function:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   // ... Resizing and initialization
+   c = atan2( a, b );
+   \endcode
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   atan2( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Atan2() );
 }
 //*************************************************************************************************
 
