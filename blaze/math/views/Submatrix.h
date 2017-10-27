@@ -1411,10 +1411,10 @@ template< size_t I1           // Row index
         , size_t J            // Present index of the first column
         , size_t M            // Present number of rows
         , size_t N            // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RSAs... args )
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 {
-   return subvector( row<I1+I2>( sm.operand(), args... ), I2, M, unchecked );
+   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1441,10 +1441,10 @@ template< size_t I1           // Row index
         , size_t J            // Present index of the first column
         , size_t M            // Present number of rows
         , size_t N            // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RSAs... args )
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 {
-   return subvector( row<I1+I2>( as_const( sm.operand() ), args... ), I2, M, unchecked );
+   return subvector( row<I1+I2>( as_const( sm.operand() ), args... ), J, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1471,10 +1471,10 @@ template< size_t I1           // Row index
         , size_t J            // Present index of the first column
         , size_t M            // Present number of rows
         , size_t N            // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RSAs... args )
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
 {
-   return subvector( row<I1+I2>( sm.operand(), args... ), I2, M, unchecked );
+   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1497,13 +1497,13 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RSAs... args )
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
 {
    const RowData<CRAs...> rd( args... );
    const size_t index( rd.row() + sm.row() );
 
-   return subvector( row( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1527,13 +1527,13 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RSAs... args )
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
 {
    const RowData<CRAs...> rd( args... );
    const size_t index( rd.row() + sm.row() );
 
-   return subvector( row( as_const( sm.operand() ), index, args... ), sm.row(), sm.rows(), unchecked );
+   return subvector( row( as_const( sm.operand() ), index, args... ), sm.column(), sm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1557,13 +1557,13 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RSAs... args )
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RRAs... args )
 {
    const RowData<CRAs...> rd( args... );
    const size_t index( rd.row() + sm.row() );
 
-   return subvector( row( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1589,10 +1589,10 @@ template< size_t I1           // Column index
         , size_t J            // Present index of the first column
         , size_t M            // Present number of rows
         , size_t N            // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RSAs... args )
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
 {
-   return subvector( column<I1+J>( sm.operand(), args... ), J, N, unchecked );
+   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1619,10 +1619,10 @@ template< size_t I1           // Column index
         , size_t J            // Present index of the first column
         , size_t M            // Present number of rows
         , size_t N            // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RSAs... args )
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
 {
-   return subvector( column<I1+J>( as_const( sm.operand() ), args... ), J, N, unchecked );
+   return subvector( column<I1+J>( as_const( sm.operand() ), args... ), I2, M, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1649,10 +1649,10 @@ template< size_t I1           // Column index
         , size_t J            // Present index of the first column
         , size_t M            // Present number of rows
         , size_t N            // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RSAs... args )
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args )
 {
-   return subvector( column<I1+J>( sm.operand(), args... ), J, N, unchecked );
+   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1675,13 +1675,13 @@ template< size_t... CCAs      // Compile time column arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RSAs... args )
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... args )
 {
    const ColumnData<CCAs...> cd( args... );
    const size_t index( cd.column() + sm.column() );
 
-   return subvector( column( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1705,13 +1705,13 @@ template< size_t... CCAs      // Compile time column arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RSAs... args )
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... args )
 {
    const ColumnData<CCAs...> cd( args... );
    const size_t index( cd.column() + sm.column() );
 
-   return subvector( column( as_const( sm.operand() ), index, args... ), sm.column(), sm.columns(), unchecked );
+   return subvector( column( as_const( sm.operand() ), index, args... ), sm.row(), sm.rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1735,13 +1735,13 @@ template< size_t... CCAs      // Compile time column arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RSAs... args )
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RCAs... args )
 {
    const ColumnData<CCAs...> cd( args... );
    const size_t index( cd.column() + sm.column() );
 
-   return subvector( column( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

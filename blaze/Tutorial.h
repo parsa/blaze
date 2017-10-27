@@ -1029,26 +1029,29 @@
 
 // \n \subsection vector_operations_initializer_list_construction Initializer List Construction
 //
-// In addition, all dense vector classes can be directly initialized by means of an initializer
-// list:
+// In addition, all dense and sparse vector classes can be directly initialized by means of an
+// initializer list:
 
    \code
    blaze::DynamicVector<float> v15{ 1.0F, 2.0F, 3.0F, 4.0F };
+   blaze::CompressedVector<int> v16{ 0, 2, 0, 0, 5, 0, 7, 0 };
    \endcode
 
+// In case of sparse vectors, only the non-zero elements are used to initialize the vector.
+//
 // \n \subsection vector_operations_copy_construction Copy Construction
 //
 // All dense and sparse vectors can be created as the copy of any other dense or sparse vector
 // with the same transpose flag (i.e. blaze::rowVector or blaze::columnVector).
 
    \code
-   StaticVector<int,9UL,columnVector> v16( v7 );  // Instantiation of the dense column vector v16
+   StaticVector<int,9UL,columnVector> v17( v7 );  // Instantiation of the dense column vector v17
                                                   // as copy of the dense column vector v7.
-   DynamicVector<int,rowVector> v17( v9 );        // Instantiation of the dense row vector v17 as
+   DynamicVector<int,rowVector> v18( v9 );        // Instantiation of the dense row vector v18 as
                                                   // copy of the sparse row vector v9.
-   CompressedVector<int,columnVector> v18( v1 );  // Instantiation of the sparse column vector v18
+   CompressedVector<int,columnVector> v19( v1 );  // Instantiation of the sparse column vector v19
                                                   // as copy of the dense column vector v1.
-   CompressedVector<float,rowVector> v19( v12 );  // Instantiation of the sparse row vector v19 as
+   CompressedVector<float,rowVector> v20( v12 );  // Instantiation of the sparse row vector v20 as
                                                   // copy of the row vector v12.
    \endcode
 
@@ -1056,8 +1059,8 @@
 // size:
 
    \code
-   StaticVector<int,5UL,columnVector> v23( v7 );  // Runtime error: Size does not match!
-   StaticVector<int,4UL,rowVector> v24( v10 );    // Compile time error: Size does not match!
+   StaticVector<int,5UL,columnVector> v21( v7 );  // Runtime error: Size does not match!
+   StaticVector<int,4UL,rowVector> v22( v10 );    // Compile time error: Size does not match!
    \endcode
 
 // \n \section vector_operations_assignment Assignment
@@ -1100,16 +1103,19 @@
 
 // \n \subsection vector_operations_initializer_list_assignment Initializer List Assignment
 //
-// Alternatively, it is possible to directly assign an initializer list to a dense vector:
+// Alternatively, it is possible to directly assign an initializer list to a dense or sparse
+// vector:
 
    \code
-   blaze::StaticVector<float,2UL> v1;
-   blaze::DynamicVector<double,rowVector> v2;
+   blaze::DynamicVector<float> v1;
+   blaze::CompressedVector<double,rowVector> v2;
 
    v1 = { 1.0F, 2.0F };
-   v2 = { 2.1, 4.0, -1.7, 8.6, -7.2 };
+   v2 = { 2.1, 0.0, -1.7, 0.0, -7.2 };
    \endcode
 
+// In case of sparse vectors, only the non-zero elements are considered.
+//
 // \n \subsection vector_operations_copy_assignment Copy Assignment
 //
 // For all vector types it is generally possible to assign another vector with the same transpose
@@ -2606,37 +2612,43 @@
 
 // \n \subsection matrix_operations_initializer_list_construction
 //
-// In addition, all dense matrix classes can be directly initialized by means of an initializer
-// list:
+// In addition, all dense and sparse matrix classes can be directly initialized by means of an
+// initializer list:
 
    \code
    blaze::DynamicMatrix<float,columnMajor> M14{ {  3.1F,  6.4F },
                                                 { -0.9F, -1.2F },
                                                 {  4.8F,  0.6F } };
+   blaze::CompressedMatrix<int,rowMajor> M15{ { 3 },
+                                              { 1 },
+                                              { 0, 2 } };
    \endcode
 
+// In case of sparse matrices, only the non-zero elements are used to initialize the matrix.
+// Missing values are considered to be default values.
+//
 // \n \subsection matrix_operations_copy_construction Copy Construction
 //
 // All dense and sparse matrices can be created as a copy of another dense or sparse matrix.
 
    \code
-   StaticMatrix<int,5UL,4UL,rowMajor> M15( M6 );    // Instantiation of the dense row-major matrix M15
+   StaticMatrix<int,5UL,4UL,rowMajor> M16( M6 );    // Instantiation of the dense row-major matrix M16
                                                     // as copy of the dense row-major matrix M6.
-   DynamicMatrix<float,columnMajor> M16( M8 );      // Instantiation of the dense column-major matrix M16
+   DynamicMatrix<float,columnMajor> M17( M8 );      // Instantiation of the dense column-major matrix M17
                                                     // as copy of the sparse column-major matrix M8.
-   CompressedMatrix<double,columnMajor> M17( M7 );  // Instantiation of the compressed column-major matrix
-                                                    // M17 as copy of the dense row-major matrix M7.
-   CompressedMatrix<float,rowMajor> M18( M8 );      // Instantiation of the compressed row-major matrix
-                                                    // M18 as copy of the compressed column-major matrix M8.
+   CompressedMatrix<double,columnMajor> M18( M7 );  // Instantiation of the compressed column-major matrix
+                                                    // M18 as copy of the dense row-major matrix M7.
+   CompressedMatrix<float,rowMajor> M19( M8 );      // Instantiation of the compressed row-major matrix
+                                                    // M19 as copy of the compressed column-major matrix M8.
    \endcode
 
 // Note that it is not possible to create a \c StaticMatrix as a copy of a matrix with a different
 // number of rows and/or columns:
 
    \code
-   StaticMatrix<int,4UL,5UL,rowMajor> M19( M6 );     // Runtime error: Number of rows and columns
+   StaticMatrix<int,4UL,5UL,rowMajor> M20( M6 );     // Runtime error: Number of rows and columns
                                                      // does not match!
-   StaticMatrix<int,4UL,4UL,columnMajor> M20( M9 );  // Compile time error: Number of columns does
+   StaticMatrix<int,4UL,4UL,columnMajor> M21( M9 );  // Compile time error: Number of columns does
                                                      // not match!
    \endcode
 
@@ -2692,13 +2704,20 @@
 
 // \n \subsection matrix_operations_initializer_list_assignment Initializer List Assignment
 //
-// Alternatively, it is possible to directly assign an initializer list to a dense matrix:
+// Alternatively, it is possible to directly assign an initializer list to a dense or sparse
+// matrix:
 
    \code
-   blaze::DynamicMatrix<double> M;
-   M = { { 3.1, 6.4 }, { -0.9, -1.2 }, { 4.8, 0.6 } };
+   blaze::DynamicMatrix<double> M1;
+   blaze::CompressedMatrix<int> M2;
+
+   M1 = { { 3.1, 6.4 }, { -0.9, -1.2 }, { 4.8, 0.6 } };
+   M2 = { { 1, 0 }, {}, { 0, 1 }, { 2 } };
    \endcode
 
+// In case of sparse matrices, only the non-zero elements are considered. Missing values are
+// considered to be default values.
+//
 // \n \subsection matrix_operations_copy_assignment Copy Assignment
 //
 // All kinds of matrices can be assigned to each other. The only restriction is that since a
