@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Min.h
-//  \brief Header file for the Min functor
+//  \file blaze/math/functors/Atan2.h
+//  \brief Header file for the Atan2 functor
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_MIN_H_
-#define _BLAZE_MATH_FUNCTORS_MIN_H_
+#ifndef _BLAZE_MATH_FUNCTORS_ATAN2_H_
+#define _BLAZE_MATH_FUNCTORS_ATAN2_H_
 
 
 //*************************************************************************************************
@@ -41,9 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/SIMDPack.h>
-#include <blaze/math/simd/Min.h>
-#include <blaze/math/typetraits/HasSIMDMin.h>
-#include <blaze/util/algorithms/Min.h>
+#include <blaze/math/shims/Atan2.h>
+#include <blaze/math/simd/Atan2.h>
+#include <blaze/math/typetraits/HasSIMDAtan2.h>
 #include <blaze/system/Inline.h>
 
 
@@ -56,29 +56,29 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the min() function.
+/*!\brief Generic wrapper for the atan2() function.
 // \ingroup functors
 */
-struct Min
+struct Atan2
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Min functor.
+   /*!\brief Default constructor of the Atan2 functor.
    */
-   explicit inline Min()
+   explicit inline Atan2()
    {}
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Returns the result of the min() function for the given objects/values.
+   /*!\brief Returns the result of the atan2() function for the given objects/values.
    //
    // \param a The left-hand side object/value.
    // \param b The right-hand side object/value.
-   // \return The result of the min() function for the given objects/values.
+   // \return The result of the atan2() function for the given objects/values.
    */
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
    {
-      return min( a, b );
+      return atan2( a, b );
    }
    //**********************************************************************************************
 
@@ -88,22 +88,22 @@ struct Min
    // \return \a true in case SIMD is enabled for the data types \a T1 and \a T2, \a false if not.
    */
    template< typename T1, typename T2 >
-   static constexpr bool simdEnabled() { return HasSIMDMin<T1,T2>::value; }
+   static constexpr bool simdEnabled() { return HasSIMDAtan2<T1,T2>::value; }
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Returns the result of the min() function for the given SIMD vectors.
+   /*!\brief Returns the result of the atan2() function for the given SIMD vectors.
    //
    // \param a The left-hand side SIMD vector.
    // \param b The right-hand side SIMD vector.
-   // \return The result of the min() function for the given SIMD vectors.
+   // \return The result of the atan2() function for the given SIMD vectors.
    */
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE decltype(auto) load( const T1& a, const T2& b ) const
    {
       BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T1 );
       BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T2 );
-      return min( a, b );
+      return atan2( a, b );
    }
    //**********************************************************************************************
 };

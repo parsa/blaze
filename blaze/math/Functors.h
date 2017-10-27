@@ -48,6 +48,7 @@
 #include <blaze/math/functors/Asinh.h>
 #include <blaze/math/functors/Assign.h>
 #include <blaze/math/functors/Atan.h>
+#include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Atanh.h>
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/Ceil.h>
