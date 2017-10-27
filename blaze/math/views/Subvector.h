@@ -184,7 +184,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, RSAs... args )
    auto dsv = subvector<4UL,8UL>( d, unchecked );
    auto ssv = subvector<5UL,7UL>( s, unchecked );
    \endcode
-//
+
 // Please note that this function creates an unaligned dense or sparse subvector. For instance,
 // the creation of the dense subvector is equivalent to the following function call:
 
@@ -544,7 +544,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
    auto dsv = subvector( d, 4UL, 8UL, unchecked );
    auto ssv = subvector( s, 5UL, 7UL, unchecked );
    \endcode
-//
+
 // Please note that this function creates an unaligned dense or sparse subvector. For instance,
 // the creation of the dense subvector is equivalent to the following function call:
 
@@ -722,7 +722,7 @@ inline decltype(auto) subvector( Vector<VT,TF>& vector, size_t index, size_t siz
    auto dsv = subvector<aligned>( d, 4UL, 8UL, unchecked );
    auto ssv = subvector<unaligned>( s, 3UL, 7UL, unchecked );
    \endcode
-//
+
 // In contrast to unaligned subvectors, which provide full flexibility, aligned subvectors pose
 // additional alignment restrictions and the given \a index is subject to additional checks to
 // guarantee proper alignment. However, especially in case of dense subvectors this may result
