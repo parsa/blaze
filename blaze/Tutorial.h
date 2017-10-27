@@ -3514,22 +3514,18 @@
 //
 // \subsection matrix_operations_min_max min() / max()
 //
-// The \c min() and the \c max() functions return the smallest and largest element of the given
+// The \c min() and \c max() functions can be used for a single matrix or multiple matrices. If
+// passed a single matrix, the functions return the smallest and largest element of the given
 // dense or sparse matrix, respectively:
 
    \code
    using blaze::rowMajor;
 
    blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -5, 2, 7 },
-                                                {  4, 0, 1 } };
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B{ { -5, 2, -7 },
-                                                { -4, 0, -1 } };
+                                                { -4, 0, 1 } };
 
    min( A );  // Returns -5
-   min( B );  // Returns -7
-
    max( A );  // Returns 7
-   max( B );  // Returns 2
    \endcode
 
 // In case the matrix currently has 0 rows or 0 columns, both functions return 0. Additionally, in
@@ -3538,15 +3534,26 @@
 // of this matrix is 0:
 
    \code
-   blaze::CompressedMatrix<int> C( 2UL, 3UL );
-   C(0,0) = 1;
-   C(0,2) = 3;
+   blaze::CompressedMatrix<int> B{ { 1, 0, 3 },
+                                   { 0, 0, 0 } };
 
-   min( C );  // Returns 0
+   min( B );  // Returns 0
    \endcode
 
-// Also note that the \c min() and \c max() functions can be used to compute the smallest and
-// largest element of a matrix expression:
+// If passed two or more dense matrices, the \c min() and \c max() functions compute the
+// componentwise minimum or maximum of the given matrices, respectively:
+
+   \code
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> C{ { -5, 1, -7 }, { 4, 1, 0 } };
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> D{ { -5, 3,  0 }, { 2, 2, -2 } };
+
+   min( A, C );     // Results in the matrix ( -5, 1, -7 ) ( -4, 0, 0 )
+   max( A, C, D );  // Results in the matrix ( -5, 3, 7 ) (  4, 2, 1 )
+   \endcode
+
+// Please note that sparse matrices can only be used in the unary \c min() and \c max() functions.
+// Also note that all forms of the \c min() and \c max() functions can be used to compute the
+// smallest and largest element of a matrix expression:
 
    \code
    min( A + B + C );  // Returns -9, i.e. the smallest value of the resulting matrix
