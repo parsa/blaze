@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/Util.h
-//  \brief Header file for the inclusion of the utility module of the Blaze library
+//  \file blaze/util/AsConst.h
+//  \brief Header file for the as_const function template
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,57 +32,60 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MODULE_H_
-#define _BLAZE_UTIL_MODULE_H_
+#ifndef _BLAZE_UTIL_ASCONST_H_
+#define _BLAZE_UTIL_ASCONST_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/AlignedAllocator.h>
-#include <blaze/util/AlignedArray.h>
-#include <blaze/util/AlignmentCheck.h>
-#include <blaze/util/Algorithms.h>
-#include <blaze/util/AsConst.h>
-#include <blaze/util/Assert.h>
-#include <blaze/util/CheckedDelete.h>
-#include <blaze/util/ColorMacros.h>
-#include <blaze/util/Complex.h>
-#include <blaze/util/Constraints.h>
-#include <blaze/util/DimensionOf.h>
-#include <blaze/util/DisableIf.h>
-#include <blaze/util/EmptyType.h>
-#include <blaze/util/EnableIf.h>
-#include <blaze/util/Exception.h>
-#include <blaze/util/FunctionTrace.h>
-#include <blaze/util/Indices.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/InputString.h>
-#include <blaze/util/InvalidType.h>
-#include <blaze/util/Limits.h>
-#include <blaze/util/Memory.h>
-#include <blaze/util/MemoryPool.h>
-#include <blaze/util/MPL.h>
-#include <blaze/util/NonCopyable.h>
-#include <blaze/util/NonCreatable.h>
-#include <blaze/util/NullType.h>
-#include <blaze/util/NumericCast.h>
-#include <blaze/util/PointerCast.h>
-#include <blaze/util/Policies.h>
-#include <blaze/util/Random.h>
-#include <blaze/util/Serialization.h>
-#include <blaze/util/Singleton.h>
-#include <blaze/util/StaticAssert.h>
-#include <blaze/util/Suffix.h>
-#include <blaze/util/Thread.h>
-#include <blaze/util/ThreadPool.h>
-#include <blaze/util/Time.h>
-#include <blaze/util/Timing.h>
-#include <blaze/util/TypeList.h>
-#include <blaze/util/Types.h>
-#include <blaze/util/TypeTraits.h>
-#include <blaze/util/UnsignedValue.h>
-#include <blaze/util/ValueTraits.h>
+#include <blaze/util/typetraits/AddConst.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  ASCONST FUNCTIONALITY
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Adding 'const' to the given lvalue.
+// \ingroup util
+//
+// \param v The given lvalue.
+// \return The const-qualified lvalue.
+//
+// This function adds the 'const' qualifier to the given lvalue.
+*/
+template< typename T >
+inline constexpr AddConst_<T>& as_const( T& v ) noexcept
+{
+   return v;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Overload of the as_const() function for rvalues.
+// \ingroup util
+//
+// This overload of the as_const() function disables its use on rvalues. This prevents potential
+// misuse in as for instance in the following example:
+
+   \code
+   for( const auto&& value : as_const( getTemporary() ) )
+   {
+      // ...
+   }
+   \endcode
+*/
+template< typename T >
+void as_const( const T&& ) = delete;
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
