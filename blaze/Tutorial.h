@@ -1924,6 +1924,16 @@
 // Note that in case of sparse vectors only the non-zero elements are taken into account!
 //
 //
+// \n \subsection vector_operations_atan2 atan2()
+//
+// The multi-valued inverse tangent is available for a pair of dense vectors:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+
+   c = atan2( a, b );  // Computes the componentwise multi-valued inverse tangent
+   \endcode
+
 // \n \subsection vector_operations_erf erf() / erfc()
 //
 // The \c erf() and \c erfc() functions compute the (complementary) error function of each
@@ -3784,6 +3794,16 @@
    B = asinh( A );  // Computes the inverse hyperbolic sine of each element of the matrix
    B = acosh( A );  // Computes the inverse hyperbolic cosine of each element of the matrix
    B = atanh( A );  // Computes the inverse hyperbolic tangent of each element of the matrix
+   \endcode
+
+// \n \subsection matrix_operations_atan2 atan2()
+//
+// The multi-valued inverse tangent is available for a pair of dense matrices:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+
+   C = atan2( A, B );  // Computes the componentwise multi-valued inverse tangent
    \endcode
 
 // \n \subsection matrix_operators_erf erf() / erfc()
