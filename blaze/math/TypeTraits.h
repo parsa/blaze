@@ -54,6 +54,7 @@
 #include <blaze/math/typetraits/HasSIMDAsin.h>
 #include <blaze/math/typetraits/HasSIMDAsinh.h>
 #include <blaze/math/typetraits/HasSIMDAtan.h>
+#include <blaze/math/typetraits/HasSIMDAtan2.h>
 #include <blaze/math/typetraits/HasSIMDAtanh.h>
 #include <blaze/math/typetraits/HasSIMDCbrt.h>
 #include <blaze/math/typetraits/HasSIMDCeil.h>
