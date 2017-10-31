@@ -700,6 +700,7 @@
 
    \code
    using blaze::CustomVector;
+   using blaze::Deallocate;
    using blaze::aligned;
    using blaze::unaligned;
    using blaze::padded;
@@ -712,15 +713,19 @@
 
    // Definition of a managed custom column vector for unaligned but padded 'float' arrays
    using UnalignedPadded = CustomVector<float,unaligned,padded,columnVector>;
-   UnalignedPadded b( new float[16], 9UL, 16UL, blaze::ArrayDelete() );
+   std::unique_ptr<float[]> memory1( new float[16] );
+   UnalignedPadded b( memory1.get(), 9UL, 16UL );
 
    // Definition of a managed custom row vector for aligned, unpadded 'double' arrays
    using AlignedUnpadded = CustomVector<double,aligned,unpadded,rowVector>;
-   AlignedUnpadded c( blaze::allocate<double>( 7UL ), 7UL, blaze::Deallocate() );
+   std::unique_ptr<double[],Deallocate> memory2( blaze::allocate<double>( 7UL ) );
+   AlignedUnpadded c( memory2.get(), 7UL );
 
    // Definition of a managed custom row vector for aligned, padded 'complex<double>' arrays
-   using AlignedPadded = CustomVector<complex<double>,aligned,padded,columnVector>;
-   AlignedPadded d( allocate< complex<double> >( 8UL ), 5UL, 8UL, blaze::Deallocate() );
+   using cplx = complex<double>;
+   using AlignedPadded = CustomVector<cplx,aligned,padded,columnVector>;
+   std::unique_ptr<cplx[],Deallocate> memory3( allocate<cplx>( 8UL ) );
+   AlignedPadded d( memory3.get(), 5UL, 8UL );
    \endcode
 
 // In comparison with the remaining \b Blaze dense vector types blaze::CustomVector has several
@@ -2244,6 +2249,7 @@
 
    \code
    using blaze::CustomMatrix;
+   using blaze::Deallocate;
    using blaze::aligned;
    using blaze::unaligned;
    using blaze::padded;
@@ -2256,15 +2262,19 @@
 
    // Definition of a managed 5x6 custom matrix for unaligned but padded 'float' arrays
    using UnalignedPadded = CustomMatrix<float,unaligned,padded,columnMajor>;
-   UnalignedPadded B( new float[40], 5UL, 6UL, 8UL, blaze::ArrayDelete() );
+   std::unique_ptr<float[]> memory1( new float[40] );
+   UnalignedPadded B( memory1.get(), 5UL, 6UL, 8UL );
 
    // Definition of a managed 12x13 custom matrix for aligned, unpadded 'double' arrays
    using AlignedUnpadded = CustomMatrix<double,aligned,unpadded,rowMajor>;
-   AlignedUnpadded C( blaze::allocate<double>( 192UL ), 12UL, 13UL, 16UL, blaze::Deallocate );
+   std::unique_ptr<double[],Deallocate> memory2( blaze::allocate<double>( 192UL ) );
+   AlignedUnpadded C( memory2.get(), 12UL, 13UL, 16UL );
 
    // Definition of a 7x14 custom matrix for aligned, padded 'complex<double>' arrays
-   using AlignedPadded = CustomMatrix<complex<double>,aligned,padded,columnMajor>;
-   AlignedPadded D( blaze::allocate<double>( 112UL ), 7UL, 14UL, 16UL, blaze::Deallocate() );
+   using cplx = complex<double>;
+   using AlignedPadded = CustomMatrix<cplx,aligned,padded,columnMajor>;
+   std::unique_ptr<cplx[],Deallocate> memory3( blaze::allocate<cplx>( 112UL ) );
+   AlignedPadded D( memory3.get(), 7UL, 14UL, 16UL );
    \endcode
 
 // In comparison with the remaining \b Blaze dense matrix types blaze::CustomMatrix has several
@@ -4990,7 +5000,8 @@
    CustomSymmetric A( array, 3UL );  // OK
 
    // Attempt to create a second 3x3 symmetric custom matrix from an uninitialized array
-   CustomSymmetric B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   std::unique_ptr<double[]> memory( new double[9UL] );
+   CustomSymmetric B( memory.get(), 3UL );  // Throws an exception
    \endcode
 
 // Finally, the symmetry property is enforced for views (rows, columns, submatrices, ...) on the
@@ -5579,7 +5590,8 @@
    CustomHermitian A( array, 3UL );  // OK
 
    // Attempt to create a second 3x3 Hermitian custom matrix from an uninitialized array
-   CustomHermitian B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   std::unique_ptr<double[]> memory( new double[9UL] );
+   CustomHermitian B( memory.get(), 3UL );  // Throws an exception
    \endcode
 
 // Finally, the Hermitian property is enforced for views (rows, columns, submatrices, ...) on the
@@ -6442,7 +6454,8 @@
    CustomLower A( array, 3UL );  // OK
 
    // Attempt to create a second 3x3 lower custom matrix from an uninitialized array
-   CustomLower B( new double[9UL], 3UL, blaze::ArrayDelete() );  // Throws an exception
+   std::unique_ptr<double[]> memory( new double[9UL] );
+   CustomLower B( memory.get(), 3UL );  // Throws an exception
    \endcode
 
 // Finally, the triangular matrix property is enforced for views (rows, columns, submatrices, ...)
