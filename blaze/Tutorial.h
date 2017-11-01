@@ -1860,12 +1860,16 @@
 //
 // \n \subsection vector_operations_pow pow()
 //
-// The \c pow() function can be used to compute the exponential value of each element of a vector:
+// The \c pow() function can be used to compute the exponential value of each element of a vector.
+// If passed a vector and a numeric exponent, the function computes the exponential value of each
+// element of the vector using the same exponent. If passed a second vector, the function computes
+// the componentwise exponential value:
 
    \code
-   blaze::StaticVector<double,3UL> a, b;
+   blaze::StaticVector<double,3UL> a, b, c;
 
-   b = pow( a, 1.2 );  // Computes the exponential value of each element
+   c = pow( a, 1.2 );  // Computes the exponential value of each element
+   c = pow( a, b );    // Computes the componentwise exponential value
    \endcode
 
 // \n \subsection vector_operations_exp exp() / exp2() / exp10()
@@ -3760,12 +3764,16 @@
 //
 // \n \subsection matrix_operators_pow pow()
 //
-// The \c pow() function can be used to compute the exponential value of each element of a matrix:
+// The \c pow() function can be used to compute the exponential value of each element of a matrix.
+// If passed a matrix and a numeric exponent, the function computes the exponential value of each
+// element of the matrix using the same exponent. If passed a second matrix, the function computes
+// the componentwise exponential value:
 
    \code
-   blaze::StaticMatrix<double,3UL,3UL> A, B;
+   blaze::StaticMatrix<double,3UL,3UL> A, B, C;
 
-   B = pow( A, 1.2 );  // Computes the exponential value of each element
+   C = pow( A, 1.2 );  // Computes the exponential value of each element
+   C = pow( A, B );    // Computes the componentwise exponential value
    \endcode
 
 // \n \subsection matrix_operators_exp exp()
