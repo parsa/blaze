@@ -76,6 +76,7 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -1469,14 +1470,13 @@ inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const
    B = pow( A, 4.2 );
    \endcode
 */
-template< typename MT    // Type of the sparse matrix
-        , bool SO        // Storage order
-        , typename ET >  // Type of the exponent
+template< typename MT  // Type of the sparse matrix
+        , bool SO      // Storage order
+        , typename ET  // Type of the exponent
+        , typename = EnableIf_< IsNumeric<ET> > >
 inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
    using ReturnType = const SMatMapExpr<MT,UnaryPow<ET>,SO>;
    return ReturnType( ~sm, UnaryPow<ET>( exp ) );

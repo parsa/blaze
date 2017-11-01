@@ -71,7 +71,6 @@
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/And.h>
@@ -81,6 +80,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -1599,14 +1599,13 @@ inline decltype(auto) clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const 
    B = pow( A, 4.2 );
    \endcode
 */
-template< typename MT    // Type of the dense matrix
-        , bool SO        // Storage order
-        , typename ET >  // Type of the exponent
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename ET  // Type of the exponent
+        , typename = EnableIf_< IsNumeric<ET> > >
 inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
    using ReturnType = const DMatMapExpr<MT,UnaryPow<ET>,SO>;
    return ReturnType( ~dm, UnaryPow<ET>( exp ) );

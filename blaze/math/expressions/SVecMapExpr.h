@@ -67,6 +67,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -1346,14 +1347,13 @@ inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const
    B = pow( A, 4.2 );
    \endcode
 */
-template< typename VT    // Type of the sparse vector
-        , bool TF        // Transpose flag
-        , typename ET >  // Type of the exponent
+template< typename VT  // Type of the sparse vector
+        , bool TF      // Transpose flag
+        , typename ET  // Type of the exponent
+        , typename = EnableIf_< IsNumeric<ET> > >
 inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
    using ReturnType = const SVecMapExpr<VT,UnaryPow<ET>,TF>;
    return ReturnType( ~sv, UnaryPow<ET>( exp ) );

@@ -71,6 +71,7 @@
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 
 
@@ -1589,14 +1590,13 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
    b = pow( a, 4.2 );
    \endcode
 */
-template< typename VT    // Type of the dense vector
-        , bool TF        // Transpose flag
-        , typename ET >  // Type of the exponent
+template< typename VT  // Type of the dense vector
+        , bool TF      // Transpose flag
+        , typename ET  // Type of the exponent
+        , typename = EnableIf_< IsNumeric<ET> > >
 inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ET exp )
 {
    BLAZE_FUNCTION_TRACE;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
    using ReturnType = const DVecMapExpr<VT,UnaryPow<ET>,TF>;
    return ReturnType( ~dv, UnaryPow<ET>( exp ) );
