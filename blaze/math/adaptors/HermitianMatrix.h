@@ -1723,9 +1723,9 @@ struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, InvCbrt >
 };
 
 template< typename MT, bool SO, bool DF, typename ET >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Pow<ET> >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, UnaryPow<ET> >
 {
-   using Type = HermitianMatrix< UnaryMapTrait_< MT, Pow<ET> > >;
+   using Type = HermitianMatrix< UnaryMapTrait_< MT, UnaryPow<ET> > >;
 };
 
 template< typename MT, bool SO, bool DF >

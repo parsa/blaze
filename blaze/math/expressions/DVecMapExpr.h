@@ -1598,8 +1598,8 @@ inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ET exp )
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   using ReturnType = const DVecMapExpr<VT,Pow<ET>,TF>;
-   return ReturnType( ~dv, Pow<ET>( exp ) );
+   using ReturnType = const DVecMapExpr<VT,UnaryPow<ET>,TF>;
+   return ReturnType( ~dv, UnaryPow<ET>( exp ) );
 }
 //*************************************************************************************************
 

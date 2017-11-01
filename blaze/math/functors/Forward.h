@@ -85,7 +85,6 @@ struct Max;
 struct Min;
 struct MultAssign;
 struct Noop;
-template< typename > struct Pow;
 struct Real;
 struct Round;
 struct SchurAssign;
@@ -98,6 +97,7 @@ struct Tan;
 struct Tanh;
 struct Trans;
 struct Trunc;
+template< typename > struct UnaryPow;
 
 } // namespace blaze
 

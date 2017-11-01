@@ -1235,9 +1235,9 @@ struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, InvCbrt >
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename ET >
-struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Pow<ET> >
+struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, UnaryPow<ET> >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_< MT, Pow<ET> > >;
+   using Type = SymmetricMatrix< UnaryMapTrait_< MT, UnaryPow<ET> > >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >

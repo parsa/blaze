@@ -2799,9 +2799,9 @@ struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Cbrt >
 };
 
 template< typename MT, bool SO, bool DF, typename ET >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Pow<ET> >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, UnaryPow<ET> >
 {
-   using Type = UniLowerMatrix< UnaryMapTrait_< MT, Pow<ET> > >;
+   using Type = UniLowerMatrix< UnaryMapTrait_< MT, UnaryPow<ET> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

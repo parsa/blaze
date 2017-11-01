@@ -2944,9 +2944,9 @@ struct UnaryMapTrait< UniUpperMatrix<MT,SO,DF>, Cbrt >
 };
 
 template< typename MT, bool SO, bool DF, typename ET >
-struct UnaryMapTrait< UniUpperMatrix<MT,SO,DF>, Pow<ET> >
+struct UnaryMapTrait< UniUpperMatrix<MT,SO,DF>, UnaryPow<ET> >
 {
-   using Type = UniUpperMatrix< UnaryMapTrait_< MT, Pow<ET> > >;
+   using Type = UniUpperMatrix< UnaryMapTrait_< MT, UnaryPow<ET> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

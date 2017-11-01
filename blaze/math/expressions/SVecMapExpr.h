@@ -1355,8 +1355,8 @@ inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ET exp )
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   using ReturnType = const SVecMapExpr<VT,Pow<ET>,TF>;
-   return ReturnType( ~sv, Pow<ET>( exp ) );
+   using ReturnType = const SVecMapExpr<VT,UnaryPow<ET>,TF>;
+   return ReturnType( ~sv, UnaryPow<ET>( exp ) );
 }
 //*************************************************************************************************
 

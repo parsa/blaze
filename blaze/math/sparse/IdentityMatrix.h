@@ -2447,9 +2447,9 @@ struct UnaryMapTrait< IdentityMatrix<T,SO>, Cbrt >
 };
 
 template< typename T, bool SO, typename ET >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Pow<ET> >
+struct UnaryMapTrait< IdentityMatrix<T,SO>, UnaryPow<ET> >
 {
-   using Type = IdentityMatrix< UnaryMapTrait< T, Pow<ET> >, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait< T, UnaryPow<ET> >, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

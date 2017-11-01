@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Pow.h
-//  \brief Header file for the Pow functor
+//  \file blaze/math/functors/UnaryPow.h
+//  \brief Header file for the UnaryPow functor
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_POW_H_
-#define _BLAZE_MATH_FUNCTORS_POW_H_
+#ifndef _BLAZE_MATH_FUNCTORS_UNARYPOW_H_
+#define _BLAZE_MATH_FUNCTORS_UNARYPOW_H_
 
 
 //*************************************************************************************************
@@ -58,11 +58,11 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the pow() function.
+/*!\brief Generic wrapper for the pow() function with fixed exponent.
 // \ingroup functors
 */
 template< typename ET >  // Type of the exponent
-struct Pow
+struct UnaryPow
 {
  public:
    //**Type definitions****************************************************************************
@@ -70,11 +70,11 @@ struct Pow
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Constructor of the Pow functor.
+   /*!\brief Constructor of the UnaryPow functor.
    //
    // \param exp The exponent.
    */
-   explicit inline Pow( ET exp )
+   explicit inline UnaryPow( ET exp )
       : exp_    ( exp )          // The scalar exponent
       , simdExp_( set( exp_ ) )  // The SIMD exponent
    {}

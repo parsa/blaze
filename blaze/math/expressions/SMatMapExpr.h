@@ -1478,8 +1478,8 @@ inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ET exp )
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ET );
 
-   using ReturnType = const SMatMapExpr<MT,Pow<ET>,SO>;
-   return ReturnType( ~sm, Pow<ET>( exp ) );
+   using ReturnType = const SMatMapExpr<MT,UnaryPow<ET>,SO>;
+   return ReturnType( ~sm, UnaryPow<ET>( exp ) );
 }
 //*************************************************************************************************
 
@@ -2413,7 +2413,7 @@ struct IsSymmetric< SMatMapExpr<MT,InvCbrt,SO> >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsSymmetric< SMatMapExpr<MT,Pow<ET>,SO> >
+struct IsSymmetric< SMatMapExpr<MT,UnaryPow<ET>,SO> >
    : public IsSymmetric<MT>
 {};
 
@@ -2591,7 +2591,7 @@ struct IsHermitian< SMatMapExpr<MT,InvCbrt,SO> >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsHermitian< SMatMapExpr<MT,Pow<ET>,SO> >
+struct IsHermitian< SMatMapExpr<MT,UnaryPow<ET>,SO> >
    : public IsHermitian<MT>
 {};
 
@@ -2772,7 +2772,7 @@ struct IsUniLower< SMatMapExpr<MT,Cbrt,SO> >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Pow<ET>,SO> >
+struct IsUniLower< SMatMapExpr<MT,UnaryPow<ET>,SO> >
    : public IsUniLower<MT>
 {};
 /*! \endcond */
@@ -2871,7 +2871,7 @@ struct IsUniUpper< SMatMapExpr<MT,Cbrt,SO> >
 {};
 
 template< typename MT, typename ET, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Pow<ET>,SO> >
+struct IsUniUpper< SMatMapExpr<MT,UnaryPow<ET>,SO> >
    : public IsUniUpper<MT>
 {};
 /*! \endcond */
