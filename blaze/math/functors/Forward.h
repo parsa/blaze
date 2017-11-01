@@ -85,6 +85,7 @@ struct Max;
 struct Min;
 struct MultAssign;
 struct Noop;
+struct Pow;
 struct Real;
 struct Round;
 struct SchurAssign;

@@ -82,6 +82,7 @@
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/MultAssign.h>
 #include <blaze/math/functors/Noop.h>
+#include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Real.h>
 #include <blaze/math/functors/Round.h>
 #include <blaze/math/functors/SchurAssign.h>
