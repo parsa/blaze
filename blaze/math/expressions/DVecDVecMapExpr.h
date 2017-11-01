@@ -54,6 +54,7 @@
 #include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
+#include <blaze/math/functors/Pow.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
@@ -1169,6 +1170,37 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Max() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise exponential value for the dense vectors \a lhs and \a rhs.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector operand.
+// \param rhs The right-hand side dense vector operand.
+// \return The resulting dense vector
+//
+// The \a pow() function computes the componentwise exponential value for the two dense vectors
+// \a lhs and \a rhs. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow() function:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   // ... Resizing and initialization
+   c = pow( a, b );
+   \endcode
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   pow( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Pow() );
 }
 //*************************************************************************************************
 
