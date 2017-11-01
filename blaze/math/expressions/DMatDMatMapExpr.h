@@ -54,6 +54,7 @@
 #include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
+#include <blaze/math/functors/Pow.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
@@ -1183,7 +1184,7 @@ inline decltype(auto)
 // \param rhs The right-hand side dense matrix operand.
 // \return The resulting dense matrix.
 //
-// This function computes the componentwise maximum of the two dense matrix \a lhs and \a rhs.
+// This function computes the componentwise maximum of the two dense matrices \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a max() function:
 
@@ -1203,6 +1204,38 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Max() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise exponential value for the dense matrices \a lhs and \a rhs.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix operand.
+// \param rhs The right-hand side dense matrix operand.
+// \return The resulting dense matrix.
+//
+// The \a pow() function computes the componentwise exponential value for the two dense matrices
+// \a lhs and \a rhs. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a pow() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   // ... Resizing and initialization
+   C = pow( A, B );
+   \endcode
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   pow( const DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Pow() );
 }
 //*************************************************************************************************
 
