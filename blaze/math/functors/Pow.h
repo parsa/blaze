@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/simd/Pow.h>
@@ -48,7 +47,6 @@
 #include <blaze/math/typetraits/HasSIMDPow.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Numeric.h>
-#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -101,7 +99,7 @@ struct Pow
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return IsSame<T,ET>::value && HasSIMDPow<T>::value; }
+   static constexpr bool simdEnabled() { return HasSIMDPow<T,ET>::value; }
    //**********************************************************************************************
 
    //**********************************************************************************************

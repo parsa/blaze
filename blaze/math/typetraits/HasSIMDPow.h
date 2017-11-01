@@ -59,7 +59,8 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T         // Type of the operand
+template< typename T1        // Type of the left-hand side operand
+        , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDPowHelper
 {
@@ -73,7 +74,7 @@ struct HasSIMDPowHelper
 /*! \cond BLAZE_INTERNAL */
 #if BLAZE_SVML_MODE
 template< typename T >
-struct HasSIMDPowHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
+struct HasSIMDPowHelper< T, T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 {
    enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
                          bool( BLAZE_AVX_MODE     ) ||
@@ -106,9 +107,10 @@ struct HasSIMDPowHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
    blaze::HasSIMDPow< complex<double> >      // Is derived from FalseType
    \endcode
 */
-template< typename T >  // Type of the operand
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
 struct HasSIMDPow
-   : public BoolConstant< HasSIMDPowHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDPowHelper< Decay_<T1>, Decay_<T2> >::value >
 {};
 //*************************************************************************************************
 
