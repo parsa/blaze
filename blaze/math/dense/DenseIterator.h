@@ -84,6 +84,8 @@ class DenseIterator
 
    template< typename Other, bool AF2 >
    inline DenseIterator( const DenseIterator<Other,AF2>& it ) noexcept;
+
+   // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
 
@@ -307,7 +309,7 @@ inline const DenseIterator<Type,AF> DenseIterator<Type,AF>::operator--( int ) no
 
 //=================================================================================================
 //
-//  OPERATORS
+//  ACCESS OPERATORS
 //
 //=================================================================================================
 
