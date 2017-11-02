@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/Math.h
-//  \brief Header file for the inclusion of the math module of the Blaze library
+//  \file blaze/math/InitializerMatrix.h
+//  \brief Header file for the complete InitializerMatrix implementation
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,57 +32,17 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_MODULE_H_
-#define _BLAZE_MATH_MODULE_H_
+#ifndef _BLAZE_MATH_INITIALIZERMATRIX_H_
+#define _BLAZE_MATH_INITIALIZERMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Accuracy.h>
-#include <blaze/math/Aliases.h>
-#include <blaze/math/AlignmentFlag.h>
-#include <blaze/math/Band.h>
-#include <blaze/math/BLAS.h>
-#include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/CompressedVector.h>
-#include <blaze/math/Constraints.h>
-#include <blaze/math/CustomMatrix.h>
-#include <blaze/math/CustomVector.h>
-#include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DynamicVector.h>
-#include <blaze/math/Epsilon.h>
-#include <blaze/math/Functions.h>
-#include <blaze/math/Functors.h>
-#include <blaze/math/IdentityMatrix.h>
-#include <blaze/math/Infinity.h>
-#include <blaze/math/InitializerMatrix.h>
-#include <blaze/math/InitializerVector.h>
-#include <blaze/math/InversionFlag.h>
-#include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/HybridMatrix.h>
-#include <blaze/math/HybridVector.h>
-#include <blaze/math/LAPACK.h>
-#include <blaze/math/LowerMatrix.h>
-#include <blaze/math/PaddingFlag.h>
-#include <blaze/math/RelaxationFlag.h>
-#include <blaze/math/Serialization.h>
-#include <blaze/math/Shims.h>
-#include <blaze/math/SMP.h>
-#include <blaze/math/StaticMatrix.h>
-#include <blaze/math/StaticVector.h>
-#include <blaze/math/StorageOrder.h>
-#include <blaze/math/StrictlyLowerMatrix.h>
-#include <blaze/math/StrictlyUpperMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/Traits.h>
-#include <blaze/math/TransposeFlag.h>
-#include <blaze/math/TypeTraits.h>
-#include <blaze/math/UniLowerMatrix.h>
-#include <blaze/math/UniUpperMatrix.h>
-#include <blaze/math/UpperMatrix.h>
-#include <blaze/math/Views.h>
+#include <blaze/math/dense/DynamicMatrix.h>
+#include <blaze/math/dense/InitializerMatrix.h>
+#include <blaze/math/dense/StaticMatrix.h>
+#include <blaze/math/DenseMatrix.h>
 
 #endif
