@@ -359,7 +359,7 @@ OperationTest<T>::OperationTest()
    testTrunc         ( blaze::HasSIMDTrunc  < T >() );
    testRound         ( blaze::HasSIMDRound  < T >() );
 
-   testPow           ( blaze::HasSIMDPow    < T >() );
+   testPow           ( blaze::HasSIMDPow    <T,T>() );
    testExp           ( blaze::HasSIMDExp    < T >() );
    testExp2          ( blaze::HasSIMDExp2   < T >() );
    testExp10         ( blaze::HasSIMDExp10  < T >() );
