@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsCustom.h>
+#include <blaze/math/typetraits/IsInitializer.h>
 #include <blaze/math/typetraits/IsView.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
@@ -138,8 +139,8 @@ struct SchurTrait
 */
 template< typename T1, typename T2 >
 struct SchurTrait< T1, T2
-                 , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
-                                 , Not< Or< IsCustom<T2>, IsView<T2> > > > > >
+                 , EnableIf_< And< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> >
+                                 , Not< Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > > >
 {
  public:
    //**********************************************************************************************
@@ -158,8 +159,8 @@ struct SchurTrait< T1, T2
 */
 template< typename T1, typename T2 >
 struct SchurTrait< T1, T2
-                 , EnableIf_< And< Not< Or< IsCustom<T1>, IsView<T1> > >
-                                 , Or< IsCustom<T2>, IsView<T2> > > > >
+                 , EnableIf_< And< Not< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> > >
+                                 , Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > >
 {
  public:
    //**********************************************************************************************
@@ -178,8 +179,8 @@ struct SchurTrait< T1, T2
 */
 template< typename T1, typename T2 >
 struct SchurTrait< T1, T2
-                 , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
-                                 , Or< IsCustom<T2>, IsView<T2> > > > >
+                 , EnableIf_< And< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> >
+                                 , Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > >
 {
  public:
    //**********************************************************************************************
