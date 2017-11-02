@@ -43,6 +43,7 @@
 #include <utility>
 #include <blaze/math/typetraits/HasSub.h>
 #include <blaze/math/typetraits/IsCustom.h>
+#include <blaze/math/typetraits/IsInitializer.h>
 #include <blaze/math/typetraits/IsView.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
@@ -221,8 +222,8 @@ struct SubTrait< complex<T1>, complex<T2> >
 */
 template< typename T1, typename T2 >
 struct SubTrait< T1, T2
-               , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
-                               , Not< Or< IsCustom<T2>, IsView<T2> > > > > >
+               , EnableIf_< And< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> >
+                               , Not< Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > > >
 {
  public:
    //**********************************************************************************************
@@ -241,8 +242,8 @@ struct SubTrait< T1, T2
 */
 template< typename T1, typename T2 >
 struct SubTrait< T1, T2
-               , EnableIf_< And< Not< Or< IsCustom<T1>, IsView<T1> > >
-                               , Or< IsCustom<T2>, IsView<T2> > > > >
+               , EnableIf_< And< Not< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> > >
+                               , Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > >
 {
  public:
    //**********************************************************************************************
@@ -261,8 +262,8 @@ struct SubTrait< T1, T2
 */
 template< typename T1, typename T2 >
 struct SubTrait< T1, T2
-               , EnableIf_< And< Or< IsCustom<T1>, IsView<T1> >
-                               , Or< IsCustom<T2>, IsView<T2> > > > >
+               , EnableIf_< And< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> >
+                               , Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > >
 {
  public:
    //**********************************************************************************************
