@@ -127,7 +127,7 @@ void ClassTest::testConstructors()
    {
       test_ = "InitializerVector two argument constructor (size 0)";
 
-      auto list = { 1, 0, 3, 4, 0 };
+      blaze::initializer_list<int> list = {};
 
       blaze::InitializerVector<int,blaze::rowVector> vec( list, 0UL );
 
