@@ -131,9 +131,9 @@ void ClassTest::testConstructors()
    {
       test_ = "InitializerMatrix two argument constructor (3x0)";
 
-      initializer_list< initializer_list<int> > list = { { 1, 0, 3, 4 },
-                                                         { 0 },
-                                                         { 2, 0, 5 } };
+      initializer_list< initializer_list<int> > list = { {},
+                                                         {},
+                                                         {} };
 
       blaze::InitializerMatrix<int> mat( list, 0UL );
 
