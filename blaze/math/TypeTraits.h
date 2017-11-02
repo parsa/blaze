@@ -115,6 +115,7 @@
 #include <blaze/math/typetraits/IsGeneral.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsInitializer.h>
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
