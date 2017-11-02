@@ -103,14 +103,14 @@ namespace blaze {
    blaze::InitializerMatrix<int> A( list );  // Representation of the initializer list as dense matrix
    \endcode
 
-// It is possible to only represent part of an initializer list or an extended initializer list
-// by explicitly specifying the number of columns:
+// It is possible to only represent an extended initializer list by explicitly specifying the
+// number of columns:
 
    \code
    const initializer_list< initializer_list<int> > list = { { 2, 6, -1 },
                                                             { 3, 5 } };
 
-   blaze::InitializerVector<int> B( list, 2UL );  // Representation of the first 2 columns of the initializer list
+   blaze::InitializerVector<int> B( list, 3UL );  // Representation of the original initializer list
    blaze::InitializerVector<int> C( list, 4UL );  // Representing the initializer list { { 2, 6, -1, 0 }, { 3, 5, 0, 0 } }
    \endcode
 
@@ -367,13 +367,18 @@ inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer
 //
 // \param list The initializer list represented by the matrix.
 // \param n The number of columns of the matrix.
+// \exception std::invalid_argument Invalid initializer list dimension.
 */
 template< typename Type >  // Data type of the matrix
 inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n ) noexcept
    : m_   ( list.size() )  // The current number of rows of the matrix
    , n_   ( n    )         // The current number of columns of the matrix
    , list_( list )         // The initializer list represented by the matrix
-{}
+{
+   if( n < determineColumns( list ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid initializer list dimension" );
+   }
+}
 //*************************************************************************************************
 
 
@@ -641,8 +646,7 @@ inline size_t InitializerMatrix<Type>::nonZeros() const
    size_t nonzeros( 0 );
 
    for( const auto& rowList : list_ ) {
-      const size_t iend( min( n_, rowList.size() ) );
-      for( size_t i=0UL; i<iend; ++i ) {
+      for( size_t i=0UL; i<rowList.size(); ++i ) {
          if( !isDefault( rowList.begin()[i] ) )
             ++nonzeros;
       }
