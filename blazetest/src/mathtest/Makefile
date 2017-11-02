@@ -37,7 +37,7 @@ default: all
 
 all: functions simd blas lapack typetraits \
      densevector sparsevector densematrix sparsematrix \
-     staticvector hybridvector dynamicvector customvector compressedvector \
+     staticvector hybridvector dynamicvector customvector initializervector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
      symmetricmatrix hermitianmatrix \
      lowermatrix unilowermatrix strictlylowermatrix \
@@ -68,7 +68,7 @@ single: all
 
 noop: functions simd blas lapack typetraits \
       densevector sparsevector densematrix sparsematrix \
-      staticvector hybridvector dynamicvector customvector compressedvector \
+      staticvector hybridvector dynamicvector customvector initializervector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
       symmetricmatrix hermitianmatrix \
       lowermatrix unilowermatrix strictlylowermatrix \
@@ -144,6 +144,11 @@ customvector:
 	@echo
 	@echo "Building the CustomVector tests..."
 	@$(MAKE) --no-print-directory -C ./customvector $(MAKECMDGOALS)
+
+initializervector:
+	@echo
+	@echo "Building the InitializerVector tests..."
+	@$(MAKE) --no-print-directory -C ./initializervector $(MAKECMDGOALS)
 
 compressedvector:
 	@echo
@@ -596,6 +601,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./hybridvector reset
 	@$(MAKE) --no-print-directory -C ./dynamicvector reset
 	@$(MAKE) --no-print-directory -C ./customvector reset
+	@$(MAKE) --no-print-directory -C ./initializervector reset
 	@$(MAKE) --no-print-directory -C ./compressedvector reset
 	@$(MAKE) --no-print-directory -C ./staticmatrix reset
 	@$(MAKE) --no-print-directory -C ./hybridmatrix reset
@@ -698,6 +704,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./hybridvector clean
 	@$(MAKE) --no-print-directory -C ./dynamicvector clean
 	@$(MAKE) --no-print-directory -C ./customvector clean
+	@$(MAKE) --no-print-directory -C ./initializervector clean
 	@$(MAKE) --no-print-directory -C ./compressedvector clean
 	@$(MAKE) --no-print-directory -C ./staticmatrix clean
 	@$(MAKE) --no-print-directory -C ./hybridmatrix clean
@@ -791,7 +798,7 @@ clean:
 .PHONY: default all essential single noop reset clean \
         functions simd blas lapack typetraits \
         densevector sparsevector densematrix sparsematrix \
-        staticvector hybridvector dynamicvector customvector compressedvector \
+        staticvector hybridvector dynamicvector customvector initializervector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix compressedmatrix \
         symmetricmatrix hermitianmatrix \
         lowermatrix unilowermatrix strictlylowermatrix \
