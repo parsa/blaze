@@ -54,6 +54,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
+#include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
@@ -989,8 +990,9 @@ inline SymmetricMatrix<MT,SO,true,true>::SymmetricMatrix( size_t n )
 
 // The matrix is sized according to the size of the initializer list and all matrix elements are
 // initialized with the values from the given list. Missing values are initialized with default
-// values. In case the matrix cannot be resized or the given list does not represent a symmetric
-// matrix, a \a std::invalid_argument exception is thrown.
+// values. In case the matrix cannot be resized and the dimensions of the initializer list don't
+// match or if the given list does not represent a symmetric matrix, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
@@ -1626,22 +1628,23 @@ inline typename SymmetricMatrix<MT,SO,true,true>::ConstIterator
    \endcode
 
 // The matrix is resized according to the size of the initializer list and all matrix elements
-// are assigned the values from the given list. Missing values are assigned default values.
-// In case the matrix cannot be resized or the given list does not represent a symmetric matrix,
-// a \a std::invalid_argument exception is thrown.
+// are assigned the values from the given list. Missing values are assigned default values. In
+// case the matrix cannot be resized and the dimensions of the initializer list don't match or
+// if the given list does not represent a symmetric matrix, a \a std::invalid_argument exception
+// is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline SymmetricMatrix<MT,SO,true,true>&
    SymmetricMatrix<MT,SO,true,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
-   MT tmp( list );
+   const InitializerMatrix<ElementType> tmp( list, list.size() );
 
    if( !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   matrix_ = std::move( tmp );
+   matrix_ = list;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square symmetric matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
