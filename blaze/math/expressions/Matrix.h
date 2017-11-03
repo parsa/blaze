@@ -1345,6 +1345,38 @@ BLAZE_ALWAYS_INLINE void multAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a single element of a matrix.
+// \ingroup matrix
+//
+// \param mat The target matrix.
+// \param i The row index of the element to be set.
+// \param j The column index of the element to be set.
+// \param value The value of the element to be set.
+// \return \a true in case the set operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the matrix
+        , bool SO        // Storage order
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool trySet( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+
+   UNUSED_PARAMETER( mat, i, j, value );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a matrix.
 // \ingroup matrix
 //
