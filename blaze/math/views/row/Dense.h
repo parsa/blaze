@@ -53,6 +53,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/View.h>
@@ -760,12 +761,14 @@ inline Row<MT,true,true,SF,CRAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to row.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the dense
 // row by means of an initializer list. The row elements are assigned the values from the given
 // initializer list. Missing values are reset to their default state. Note that in case the size
 // of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
-// thrown.
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate
+// an invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
@@ -777,7 +780,15 @@ inline Row<MT,true,true,SF,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
    }
 
-   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+   if( IsRestricted<MT>::value ) {
+      const InitializerVector<ElementType,true> tmp( list, size() );
+      if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   std::fill( std::copy( list.begin(), list.end(), left.begin() ), left.end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -3103,12 +3114,14 @@ inline Row<MT,false,true,false,CRAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to row.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the dense
 // row by means of an initializer list. The row elements are assigned the values from the given
 // initializer list. Missing values are reset to their default state. Note that in case the size
 // of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
-// thrown.
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate
+// an invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -3119,7 +3132,15 @@ inline Row<MT,false,true,false,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
    }
 
-   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+   if( IsRestricted<MT>::value ) {
+      const InitializerVector<ElementType,true> tmp( list, size() );
+      if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   std::fill( std::copy( list.begin(), list.end(), left.begin() ), left.end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
@@ -4785,12 +4806,14 @@ inline Row<MT,false,true,true,CRAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to row.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the dense
 // row by means of an initializer list. The row elements are assigned the values from the given
 // initializer list. Missing values are reset to their default state. Note that in case the size
 // of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
-// thrown.
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate
+// an invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -4801,7 +4824,15 @@ inline Row<MT,false,true,true,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
    }
 
-   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+   if( IsRestricted<MT>::value ) {
+      const InitializerVector<ElementType,true> tmp( list, size() );
+      if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   std::fill( std::copy( list.begin(), list.end(), left.begin() ), left.end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
