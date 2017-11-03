@@ -57,6 +57,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
+#include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/InitializerList.h>
@@ -924,8 +925,9 @@ inline UniLowerMatrix<MT,SO,true>::UniLowerMatrix( size_t n, const ElementType& 
 
 // The matrix is sized according to the size of the initializer list and all matrix elements are
 // initialized with the values from the given list. Missing values are initialized with default
-// values. In case the matrix cannot be resized or the given list does not represent an unilower
-// matrix, a \a std::invalid_argument exception is thrown.
+// values. In case the matrix cannot be resized and the dimensions of the initializer list don't
+// match or if the given list does not represent an unilower matrix, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
@@ -1543,22 +1545,23 @@ inline UniLowerMatrix<MT,SO,true>&
    \endcode
 
 // The matrix is resized according to the size of the initializer list and all matrix elements
-// are assigned the values from the given list. Missing values are assigned default values.
-// In case the matrix cannot be resized or the given list does not represent an unilower matrix,
-// a \a std::invalid_argument exception is thrown.
+// are assigned the values from the given list. Missing values are assigned default values. In
+// case the matrix cannot be resized and the dimensions of the initializer list don't match or
+// if the given list does not represent an unilower matrix, a \a std::invalid_argument exception
+// is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline UniLowerMatrix<MT,SO,true>&
    UniLowerMatrix<MT,SO,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
-   MT tmp( list );
+   const InitializerMatrix<ElementType> tmp( list, list.size() );
 
    if( !isUniLower( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   matrix_ = std::move( tmp );
+   matrix_ = list;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square unilower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
