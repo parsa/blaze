@@ -702,8 +702,8 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
 // The matrix is sized according to the size of the initializer list and all its elements are
 // initialized by the values of the given initializer list. Missing values are initialized as
 // default (as e.g. the value 6 in the example). Note that in case the size of the top-level
-// initializer list exceeds the number of rows or the size of any nested list exceeds the
-// number of columns, a \a std::invalid_argument exception is thrown.
+// initializer list exceeds the maximum number of rows or the size of any nested list exceeds
+// the maximum number of columns, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1356,8 +1356,8 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ty
 // The matrix is resized according to the given initializer list and all its elements are
 // assigned the values from the given initializer list. Missing values are initialized as
 // default (as e.g. the value 6 in the example). Note that in case the size of the top-level
-// initializer list exceeds the number of rows or the size of any nested list exceeds the
-// number of columns, a \a std::invalid_argument exception is thrown.
+// initializer list exceeds the maximum number of rows or the size of any nested list exceeds
+// the maximum number of columns, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
