@@ -55,6 +55,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/View.h>
@@ -961,11 +962,10 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // This assignment operator offers the option to directly assign to all elements of the submatrix
 // by means of an initializer list. The submatrix elements are assigned the values from the given
 // initializer list. Missing values are initialized as default. Note that in case the size of the
-// top-level initializer list exceeds the number of rows or the size of any nested list exceeds
-// the number of columns, a \a std::invalid_argument exception is thrown. Also, if the underlying
-// matrix \a MT is a lower triangular, upper triangular, or symmetric matrix and the assignment
-// would violate its lower, upper, or symmetry property, respectively, a \a std::invalid_argument
-// exception is thrown.
+// top-level initializer list does not match the number of rows of the submatrix or the size of
+// any nested list exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// Also, if the underlying matrix \a MT is restricted and the assignment would violate an
+// invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -974,13 +974,12 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    Submatrix<MT,AF,false,false,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    using blaze::assign;
-   using blaze::nonZeros;
 
-   if( list.size() != rows() || determineColumns( list ) > columns() ) {
+   if( list.size() != rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
 
-   const ResultType tmp( list );
+   const InitializerMatrix<ElementType> tmp( list, columns() );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3458,11 +3457,10 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // This assignment operator offers the option to directly assign to all elements of the submatrix
 // by means of an initializer list. The submatrix elements are assigned the values from the given
 // initializer list. Missing values are initialized as default. Note that in case the size of the
-// top-level initializer list exceeds the number of rows or the size of any nested list exceeds
-// the number of columns, a \a std::invalid_argument exception is thrown. Also, if the underlying
-// matrix \a MT is a lower triangular, upper triangular, or symmetric matrix and the assignment
-// would violate its lower, upper, or symmetry property, respectively, a \a std::invalid_argument
-// exception is thrown.
+// top-level initializer list does not match the number of rows of the submatrix or the size of
+// any nested list exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// Also, if the underlying matrix \a MT is restricted and the assignment would violate an
+// invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -3471,13 +3469,12 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    Submatrix<MT,AF,true,false,CSAs...>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
    using blaze::assign;
-   using blaze::nonZeros;
 
-   if( list.size() != rows() || determineColumns( list ) > columns() ) {
+   if( list.size() != rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
 
-   const ResultType tmp( list );
+   const InitializerMatrix<ElementType> tmp( list, columns() );
 
    if( !tryAssign( matrix_, tmp, row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
