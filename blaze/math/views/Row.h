@@ -1095,6 +1095,37 @@ inline bool isSame( const Row<MT1,SO,DF,SF1,CRAs1...>& a,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a single element of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the element to be set.
+// \param value The value of the element to be set.
+// \return \a true in case the set operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+inline bool trySet( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= row.size(), "Invalid vector access index" );
+
+   return trySet( row.operand(), row.row(), index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a row.
 // \ingroup row
 //
