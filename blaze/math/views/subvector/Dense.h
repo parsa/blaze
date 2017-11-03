@@ -1128,9 +1128,12 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    Subvector<VT,unaligned,TF,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( offset() + size() );
+   decltype(auto) left( derestrict( vector_ ) );
 
-   for( size_t i=offset(); i<iend; ++i )
-      vector_[i] = rhs;
+   for( size_t i=offset(); i<iend; ++i ) {
+      if( !IsRestricted<VT>::value || trySet( vector_, i, rhs ) )
+         left[i] = rhs;
+   }
 
    return *this;
 }
@@ -3291,9 +3294,12 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    Subvector<VT,aligned,TF,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( offset() + size() );
+   decltype(auto) left( derestrict( vector_ ) );
 
-   for( size_t i=offset(); i<iend; ++i )
-      vector_[i] = rhs;
+   for( size_t i=offset(); i<iend; ++i ) {
+      if( !IsRestricted<VT>::value || trySet( vector_, i, rhs ) )
+         left[i] = rhs;
+   }
 
    return *this;
 }
