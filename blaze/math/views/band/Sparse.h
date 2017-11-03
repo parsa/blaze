@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -503,6 +504,7 @@ class Band<MT,TF,false,false,CBAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+                           inline Band& operator= ( initializer_list<ElementType> list );
                            inline Band& operator= ( const Band& rhs );
    template< typename VT > inline Band& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline Band& operator+=( const Vector<VT,TF>& rhs );
@@ -891,6 +893,50 @@ inline typename Band<MT,TF,false,false,CBAs...>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all band elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to band.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the dense
+// band by means of an initializer list. The band elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the band, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate an
+// invariant of the matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline Band<MT,TF,false,false,CBAs...>&
+   Band<MT,TF,false,false,CBAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to band" );
+   }
+
+   const InitializerVector<ElementType,false> tmp( list, size() );
+
+   if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
