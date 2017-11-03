@@ -382,6 +382,39 @@ inline void lu( const UpperMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a single element of a upper matrix.
+// \ingroup matrix
+//
+// \param mat The target upper matrix.
+// \param i The row index of the element to be set.
+// \param j The column index of the element to be set.
+// \param value The value of the element to be set.
+// \return \a true in case the set operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+inline bool trySet( const UpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+
+   UNUSED_PARAMETER( mat );
+
+   return ( i <= j || isDefault( value ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a dense vector to a upper matrix.
 // \ingroup upper_matrix
 //
