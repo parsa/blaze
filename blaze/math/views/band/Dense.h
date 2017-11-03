@@ -51,6 +51,7 @@
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -964,12 +965,14 @@ inline Band<MT,TF,true,false,CBAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to band.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
 //
 // This assignment operator offers the option to directly assign to all elements of the dense
 // band by means of an initializer list. The band elements are assigned the values from the given
 // initializer list. Missing values are reset to their default state. Note that in case the size
 // of the initializer list exceeds the size of the band, a \a std::invalid_argument exception is
-// thrown.
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate an
+// invariant of the matrix, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT          // Type of the dense matrix
         , bool TF              // Transpose flag
@@ -981,7 +984,15 @@ inline Band<MT,TF,true,false,CBAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to band" );
    }
 
-   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+   if( IsRestricted<MT>::value ) {
+      const InitializerVector<ElementType,false> tmp( list, size() );
+      if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   std::fill( std::copy( list.begin(), list.end(), left.begin() ), left.end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
