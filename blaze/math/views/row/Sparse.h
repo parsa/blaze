@@ -53,6 +53,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/View.h>
@@ -187,6 +188,7 @@ class Row<MT,true,false,SF,CRAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline Row& operator=( initializer_list<ElementType> list );
    inline Row& operator=( const Row& rhs );
 
    template< typename VT > inline Row& operator= ( const DenseVector<VT,true>&  rhs );
@@ -582,6 +584,51 @@ inline typename Row<MT,true,false,SF,CRAs...>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all row elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to row.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the sparse
+// row by means of an initializer list. The row elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate
+// an invariant of the matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline Row<MT,true,false,SF,CRAs...>&
+   Row<MT,true,false,SF,CRAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
+   }
+
+   const InitializerVector<ElementType,true> tmp( list, size() );
+
+   if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2490,7 +2537,9 @@ class Row<MT,false,false,false,CRAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                           inline Row& operator= ( const Row& rhs );
+   inline Row& operator=( initializer_list<ElementType> list );
+   inline Row& operator=( const Row& rhs );
+
    template< typename VT > inline Row& operator= ( const Vector<VT,true>& rhs );
    template< typename VT > inline Row& operator+=( const Vector<VT,true>& rhs );
    template< typename VT > inline Row& operator-=( const Vector<VT,true>& rhs );
@@ -2857,6 +2906,50 @@ inline typename Row<MT,false,false,false,CRAs...>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all row elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to row.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the sparse
+// row by means of an initializer list. The row elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate
+// an invariant of the matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline Row<MT,false,false,false,CRAs...>&
+   Row<MT,false,false,false,CRAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
+   }
+
+   const InitializerVector<ElementType,true> tmp( list, size() );
+
+   if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -4182,6 +4275,7 @@ class Row<MT,false,false,true,CRAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline Row& operator=( initializer_list<ElementType> list );
    inline Row& operator=( const Row& rhs );
 
    template< typename VT > inline Row& operator= ( const DenseVector<VT,true>&  rhs );
@@ -4567,6 +4661,50 @@ inline typename Row<MT,false,false,true,CRAs...>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all row elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to row.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the sparse
+// row by means of an initializer list. The row elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the row, a \a std::invalid_argument exception is
+// thrown. Also, if the underlying matrix \a MT is restricted and the assignment would violate
+// an invariant of the matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline Row<MT,false,false,true,CRAs...>&
+   Row<MT,false,false,true,CRAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
+   }
+
+   const InitializerVector<ElementType,true> tmp( list, size() );
+
+   if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
