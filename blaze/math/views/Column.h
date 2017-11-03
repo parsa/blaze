@@ -1098,6 +1098,37 @@ inline bool isSame( const Column<MT1,SO,DF,SF1,CCAs1...>& a,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a single element of a column.
+// \ingroup column
+//
+// \param sv The target column.
+// \param index The index of the element to be set.
+// \param value The value of the element to be set.
+// \return \a true in case the set operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CCAs  // Compile time column arguments
+        , typename ET >   // Type of the element
+inline bool trySet( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= column.size(), "Invalid vector access index" );
+
+   return trySet( column.operand(), index, column.column(), value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a column.
 // \ingroup column
 //
