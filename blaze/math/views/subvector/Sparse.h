@@ -50,9 +50,11 @@
 #include <blaze/math/constraints/Subvector.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/View.h>
+#include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -457,6 +459,7 @@ class Subvector<VT,AF,TF,false,CSAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+                            inline Subvector& operator= ( initializer_list<ElementType> list );
                             inline Subvector& operator= ( const Subvector& rhs );
    template< typename VT2 > inline Subvector& operator= ( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator+=( const Vector<VT2,TF>& rhs );
@@ -875,6 +878,52 @@ inline typename Subvector<VT,AF,TF,false,CSAs...>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all subvector elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to subvector.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
+//
+// This assignment operator offers the option to directly assign to all elements of the subvector
+// by means of an initializer list. The subvector elements are assigned the values from the given
+// initializer list. Missing values are reset to their default state. Note that in case the size
+// of the initializer list exceeds the size of the subvector, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying vector \a VT is restricted and the assignment would violate
+// an invariant of the vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT       // Type of the sparse vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline Subvector<VT,AF,TF,false,CSAs...>&
+   Subvector<VT,AF,TF,false,CSAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
+   }
+
+   const InitializerVector<ElementType,TF> tmp( list, size() );
+
+   if( !tryAssign( vector_, tmp, offset() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Copy assignment operator for Subvector.
 //
 // \param rhs Sparse subvector to be copied.
@@ -932,7 +981,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Assignment operator for different vectors.
 //
-// \param rhs Dense vector to be assigned.
+// \param rhs Vector to be assigned.
 // \return Reference to the assigned subvector.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted vector.
