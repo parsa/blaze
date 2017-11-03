@@ -53,6 +53,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/View.h>
@@ -186,6 +187,7 @@ class Column<MT,true,false,SF,CCAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline Column& operator=( initializer_list<ElementType> list );
    inline Column& operator=( const Column& rhs );
 
    template< typename VT > inline Column& operator= ( const DenseVector<VT,false>&  rhs );
@@ -581,6 +583,51 @@ inline typename Column<MT,true,false,SF,CCAs...>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all column elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to column.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the sparse
+// column by means of an initializer list. The column elements are assigned the values from the
+// given initializer list. Missing values are reset to their default state. Note that in case
+// the size of the initializer list exceeds the size of the column, a \a std::invalid_argument
+// exception is thrown. Also, if the underlying matrix \a MT is restricted and the assignment
+// would violate an invariant of the matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,true,false,SF,CCAs...>&
+   Column<MT,true,false,SF,CCAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
+   }
+
+   const InitializerVector<ElementType,false> tmp( list, size() );
+
+   if( !tryAssign( matrix_, tmp, 0UL, column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -2489,7 +2536,9 @@ class Column<MT,false,false,false,CCAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-                           inline Column& operator= ( const Column& rhs );
+   inline Column& operator=( initializer_list<ElementType> list );
+   inline Column& operator=( const Column& rhs );
+
    template< typename VT > inline Column& operator= ( const Vector<VT,false>& rhs );
    template< typename VT > inline Column& operator+=( const Vector<VT,false>& rhs );
    template< typename VT > inline Column& operator-=( const Vector<VT,false>& rhs );
@@ -2861,6 +2910,50 @@ inline typename Column<MT,false,false,false,CCAs...>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all column elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to column.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the sparse
+// column by means of an initializer list. The column elements are assigned the values from the
+// given initializer list. Missing values are reset to their default state. Note that in case
+// the size of the initializer list exceeds the size of the column, a \a std::invalid_argument
+// exception is thrown. Also, if the underlying matrix \a MT is restricted and the assignment
+// would violate an invariant of the matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,false,CCAs...>&
+   Column<MT,false,false,false,CCAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
+   }
+
+   const InitializerVector<ElementType,false> tmp( list, size() );
+
+   if( !tryAssign( matrix_, tmp, 0UL, column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
@@ -4187,6 +4280,7 @@ class Column<MT,false,false,true,CCAs...>
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
+   inline Column& operator=( initializer_list<ElementType> list );
    inline Column& operator=( const Column& rhs );
 
    template< typename VT > inline Column& operator= ( const DenseVector<VT,false>&  rhs );
@@ -4572,6 +4666,50 @@ inline typename Column<MT,false,false,true,CCAs...>::ConstIterator
 //  ASSIGNMENT OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief List assignment to all column elements.
+//
+// \param list The initializer list.
+// \exception std::invalid_argument Invalid assignment to column.
+// \exception std::invalid_argument Invalid assignment to restricted matrix.
+//
+// This assignment operator offers the option to directly assign to all elements of the sparse
+// column by means of an initializer list. The column elements are assigned the values from the
+// given initializer list. Missing values are reset to their default state. Note that in case
+// the size of the initializer list exceeds the size of the column, a \a std::invalid_argument
+// exception is thrown. Also, if the underlying matrix \a MT is restricted and the assignment
+// would violate an invariant of the matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline Column<MT,false,false,true,CCAs...>&
+   Column<MT,false,false,true,CCAs...>::operator=( initializer_list<ElementType> list )
+{
+   using blaze::assign;
+
+   if( list.size() > size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to column" );
+   }
+
+   const InitializerVector<ElementType,false> tmp( list, size() );
+
+   if( !tryAssign( matrix_, tmp, 0UL, column() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   left.reset();
+   assign( left, tmp );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
