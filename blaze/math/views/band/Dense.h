@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -943,6 +944,8 @@ template< typename MT          // Type of the dense matrix
 inline Band<MT,TF,true,false,CBAs...>&
    Band<MT,TF,true,false,CBAs...>::operator=( const ElementType& rhs )
 {
+   decltype(auto) left( derestrict( matrix_ ) );
+
    if( ( IsLower<MT>::value && column() > 0UL ) ||
        ( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value ) && row() == 0UL ) ||
        ( IsUpper<MT>::value && row() > 0UL ) ||
@@ -950,8 +953,10 @@ inline Band<MT,TF,true,false,CBAs...>&
       return *this;
 
    const size_t n( size() );
-   for( size_t i=0UL; i<n; ++i )
-      matrix_(row()+i,column()+i) = rhs;
+   for( size_t i=0UL; i<n; ++i ) {
+      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, row()+i, column()+i, rhs ) )
+         left(row()+i,column()+i) = rhs;
+   }
 
    return *this;
 }
