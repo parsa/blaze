@@ -57,6 +57,7 @@
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/dense/DenseMatrix.h>
+#include <blaze/math/dense/InitializerMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/InitializerList.h>
@@ -927,8 +928,9 @@ inline UpperMatrix<MT,SO,true>::UpperMatrix( size_t n, const ElementType& init )
 
 // The matrix is sized according to the size of the initializer list and all matrix elements are
 // initialized with the values from the given list. Missing values are initialized with default
-// values. In case the matrix cannot be resized or the given list does not represent an upper
-// matrix, a \a std::invalid_argument exception is thrown.
+// values. In case the matrix cannot be resized and the dimensions of the initializer list don't
+// match or if the given list does not represent an upper matrix, a \a std::invalid_argument
+// exception is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
@@ -1540,22 +1542,23 @@ inline UpperMatrix<MT,SO,true>&
    \endcode
 
 // The matrix is resized according to the size of the initializer list and all matrix elements
-// are assigned the values from the given list. Missing values are assigned default values.
-// In case the matrix cannot be resized or the given list does not represent an upper matrix,
-// a \a std::invalid_argument exception is thrown.
+// are assigned the values from the given list. Missing values are assigned default values. In
+// case the matrix cannot be resized and the dimensions of the initializer list don't match or
+// if the given list does not represent an upper matrix, a \a std::invalid_argument exception
+// is thrown.
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline UpperMatrix<MT,SO,true>&
    UpperMatrix<MT,SO,true>::operator=( initializer_list< initializer_list<ElementType> > list )
 {
-   MT tmp( list );
+   const InitializerMatrix<ElementType> tmp( list, list.size() );
 
    if( !isUpper( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
    }
 
-   matrix_ = std::move( tmp );
+   matrix_ = list;
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square upper matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
