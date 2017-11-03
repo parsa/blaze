@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -735,6 +736,8 @@ template< typename MT       // Type of the dense matrix
 inline Row<MT,true,true,SF,CRAs...>&
    Row<MT,true,true,SF,CRAs...>::operator=( const ElementType& rhs )
 {
+   decltype(auto) left( derestrict( matrix_ ) );
+
    const size_t jbegin( ( IsUpper<MT>::value )
                         ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
                            ?( row()+1UL )
@@ -746,8 +749,10 @@ inline Row<MT,true,true,SF,CRAs...>&
                            :( row()+1UL ) )
                         :( size() ) );
 
-   for( size_t j=jbegin; j<jend; ++j )
-      matrix_(row(),j) = rhs;
+   for( size_t j=jbegin; j<jend; ++j ) {
+      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, row(), j, rhs ) )
+         left(row(),j) = rhs;
+   }
 
    return *this;
 }
@@ -3088,6 +3093,8 @@ template< typename MT       // Type of the dense matrix
 inline Row<MT,false,true,false,CRAs...>&
    Row<MT,false,true,false,CRAs...>::operator=( const ElementType& rhs )
 {
+   decltype(auto) left( derestrict( matrix_ ) );
+
    const size_t jbegin( ( IsUpper<MT>::value )
                         ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
                            ?( row()+1UL )
@@ -3099,8 +3106,10 @@ inline Row<MT,false,true,false,CRAs...>&
                            :( row()+1UL ) )
                         :( size() ) );
 
-   for( size_t j=jbegin; j<jend; ++j )
-      matrix_(row(),j) = rhs;
+   for( size_t j=jbegin; j<jend; ++j ) {
+      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, row(), j, rhs ) )
+         left(row(),j) = rhs;
+   }
 
    return *this;
 }
@@ -4780,6 +4789,8 @@ template< typename MT       // Type of the dense matrix
 inline Row<MT,false,true,true,CRAs...>&
    Row<MT,false,true,true,CRAs...>::operator=( const ElementType& rhs )
 {
+   decltype(auto) left( derestrict( matrix_ ) );
+
    const size_t ibegin( ( IsLower<MT>::value )
                         ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
                            ?( row()+1UL )
@@ -4791,8 +4802,10 @@ inline Row<MT,false,true,true,CRAs...>&
                            :( row()+1UL ) )
                         :( size() ) );
 
-   for( size_t i=ibegin; i<iend; ++i )
-      matrix_(i,row()) = rhs;
+   for( size_t i=ibegin; i<iend; ++i ) {
+      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, row(), rhs ) )
+         left(i,row()) = rhs;
+   }
 
    return *this;
 }
