@@ -81,6 +81,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -1261,6 +1262,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
    Submatrix<MT,unaligned,false,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( row() + rows() );
+   decltype(auto) left( derestrict( matrix_ ) );
 
    for( size_t i=row(); i<iend; ++i )
    {
@@ -1275,8 +1277,10 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
 
-      for( size_t j=jbegin; j<jend; ++j )
-         matrix_(i,j) = rhs;
+      for( size_t j=jbegin; j<jend; ++j ) {
+         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+            left(i,j) = rhs;
+      }
    }
 
    return *this;
@@ -4539,6 +4543,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
    Submatrix<MT,unaligned,true,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t jend( column() + columns() );
+   decltype(auto) left( derestrict( matrix_ ) );
 
    for( size_t j=column(); j<jend; ++j )
    {
@@ -4553,8 +4558,10 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
 
-      for( size_t i=ibegin; i<iend; ++i )
-         matrix_(i,j) = rhs;
+      for( size_t i=ibegin; i<iend; ++i ) {
+         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+            left(i,j) = rhs;
+      }
    }
 
    return *this;
@@ -7430,6 +7437,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
    Submatrix<MT,aligned,false,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t iend( row() + rows() );
+   decltype(auto) left( derestrict( matrix_ ) );
 
    for( size_t i=row(); i<iend; ++i )
    {
@@ -7444,8 +7452,10 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
 
-      for( size_t j=jbegin; j<jend; ++j )
-         matrix_(i,j) = rhs;
+      for( size_t j=jbegin; j<jend; ++j ) {
+         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+            left(i,j) = rhs;
+      }
    }
 
    return *this;
@@ -10298,6 +10308,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
    Submatrix<MT,aligned,true,true,CSAs...>::operator=( const ElementType& rhs )
 {
    const size_t jend( column() + columns() );
+   decltype(auto) left( derestrict( matrix_ ) );
 
    for( size_t j=column(); j<jend; ++j )
    {
@@ -10312,8 +10323,10 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
 
-      for( size_t i=ibegin; i<iend; ++i )
-         matrix_(i,j) = rhs;
+      for( size_t i=ibegin; i<iend; ++i ) {
+         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+            left(i,j) = rhs;
+      }
    }
 
    return *this;
