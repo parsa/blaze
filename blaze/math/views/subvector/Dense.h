@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/Subvector.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/dense/InitializerVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/CrossExpr.h>
@@ -1143,12 +1144,14 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 //
 // \param list The initializer list.
 // \exception std::invalid_argument Invalid assignment to subvector.
+// \exception std::invalid_argument Invalid assignment to restricted vector.
 //
 // This assignment operator offers the option to directly assign to all elements of the subvector
 // by means of an initializer list. The subvector elements are assigned the values from the given
 // initializer list. Missing values are reset to their default state. Note that in case the size
 // of the initializer list exceeds the size of the subvector, a \a std::invalid_argument exception
-// is thrown.
+// is thrown. Also, if the underlying vector \a VT is restricted and the assignment would violate
+// an invariant of the vector, a \a std::invalid_argument exception is thrown.
 */
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
@@ -1160,7 +1163,15 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
    }
 
-   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
+   if( IsRestricted<VT>::value ) {
+      const InitializerVector<ElementType,TF> tmp( list, size() );
+      if( !tryAssign( vector_, tmp, offset() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   std::fill( std::copy( list.begin(), list.end(), left.begin() ), left.end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
 
@@ -3313,6 +3324,14 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
    }
 
+   if( IsRestricted<VT>::value ) {
+      const InitializerVector<ElementType,TF> tmp( list, size() );
+      if( !tryAssign( vector_, tmp, offset() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( *this ) );
    std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
