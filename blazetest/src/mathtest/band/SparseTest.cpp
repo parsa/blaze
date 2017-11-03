@@ -515,6 +515,95 @@ void SparseTest::testConstructors()
 void SparseTest::testAssignment()
 {
    //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major initializer list assignment (complete list)";
+
+      initialize();
+
+      BT band1 = blaze::band( mat_, 1L );
+      band1 = { 1, 2, 3, 4 };
+
+      checkSize    ( band1,  4UL );
+      checkCapacity( band1,  4UL );
+      checkNonZeros( band1,  4UL );
+      checkRows    ( mat_ ,  4UL );
+      checkColumns ( mat_ ,  6UL );
+      checkNonZeros( mat_ , 11UL );
+
+      if( band1[0] != 1 || band1[1] != 2 || band1[2] != 3 || band1[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << band1 << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != -2 || mat_(0,1) != 1 || mat_(0,2) !=  7 || mat_(0,3) !=  0 || mat_(0,4) != 0 || mat_(0,5) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 0 || mat_(1,2) !=  2 || mat_(1,3) != -8 || mat_(1,4) != 0 || mat_(1,5) !=  0 ||
+          mat_(2,0) !=  0 || mat_(2,1) != 1 || mat_(2,2) != -3 || mat_(2,3) !=  3 || mat_(2,4) != 9 || mat_(2,5) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) !=  0 || mat_(3,4) != 4 || mat_(3,5) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( -2  1  7  0  0  0 )\n"
+                                     "(  0  0  2 -8  0  0 )\n"
+                                     "(  0  1 -3  3  9  0 )\n"
+                                     "(  0  0  0  0  4 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major initializer list assignment (incomplete list)";
+
+      initialize();
+
+      BT band1 = blaze::band( mat_, 1L );
+      band1 = { 1, 2 };
+
+      checkSize    ( band1, 4UL );
+      checkCapacity( band1, 4UL );
+      checkNonZeros( band1, 2UL );
+      checkRows    ( mat_ , 4UL );
+      checkColumns ( mat_ , 6UL );
+      checkNonZeros( mat_ , 9UL );
+
+      if( band1[0] != 1 || band1[1] != 2 || band1[2] != 0 || band1[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << band1 << "\n"
+             << "   Expected result:\n( 1 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0) != -2 || mat_(0,1) != 1 || mat_(0,2) !=  7 || mat_(0,3) !=  0 || mat_(0,4) != 0 || mat_(0,5) !=  0 ||
+          mat_(1,0) !=  0 || mat_(1,1) != 0 || mat_(1,2) !=  2 || mat_(1,3) != -8 || mat_(1,4) != 0 || mat_(1,5) !=  0 ||
+          mat_(2,0) !=  0 || mat_(2,1) != 1 || mat_(2,2) != -3 || mat_(2,3) !=  0 || mat_(2,4) != 9 || mat_(2,5) !=  0 ||
+          mat_(3,0) !=  0 || mat_(3,1) != 0 || mat_(3,2) !=  0 || mat_(3,3) !=  0 || mat_(3,4) != 0 || mat_(3,5) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n( -2  1  7  0  0  0 )\n"
+                                     "(  0  0  2 -8  0  0 )\n"
+                                     "(  0  1 -3  0  9  0 )\n"
+                                     "(  0  0  0  0  0 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
    // Row-major copy assignment
    //=====================================================================================
 
@@ -657,6 +746,103 @@ void SparseTest::testAssignment()
                                      "(  0  0  4  0  0  0 )\n"
                                      "(  0  1 -3  5  0  0 )\n"
                                      "(  0  0  0  0 -6  9 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Column-major initializer list assignment (complete list)";;
+
+      initialize();
+
+      OBT band1 = blaze::band( tmat_, -1L );
+      band1 = { 1, 2, 3, 4 };
+
+      checkSize    ( band1,  4UL );
+      checkCapacity( band1,  4UL );
+      checkNonZeros( band1,  4UL );
+      checkRows    ( tmat_,  6UL );
+      checkColumns ( tmat_,  4UL );
+      checkNonZeros( tmat_, 11UL );
+
+      if( band1[0] != 1 || band1[1] != 2 || band1[2] != 3 || band1[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << band1 << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != -2 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  1 || tmat_(1,1) !=  0 || tmat_(1,2) !=  1 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) !=  7 || tmat_(2,1) !=  2 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -8 || tmat_(3,2) !=  3 || tmat_(3,3) !=  0 ||
+          tmat_(4,0) !=  0 || tmat_(4,1) !=  0 || tmat_(4,2) !=  9 || tmat_(4,3) !=  4 ||
+          tmat_(5,0) !=  0 || tmat_(5,1) !=  0 || tmat_(5,2) !=  0 || tmat_(5,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( -2  0  0  0 )\n"
+                                     "(  1  0  1  0 )\n"
+                                     "(  7  2 -3  0 )\n"
+                                     "(  0 -8  3  0 )\n"
+                                     "(  0  0  9  4 )\n"
+                                     "(  0  0  0 10 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major initializer list assignment (incomplete list)";
+
+      initialize();
+
+      OBT band1 = blaze::band( tmat_, -1L );
+      band1 = { 1, 2 };
+
+      checkSize    ( band1, 4UL );
+      checkCapacity( band1, 4UL );
+      checkNonZeros( band1, 2UL );
+      checkRows    ( tmat_, 6UL );
+      checkColumns ( tmat_, 4UL );
+      checkNonZeros( tmat_, 9UL );
+
+      if( band1[0] != 1 || band1[1] != 2 || band1[2] != 0 || band1[3] != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << band1 << "\n"
+             << "   Expected result:\n( 1 2 0 0 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( tmat_(0,0) != -2 || tmat_(0,1) !=  0 || tmat_(0,2) !=  0 || tmat_(0,3) !=  0 ||
+          tmat_(1,0) !=  1 || tmat_(1,1) !=  0 || tmat_(1,2) !=  1 || tmat_(1,3) !=  0 ||
+          tmat_(2,0) !=  7 || tmat_(2,1) !=  2 || tmat_(2,2) != -3 || tmat_(2,3) !=  0 ||
+          tmat_(3,0) !=  0 || tmat_(3,1) != -8 || tmat_(3,2) !=  0 || tmat_(3,3) !=  0 ||
+          tmat_(4,0) !=  0 || tmat_(4,1) !=  0 || tmat_(4,2) !=  9 || tmat_(4,3) !=  0 ||
+          tmat_(5,0) !=  0 || tmat_(5,1) !=  0 || tmat_(5,2) !=  0 || tmat_(5,3) != 10 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << tmat_ << "\n"
+             << "   Expected result:\n( -2  0  0  0 )\n"
+                                     "(  1  0  1  0 )\n"
+                                     "(  7  2 -3  0 )\n"
+                                     "(  0 -8  0  0 )\n"
+                                     "(  0  0  9  0 )\n"
+                                     "(  0  0  0 10 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
