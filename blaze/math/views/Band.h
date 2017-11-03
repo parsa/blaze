@@ -1367,6 +1367,37 @@ inline bool isSame( const Band<MT1,TF,DF,MF,CBAs1...>& a,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a single element of a band.
+// \ingroup band
+//
+// \param band The target band.
+// \param index The index of the element to be set.
+// \param value The value of the element to be set.
+// \return \a true in case the set operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename ET >      // Type of the element
+inline bool trySet( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= band.size(), "Invalid vector access index" );
+
+   return trySet( band.operand(), band.row()+index, band.column()+index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a band.
 // \ingroup band
 //
