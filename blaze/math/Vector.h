@@ -84,19 +84,19 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
    operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< VectorType_<T1>, TransposeType_<T2> >
    outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< VectorType_<T1>, VectorType_<T2> >
    outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< TransposeType_<T1>, TransposeType_<T2> >
    outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< TransposeType_<T1>, VectorType_<T2> >
    outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
 template< typename VT, bool TF >
@@ -234,7 +234,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< VectorType_<T1>, TransposeType_<T2> >
    outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
    return (~lhs) * trans(~rhs);
@@ -253,7 +253,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< VectorType_<T1>, VectorType_<T2> >
    outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
    return (~lhs) * (~rhs);
@@ -272,7 +272,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< TransposeType_<T1>, TransposeType_<T2> >
    outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
    return trans(~lhs) * trans(~rhs);
@@ -291,7 +291,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
+inline const MultTrait_< TransposeType_<T1>, VectorType_<T2> >
    outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return trans(~lhs) * (~rhs);
