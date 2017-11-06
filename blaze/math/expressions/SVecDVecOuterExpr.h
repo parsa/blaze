@@ -138,9 +138,12 @@ class SVecDVecOuterExpr
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   template< typename MT >
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
+       strategy. In case the expression specific parallel evaluation strategy is selected, the
+       \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   template< typename LHS, typename RHS >
    struct UseAssign {
-      enum : bool { value = useAssign };
+      enum : bool { value = RHS::useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -676,7 +679,7 @@ class SVecDVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_< UseAssign<MT,SVecDVecOuterExpr> >
       assign( DenseMatrix<MT,true>& lhs, const SVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -789,7 +792,7 @@ class SVecDVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_< UseAssign<MT,SVecDVecOuterExpr> >
       assign( SparseMatrix<MT,true>& lhs, const SVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -965,7 +968,7 @@ class SVecDVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_< UseAssign<MT,SVecDVecOuterExpr> >
       addAssign( DenseMatrix<MT,true>& lhs, const SVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1139,7 +1142,7 @@ class SVecDVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_< UseAssign<MT,SVecDVecOuterExpr> >
       subAssign( DenseMatrix<MT,true>& lhs, const SVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1343,7 +1346,7 @@ class SVecDVecOuterExpr
    // element types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_< UseAssign<MT,SVecDVecOuterExpr> >
       schurAssign( DenseMatrix<MT,true>& lhs, const SVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

@@ -144,12 +144,11 @@ class SMatSMatAddExpr
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable, \a value is set to 1 and the
-       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
-       and the default strategy is chosen. */
-   template< typename MT >
+       strategy. In case the expression specific parallel evaluation strategy is selected, the
+       \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   template< typename LHS, typename RHS >
    struct UseSMPAssign {
-      enum : bool { value = MT::smpAssignable };
+      enum : bool { value = LHS::smpAssignable };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -727,7 +726,7 @@ class SMatSMatAddExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_< UseSMPAssign<MT,SMatSMatAddExpr> >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -761,7 +760,7 @@ class SMatSMatAddExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_< UseSMPAssign<MT,SMatSMatAddExpr> >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -796,7 +795,7 @@ class SMatSMatAddExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_< UseSMPAssign<MT,SMatSMatAddExpr> >
       smpSchurAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatAddExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
