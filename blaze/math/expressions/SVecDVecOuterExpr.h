@@ -71,7 +71,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -138,37 +137,42 @@ class SVecDVecOuterExpr
                                IsComputation<VT2>::value || !IsNumeric<ET2>::value ) };
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign alias is a helper alias for the selection of the parallel evaluation
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case the expression specific parallel evaluation strategy is selected, the
        \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename LHS, typename RHS >
-   using UseAssign = BoolConstant< RHS::useAssign >;
+   struct UseAssign {
+      enum : bool { value = RHS::useAssign };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
        outer product, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   using UseVectorizedKernel =
-      BoolConstant< useOptimizedKernels &&
-                    T1::simdEnabled && T3::simdEnabled &&
-                    IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                    IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                    HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value >;
+   struct UseVectorizedKernel {
+      enum : bool { value = useOptimizedKernels &&
+                            T1::simdEnabled && T3::simdEnabled &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case no vectorized computation is possible, the nested \value will be set to 1,
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   using UseDefaultKernel = BoolConstant< !UseVectorizedKernel<T1,T2,T3>::value >;
+   struct UseDefaultKernel {
+      enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
