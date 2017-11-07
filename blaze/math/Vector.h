@@ -44,7 +44,6 @@
 #include <ostream>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Vector.h>
-#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/TransposeFlag.h>
 
 
@@ -60,44 +59,34 @@ namespace blaze {
 /*!\name Vector operators */
 //@{
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
+inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
+inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
+inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
+inline decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
+inline decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< VectorType_<T1>, TransposeType_<T2> >
-   outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
+inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< VectorType_<T1>, VectorType_<T2> >
-   outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
+inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< TransposeType_<T1>, TransposeType_<T2> >
-   outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
+inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline const MultTrait_< TransposeType_<T1>, VectorType_<T2> >
-   outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
 template< typename VT, bool TF >
 inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
@@ -116,8 +105,7 @@ inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
+inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
    return trans(~lhs) * (~rhs);
 }
@@ -135,8 +123,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
+inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
    return trans(~lhs) * trans(~rhs);
 }
@@ -154,8 +141,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
+inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
    return (~lhs) * (~rhs);
 }
@@ -173,8 +159,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
+inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return (~lhs) * trans(~rhs);
 }
@@ -194,8 +179,7 @@ template< typename T1  // Type of the left-hand side vector
         , bool TF1     // Transpose flag of the left-hand side vector
         , typename T2  // Type of the right-hand side vector
         , bool TF2 >   // Transpose flag of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
+inline decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
 {
    return inner( ~lhs, ~rhs );
 }
@@ -215,8 +199,7 @@ template< typename T1  // Type of the left-hand side vector
         , bool TF1     // Transpose flag of the left-hand side vector
         , typename T2  // Type of the right-hand side vector
         , bool TF2 >   // Transpose flag of the right-hand side vector
-inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
-   operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
+inline decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs )
 {
    return inner( ~lhs, ~rhs );
 }
@@ -234,8 +217,7 @@ inline const MultTrait_< ElementType_<T1>, ElementType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< VectorType_<T1>, TransposeType_<T2> >
-   outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
+inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs )
 {
    return (~lhs) * trans(~rhs);
 }
@@ -253,8 +235,7 @@ inline const MultTrait_< VectorType_<T1>, TransposeType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< VectorType_<T1>, VectorType_<T2> >
-   outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
+inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs )
 {
    return (~lhs) * (~rhs);
 }
@@ -272,8 +253,7 @@ inline const MultTrait_< VectorType_<T1>, VectorType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< TransposeType_<T1>, TransposeType_<T2> >
-   outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
+inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs )
 {
    return trans(~lhs) * trans(~rhs);
 }
@@ -291,8 +271,7 @@ inline const MultTrait_< TransposeType_<T1>, TransposeType_<T2> >
 */
 template< typename T1    // Type of the left-hand side vector
         , typename T2 >  // Type of the right-hand side vector
-inline const MultTrait_< TransposeType_<T1>, VectorType_<T2> >
-   outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
+inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return trans(~lhs) * (~rhs);
 }
