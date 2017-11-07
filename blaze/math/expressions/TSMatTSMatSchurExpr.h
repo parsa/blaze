@@ -141,20 +141,6 @@ class TSMatTSMatSchurExpr
    /*! \endcond */
    //**********************************************************************************************
 
-   //**Parallel evaluation strategy****************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable, \a value is set to 1 and the
-       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
-       and the default strategy is chosen. */
-   template< typename MT >
-   struct UseSMPAssign {
-      enum : bool { value = MT::smpAssignable };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = TSMatTSMatSchurExpr<MT1,MT2>;  //!< Type of this TSMatTSMatSchurExpr instance.
