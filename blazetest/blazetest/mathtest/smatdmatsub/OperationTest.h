@@ -6997,7 +6997,7 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::TrueType )
       MT1 lhs( lhs_ );
 
       blaze::resetLower( lhs );
-      blaze::resetUpper( rhs );
+      blaze::resetUpper( lhs );
 
       OMT1 olhs  ( lhs );
       RT1  reflhs( lhs );
