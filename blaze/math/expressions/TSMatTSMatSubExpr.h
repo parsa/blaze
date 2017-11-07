@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
@@ -72,7 +73,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
@@ -126,27 +126,29 @@ class TSMatTSMatSubExpr
 
    //**Serial evaluation strategy******************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseSymmetricKernel alias is a helper alias for the selection of the serial
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSymmetricKernel struct is a helper struct for the selection of the serial
        evaluation strategy. In case the target matrix is column-major and both matrix
        operands are symmetric, \a value is set to 1 and an optimized evaluation strategy
        is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
-   using UseSymmetricKernel =
-      BoolConstant< IsRowMajorMatrix<T1>::value &&
-                    IsSymmetric<T2>::value &&
-                    IsSymmetric<T3>::value >;
+   struct UseSymmetricKernel {
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( T1 );
+      enum : bool { value = IsSymmetric<T2>::value && IsSymmetric<T3>::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign alias is a helper alias for the selection of the parallel evaluation
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case the expression specific parallel evaluation strategy is selected, the
        \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename LHS, typename RHS >
-   using UseSMPAssign = BoolConstant< LHS::smpAssignable >;
+   struct UseSMPAssign {
+      enum : bool { value = LHS::smpAssignable };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
