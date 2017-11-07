@@ -73,7 +73,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
@@ -137,12 +136,14 @@ class SMatDMatSchurExpr
    enum : bool { useAssign = ( RequiresEvaluation<MT1>::value || RequiresEvaluation<MT2>::value ) };
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseAssign alias is a helper alias for the selection of the serial evaluation strategy.
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseAssign struct is a helper struct for the selection of the serial evaluation strategy.
        In case the expression specific serial evaluation strategy is selected, the \a value is set
        to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename LHS, typename RHS >
-   using UseAssign = BoolConstant< RHS::useAssign >;
+   struct UseAssign {
+      enum : bool { value = RHS::useAssign };
+   };
    /*! \endcond */
    //**********************************************************************************************
 

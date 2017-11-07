@@ -74,7 +74,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
@@ -130,15 +129,16 @@ class SMatSMatSchurExpr
 
    //**Serial evaluation strategy******************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseSymmetricKernel alias is a helper alias for the selection of the serial
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSymmetricKernel struct is a helper struct for the selection of the serial
        evaluation strategy. In case the target matrix is column-major and both matrix
        operands are symmetric, \a value is set to 1 and an optimized evaluation strategy
        is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
-   using UseSymmetricKernel =
-      BoolConstant< IsColumnMajorMatrix<T1>::value &&
-                    IsSymmetric<T2>::value && IsSymmetric<T3>::value >;
+   struct UseSymmetricKernel {
+      enum : bool { value = IsColumnMajorMatrix<T1>::value &&
+                            IsSymmetric<T2>::value && IsSymmetric<T3>::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
