@@ -4473,7 +4473,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  = declsym( max( eval( lhs ), eval( rhs ) ) );
             sres_   = declsym( max( eval( lhs ), eval( rhs ) ) );
             osres_  = declsym( max( eval( lhs ), eval( rhs ) ) );
-            refres_ = declsym( eval( ref_ ) );
+            refres_ = declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -4487,7 +4487,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  = declsym( max( eval( lhs ), eval( orhs ) ) );
             sres_   = declsym( max( eval( lhs ), eval( orhs ) ) );
             osres_  = declsym( max( eval( lhs ), eval( orhs ) ) );
-            refres_ = declsym( eval( ref_ ) );
+            refres_ = declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -4501,7 +4501,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  = declsym( max( eval( olhs ), eval( rhs ) ) );
             sres_   = declsym( max( eval( olhs ), eval( rhs ) ) );
             osres_  = declsym( max( eval( olhs ), eval( rhs ) ) );
-            refres_ = declsym( eval( ref_ ) );
+            refres_ = declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -4515,7 +4515,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  = declsym( max( eval( olhs ), eval( orhs ) ) );
             sres_   = declsym( max( eval( olhs ), eval( orhs ) ) );
             osres_  = declsym( max( eval( olhs ), eval( orhs ) ) );
-            refres_ = declsym( eval( ref_ ) );
+            refres_ = declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
@@ -4602,7 +4602,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  += declsym( max( eval( lhs ), eval( rhs ) ) );
             sres_   += declsym( max( eval( lhs ), eval( rhs ) ) );
             osres_  += declsym( max( eval( lhs ), eval( rhs ) ) );
-            refres_ += declsym( eval( ref_ ) );
+            refres_ += declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -4616,7 +4616,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  += declsym( max( eval( lhs ), eval( orhs ) ) );
             sres_   += declsym( max( eval( lhs ), eval( orhs ) ) );
             osres_  += declsym( max( eval( lhs ), eval( orhs ) ) );
-            refres_ += declsym( eval( ref_ ) );
+            refres_ += declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -4630,7 +4630,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  += declsym( max( eval( olhs ), eval( rhs ) ) );
             sres_   += declsym( max( eval( olhs ), eval( rhs ) ) );
             osres_  += declsym( max( eval( olhs ), eval( rhs ) ) );
-            refres_ += declsym( eval( ref_ ) );
+            refres_ += declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -4644,7 +4644,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  += declsym( max( eval( olhs ), eval( orhs ) ) );
             sres_   += declsym( max( eval( olhs ), eval( orhs ) ) );
             osres_  += declsym( max( eval( olhs ), eval( orhs ) ) );
-            refres_ += declsym( eval( ref_ ) );
+            refres_ += declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
@@ -4731,7 +4731,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  -= declsym( max( eval( lhs ), eval( rhs ) ) );
             sres_   -= declsym( max( eval( lhs ), eval( rhs ) ) );
             osres_  -= declsym( max( eval( lhs ), eval( rhs ) ) );
-            refres_ -= declsym( eval( ref_ ) );
+            refres_ -= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -4745,7 +4745,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  -= declsym( max( eval( lhs ), eval( orhs ) ) );
             sres_   -= declsym( max( eval( lhs ), eval( orhs ) ) );
             osres_  -= declsym( max( eval( lhs ), eval( orhs ) ) );
-            refres_ -= declsym( eval( ref_ ) );
+            refres_ -= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -4759,7 +4759,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  -= declsym( max( eval( olhs ), eval( rhs ) ) );
             sres_   -= declsym( max( eval( olhs ), eval( rhs ) ) );
             osres_  -= declsym( max( eval( olhs ), eval( rhs ) ) );
-            refres_ -= declsym( eval( ref_ ) );
+            refres_ -= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -4773,7 +4773,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  -= declsym( max( eval( olhs ), eval( orhs ) ) );
             sres_   -= declsym( max( eval( olhs ), eval( orhs ) ) );
             osres_  -= declsym( max( eval( olhs ), eval( orhs ) ) );
-            refres_ -= declsym( eval( ref_ ) );
+            refres_ -= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
@@ -4860,7 +4860,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  %= declsym( max( eval( lhs ), eval( rhs ) ) );
             sres_   %= declsym( max( eval( lhs ), eval( rhs ) ) );
             osres_  %= declsym( max( eval( lhs ), eval( rhs ) ) );
-            refres_ %= declsym( eval( ref_ ) );
+            refres_ %= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -4874,7 +4874,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  %= declsym( max( eval( lhs ), eval( orhs ) ) );
             sres_   %= declsym( max( eval( lhs ), eval( orhs ) ) );
             osres_  %= declsym( max( eval( lhs ), eval( orhs ) ) );
-            refres_ %= declsym( eval( ref_ ) );
+            refres_ %= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -4888,7 +4888,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  %= declsym( max( eval( olhs ), eval( rhs ) ) );
             sres_   %= declsym( max( eval( olhs ), eval( rhs ) ) );
             osres_  %= declsym( max( eval( olhs ), eval( rhs ) ) );
-            refres_ %= declsym( eval( ref_ ) );
+            refres_ %= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -4902,7 +4902,7 @@ void OperationTest<MT1,MT2>::testDeclSymOperation( blaze::TrueType )
             odres_  %= declsym( max( eval( olhs ), eval( orhs ) ) );
             sres_   %= declsym( max( eval( olhs ), eval( orhs ) ) );
             osres_  %= declsym( max( eval( olhs ), eval( orhs ) ) );
-            refres_ %= declsym( eval( ref_ ) );
+            refres_ %= declsym( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
@@ -5057,7 +5057,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  = declherm( max( eval( lhs ), eval( rhs ) ) );
             sres_   = declherm( max( eval( lhs ), eval( rhs ) ) );
             osres_  = declherm( max( eval( lhs ), eval( rhs ) ) );
-            refres_ = declherm( eval( ref_ ) );
+            refres_ = declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -5071,7 +5071,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  = declherm( max( eval( lhs ), eval( orhs ) ) );
             sres_   = declherm( max( eval( lhs ), eval( orhs ) ) );
             osres_  = declherm( max( eval( lhs ), eval( orhs ) ) );
-            refres_ = declherm( eval( ref_ ) );
+            refres_ = declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -5085,7 +5085,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  = declherm( max( eval( olhs ), eval( rhs ) ) );
             sres_   = declherm( max( eval( olhs ), eval( rhs ) ) );
             osres_  = declherm( max( eval( olhs ), eval( rhs ) ) );
-            refres_ = declherm( eval( ref_ ) );
+            refres_ = declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -5099,7 +5099,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  = declherm( max( eval( olhs ), eval( orhs ) ) );
             sres_   = declherm( max( eval( olhs ), eval( orhs ) ) );
             osres_  = declherm( max( eval( olhs ), eval( orhs ) ) );
-            refres_ = declherm( eval( ref_ ) );
+            refres_ = declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
@@ -5186,7 +5186,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  += declherm( max( eval( lhs ), eval( rhs ) ) );
             sres_   += declherm( max( eval( lhs ), eval( rhs ) ) );
             osres_  += declherm( max( eval( lhs ), eval( rhs ) ) );
-            refres_ += declherm( eval( ref_ ) );
+            refres_ += declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -5200,7 +5200,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  += declherm( max( eval( lhs ), eval( orhs ) ) );
             sres_   += declherm( max( eval( lhs ), eval( orhs ) ) );
             osres_  += declherm( max( eval( lhs ), eval( orhs ) ) );
-            refres_ += declherm( eval( ref_ ) );
+            refres_ += declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -5214,7 +5214,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  += declherm( max( eval( olhs ), eval( rhs ) ) );
             sres_   += declherm( max( eval( olhs ), eval( rhs ) ) );
             osres_  += declherm( max( eval( olhs ), eval( rhs ) ) );
-            refres_ += declherm( eval( ref_ ) );
+            refres_ += declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -5228,7 +5228,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  += declherm( max( eval( olhs ), eval( orhs ) ) );
             sres_   += declherm( max( eval( olhs ), eval( orhs ) ) );
             osres_  += declherm( max( eval( olhs ), eval( orhs ) ) );
-            refres_ += declherm( eval( ref_ ) );
+            refres_ += declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
@@ -5315,7 +5315,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  -= declherm( max( eval( lhs ), eval( rhs ) ) );
             sres_   -= declherm( max( eval( lhs ), eval( rhs ) ) );
             osres_  -= declherm( max( eval( lhs ), eval( rhs ) ) );
-            refres_ -= declherm( eval( ref_ ) );
+            refres_ -= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -5329,7 +5329,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  -= declherm( max( eval( lhs ), eval( orhs ) ) );
             sres_   -= declherm( max( eval( lhs ), eval( orhs ) ) );
             osres_  -= declherm( max( eval( lhs ), eval( orhs ) ) );
-            refres_ -= declherm( eval( ref_ ) );
+            refres_ -= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -5343,7 +5343,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  -= declherm( max( eval( olhs ), eval( rhs ) ) );
             sres_   -= declherm( max( eval( olhs ), eval( rhs ) ) );
             osres_  -= declherm( max( eval( olhs ), eval( rhs ) ) );
-            refres_ -= declherm( eval( ref_ ) );
+            refres_ -= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -5357,7 +5357,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  -= declherm( max( eval( olhs ), eval( orhs ) ) );
             sres_   -= declherm( max( eval( olhs ), eval( orhs ) ) );
             osres_  -= declherm( max( eval( olhs ), eval( orhs ) ) );
-            refres_ -= declherm( eval( ref_ ) );
+            refres_ -= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
@@ -5444,7 +5444,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  %= declherm( max( eval( lhs ), eval( rhs ) ) );
             sres_   %= declherm( max( eval( lhs ), eval( rhs ) ) );
             osres_  %= declherm( max( eval( lhs ), eval( rhs ) ) );
-            refres_ %= declherm( eval( ref_ ) );
+            refres_ %= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,MT2>( ex );
@@ -5458,7 +5458,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  %= declherm( max( eval( lhs ), eval( orhs ) ) );
             sres_   %= declherm( max( eval( lhs ), eval( orhs ) ) );
             osres_  %= declherm( max( eval( lhs ), eval( orhs ) ) );
-            refres_ %= declherm( eval( ref_ ) );
+            refres_ %= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<MT1,OMT2>( ex );
@@ -5472,7 +5472,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  %= declherm( max( eval( olhs ), eval( rhs ) ) );
             sres_   %= declherm( max( eval( olhs ), eval( rhs ) ) );
             osres_  %= declherm( max( eval( olhs ), eval( rhs ) ) );
-            refres_ %= declherm( eval( ref_ ) );
+            refres_ %= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,MT2>( ex );
@@ -5486,7 +5486,7 @@ void OperationTest<MT1,MT2>::testDeclHermOperation( blaze::TrueType )
             odres_  %= declherm( max( eval( olhs ), eval( orhs ) ) );
             sres_   %= declherm( max( eval( olhs ), eval( orhs ) ) );
             osres_  %= declherm( max( eval( olhs ), eval( orhs ) ) );
-            refres_ %= declherm( eval( ref_ ) );
+            refres_ %= declherm( eval( ref ) );
          }
          catch( std::exception& ex ) {
             convertException<OMT1,OMT2>( ex );
