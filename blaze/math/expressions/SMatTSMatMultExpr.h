@@ -74,6 +74,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
@@ -113,18 +114,17 @@ class SMatTSMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The CanExploitSymmetry alias is a helper alias for the selection of the optimal
        evaluation strategy. In case the target matrix is row-major and the right-hand side
        matrix operand of type \a T3 is symmetric or in case the target matrix is column-major
        and the left-hand side matrix operands of type \a T2 is symmetric, \a value is set to
        1 and an optimized evaluation strategy is selected. Otherwise \a value is set to 0 and
        the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
-   struct CanExploitSymmetry {
-      enum : bool { value = ( IsRowMajorMatrix<T1>::value    && IsSymmetric<T3>::value ) ||
-                            ( IsColumnMajorMatrix<T1>::value && IsSymmetric<T2>::value ) };
-   };
+   using CanExploitSymmetry =
+      BoolConstant< ( IsRowMajorMatrix<T1>::value    && IsSymmetric<T3>::value ) ||
+                    ( IsColumnMajorMatrix<T1>::value && IsSymmetric<T2>::value ) >;
    /*! \endcond */
    //**********************************************************************************************
 

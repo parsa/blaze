@@ -106,6 +106,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
@@ -180,73 +181,70 @@ class TDMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The CanExploitSymmetry alias is a helper alias for the selection of the optimal
        evaluation strategy. In case the target matrix is row-major and either of the two
        matrix operands is symmetric, \a value is set to 1 and an optimized evaluation
        strategy is selected. Otherwise \a value is set to 0 and the default strategy is
        chosen. */
    template< typename T1, typename T2, typename T3 >
-   struct CanExploitSymmetry {
-      enum : bool { value = IsRowMajorMatrix<T1>::value &&
-                            ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
-   };
+   using CanExploitSymmetry =
+      BoolConstant< IsRowMajorMatrix<T1>::value &&
+                    ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The IsEvaluationRequired alias is a helper alias for the selection of the parallel
        evaluation strategy. In case either of the two matrix operands requires an intermediate
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct IsEvaluationRequired {
-      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
-                            CanExploitSymmetry<T1,T2,T3>::value };
-   };
+   using IsEvaluationRequired =
+      BoolConstant< ( IsComputation<T2>::value || RequiresEvaluation<T2>::value ||
+                      IsComputation<T3>::value || RequiresEvaluation<T3>::value ) &&
+                    !CanExploitSymmetry<T1,T2,T3>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
       //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case the types of all three involved matrices are suited for a BLAS kernel, the nested
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
-                            !SYM && !HERM && !LOW && !UPP &&
-                            HasMutableDataAccess<T1>::value &&
-                            HasConstDataAccess<T2>::value &&
-                            HasConstDataAccess<T3>::value &&
-                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible< ElementType_<T1> >::value &&
-                            IsBLASCompatible< ElementType_<T2> >::value &&
-                            IsBLASCompatible< ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
-   };
+   using UseBlasKernel =
+      BoolConstant< BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
+                    !SYM && !HERM && !LOW && !UPP &&
+                    HasMutableDataAccess<T1>::value &&
+                    HasConstDataAccess<T2>::value &&
+                    HasConstDataAccess<T3>::value &&
+                    !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                    IsBLASCompatible< ElementType_<T1> >::value &&
+                    IsBLASCompatible< ElementType_<T2> >::value &&
+                    IsBLASCompatible< ElementType_<T3> >::value &&
+                    IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                    IsSame< ElementType_<T1>, ElementType_<T3> >::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseVectorizedDefaultKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
-   };
+   using UseVectorizedDefaultKernel =
+      BoolConstant< useOptimizedKernels &&
+                    !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                    IsSIMDCombinable< ElementType_<T1>
+                                    , ElementType_<T2>
+                                    , ElementType_<T3> >::value &&
+                    HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                    HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value >;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -4664,69 +4662,66 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The CanExploitSymmetry alias is a helper alias for the selection of the optimal
        evaluation strategy. In case the target matrix is row-major and either of the two
        matrix operands is symmetric, \a value is set to 1 and an optimized evaluation
        strategy is selected. Otherwise \a value is set to 0 and the default strategy is
        chosen. */
    template< typename T1, typename T2, typename T3 >
-   struct CanExploitSymmetry {
-      enum : bool { value = IsRowMajorMatrix<T1>::value &&
-                            ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
-   };
+   using CanExploitSymmetry =
+      BoolConstant< IsRowMajorMatrix<T1>::value &&
+                    ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) >;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The IsEvaluationRequired alias is a helper alias for the selection of the parallel
        evaluation strategy. In case either of the two matrix operands requires an intermediate
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct IsEvaluationRequired {
-      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
-                            !CanExploitSymmetry<T1,T2,T3>::value };
-   };
+   using IsEvaluationRequired =
+      BoolConstant< ( IsComputation<T2>::value || RequiresEvaluation<T2>::value ||
+                      IsComputation<T3>::value || RequiresEvaluation<T3>::value ) &&
+                    !CanExploitSymmetry<T1,T2,T3>::value >;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case the types of all three involved matrices and the scalar type are suited for a BLAS
        kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
-                            !SYM && !HERM && !LOW && !UPP &&
-                            HasMutableDataAccess<T1>::value &&
-                            HasConstDataAccess<T2>::value &&
-                            HasConstDataAccess<T3>::value &&
-                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible< ElementType_<T1> >::value &&
-                            IsBLASCompatible< ElementType_<T2> >::value &&
-                            IsBLASCompatible< ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
-   };
+   using UseBlasKernel =
+      BoolConstant< BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
+                    !SYM && !HERM && !LOW && !UPP &&
+                    HasMutableDataAccess<T1>::value &&
+                    HasConstDataAccess<T2>::value &&
+                    HasConstDataAccess<T3>::value &&
+                    !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                    IsBLASCompatible< ElementType_<T1> >::value &&
+                    IsBLASCompatible< ElementType_<T2> >::value &&
+                    IsBLASCompatible< ElementType_<T3> >::value &&
+                    IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                    IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                    !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) >;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case all four involved data types are suited for a vectorized computation of the
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseVectorizedDefaultKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T2>::value &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3>
-                                            , T4 >::value &&
-                            HasSIMDAdd< ElementType_<T2>, ElementType_<T2> >::value &&
-                            HasSIMDMult< ElementType_<T3>, ElementType_<T3> >::value };
-   };
+   using UseVectorizedDefaultKernel =
+      BoolConstant< useOptimizedKernels &&
+                    !IsDiagonal<T2>::value &&
+                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                    IsSIMDCombinable< ElementType_<T1>
+                                    , ElementType_<T2>
+                                    , ElementType_<T3>
+                                    , T4 >::value &&
+                    HasSIMDAdd< ElementType_<T2>, ElementType_<T2> >::value &&
+                    HasSIMDMult< ElementType_<T3>, ElementType_<T3> >::value >;
    //**********************************************************************************************
 
    //**********************************************************************************************

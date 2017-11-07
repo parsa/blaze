@@ -87,6 +87,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
@@ -154,44 +155,41 @@ class SMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The CanExploitSymmetry alias is a helper alias for the selection of the optimal
        evaluation strategy. In case the right-hand side dense matrix operand is symmetric,
        \a value is set to 1 and an optimized evaluation strategy is selected. Otherwise
        \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
-   struct CanExploitSymmetry {
-      enum : bool { value = IsSymmetric<T3>::value };
-   };
+   using CanExploitSymmetry = BoolConstant< IsSymmetric<T3>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The IsEvaluationRequired alias is a helper alias for the selection of the parallel
        evaluation strategy. In case either of the two matrix operands requires an intermediate
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct IsEvaluationRequired {
-      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
-                            CanExploitSymmetry<T1,T2,T3>::value };
-   };
+   using IsEvaluationRequired =
+      BoolConstant< ( IsComputation<T2>::value || RequiresEvaluation<T2>::value ||
+                      IsComputation<T3>::value || RequiresEvaluation<T3>::value ) &&
+                    !CanExploitSymmetry<T1,T2,T3>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case the left-hand side matrix is not a diagonal and a loop-unrolled computation is
        feasible, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseOptimizedKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T3>::value &&
-                            !IsResizable< ElementType_<T1> >::value &&
-                            !IsResizable<ET1>::value };
-   };
+   using UseOptimizedKernel =
+      BoolConstant< useOptimizedKernels &&
+                    !IsDiagonal<T3>::value &&
+                    !IsResizable< ElementType_<T1> >::value &&
+                    !IsResizable<ET1>::value >;
    /*! \endcond */
    //**********************************************************************************************
 

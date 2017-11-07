@@ -91,6 +91,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
@@ -157,64 +158,61 @@ class TDMatTSMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
+   //! Helper alias template for the explicit application of the SFINAE principle.
+   /*! The IsEvaluationRequired alias is a helper alias for the selection of the parallel
        evaluation strategy. In case either of the two matrix operands requires an intermediate
        evaluation, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct IsEvaluationRequired {
-      enum : bool { value = ( evaluateLeft || evaluateRight ) };
-   };
+   using IsEvaluationRequired =
+      BoolConstant< IsComputation<T2>::value || RequiresEvaluation<T2>::value ||
+                    IsComputation<T3>::value || RequiresEvaluation<T3>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
        matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseVectorizedKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T2>::value &&
-                            T1::simdEnabled && T2::simdEnabled &&
-                            IsColumnMajorMatrix<T1>::value &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
-   };
+   using UseVectorizedKernel =
+      BoolConstant< useOptimizedKernels &&
+                    !IsDiagonal<T2>::value &&
+                    T1::simdEnabled && T2::simdEnabled &&
+                    IsColumnMajorMatrix<T1>::value &&
+                    IsSIMDCombinable< ElementType_<T1>
+                                    , ElementType_<T2>
+                                    , ElementType_<T3> >::value &&
+                    HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                    HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case a vectorized computation of the matrix multiplication is not possible, but a
        loop-unrolled computation is feasible, the nested \value will be set to 1, otherwise
        it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseOptimizedKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !UseVectorizedKernel<T1,T2,T3>::value &&
-                            !IsDiagonal<T2>::value &&
-                            !IsResizable< ElementType_<T1> >::value &&
-                            !IsResizable<ET2>::value };
-   };
+   using UseOptimizedKernel =
+      BoolConstant< useOptimizedKernels &&
+                    !UseVectorizedKernel<T1,T2,T3>::value &&
+                    !IsDiagonal<T2>::value &&
+                    !IsResizable< ElementType_<T1> >::value &&
+                    !IsResizable<ET2>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    /*! In case neither a vectorized nor optimized computation is possible, the nested \value will
        be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseDefaultKernel {
-      enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value &&
-                            !UseOptimizedKernel<T1,T2,T3>::value };
-   };
+   using UseDefaultKernel =
+      BoolConstant< !UseVectorizedKernel<T1,T2,T3>::value &&
+                    !UseOptimizedKernel<T1,T2,T3>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
