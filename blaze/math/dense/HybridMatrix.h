@@ -390,58 +390,54 @@ class HybridMatrix
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value };
-   };
+   using VectorizedAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    IsRowMajorMatrix<MT>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
-   };
+   using VectorizedAddAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    HasSIMDAdd< Type, ElementType_<MT> >::value &&
+                    IsRowMajorMatrix<MT>::value &&
+                    !IsDiagonal<MT>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
-   };
+   using VectorizedSubAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    HasSIMDSub< Type, ElementType_<MT> >::value &&
+                    IsRowMajorMatrix<MT>::value &&
+                    !IsDiagonal<MT>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value };
-   };
+   using VectorizedSchurAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    HasSIMDMult< Type, ElementType_<MT> >::value &&
+                    IsRowMajorMatrix<MT>::value >;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -3503,52 +3499,48 @@ class HybridMatrix<Type,M,N,true>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value };
-   };
+   using VectorizedAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    IsColumnMajorMatrix<MT>::value >;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
-   };
+   using VectorizedAddAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    HasSIMDAdd< Type, ElementType_<MT> >::value &&
+                    IsColumnMajorMatrix<MT>::value &&
+                    !IsDiagonal<MT>::value >;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
-   };
+   using VectorizedSubAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    HasSIMDSub< Type, ElementType_<MT> >::value &&
+                    IsColumnMajorMatrix<MT>::value &&
+                    !IsDiagonal<MT>::value >;
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper alias template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value };
-   };
+   using VectorizedSchurAssign =
+      BoolConstant< useOptimizedKernels &&
+                    simdEnabled && MT::simdEnabled &&
+                    IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                    HasSIMDMult< Type, ElementType_<MT> >::value &&
+                    IsColumnMajorMatrix<MT>::value >;
    //**********************************************************************************************
 
    //**********************************************************************************************
