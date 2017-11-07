@@ -150,12 +150,9 @@ class DVecDVecOuterExpr
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseAssign struct is a helper struct for the selection of the serial evaluation strategy.
-       In case the expression specific serial evaluation strategy is selected, the \a value is set
-       to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
-   template< typename LHS, typename RHS >
+   template< typename VT >
    struct UseAssign {
-      enum : bool { value = RHS::useAssign };
+      enum : bool { value = useAssign };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -164,11 +161,11 @@ class DVecDVecOuterExpr
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the expression specific parallel evaluation strategy is selected, the
-       \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
-   template< typename LHS, typename RHS >
+       strategy. In case the right-hand side vector operand requires an intermediate evaluation,
+       the nested \value will be set to 1, otherwise it will be 0. */
+   template< typename VT >
    struct UseSMPAssign {
-      enum : bool { value = RHS::useAssign };
+      enum : bool { value = evaluateRight };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -680,7 +677,7 @@ class DVecDVecOuterExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseAssign<MT> >
       assign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -956,7 +953,7 @@ class DVecDVecOuterExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseAssign<MT> >
       addAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1201,7 +1198,7 @@ class DVecDVecOuterExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseAssign<MT> >
       subAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1446,7 +1443,7 @@ class DVecDVecOuterExpr
    // the compiler in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseAssign<MT> >
       schurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1699,7 +1696,7 @@ class DVecDVecOuterExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAssign( DenseMatrix<MT,SO>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1736,7 +1733,7 @@ class DVecDVecOuterExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_< UseSMPAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAssign( SparseMatrix<MT,SO>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1774,7 +1771,7 @@ class DVecDVecOuterExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpAddAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1815,7 +1812,7 @@ class DVecDVecOuterExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpSubAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1856,7 +1853,7 @@ class DVecDVecOuterExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT,DVecDVecOuterExpr> >
+   friend inline EnableIf_< UseSMPAssign<MT> >
       smpSchurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
