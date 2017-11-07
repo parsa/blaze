@@ -81,7 +81,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
@@ -131,29 +130,31 @@ class SMatSMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The CanExploitSymmetry alias is a helper alias for the selection of the optimal
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The CanExploitSymmetry struct is a helper struct for the selection of the optimal
        evaluation strategy. In case the target matrix is column-major and both matrix
        operands are symmetric, \a value is set to 1 and an optimized evaluation strategy
        is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
-   using CanExploitSymmetry =
-      BoolConstant< IsColumnMajorMatrix<T1>::value &&
-                    IsSymmetric<T2>::value && IsSymmetric<T3>::value >;
+   struct CanExploitSymmetry {
+      enum : bool { value = IsColumnMajorMatrix<T1>::value &&
+                            IsSymmetric<T2>::value && IsSymmetric<T3>::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The IsEvaluationRequired alias is a helper alias for the selection of the parallel
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
        evaluation strategy. In case either of the two matrix operands requires an intermediate
        evaluation and in case no symmetry can be exploited, the nested \value will be set to 1,
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   using IsEvaluationRequired =
-      BoolConstant< ( RequiresEvaluation<T2>::value || RequiresEvaluation<T3>::value ) &&
-                    !CanExploitSymmetry<T1,T2,T3>::value >;
+   struct IsEvaluationRequired {
+      enum : bool { value = ( evaluateLeft || evaluateRight ) &&
+                            !CanExploitSymmetry<T1,T2,T3>::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
