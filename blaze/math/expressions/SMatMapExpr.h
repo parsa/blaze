@@ -71,7 +71,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
@@ -122,24 +121,27 @@ class SMatMapExpr
    enum : bool { useAssign = RequiresEvaluation<MT>::value };
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseAssign alias is a helper alias for the selection of the serial evaluation strategy.
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseAssign struct is a helper struct for the selection of the serial evaluation strategy.
        In case the expression specific serial evaluation strategy is selected, the \a value is set
        to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename LHS, typename RHS >
-   using UseAssign = BoolConstant< RHS::useAssign >;
+   struct UseAssign {
+      enum : bool { value = RHS::useAssign };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign alias is a helper alias for the selection of the parallel evaluation
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case the expression specific parallel evaluation strategy is selected, the
        \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename LHS, typename RHS >
-   using UseSMPAssign =
-      BoolConstant< ( !LHS::smpAssignable || !RHS::smpAssignable ) && RHS::useAssign >;
+   struct UseSMPAssign {
+      enum : bool { value = ( !LHS::smpAssignable || !RHS::smpAssignable ) && RHS::useAssign };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
