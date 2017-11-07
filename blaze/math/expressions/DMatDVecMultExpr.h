@@ -89,7 +89,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
@@ -146,52 +145,56 @@ class DMatDVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign alias is a helper alias for the selection of the parallel evaluation
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case the expression specific parallel evaluation strategy is selected, the
        \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename LHS, typename RHS >
-   using UseSMPAssign = BoolConstant< RHS::evaluateMatrix || RHS::evaluateVector >;
+   struct UseSMPAssign {
+      enum : bool { value = ( RHS::evaluateMatrix || RHS::evaluateVector ) };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the matrix type and the two involved vector types are suited for a BLAS kernel,
        the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   using UseBlasKernel =
-      BoolConstant< BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
-                    HasMutableDataAccess<T1>::value &&
-                    HasConstDataAccess<T2>::value &&
-                    HasConstDataAccess<T3>::value &&
-                    !IsDiagonal<T2>::value &&
-                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                    IsBLASCompatible< ElementType_<T1> >::value &&
-                    IsBLASCompatible< ElementType_<T2> >::value &&
-                    IsBLASCompatible< ElementType_<T3> >::value &&
-                    IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                    IsSame< ElementType_<T1>, ElementType_<T3> >::value >;
+   struct UseBlasKernel {
+      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
+                            HasMutableDataAccess<T1>::value &&
+                            HasConstDataAccess<T2>::value &&
+                            HasConstDataAccess<T3>::value &&
+                            !IsDiagonal<T2>::value &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                            IsBLASCompatible< ElementType_<T1> >::value &&
+                            IsBLASCompatible< ElementType_<T2> >::value &&
+                            IsBLASCompatible< ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the matrix type and the two involved vector types are suited for a vectorized
        computation of the matrix/vector multiplication, the nested \a value will be set to 1,
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   using UseVectorizedDefaultKernel =
-      BoolConstant< useOptimizedKernels &&
-                    !IsDiagonal<T2>::value &&
-                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                    IsSIMDCombinable< ElementType_<T1>
-                                    , ElementType_<T2>
-                                    , ElementType_<T3> >::value &&
-                    HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                    HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value >;
+   struct UseVectorizedDefaultKernel {
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T2>::value &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                            IsSIMDCombinable< ElementType_<T1>
+                                            , ElementType_<T2>
+                                            , ElementType_<T3> >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+   };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -2748,50 +2751,54 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign alias is a helper alias for the selection of the parallel evaluation
+   //! Helper structure for the explicit application of the SFINAE principle.
+   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
        strategy. In case the expression specific parallel evaluation strategy is selected, the
        \a value is set to 1. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename LHS, typename RHS >
-   using UseSMPAssign = BoolConstant< RHS::evaluateMatrix || RHS::evaluateVector >;
+   struct UseSMPAssign {
+      enum : bool { value = ( RHS::evaluateMatrix || RHS::evaluateVector ) };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the matrix type, the two involved vector types, and the scalar type are suited
        for a BLAS kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   using UseBlasKernel =
-      BoolConstant< BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
-                    HasMutableDataAccess<T1>::value &&
-                    HasConstDataAccess<T2>::value &&
-                    HasConstDataAccess<T3>::value &&
-                    !IsDiagonal<T2>::value &&
-                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                    IsBLASCompatible< ElementType_<T1> >::value &&
-                    IsBLASCompatible< ElementType_<T2> >::value &&
-                    IsBLASCompatible< ElementType_<T3> >::value &&
-                    IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                    IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                    !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) >;
+   struct UseBlasKernel {
+      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
+                            HasMutableDataAccess<T1>::value &&
+                            HasConstDataAccess<T2>::value &&
+                            HasConstDataAccess<T3>::value &&
+                            !IsDiagonal<T2>::value &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                            IsBLASCompatible< ElementType_<T1> >::value &&
+                            IsBLASCompatible< ElementType_<T2> >::value &&
+                            IsBLASCompatible< ElementType_<T3> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
+                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
+                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    /*! In case the two involved vector types, the matrix type, and the scalar type are suited
        for a vectorized computation of the scaled vector/matrix multiplication, the nested
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   using UseVectorizedDefaultKernel =
-      BoolConstant< useOptimizedKernels &&
-                    !IsDiagonal<T2>::value &&
-                    T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                    IsSIMDCombinable< ElementType_<T1>
-                                    , ElementType_<T2>
-                                    , ElementType_<T3>
-                                    , T4 >::value &&
-                    HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                    HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value >;
+   struct UseVectorizedDefaultKernel {
+      enum : bool { value = useOptimizedKernels &&
+                            !IsDiagonal<T2>::value &&
+                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+                            IsSIMDCombinable< ElementType_<T1>
+                                            , ElementType_<T2>
+                                            , ElementType_<T3>
+                                            , T4 >::value &&
+                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
+                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+   };
    //**********************************************************************************************
 
  public:
