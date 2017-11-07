@@ -92,7 +92,6 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
@@ -252,52 +251,57 @@ class Column<MT,true,true,SF,CCAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedAddAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDAdd< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedAddAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedSubAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDSub< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedSubAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedMultAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDMult< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedMultAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedDivAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDDiv< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -4315,52 +4319,57 @@ class Column<MT,false,true,true,CCAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedAddAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDAdd< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedAddAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedSubAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDSub< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedSubAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedMultAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDMult< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedMultAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper alias template for the explicit application of the SFINAE principle.
+   //! Helper structure for the explicit application of the SFINAE principle.
    template< typename VT >
-   using VectorizedDivAssign =
-      BoolConstant< useOptimizedKernels &&
-                    simdEnabled && VT::simdEnabled &&
-                    IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                    HasSIMDDiv< ElementType, ElementType_<VT> >::value >;
+   struct VectorizedDivAssign {
+      enum : bool { value = useOptimizedKernels &&
+                            simdEnabled && VT::simdEnabled &&
+                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
+   };
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
