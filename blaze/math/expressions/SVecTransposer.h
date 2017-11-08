@@ -47,6 +47,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
@@ -522,6 +523,25 @@ template< typename VT, bool TF, size_t... CSAs >
 struct SubvectorTrait< SVecTransposer<VT,TF>, CSAs... >
 {
    using Type = SubvectorTrait_< ResultType_< SVecTransposer<VT,TF> >, CSAs... >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ELEMENTSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF, size_t... CEAs >
+struct ElementsTrait< SVecTransposer<VT,TF>, CEAs... >
+{
+   using Type = ElementsTrait_< ResultType_< SVecTransposer<VT,TF> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -47,6 +47,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/simd/SIMDTrait.h>
+#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -862,6 +863,25 @@ template< typename VT, bool TF, size_t... CSAs >
 struct SubvectorTrait< DVecTransposer<VT,TF>, CSAs... >
 {
    using Type = SubvectorTrait_< ResultType_< DVecTransposer<VT,TF> >, CSAs... >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ELEMENTSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF, size_t... CEAs >
+struct ElementsTrait< DVecTransposer<VT,TF>, CEAs... >
+{
+   using Type = ElementsTrait_< ResultType_< DVecTransposer<VT,TF> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
