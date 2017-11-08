@@ -62,6 +62,7 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -3006,6 +3007,31 @@ struct SubvectorTrait< StaticVector<T,N1,TF>, I, N2 >
 
 template< typename T, size_t N, bool TF >
 struct SubvectorTrait< StaticVector<T,N,TF> >
+{
+   using Type = HybridVector<T,N,TF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ELEMENTSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N1, bool TF, size_t... CEAs >
+struct ElementsTrait< StaticVector<T,N1,TF>, CEAs... >
+{
+   using Type = StaticVector<T,sizeof...(CEAs),TF>;
+};
+
+template< typename T, size_t N, bool TF >
+struct ElementsTrait< StaticVector<T,N,TF> >
 {
    using Type = HybridVector<T,N,TF>;
 };

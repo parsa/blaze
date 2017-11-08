@@ -63,6 +63,7 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
@@ -5263,6 +5264,31 @@ struct SubvectorTrait< CustomVector<T,AF,PF,TF>, I, N >
 
 template< typename T, bool AF, bool PF, bool TF >
 struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
+{
+   using Type = DynamicVector<T,TF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ELEMENTSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool AF, bool PF, bool TF, size_t... CEAs >
+struct ElementsTrait< CustomVector<T,AF,PF,TF>, CEAs... >
+{
+   using Type = StaticVector<T,sizeof...(CEAs),TF>;
+};
+
+template< typename T, bool AF, bool PF, bool TF >
+struct ElementsTrait< CustomVector<T,AF,PF,TF> >
 {
    using Type = DynamicVector<T,TF>;
 };
