@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -1142,6 +1143,25 @@ template< typename MT, bool SO, size_t... CSAs >
 struct SubmatrixTrait< SMatTransposer<MT,SO>, CSAs... >
 {
    using Type = SubmatrixTrait_< ResultType_< SMatTransposer<MT,SO> >, CSAs... >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, size_t... CRAs >
+struct RowsTrait< SMatTransposer<MT,SO>, CRAs... >
+{
+   using Type = RowsTrait_< ResultType_< SMatTransposer<MT,SO> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

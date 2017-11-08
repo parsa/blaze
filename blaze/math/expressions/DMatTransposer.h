@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/simd/SIMDTrait.h>
+#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -2301,6 +2302,25 @@ template< typename MT, bool SO, size_t... CSAs >
 struct SubmatrixTrait< DMatTransposer<MT,SO>, CSAs... >
 {
    using Type = SubmatrixTrait_< ResultType_< DMatTransposer<MT,SO> >, CSAs... >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, size_t... CRAs >
+struct RowsTrait< DMatTransposer<MT,SO>, CRAs... >
+{
+   using Type = RowsTrait_< ResultType_< DMatTransposer<MT,SO> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
