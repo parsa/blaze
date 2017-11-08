@@ -59,6 +59,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -3083,6 +3084,31 @@ struct SubvectorTrait< CompressedVector<T,TF>, I, N >
 
 template< typename T, bool TF >
 struct SubvectorTrait< CompressedVector<T,TF> >
+{
+   using Type = CompressedVector<T,TF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ELEMENTSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool TF, size_t... CEAs >
+struct ElementsTrait< CompressedVector<T,TF>, CEAs... >
+{
+   using Type = StaticVector<T,sizeof...(CEAs),TF>;
+};
+
+template< typename T, bool TF >
+struct ElementsTrait< CompressedVector<T,TF> >
 {
    using Type = CompressedVector<T,TF>;
 };
