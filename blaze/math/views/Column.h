@@ -57,6 +57,7 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/ColumnTrait.h>
+#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1542,6 +1543,25 @@ template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CSAs
 struct SubvectorTrait< Column<MT,SO,DF,SF,CCAs...>, CSAs... >
 {
    using Type = SubvectorTrait_< ResultType_< Column<MT,SO,DF,SF,CCAs...> >, CSAs... >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ELEMENTSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CEAs >
+struct ElementsTrait< Column<MT,SO,DF,SF,CCAs...>, CEAs... >
+{
+   using Type = ElementsTrait_< ResultType_< Column<MT,SO,DF,SF,CCAs...> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

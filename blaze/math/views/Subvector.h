@@ -58,6 +58,8 @@
 #include <blaze/math/expressions/VecVecSubExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1932,6 +1934,44 @@ template< typename VT, bool TF, size_t... CSAs >
 struct IsAligned< Subvector<VT,aligned,TF,true,CSAs...> >
    : public TrueType
 {};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs1, size_t... CSAs2 >
+struct SubvectorTrait< Subvector<VT,AF,TF,DF,CSAs1...>, CSAs2... >
+{
+   using Type = SubvectorTrait_< ResultType_< Subvector<VT,AF,TF,DF,CSAs1...> >, CSAs2... >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ELEMENTSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs, size_t... CEAs >
+struct ElementsTrait< Subvector<VT,AF,TF,DF,CSAs...>, CEAs... >
+{
+   using Type = ElementsTrait_< ResultType_< Subvector<VT,AF,TF,DF,CSAs...> >, CEAs... >;
+};
 /*! \endcond */
 //*************************************************************************************************
 
