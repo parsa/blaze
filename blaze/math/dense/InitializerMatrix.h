@@ -240,7 +240,7 @@ class InitializerMatrix
    /*!\name Constructors */
    //@{
    explicit inline InitializerMatrix( initializer_list< initializer_list<Type> > list ) noexcept;
-   explicit inline InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n ) noexcept;
+   explicit inline InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -370,7 +370,7 @@ inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer
 // \exception std::invalid_argument Invalid initializer list dimension.
 */
 template< typename Type >  // Data type of the matrix
-inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n ) noexcept
+inline InitializerMatrix<Type>::InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n )
    : m_   ( list.size() )  // The current number of rows of the matrix
    , n_   ( n    )         // The current number of columns of the matrix
    , list_( list )         // The initializer list represented by the matrix
