@@ -232,7 +232,7 @@ class InitializerVector
    /*!\name Constructors */
    //@{
    explicit inline InitializerVector( initializer_list<Type> list ) noexcept;
-   explicit inline InitializerVector( initializer_list<Type> list, size_t n ) noexcept;
+   explicit inline InitializerVector( initializer_list<Type> list, size_t n );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -356,7 +356,7 @@ inline InitializerVector<Type,TF>::InitializerVector( initializer_list<Type> lis
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline InitializerVector<Type,TF>::InitializerVector( initializer_list<Type> list, size_t n ) noexcept
+inline InitializerVector<Type,TF>::InitializerVector( initializer_list<Type> list, size_t n )
    : size_( n    )  // The current size/dimension of the vector
    , list_( list )  // The initializer list represented by the vector
 {
