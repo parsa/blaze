@@ -428,8 +428,8 @@ inline void lu( const UniUpperMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
 // \param mat The target uniupper matrix.
 // \param i The row index of the element to be set.
 // \param j The column index of the element to be set.
-// \param value The value of the element to be set.
-// \return \a true in case the set operation would be successful, \a false if not.
+// \param value The value to be set to the element.
+// \return \a true in case the operation would be successful, \a false if not.
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -453,6 +453,131 @@ inline bool trySet( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
       return isOne( value );
    else
       return isDefault( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a single element of an uniupper matrix.
+// \ingroup matrix
+//
+// \param mat The target uniupper matrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The value to be added to the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+inline bool tryAdd( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+
+   UNUSED_PARAMETER( mat );
+
+   if( i < j )
+      return true;
+   else
+      return isDefault( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a single element of an uniupper matrix.
+// \ingroup matrix
+//
+// \param mat The target uniupper matrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The value to be subtracted from the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+inline bool trySub( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
+{
+   return tryAdd( mat, i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a single element of an uniupper matrix.
+// \ingroup matrix
+//
+// \param mat The target uniupper matrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The factor for the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+inline bool tryMult( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+
+   UNUSED_PARAMETER( mat );
+
+   return ( i != j || isOne( value ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a single element of an uniupper matrix.
+// \ingroup matrix
+//
+// \param mat The target uniupper matrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The divisor for the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+inline bool tryDiv( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
+{
+   return tryMult( mat, i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
