@@ -1424,7 +1424,7 @@ inline bool isDefault( const Subvector<VT,AF,TF,false,CSAs...>& sv )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the invariants of the given subvector vector are intact.
+/*!\brief Returns whether the invariants of the given subvector are intact.
 // \ingroup subvector
 //
 // \param sv The subvector to be tested.
@@ -1456,7 +1456,7 @@ inline bool isIntact( const Subvector<VT,AF,TF,DF,CSAs...>& sv ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given vector and subvector represent the same observable state.
+/*!\brief Returns whether the given subvector and vector represent the same observable state.
 // \ingroup subvector
 //
 // \param a The subvector to be tested for its state.
@@ -1500,7 +1500,7 @@ template< typename VT       // Type of the vector
         , size_t... CSAs >  // Compile time subvector arguments
 inline bool isSame( const Vector<VT,TF>& a, const Subvector<VT,AF,TF,DF,CSAs...>& b ) noexcept
 {
-   return ( isSame( ~a, b.operand() ) && ( (~a).size() == b.size() ) );
+   return isSame( b, a );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1547,8 +1547,8 @@ inline bool isSame( const Subvector<VT1,AF1,TF1,DF1,CSAs1...>& a,
 //
 // \param sv The target subvector.
 // \param index The index of the element to be set.
-// \param value The value of the element to be set.
-// \return \a true in case the set operation would be successful, \a false if not.
+// \param value The value to be set to the element.
+// \return \a true in case the operation would be successful, \a false if not.
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -1566,6 +1566,130 @@ inline bool trySet( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, cons
    BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
 
    return trySet( sv.operand(), sv.offset()+index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a single element of a subvector.
+// \ingroup subvector
+//
+// \param sv The target subvector.
+// \param index The index of the element to be modified.
+// \param value The value to be added to the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename ET >     // Type of the element
+inline bool tryAdd( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+
+   return tryAdd( sv.operand(), sv.offset()+index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a single element of a subvector.
+// \ingroup subvector
+//
+// \param sv The target subvector.
+// \param index The index of the element to be modified.
+// \param value The value to be subtracting from the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename ET >     // Type of the element
+inline bool trySub( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+
+   return trySub( sv.operand(), sv.offset()+index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a single element of a subvector.
+// \ingroup subvector
+//
+// \param sv The target subvector.
+// \param index The index of the element to be modified.
+// \param value The factor for the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename ET >     // Type of the element
+inline bool tryMult( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+
+   return tryMult( sv.operand(), sv.offset()+index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a single element of a subvector.
+// \ingroup subvector
+//
+// \param sv The target subvector.
+// \param index The index of the element to be modified.
+// \param value The divisor for the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename ET >     // Type of the element
+inline bool tryDiv( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+
+   return tryDiv( sv.operand(), sv.offset()+index, value );
 }
 /*! \endcond */
 //*************************************************************************************************
