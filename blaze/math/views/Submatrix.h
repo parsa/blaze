@@ -2644,8 +2644,8 @@ inline DisableIf_< HasMutableDataAccess<MT> > invert( Submatrix<MT,AF,SO,true,CS
 // \param sm The target submatrix.
 // \param i The row index of the element to be set.
 // \param j The column index of the element to be set.
-// \param value The value of the element to be set.
-// \return \a true in case the set operation would be successful, \a false if not.
+// \param value The value to be set to the element.
+// \return \a true in case the operation would be successful, \a false if not.
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -2664,6 +2664,138 @@ inline bool trySet( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
    BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
 
    return trySet( sm.operand(), sm.row()+i, sm.column()+j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a single element of a submatrix.
+// \ingroup matrix
+//
+// \param sm The target submatrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The value to be added to the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename ET >     // Type of the element
+inline bool tryAdd( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+
+   return tryAdd( sm.operand(), sm.row()+i, sm.column()+j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a single element of a submatrix.
+// \ingroup matrix
+//
+// \param sm The target submatrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The value to be subtracted from the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename ET >     // Type of the element
+inline bool trySub( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+
+   return trySub( sm.operand(), sm.row()+i, sm.column()+j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a single element of a submatrix.
+// \ingroup matrix
+//
+// \param sm The target submatrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The factor for the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename ET >     // Type of the element
+inline bool tryMult( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+
+   return tryMult( sm.operand(), sm.row()+i, sm.column()+j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a single element of a submatrix.
+// \ingroup matrix
+//
+// \param sm The target submatrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The divisor for the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename ET >     // Type of the element
+inline bool tryDiv( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+
+   return tryDiv( sm.operand(), sm.row()+i, sm.column()+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
