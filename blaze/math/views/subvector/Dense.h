@@ -149,7 +149,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //**********************************************************************************************
 
    //**SubvectorIterator class definition**********************************************************
-   /*!\brief Iterator over the elements of the sparse subvector.
+   /*!\brief Iterator over the elements of the dense subvector.
    */
    template< typename IteratorType >  // Type of the dense vector iterator
    class SubvectorIterator
@@ -605,7 +605,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    template< typename VT2 > inline Subvector& operator+=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator-=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator*=( const Vector<VT2,TF>& rhs );
-   template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>&  rhs );
+   template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator%=( const Vector<VT2,TF>& rhs );
 
    template< typename Other >
@@ -742,7 +742,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    template< typename VT2 > inline void addAssign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedSubAssign<VT2> > subAssign ( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_< VectorizedSubAssign<VT2> > subAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
    inline EnableIf_< VectorizedSubAssign<VT2> > subAssign( const DenseVector <VT2,TF>& rhs );
@@ -875,7 +875,7 @@ inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Reference
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Subscript operator for the direct access to the subvector elements.
 //
-// \param index Access index. The index must be smaller than the number of subvector columns.
+// \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
 //
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
@@ -898,7 +898,7 @@ inline typename Subvector<VT,unaligned,TF,true,CSAs...>::ConstReference
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the subvector elements.
 //
-// \param index Access index. The index must be smaller than the number of subvector columns.
+// \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid subvector access index.
 //
@@ -924,7 +924,7 @@ inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Reference
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Checked access to the subvector elements.
 //
-// \param index Access index. The index must be smaller than the number of subvector columns.
+// \param index Access index. The index must be smaller than the number of subvector elements.
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid subvector access index.
 //
@@ -1146,6 +1146,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 /*!\brief List assignment to all subvector elements.
 //
 // \param list The initializer list.
+// \return Reference to the assigned subvector.
 // \exception std::invalid_argument Invalid assignment to subvector.
 // \exception std::invalid_argument Invalid assignment to restricted vector.
 //

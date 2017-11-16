@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_DENSESUBVECTOR_H_
-#define _BLAZE_MATH_DENSESUBVECTOR_H_
+#ifndef _BLAZE_MATH_SUBVECTOR_H_
+#define _BLAZE_MATH_SUBVECTOR_H_
 
 
 //*************************************************************************************************
