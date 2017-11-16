@@ -72,6 +72,7 @@
 #include <blaze/math/views/subvector/SubvectorData.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/AsConst.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
