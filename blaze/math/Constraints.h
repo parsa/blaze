@@ -64,6 +64,7 @@
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/DivExpr.h>
+#include <blaze/math/constraints/Elements.h>
 #include <blaze/math/constraints/EvalExpr.h>
 #include <blaze/math/constraints/Expression.h>
 #include <blaze/math/constraints/General.h>
