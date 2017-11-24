@@ -3155,6 +3155,31 @@ struct LowType< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
 
 //=================================================================================================
 //
+//  SUBVECTORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N1, bool TF, size_t I, size_t N2 >
+struct SubvectorTrait< HybridVector<T,N1,TF>, I, N2 >
+{
+   using Type = StaticVector<T,N2,TF>;
+};
+
+template< typename T, size_t N, bool TF >
+struct SubvectorTrait< HybridVector<T,N,TF> >
+{
+   using Type = HybridVector<T,N,TF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ELEMENTSTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
