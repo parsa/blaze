@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the unique pointer module of the Blaze test suite
+#  Makefile for the alignedallocator module of the Blaze test suite
 #
 #  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
