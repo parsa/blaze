@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Algorithms.h
-//  \brief Headerfile for generic algorithms
+//  \file blaze/util/algorithms/DestroyAt.h
+//  \brief Headerfile for the generic destroy_at algorithm
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,17 +32,34 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHMS_H_
-#define _BLAZE_UTIL_ALGORITHMS_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_DESTROYAT_H_
+#define _BLAZE_UTIL_ALGORITHMS_DESTROYAT_H_
 
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  DESTROY_AT ALGORITHM
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\brief Destroys the object at the given address.
+// \ingroup algorithms
+//
+// \param p The address of the object to be destroyed.
+// \return void
+//
+// This function explicitly calls the destructor of the object at the given address.
+*/
+template< typename T >
+void destroy_at( T* p ) noexcept
+{
+   p->~T();
+}
 //*************************************************************************************************
 
-#include <blaze/util/algorithms/DestroyAt.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
-#include <blaze/util/algorithms/Transfer.h>
+} // namespace blaze
 
 #endif
