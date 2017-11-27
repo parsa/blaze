@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Algorithms.h
-//  \brief Headerfile for generic algorithms
+//  \file blaze/util/algorithms/UninitializedDefaultConstruct.h
+//  \brief Headerfile for the generic uninitialized_default_construct algorithm
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,58 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHMS_H_
-#define _BLAZE_UTIL_ALGORITHMS_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDDEFAULTCONSTRUCT_H_
+#define _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDDEFAULTCONSTRUCT_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/algorithms/Destroy.h>
-#include <blaze/util/algorithms/DestroyAt.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
-#include <blaze/util/algorithms/Transfer.h>
-#include <blaze/util/algorithms/UninitializedDefaultConstruct.h>
+#include <iterator>
+#include <memory>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  UNINITIALIZED_DEFAULT_CONSTRUCT ALGORITHM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Default constructs elements in the given range.
+// \ingroup algorithms
+//
+// \param first Iterator to the first element of the range.
+// \param last Iterator to the element one past the last element of the range.
+// \return void
+//
+// This function default constructs elements in the given range \f$ [first,last) \f$. The range
+// is assumed to be uninitialized.
+*/
+template< class ForwardIt >
+void uninitialized_default_construct( ForwardIt first, ForwardIt last )
+{
+   using Value = typename std::iterator_traits<ForwardIt>::value_type;
+
+   ForwardIt current( first );
+
+   try {
+      for( ; current!=last; ++current ) {
+         ::new ( std::addressof( *current ) ) Value;
+      }
+   }
+   catch (...) {
+      for( ; first!=current; ++first ) {
+         first->~Value();
+      }
+      throw;
+   }
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
