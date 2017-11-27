@@ -381,7 +381,7 @@ inline constexpr typename AlignedArray<Type,N,Alignment>::ConstPointer
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the aligned array.
 //
-// \return Iterator to the first element of the aigned array.
+// \return Iterator to the first element of the aligned array.
 */
 template< typename Type       // Data type of the elements
         , size_t N            // Number of elements
@@ -397,7 +397,7 @@ inline typename AlignedArray<Type,N,Alignment>::Iterator
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the aligned array.
 //
-// \return Iterator to the first element of the aigned array.
+// \return Iterator to the first element of the aligned array.
 */
 template< typename Type       // Data type of the elements
         , size_t N            // Number of elements
@@ -413,7 +413,7 @@ inline constexpr typename AlignedArray<Type,N,Alignment>::ConstIterator
 //*************************************************************************************************
 /*!\brief Returns an iterator to the first element of the aligned array.
 //
-// \return Iterator to the first element of the aigned array.
+// \return Iterator to the first element of the aligned array.
 */
 template< typename Type       // Data type of the elements
         , size_t N            // Number of elements
