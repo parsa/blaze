@@ -1,6 +1,7 @@
+#!/bin/bash
 #==================================================================================================
 #
-#  Makefile for the utiltest module of the Blaze test suite
+#  Run script for the smallvector module of the Blaze test suite
 #
 #  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 #
@@ -32,68 +33,8 @@
 #==================================================================================================
 
 
-# Build rules
-default: all
+SMALLVECTOR_PATH=$( dirname "${BASH_SOURCE[0]}" )
 
-all: alignedallocator memory numericcast smallvector typetraits valuetraits
+echo " Running SmallVector tests..."
 
-essential: all
-
-single: all
-
-noop: all
-
-
-# Internal rules
-alignedallocator:
-	@echo
-	@echo "Building the aligned allocator tests..."
-	@$(MAKE) --no-print-directory -C ./alignedallocator $(MAKECMDGOALS)
-
-memory:
-	@echo
-	@echo "Building the memory tests..."
-	@$(MAKE) --no-print-directory -C ./memory $(MAKECMDGOALS)
-
-numericcast:
-	@echo
-	@echo "Building the numeric cast tests..."
-	@$(MAKE) --no-print-directory -C ./numericcast $(MAKECMDGOALS)
-
-smallvector:
-	@echo
-	@echo "Building the small vector tests..."
-	@$(MAKE) --no-print-directory -C ./smallvector $(MAKECMDGOALS)
-
-typetraits:
-	@echo
-	@echo "Building the type traits tests..."
-	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
-
-valuetraits:
-	@echo
-	@echo "Building the value traits tests..."
-	@$(MAKE) --no-print-directory -C ./valuetraits $(MAKECMDGOALS)
-
-
-# Cleanup
-reset:
-	@$(MAKE) --no-print-directory -C ./alignedallocator reset
-	@$(MAKE) --no-print-directory -C ./memory reset
-	@$(MAKE) --no-print-directory -C ./numericcast reset
-	@$(MAKE) --no-print-directory -C ./smallvector reset
-	@$(MAKE) --no-print-directory -C ./typetraits reset
-	@$(MAKE) --no-print-directory -C ./valuetraits reset
-
-clean:
-	@$(MAKE) --no-print-directory -C ./alignedallocator clean
-	@$(MAKE) --no-print-directory -C ./memory clean
-	@$(MAKE) --no-print-directory -C ./numericcast clean
-	@$(MAKE) --no-print-directory -C ./smallvector clean
-	@$(MAKE) --no-print-directory -C ./typetraits clean
-	@$(MAKE) --no-print-directory -C ./valuetraits clean
-
-
-# Setting the independent commands
-.PHONY: default all essential single reset clean \
-        alignedallocator memory numericcast smallvector typetraits valuetraits
+EXE=$SMALLVECTOR_PATH/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

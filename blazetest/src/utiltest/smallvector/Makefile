@@ -1,8 +1,8 @@
 #==================================================================================================
 #
-#  Makefile for the utiltest module of the Blaze test suite
+#  Makefile for the smallvector module of the Blaze test suite
 #
-#  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -32,68 +32,53 @@
 #==================================================================================================
 
 
-# Build rules
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),reset)
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../Makeconfig
+endif
+endif
+
+
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
+
+
+# General rules
 default: all
-
-all: alignedallocator memory numericcast smallvector typetraits valuetraits
-
-essential: all
-
-single: all
-
-noop: all
+all: $(BIN)
+essential: $(BIN)
+single: $(BIN)
+noop: $(BIN)
 
 
-# Internal rules
-alignedallocator:
-	@echo
-	@echo "Building the aligned allocator tests..."
-	@$(MAKE) --no-print-directory -C ./alignedallocator $(MAKECMDGOALS)
-
-memory:
-	@echo
-	@echo "Building the memory tests..."
-	@$(MAKE) --no-print-directory -C ./memory $(MAKECMDGOALS)
-
-numericcast:
-	@echo
-	@echo "Building the numeric cast tests..."
-	@$(MAKE) --no-print-directory -C ./numericcast $(MAKECMDGOALS)
-
-smallvector:
-	@echo
-	@echo "Building the small vector tests..."
-	@$(MAKE) --no-print-directory -C ./smallvector $(MAKECMDGOALS)
-
-typetraits:
-	@echo
-	@echo "Building the type traits tests..."
-	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
-
-valuetraits:
-	@echo
-	@echo "Building the value traits tests..."
-	@$(MAKE) --no-print-directory -C ./valuetraits $(MAKECMDGOALS)
+# Build rules
+ClassTest: ClassTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
 reset:
-	@$(MAKE) --no-print-directory -C ./alignedallocator reset
-	@$(MAKE) --no-print-directory -C ./memory reset
-	@$(MAKE) --no-print-directory -C ./numericcast reset
-	@$(MAKE) --no-print-directory -C ./smallvector reset
-	@$(MAKE) --no-print-directory -C ./typetraits reset
-	@$(MAKE) --no-print-directory -C ./valuetraits reset
-
+	@$(RM) $(OBJ) $(BIN)
 clean:
-	@$(MAKE) --no-print-directory -C ./alignedallocator clean
-	@$(MAKE) --no-print-directory -C ./memory clean
-	@$(MAKE) --no-print-directory -C ./numericcast clean
-	@$(MAKE) --no-print-directory -C ./smallvector clean
-	@$(MAKE) --no-print-directory -C ./typetraits clean
-	@$(MAKE) --no-print-directory -C ./valuetraits clean
+	@$(RM) $(OBJ) $(BIN) $(DEP)
+
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),reset)
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
 
 
 # Setting the independent commands
-.PHONY: default all essential single reset clean \
-        alignedallocator memory numericcast smallvector typetraits valuetraits
+.PHONY: default all essential single noop reset clean
