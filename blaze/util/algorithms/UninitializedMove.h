@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Algorithms.h
-//  \brief Headerfile for generic algorithms
+//  \file blaze/util/algorithms/UninitializedMove.h
+//  \brief Headerfile for the generic uninitialized_move algorithm
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,21 +32,62 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHMS_H_
-#define _BLAZE_UTIL_ALGORITHMS_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDMOVE_H_
+#define _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDMOVE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/algorithms/Destroy.h>
-#include <blaze/util/algorithms/DestroyAt.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
-#include <blaze/util/algorithms/Transfer.h>
-#include <blaze/util/algorithms/UninitializedDefaultConstruct.h>
-#include <blaze/util/algorithms/UninitializedMove.h>
-#include <blaze/util/algorithms/UninitializedValueConstruct.h>
+#include <iterator>
+#include <memory>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  UNINITIALIZED_MOVE ALGORITHM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Move the elements from the given source range to the uninitialized destination range.
+// \ingroup algorithms
+//
+// \param first Iterator to the first element of the source range.
+// \param last Iterator to the element one past the last element of the source range.
+// \param dest Iterator to the first element of the destination range.
+// \return Output iterator to the element one past the last copied element.
+//
+// This function moves the elements from the source range \f$ [first,last) \f$ to the specified
+// destination range. The destination range is assumed to be uninitialized, i.e. the elements
+// are move constructed.
+*/
+template< typename InputIt
+        , typename ForwardIt >
+ForwardIt uninitialized_move( InputIt first, InputIt last, ForwardIt dest )
+{
+   using Value = typename std::iterator_traits<ForwardIt>::value_type;
+
+   ForwardIt current( dest );
+
+   try {
+      for( ; first!=last; ++first, ++current ) {
+         ::new ( std::addressof( *current ) ) Value( std::move( *first ) );
+      }
+      return current;
+   }
+   catch( ... ) {
+      for( ; dest != current; ++dest ) {
+         dest->~Value();
+      }
+      throw;
+   }
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
