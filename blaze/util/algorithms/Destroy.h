@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Algorithms.h
-//  \brief Headerfile for generic algorithms
+//  \file blaze/util/algorithms/Destroy.h
+//  \brief Headerfile for the generic destroy algorithm
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,18 +32,45 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHMS_H_
-#define _BLAZE_UTIL_ALGORITHMS_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_DESTROY_H_
+#define _BLAZE_UTIL_ALGORITHMS_DESTROY_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/algorithms/Destroy.h>
+#include <memory>
 #include <blaze/util/algorithms/DestroyAt.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
-#include <blaze/util/algorithms/Transfer.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  DESTROY_AT ALGORITHM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Destroys the given range of objects .
+// \ingroup algorithms
+//
+// \param first Iterator to the first element to be destroyed.
+// \param last Iterator to the element one past the last element to be destroyed.
+// \return void
+//
+// This function explicitly calls the destructor of all object in the given range.
+*/
+template< typename ForwardIt >
+void destroy( ForwardIt first, ForwardIt last )
+{
+   for( ; first!=last; ++first ) {
+      destroy_at( std::addressof( *first ) );
+   }
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
