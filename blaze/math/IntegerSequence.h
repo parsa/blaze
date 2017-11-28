@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -106,11 +105,28 @@ using std::make_index_sequence;
 */
 template< size_t Offset   // The offset for the shift operation
         , size_t... Is >  // The sequence of indices
-constexpr decltype(auto) shift( std::index_sequence<Is...> sequence )
+constexpr decltype(auto) shift( std::index_sequence<Is...> /*sequence*/ )
 {
-   UNUSED_PARAMETER( sequence );
-
    return std::index_sequence< ( Is + Offset )... >();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creates a subsequence from the given index sequence.
+// \ingroup math
+//
+// \param sequence The given index sequence
+// \return The resulting subsequence.
+*/
+template< size_t... Is1    // The indices to be selected
+        , size_t... Is2 >  // The sequence of indices
+constexpr decltype(auto) subsequence( std::index_sequence<Is2...> /*sequence*/ )
+{
+   constexpr size_t indices[] = { Is2... };
+   return std::index_sequence< indices[Is1]... >();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -140,6 +156,27 @@ constexpr decltype(auto) shift( std::index_sequence<Is...> sequence )
 template< size_t Offset  // The offset of the index sequence
         , size_t N >     // The total number of indices in the index sequence
 using make_shifted_index_sequence = decltype( shift<Offset>( make_index_sequence<N>() ) );
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the setup of shifted index subsequences.
+// \ingroup math
+//
+// The make_shifted_index_subsequence alias template provides a convenient way to create a
+// subsequence of an index sequences with specific initial index and a specific number of indices.
+// The following code example demonstrates the use of make_shifted_index_subsequence:
+
+   \code
+   // Creating the subsequence <3,6,8> from the index sequence <2,3,4,5,6,7,8>
+   using Type = make_shifted_index_subsequence<2UL,6UL,1UL,4UL,6UL>;
+   \endcode
+*/
+template< size_t Offset    // The offset of the index sequence
+        , size_t N         // The total number of indices in the index sequence
+        , size_t ... Is >  // The indices to be selected
+using make_shifted_index_subsequence =
+   decltype( subsequence<Is...>( shift<Offset>( make_index_sequence<N>() ) ) );
 //*************************************************************************************************
 
 } // namespace blaze
