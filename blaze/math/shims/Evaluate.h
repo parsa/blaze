@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Shims.h
-//  \brief Header file for the mathematical shims
+//  \file blaze/math/shims/Evaluate.h
+//  \brief Header file for the evaluate shim
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,61 +32,53 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_H_
-#define _BLAZE_MATH_SHIMS_H_
+#ifndef _BLAZE_MATH_SHIMS_EVALUATE_H_
+#define _BLAZE_MATH_SHIMS_EVALUATE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Abs.h>
-#include <blaze/math/shims/Acos.h>
-#include <blaze/math/shims/Acosh.h>
-#include <blaze/math/shims/Asin.h>
-#include <blaze/math/shims/Asinh.h>
-#include <blaze/math/shims/Atan.h>
-#include <blaze/math/shims/Atan2.h>
-#include <blaze/math/shims/Atanh.h>
-#include <blaze/math/shims/Cbrt.h>
-#include <blaze/math/shims/Ceil.h>
-#include <blaze/math/shims/Clamp.h>
-#include <blaze/math/shims/Clear.h>
-#include <blaze/math/shims/Conjugate.h>
-#include <blaze/math/shims/Cos.h>
-#include <blaze/math/shims/Cosh.h>
-#include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/Erf.h>
-#include <blaze/math/shims/Erfc.h>
-#include <blaze/math/shims/Eval.h>
-#include <blaze/math/shims/Evaluate.h>
-#include <blaze/math/shims/Exp.h>
-#include <blaze/math/shims/Exp2.h>
-#include <blaze/math/shims/Floor.h>
-#include <blaze/math/shims/Imaginary.h>
-#include <blaze/math/shims/InvCbrt.h>
-#include <blaze/math/shims/Invert.h>
-#include <blaze/math/shims/InvSqrt.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/shims/IsDivisor.h>
-#include <blaze/math/shims/IsNaN.h>
-#include <blaze/math/shims/IsOne.h>
-#include <blaze/math/shims/IsReal.h>
-#include <blaze/math/shims/IsZero.h>
-#include <blaze/math/shims/Log.h>
-#include <blaze/math/shims/Log2.h>
-#include <blaze/math/shims/Log10.h>
-#include <blaze/math/shims/Pow.h>
-#include <blaze/math/shims/Real.h>
-#include <blaze/math/shims/Reset.h>
-#include <blaze/math/shims/Round.h>
-#include <blaze/math/shims/Serial.h>
-#include <blaze/math/shims/Sin.h>
-#include <blaze/math/shims/Sinh.h>
-#include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/shims/Square.h>
-#include <blaze/math/shims/Tan.h>
-#include <blaze/math/shims/Tanh.h>
-#include <blaze/math/shims/Trunc.h>
+#include <blaze/system/Inline.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/Or.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  EVALUATE SHIM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Formal evaluation of the given argument.
+// \ingroup math_shims
+//
+// \param a The value/object to be evaluated.
+// \return The evaluated value/object.
+//
+// This function forces an evaluation of the given matrix expression and enables an automatic
+// deduction of the correct result type of an operation.
+
+
+// The \a evaluate shim represents an abstract interface for enforcing the evaluation of a given
+// value/object of any data type and deducing the correct result type of an operation. For data
+// types that don't require an evaluation, as for instance built-in or complex data types, the
+// default behavior is not changed.
+*/
+template< typename T >
+BLAZE_ALWAYS_INLINE constexpr EnableIf_< Or< IsBuiltin<T>, IsComplex<T> >, T >
+   evaluate( const T& a ) noexcept
+{
+   return a;
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
