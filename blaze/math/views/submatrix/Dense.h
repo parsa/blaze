@@ -669,14 +669,16 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    using DataType::rows;
    using DataType::columns;
 
-   inline Operand operand() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  capacity( size_t i ) const noexcept;
-   inline size_t  nonZeros() const;
-   inline size_t  nonZeros( size_t i ) const;
-   inline void    reset();
-   inline void    reset( size_t i );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -1851,8 +1853,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true,CSAs...> >
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
-inline typename Submatrix<MT,unaligned,false,true,CSAs...>::Operand
-   Submatrix<MT,unaligned,false,true,CSAs...>::operand() const noexcept
+inline MT& Submatrix<MT,unaligned,false,true,CSAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline const MT& Submatrix<MT,unaligned,false,true,CSAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -3980,14 +3997,16 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    using DataType::rows;
    using DataType::columns;
 
-   inline Operand operand() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  capacity( size_t i ) const noexcept;
-   inline size_t  nonZeros() const;
-   inline size_t  nonZeros( size_t i ) const;
-   inline void    reset();
-   inline void    reset( size_t i );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -5141,8 +5160,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true,CSAs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
-inline typename Submatrix<MT,unaligned,true,true,CSAs...>::Operand
-   Submatrix<MT,unaligned,true,true,CSAs...>::operand() const noexcept
+inline MT& Submatrix<MT,unaligned,true,true,CSAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline const MT& Submatrix<MT,unaligned,true,true,CSAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -6846,14 +6880,16 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    using DataType::rows;
    using DataType::columns;
 
-   inline Operand operand() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  capacity( size_t i ) const noexcept;
-   inline size_t  nonZeros() const;
-   inline size_t  nonZeros( size_t i ) const;
-   inline void    reset();
-   inline void    reset( size_t i );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -8026,8 +8062,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true,CSAs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
-inline typename Submatrix<MT,aligned,false,true,CSAs...>::Operand
-   Submatrix<MT,aligned,false,true,CSAs...>::operand() const noexcept
+inline MT& Submatrix<MT,aligned,false,true,CSAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline const MT& Submatrix<MT,aligned,false,true,CSAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -9745,14 +9796,16 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    using DataType::rows;
    using DataType::columns;
 
-   inline Operand operand() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  capacity( size_t i ) const noexcept;
-   inline size_t  nonZeros() const;
-   inline size_t  nonZeros( size_t i ) const;
-   inline void    reset();
-   inline void    reset( size_t i );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t capacity( size_t i ) const noexcept;
+   inline size_t nonZeros() const;
+   inline size_t nonZeros( size_t i ) const;
+   inline void   reset();
+   inline void   reset( size_t i );
    //@}
    //**********************************************************************************************
 
@@ -10905,8 +10958,23 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true,CSAs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
-inline typename Submatrix<MT,aligned,true,true,CSAs...>::Operand
-   Submatrix<MT,aligned,true,true,CSAs...>::operand() const noexcept
+inline MT& Submatrix<MT,aligned,true,true,CSAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the submatrix.
+//
+// \return The matrix containing the submatrix.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline const MT& Submatrix<MT,aligned,true,true,CSAs...>::operand() const noexcept
 {
    return matrix_;
 }
