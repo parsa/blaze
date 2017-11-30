@@ -91,7 +91,6 @@
 #include <blaze/math/views/Subvector.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
-#include <blaze/util/AsConst.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -1445,7 +1444,7 @@ template< size_t I1           // Row index
         , typename... RRAs >  // Optional row arguments
 inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 {
-   return subvector( row<I1+I2>( as_const( sm.operand() ), args... ), J, N, unchecked );
+   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1534,7 +1533,7 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... arg
    const RowData<CRAs...> rd( args... );
    const size_t index( rd.row() + sm.row() );
 
-   return subvector( row( as_const( sm.operand() ), index, args... ), sm.column(), sm.columns(), unchecked );
+   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1623,7 +1622,7 @@ template< size_t I1           // Column index
         , typename... RCAs >  // Optional column arguments
 inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
 {
-   return subvector( column<I1+J>( as_const( sm.operand() ), args... ), I2, M, unchecked );
+   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1712,7 +1711,7 @@ inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... 
    const ColumnData<CCAs...> cd( args... );
    const size_t index( cd.column() + sm.column() );
 
-   return subvector( column( as_const( sm.operand() ), index, args... ), sm.row(), sm.rows(), unchecked );
+   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1819,7 +1818,7 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm, 
    BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid submatrix specification" );
    BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid submatrix specification" );
 
-   return submatrix<AF1,I1+I2,J1+J2,M1,N1>( as_const( sm.operand() ), args... );
+   return submatrix<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1945,7 +1944,7 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm, RSAs... args
       BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF1>( as_const( sm.operand() ), sm.row() + I, sm.column() + J, M, N, args... );
+   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2082,7 +2081,7 @@ inline decltype(auto)
       BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF1>( as_const( sm.operand() ), sm.row() + row, sm.column() + column, m, n, args... );
+   return submatrix<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
