@@ -214,12 +214,14 @@ class Row<MT,true,false,SF,CRAs...>
    //@{
    using DataType::row;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
-   inline void    reserve( size_t n );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -1313,8 +1315,24 @@ inline EnableIf_<IsNumeric<Other>, Row<MT,true,false,SF,CRAs...> >&
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
         , size_t... CRAs >  // Compile time row arguments
-inline typename Row<MT,true,false,SF,CRAs...>::Operand
-   Row<MT,true,false,SF,CRAs...>::operand() const noexcept
+inline MT& Row<MT,true,false,SF,CRAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline const MT& Row<MT,true,false,SF,CRAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -2363,7 +2381,7 @@ class Row<MT,false,false,false,CRAs...>
       // \param matrix The matrix containing the row.
       // \param row The row index.
       // \param column The column index.
-      // \param pos Initial position of the iterator
+      // \param pos Initial position of the iterator.
       */
       inline RowIterator( MatrixType& matrix, size_t row, size_t column, IteratorType pos )
          : matrix_( &matrix )  // The sparse matrix containing the row.
@@ -2560,12 +2578,14 @@ class Row<MT,false,false,false,CRAs...>
    //@{
    using DataType::row;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
-   inline void    reserve( size_t n );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -3416,13 +3436,28 @@ inline EnableIf_<IsNumeric<Other>, Row<MT,false,false,false,CRAs...> >&
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
-inline typename Row<MT,false,false,false,CRAs...>::Operand
-   Row<MT,false,false,false,CRAs...>::operand() const noexcept
+inline MT& Row<MT,false,false,false,CRAs...>::operand() noexcept
 {
    return matrix_;
 }
 /*! \endcond */
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline const MT& Row<MT,false,false,false,CRAs...>::operand() const noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//************************************************************************************************
 
 
 //*************************************************************************************************
@@ -4301,12 +4336,14 @@ class Row<MT,false,false,true,CRAs...>
    //@{
    using DataType::row;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
-   inline void    reserve( size_t n );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -5376,8 +5413,23 @@ inline EnableIf_<IsNumeric<Other>, Row<MT,false,false,true,CRAs...> >&
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
-inline typename Row<MT,false,false,true,CRAs...>::Operand
-   Row<MT,false,false,true,CRAs...>::operand() const noexcept
+inline MT& Row<MT,false,false,true,CRAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline const MT& Row<MT,false,false,true,CRAs...>::operand() const noexcept
 {
    return matrix_;
 }

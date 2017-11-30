@@ -232,7 +232,9 @@ class Row<MT,true,true,SF,CRAs...>
    //@{
    using DataType::row;
 
-   inline Operand operand() const noexcept;
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
    inline size_t  size() const noexcept;
    inline size_t  spacing() const noexcept;
    inline size_t  capacity() const noexcept;
@@ -1241,8 +1243,24 @@ inline EnableIf_< IsNumeric<Other>, Row<MT,true,true,SF,CRAs...> >&
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CRAs >  // Compile time row arguments
-inline typename Row<MT,true,true,SF,CRAs...>::Operand
-   Row<MT,true,true,SF,CRAs...>::operand() const noexcept
+inline MT& Row<MT,true,true,SF,CRAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the dense matrix
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline const MT& Row<MT,true,true,SF,CRAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -2700,7 +2718,9 @@ class Row<MT,false,true,false,CRAs...>
    //@{
    using DataType::row;
 
-   inline Operand operand() const noexcept;
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
    inline size_t  size() const noexcept;
    inline size_t  spacing() const noexcept;
    inline size_t  capacity() const noexcept;
@@ -3588,8 +3608,23 @@ inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,false,CRAs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
-inline typename Row<MT,false,true,false,CRAs...>::Operand
-   Row<MT,false,true,false,CRAs...>::operand() const noexcept
+inline MT& Row<MT,false,true,false,CRAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline const MT& Row<MT,false,true,false,CRAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -4302,7 +4337,9 @@ class Row<MT,false,true,true,CRAs...>
    //@{
    using DataType::row;
 
-   inline Operand operand() const noexcept;
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
    inline size_t  size() const noexcept;
    inline size_t  spacing() const noexcept;
    inline size_t  capacity() const noexcept;
@@ -5283,8 +5320,23 @@ inline EnableIf_< IsNumeric<Other>, Row<MT,false,true,true,CRAs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
-inline typename Row<MT,false,true,true,CRAs...>::Operand
-   Row<MT,false,true,true,CRAs...>::operand() const noexcept
+inline MT& Row<MT,false,true,true,CRAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the row.
+//
+// \return The matrix containing the row.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CRAs >  // Compile time row arguments
+inline const MT& Row<MT,false,true,true,CRAs...>::operand() const noexcept
 {
    return matrix_;
 }
