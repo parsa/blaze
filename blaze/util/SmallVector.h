@@ -194,14 +194,12 @@ class SmallVector
    //**********************************************************************************************
    //! Adjustment of the size of the static storage.
    enum : size_t { NN = N > 0UL ? N*sizeof(T) : 1UL };
-
-   enum : size_t { Alignment = AlignmentOf<T>::value };
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   alignas( Alignment ) byte_t v_[NN];  //!< The static storage.
+   alignas( AlignmentOf<T>::value ) byte_t v_[NN];  //!< The static storage.
 
    T* begin_;  //!< Pointer to the beginning of the currently used storage.
    T* end_;    //!< Pointer to the end of the currently used storage.
