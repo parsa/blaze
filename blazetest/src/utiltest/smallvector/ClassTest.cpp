@@ -1450,9 +1450,9 @@ void ClassTest::testIterator()
    {
       test_ = "Iterator/ConstIterator conversion";
 
-      ConstIterator it( std::begin( vec ) );
+      ConstIterator it( begin( vec ) );
 
-      if( it == std::end( vec ) || *it != 1 ) {
+      if( it == end( vec ) || *it != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed iterator conversion detected\n";
@@ -1464,7 +1464,7 @@ void ClassTest::testIterator()
    {
       test_ = "Iterator subtraction";
 
-      const size_t number( std::end( vec ) - std::begin( vec ) );
+      const size_t number( end( vec ) - begin( vec ) );
 
       if( number != 4UL ) {
          std::ostringstream oss;
@@ -1481,7 +1481,7 @@ void ClassTest::testIterator()
    {
       test_ = "ConstIterator subtraction";
 
-      const size_t number( std::cend( vec ) - std::cbegin( vec ) );
+      const size_t number( cend( vec ) - cbegin( vec ) );
 
       if( number != 4UL ) {
          std::ostringstream oss;
@@ -1498,8 +1498,8 @@ void ClassTest::testIterator()
    {
       test_ = "Read-only access via ConstIterator";
 
-      ConstIterator it ( std::cbegin( vec ) );
-      ConstIterator end( std::cend( vec ) );
+      ConstIterator it ( cbegin( vec ) );
+      ConstIterator end( cend( vec ) );
 
       if( it == end || *it != 1 ) {
          std::ostringstream oss;
@@ -1596,7 +1596,7 @@ void ClassTest::testIterator()
 
       int value = 6;
 
-      for( Iterator it=std::begin( vec ); it!=std::end( vec ); ++it ) {
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
          *it = value++;
       }
 
@@ -1617,7 +1617,7 @@ void ClassTest::testIterator()
 
       int value = 2;
 
-      for( Iterator it=std::begin( vec ); it!=std::end( vec ); ++it ) {
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
          *it += value++;
       }
 
@@ -1638,7 +1638,7 @@ void ClassTest::testIterator()
 
       int value = 2;
 
-      for( Iterator it=std::begin( vec ); it!=std::end( vec ); ++it ) {
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
          *it -= value++;
       }
 
@@ -1659,7 +1659,7 @@ void ClassTest::testIterator()
 
       int value = 1;
 
-      for( Iterator it=std::begin( vec ); it!=std::end( vec ); ++it ) {
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
          *it *= value++;
       }
 
@@ -1678,7 +1678,7 @@ void ClassTest::testIterator()
    {
       test_ = "Division assignment via Iterator";
 
-      for( Iterator it=std::begin( vec ); it!=std::end( vec ); ++it ) {
+      for( Iterator it=begin( vec ); it!=end( vec ); ++it ) {
          *it /= 2;
       }
 
