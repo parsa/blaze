@@ -1298,6 +1298,24 @@ template< typename T1, size_t N1, typename A1, typename T2, size_t N2, typename 
 inline bool operator!=( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N2,A2>& rhs );
 
 template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::Iterator begin( SmallVector<T,N,A>& sv );
+
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator begin( const SmallVector<T,N,A>& sv );
+
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator cbegin( const SmallVector<T,N,A>& sv );
+
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::Iterator end( SmallVector<T,N,A>& sv );
+
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator end( const SmallVector<T,N,A>& sv );
+
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator cend( const SmallVector<T,N,A>& sv );
+
+template< typename T, size_t N, typename A >
 inline void clear( SmallVector<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
@@ -1347,6 +1365,96 @@ template< typename T1    // Data type of the elements of the left-hand side vect
 inline bool operator!=( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N2,A2>& rhs )
 {
    return !( lhs == rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the given small vector.
+// \ingroup util
+//
+// \param sv The given small vector.
+// \return Iterator to the first element of the given small vector.
+*/
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::Iterator begin( SmallVector<T,N,A>& sv )
+{
+   return sv.begin();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the given small vector.
+// \ingroup util
+//
+// \param sv The given small vector.
+// \return Iterator to the first element of the given small vector.
+*/
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator begin( const SmallVector<T,N,A>& sv )
+{
+   return sv.begin();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator to the first element of the given small vector.
+// \ingroup util
+//
+// \param sv The given small vector.
+// \return Iterator to the first element of the given small vector.
+*/
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator cbegin( const SmallVector<T,N,A>& sv )
+{
+   return sv.begin();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the given small vector.
+// \ingroup util
+//
+// \param sv The given small vector.
+// \return Iterator just past the last element of the given small vector.
+*/
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::Iterator end( SmallVector<T,N,A>& sv )
+{
+   return sv.end();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the given small vector.
+// \ingroup util
+//
+// \param sv The given small vector.
+// \return Iterator just past the last element of the given small vector.
+*/
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator end( const SmallVector<T,N,A>& sv )
+{
+   return sv.end();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns an iterator just past the last element of the given small vector.
+// \ingroup util
+//
+// \param sv The given small vector.
+// \return Iterator just past the last element of the given small vector.
+*/
+template< typename T, size_t N, typename A >
+inline typename SmallVector<T,N,A>::ConstIterator cend( SmallVector<T,N,A>& sv )
+{
+   return sv.end();
 }
 //*************************************************************************************************
 
