@@ -622,11 +622,13 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    using DataType::offset;
    using DataType::size;
 
-   inline Operand operand() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
+   inline VT&       operand() noexcept;
+   inline const VT& operand() const noexcept;
+
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
    //@}
    //**********************************************************************************************
 
@@ -1615,8 +1617,24 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
-inline typename Subvector<VT,unaligned,TF,true,CSAs...>::Operand
-   Subvector<VT,unaligned,TF,true,CSAs...>::operand() const noexcept
+inline VT& Subvector<VT,unaligned,TF,true,CSAs...>::operand() noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline const VT& Subvector<VT,unaligned,TF,true,CSAs...>::operand() const noexcept
 {
    return vector_;
 }
@@ -2797,11 +2815,13 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    using DataType::offset;
    using DataType::size;
 
-   inline Operand operand() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
+   inline VT&       operand() noexcept;
+   inline const VT& operand() const noexcept;
+
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
    //@}
    //**********************************************************************************************
 
@@ -3779,8 +3799,24 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
 template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
-inline typename Subvector<VT,aligned,TF,true,CSAs...>::Operand
-   Subvector<VT,aligned,TF,true,CSAs...>::operand() const noexcept
+inline VT& Subvector<VT,aligned,TF,true,CSAs...>::operand() noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT       // Type of the dense vector
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline const VT& Subvector<VT,aligned,TF,true,CSAs...>::operand() const noexcept
 {
    return vector_;
 }

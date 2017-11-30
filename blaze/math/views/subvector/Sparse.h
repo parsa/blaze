@@ -482,11 +482,13 @@ class Subvector<VT,AF,TF,false,CSAs...>
    using DataType::offset;
    using DataType::size;
 
-   inline Operand operand() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
-   inline void    reserve( size_t n );
+   inline VT&       operand() noexcept;
+   inline const VT& operand() const noexcept;
+
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -1400,8 +1402,25 @@ template< typename VT       // Type of the sparse vector
         , AlignmentFlag AF  // Alignment flag
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
-inline typename Subvector<VT,AF,TF,false,CSAs...>::Operand
-   Subvector<VT,AF,TF,false,CSAs...>::operand() const noexcept
+inline VT& Subvector<VT,AF,TF,false,CSAs...>::operand() noexcept
+{
+   return vector_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the vector containing the subvector.
+//
+// \return The vector containing the subvector.
+*/
+template< typename VT       // Type of the sparse vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline const VT& Subvector<VT,AF,TF,false,CSAs...>::operand() const noexcept
 {
    return vector_;
 }
