@@ -528,12 +528,14 @@ class Band<MT,TF,true,false,CBAs...>
    using DataType::row;
    using DataType::column;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
    //@}
    //**********************************************************************************************
 
@@ -1448,8 +1450,24 @@ inline EnableIf_< IsNumeric<Other>, Band<MT,TF,true,false,CBAs...> >&
 template< typename MT          // Type of the dense matrix
         , bool TF              // Transpose flag
         , ptrdiff_t... CBAs >  // Compile time band arguments
-inline typename Band<MT,TF,true,false,CBAs...>::Operand
-   Band<MT,TF,true,false,CBAs...>::operand() const noexcept
+inline MT& Band<MT,TF,true,false,CBAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the band.
+//
+// \return The matrix containing the band.
+*/
+template< typename MT          // Type of the dense matrix
+        , bool TF              // Transpose flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline const MT& Band<MT,TF,true,false,CBAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -2202,7 +2220,7 @@ class Band<MT,TF,true,true,CBAs...>
    //
    // \return The matrix multiplication expression containing the band.
    */
-   inline MT operand() const noexcept {
+   inline const MT& operand() const noexcept {
       return matrix_;
    }
    //**********************************************************************************************
