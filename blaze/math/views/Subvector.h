@@ -69,7 +69,6 @@
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/Dense.h>
 #include <blaze/math/views/subvector/Sparse.h>
-#include <blaze/util/AsConst.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
@@ -1191,7 +1190,7 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF,I2,N2>& sv, RSAs..
 
    BLAZE_STATIC_ASSERT_MSG( I1 + N1 <= N2, "Invalid subvector specification" );
 
-   return subvector<AF1,I1+I2,N1>( as_const( sv.operand() ), args... );
+   return subvector<AF1,I1+I2,N1>( sv.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1306,7 +1305,7 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv, RSAs... args
       BLAZE_USER_ASSERT( I + N <= sv.size(), "Invalid subvector specification" );
    }
 
-   return subvector<AF1>( as_const( sv.operand() ), sv.offset() + I, N, args... );
+   return subvector<AF1>( sv.operand(), sv.offset() + I, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1432,7 +1431,7 @@ inline decltype(auto)
       BLAZE_USER_ASSERT( index + size <= sv.size(), "Invalid subvector specification" );
    }
 
-   return subvector<AF1>( as_const( sv.operand() ), sv.offset() + index, size, args... );
+   return subvector<AF1>( sv.operand(), sv.offset() + index, size, args... );
 }
 /*! \endcond */
 //*************************************************************************************************

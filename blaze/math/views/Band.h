@@ -71,7 +71,6 @@
 #include <blaze/math/views/Forward.h>
 #include <blaze/math/views/subvector/SubvectorData.h>
 #include <blaze/system/TransposeFlag.h>
-#include <blaze/util/AsConst.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -509,7 +508,7 @@ inline decltype(auto) subvector( const Band<MT,TF,DF,MF,I2>& b, RSAs... args )
    constexpr size_t row   ( ( I2 >= 0L ? 0UL : -I2 ) + I1 );
    constexpr size_t column( ( I2 >= 0L ?  I2 : 0UL ) + I1 );
 
-   return diagonal( submatrix<AF,row,column,N,N>( as_const( b.operand() ), args... ), unchecked );
+   return diagonal( submatrix<AF,row,column,N,N>( b.operand(), args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -612,7 +611,7 @@ inline decltype(auto) subvector( const Band<MT,TF,DF,MF,CBAs...>& b, RSAs... arg
    const size_t row   ( b.row() + sd.offset() );
    const size_t column( b.column() + sd.offset() );
 
-   return diagonal( submatrix<AF>( as_const( b.operand() ), row, column, sd.size(), sd.size(), args... ), unchecked );
+   return diagonal( submatrix<AF>( b.operand(), row, column, sd.size(), sd.size(), args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
