@@ -213,12 +213,14 @@ class Column<MT,true,false,SF,CCAs...>
    //@{
    using DataType::column;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
-   inline void    reserve( size_t n );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -1312,8 +1314,24 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,true,false,SF,CCAs...> >&
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
-inline typename Column<MT,true,false,SF,CCAs...>::Operand
-   Column<MT,true,false,SF,CCAs...>::operand() const noexcept
+inline MT& Column<MT,true,false,SF,CCAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline const MT& Column<MT,true,false,SF,CCAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -2362,7 +2380,7 @@ class Column<MT,false,false,false,CCAs...>
       // \param matrix The matrix containing the column.
       // \param row The row index.
       // \param column The column index.
-      // \param pos Initial position of the iterator
+      // \param pos Initial position of the iterator.
       */
       inline ColumnIterator( MatrixType& matrix, size_t row, size_t column, IteratorType pos )
          : matrix_( &matrix )  // The sparse matrix containing the column.
@@ -2559,12 +2577,14 @@ class Column<MT,false,false,false,CCAs...>
    //@{
    using DataType::column;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const;
-   inline size_t  capacity() const;
-   inline size_t  nonZeros() const;
-   inline void    reset();
-   inline void    reserve( size_t n );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const;
+   inline size_t capacity() const;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -3420,8 +3440,23 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,false,CCAs...> >&
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
-inline typename Column<MT,false,false,false,CCAs...>::Operand
-   Column<MT,false,false,false,CCAs...>::operand() const noexcept
+inline MT& Column<MT,false,false,false,CCAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline const MT& Column<MT,false,false,false,CCAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -4306,12 +4341,14 @@ class Column<MT,false,false,true,CCAs...>
    //@{
    using DataType::column;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
-   inline void    reserve( size_t n );
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
+   inline void   reserve( size_t n );
    //@}
    //**********************************************************************************************
 
@@ -5381,8 +5418,23 @@ inline EnableIf_<IsNumeric<Other>, Column<MT,false,false,true,CCAs...> >&
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
-inline typename Column<MT,false,false,true,CCAs...>::Operand
-   Column<MT,false,false,true,CCAs...>::operand() const noexcept
+inline MT& Column<MT,false,false,true,CCAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the sparse matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline const MT& Column<MT,false,false,true,CCAs...>::operand() const noexcept
 {
    return matrix_;
 }

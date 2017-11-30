@@ -233,12 +233,14 @@ class Column<MT,true,true,SF,CCAs...>
    //@{
    using DataType::column;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
    //@}
    //**********************************************************************************************
 
@@ -1242,8 +1244,24 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,true,true,SF,CCAs...> >&
 template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
-inline typename Column<MT,true,true,SF,CCAs...>::Operand
-   Column<MT,true,true,SF,CCAs...>::operand() const noexcept
+inline MT& Column<MT,true,true,SF,CCAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the dense matrix
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline const MT& Column<MT,true,true,SF,CCAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -2699,12 +2717,14 @@ class Column<MT,false,true,false,CCAs...>
    //@{
    using DataType::column;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
    //@}
    //**********************************************************************************************
 
@@ -3587,8 +3607,23 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,false,CCAs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
-inline typename Column<MT,false,true,false,CCAs...>::Operand
-   Column<MT,false,true,false,CCAs...>::operand() const noexcept
+inline MT& Column<MT,false,true,false,CCAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline const MT& Column<MT,false,true,false,CCAs...>::operand() const noexcept
 {
    return matrix_;
 }
@@ -4301,12 +4336,14 @@ class Column<MT,false,true,true,CCAs...>
    //@{
    using DataType::column;
 
-   inline Operand operand() const noexcept;
-   inline size_t  size() const noexcept;
-   inline size_t  spacing() const noexcept;
-   inline size_t  capacity() const noexcept;
-   inline size_t  nonZeros() const;
-   inline void    reset();
+   inline MT&       operand() noexcept;
+   inline const MT& operand() const noexcept;
+
+   inline size_t size() const noexcept;
+   inline size_t spacing() const noexcept;
+   inline size_t capacity() const noexcept;
+   inline size_t nonZeros() const;
+   inline void   reset();
    //@}
    //**********************************************************************************************
 
@@ -5282,8 +5319,23 @@ inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,true,CCAs...> >&
 */
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
-inline typename Column<MT,false,true,true,CCAs...>::Operand
-   Column<MT,false,true,true,CCAs...>::operand() const noexcept
+inline MT& Column<MT,false,true,true,CCAs...>::operand() noexcept
+{
+   return matrix_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the matrix containing the column.
+//
+// \return The matrix containing the column.
+*/
+template< typename MT       // Type of the dense matrix
+        , size_t... CCAs >  // Compile time column arguments
+inline const MT& Column<MT,false,true,true,CCAs...>::operand() const noexcept
 {
    return matrix_;
 }
