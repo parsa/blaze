@@ -1019,7 +1019,7 @@ void SparseTest::testCrossAssign()
 
       initialize();
 
-      VT vec( 10UL );
+      VT vec( 10UL, 3UL );
       vec[4] =  2;
       vec[6] = -1;
       vec[7] =  4;

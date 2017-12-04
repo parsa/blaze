@@ -275,7 +275,7 @@ void DenseUnalignedTest::testAssignment()
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << sv << "\n"
-             << "   Expected result:\n( 1 2 3 4 )\n";
+             << "   Expected result:\n( 1 2 0 0 )\n";
          throw std::runtime_error( oss.str() );
       }
 
@@ -1979,7 +1979,7 @@ void DenseUnalignedTest::testScaling()
 
 
    //=====================================================================================
-   // Self-scaling (v=v*s)
+   // Self-scaling (v=s*v)
    //=====================================================================================
 
    {
