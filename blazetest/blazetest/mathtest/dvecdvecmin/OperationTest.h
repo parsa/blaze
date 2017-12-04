@@ -147,6 +147,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
+                          void testElementsOperation ();
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -293,6 +294,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
+   testElementsOperation();
 }
 //*************************************************************************************************
 
@@ -3751,6 +3753,481 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
                subvector( tdres_  , index, size ) /= subvector( min( eval( tlhs_ ), eval( trhs_ ) ), index, size );
                subvector( tsres_  , index, size ) /= subvector( min( eval( tlhs_ ), eval( trhs_ ) ), index, size );
                subvector( trefres_, index, size ) /= subvector( eval( tref_ )                      , index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the elements-wise dense vector/dense vector minimum operation.
+//
+// \return void
+// \exception std::runtime_error Minimum error detected.
+//
+// This function tests the elements-wise vector minimum with plain assignment, addition
+// assignment, subtraction assignment, multiplication assignment, and division assignment.
+// In case any error resulting from the minimum operation or the subsequent assignment is
+// detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testElementsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
+   {
+      if( lhs_.size() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Elements-wise minimum
+      //=====================================================================================
+
+      // Elements-wise minimum with the given vectors
+      {
+         test_  = "Elements-wise minimum with the given vectors";
+         error_ = "Failed minimum operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) = elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) = elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( refres_, &indices[index], size ) = elements( ref_             , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) = elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) = elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) = elements( tref_              , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Elements-wise minimum with evaluated vectors
+      {
+         test_  = "Elements-wise minimum with evaluated vectors";
+         error_ = "Failed minimum operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) = elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) = elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( refres_, &indices[index], size ) = elements( eval( ref_ )                     , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) = elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) = elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) = elements( eval( tref_ )                      , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise minimum with addition assignment
+      //=====================================================================================
+
+      // Elements-wise minimum with addition assignment with the given vectors
+      {
+         test_  = "Elements-wise minimum with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) += elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) += elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( refres_, &indices[index], size ) += elements( ref_             , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) += elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) += elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) += elements( tref_              , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Elements-wise minimum with addition assignment with evaluated vectors
+      {
+         test_  = "Elements-wise minimum with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) += elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) += elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( refres_, &indices[index], size ) += elements( eval( ref_ )                     , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) += elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) += elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) += elements( eval( tref_ )                      , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise minimum with subtraction assignment
+      //=====================================================================================
+
+      // Elements-wise minimum with subtraction assignment with the given vectors
+      {
+         test_  = "Elements-wise minimum with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) -= elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) -= elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( refres_, &indices[index], size ) -= elements( ref_             , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) -= elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) -= elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) -= elements( tref_              , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Elements-wise minimum with subtraction assignment with evaluated vectors
+      {
+         test_  = "Elements-wise minimum with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) -= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) -= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( refres_, &indices[index], size ) -= elements( eval( ref_ )                     , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) -= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) -= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) -= elements( eval( tref_ )                      , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise minimum with multiplication assignment
+      //=====================================================================================
+
+      // Elements-wise minimum with multiplication assignment with the given vectors
+      {
+         test_  = "Elements-wise minimum with multiplication assignment with the given vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) *= elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) *= elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( refres_, &indices[index], size ) *= elements( ref_             , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) *= elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) *= elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) *= elements( tref_              , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Elements-wise minimum with multiplication assignment with evaluated vectors
+      {
+         test_  = "Elements-wise minimum with multiplication assignment with evaluated vectors";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) *= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) *= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( refres_, &indices[index], size ) *= elements( eval( ref_ )                     , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], size ) *= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) *= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) *= elements( eval( tref_ )                      , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise minimum with division assignment
+      //=====================================================================================
+
+      // Elements-wise minimum with division assignment with the given vectors
+      {
+         test_  = "Elements-wise minimum with division assignment with the given vectors";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( lhs_, rhs_ ), &indices[index], size ) ) ) continue;
+               elements( dres_  , &indices[index], size ) /= elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) /= elements( min( lhs_, rhs_ ), &indices[index], size );
+               elements( refres_, &indices[index], size ) /= elements( ref_             , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( tlhs_, trhs_ ), &indices[index], size ) ) ) continue;
+               elements( tdres_  , &indices[index], size ) /= elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) /= elements( min( tlhs_, trhs_ ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) /= elements( tref_              , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT1,TVT2>( ex );
+         }
+
+         checkTransposeResults<TVT1,TVT2>();
+      }
+
+      // Elements-wise minimum with division assignment with evaluated vectors
+      {
+         test_  = "Elements-wise minimum with division assignment with evaluated vectors";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( lhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( lhs_, rhs_ ), &indices[index], size ) ) ) continue;
+               elements( dres_  , &indices[index], size ) /= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( sres_  , &indices[index], size ) /= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
+               elements( refres_, &indices[index], size ) /= elements( eval( ref_ )                     , &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT1,VT2>( ex );
+         }
+
+         checkResults<VT1,VT2>();
+
+         try {
+            initTransposeResults();
+            std::vector<size_t> indices( tlhs_.size() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( tlhs_, trhs_ ), &indices[index], size ) ) ) continue;
+               elements( tdres_  , &indices[index], size ) /= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( tsres_  , &indices[index], size ) /= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
+               elements( trefres_, &indices[index], size ) /= elements( eval( tref_ )                      , &indices[index], size );
             }
          }
          catch( std::exception& ex ) {
