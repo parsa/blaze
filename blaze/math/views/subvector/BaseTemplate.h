@@ -55,6 +55,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Base template of the Subvector class template.
+// \ingroup subvector
+*/
 template< typename VT                         // Type of the vector
         , AlignmentFlag AF = unaligned        // Alignment flag
         , bool TF = IsRowVector<VT>::value    // Transpose flag
@@ -62,6 +66,7 @@ template< typename VT                         // Type of the vector
         , size_t... CSAs >                    // Compile time subvector arguments
 class Subvector
 {};
+/*! \endcond */
 //*************************************************************************************************
 
 
