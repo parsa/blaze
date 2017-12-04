@@ -55,6 +55,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Base template of the Band class template.
+// \ingroup band
+*/
 template< typename MT                            // Type of the matrix
         , bool TF = defaultTransposeFlag         // Transpose flag
         , bool DF = IsDenseMatrix<MT>::value     // Density flag
@@ -62,6 +66,7 @@ template< typename MT                            // Type of the matrix
         , ptrdiff_t... CBAs >                    // Compile time band arguments
 class Band
 {};
+/*! \endcond */
 //*************************************************************************************************
 
 
