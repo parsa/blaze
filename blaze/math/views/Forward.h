@@ -77,6 +77,24 @@ decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t, RSAs... );
 template< AlignmentFlag AF, typename VT, bool TF, typename... RSAs >
 decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t, RSAs... );
 
+template< size_t I, size_t... Is, typename VT, bool TF, typename... REAs >
+decltype(auto) elements( Vector<VT,TF>&, REAs... );
+
+template< size_t I, size_t... Is, typename VT, bool TF, typename... REAs >
+decltype(auto) elements( const Vector<VT,TF>&, REAs... );
+
+template< size_t I, size_t... Is, typename VT, bool TF, typename... REAs >
+decltype(auto) elements( Vector<VT,TF>&&, REAs... );
+
+template< typename VT, bool TF, typename... REAs >
+decltype(auto) elements( Vector<VT,TF>&, const size_t*, size_t, REAs... );
+
+template< typename VT, bool TF, typename... REAs >
+decltype(auto) elements( const Vector<VT,TF>&, const size_t*, size_t, REAs... );
+
+template< typename VT, bool TF, typename... REAs >
+decltype(auto) elements( Vector<VT,TF>&&, const size_t*, size_t, REAs... );
+
 template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
 decltype(auto) submatrix( Matrix<MT,SO>&, RSAs... );
 
