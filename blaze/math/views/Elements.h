@@ -2019,13 +2019,14 @@ inline bool tryDivAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
-inline decltype(auto) derestrict( Elements<VT,TF,DF,CEAs...>& e )
+template< typename VT     // Type of the vector
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , size_t I        // First element index
+        , size_t... Is >  // Remaining element indices
+inline decltype(auto) derestrict( Elements<VT,TF,DF,I,Is...>& e )
 {
-   return elements<CEAs...>( derestrict( e.operand() ), unchecked );
+   return elements<I,Is...>( derestrict( e.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2046,13 +2047,14 @@ inline decltype(auto) derestrict( Elements<VT,TF,DF,CEAs...>& e )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
-inline decltype(auto) derestrict( Elements<VT,TF,DF,CEAs...>&& e )
+template< typename VT     // Type of the vector
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , size_t I        // First element index
+        , size_t... Is >  // Remaining element indices
+inline decltype(auto) derestrict( Elements<VT,TF,DF,I,Is...>&& e )
 {
-   return elements<CEAs...>( derestrict( e.operand() ), unchecked );
+   return elements<I,Is...>( derestrict( e.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
