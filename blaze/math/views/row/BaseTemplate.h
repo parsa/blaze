@@ -55,6 +55,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Base template of the Row class template.
+// \ingroup row
+*/
 template< typename MT                            // Type of the matrix
         , bool SO = IsRowMajorMatrix<MT>::value  // Storage order
         , bool DF = IsDenseMatrix<MT>::value     // Density flag
@@ -62,6 +66,7 @@ template< typename MT                            // Type of the matrix
         , size_t... CRAs >                       // Compile time row arguments
 class Row
 {};
+/*! \endcond */
 //*************************************************************************************************
 
 
