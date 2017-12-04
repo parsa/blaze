@@ -38,3 +38,4 @@ PATH_ELEMENTS=$( dirname "${BASH_SOURCE[0]}" )
 echo " Running Elements tests..."
 
 EXE=$PATH_ELEMENTS/DenseTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_ELEMENTS/SparseTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
