@@ -55,6 +55,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Base template of the Submatrix class template.
+// \ingroup submatrix
+*/
 template< typename MT                               // Type of the matrix
         , AlignmentFlag AF = unaligned              // Alignment flag
         , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
@@ -62,6 +66,7 @@ template< typename MT                               // Type of the matrix
         , size_t... CSAs >                          // Compile time submatrix arguments
 class Submatrix
 {};
+/*! \endcond */
 //*************************************************************************************************
 
 
