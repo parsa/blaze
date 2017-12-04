@@ -552,6 +552,7 @@ inline const InitializerIterator<Type> operator-( const InitializerIterator<Type
 //*************************************************************************************************
 /*!\brief Calculating the number of elements between two iterators.
 //
+// \param lhs The left-hand side iterator.
 // \param rhs The right-hand side iterator.
 // \return The number of elements between the two iterators.
 */

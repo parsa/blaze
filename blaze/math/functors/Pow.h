@@ -64,8 +64,6 @@ struct Pow
  public:
    //**********************************************************************************************
    /*!\brief Constructor of the Pow functor.
-   //
-   // \param exp The exponent.
    */
    explicit inline Pow()
    {}

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/IndexSequence.h
-//  \brief Header file for the std::index_sequence aliases
+//  \file blaze/math/IntegerSequence.h
+//  \brief Header file for the integer_sequence and index_sequence aliases
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
