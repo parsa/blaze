@@ -55,6 +55,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Base template of the Column class template.
+// \ingroup column
+*/
 template< typename MT                               // Type of the matrix
         , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
         , bool DF = IsDenseMatrix<MT>::value        // Density flag
@@ -62,6 +66,7 @@ template< typename MT                               // Type of the matrix
         , size_t... CCAs >                          // Compile time column arguments
 class Column
 {};
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -75,11 +80,11 @@ class Column
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the Row class template.
-// \ingroup row
+/*!\brief Auxiliary alias declaration for the Column class template.
+// \ingroup column
 //
-// The Row_ alias declaration represents a convenient shortcut for the specification of the
-// non-derived template arguments of the Row class template.
+// The Column_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Column class template.
 */
 template< typename MT       // Type of the matrix
         , size_t... CCAs >  // Compile time column arguments
