@@ -54,12 +54,17 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Base template of the Elements class template.
+// \ingroup row
+*/
 template< typename VT                         // Type of the vector
         , bool TF = IsRowVector<VT>::value    // Transpose flag
         , bool DF = IsDenseVector<VT>::value  // Density flag
         , size_t... CEAs >                    // Compile time element arguments
 class Elements
 {};
+/*! \endcond */
 //*************************************************************************************************
 
 
