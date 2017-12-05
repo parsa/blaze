@@ -97,7 +97,7 @@ namespace blaze {
 //
 // \param vector The vector containing the elements.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given vector.
@@ -110,10 +110,10 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a view on the 1st and 3rd element of the dense vector d
-   auto elements13 = elements<1UL,3UL>( D );
+   auto elements1 = elements<1UL,3UL>( D );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
-   auto elements42 = elements<4UL,2UL>( S );
+   auto elements2 = elements<4UL,2UL>( S );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -122,8 +122,8 @@ namespace blaze {
 // can be skipped by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto elements13 = elements<1UL,3UL>( d, unchecked );
-   auto elements42 = elements<4UL,2UL>( s, unchecked );
+   auto elements1 = elements<1UL,3UL>( d, unchecked );
+   auto elements2 = elements<4UL,2UL>( s, unchecked );
    \endcode
 */
 template< size_t I            // First element index
@@ -147,7 +147,7 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, REAs... args )
 //
 // \param vector The constant vector containing the elements.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given constant
@@ -160,10 +160,10 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, REAs... args )
    const blaze::CompressedVector<double,rowVector> s( ... );
 
    // Creating a view on the 1st and 3rd element of the dense vector d
-   auto elements13 = elements<1UL,3UL>( D );
+   auto elements1 = elements<1UL,3UL>( D );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
-   auto elements42 = elements<4UL,2UL>( S );
+   auto elements2 = elements<4UL,2UL>( S );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -172,8 +172,8 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, REAs... args )
 // can be skipped by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto elements13 = elements<1UL,3UL>( d, unchecked );
-   auto elements42 = elements<4UL,2UL>( s, unchecked );
+   auto elements1 = elements<1UL,3UL>( d, unchecked );
+   auto elements2 = elements<4UL,2UL>( s, unchecked );
    \endcode
 */
 template< size_t I            // First element index
@@ -197,10 +197,10 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, REAs... args )
 //
 // \param vector The temporary vector containing the elements.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
-// This function returns an expression representing an element selection of the given temporary
+// This function returns an expression representing an selection of elements of the given temporary
 // vector. In case any element is not properly specified (i.e. if any specified index is greater
 // than or equal to the total number of the elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
@@ -225,10 +225,10 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
 // \ingroup elements
 //
 // \param vector The vector containing the elements.
-// \param indices Pointer to the first index of the element.
+// \param indices Pointer to the first index of the selected elements.
 // \param n The total number of indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given vector.
@@ -242,11 +242,11 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
 
    // Creating a view on the 1st and 3rd element of the dense vector d
    const std::vector<size_t> indices1{ 1UL, 3UL };
-   auto elements13 = elements( D, indices1.data(), indices1.size() );
+   auto elements1 = elements( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
    const std::array<size_t,2uL> indices2{ 4UL, 2UL };
-   auto elements42 = elements( S, indices2.data(), indices2.size() );
+   auto elements2 = elements( S, indices2.data(), indices2.size() );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -255,8 +255,8 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
 // can be skipped by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto elements13 = elements( d, indices1.data(), indices1.size(), unchecked );
-   auto elements42 = elements( s, indices2.data(), indices2.size(), unchecked );
+   auto elements1 = elements( d, indices1.data(), indices1.size(), unchecked );
+   auto elements2 = elements( s, indices2.data(), indices2.size(), unchecked );
    \endcode
 */
 template< typename VT         // Type of the vector
@@ -277,10 +277,10 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, const size_t* indices, si
 // \ingroup elements
 //
 // \param vector The constant vector containing the elements.
-// \param indices Pointer to the first index of the element.
+// \param indices Pointer to the first index of the selected elements.
 // \param n The total number of indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given constant
@@ -294,11 +294,11 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, const size_t* indices, si
 
    // Creating a view on the 1st and 3rd element of the dense vector d
    const std::vector<size_t> indices1{ 1UL, 3UL };
-   auto elements13 = elements( D, indices1.data(), indices1.size() );
+   auto elements1 = elements( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
    const std::array<size_t,2uL> indices2{ 4UL, 2UL };
-   auto elements42 = elements( S, indices2.data(), indices2.size() );
+   auto elements2 = elements( S, indices2.data(), indices2.size() );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -307,8 +307,8 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, const size_t* indices, si
 // can be skipped by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto elements13 = elements( d, indices1.data(), indices1.size(), unchecked );
-   auto elements42 = elements( s, indices2.data(), indices2.size(), unchecked );
+   auto elements1 = elements( d, indices1.data(), indices1.size(), unchecked );
+   auto elements2 = elements( s, indices2.data(), indices2.size(), unchecked );
    \endcode
 */
 template< typename VT         // Type of the vector
@@ -329,15 +329,15 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, const size_t* indic
 // \ingroup elements
 //
 // \param vector The temporary vector containing the elements.
-// \param indices Pointer to the first index of the element.
+// \param indices Pointer to the first index of the selected elements.
 // \param n The total number of indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
-// This function returns an expression representing an element selection of the given temporary
+// This function returns an expression representing a selection of elements of the given temporary
 // vector. In case any element is not properly specified (i.e. if any specified index is greater
-// than or equal to the total number of the elements in the given vector) a \a std::invalid_argument
+// than or equal to the total number of elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
@@ -361,12 +361,12 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, const size_t* indices, s
 // \param vector The vector containing the elements.
 // \param indices The sequence of element indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
-// This function returns an expression representing an element selection of the given vector.
+// This function returns an expression representing a selection of elements of the given vector.
 // In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of the elements in the given vector) a \a std::invalid_argument
+// or equal to the total number of elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
@@ -392,16 +392,15 @@ inline decltype(auto) elements( VT&& vector, index_sequence<Is...> indices, REAs
 // \param vector The vector containing the elements.
 // \param indices The list of element indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
-// This function returns an expression representing an element selection of the given vector.
+// This function returns an expression representing a selection of elements of the given vector.
 // In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of the elements in the given vector) a \a std::invalid_argument
+// or equal to the total number of elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
-        , size_t... Is        // Element indices
         , typename... REAs >  // Optional arguments
 inline decltype(auto) elements( VT&& vector, initializer_list<size_t> indices, REAs... args )
 {
@@ -421,16 +420,15 @@ inline decltype(auto) elements( VT&& vector, initializer_list<size_t> indices, R
 // \param vector The vector containing the elements.
 // \param indices The array of element indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
-// This function returns an expression representing an element selection of the given vector.
+// This function returns an expression representing a selection of elements of the given vector.
 // In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of the elements in the given vector) a \a std::invalid_argument
+// or equal to the total number of elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
-        , size_t... Is        // Element indices
         , size_t N            // Number of indices
         , typename... REAs >  // Optional arguments
 inline decltype(auto) elements( VT&& vector, const std::array<size_t,N>& indices, REAs... args )
@@ -451,16 +449,15 @@ inline decltype(auto) elements( VT&& vector, const std::array<size_t,N>& indices
 // \param vector The vector containing the elements.
 // \param indices The vector of element indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
-// This function returns an expression representing an element selection of the given vector.
+// This function returns an expression representing a selection of elements of the given vector.
 // In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of the elements in the given vector) a \a std::invalid_argument
+// or equal to the total number of elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
-        , size_t... Is        // Element indices
         , typename... REAs >  // Optional arguments
 inline decltype(auto) elements( VT&& vector, const std::vector<size_t>& indices, REAs... args )
 {
@@ -480,16 +477,15 @@ inline decltype(auto) elements( VT&& vector, const std::vector<size_t>& indices,
 // \param vector The vector containing the elements.
 // \param indices The vector of element indices.
 // \param args Optional arguments.
-// \return View on the specified elements of the vectors.
+// \return View on the specified elements of the vector.
 // \exception std::invalid_argument Invalid element access index.
 //
-// This function returns an expression representing an element selection of the given vector.
+// This function returns an expression representing a selection of elements of the given vector.
 // In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of the elements in the given vector) a \a std::invalid_argument
+// or equal to the total number of elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
-        , size_t... Is        // Element indices
         , size_t N            // Number of preallocated elements
         , typename... REAs >  // Optional arguments
 inline decltype(auto) elements( VT&& vector, const SmallVector<size_t,N>& indices, REAs... args )

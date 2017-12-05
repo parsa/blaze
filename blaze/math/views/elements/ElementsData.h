@@ -75,7 +75,7 @@ struct ElementsData
 {
  public:
    //**Type definitions****************************************************************************
-   using Indices = std::array<size_t,sizeof...(CEAs)>;
+   using Indices = std::array<size_t,sizeof...(CEAs)>;  //!< Type of the container for element indices.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -194,7 +194,7 @@ struct ElementsData<>
 {
  public:
    //**Type definitions****************************************************************************
-   using Indices = SmallVector<size_t,8UL>;
+   using Indices = SmallVector<size_t,8UL>;  //!< Type of the container for element indices.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -239,7 +239,7 @@ struct ElementsData<>
 /*! \cond BLAZE_INTERNAL */
 /*!\brief The constructor for ElementsData.
 //
-// \param indices Pointer to the first index of the element.
+// \param indices Pointer to the first index of the selected elements.
 // \param n The total number of indices.
 // \param args The optional element arguments.
 */
