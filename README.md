@@ -35,10 +35,33 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
-**15.9.2017**: Attention early adopters: We have spent the last weeks to update all available views.
-One highlight of this refactoring is that it is now possible to provide the arguments of views as
-template arguments! As an example, consider the following two code snippets that demonstrate the setup
-of subvectors and submatrices, respectively:
+**05.12.2017**: One of the big new features of **Blaze** 3.3 is now available: Element selections! The following code snippet gives you an impression of the possibilities that element selections provide. For further details, please see [Issue #48](https://bitbucket.org/blaze-lib/blaze/issues/48/introduce-non-contiguous-views-into-blaze).
+
+```
+#!c++
+blaze::DynamicVector<double,blaze::rowVector> x;
+// ... Resizing and initialization
+
+// Selecting the elements 4, 6, 8, and 10 (compile time arguments)
+auto e1 = elements<4UL,6UL,8UL,10UL>( x );
+
+// Selecting the elements 3, 2, and 1 (runtime arguments via an initializer list)
+const std::initializer_list<size_t> list{ 3UL, 2UL, 1UL };
+auto e2 = elements( x, { 3UL, 2UL, 1UL } );
+auto e3 = elements( x, list );
+
+// Selecting the elements 1, 2, 3, 3, 2, and 1 (runtime arguments via a std::array)
+const std::array<size_t> array{ 1UL, 2UL, 3UL, 3UL, 2UL, 1UL };
+auto e4 = elements( x, array );
+auto e5 = elements( x, array.data(), array.size() );
+
+// Selecting the element 4 fives times (runtime arguments via a std::vector)
+const std::vector<size_t> vector{ 4UL, 4UL, 4UL, 4UL, 4UL };
+auto e6 = elements( x, vector );
+auto e7 = elements( x, vector.data(), vector.size() );
+```
+
+**15.9.2017**: Attention early adopters: We have spent the last weeks to update all available views. One highlight of this refactoring is that it is now possible to provide the arguments of views as template arguments! As an example, consider the following two code snippets that demonstrate the setup of subvectors and submatrices, respectively:
 
 ```
 #!c++
