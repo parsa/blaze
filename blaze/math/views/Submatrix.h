@@ -1394,7 +1394,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific row of the given submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The submatrix containing the row.
 // \param args The optional row arguments.
@@ -1423,7 +1423,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific row of the given constant submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The constant submatrix containing the row.
 // \param args The optional row arguments.
@@ -1453,7 +1453,7 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... ar
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific row of the given temporary submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The temporary submatrix containing the row.
 // \param args The optional row arguments.
@@ -1483,7 +1483,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific row of the given submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The submatrix containing the row.
 // \param args The optional row arguments.
@@ -1512,7 +1512,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific row of the given constant submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The constant submatrix containing the row.
 // \param args The optional row arguments.
@@ -1542,7 +1542,7 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... arg
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific row of the given temporary submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The temporary submatrix containing the row.
 // \param args The optional row arguments.
@@ -1572,7 +1572,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RRAs... args )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific column of the given submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The submatrix containing the column.
 // \param args The optional column arguments.
@@ -1601,7 +1601,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific column of the given constant submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The constant submatrix containing the column.
 // \param args The optional column arguments.
@@ -1631,7 +1631,7 @@ inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs...
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific column of the given temporary submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The temporary submatrix containing the column.
 // \param args The optional column arguments.
@@ -1661,7 +1661,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific column of the given submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The submatrix containing the column.
 // \param args The optional column arguments.
@@ -1690,7 +1690,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... args )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific column of the given constant submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The constant submatrix containing the column.
 // \param args The optional column arguments.
@@ -1720,7 +1720,7 @@ inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific column of the given temporary submatrix.
-// \ingroup band
+// \ingroup submatrix
 //
 // \param sm The temporary submatrix containing the column.
 // \param args The optional column arguments.
@@ -2845,21 +2845,23 @@ inline bool isSame( const Submatrix<MT1,AF1,SO1,DF1,CSAs1...>& a,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief In-place inversion of the given submatrix.
+/*!\brief In-place inversion of the given dense submatrix.
 // \ingroup submatrix
 //
 // \param sm The dense submatrix to be inverted.
 // \return void
-// \exception std::invalid_argument Inversion of singular matrix failed.
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::runtime_error Inversion of singular matrix failed.
 //
-// This function inverts the given dense submatrix by means of the specified matrix decomposition
-// algorithm \a IF:
+// This function inverts the given dense submatrix by means of the specified matrix type or matrix
+// inversion algorithm \c IF (see the InversionFlag documentation):
 
    \code
-   invert<byLU>( A );    // Inversion of a general matrix
-   invert<byLDLT>( A );  // Inversion of a symmetric indefinite matrix
-   invert<byLDLH>( A );  // Inversion of a Hermitian indefinite matrix
-   invert<byLLH>( A );   // Inversion of a Hermitian positive definite matrix
+   invert<asLower>( A );     // Inversion of a lower triangular matrix
+   invert<asUniUpper>( A );  // Inversion of an upper unitriangular matrix
+   invert<byLU>( A );        // Inversion by means of an LU decomposition
+   invert<byLLH>( A );       // Inversion by means of a Cholesky decomposition
+   ...
    \endcode
 
 // The matrix inversion fails if ...
@@ -2868,7 +2870,11 @@ inline bool isSame( const Submatrix<MT1,AF1,SO1,DF1,CSAs1...>& a,
 //  - ... the given submatrix is singular and not invertible.
 //
 // In all failure cases either a compilation error is created if the failure can be predicted at
-// compile time or a \a std::invalid_argument exception is thrown.
+// compile time or an exception is thrown.
+//
+// \note The matrix inversion can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
@@ -2899,7 +2905,7 @@ inline DisableIf_< HasMutableDataAccess<MT> > invert( Submatrix<MT,AF,SO,true,CS
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by setting a single element of a submatrix.
-// \ingroup matrix
+// \ingroup submatrix
 //
 // \param sm The target submatrix.
 // \param i The row index of the element to be set.
@@ -2920,8 +2926,8 @@ template< typename MT       // Type of the matrix
         , typename ET >     // Type of the element
 inline bool trySet( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= sm.columns(), "Invalid column access index" );
 
    return trySet( sm.operand(), sm.row()+i, sm.column()+j, value );
 }
@@ -2932,7 +2938,7 @@ inline bool trySet( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by adding to a single element of a submatrix.
-// \ingroup matrix
+// \ingroup submatrix
 //
 // \param sm The target submatrix.
 // \param i The row index of the element to be modified.
@@ -2953,8 +2959,8 @@ template< typename MT       // Type of the matrix
         , typename ET >     // Type of the element
 inline bool tryAdd( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= sm.columns(), "Invalid column access index" );
 
    return tryAdd( sm.operand(), sm.row()+i, sm.column()+j, value );
 }
@@ -2965,7 +2971,7 @@ inline bool tryAdd( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by subtracting from a single element of a submatrix.
-// \ingroup matrix
+// \ingroup submatrix
 //
 // \param sm The target submatrix.
 // \param i The row index of the element to be modified.
@@ -2986,8 +2992,8 @@ template< typename MT       // Type of the matrix
         , typename ET >     // Type of the element
 inline bool trySub( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= sm.columns(), "Invalid column access index" );
 
    return trySub( sm.operand(), sm.row()+i, sm.column()+j, value );
 }
@@ -2998,7 +3004,7 @@ inline bool trySub( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of a submatrix.
-// \ingroup matrix
+// \ingroup submatrix
 //
 // \param sm The target submatrix.
 // \param i The row index of the element to be modified.
@@ -3019,8 +3025,8 @@ template< typename MT       // Type of the matrix
         , typename ET >     // Type of the element
 inline bool tryMult( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= sm.columns(), "Invalid column access index" );
 
    return tryMult( sm.operand(), sm.row()+i, sm.column()+j, value );
 }
@@ -3031,7 +3037,7 @@ inline bool tryMult( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of a submatrix.
-// \ingroup matrix
+// \ingroup submatrix
 //
 // \param sm The target submatrix.
 // \param i The row index of the element to be modified.
@@ -3052,8 +3058,8 @@ template< typename MT       // Type of the matrix
         , typename ET >     // Type of the element
 inline bool tryDiv( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= sm.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i <= sm.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j <= sm.columns(), "Invalid column access index" );
 
    return tryDiv( sm.operand(), sm.row()+i, sm.column()+j, value );
 }
