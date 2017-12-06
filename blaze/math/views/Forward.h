@@ -46,6 +46,7 @@
 #include <blaze/math/views/column/BaseTemplate.h>
 #include <blaze/math/views/elements/BaseTemplate.h>
 #include <blaze/math/views/row/BaseTemplate.h>
+#include <blaze/math/views/rows/BaseTemplate.h>
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/util/Types.h>
