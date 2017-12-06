@@ -1566,10 +1566,10 @@ inline bool isIntact( const Elements<VT,TF,DF,CEAs...>& e ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given vector and element selection represent the same observable state.
+/*!\brief Returns whether the given element selection and vector represent the same observable state.
 // \ingroup elements
 //
-// \param a The selection of elements to be tested for its state.
+// \param a The element selection to be tested for its state.
 // \param b The vector to be tested for its state.
 // \return \a true in case the element selection and vector share a state, \a false otherwise.
 //
@@ -1601,11 +1601,11 @@ inline bool isSame( const Elements<VT,TF,DF,CEAs...>& a, const Vector<VT,TF>& b 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given element selection and vector represent the same observable state.
+/*!\brief Returns whether the given vector and element selection represent the same observable state.
 // \ingroup elements
 //
 // \param a The vector to be tested for its state.
-// \param b The selection of elements to be tested for its state.
+// \param b The element selection to be tested for its state.
 // \return \a true in case the vector and element selection share a state, \a false otherwise.
 //
 // This overload of the isSame function tests if the given selection of elements refers to the
@@ -1618,6 +1618,73 @@ template< typename VT       // Type of the vector
         , bool DF           // Density flag
         , size_t... CEAs >  // Compile time element arguments
 inline bool isSame( const Vector<VT,TF>& a, const Elements<VT,TF,DF,CEAs...>& b ) noexcept
+{
+   return isSame( b, a );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given element selection and subvector represent the same observable state.
+// \ingroup elements
+//
+// \param a The element selection to be tested for its state.
+// \param b The subvector to be tested for its state.
+// \return \a true in case the element selection and vector share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the given selection of elements refers to the
+// entire range of the given subvector in ascending and consecutive order and by that represents
+// the same observable state. In this case, the function returns \a true, otherwise it returns
+// \a false.
+*/
+template< typename VT1      // Type of the left-hand side vector
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CEAs    // Compile time element arguments
+        , typename VT2      // Type of the right-hand side vector
+        , AlignmentFlag AF  // Alignment flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline bool isSame( const Elements<VT1,TF,DF,CEAs...>& a, const Subvector<VT2,AF,TF,DF,CSAs...>& b ) noexcept
+{
+   if( !isSame( a.operand(), b.operand() ) || ( a.size() != b.size() ) )
+      return false;
+
+   decltype(auto) indices( a.idces() );
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( indices[i] != b.offset()+i )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the given subvector and element selection represent the same observable state.
+// \ingroup elements
+//
+// \param a The subvector to be tested for its state.
+// \param b The selection of elements to be tested for its state.
+// \return \a true in case the vector and element selection share a state, \a false otherwise.
+//
+// This overload of the isSame function tests if the given selection of elements refers to the
+// entire range of the given subvector in ascending and consecutive order and by that represents
+// the same observable state. In this case, the function returns \a true, otherwise it returns
+// \a false.
+*/
+template< typename VT1      // Type of the left-hand side vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename VT2      // Type of the right-hand side vector
+        , size_t... CEAs >  // Compile time element arguments
+inline bool isSame( const Subvector<VT1,AF,TF,DF,CSAs...>& a, const Elements<VT2,TF,DF,CEAs...>& b ) noexcept
 {
    return isSame( b, a );
 }
