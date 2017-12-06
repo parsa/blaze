@@ -166,10 +166,10 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = const ElementType*;
+   using ConstPointer = ConstPointer_<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -3492,10 +3492,10 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = const ElementType*;
+   using ConstPointer = ConstPointer_<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -6777,10 +6777,10 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = const ElementType*;
+   using ConstPointer = ConstPointer_<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_<MT>;
@@ -9693,10 +9693,10 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = const ElementType*;
+   using ConstPointer = ConstPointer_<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, ElementType* >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_<MT>;

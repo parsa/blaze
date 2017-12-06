@@ -142,10 +142,10 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
 
    //! Pointer to a constant subvector value.
-   using ConstPointer = const ElementType*;
+   using ConstPointer = ConstPointer_<VT>;
 
    //! Pointer to a non-constant subvector value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_<VT> >;
    //**********************************************************************************************
 
    //**SubvectorIterator class definition**********************************************************
@@ -2737,10 +2737,10 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
 
    //! Pointer to a constant subvector value.
-   using ConstPointer = const ElementType*;
+   using ConstPointer = ConstPointer_<VT>;
 
    //! Pointer to a non-constant subvector value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_<VT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_<VT>;

@@ -123,10 +123,10 @@ class Elements<VT,TF,true,CEAs...>
    using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
 
    //! Pointer to a constant element value.
-   using ConstPointer = const ElementType*;
+   using ConstPointer = ConstPointer_<VT>;
 
    //! Pointer to a non-constant element value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, ElementType* >;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_<VT> >;
    //**********************************************************************************************
 
    //**ElementsIterator class definition***********************************************************
