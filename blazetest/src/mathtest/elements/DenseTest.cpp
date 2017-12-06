@@ -3106,7 +3106,659 @@ void DenseTest::testIsDefault()
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseTest::testIsSame()
-{}
+{
+   test_ = "isSame() function";
+
+
+   //=====================================================================================
+   // Vector-based tests
+   //=====================================================================================
+
+   {
+      // isSame with vector and matching element selection
+      {
+         auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
+
+         if( blaze::isSame( e, vec_ ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Vector:\n" << vec_ << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( vec_, e ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Vector:\n" << vec_ << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with vector and non-matching element selection (different size)
+      {
+         auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+
+         if( blaze::isSame( e, vec_ ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Vector:\n" << vec_ << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( vec_, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Vector:\n" << vec_ << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with vector and non-matching element selection (different order)
+      {
+         auto e = blaze::elements( vec_, { 0UL, 1UL, 3UL, 2UL, 4UL, 5UL, 6UL, 7UL } );
+
+         if( blaze::isSame( e, vec_ ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Vector:\n" << vec_ << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( vec_, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Vector:\n" << vec_ << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subvector and matching element selection
+      {
+         auto e = blaze::elements( vec_, { 2UL, 3UL, 4UL } );
+         auto s = blaze::subvector( vec_, 2UL, 3UL );
+
+         if( blaze::isSame( e, s ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subvector:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subvector:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subvector and non-matching element selection (different size)
+      {
+         auto e = blaze::elements( vec_, { 2UL, 3UL, 4UL } );
+         auto s = blaze::subvector( vec_, 2UL, 4UL );
+
+         if( blaze::isSame( e, s ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subvector:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subvector:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subvector and non-matching element selection (different order)
+      {
+         auto e = blaze::elements( vec_, { 2UL, 4UL, 3UL } );
+         auto s = blaze::subvector( vec_, 2UL, 3UL );
+
+         if( blaze::isSame( e, s ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subvector:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subvector:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching element selections
+      {
+         auto e1 = blaze::elements( vec_, { 5UL, 3UL, 1UL } );
+         auto e2 = blaze::elements( vec_, { 5UL, 3UL, 1UL } );
+
+         if( blaze::isSame( e1, e2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching element selections (different size)
+      {
+         auto e1 = blaze::elements( vec_, { 5UL, 3UL, 1UL } );
+         auto e2 = blaze::elements( vec_, { 5UL, 3UL } );
+
+         if( blaze::isSame( e1, e2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching element selections (different order)
+      {
+         auto e1 = blaze::elements( vec_, { 5UL, 3UL, 1UL } );
+         auto e2 = blaze::elements( vec_, { 5UL, 1UL, 3UL } );
+
+         if( blaze::isSame( e1, e2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-based tests
+   //=====================================================================================
+
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 },
+                                                           { 4, 5, 6 },
+                                                           { 7, 8, 9 } };
+
+      // isSame with row and matching element selection
+      {
+         auto r = blaze::row( mat, 1UL );
+         auto e = blaze::elements( r, { 0UL, 1UL, 2UL } );
+
+         if( blaze::isSame( e, r ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << r << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( r, e ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << r << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and non-matching element selection (different size)
+      {
+         auto r = blaze::row( mat, 1UL );
+         auto e = blaze::elements( r, { 0UL, 1UL } );
+
+         if( blaze::isSame( e, r ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << r << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( r, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << r << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with row and non-matching element selection (different order)
+      {
+         auto r = blaze::row( mat, 1UL );
+         auto e = blaze::elements( r, { 0UL, 2UL, 1UL } );
+
+         if( blaze::isSame( e, r ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << r << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( r, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Row:\n" << r << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subrow and matching element selection
+      {
+         auto r = blaze::row( mat, 1UL );
+         auto e = blaze::elements( r, { 1UL, 2UL } );
+         auto s = blaze::subvector( r, 1UL, 2UL );
+
+         if( blaze::isSame( e, s ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subrow:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subrow:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subrow and non-matching element selection (different size)
+      {
+         auto r = blaze::row( mat, 1UL );
+         auto e = blaze::elements( r, { 0UL, 1UL, 2UL } );
+         auto s = blaze::subvector( r, 1UL, 2UL );
+
+         if( blaze::isSame( e, s ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subrow:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subrow:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subrow and non-matching element selection (different order)
+      {
+         auto r = blaze::row( mat, 1UL );
+         auto e = blaze::elements( r, { 2UL, 1UL } );
+         auto s = blaze::subvector( r, 1UL, 2UL );
+
+         if( blaze::isSame( e, s ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subrow:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subrow:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching element selections
+      {
+         auto r  = blaze::row( mat, 1UL );
+         auto e1 = blaze::elements( r, { 1UL, 2UL } );
+         auto e2 = blaze::elements( r, { 1UL, 2UL } );
+
+         if( blaze::isSame( e1, e2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching element selections (different size)
+      {
+         auto r  = blaze::row( mat, 1UL );
+         auto e1 = blaze::elements( r, { 1UL, 2UL } );
+         auto e2 = blaze::elements( r, { 0UL, 1UL, 2UL } );
+
+         if( blaze::isSame( e1, e2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching element selections (different order)
+      {
+         auto r  = blaze::row( mat, 1UL );
+         auto e1 = blaze::elements( r, { 1UL, 2UL } );
+         auto e2 = blaze::elements( r, { 2UL, 1UL } );
+
+         if( blaze::isSame( e1, e2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-based tests
+   //=====================================================================================
+
+   {
+      const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 },
+                                                           { 4, 5, 6 },
+                                                           { 7, 8, 9 } };
+
+      // isSame with column and matching element selection
+      {
+         auto c = blaze::column( mat, 1UL );
+         auto e = blaze::elements( c, { 0UL, 1UL, 2UL } );
+
+         if( blaze::isSame( e, c ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << c << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( c, e ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << c << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and non-matching element selection (different size)
+      {
+         auto c = blaze::column( mat, 1UL );
+         auto e = blaze::elements( c, { 0UL, 1UL } );
+
+         if( blaze::isSame( e, c ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << c << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( c, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << c << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with column and non-matching element selection (different order)
+      {
+         auto c = blaze::column( mat, 1UL );
+         auto e = blaze::elements( c, { 0UL, 2UL, 1UL } );
+
+         if( blaze::isSame( e, c ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << c << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( c, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Column:\n" << c << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subcolumn and matching element selection
+      {
+         auto c = blaze::column( mat, 1UL );
+         auto e = blaze::elements( c, { 1UL, 2UL } );
+         auto s = blaze::subvector( c, 1UL, 2UL );
+
+         if( blaze::isSame( e, s ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subcolumn:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subcolumn:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subcolumn and non-matching element selection (different size)
+      {
+         auto c = blaze::column( mat, 1UL );
+         auto e = blaze::elements( c, { 0UL, 1UL, 2UL } );
+         auto s = blaze::subvector( c, 1UL, 2UL );
+
+         if( blaze::isSame( e, s ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subcolumn:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subcolumn:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with subcolumn and non-matching element selection (different order)
+      {
+         auto c = blaze::column( mat, 1UL );
+         auto e = blaze::elements( c, { 2UL, 1UL } );
+         auto s = blaze::subvector( c, 1UL, 2UL );
+
+         if( blaze::isSame( e, s ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subcolumn:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( s, e ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Subcolumn:\n" << s << "\n"
+                << "   Element selection:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching element selections
+      {
+         auto c  = blaze::column( mat, 1UL );
+         auto e1 = blaze::elements( c, { 1UL, 2UL } );
+         auto e2 = blaze::elements( c, { 1UL, 2UL } );
+
+         if( blaze::isSame( e1, e2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching element selections (different size)
+      {
+         auto c  = blaze::column( mat, 1UL );
+         auto e1 = blaze::elements( c, { 1UL, 2UL } );
+         auto e2 = blaze::elements( c, { 0UL, 1UL, 2UL } );
+
+         if( blaze::isSame( e1, e2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching element selections (different order)
+      {
+         auto c  = blaze::column( mat, 1UL );
+         auto e1 = blaze::elements( c, { 1UL, 2UL } );
+         auto e2 = blaze::elements( c, { 2UL, 1UL } );
+
+         if( blaze::isSame( e1, e2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First element selection:\n" << e1 << "\n"
+                << "   Second element selection:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
 //*************************************************************************************************
 
 
