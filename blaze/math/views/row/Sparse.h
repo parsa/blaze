@@ -2960,7 +2960,7 @@ inline Row<MT,false,false,false,CRAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
-   left.reset();
+
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
