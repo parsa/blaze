@@ -2964,7 +2964,7 @@ inline Column<MT,false,false,false,CCAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
-   left.reset();
+
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
