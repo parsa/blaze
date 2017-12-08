@@ -145,6 +145,13 @@ class StrictlyLowerProxy
    //@}
    //**********************************************************************************************
 
+   //**Access operators****************************************************************************
+   /*!\name Access operators */
+   //@{
+   inline const StrictlyLowerProxy* operator->() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
@@ -457,6 +464,27 @@ inline const StrictlyLowerProxy<MT>& StrictlyLowerProxy<MT>::operator%=( const T
    value_ %= value;
 
    return *this;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ACCESS OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Direct access to the accessed matrix element.
+//
+// \return Pointer to the accessed matrix element.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline const StrictlyLowerProxy<MT>* StrictlyLowerProxy<MT>::operator->() const noexcept
+{
+   return this;
 }
 //*************************************************************************************************
 

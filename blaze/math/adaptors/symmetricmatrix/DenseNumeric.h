@@ -164,10 +164,10 @@ class SymmetricMatrix<MT,SO,true,true>
     public:
       //**Type definitions*************************************************************************
       using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
-      using ValueType = ElementType_<MT>;                        //!< Type of the underlying elements.
-      using PointerType = NumericProxy<MT>;                      //!< Pointer return type.
-      using ReferenceType = NumericProxy<MT>;                    //!< Reference return type.
-      using DifferenceType = ptrdiff_t;                          //!< Difference between two iterators.
+      using ValueType        = ElementType_<MT>;                 //!< Type of the underlying elements.
+      using PointerType      = NumericProxy<MT>;                 //!< Pointer return type.
+      using ReferenceType    = NumericProxy<MT>;                 //!< Reference return type.
+      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
 
       // STL iterator requirements
       using iterator_category = IteratorCategory;  //!< The iterator category.

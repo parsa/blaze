@@ -145,6 +145,13 @@ class StrictlyUpperProxy
    //@}
    //**********************************************************************************************
 
+   //**Access operators****************************************************************************
+   /*!\name Access operators */
+   //@{
+   inline const StrictlyUpperProxy* operator->() const noexcept;
+   //@}
+   //**********************************************************************************************
+
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
@@ -456,6 +463,27 @@ inline const StrictlyUpperProxy<MT>& StrictlyUpperProxy<MT>::operator%=( const T
    value_ %= value;
 
    return *this;
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ACCESS OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Direct access to the accessed matrix element.
+//
+// \return Pointer to the accessed matrix element.
+*/
+template< typename MT >  // Type of the adapted matrix
+inline const StrictlyUpperProxy<MT>* StrictlyUpperProxy<MT>::operator->() const noexcept
+{
+   return this;
 }
 //*************************************************************************************************
 
