@@ -2348,10 +2348,10 @@ class Row<MT,false,false,false,CRAs...>
       /*!\brief Default constructor of the RowIterator class.
       */
       inline RowIterator()
-         : matrix_( nullptr )  // The sparse matrix containing the row.
-         , row_   ( 0UL )      // The current row index.
-         , column_( 0UL )      // The current column index.
-         , pos_   ()           // Iterator to the current sparse element.
+         : matrix_( nullptr )  // The sparse matrix containing the row
+         , row_   ( 0UL )      // The current row index
+         , column_( 0UL )      // The current column index
+         , pos_   ()           // Iterator to the current sparse element
       {}
       //*******************************************************************************************
 
@@ -2363,10 +2363,10 @@ class Row<MT,false,false,false,CRAs...>
       // \param column The column index.
       */
       inline RowIterator( MatrixType& matrix, size_t row, size_t column )
-         : matrix_( &matrix )  // The sparse matrix containing the row.
-         , row_   ( row     )  // The current row index.
-         , column_( column  )  // The current column index.
-         , pos_   ()           // Iterator to the current sparse element.
+         : matrix_( &matrix )  // The sparse matrix containing the row
+         , row_   ( row     )  // The current row index
+         , column_( column  )  // The current column index
+         , pos_   ()           // Iterator to the current sparse element
       {
          for( ; column_<matrix_->columns(); ++column_ ) {
             pos_ = matrix_->find( row_, column_ );
@@ -2384,10 +2384,10 @@ class Row<MT,false,false,false,CRAs...>
       // \param pos Initial position of the iterator.
       */
       inline RowIterator( MatrixType& matrix, size_t row, size_t column, IteratorType pos )
-         : matrix_( &matrix )  // The sparse matrix containing the row.
-         , row_   ( row     )  // The current row index.
-         , column_( column  )  // The current column index.
-         , pos_   ( pos     )  // Iterator to the current sparse element.
+         : matrix_( &matrix )  // The sparse matrix containing the row
+         , row_   ( row     )  // The current row index
+         , column_( column  )  // The current column index
+         , pos_   ( pos     )  // Iterator to the current sparse element
       {
          BLAZE_INTERNAL_ASSERT( matrix.find( row, column ) == pos, "Invalid initial iterator position" );
       }
@@ -2400,10 +2400,10 @@ class Row<MT,false,false,false,CRAs...>
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline RowIterator( const RowIterator<MatrixType2,IteratorType2>& it )
-         : matrix_( it.matrix_ )  // The sparse matrix containing the row.
-         , row_   ( it.row_    )  // The current row index.
-         , column_( it.column_ )  // The current column index.
-         , pos_   ( it.pos_    )  // Iterator to the current sparse element.
+         : matrix_( it.matrix_ )  // The sparse matrix containing the row
+         , row_   ( it.row_    )  // The current row index
+         , column_( it.column_ )  // The current column index
+         , pos_   ( it.pos_    )  // Iterator to the current sparse element
       {}
       //*******************************************************************************************
 

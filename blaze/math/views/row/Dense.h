@@ -60,6 +60,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -2353,19 +2354,26 @@ class Row<MT,false,true,false,CRAs...>
    //**RowIterator class definition****************************************************************
    /*!\brief Iterator over the elements of the dense row.
    */
-   template< typename MatrixType >  // Type of the dense matrix
+   template< typename MatrixType      // Type of the dense matrix
+           , typename IteratorType >  // Type of the dense matrix iterator
    class RowIterator
    {
     public:
       //**Type definitions*************************************************************************
-      //! Return type for the access to the value of a dense element.
-      using Reference = If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >;
+      //! The iterator category.
+      using IteratorCategory = typename std::iterator_traits<IteratorType>::iterator_category;
 
-      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
-      using ValueType        = RemoveReference_<Reference>;      //!< Type of the underlying elements.
-      using PointerType      = ValueType*;                       //!< Pointer return type.
-      using ReferenceType    = Reference;                        //!< Reference return type.
-      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
+      //! Type of the underlying elements.
+      using ValueType = typename std::iterator_traits<IteratorType>::value_type;
+
+      //! Pointer return type.
+      using PointerType = typename std::iterator_traits<IteratorType>::pointer;
+
+      //! Reference return type.
+      using ReferenceType = typename std::iterator_traits<IteratorType>::reference;
+
+      //! Difference between two iterators.
+      using DifferenceType = typename std::iterator_traits<IteratorType>::difference_type;
 
       // STL iterator requirements
       using iterator_category = IteratorCategory;  //!< The iterator category.
@@ -2379,9 +2387,10 @@ class Row<MT,false,true,false,CRAs...>
       /*!\brief Default constructor of the RowIterator class.
       */
       inline RowIterator() noexcept
-         : matrix_( nullptr )  // The dense matrix containing the row.
-         , row_   ( 0UL )      // The current row index.
-         , column_( 0UL )      // The current column index.
+         : matrix_( nullptr )  // The dense matrix containing the row
+         , row_   ( 0UL )      // The current row index
+         , column_( 0UL )      // The current column index
+         , pos_   (     )      // Iterator to the current dense element
       {}
       //*******************************************************************************************
 
@@ -2393,10 +2402,14 @@ class Row<MT,false,true,false,CRAs...>
       // \param column The column index.
       */
       inline RowIterator( MatrixType& matrix, size_t row, size_t column ) noexcept
-         : matrix_( &matrix )  // The dense matrix containing the row.
-         , row_   ( row     )  // The current row index.
-         , column_( column  )  // The current column index.
-      {}
+         : matrix_( &matrix )  // The dense matrix containing the row
+         , row_   ( row     )  // The current row index
+         , column_( column  )  // The current column index
+         , pos_   (         )  // Iterator to the current dense element
+      {
+         if( column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+      }
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -2404,11 +2417,12 @@ class Row<MT,false,true,false,CRAs...>
       //
       // \param it The row iterator to be copied.
       */
-      template< typename MatrixType2 >
-      inline RowIterator( const RowIterator<MatrixType2>& it ) noexcept
-         : matrix_( it.matrix_ )  // The dense matrix containing the row.
-         , row_   ( it.row_    )  // The current row index.
-         , column_( it.column_ )  // The current column index.
+      template< typename MatrixType2, typename IteratorType2 >
+      inline RowIterator( const RowIterator<MatrixType2,IteratorType2>& it ) noexcept
+         : matrix_( it.matrix_ )  // The dense matrix containing the row
+         , row_   ( it.row_    )  // The current row index
+         , column_( it.column_ )  // The current column index
+         , pos_   ( it.pos_    )  // Iterator to the current dense element
       {}
       //*******************************************************************************************
 
@@ -2419,7 +2433,11 @@ class Row<MT,false,true,false,CRAs...>
       // \return The incremented iterator.
       */
       inline RowIterator& operator+=( size_t inc ) noexcept {
+         using blaze::reset;
          column_ += inc;
+         if( column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -2431,7 +2449,11 @@ class Row<MT,false,true,false,CRAs...>
       // \return The decremented iterator.
       */
       inline RowIterator& operator-=( size_t dec ) noexcept {
+         using blaze::reset;
          column_ -= dec;
+         if( column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -2442,7 +2464,11 @@ class Row<MT,false,true,false,CRAs...>
       // \return Reference to the incremented iterator.
       */
       inline RowIterator& operator++() noexcept {
+         using blaze::reset;
          ++column_;
+         if( column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -2465,7 +2491,11 @@ class Row<MT,false,true,false,CRAs...>
       // \return Reference to the decremented iterator.
       */
       inline RowIterator& operator--() noexcept {
+         using blaze::reset;
          --column_;
+         if( column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -2489,7 +2519,7 @@ class Row<MT,false,true,false,CRAs...>
       // \return Reference to the accessed value.
       */
       inline ReferenceType operator[]( size_t index ) const {
-         return (*matrix_)(row_,column_+index);
+         return pos_[index];
       }
       //*******************************************************************************************
 
@@ -2499,7 +2529,7 @@ class Row<MT,false,true,false,CRAs...>
       // \return Reference to the current value.
       */
       inline ReferenceType operator*() const {
-         return (*matrix_)(row_,column_);
+         return *pos_;
       }
       //*******************************************************************************************
 
@@ -2509,7 +2539,7 @@ class Row<MT,false,true,false,CRAs...>
       // \return Pointer to the dense row element at the current iterator position.
       */
       inline PointerType operator->() const {
-         return &(*matrix_)(row_,column_);
+         return pos_;
       }
       //*******************************************************************************************
 
@@ -2519,8 +2549,8 @@ class Row<MT,false,true,false,CRAs...>
       // \param rhs The right-hand side row iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator==( const RowIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator==( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return column_ == rhs.column_;
       }
       //*******************************************************************************************
@@ -2531,8 +2561,8 @@ class Row<MT,false,true,false,CRAs...>
       // \param rhs The right-hand side row iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      template< typename MatrixType2 >
-      inline bool operator!=( const RowIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator!=( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return !( *this == rhs );
       }
       //*******************************************************************************************
@@ -2543,8 +2573,8 @@ class Row<MT,false,true,false,CRAs...>
       // \param rhs The right-hand side row iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator<( const RowIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator<( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return column_ < rhs.column_;
       }
       //*******************************************************************************************
@@ -2555,8 +2585,8 @@ class Row<MT,false,true,false,CRAs...>
       // \param rhs The right-hand side row iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator>( const RowIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator>( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return column_ > rhs.column_;
       }
       //*******************************************************************************************
@@ -2567,8 +2597,8 @@ class Row<MT,false,true,false,CRAs...>
       // \param rhs The right-hand side row iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator<=( const RowIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator<=( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return column_ <= rhs.column_;
       }
       //*******************************************************************************************
@@ -2579,8 +2609,8 @@ class Row<MT,false,true,false,CRAs...>
       // \param rhs The right-hand side row iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator>=( const RowIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator>=( const RowIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return column_ >= rhs.column_;
       }
       //*******************************************************************************************
@@ -2634,23 +2664,24 @@ class Row<MT,false,true,false,CRAs...>
 
     private:
       //**Member variables*************************************************************************
-      MatrixType* matrix_;  //!< The dense matrix containing the row.
-      size_t      row_;     //!< The current row index.
-      size_t      column_;  //!< The current column index.
+      MatrixType*  matrix_;  //!< The dense matrix containing the row.
+      size_t       row_;     //!< The current row index.
+      size_t       column_;  //!< The current column index.
+      IteratorType pos_;     //!< Iterator to the current dense element.
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      template< typename MatrixType2 > friend class RowIterator;
+      template< typename MatrixType2, typename IteratorType2 > friend class RowIterator;
       //*******************************************************************************************
    };
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = RowIterator<const MT>;
+   using ConstIterator = RowIterator< const MT, ConstIterator_<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, RowIterator<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, RowIterator< MT, Iterator_<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
