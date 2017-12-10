@@ -156,19 +156,26 @@ class Band<MT,TF,true,false,CBAs...>
    //**BandIterator class definition***************************************************************
    /*!\brief Iterator over the elements of the dense band.
    */
-   template< typename MatrixType >  // Type of the dense matrix
+   template< typename MatrixType      // Type of the dense matrix
+           , typename IteratorType >  // Type of the dense matrix iterator
    class BandIterator
    {
     public:
       //**Type definitions*************************************************************************
-      //! Return type for the access to the value of a dense element.
-      using Reference = If_< IsConst<MatrixType>, ConstReference_<MatrixType>, Reference_<MatrixType> >;
+      //! The iterator category.
+      using IteratorCategory = typename std::iterator_traits<IteratorType>::iterator_category;
 
-      using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
-      using ValueType        = RemoveReference_<Reference>;      //!< Type of the underlying elements.
-      using PointerType      = ValueType*;                       //!< Pointer return type.
-      using ReferenceType    = Reference;                        //!< Reference return type.
-      using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
+      //! Type of the underlying elements.
+      using ValueType = typename std::iterator_traits<IteratorType>::value_type;
+
+      //! Pointer return type.
+      using PointerType = typename std::iterator_traits<IteratorType>::pointer;
+
+      //! Reference return type.
+      using ReferenceType = typename std::iterator_traits<IteratorType>::reference;
+
+      //! Difference between two iterators.
+      using DifferenceType = typename std::iterator_traits<IteratorType>::difference_type;
 
       // STL iterator requirements
       using iterator_category = IteratorCategory;  //!< The iterator category.
@@ -182,9 +189,10 @@ class Band<MT,TF,true,false,CBAs...>
       /*!\brief Default constructor of the BandIterator class.
       */
       inline BandIterator() noexcept
-         : matrix_( nullptr )  // The dense matrix containing the band.
-         , row_   ( 0UL )      // The current row index.
-         , column_( 0UL )      // The current column index.
+         : matrix_( nullptr )  // The dense matrix containing the band
+         , row_   ( 0UL )      // The current row index
+         , column_( 0UL )      // The current column index
+         , pos_   (     )      // Iterator to the current dense element
       {}
       //*******************************************************************************************
 
@@ -196,10 +204,16 @@ class Band<MT,TF,true,false,CBAs...>
       // \param columnIndex The initial column index.
       */
       inline BandIterator( MatrixType& matrix, size_t rowIndex, size_t columnIndex ) noexcept
-         : matrix_( &matrix     )  // The dense matrix containing the band.
-         , row_   ( rowIndex    )  // The current row index.
-         , column_( columnIndex )  // The current column index.
-      {}
+         : matrix_( &matrix     )  // The dense matrix containing the band
+         , row_   ( rowIndex    )  // The current row index
+         , column_( columnIndex )  // The current column index
+         , pos_   (             )  // Iterator to the current dense element
+      {
+         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+            pos_ = matrix_->begin( row_ ) + column_;
+         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+      }
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -207,11 +221,12 @@ class Band<MT,TF,true,false,CBAs...>
       //
       // \param it The band iterator to be copied.
       */
-      template< typename MatrixType2 >
-      inline BandIterator( const BandIterator<MatrixType2>& it ) noexcept
-         : matrix_( it.matrix_ )  // The dense matrix containing the band.
-         , row_   ( it.row_    )  // The current row index.
-         , column_( it.column_ )  // The current column index.
+      template< typename MatrixType2, typename IteratorType2 >
+      inline BandIterator( const BandIterator<MatrixType2,IteratorType2>& it ) noexcept
+         : matrix_( it.matrix_ )  // The dense matrix containing the band
+         , row_   ( it.row_    )  // The current row index
+         , column_( it.column_ )  // The current column index
+         , pos_   ( it.pos_    )  // Iterator to the current dense element
       {}
       //*******************************************************************************************
 
@@ -222,8 +237,17 @@ class Band<MT,TF,true,false,CBAs...>
       // \return The incremented iterator.
       */
       inline BandIterator& operator+=( size_t inc ) noexcept {
+         using blaze::reset;
+
          row_    += inc;
          column_ += inc;
+
+         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+            pos_ = matrix_->begin( row_ ) + column_;
+         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
+
          return *this;
       }
       //*******************************************************************************************
@@ -235,8 +259,17 @@ class Band<MT,TF,true,false,CBAs...>
       // \return The decremented iterator.
       */
       inline BandIterator& operator-=( size_t dec ) noexcept {
+         using blaze::reset;
+
          row_    -= dec;
          column_ -= dec;
+
+         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+            pos_ = matrix_->begin( row_ ) + column_;
+         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
+
          return *this;
       }
       //*******************************************************************************************
@@ -247,8 +280,17 @@ class Band<MT,TF,true,false,CBAs...>
       // \return Reference to the incremented iterator.
       */
       inline BandIterator& operator++() noexcept {
+         using blaze::reset;
+
          ++row_;
          ++column_;
+
+         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+            pos_ = matrix_->begin( row_ ) + column_;
+         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
+
          return *this;
       }
       //*******************************************************************************************
@@ -271,8 +313,17 @@ class Band<MT,TF,true,false,CBAs...>
       // \return Reference to the decremented iterator.
       */
       inline BandIterator& operator--() noexcept {
+         using blaze::reset;
+
          --row_;
          --column_;
+
+         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+            pos_ = matrix_->begin( row_ ) + column_;
+         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+            pos_ = matrix_->begin( column_ ) + row_;
+         else reset( pos_ );
+
          return *this;
       }
       //*******************************************************************************************
@@ -296,7 +347,7 @@ class Band<MT,TF,true,false,CBAs...>
       // \return Reference to the accessed value.
       */
       inline ReferenceType operator[]( size_t index ) const {
-         return (*matrix_)(row_+index,column_+index);
+         return pos_[index];
       }
       //*******************************************************************************************
 
@@ -306,7 +357,7 @@ class Band<MT,TF,true,false,CBAs...>
       // \return Reference to the current value.
       */
       inline ReferenceType operator*() const {
-         return (*matrix_)(row_,column_);
+         return *pos_;
       }
       //*******************************************************************************************
 
@@ -316,7 +367,7 @@ class Band<MT,TF,true,false,CBAs...>
       // \return Pointer to the dense band element at the current iterator position.
       */
       inline PointerType operator->() const {
-         return &(*matrix_)(row_,column_);
+         return pos_;
       }
       //*******************************************************************************************
 
@@ -326,8 +377,8 @@ class Band<MT,TF,true,false,CBAs...>
       // \param rhs The right-hand side band iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator==( const BandIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator==( const BandIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return row_ == rhs.row_;
       }
       //*******************************************************************************************
@@ -338,8 +389,8 @@ class Band<MT,TF,true,false,CBAs...>
       // \param rhs The right-hand side band iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      template< typename MatrixType2 >
-      inline bool operator!=( const BandIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator!=( const BandIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return !( *this == rhs );
       }
       //*******************************************************************************************
@@ -350,8 +401,8 @@ class Band<MT,TF,true,false,CBAs...>
       // \param rhs The right-hand side band iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator<( const BandIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator<( const BandIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return row_ < rhs.row_;
       }
       //*******************************************************************************************
@@ -362,8 +413,8 @@ class Band<MT,TF,true,false,CBAs...>
       // \param rhs The right-hand side band iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator>( const BandIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator>( const BandIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return row_ > rhs.row_;
       }
       //*******************************************************************************************
@@ -374,8 +425,8 @@ class Band<MT,TF,true,false,CBAs...>
       // \param rhs The right-hand side band iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator<=( const BandIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator<=( const BandIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return row_ <= rhs.row_;
       }
       //*******************************************************************************************
@@ -386,8 +437,8 @@ class Band<MT,TF,true,false,CBAs...>
       // \param rhs The right-hand side band iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      template< typename MatrixType2 >
-      inline bool operator>=( const BandIterator<MatrixType2>& rhs ) const noexcept {
+      template< typename MatrixType2, typename IteratorType2 >
+      inline bool operator>=( const BandIterator<MatrixType2,IteratorType2>& rhs ) const noexcept {
          return row_ >= rhs.row_;
       }
       //*******************************************************************************************
@@ -441,23 +492,24 @@ class Band<MT,TF,true,false,CBAs...>
 
     private:
       //**Member variables*************************************************************************
-      MatrixType* matrix_;  //!< The dense matrix containing the band.
-      size_t      row_;     //!< The current row index.
-      size_t      column_;  //!< The current column index.
+      MatrixType*  matrix_;  //!< The dense matrix containing the band.
+      size_t       row_;     //!< The current row index.
+      size_t       column_;  //!< The current column index.
+      IteratorType pos_;     //!< Iterator to the current dense element.
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      template< typename MatrixType2 > friend class BandIterator;
+      template< typename MatrixType2, typename IteratorType2 > friend class BandIterator;
       //*******************************************************************************************
    };
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = BandIterator<const MT>;
+   using ConstIterator = BandIterator< const MT, ConstIterator_<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator< MT, Iterator_<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

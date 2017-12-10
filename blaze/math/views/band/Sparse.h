@@ -288,10 +288,10 @@ class Band<MT,TF,false,false,CBAs...>
       /*!\brief Default constructor of the BandIterator class.
       */
       inline BandIterator()
-         : matrix_( nullptr )  // The sparse matrix containing the band.
-         , row_   ( 0UL )      // The current row index.
-         , column_( 0UL )      // The current column index.
-         , pos_   ()           // Iterator to the current sparse element.
+         : matrix_( nullptr )  // The sparse matrix containing the band
+         , row_   ( 0UL )      // The current row index
+         , column_( 0UL )      // The current column index
+         , pos_   ()           // Iterator to the current sparse element
       {}
       //*******************************************************************************************
 
@@ -303,10 +303,10 @@ class Band<MT,TF,false,false,CBAs...>
       // \param columnIndex The initial column index.
       */
       inline BandIterator( MatrixType& matrix, size_t rowIndex, size_t columnIndex )
-         : matrix_( &matrix     )  // The sparse matrix containing the band.
-         , row_   ( rowIndex    )  // The current row index.
-         , column_( columnIndex )  // The current column index.
-         , pos_   ()               // Iterator to the current sparse element.
+         : matrix_( &matrix     )  // The sparse matrix containing the band
+         , row_   ( rowIndex    )  // The current row index
+         , column_( columnIndex )  // The current column index
+         , pos_   ()               // Iterator to the current sparse element
       {
          for( ; row_ < matrix_->rows() && column_ < matrix_->columns(); ++row_, ++column_ ) {
             pos_ = matrix_->find( row_, column_ );
@@ -325,10 +325,10 @@ class Band<MT,TF,false,false,CBAs...>
       // \param pos Initial position of the iterator
       */
       inline BandIterator( MatrixType& matrix, size_t rowIndex, size_t columnIndex, IteratorType pos )
-         : matrix_( &matrix     )  // The sparse matrix containing the band.
-         , row_   ( rowIndex    )  // The current row index.
-         , column_( columnIndex )  // The current column index.
-         , pos_   ( pos         )  // Iterator to the current sparse element.
+         : matrix_( &matrix     )  // The sparse matrix containing the band
+         , row_   ( rowIndex    )  // The current row index
+         , column_( columnIndex )  // The current column index
+         , pos_   ( pos         )  // Iterator to the current sparse element
       {
          BLAZE_INTERNAL_ASSERT( matrix.find( row_, column_ ) == pos, "Invalid initial iterator position" );
       }
@@ -341,10 +341,10 @@ class Band<MT,TF,false,false,CBAs...>
       */
       template< typename MatrixType2, typename IteratorType2 >
       inline BandIterator( const BandIterator<MatrixType2,IteratorType2>& it )
-         : matrix_( it.matrix_ )  // The sparse matrix containing the band.
-         , row_   ( it.row_    )  // The current row index.
-         , column_( it.column_ )  // The current column index.
-         , pos_   ( it.pos_    )  // Iterator to the current sparse element.
+         : matrix_( it.matrix_ )  // The sparse matrix containing the band
+         , row_   ( it.row_    )  // The current row index
+         , column_( it.column_ )  // The current column index
+         , pos_   ( it.pos_    )  // Iterator to the current sparse element
       {}
       //*******************************************************************************************
 
