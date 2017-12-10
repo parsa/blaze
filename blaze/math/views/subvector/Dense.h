@@ -282,10 +282,20 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //**Element access operator******************************************************************
       /*!\brief Direct access to the element at the current iterator position.
       //
-      // \return The resulting value.
+      // \return Reference to the current value.
       */
       inline ReferenceType operator*() const {
          return *iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return Pointer to the element at the current iterator position.
+      */
+      inline IteratorType operator->() const {
+         return iterator_;
       }
       //*******************************************************************************************
 

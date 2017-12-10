@@ -313,6 +313,16 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
       }
       //*******************************************************************************************
 
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return Pointer to the element at the current iterator position.
+      */
+      inline IteratorType operator->() const {
+         return iterator_;
+      }
+      //*******************************************************************************************
+
       //**Load function****************************************************************************
       /*!\brief Load of a SIMD element of the dense submatrix.
       //
@@ -3638,6 +3648,16 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
       */
       inline ReferenceType operator*() const {
          return *iterator_;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return Pointer to the element at the current iterator position.
+      */
+      inline IteratorType operator->() const {
+         return iterator_;
       }
       //*******************************************************************************************
 
