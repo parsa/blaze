@@ -347,7 +347,12 @@ class Band<MT,TF,true,false,CBAs...>
       // \return Reference to the accessed value.
       */
       inline ReferenceType operator[]( size_t index ) const {
-         return pos_[index];
+         BLAZE_USER_ASSERT( row_   +index < matrix_->rows()   , "Invalid access index detected" );
+         BLAZE_USER_ASSERT( column_+index < matrix_->columns(), "Invalid access index detected" );
+         const IteratorType pos( IsRowMajorMatrix<MatrixType>::value
+                               ? matrix_->begin( row_+index ) + column_ + index
+                               : matrix_->begin( column_+index ) + row_ + index );
+         return *pos;
       }
       //*******************************************************************************************
 
