@@ -2517,7 +2517,9 @@ class Column<MT,false,true,false,CCAs...>
       // \return Reference to the accessed value.
       */
       inline ReferenceType operator[]( size_t index ) const {
-         return pos_[index];
+         BLAZE_USER_ASSERT( row_+index < matrix_->rows(), "Invalid access index detected" );
+         const IteratorType pos( matrix_->begin( row_+index ) + column_ );
+         return *pos;
       }
       //*******************************************************************************************
 
