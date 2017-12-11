@@ -64,7 +64,7 @@ namespace blaze {
 template< typename Type >
 BLAZE_ALWAYS_INLINE void reset( Type& resettable )
 {
-   resettable = Type(0);
+   resettable = Type();
 }
 //*************************************************************************************************
 
