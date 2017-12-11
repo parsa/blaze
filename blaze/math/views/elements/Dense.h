@@ -56,6 +56,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -132,16 +133,26 @@ class Elements<VT,TF,true,CEAs...>
    //**ElementsIterator class definition***********************************************************
    /*!\brief Iterator over the element selection of the dense vector.
    */
-   template< typename ET >  // Type of the element selection
+   template< typename ElementsType    // Type of the element selection
+           , typename IteratorType >  // Type of the dense vector iterator
    class ElementsIterator
    {
     public:
       //**Type definitions*************************************************************************
-      using IteratorCategory = std::random_access_iterator_tag;       //! The iterator category.
-      using ValueType        = ElementType_<ET>;                      //! Type of the underlying elements.
-      using PointerType      = decltype( &std::declval<ET>()[0UL] );  //! Pointer return type.
-      using ReferenceType    = decltype( std::declval<ET>()[0UL] );   //! Reference return type.
-      using DifferenceType   = ptrdiff_t;                             //! Difference between two iterators.
+      //! The iterator category.
+      using IteratorCategory = typename std::iterator_traits<IteratorType>::iterator_category;
+
+      //! Type of the underlying elements.
+      using ValueType = typename std::iterator_traits<IteratorType>::value_type;
+
+      //! Pointer return type.
+      using PointerType = typename std::iterator_traits<IteratorType>::pointer;
+
+      //! Reference return type.
+      using ReferenceType = typename std::iterator_traits<IteratorType>::reference;
+
+      //! Difference between two iterators.
+      using DifferenceType = typename std::iterator_traits<IteratorType>::difference_type;
 
       // STL iterator requirements
       using iterator_category = IteratorCategory;  //!< The iterator category.
@@ -156,7 +167,8 @@ class Elements<VT,TF,true,CEAs...>
       */
       inline ElementsIterator()
          : elements_( nullptr )  // Pointer to the element selection
-         , index_   ( 0UL)       // Index of the current element of the element selection
+         , index_   ( 0UL )      // Index of the current element of the element selection
+         , pos_     ()           // Iterator to the current element
       {}
       //*******************************************************************************************
 
@@ -166,10 +178,14 @@ class Elements<VT,TF,true,CEAs...>
       // \param elements Pointer to the element selection.
       // \param index Index of the initial element.
       */
-      inline ElementsIterator( ET* elements, size_t index )
+      inline ElementsIterator( ElementsType* elements, size_t index )
          : elements_( elements )  // Pointer to the element selection
          , index_   ( index )     // Index of the current element of the element selection
-      {}
+         , pos_     ()            // Iterator to the current element
+      {
+         if( index_ < elements_->size() )
+            pos_ = elements_->operand().begin() + elements_->idx( index_ );
+      }
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -177,10 +193,11 @@ class Elements<VT,TF,true,CEAs...>
       //
       // \param it The elements iterator to be copied
       */
-      template< typename ET2 >
-      inline ElementsIterator( const ElementsIterator<ET2>& it )
+      template< typename ElementsType2, typename IteratorType2 >
+      inline ElementsIterator( const ElementsIterator<ElementsType2,IteratorType2>& it )
          : elements_( it.elements_ )  // Pointer to the element selection
          , index_   ( it.index_ )     // Index of the current element of the element selection
+         , pos_     ( it.pos_ )       // Iterator to the current element
       {}
       //*******************************************************************************************
 
@@ -191,7 +208,11 @@ class Elements<VT,TF,true,CEAs...>
       // \return The incremented iterator.
       */
       inline ElementsIterator& operator+=( size_t inc ) {
+         using blaze::reset;
          index_ += inc;
+         if( index_ < elements_->size() )
+            pos_ = elements_->operand().begin() + elements_->idx( index_ );
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -203,7 +224,11 @@ class Elements<VT,TF,true,CEAs...>
       // \return The decremented iterator.
       */
       inline ElementsIterator& operator-=( size_t dec ) {
+         using blaze::reset;
          index_ -= dec;
+         if( index_ < elements_->size() )
+            pos_ = elements_->operand().begin() + elements_->idx( index_ );
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -214,7 +239,11 @@ class Elements<VT,TF,true,CEAs...>
       // \return Reference to the incremented iterator.
       */
       inline ElementsIterator& operator++() {
+         using blaze::reset;
          ++index_;
+         if( index_ < elements_->size() )
+            pos_ = elements_->operand().begin() + elements_->idx( index_ );
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -225,7 +254,9 @@ class Elements<VT,TF,true,CEAs...>
       // \return The previous position of the iterator.
       */
       inline const ElementsIterator operator++( int ) {
-         return ElementsIterator( elements_, index_++ );
+         const ElementsIterator tmp( *this );
+         ++(*this);
+         return tmp;
       }
       //*******************************************************************************************
 
@@ -235,7 +266,11 @@ class Elements<VT,TF,true,CEAs...>
       // \return Reference to the decremented iterator.
       */
       inline ElementsIterator& operator--() {
+         using blaze::reset;
          --index_;
+         if( index_ < elements_->size() )
+            pos_ = elements_->operand().begin() + elements_->idx( index_ );
+         else reset( pos_ );
          return *this;
       }
       //*******************************************************************************************
@@ -246,7 +281,21 @@ class Elements<VT,TF,true,CEAs...>
       // \return The previous position of the iterator.
       */
       inline const ElementsIterator operator--( int ) {
-         return ElementsIterator( elements_, index_-- );
+         const ElementsIterator tmp( *this );
+         --(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Subscript operator***********************************************************************
+      /*!\brief Direct access to the elements.
+      //
+      // \param index Access index.
+      // \return Reference to the accessed value.
+      */
+      inline ReferenceType operator[]( size_t index ) const {
+         const IteratorType pos( elements_->operand().begin() + elements_->idx( index_ + index ) );
+         return *pos;
       }
       //*******************************************************************************************
 
@@ -256,7 +305,17 @@ class Elements<VT,TF,true,CEAs...>
       // \return The resulting value.
       */
       inline ReferenceType operator*() const {
-         return (*elements_)[index_];
+         return *pos_;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the element at the current iterator position.
+      //
+      // \return Pointer to the element at the current iterator position.
+      */
+      inline PointerType operator->() const {
+         return pos_;
       }
       //*******************************************************************************************
 
@@ -375,22 +434,23 @@ class Elements<VT,TF,true,CEAs...>
 
     private:
       //**Member variables*************************************************************************
-      size_t index_;     //!< Index of the current element of the element selection.
-      ET*    elements_;  //!< Pointer to the element selection.
+      ElementsType* elements_;  //!< Pointer to the element selection.
+      size_t        index_;     //!< Index of the current element of the element selection.
+      IteratorType  pos_;       //!< Iterator to the current element.
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      template< typename ET2 > friend class ElementsIterator;
+      template< typename ElementsType2, typename IteratorType2 > friend class ElementsIterator;
       //*******************************************************************************************
    };
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = ElementsIterator<const This>;
+   using ConstIterator = ElementsIterator< const This, ConstIterator_<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator<This> >;
+   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator< This, Iterator_<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
