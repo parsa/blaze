@@ -42,6 +42,7 @@
 #include <memory>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
+#include <blaze/math/Views.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
@@ -87,6 +88,7 @@ DenseAlignedTest::DenseAlignedTest()
    testIsDefault();
    testIsSame();
    testSubvector();
+   testElements();
 }
 //*************************************************************************************************
 
@@ -2686,6 +2688,80 @@ void DenseAlignedTest::testSubvector()
           << " Error: Setup of out-of-bounds subvector succeeded\n"
           << " Details:\n"
           << "   Result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c elements() function with the Subvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c elements() function used with the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseAlignedTest::testElements()
+{
+   using blaze::subvector;
+   using blaze::aligned;
+   using blaze::unaligned;
+
+
+   test_ = "elements() function";
+
+   initialize();
+
+   {
+      ASVT sv1 = subvector<aligned>( vec1_, 8UL, 32UL );
+      auto e1 = elements( sv1, { 8UL, 16UL } );
+
+      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 32UL );
+      auto e2 = elements( sv2, { 8UL, 16UL } );
+
+      if( e1 != e2 || vec1_ != vec2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Elements function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << e1 << "\n"
+             << "   Expected result:\n" << e2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( e1[1] != e2[1] ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e1[1] << "\n"
+             << "   Expected result: " << e2[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( *e1.begin() != *e2.begin() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << *e1.begin() << "\n"
+             << "   Expected result: " << *e2.begin() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      ASVT sv = subvector<aligned>( vec1_, 8UL, 32UL );
+      auto e = elements( sv, { 8UL, 32UL } );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds element selection succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << e << "\n";
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ) {}

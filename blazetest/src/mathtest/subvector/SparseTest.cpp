@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/DynamicVector.h>
+#include <blaze/math/Views.h>
 #include <blazetest/mathtest/subvector/SparseTest.h>
 
 
@@ -87,6 +88,7 @@ SparseTest::SparseTest()
    testIsDefault();
    testIsSame();
    testSubvector();
+   testElements();
 }
 //*************************************************************************************************
 
@@ -3644,6 +3646,62 @@ void SparseTest::testSubvector()
           << " Error: Setup of out-of-bounds subvector succeeded\n"
           << " Details:\n"
           << "   Result:\n" << sv2 << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c elements() function with the Subvector class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c elements() function used with the Subvector
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testElements()
+{
+   test_ = "elements() function";
+
+   initialize();
+
+   {
+      SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+      auto e = blaze::elements( sv, { 4UL, 2UL, 1UL, 3UL } );
+
+      if( e[1] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e[1] << "\n"
+             << "   Expected result: -2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( e.begin()->value() != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e.begin()->value() << "\n"
+             << "   Expected result: -2\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+      auto e = blaze::elements( sv, { 6UL } );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Setup of out-of-bounds element selection succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << e << "\n";
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ) {}

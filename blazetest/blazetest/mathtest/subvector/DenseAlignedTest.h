@@ -102,6 +102,7 @@ class DenseAlignedTest
    void testIsDefault   ();
    void testIsSame      ();
    void testSubvector   ();
+   void testElements    ();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
