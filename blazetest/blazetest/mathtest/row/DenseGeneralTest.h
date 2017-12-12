@@ -105,6 +105,7 @@ class DenseGeneralTest
    void testIsDefault();
    void testIsSame();
    void testSubvector();
+   void testElements();
 
    template< typename Type >
    void checkSize( const Type& row, size_t expectedSize ) const;

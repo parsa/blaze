@@ -91,29 +91,30 @@ class SparseSymmetricTest
    /*!\name Test functions */
    //@{
    void testConstructors();
-   void testAssignment  ();
-   void testAddAssign   ();
-   void testSubAssign   ();
-   void testMultAssign  ();
-   void testDivAssign   ();
-   void testCrossAssign ();
-   void testScaling     ();
-   void testSubscript   ();
-   void testIterator    ();
-   void testNonZeros    ();
-   void testReset       ();
-   void testClear       ();
-   void testReserve     ();
-   void testSet         ();
-   void testInsert      ();
-   void testAppend      ();
-   void testErase       ();
-   void testFind        ();
-   void testLowerBound  ();
-   void testUpperBound  ();
-   void testIsDefault   ();
-   void testIsSame      ();
-   void testSubvector   ();
+   void testAssignment();
+   void testAddAssign();
+   void testSubAssign();
+   void testMultAssign();
+   void testDivAssign();
+   void testCrossAssign();
+   void testScaling();
+   void testSubscript();
+   void testIterator();
+   void testNonZeros();
+   void testReset();
+   void testClear();
+   void testReserve();
+   void testSet();
+   void testInsert();
+   void testAppend();
+   void testErase();
+   void testFind();
+   void testLowerBound();
+   void testUpperBound();
+   void testIsDefault();
+   void testIsSame();
+   void testSubvector();
+   void testElements();
 
    template< typename Type >
    void checkSize( const Type& row, size_t expectedSize ) const;
