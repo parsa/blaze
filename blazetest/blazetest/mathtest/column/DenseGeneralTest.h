@@ -90,21 +90,22 @@ class DenseGeneralTest
    /*!\name Test functions */
    //@{
    void testConstructors();
-   void testAssignment  ();
-   void testAddAssign   ();
-   void testSubAssign   ();
-   void testMultAssign  ();
-   void testDivAssign   ();
-   void testCrossAssign ();
-   void testScaling     ();
-   void testSubscript   ();
-   void testIterator    ();
-   void testNonZeros    ();
-   void testReset       ();
-   void testClear       ();
-   void testIsDefault   ();
-   void testIsSame      ();
-   void testSubvector   ();
+   void testAssignment();
+   void testAddAssign();
+   void testSubAssign();
+   void testMultAssign();
+   void testDivAssign();
+   void testCrossAssign();
+   void testScaling();
+   void testSubscript();
+   void testIterator();
+   void testNonZeros();
+   void testReset();
+   void testClear();
+   void testIsDefault();
+   void testIsSame();
+   void testSubvector();
+   void testElements();
 
    template< typename Type >
    void checkSize( const Type& column, size_t expectedSize ) const;

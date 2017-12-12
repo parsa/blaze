@@ -90,6 +90,7 @@ SparseGeneralTest::SparseGeneralTest()
    testIsDefault();
    testIsSame();
    testSubvector();
+   testElements();
 }
 //*************************************************************************************************
 
@@ -7768,6 +7769,87 @@ void SparseGeneralTest::testSubvector()
              << " Details:\n"
              << "   Result: " << sv.begin()->value() << "\n"
              << "   Expected result: 1\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c elements() function with the Column specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c elements() function used with the Column
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseGeneralTest::testElements()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major elements() function";
+
+      initialize();
+
+      CT   col2 = blaze::column( mat_, 2UL );
+      auto e    = blaze::elements( col2, { 2UL, 0UL } );
+
+      if( e[1] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e[1] << "\n"
+             << "   Expected result: -2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( e.begin()->value() != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e.begin()->value() << "\n"
+             << "   Expected result: -3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major elements() function";
+
+      initialize();
+
+      OCT  col2 = blaze::column( tmat_, 2UL );
+      auto e    = blaze::elements( col2, { 2UL, 0UL } );
+
+      if( e[1] != -2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e[1] << "\n"
+             << "   Expected result: -2\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( e.begin()->value() != -3 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e.begin()->value() << "\n"
+             << "   Expected result: -3\n";
          throw std::runtime_error( oss.str() );
       }
    }
