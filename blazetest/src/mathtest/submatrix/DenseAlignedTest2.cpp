@@ -82,6 +82,7 @@ DenseAlignedTest::DenseAlignedTest()
    testSubmatrix();
    testRow();
    testColumn();
+   testBand();
 }
 //*************************************************************************************************
 
@@ -3629,6 +3630,116 @@ void DenseAlignedTest::testColumn()
              << " Details:\n"
              << "   Result: " << *col1.begin() << "\n"
              << "   Expected result: " << *col2.begin() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c band() function with the Submatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c band() function with the Submatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseAlignedTest::testBand()
+{
+   using blaze::submatrix;
+   using blaze::aligned;
+   using blaze::unaligned;
+
+
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major band() function";
+
+      initialize();
+
+      ASMT sm1  = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+      USMT sm2  = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+      auto b1 = band( sm1, 1L );
+      auto b2 = band( sm2, 1L );
+
+      if( b1 != b2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Band function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << b1 << "\n"
+             << "   Expected result:\n" << b2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( b1[1] != b2[1] ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << b1[1] << "\n"
+             << "   Expected result: " << b2[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( *b1.begin() != *b2.begin() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << *b1.begin() << "\n"
+             << "   Expected result: " << *b2.begin() << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major band() function";
+
+      initialize();
+
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+      auto  b1  = band( sm1, 1L );
+      auto  b2  = band( sm2, 1L );
+
+      if( b1 != b2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Band function failed\n"
+             << " Details:\n"
+             << "   Result:\n" << b1 << "\n"
+             << "   Expected result:\n" << b2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( b1[1] != b2[1] ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << b1[1] << "\n"
+             << "   Expected result: " << b2[1] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( *b1.begin() != *b2.begin() ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << *b1.begin() << "\n"
+             << "   Expected result: " << *b2.begin() << "\n";
          throw std::runtime_error( oss.str() );
       }
    }

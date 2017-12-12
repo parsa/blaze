@@ -7260,6 +7260,87 @@ void SparseTest::testColumn()
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Test of the \c band() function with the Submatrix class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c band() function with the Submatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void SparseTest::testBand()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major band() function";
+
+      initialize();
+
+      SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 4UL, 3UL );
+      auto b2  = band( sm1, -2L );
+
+      if( b2[1] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << b2[1] << "\n"
+             << "   Expected result: 9\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( b2.begin()->value() != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << b2.begin()->value() << "\n"
+             << "   Expected result: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major band() function";
+
+      initialize();
+
+      OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 3UL, 4UL );
+      auto b2  = band( sm1, 2L );
+
+      if( b2[1] != 9 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << b2[1] << "\n"
+             << "   Expected result: 9\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( b2.begin()->value() != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << b2.begin()->value() << "\n"
+             << "   Expected result: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

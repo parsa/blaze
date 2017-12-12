@@ -87,24 +87,25 @@ class DenseAlignedTest
    /*!\name Test functions */
    //@{
    void testConstructors();
-   void testAssignment  ();
-   void testAddAssign   ();
-   void testSubAssign   ();
-   void testSchurAssign ();
-   void testMultAssign  ();
-   void testScaling     ();
+   void testAssignment();
+   void testAddAssign();
+   void testSubAssign();
+   void testSchurAssign();
+   void testMultAssign();
+   void testScaling();
    void testFunctionCall();
-   void testIterator    ();
-   void testNonZeros    ();
-   void testReset       ();
-   void testClear       ();
-   void testTranspose   ();
-   void testCTranspose  ();
-   void testIsDefault   ();
-   void testIsSame      ();
-   void testSubmatrix   ();
-   void testRow         ();
-   void testColumn      ();
+   void testIterator();
+   void testNonZeros();
+   void testReset();
+   void testClear();
+   void testTranspose();
+   void testCTranspose();
+   void testIsDefault();
+   void testIsSame();
+   void testSubmatrix();
+   void testRow();
+   void testColumn();
+   void testBand();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
