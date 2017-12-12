@@ -105,6 +105,7 @@ class DenseTest
    void testIsDefault();
    void testIsSame();
    void testSubvector();
+   void testElements();
 
    template< typename Type >
    void checkSize( const Type& band, size_t expectedSize ) const;

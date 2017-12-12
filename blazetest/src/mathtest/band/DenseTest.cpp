@@ -85,6 +85,7 @@ DenseTest::DenseTest()
    testIsDefault();
    testIsSame();
    testSubvector();
+   testElements();
 }
 //*************************************************************************************************
 
@@ -7468,7 +7469,7 @@ void DenseTest::testSubvector()
          oss << " Test: " << test_ << "\n"
              << " Error: Subscript operator access failed\n"
              << " Details:\n"
-             << "   Result: " << sv[4] << "\n"
+             << "   Result: " << sv[1] << "\n"
              << "   Expected result: 4\n";
          throw std::runtime_error( oss.str() );
       }
@@ -7514,6 +7515,87 @@ void DenseTest::testSubvector()
              << " Details:\n"
              << "   Result: " << *sv.begin() << "\n"
              << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c elements() function with the Band specialization.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c elements() function used with the Band specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testElements()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major elements() function";
+
+      initialize();
+
+      BT   band1 = blaze::band( mat_, 1L );
+      auto e     = blaze::elements( band1, { 3UL, 2UL } );
+
+      if( e[1] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e[1] << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( *e.begin() != -6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << *e.begin() << "\n"
+             << "   Expected result: -6\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major elements() function";
+
+      initialize();
+
+      OBT  band1 = blaze::band( tmat_, -1L );
+      auto e     = blaze::elements( band1, { 3UL, 2UL } );
+
+      if( e[1] != 5 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subscript operator access failed\n"
+             << " Details:\n"
+             << "   Result: " << e[1] << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( *e.begin() != -6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Iterator access failed\n"
+             << " Details:\n"
+             << "   Result: " << *e.begin() << "\n"
+             << "   Expected result: -6\n";
          throw std::runtime_error( oss.str() );
       }
    }
