@@ -866,94 +866,6 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given matrix/vector multiplication.
-// \ingroup submatrix
-//
-// \param vector The constant matrix/vector multiplication.
-// \param args The runtime subvector arguments.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// matrix/vector multiplication.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename VT         // Vector base type of the expression
-        , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using MT = RemoveReference_< LeftOperand_< VectorType_<VT> > >;
-
-   const SubvectorData<CSAs...> sd( args... );
-
-   decltype(auto) left ( (~vector).leftOperand()  );
-   decltype(auto) right( (~vector).rightOperand() );
-
-   const size_t column( ( IsUpper<MT>::value )
-                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
-                        :( 0UL ) );
-   const size_t n( ( IsLower<MT>::value )
-                   ?( ( IsUpper<MT>::value )?( sd.size() )
-                                            :( ( IsStrictlyLower<MT>::value && sd.size() > 0UL )
-                                               ?( sd.offset() + sd.size() - 1UL )
-                                               :( sd.offset() + sd.size() ) ) )
-                   :( ( IsUpper<MT>::value )?( left.columns() - column )
-                                            :( left.columns() ) ) );
-
-   return submatrix<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given vector/matrix multiplication.
-// \ingroup submatrix
-//
-// \param vector The constant vector/matrix multiplication.
-// \param args The runtime subvector arguments.
-// \return View on the specified subvector of the multiplication.
-//
-// This function returns an expression representing the specified subvector of the given
-// vector/matrix multiplication.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename VT         // Vector base type of the expression
-        , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using MT = RemoveReference_< RightOperand_< VectorType_<VT> > >;
-
-   const SubvectorData<CSAs...> sd( args... );
-
-   decltype(auto) left ( (~vector).leftOperand()  );
-   decltype(auto) right( (~vector).rightOperand() );
-
-   const size_t row( ( IsLower<MT>::value )
-                     ?( ( !AF && IsStrictlyLower<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
-                     :( 0UL ) );
-   const size_t m( ( IsUpper<MT>::value )
-                   ?( ( IsLower<MT>::value )?( sd.size() )
-                                            :( ( IsStrictlyUpper<MT>::value && sd.size() > 0UL )
-                                               ?( sd.offset() + sd.size() - 1UL )
-                                               :( sd.offset() + sd.size() ) ) )
-                   :( ( IsLower<MT>::value )?( right.rows() - row )
-                                            :( right.rows() ) ) );
-
-   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, sd.offset(), m, sd.size() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific submatrix of the given matrix/matrix addition.
 // \ingroup submatrix
 //
@@ -1393,362 +1305,6 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given submatrix.
-// \ingroup submatrix
-//
-// \param sm The submatrix containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the submatrix.
-//
-// This function returns an expression representing the specified row of the given submatrix.
-*/
-template< size_t I1           // Row index
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
-{
-   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the submatrix.
-//
-// This function returns an expression representing the specified row of the given constant
-// submatrix.
-*/
-template< size_t I1           // Row index
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
-{
-   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the submatrix.
-//
-// This function returns an expression representing the specified row of the given temporary
-// submatrix.
-*/
-template< size_t I1           // Row index
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
-{
-   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given submatrix.
-// \ingroup submatrix
-//
-// \param sm The submatrix containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the submatrix.
-//
-// This function returns an expression representing the specified row of the given submatrix.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
-{
-   const RowData<CRAs...> rd( args... );
-   const size_t index( rd.row() + sm.row() );
-
-   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the submatrix.
-//
-// This function returns an expression representing the specified row of the given constant
-// submatrix.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
-{
-   const RowData<CRAs...> rd( args... );
-   const size_t index( rd.row() + sm.row() );
-
-   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the submatrix.
-//
-// This function returns an expression representing the specified row of the given temporary
-// submatrix.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RRAs... args )
-{
-   const RowData<CRAs...> rd( args... );
-   const size_t index( rd.row() + sm.row() );
-
-   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given submatrix.
-// \ingroup submatrix
-//
-// \param sm The submatrix containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the submatrix.
-//
-// This function returns an expression representing the specified column of the given submatrix.
-*/
-template< size_t I1           // Column index
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
-{
-   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the submatrix.
-//
-// This function returns an expression representing the specified column of the given constant
-// submatrix.
-*/
-template< size_t I1           // Column index
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
-{
-   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the submatrix.
-//
-// This function returns an expression representing the specified column of the given temporary
-// submatrix.
-*/
-template< size_t I1           // Column index
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args )
-{
-   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given submatrix.
-// \ingroup submatrix
-//
-// \param sm The submatrix containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the submatrix.
-//
-// This function returns an expression representing the specified column of the given submatrix.
-*/
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... args )
-{
-   const ColumnData<CCAs...> cd( args... );
-   const size_t index( cd.column() + sm.column() );
-
-   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the submatrix.
-//
-// This function returns an expression representing the specified column of the given constant
-// submatrix.
-*/
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... args )
-{
-   const ColumnData<CCAs...> cd( args... );
-   const size_t index( cd.column() + sm.column() );
-
-   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the submatrix.
-//
-// This function returns an expression representing the specified column of the given temporary
-// submatrix.
-*/
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RCAs... args )
-{
-   const ColumnData<CCAs...> cd( args... );
-   const size_t index( cd.column() + sm.column() );
-
-   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific submatrix of another submatrix.
 // \ingroup submatrix
 //
@@ -2129,6 +1685,474 @@ inline decltype(auto)
    }
 
    return submatrix<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (SUBVECTOR)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given matrix/vector multiplication.
+// \ingroup submatrix
+//
+// \param vector The constant matrix/vector multiplication.
+// \param args The runtime subvector arguments.
+// \return View on the specified subvector of the multiplication.
+//
+// This function returns an expression representing the specified subvector of the given
+// matrix/vector multiplication.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using MT = RemoveReference_< LeftOperand_< VectorType_<VT> > >;
+
+   const SubvectorData<CSAs...> sd( args... );
+
+   decltype(auto) left ( (~vector).leftOperand()  );
+   decltype(auto) right( (~vector).rightOperand() );
+
+   const size_t column( ( IsUpper<MT>::value )
+                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
+                        :( 0UL ) );
+   const size_t n( ( IsLower<MT>::value )
+                   ?( ( IsUpper<MT>::value )?( sd.size() )
+                                            :( ( IsStrictlyLower<MT>::value && sd.size() > 0UL )
+                                               ?( sd.offset() + sd.size() - 1UL )
+                                               :( sd.offset() + sd.size() ) ) )
+                   :( ( IsUpper<MT>::value )?( left.columns() - column )
+                                            :( left.columns() ) ) );
+
+   return submatrix<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector/matrix multiplication.
+// \ingroup submatrix
+//
+// \param vector The constant vector/matrix multiplication.
+// \param args The runtime subvector arguments.
+// \return View on the specified subvector of the multiplication.
+//
+// This function returns an expression representing the specified subvector of the given
+// vector/matrix multiplication.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using MT = RemoveReference_< RightOperand_< VectorType_<VT> > >;
+
+   const SubvectorData<CSAs...> sd( args... );
+
+   decltype(auto) left ( (~vector).leftOperand()  );
+   decltype(auto) right( (~vector).rightOperand() );
+
+   const size_t row( ( IsLower<MT>::value )
+                     ?( ( !AF && IsStrictlyLower<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
+                     :( 0UL ) );
+   const size_t m( ( IsUpper<MT>::value )
+                   ?( ( IsLower<MT>::value )?( sd.size() )
+                                            :( ( IsStrictlyUpper<MT>::value && sd.size() > 0UL )
+                                               ?( sd.offset() + sd.size() - 1UL )
+                                               :( sd.offset() + sd.size() ) ) )
+                   :( ( IsLower<MT>::value )?( right.rows() - row )
+                                            :( right.rows() ) ) );
+
+   return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, sd.offset(), m, sd.size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (ROW)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given submatrix.
+// \ingroup submatrix
+//
+// \param sm The submatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given submatrix.
+*/
+template< size_t I1           // Row index
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I2           // Present index of the first row
+        , size_t J            // Present index of the first column
+        , size_t M            // Present number of rows
+        , size_t N            // Present number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
+{
+   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given constant submatrix.
+// \ingroup submatrix
+//
+// \param sm The constant submatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given constant
+// submatrix.
+*/
+template< size_t I1           // Row index
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I2           // Present index of the first row
+        , size_t J            // Present index of the first column
+        , size_t M            // Present number of rows
+        , size_t N            // Present number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
+{
+   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given temporary submatrix.
+// \ingroup submatrix
+//
+// \param sm The temporary submatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given temporary
+// submatrix.
+*/
+template< size_t I1           // Row index
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I2           // Present index of the first row
+        , size_t J            // Present index of the first column
+        , size_t M            // Present number of rows
+        , size_t N            // Present number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
+{
+   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given submatrix.
+// \ingroup submatrix
+//
+// \param sm The submatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given submatrix.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
+{
+   const RowData<CRAs...> rd( args... );
+   const size_t index( rd.row() + sm.row() );
+
+   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given constant submatrix.
+// \ingroup submatrix
+//
+// \param sm The constant submatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given constant
+// submatrix.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
+{
+   const RowData<CRAs...> rd( args... );
+   const size_t index( rd.row() + sm.row() );
+
+   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given temporary submatrix.
+// \ingroup submatrix
+//
+// \param sm The temporary submatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given temporary
+// submatrix.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RRAs... args )
+{
+   const RowData<CRAs...> rd( args... );
+   const size_t index( rd.row() + sm.row() );
+
+   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (COLUMN)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given submatrix.
+// \ingroup submatrix
+//
+// \param sm The submatrix containing the column.
+// \param args The optional column arguments.
+// \return View on the specified column of the submatrix.
+//
+// This function returns an expression representing the specified column of the given submatrix.
+*/
+template< size_t I1           // Column index
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I2           // Present index of the first row
+        , size_t J            // Present index of the first column
+        , size_t M            // Present number of rows
+        , size_t N            // Present number of columns
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
+{
+   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given constant submatrix.
+// \ingroup submatrix
+//
+// \param sm The constant submatrix containing the column.
+// \param args The optional column arguments.
+// \return View on the specified column of the submatrix.
+//
+// This function returns an expression representing the specified column of the given constant
+// submatrix.
+*/
+template< size_t I1           // Column index
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I2           // Present index of the first row
+        , size_t J            // Present index of the first column
+        , size_t M            // Present number of rows
+        , size_t N            // Present number of columns
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
+{
+   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given temporary submatrix.
+// \ingroup submatrix
+//
+// \param sm The temporary submatrix containing the column.
+// \param args The optional column arguments.
+// \return View on the specified column of the submatrix.
+//
+// This function returns an expression representing the specified column of the given temporary
+// submatrix.
+*/
+template< size_t I1           // Column index
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I2           // Present index of the first row
+        , size_t J            // Present index of the first column
+        , size_t M            // Present number of rows
+        , size_t N            // Present number of columns
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args )
+{
+   return subvector( column<I1+J>( sm.operand(), args... ), I2, M, unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given submatrix.
+// \ingroup submatrix
+//
+// \param sm The submatrix containing the column.
+// \param args The optional column arguments.
+// \return View on the specified column of the submatrix.
+//
+// This function returns an expression representing the specified column of the given submatrix.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... args )
+{
+   const ColumnData<CCAs...> cd( args... );
+   const size_t index( cd.column() + sm.column() );
+
+   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given constant submatrix.
+// \ingroup submatrix
+//
+// \param sm The constant submatrix containing the column.
+// \param args The optional column arguments.
+// \return View on the specified column of the submatrix.
+//
+// This function returns an expression representing the specified column of the given constant
+// submatrix.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RCAs... args )
+{
+   const ColumnData<CCAs...> cd( args... );
+   const size_t index( cd.column() + sm.column() );
+
+   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given temporary submatrix.
+// \ingroup submatrix
+//
+// \param sm The temporary submatrix containing the column.
+// \param args The optional column arguments.
+// \return View on the specified column of the submatrix.
+//
+// This function returns an expression representing the specified column of the given temporary
+// submatrix.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Present alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RCAs... args )
+{
+   const ColumnData<CCAs...> cd( args... );
+   const size_t index( cd.column() + sm.column() );
+
+   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

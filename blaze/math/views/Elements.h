@@ -508,198 +508,6 @@ inline decltype(auto) elements( VT&& vector, const SmallVector<size_t,N>& indice
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given element selection.
-// \ingroup elements
-//
-// \param e The selection of elements containing the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the element selection.
-//
-// This function returns an expression representing the specified subvector of the given element
-// selection.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t I            // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
-        , typename... RSAs >  // Optional arguments
-inline decltype(auto) subvector( Elements<VT,TF,DF,CEAs...>& e, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements( e, make_shifted_index_sequence<I,N>(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given constant element selection.
-// \ingroup elements
-//
-// \param e The constant selection of elements containing the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the element selection.
-//
-// This function returns an expression representing the specified subvector of the given constant
-// element selection.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t I            // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
-        , typename... RSAs >  // Optional arguments
-inline decltype(auto) subvector( const Elements<VT,TF,DF,CEAs...>& e, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements( e, make_shifted_index_sequence<I,N>(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given temporary element selection.
-// \ingroup elements
-//
-// \param e The temporary selection of elements containing the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the element selection.
-//
-// This function returns an expression representing the specified subvector of the given temporary
-// element selection.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t I            // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
-        , typename... RSAs >  // Optional arguments
-inline decltype(auto) subvector( Elements<VT,TF,DF,CEAs...>&& e, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements( e, make_shifted_index_sequence<I,N>(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given element selection.
-// \ingroup elements
-//
-// \param e The selection of elements containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the element selection.
-//
-// This function returns an expression representing the specified subvector of the given element
-// selection.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
-        , typename... RSAs >  // Optional arguments
-inline decltype(auto)
-   subvector( Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   SmallVector<size_t,128UL> indices( size );
-   std::iota( indices.begin(), indices.end(), index );
-
-   return elements( e, indices.data(), indices.size(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given constant element selection.
-// \ingroup elements
-//
-// \param e The constant selection of elements containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the element selection.
-//
-// This function returns an expression representing the specified subvector of the given constant
-// element selection.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
-        , typename... RSAs >  // Optional arguments
-inline decltype(auto)
-   subvector( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   SmallVector<size_t,128UL> indices( size );
-   std::iota( indices.begin(), indices.end(), index );
-
-   return elements( e, indices.data(), indices.size(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given temporary element selection.
-// \ingroup elements
-//
-// \param e The temporary selection of elements containing the subvector.
-// \param index The index of the first element of the subvector.
-// \param size The size of the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the element selection.
-//
-// This function returns an expression representing the specified subvector of the given temporary
-// element selection.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
-        , typename... RSAs >  // Optional arguments
-inline decltype(auto)
-   subvector( Elements<VT,TF,DF,CEAs...>&& e, size_t index, size_t size, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   SmallVector<size_t,128UL> indices( size );
-   std::iota( indices.begin(), indices.end(), index );
-
-   return elements( std::move( e ), indices.data(), indices.size(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of elements on the given vector/vector addition.
 // \ingroup elements
 //
@@ -1357,6 +1165,206 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
    }
 
    return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (SUBVECTOR)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given element selection.
+// \ingroup elements
+//
+// \param e The selection of elements containing the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the element selection.
+//
+// This function returns an expression representing the specified subvector of the given element
+// selection.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CEAs      // Compile time element arguments
+        , typename... RSAs >  // Optional arguments
+inline decltype(auto) subvector( Elements<VT,TF,DF,CEAs...>& e, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return elements( e, make_shifted_index_sequence<I,N>(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given constant element selection.
+// \ingroup elements
+//
+// \param e The constant selection of elements containing the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the element selection.
+//
+// This function returns an expression representing the specified subvector of the given constant
+// element selection.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CEAs      // Compile time element arguments
+        , typename... RSAs >  // Optional arguments
+inline decltype(auto) subvector( const Elements<VT,TF,DF,CEAs...>& e, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return elements( e, make_shifted_index_sequence<I,N>(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given temporary element selection.
+// \ingroup elements
+//
+// \param e The temporary selection of elements containing the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the element selection.
+//
+// This function returns an expression representing the specified subvector of the given temporary
+// element selection.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CEAs      // Compile time element arguments
+        , typename... RSAs >  // Optional arguments
+inline decltype(auto) subvector( Elements<VT,TF,DF,CEAs...>&& e, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return elements( e, make_shifted_index_sequence<I,N>(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given element selection.
+// \ingroup elements
+//
+// \param e The selection of elements containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the element selection.
+//
+// This function returns an expression representing the specified subvector of the given element
+// selection.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CEAs      // Compile time element arguments
+        , typename... RSAs >  // Optional arguments
+inline decltype(auto)
+   subvector( Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   SmallVector<size_t,128UL> indices( size );
+   std::iota( indices.begin(), indices.end(), index );
+
+   return elements( e, indices.data(), indices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given constant element selection.
+// \ingroup elements
+//
+// \param e The constant selection of elements containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the element selection.
+//
+// This function returns an expression representing the specified subvector of the given constant
+// element selection.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CEAs      // Compile time element arguments
+        , typename... RSAs >  // Optional arguments
+inline decltype(auto)
+   subvector( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   SmallVector<size_t,128UL> indices( size );
+   std::iota( indices.begin(), indices.end(), index );
+
+   return elements( e, indices.data(), indices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given temporary element selection.
+// \ingroup elements
+//
+// \param e The temporary selection of elements containing the subvector.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \param args The optional subvector arguments.
+// \return View on the specified subvector of the element selection.
+//
+// This function returns an expression representing the specified subvector of the given temporary
+// element selection.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CEAs      // Compile time element arguments
+        , typename... RSAs >  // Optional arguments
+inline decltype(auto)
+   subvector( Elements<VT,TF,DF,CEAs...>&& e, size_t index, size_t size, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   SmallVector<size_t,128UL> indices( size );
+   std::iota( indices.begin(), indices.end(), index );
+
+   return elements( std::move( e ), indices.data(), indices.size(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
