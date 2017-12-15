@@ -1774,17 +1774,21 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 */
 template< size_t I1           // Row index
         , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool SO             // Storage order
         , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
+        , size_t I2           // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
         , typename... RRAs >  // Optional row arguments
 inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 {
-   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+
+   return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1804,17 +1808,21 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 */
 template< size_t I1           // Row index
         , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool SO             // Storage order
         , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
+        , size_t I2           // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
         , typename... RRAs >  // Optional row arguments
 inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 {
-   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+
+   return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1834,17 +1842,150 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RRAs... ar
 */
 template< size_t I1           // Row index
         , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool SO             // Storage order
         , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J            // Present index of the first column
-        , size_t M            // Present number of rows
-        , size_t N            // Present number of columns
+        , size_t I2           // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
         , typename... RRAs >  // Optional row arguments
 inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
 {
-   return subvector( row<I1+I2>( sm.operand(), args... ), J, N, unchecked );
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+
+   return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given submatrix.
+// \ingroup submatrix
+//
+// \param sm The submatrix containing the row.
+// \param index The index of the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given submatrix.
+*/
+template< typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( index >= M ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+   }
+
+   return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given constant submatrix.
+// \ingroup submatrix
+//
+// \param sm The constant submatrix containing the row.
+// \param index The index of the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given constant
+// submatrix.
+*/
+template< typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( index >= M ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+   }
+
+   return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given temporary submatrix.
+// \ingroup submatrix
+//
+// \param sm The temporary submatrix containing the row.
+// \param index The index of the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the submatrix.
+//
+// This function returns an expression representing the specified row of the given temporary
+// submatrix.
+*/
+template< typename MT         // Type of the sparse submatrix
+        , AlignmentFlag AF    // Alignment flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I,J,M,N>&& sm, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( index >= M ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+   }
+
+   return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1863,14 +2004,27 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
 */
 template< size_t... CRAs      // Compile time row arguments
         , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool SO             // Storage order
         , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 {
+   BLAZE_FUNCTION_TRACE;
+
    const RowData<CRAs...> rd( args... );
+
+   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( rd.row() >= sm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+   }
+
    const size_t index( rd.row() + sm.row() );
 
    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
@@ -1893,14 +2047,27 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
 */
 template< size_t... CRAs      // Compile time row arguments
         , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool SO             // Storage order
         , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... args )
+inline decltype(auto) row( const Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 {
+   BLAZE_FUNCTION_TRACE;
+
    const RowData<CRAs...> rd( args... );
+
+   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( rd.row() >= sm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+   }
+
    const size_t index( rd.row() + sm.row() );
 
    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
@@ -1923,14 +2090,27 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, RRAs... arg
 */
 template< size_t... CRAs      // Compile time row arguments
         , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Present alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool SO             // Storage order
         , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, RRAs... args )
+inline decltype(auto) row( Submatrix<MT,AF,SO,DF>&& sm, RRAs... args )
 {
+   BLAZE_FUNCTION_TRACE;
+
    const RowData<CRAs...> rd( args... );
+
+   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+
+   if( isChecked ) {
+      if( ( rd.row() >= sm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+   }
+
    const size_t index( rd.row() + sm.row() );
 
    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
