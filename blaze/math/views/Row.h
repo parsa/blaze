@@ -458,6 +458,7 @@ inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, RRAs... args )
 // \param matrix The constant outer product.
 // \param args Optional row arguments.
 // \return View on the specified row of the outer product.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given outer product.
 */
@@ -491,6 +492,7 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, RRAs... args )
 // \param index The index of the row.
 // \param args Optional row arguments.
 // \return View on the specified row of the outer product.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given outer product.
 */

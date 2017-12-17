@@ -459,6 +459,7 @@ inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, RCAs... args )
 // \param matrix The constant outer product.
 // \param args Optional column arguments.
 // \return View on the specified column of the outer product.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given outer
 // product.
@@ -493,6 +494,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 // \param index The index of the column.
 // \param args Optional column arguments.
 // \return View on the specified column of the outer product.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given outer
 // product.

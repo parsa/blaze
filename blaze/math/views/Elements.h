@@ -914,6 +914,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,I2,Is2...>&& e, REAs... args )
 // \param e The given element selection.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the other element selection.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given element selection.
@@ -934,7 +935,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>& e, REAs... args )
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
@@ -954,6 +955,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>& e, REAs... args )
 // \param e The given constant element selection.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the other element selection.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given constant element selection.
@@ -974,7 +976,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF>& e, REAs... args )
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
@@ -994,6 +996,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF>& e, REAs... args )
 // \param e The given temporary element selection.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the other element selection.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given temporary element selection.
@@ -1014,7 +1017,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>&& e, REAs... args )
       static constexpr size_t indices[] = { I, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
          if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
@@ -1036,6 +1039,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>&& e, REAs... args )
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the other element selection.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given element selection.
@@ -1055,7 +1059,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
@@ -1084,6 +1088,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the other element selection.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given constant element selection.
@@ -1103,7 +1108,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }
@@ -1132,6 +1137,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the other element selection.
+// \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given temporary element selection.
@@ -1151,7 +1157,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
          if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
    }

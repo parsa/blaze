@@ -1394,6 +1394,7 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>&& sm, RSAs.
 // \param sm The given submatrix
 // \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
@@ -1437,6 +1438,7 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>& sm, RSAs... args )
 // \param sm The constant submatrix
 // \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given constant
 // submatrix.
@@ -1481,6 +1483,7 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm, RSAs... args
 // \param sm The temporary submatrix
 // \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given temporary
 // submatrix.
@@ -1529,6 +1532,7 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>&& sm, RSAs... args )
 // \param n The number of columns of the submatrix.
 // \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
@@ -1575,6 +1579,7 @@ inline decltype(auto)
 // \param n The number of columns of the submatrix.
 // \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given constant
 // submatrix.
@@ -1622,6 +1627,7 @@ inline decltype(auto)
 // \param n The number of columns of the submatrix.
 // \param args The optional submatrix arguments.
 // \return View on the specified submatrix of the other submatrix.
+// \exception std::invalid_argument Invalid submatrix specification.
 //
 // This function returns an expression representing the specified submatrix of the given temporary
 // submatrix.
@@ -1914,6 +1920,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t index, RRA
 // \param index The index of the row.
 // \param args The optional row arguments.
 // \return View on the specified row of the submatrix.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given constant
 // submatrix.
@@ -1957,6 +1964,7 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t inde
 // \param index The index of the row.
 // \param args The optional row arguments.
 // \return View on the specified row of the submatrix.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given temporary
 // submatrix.
@@ -1999,6 +2007,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I,J,M,N>&& sm, size_t index, RR
 // \param sm The submatrix containing the row.
 // \param args The optional row arguments.
 // \return View on the specified row of the submatrix.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given submatrix.
 */
@@ -2041,6 +2050,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 // \param sm The constant submatrix containing the row.
 // \param args The optional row arguments.
 // \return View on the specified row of the submatrix.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given constant
 // submatrix.
@@ -2084,6 +2094,7 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 // \param sm The temporary submatrix containing the row.
 // \param args The optional row arguments.
 // \return View on the specified row of the submatrix.
+// \exception std::invalid_argument Invalid row access index.
 //
 // This function returns an expression representing the specified row of the given temporary
 // submatrix.
@@ -2237,6 +2248,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args
 // \param index The index of the column.
 // \param args The optional column arguments.
 // \return View on the specified column of the submatrix.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given submatrix.
 */
@@ -2279,6 +2291,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t index, 
 // \param index The index of the column.
 // \param args The optional column arguments.
 // \return View on the specified column of the submatrix.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given constant
 // submatrix.
@@ -2322,6 +2335,7 @@ inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t i
 // \param index The index of the column.
 // \param args The optional column arguments.
 // \return View on the specified column of the submatrix.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given temporary
 // submatrix.
@@ -2364,6 +2378,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I,J,M,N>&& sm, size_t index,
 // \param sm The submatrix containing the column.
 // \param args The optional column arguments.
 // \return View on the specified column of the submatrix.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given submatrix.
 */
@@ -2406,6 +2421,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
 // \param sm The constant submatrix containing the column.
 // \param args The optional column arguments.
 // \return View on the specified column of the submatrix.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given constant
 // submatrix.
@@ -2449,6 +2465,7 @@ inline decltype(auto) column( const Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
 // \param sm The temporary submatrix containing the column.
 // \param args The optional column arguments.
 // \return View on the specified column of the submatrix.
+// \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing the specified column of the given temporary
 // submatrix.

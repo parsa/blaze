@@ -1241,6 +1241,7 @@ inline decltype(auto) subvector( Subvector<VT,AF2,TF,DF,I2,N2>&& sv, RSAs... arg
 // \param sv The given subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
@@ -1281,6 +1282,7 @@ inline decltype(auto) subvector( Subvector<VT,AF2,TF,DF>& sv, RSAs... args )
 // \param sv The given constant subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given constant
 // subvector.
@@ -1322,6 +1324,7 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv, RSAs... args
 // \param sv The given temporary subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given temporary
 // subvector.
@@ -1365,6 +1368,7 @@ inline decltype(auto) subvector( Subvector<VT,AF2,TF,DF>&& sv, RSAs... args )
 // \param size The size of the subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given subvector.
 */
@@ -1407,6 +1411,7 @@ inline decltype(auto)
 // \param size The size of the subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given constant
 // subvector.
@@ -1450,6 +1455,7 @@ inline decltype(auto)
 // \param size The size of the subvector.
 // \param args The optional subvector arguments.
 // \return View on the specified subvector of the other subvector.
+// \exception std::invalid_argument Invalid subvector specification.
 //
 // This function returns an expression representing the specified subvector of the given temporary
 // subvector.
@@ -1595,6 +1601,7 @@ inline decltype(auto)
 // \param sv The given subvector.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
+// \exception std::invalid_argument Invalid elements specification.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
@@ -1635,6 +1642,7 @@ inline decltype(auto) elements( Subvector<VT,AF,TF,DF>& sv, REAs... args )
 // \param sv The given constant subvector.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
+// \exception std::invalid_argument Invalid elements specification.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given constant subvector.
@@ -1675,6 +1683,7 @@ inline decltype(auto) elements( const Subvector<VT,AF,TF,DF>& sv, REAs... args )
 // \param sv The given temporary subvector.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
+// \exception std::invalid_argument Invalid elements specification.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given temporary subvector.
@@ -1717,6 +1726,7 @@ inline decltype(auto) elements( Subvector<VT,AF,TF,DF>&& sv, REAs... args )
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
+// \exception std::invalid_argument Invalid elements specification.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
@@ -1762,6 +1772,7 @@ inline decltype(auto)
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
+// \exception std::invalid_argument Invalid elements specification.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given constant subvector.
@@ -1807,6 +1818,7 @@ inline decltype(auto)
 // \param n The total number of indices.
 // \param args The optional element arguments.
 // \return View on the specified selection of elements on the subvector.
+// \exception std::invalid_argument Invalid elements specification.
 //
 // This function returns an expression representing the specified selection of elements on the
 // given temporary subvector.
