@@ -50,6 +50,7 @@
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/constraints/Submatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/UniTriangular.h>
@@ -303,6 +304,7 @@ class Row<MT,true,false,SF,CRAs...>
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE     ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE   ( MT );
    //**********************************************************************************************
@@ -2659,6 +2661,7 @@ class Row<MT,false,false,false,CRAs...>
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE       ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE       ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE       ( MT );
    //**********************************************************************************************
@@ -4426,6 +4429,7 @@ class Row<MT,false,false,true,CRAs...>
    BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE   ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SUBMATRIX_TYPE      ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE        ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE      ( MT );
    //**********************************************************************************************
