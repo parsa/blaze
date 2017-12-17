@@ -2544,7 +2544,7 @@ inline void CustomVector<Type,AF,PF,TF>::multAssign( const SparseVector<VT,TF>& 
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const DynamicVector<Type,TF> tmp( serial( *this ) );
+   const ResultType tmp( serial( *this ) );
 
    reset();
 
@@ -4826,7 +4826,7 @@ inline void CustomVector<Type,AF,padded,TF>::multAssign( const SparseVector<VT,T
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   const DynamicVector<Type,TF> tmp( serial( *this ) );
+   const ResultType tmp( serial( *this ) );
 
    reset();
 
@@ -5259,13 +5259,13 @@ struct BinaryMapTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF>,
 template< typename T, bool AF, bool PF, bool TF, size_t I, size_t N >
 struct SubvectorTrait< CustomVector<T,AF,PF,TF>, I, N >
 {
-   using Type = StaticVector<T,N,TF>;
+   using Type = StaticVector<RemoveConst_<T>,N,TF>;
 };
 
 template< typename T, bool AF, bool PF, bool TF >
 struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
 {
-   using Type = DynamicVector<T,TF>;
+   using Type = DynamicVector<RemoveConst_<T>,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5284,13 +5284,13 @@ struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
 template< typename T, bool AF, bool PF, bool TF, size_t... CEAs >
 struct ElementsTrait< CustomVector<T,AF,PF,TF>, CEAs... >
 {
-   using Type = StaticVector<T,sizeof...(CEAs),TF>;
+   using Type = StaticVector<RemoveConst_<T>,sizeof...(CEAs),TF>;
 };
 
 template< typename T, bool AF, bool PF, bool TF >
 struct ElementsTrait< CustomVector<T,AF,PF,TF> >
 {
-   using Type = DynamicVector<T,TF>;
+   using Type = DynamicVector<RemoveConst_<T>,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
