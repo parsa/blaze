@@ -6521,13 +6521,13 @@ struct BinaryMapTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2
 template< typename T, bool AF, bool PF, bool SO, size_t I, size_t J, size_t M, size_t N >
 struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO>, I, J, M, N >
 {
-   using Type = StaticMatrix<T,M,N,SO>;
+   using Type = StaticMatrix<RemoveConst_<T>,M,N,SO>;
 };
 
 template< typename T, bool AF, bool PF, bool SO >
 struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO> >
 {
-   using Type = DynamicMatrix<T,SO>;
+   using Type = DynamicMatrix<RemoveConst_<T>,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6546,7 +6546,7 @@ struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO> >
 template< typename T, bool AF, bool PF, bool SO, size_t... CRAs >
 struct RowTrait< CustomMatrix<T,AF,PF,SO>, CRAs... >
 {
-   using Type = DynamicVector<T,true>;
+   using Type = DynamicVector<RemoveConst_<T>,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6565,7 +6565,7 @@ struct RowTrait< CustomMatrix<T,AF,PF,SO>, CRAs... >
 template< typename T, bool AF, bool PF, bool SO, size_t... CRAs >
 struct RowsTrait< CustomMatrix<T,AF,PF,SO>, CRAs... >
 {
-   using Type = DynamicMatrix<T,false>;
+   using Type = DynamicMatrix<RemoveConst_<T>,false>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6584,7 +6584,7 @@ struct RowsTrait< CustomMatrix<T,AF,PF,SO>, CRAs... >
 template< typename T, bool AF, bool PF, bool SO, size_t... CCAs >
 struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
 {
-   using Type = DynamicVector<T,false>;
+   using Type = DynamicVector<RemoveConst_<T>,false>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6603,7 +6603,7 @@ struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
 template< typename T, bool AF, bool PF, bool SO, size_t... CCAs >
 struct ColumnsTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
 {
-   using Type = DynamicMatrix<T,true>;
+   using Type = DynamicMatrix<RemoveConst_<T>,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6622,7 +6622,7 @@ struct ColumnsTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
 template< typename T, bool AF, bool PF, bool SO, ptrdiff_t... CBAs >
 struct BandTrait< CustomMatrix<T,AF,PF,SO>, CBAs... >
 {
-   using Type = DynamicVector<T,defaultTransposeFlag>;
+   using Type = DynamicVector<RemoveConst_<T>,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
