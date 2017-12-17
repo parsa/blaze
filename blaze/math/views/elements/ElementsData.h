@@ -133,7 +133,7 @@ inline ElementsData<CEAs...>::ElementsData( REAs... args ) noexcept
 template< size_t... CEAs >  // Compile time element arguments
 inline const typename ElementsData<CEAs...>::Indices& ElementsData<CEAs...>::idces() const noexcept
 {
-   static constexpr Indices tmp{ CEAs... };
+   static constexpr Indices tmp{ { CEAs... } };
    return tmp;
 }
 /*! \endcond */
@@ -151,7 +151,7 @@ template< size_t... CEAs >  // Compile time element arguments
 inline size_t ElementsData<CEAs...>::idx( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < size(), "Invalid element access index" );
-   static constexpr Indices tmp{ CEAs... };
+   static constexpr Indices tmp{ { CEAs... } };
    return tmp[i];
 }
 /*! \endcond */
