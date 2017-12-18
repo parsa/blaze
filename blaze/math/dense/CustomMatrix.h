@@ -76,6 +76,7 @@
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -6372,6 +6373,25 @@ struct IsAligned< CustomMatrix<T,aligned,PF,SO> >
 {};
 /*! \endcond */
 //*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool AF, bool PF, bool SO >
+struct IsContiguous< CustomMatrix<T,AF,PF,SO> >
+   : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
 
 
 
