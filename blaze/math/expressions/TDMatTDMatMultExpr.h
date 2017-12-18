@@ -217,9 +217,9 @@ class TDMatTDMatMultExpr
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
                             !SYM && !HERM && !LOW && !UPP &&
-                            HasMutableDataAccess<T1>::value &&
-                            HasConstDataAccess<T2>::value &&
-                            HasConstDataAccess<T3>::value &&
+                            IsContiguous<T1>::value && HasMutableDataAccess<T1>::value &&
+                            IsContiguous<T2>::value && HasConstDataAccess<T2>::value &&
+                            IsContiguous<T3>::value && HasConstDataAccess<T3>::value &&
                             !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
                             IsBLASCompatible< ElementType_<T1> >::value &&
