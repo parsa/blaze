@@ -51,6 +51,7 @@
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
+#include <blaze/math/constraints/Contiguous.h>
 #include <blaze/math/constraints/CrossExpr.h>
 #include <blaze/math/constraints/Custom.h>
 #include <blaze/math/constraints/Declaration.h>
