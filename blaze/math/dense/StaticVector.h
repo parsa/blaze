@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
@@ -2760,6 +2761,24 @@ struct IsStatic< StaticVector<T,N,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
 struct IsAligned< StaticVector<T,N,TF> >
+   : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool TF >
+struct IsContiguous< StaticVector<T,N,TF> >
    : public TrueType
 {};
 /*! \endcond */
