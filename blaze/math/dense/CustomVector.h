@@ -73,6 +73,8 @@
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
@@ -5148,6 +5150,24 @@ struct IsCustom< CustomVector<T,AF,PF,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool PF, bool TF >
 struct IsAligned< CustomVector<T,aligned,PF,TF> >
+   : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISALIGNED SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool PF, bool TF >
+struct IsContiguous< CustomVector<T,aligned,PF,TF> >
    : public TrueType
 {};
 /*! \endcond */
