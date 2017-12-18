@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -1477,6 +1478,24 @@ struct HasMutableDataAccess< Row<MT,SO,true,SF,CRAs...> >
 template< typename MT, bool SO, bool SF, size_t... CRAs >
 struct IsAligned< Row<MT,SO,true,SF,CRAs...> >
    : public And< IsAligned<MT>, Or< IsRowMajorMatrix<MT>, IsSymmetric<MT> > >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SF, size_t... CRAs >
+struct IsContiguous< Row<MT,true,true,SF,CRAs...> >
+   : public IsContiguous<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
