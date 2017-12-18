@@ -77,6 +77,7 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -2220,6 +2221,24 @@ struct HasConstDataAccess< UniLowerMatrix<MT,SO,true> >
 template< typename MT, bool SO, bool DF >
 struct IsAligned< UniLowerMatrix<MT,SO,DF> >
    : public IsAligned<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsContiguous< UniLowerMatrix<MT,SO,DF> >
+   : public IsContiguous<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
