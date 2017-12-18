@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
@@ -2669,6 +2670,24 @@ struct HasMutableDataAccess< Subvector<VT,AF,TF,true,CSAs...> >
 template< typename VT, bool TF, size_t... CSAs >
 struct IsAligned< Subvector<VT,aligned,TF,true,CSAs...> >
    : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, AlignmentFlag AF, bool TF, size_t... CSAs >
+struct IsContiguous< Subvector<VT,AF,TF,true,CSAs...> >
+   : public IsContiguous<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
