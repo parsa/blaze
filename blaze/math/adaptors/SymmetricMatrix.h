@@ -74,6 +74,8 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
+#include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -619,6 +621,24 @@ struct HasConstDataAccess< SymmetricMatrix<MT,SO,true,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsAligned< SymmetricMatrix<MT,SO,DF,NF> >
    : public IsAligned<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool NF >
+struct IsContiguous< SymmetricMatrix<MT,SO,DF,NF> >
+   : public IsContiguous<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
