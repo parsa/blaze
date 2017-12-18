@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
@@ -2716,6 +2717,24 @@ struct HasMutableDataAccess< DynamicVector<T,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool TF >
 struct IsAligned< DynamicVector<T,TF> >
+   : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool TF >
+struct IsContiguous< DynamicVector<T,TF> >
    : public TrueType
 {};
 /*! \endcond */
