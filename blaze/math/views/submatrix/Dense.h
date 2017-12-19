@@ -1435,17 +1435,17 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value ) {
-      reset();
-   }
-
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, right );
    }
 
@@ -1772,11 +1772,11 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
+   decltype(auto) left( derestrict( *this ) );
+
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
    }
-
-   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4752,17 +4752,17 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value ) {
-      reset();
-   }
-
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, right );
    }
 
@@ -5089,11 +5089,11 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
+   decltype(auto) left( derestrict( *this ) );
+
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
    }
-
-   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -7654,17 +7654,17 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value ) {
-      reset();
-   }
-
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, right );
    }
 
@@ -7991,11 +7991,11 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
+   decltype(auto) left( derestrict( *this ) );
+
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
    }
-
-   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -10550,17 +10550,17 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
-   if( IsSparseMatrix<MT2>::value ) {
-      reset();
-   }
-
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
       const ResultType_<MT2> tmp( right );
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, tmp );
    }
    else {
+      if( IsSparseMatrix<MT2>::value )
+         reset();
       smpAssign( left, right );
    }
 
@@ -10887,11 +10887,11 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
    }
 
+   decltype(auto) left( derestrict( *this ) );
+
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
    }
-
-   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
