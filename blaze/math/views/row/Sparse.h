@@ -1720,7 +1720,7 @@ inline void Row<MT,true,false,SF,CRAs...>::erase( Iterator first, Iterator last,
 // found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the sparse row (the end() iterator) is returned. Note that
 // the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
+// via the subscript operator, the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
@@ -1746,7 +1746,7 @@ inline typename Row<MT,true,false,SF,CRAs...>::Iterator
 // found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the sparse row (the end() iterator) is returned. Note that
 // the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
+// via the subscript operator, the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
@@ -1770,8 +1770,8 @@ inline typename Row<MT,true,false,SF,CRAs...>::ConstIterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
@@ -1795,8 +1795,8 @@ inline typename Row<MT,true,false,SF,CRAs...>::Iterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
@@ -1818,10 +1818,10 @@ inline typename Row<MT,true,false,SF,CRAs...>::ConstIterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
@@ -1843,10 +1843,10 @@ inline typename Row<MT,true,false,SF,CRAs...>::Iterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , bool SF           // Symmetry flag
@@ -3834,7 +3834,7 @@ inline void Row<MT,false,false,false,CRAs...>::erase( Iterator first, Iterator l
 // found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the sparse row (the end() iterator) is returned. Note that
 // the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
+// via the subscript operator, the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -3864,7 +3864,7 @@ inline typename Row<MT,false,false,false,CRAs...>::Iterator
 // found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the sparse row (the end() iterator) is returned. Note that
 // the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
+// via the subscript operator, the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -3892,8 +3892,8 @@ inline typename Row<MT,false,false,false,CRAs...>::ConstIterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -3924,8 +3924,8 @@ inline typename Row<MT,false,false,false,CRAs...>::Iterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -3954,10 +3954,10 @@ inline typename Row<MT,false,false,false,CRAs...>::ConstIterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -3986,10 +3986,10 @@ inline typename Row<MT,false,false,false,CRAs...>::Iterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -5805,7 +5805,7 @@ inline void Row<MT,false,false,true,CRAs...>::erase( Iterator first, Iterator la
 // found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the sparse row (the end() iterator) is returned. Note that
 // the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
+// via the subscript operator, the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -5830,7 +5830,7 @@ inline typename Row<MT,false,false,true,CRAs...>::Iterator
 // found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the sparse row (the end() iterator) is returned. Note that
 // the returned sparse row iterator is subject to invalidation due to inserting operations
-// via the subscript operator or the insert() function!
+// via the subscript operator, the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -5853,8 +5853,8 @@ inline typename Row<MT,false,false,true,CRAs...>::ConstIterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -5877,8 +5877,8 @@ inline typename Row<MT,false,false,true,CRAs...>::Iterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -5899,10 +5899,10 @@ inline typename Row<MT,false,false,true,CRAs...>::ConstIterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
@@ -5923,10 +5923,10 @@ inline typename Row<MT,false,false,true,CRAs...>::Iterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse row iterator
-// is subject to invalidation due to inserting operations via the subscript operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the subscript operator, the set()
+// function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments

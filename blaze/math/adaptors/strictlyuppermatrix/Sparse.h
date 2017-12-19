@@ -2030,8 +2030,8 @@ inline void StrictlyUpperMatrix<MT,SO,false>::erase( size_t i, Iterator first, I
 // \a j. In case the element is found, the function returns an row/column iterator to the
 // element. Otherwise an iterator just past the last non-zero element of row \a i or column
 // \a j (the end() iterator) is returned. Note that the returned uniupper matrix iterator is
-// subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -2057,8 +2057,8 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
 // \a j. In case the element is found, the function returns an row/column iterator to the
 // element. Otherwise an iterator just past the last non-zero element of row \a i or column
 // \a j (the end() iterator) is returned. Note that the returned uniupper matrix iterator is
-// subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -2085,7 +2085,7 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::ConstIterator
 // index. In combination with the upperBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned strictly upper
 // matrix iterator is subject to invalidation due to inserting operations via the function
-// call operator or the insert() function!
+// call operator, the set() function or the insert() function!
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -2112,7 +2112,7 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
 // index. In combination with the upperBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned strictly upper
 // matrix iterator is subject to invalidation due to inserting operations via the function
-// call operator or the insert() function!
+// call operator, the set() function or the insert() function!
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -2136,10 +2136,10 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::ConstIterator
 // In case of a row-major matrix, this function returns a row iterator to the first element with
 // an index greater then the given column index. In case of a column-major matrix, the function
 // returns a column iterator to the first element with an index greater then the given row
-// index. In combination with the upperBound() function this function can be used to create
+// index. In combination with the lowerBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned strictly upper
 // matrix iterator is subject to invalidation due to inserting operations via the function
-// call operator or the insert() function!
+// call operator, the set() function or the insert() function!
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
@@ -2163,10 +2163,10 @@ inline typename StrictlyUpperMatrix<MT,SO,false>::Iterator
 // In case of a row-major matrix, this function returns a row iterator to the first element with
 // an index greater then the given column index. In case of a column-major matrix, the function
 // returns a column iterator to the first element with an index greater then the given row
-// index. In combination with the upperBound() function this function can be used to create
+// index. In combination with the lowerBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned strictly upper
 // matrix iterator is subject to invalidation due to inserting operations via the function
-// call operator or the insert() function!
+// call operator, the set() function or the insert() function!
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix

@@ -1770,7 +1770,7 @@ inline void Elements<VT,TF,false,CEAs...>::erase( Iterator first, Iterator last,
 // is found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the element selection (the end() iterator) is returned. Note that
 // the returned iterator is subject to invalidation due to inserting operations via the subscript
-// operator, the insert() function, or the set() function!
+// operator, the set() function or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
         , bool TF           // Transpose flag
@@ -1801,7 +1801,7 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // is found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the element selection (the end() iterator) is returned. Note that
 // the returned iterator is subject to invalidation due to inserting operations via the subscript
-// operator, the insert() function, or the set() function!
+// operator, the set() function or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
         , bool TF           // Transpose flag
@@ -1830,8 +1830,8 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse subvector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
         , bool TF           // Transpose flag
@@ -1860,8 +1860,8 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse subvector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
         , bool TF           // Transpose flag
@@ -1888,10 +1888,10 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse subvector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
         , bool TF           // Transpose flag
@@ -1918,10 +1918,10 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // \return Iterator to the first index greater then the given index, end() iterator otherwise.
 //
 // This function returns an iterator to the first element with an index greater then the given
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned sparse subvector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename VT       // Type of the sparse vector
         , bool TF           // Transpose flag

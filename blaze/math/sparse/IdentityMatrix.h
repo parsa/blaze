@@ -959,7 +959,7 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
 // In case of a row-major matrix, this function returns a row iterator to the first element with
 // an index greater then the given column index. In case of a column-major matrix, the function
 // returns a column iterator to the first element with an index greater then the given row
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices.
 */
 template< typename Type  // Data type of the matrix

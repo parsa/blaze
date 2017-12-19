@@ -1888,7 +1888,7 @@ inline void CompressedVector<Type,TF>::erase( Iterator first, Iterator last, Pre
 // is found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the compressed vector (the end() iterator) is returned. Note
 // that the returned compressed vector iterator is subject to invalidation due to inserting
-// operations via the subscript operator or the insert() function!
+// operations via the subscript operator, the set() function or the insert() function!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1910,7 +1910,7 @@ inline typename CompressedVector<Type,TF>::Iterator CompressedVector<Type,TF>::f
 // is found, the function returns an iterator to the element. Otherwise an iterator just past
 // the last non-zero element of the compressed vector (the end() iterator) is returned. Note
 // that the returned compressed vector iterator is subject to invalidation due to inserting
-// operations via the subscript operator or the insert() function!
+// operations via the subscript operator, the set() function or the insert() function!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1933,8 +1933,8 @@ inline typename CompressedVector<Type,TF>::ConstIterator CompressedVector<Type,T
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed vector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1955,8 +1955,8 @@ inline typename CompressedVector<Type,TF>::Iterator
 // This function returns an iterator to the first element with an index not less then the given
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed vector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -1981,8 +1981,8 @@ inline typename CompressedVector<Type,TF>::ConstIterator
 // This function returns an iterator to the first element with an index greater then the given
 // index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed vector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -2003,8 +2003,8 @@ inline typename CompressedVector<Type,TF>::Iterator
 // This function returns an iterator to the first element with an index greater then the given
 // index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed vector
-// iterator is subject to invalidation due to inserting operations via the subscript operator
-// or the insert() function!
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the set() function or the insert() function!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag

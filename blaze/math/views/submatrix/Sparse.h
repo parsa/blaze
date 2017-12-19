@@ -1289,8 +1289,8 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 // is subject to three restrictions. First, this operator cannot be used for submatrices on lower
 // or upper unitriangular matrices. The attempt to scale such a submatrix results in a compilation
 // error! Second, this operator can only be used for numeric data types. And third, the elements
-// of the sparse row must support the multiplication assignment operator for the given scalar
-// built-in data type.
+// of the sparse submatrix must support the multiplication assignment operator for the given
+// numeric data type.
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -2025,8 +2025,8 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::erase( size_t i, Iterator firs
 // \a j. In case the element is found, the function returns an row/column iterator to the
 // element. Otherwise an iterator just past the last non-zero element of row \a i or column
 // \a j (the end() iterator) is returned. Note that the returned sparse submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or
-// the insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -2058,8 +2058,8 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // \a j. In case the element is found, the function returns an row/column iterator to the
 // element. Otherwise an iterator just past the last non-zero element of row \a i or column
 // \a j (the end() iterator) is returned. Note that the returned sparse submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or
-// the insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -2091,8 +2091,8 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // function returns a column iterator to the first element with an index not less then the given
 // row index. In combination with the upperBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -2119,8 +2119,8 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // function returns a column iterator to the first element with an index not less then the given
 // row index. In combination with the upperBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -2145,10 +2145,10 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::ConstIterator
 // In case of a row-major submatrix, this function returns a row iterator to the first element
 // with an index greater then the given column index. In case of a column-major submatrix, the
 // function returns a column iterator to the first element with an index greater then the given
-// row index. In combination with the upperBound() function this function can be used to create
+// row index. In combination with the lowerBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -2173,10 +2173,10 @@ inline typename Submatrix<MT,AF,false,false,CSAs...>::Iterator
 // In case of a row-major submatrix, this function returns a row iterator to the first element
 // with an index greater then the given column index. In case of a column-major submatrix, the
 // function returns a column iterator to the first element with an index greater then the given
-// row index. In combination with the upperBound() function this function can be used to create
+// row index. In combination with the lowerBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -3802,8 +3802,8 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 // is subject to three restrictions. First, this operator cannot be used for submatrices on lower
 // or upper unitriangular matrices. The attempt to scale such a submatrix results in a compilation
 // error! Second, this operator can only be used for numeric data types. And third, the elements
-// of the sparse row must support the multiplication assignment operator for the given scalar
-// built-in data type.
+// of the sparse submatrix must support the multiplication assignment operator for the given
+// numeric data type.
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -4509,8 +4509,8 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::erase( size_t j, Iterator first
 // \a j. In case the element is found, the function returns an row/column iterator to the
 // element. Otherwise an iterator just past the last non-zero element of row \a i or column
 // \a j (the end() iterator) is returned. Note that the returned sparse submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or
-// the insert() function!
+// is subject to invalidation due to inserting operations via the function call operator,
+// the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -4542,8 +4542,8 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // \a j. In case the element is found, the function returns an row/column iterator to the
 // element. Otherwise an iterator just past the last non-zero element of row \a i or column
 // \a j (the end() iterator) is returned. Note that the returned sparse submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or
-// the insert() function!
+// is subject to invalidation due to inserting operations via the function call operator,
+// the set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -4575,8 +4575,8 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // function returns a column iterator to the first element with an index not less then the given
 // row index. In combination with the upperBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -4603,8 +4603,8 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // function returns a column iterator to the first element with an index not less then the given
 // row index. In combination with the upperBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -4629,10 +4629,10 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::ConstIterator
 // In case of a row-major submatrix, this function returns a row iterator to the first element
 // with an index greater then the given column index. In case of a column-major submatrix, the
 // function returns a column iterator to the first element with an index greater then the given
-// row index. In combination with the upperBound() function this function can be used to create
+// row index. In combination with the lowerBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
@@ -4657,10 +4657,10 @@ inline typename Submatrix<MT,AF,true,false,CSAs...>::Iterator
 // In case of a row-major submatrix, this function returns a row iterator to the first element
 // with an index greater then the given column index. In case of a column-major submatrix, the
 // function returns a column iterator to the first element with an index greater then the given
-// row index. In combination with the upperBound() function this function can be used to create
+// row index. In combination with the lowerBound() function this function can be used to create
 // a pair of iterators specifying a range of indices. Note that the returned submatrix iterator
-// is subject to invalidation due to inserting operations via the function call operator or the
-// insert() function!
+// is subject to invalidation due to inserting operations via the function call operator, the
+// set() function or the insert() function!
 */
 template< typename MT       // Type of the sparse matrix
         , AlignmentFlag AF  // Alignment flag
