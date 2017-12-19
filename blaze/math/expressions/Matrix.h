@@ -147,6 +147,31 @@ inline VT& operator*=( Vector<VT,false>& lhs, const Matrix<MT,SO>& rhs )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a temporary column vector
+//        and a matrix (\f$ v*=A \f$).
+// \ingroup matrix
+//
+// \param mat The left-hand side temporary column vector for the multiplication.
+// \param vec The right-hand side matrix for the multiplication.
+// \return Reference to the left-hand side vector.
+// \exception std::invalid_argument Matrix and vector sizes do not match.
+//
+// In case the current size of the vector \a vec doesn't match the current number of columns
+// of the matrix \a mat, a \a std::invalid_argument is thrown.
+*/
+template< typename VT  // Type of the left-hand side column vector
+        , typename MT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order of the right-hand side matrix
+inline VT& operator*=( Vector<VT,false>&& lhs, const Matrix<MT,SO>& rhs )
+{
+   return (~lhs) *= (~rhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of a row vector and a
 //        matrix (\f$ v*=A \f$).
 // \ingroup matrix
@@ -174,6 +199,31 @@ inline VT& operator*=( Vector<VT,true>& lhs, const Matrix<MT,SO>& rhs )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a temporary row vector
+//        and a matrix (\f$ v*=A \f$).
+// \ingroup matrix
+//
+// \param mat The left-hand side temporary row vector for the multiplication.
+// \param vec The right-hand side matrix for the multiplication.
+// \return Reference to the left-hand side vector.
+// \exception std::invalid_argument Matrix and vector sizes do not match.
+//
+// In case the current size of the vector \a vec doesn't match the current number of columns
+// of the matrix \a mat, a \a std::invalid_argument is thrown.
+*/
+template< typename VT  // Type of the left-hand side row vector
+        , typename MT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order of the right-hand side matrix
+inline VT& operator*=( Vector<VT,true>&& lhs, const Matrix<MT,SO>& rhs )
+{
+   return (~lhs) *= (~rhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Multiplication assignment operator for the multiplication of two matrices (\f$ A*=B \f$).
 // \ingroup matrix
 //
@@ -194,6 +244,32 @@ inline MT1& operator*=( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    ResultType_<MT1> tmp( (~lhs) * (~rhs) );
    (~lhs) = std::move( tmp );
    return (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication assignment operator for the multiplication of a temporary matrix with
+//        another matrix (\f$ A*=B \f$).
+// \ingroup matrix
+//
+// \param lhs The left-hand side temporary matrix for the multiplication.
+// \param rhs The right-hand side matrix for the multiplication.
+// \return Reference to the left-hand side matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// In case the current number of columns of \a lhs and the current number of rows of \a rhs
+// don't match, a \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Type of the left-hand side matrix
+        , bool SO1      // Storage order of the left-hand side matrix
+        , typename MT2  // Type of the right-hand side matrix
+        , bool SO2 >    // Storage order of the right-hand side matrix
+inline MT1& operator*=( Matrix<MT1,SO1>&& lhs, const Matrix<MT2,SO2>& rhs )
+{
+   return (~lhs) *= (~rhs);
 }
 /*! \endcond */
 //*************************************************************************************************
