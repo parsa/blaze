@@ -43,7 +43,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <vector>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
