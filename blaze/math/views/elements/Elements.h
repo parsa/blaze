@@ -121,19 +121,19 @@
    // ... Resizing and initialization
 
    // Selecting the elements 1, 3, 5, and 7
-   auto e = elements( x, 3UL, 5UL, 7UL, 9UL );
+   auto e = elements( x, { 1UL, 3UL, 5UL, 7UL } );
 
    // Setting the elements 1, 3, 5, and 7 of x to the 2nd row of matrix A
    e = row( A, 2UL );
 
    // Setting the elements 2, 4, 6, and 8 of x to y
-   elements( x, 2UL, 4UL, 6UL, 8UL ) = y;
+   elements( x, { 2UL, 4UL, 6UL, 8UL } ) = y;
 
    // Setting the 3rd row of A to the elements 5, 4, 3, and 2 of x
-   row( A, 3UL ) = elements( x, 5UL, 4UL, 3UL, 2UL );
+   row( A, 3UL ) = elements( x, { 5UL, 4UL, 3UL, 2UL } );
 
    // Rotating the result of the addition between y and the 1st row of A
-   x = elements( y + row( A, 1UL ), 3UL, 4UL, 1UL, 2UL )
+   x = elements( y + row( A, 1UL ), { 2UL, 3UL, 0UL, 1UL } )
    \endcode
 
 // Please note that using an element selection, which refers to an index multiple times, on the
@@ -160,7 +160,7 @@
    // ... Resizing and initialization
 
    // Selecting the elements 2, 4, 6, and 8
-   auto e = elements( v, 2UL, 4UL, 6UL, 8UL );
+   auto e = elements( v, { 2UL, 4UL, 6UL, 8UL } );
 
    // Setting the 1st element of the element selection, which corresponds to
    // the element at index 4 in vector v
@@ -183,7 +183,7 @@
    // ... Resizing and initialization
 
    // Creating an element selection including specific elements of dense vector v
-   auto e = elements( v, 0UL, 3UL, 6UL, 9UL, 12UL );
+   auto e = elements( v, { 0UL, 3UL, 6UL, 9UL, 12UL } );
 
    // Traversing the elements via iterators to non-const elements
    for( auto it=e.begin(); it!=e.end(); ++it ) {
@@ -203,7 +203,7 @@
    // ... Resizing and initialization
 
    // Creating an element selection including specific elements of sparse vector v
-   auto e = elements( v, 0UL, 3UL, 6UL, 9UL, 12UL );
+   auto e = elements( v, { 0UL, 3UL, 6UL, 9UL, 12UL } );
 
    // Traversing the elements via iterators to non-const elements
    for( auto it=e.begin(); it!=e.end(); ++it ) {
@@ -273,7 +273,7 @@
    // ... Resizing and initialization
 
    // Selecting the elements 5 and 10
-   auto e = elements( v, 5UL, 10UL );
+   auto e = elements( v, { 5UL, 10UL } );
 
    e.size();          // Returns the number of elements in the element selection
    e.capacity();      // Returns the capacity of the element selection
@@ -281,7 +281,7 @@
 
    e.resize( 84UL );  // Compilation error: Cannot resize an element selection
 
-   auto e2 = elements( v, 15UL, 10UL );
+   auto e2 = elements( v, { 15UL, 10UL } );
    swap( e, e2 );   // Compilation error: Swap operation not allowed
    \endcode
 
@@ -296,10 +296,9 @@
    \code
    blaze::DynamicVector<double,blaze::rowVector> d1, d2, d3;
    blaze::CompressedVector<double,blaze::rowVector> s1, s2;
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
 
    // ... Resizing and initialization
-
-   blaze::DynamicMatrix<double,blaze::rowMajor> A;
 
    std::initializer_list<size_t> indices1{ 0UL, 3UL, 6UL,  9UL, 12UL, 15UL, 18UL, 21UL };
    std::initializer_list<size_t> indices2{ 1UL, 4UL, 7UL, 10UL, 13UL, 16UL, 19UL, 22UL };
