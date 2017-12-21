@@ -7350,19 +7350,19 @@
    // ... Resizing and initialization
 
    // Selecting the elements 1, 3, 5, and 7
-   auto e = elements( x, 3UL, 5UL, 7UL, 9UL );
+   auto e = elements( x, { 1UL, 3UL, 5UL, 7UL } );
 
    // Setting the elements 1, 3, 5, and 7 of x to the 2nd row of matrix A
    e = row( A, 2UL );
 
    // Setting the elements 2, 4, 6, and 8 of x to y
-   elements( x, 2UL, 4UL, 6UL, 8UL ) = y;
+   elements( x, { 2UL, 4UL, 6UL, 8UL } ) = y;
 
    // Setting the 3rd row of A to the elements 5, 4, 3, and 2 of x
-   row( A, 3UL ) = elements( x, 5UL, 4UL, 3UL, 2UL );
+   row( A, 3UL ) = elements( x, { 5UL, 4UL, 3UL, 2UL } );
 
    // Rotating the result of the addition between y and the 1st row of A
-   x = elements( y + row( A, 1UL ), 3UL, 4UL, 1UL, 2UL )
+   x = elements( y + row( A, 1UL ), { 2UL, 3UL, 0UL, 1UL } )
    \endcode
 
 // Please note that using an element selection, which refers to an index multiple times, on the
@@ -7389,7 +7389,7 @@
    // ... Resizing and initialization
 
    // Selecting the elements 2, 4, 6, and 8
-   auto e = elements( v, 2UL, 4UL, 6UL, 8UL );
+   auto e = elements( v, { 2UL, 4UL, 6UL, 8UL } );
 
    // Setting the 1st element of the element selection, which corresponds to
    // the element at index 4 in vector v
@@ -7412,7 +7412,7 @@
    // ... Resizing and initialization
 
    // Creating an element selection including specific elements of dense vector v
-   auto e = elements( v, 0UL, 3UL, 6UL, 9UL, 12UL );
+   auto e = elements( v, { 0UL, 3UL, 6UL, 9UL, 12UL } );
 
    // Traversing the elements via iterators to non-const elements
    for( auto it=e.begin(); it!=e.end(); ++it ) {
@@ -7432,7 +7432,7 @@
    // ... Resizing and initialization
 
    // Creating an element selection including specific elements of sparse vector v
-   auto e = elements( v, 0UL, 3UL, 6UL, 9UL, 12UL );
+   auto e = elements( v, { 0UL, 3UL, 6UL, 9UL, 12UL } );
 
    // Traversing the elements via iterators to non-const elements
    for( auto it=e.begin(); it!=e.end(); ++it ) {
@@ -7502,7 +7502,7 @@
    // ... Resizing and initialization
 
    // Selecting the elements 5 and 10
-   auto e = elements( v, 5UL, 10UL );
+   auto e = elements( v, { 5UL, 10UL } );
 
    e.size();          // Returns the number of elements in the element selection
    e.capacity();      // Returns the capacity of the element selection
@@ -7510,7 +7510,7 @@
 
    e.resize( 84UL );  // Compilation error: Cannot resize an element selection
 
-   auto e2 = elements( v, 15UL, 10UL );
+   auto e2 = elements( v, { 15UL, 10UL } );
    swap( e, e2 );   // Compilation error: Swap operation not allowed
    \endcode
 
@@ -7611,7 +7611,7 @@
    using MatrixType = blaze::DynamicMatrix<int>;
 
    using SubmatrixType1 = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
-   using SubmatrixType2 = blaze::SubmatrixExprTrait<VectorType,3UL,0UL,4UL,8UL>::Type;
+   using SubmatrixType2 = blaze::SubmatrixExprTrait<MatrixType,3UL,0UL,4UL,8UL>::Type;
    \endcode
 
 // The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
@@ -7719,7 +7719,7 @@
    auto sm = submatrix( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 submatrix of A
 
    // The function call operator provides access to all possible elements of the sparse submatrix,
-   // including the zero elements. In case the subscript operator is used to access an element
+   // including the zero elements. In case the function call operator is used to access an element
    // that is currently not stored in the sparse submatrix, the element is inserted into the
    // submatrix.
    sm(2,4) = 2.0;
@@ -7756,7 +7756,7 @@
 // such as resizing and swapping:
 
    \code
-   blaze::DynamicMatrix<int,blaze::rowMajor>
+   blaze::DynamicMatrix<int,blaze::rowMajor> A( 42UL, 42UL );
    // ... Resizing and initialization
 
    // Creating a view on the a 8x12 submatrix of matrix A
@@ -7784,7 +7784,7 @@
 
    \code
    blaze::DynamicMatrix<double,blaze::rowMajor> D1, D2, D3;
-   blaze::CompressedMatrix<double,blaze::rowMajor>
+   blaze::CompressedMatrix<double,blaze::rowMajor> S1, S2;
 
    blaze::CompressedVector<double,blaze::columnVector> a, b;
 
@@ -7797,9 +7797,9 @@
                                               // starting in row 0 and column 8
    sm = S1;                                   // Sparse matrix initialization of the second 8x8 submatrix
 
-   D3 = sm + D2;                                    // Dense matrix/dense matrix addition
-   S2 = S1  - submatrix( D1, 8UL, 0UL, 8UL, 8UL );  // Sparse matrix/dense matrix subtraction
-   D2 = sm * submatrix( D1, 8UL, 8UL, 8UL, 8UL );   // Dense matrix/dense matrix multiplication
+   D3 = sm + D2;                                   // Dense matrix/dense matrix addition
+   S2 = S1 - submatrix( D1, 8UL, 0UL, 8UL, 8UL );  // Sparse matrix/dense matrix subtraction
+   D2 = sm * submatrix( D1, 8UL, 8UL, 8UL, 8UL );  // Dense matrix/dense matrix multiplication
 
    submatrix( D1, 8UL, 0UL, 8UL, 8UL ) *= 2.0;      // In-place scaling of a submatrix of D1
    D2 = submatrix( D1, 8UL, 8UL, 8UL, 8UL ) * 2.0;  // Scaling of the a submatrix of D1
