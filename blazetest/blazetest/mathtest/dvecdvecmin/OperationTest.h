@@ -40,10 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -3789,6 +3791,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
          return;
 
 
+      std::vector<size_t> indices( lhs_.size() );
+      std::iota( indices.begin(), indices.end(), 0UL );
+      std::random_shuffle( indices.begin(), indices.end() );
+
+
       //=====================================================================================
       // Elements-wise minimum
       //=====================================================================================
@@ -3800,14 +3807,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) = elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) = elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( refres_, &indices[index], size ) = elements( ref_             , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) = elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) = elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( refres_, &indices[index], n ) = elements( ref_             , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3818,14 +3822,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) = elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) = elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) = elements( tref_              , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) = elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) = elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) = elements( tref_              , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3842,14 +3843,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) = elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) = elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( refres_, &indices[index], size ) = elements( eval( ref_ )                     , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) = elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) = elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) = elements( eval( ref_ )                     , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3860,14 +3858,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) = elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) = elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) = elements( eval( tref_ )                      , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) = elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) = elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) = elements( eval( tref_ )                      , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3889,14 +3884,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) += elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) += elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( refres_, &indices[index], size ) += elements( ref_             , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) += elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) += elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( refres_, &indices[index], n ) += elements( ref_             , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3907,14 +3899,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) += elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) += elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) += elements( tref_              , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) += elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) += elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) += elements( tref_              , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3931,14 +3920,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) += elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) += elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( refres_, &indices[index], size ) += elements( eval( ref_ )                     , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) += elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) += elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) += elements( eval( ref_ )                     , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3949,14 +3935,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) += elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) += elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) += elements( eval( tref_ )                      , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) += elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) += elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) += elements( eval( tref_ )                      , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3978,14 +3961,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) -= elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) -= elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( refres_, &indices[index], size ) -= elements( ref_             , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) -= elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) -= elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( refres_, &indices[index], n ) -= elements( ref_             , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -3996,14 +3976,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) -= elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) -= elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) -= elements( tref_              , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) -= elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) -= elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) -= elements( tref_              , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4020,14 +3997,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) -= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) -= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( refres_, &indices[index], size ) -= elements( eval( ref_ )                     , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) -= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) -= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) -= elements( eval( ref_ )                     , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4038,14 +4012,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) -= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) -= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) -= elements( eval( tref_ )                      , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) -= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) -= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) -= elements( eval( tref_ )                      , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4067,14 +4038,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) *= elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) *= elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( refres_, &indices[index], size ) *= elements( ref_             , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) *= elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) *= elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( refres_, &indices[index], n ) *= elements( ref_             , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4085,14 +4053,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) *= elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) *= elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) *= elements( tref_              , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) *= elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) *= elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) *= elements( tref_              , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4109,14 +4074,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( dres_  , &indices[index], size ) *= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) *= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( refres_, &indices[index], size ) *= elements( eval( ref_ )                     , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], n ) *= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) *= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) *= elements( eval( ref_ )                     , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4127,14 +4089,11 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               elements( tdres_  , &indices[index], size ) *= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) *= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) *= elements( eval( tref_ )                      , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( tdres_  , &indices[index], n ) *= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) *= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) *= elements( eval( tref_ )                      , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4156,15 +4115,12 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( min( lhs_, rhs_ ), &indices[index], size ) ) ) continue;
-               elements( dres_  , &indices[index], size ) /= elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) /= elements( min( lhs_, rhs_ ), &indices[index], size );
-               elements( refres_, &indices[index], size ) /= elements( ref_             , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( lhs_, rhs_ ), &indices[index], n ) ) ) continue;
+               elements( dres_  , &indices[index], n ) /= elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) /= elements( min( lhs_, rhs_ ), &indices[index], n );
+               elements( refres_, &indices[index], n ) /= elements( ref_             , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4175,15 +4131,12 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( min( tlhs_, trhs_ ), &indices[index], size ) ) ) continue;
-               elements( tdres_  , &indices[index], size ) /= elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) /= elements( min( tlhs_, trhs_ ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) /= elements( tref_              , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( tlhs_, trhs_ ), &indices[index], n ) ) ) continue;
+               elements( tdres_  , &indices[index], n ) /= elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) /= elements( min( tlhs_, trhs_ ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) /= elements( tref_              , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4200,15 +4153,12 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initResults();
-            std::vector<size_t> indices( lhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( min( lhs_, rhs_ ), &indices[index], size ) ) ) continue;
-               elements( dres_  , &indices[index], size ) /= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( sres_  , &indices[index], size ) /= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], size );
-               elements( refres_, &indices[index], size ) /= elements( eval( ref_ )                     , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( lhs_, rhs_ ), &indices[index], n ) ) ) continue;
+               elements( dres_  , &indices[index], n ) /= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( sres_  , &indices[index], n ) /= elements( min( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               elements( refres_, &indices[index], n ) /= elements( eval( ref_ )                     , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
@@ -4219,15 +4169,12 @@ void OperationTest<VT1,VT2>::testElementsOperation()
 
          try {
             initTransposeResults();
-            std::vector<size_t> indices( tlhs_.size() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( min( tlhs_, trhs_ ), &indices[index], size ) ) ) continue;
-               elements( tdres_  , &indices[index], size ) /= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( tsres_  , &indices[index], size ) /= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], size );
-               elements( trefres_, &indices[index], size ) /= elements( eval( tref_ )                      , &indices[index], size );
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( min( tlhs_, trhs_ ), &indices[index], n ) ) ) continue;
+               elements( tdres_  , &indices[index], n ) /= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( tsres_  , &indices[index], n ) /= elements( min( eval( tlhs_ ), eval( trhs_ ) ), &indices[index], n );
+               elements( trefres_, &indices[index], n ) /= elements( eval( tref_ )                      , &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
