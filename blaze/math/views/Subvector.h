@@ -1737,9 +1737,10 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time subvector arguments
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto)
-   elements( Subvector<VT,AF,TF,DF,CSAs...>& sv, const size_t* indices, size_t n, REAs... args )
+   elements( Subvector<VT,AF,TF,DF,CSAs...>& sv, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1783,9 +1784,10 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time subvector arguments
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto)
-   elements( const Subvector<VT,AF,TF,DF,CSAs...>& sv, const size_t* indices, size_t n, REAs... args )
+   elements( const Subvector<VT,AF,TF,DF,CSAs...>& sv, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1829,9 +1831,10 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time subvector arguments
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto)
-   elements( Subvector<VT,AF,TF,DF,CSAs...>&& sv, const size_t* indices, size_t n, REAs... args )
+   elements( Subvector<VT,AF,TF,DF,CSAs...>&& sv, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 

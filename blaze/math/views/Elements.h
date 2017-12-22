@@ -245,7 +245,7 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
    auto elements1 = elements( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
-   const std::array<size_t,2uL> indices2{ 4UL, 2UL };
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
    auto elements2 = elements( S, indices2.data(), indices2.size() );
    \endcode
 
@@ -261,8 +261,9 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
 */
 template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( Vector<VT,TF>& vector, const size_t* indices, size_t n, REAs... args )
+inline decltype(auto) elements( Vector<VT,TF>& vector, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -297,7 +298,7 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, const size_t* indices, si
    auto elements1 = elements( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
-   const std::array<size_t,2uL> indices2{ 4UL, 2UL };
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
    auto elements2 = elements( S, indices2.data(), indices2.size() );
    \endcode
 
@@ -313,8 +314,9 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, const size_t* indices, si
 */
 template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( const Vector<VT,TF>& vector, const size_t* indices, size_t n, REAs... args )
+inline decltype(auto) elements( const Vector<VT,TF>& vector, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -342,8 +344,9 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, const size_t* indic
 */
 template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( Vector<VT,TF>&& vector, const size_t* indices, size_t n, REAs... args )
+inline decltype(auto) elements( Vector<VT,TF>&& vector, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -401,8 +404,9 @@ inline decltype(auto) elements( VT&& vector, index_sequence<Is...> indices, REAs
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( VT&& vector, initializer_list<size_t> indices, REAs... args )
+inline decltype(auto) elements( VT&& vector, initializer_list<T> indices, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -429,9 +433,10 @@ inline decltype(auto) elements( VT&& vector, initializer_list<size_t> indices, R
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
+        , typename T          // Type of the element indices
         , size_t N            // Number of indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( VT&& vector, const std::array<size_t,N>& indices, REAs... args )
+inline decltype(auto) elements( VT&& vector, const std::array<T,N>& indices, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -458,8 +463,9 @@ inline decltype(auto) elements( VT&& vector, const std::array<size_t,N>& indices
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( VT&& vector, const std::vector<size_t>& indices, REAs... args )
+inline decltype(auto) elements( VT&& vector, const std::vector<T>& indices, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -486,9 +492,10 @@ inline decltype(auto) elements( VT&& vector, const std::vector<size_t>& indices,
 // exception is thrown.
 */
 template< typename VT         // Type of the vector
+        , typename T          // Type of the element indices
         , size_t N            // Number of preallocated elements
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( VT&& vector, const SmallVector<size_t,N>& indices, REAs... args )
+inline decltype(auto) elements( VT&& vector, const SmallVector<T,N>& indices, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1048,9 +1055,10 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CEAs      // Compile time element arguments
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
-                                const size_t* indices, size_t n, REAs... args )
+                                const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1097,9 +1105,10 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CEAs      // Compile time element arguments
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
-                                const size_t* indices, size_t n, REAs... args )
+                                const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1146,9 +1155,10 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CEAs      // Compile time element arguments
+        , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
-                                const size_t* indices, size_t n, REAs... args )
+                                const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 

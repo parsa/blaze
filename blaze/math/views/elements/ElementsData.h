@@ -200,8 +200,8 @@ struct ElementsData<>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   template< typename... REAs >
-   explicit inline ElementsData( const size_t* indices, size_t n, REAs... args );
+   template< typename T, typename... REAs >
+   explicit inline ElementsData( const T* indices, size_t n, REAs... args );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -243,8 +243,9 @@ struct ElementsData<>
 // \param n The total number of indices.
 // \param args The optional element arguments.
 */
-template< typename... REAs >  // Optional element arguments
-inline ElementsData<>::ElementsData( const size_t* indices, size_t n, REAs... args )
+template< typename T          // Type of the element indices
+        , typename... REAs >  // Optional element arguments
+inline ElementsData<>::ElementsData( const T* indices, size_t n, REAs... args )
    : indices_( indices, indices+n )  // The indices of the elements in the vector
 {
    UNUSED_PARAMETER( args... );
