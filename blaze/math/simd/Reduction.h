@@ -335,9 +335,9 @@ BLAZE_ALWAYS_INLINE float sum( const SIMDfloat& a ) noexcept
    const __m512 c( _mm512_add_ps( b, a.value ) );
    const __m512 d( _mm512_shuffle_f32x4( c, c, 0b01'01'01'01 ) );
    const __m512 e( _mm512_add_ps( d, c ) );
-   const __m512 f( _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( e ), 0b01'00'11'10 ) ) );
+   const __m512 f( _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( e ), _MM_PERM_BADC ) ) );
    const __m512 g( _mm512_add_ps( e, f ) );
-   const __m512 h( _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( g ), 0b10'11'00'01 ) ) );
+   const __m512 h( _mm512_castsi512_ps( _mm512_shuffle_epi32( _mm512_castps_si512( g ), _MM_PERM_CDAB ) ) );
    b = _mm512_add_ps( g, h );
    return _mm_cvtss_f32( _mm512_castps512_ps128( b ) );
 #elif BLAZE_MIC_MODE
