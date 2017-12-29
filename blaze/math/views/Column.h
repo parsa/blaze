@@ -1148,7 +1148,7 @@ inline bool tryAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
 
-   return tryAssign( lhs.operand(), ~rhs, index, lhs.column );
+   return tryAssign( lhs.operand(), ~rhs, index, lhs.column() );
 }
 /*! \endcond */
 //*************************************************************************************************
