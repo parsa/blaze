@@ -44,6 +44,7 @@
 #include <blaze/math/Column.h>
 #include <blaze/math/Elements.h>
 #include <blaze/math/Row.h>
+#include <blaze/math/Rows.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/math/Subvector.h>
 
