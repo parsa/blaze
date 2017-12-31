@@ -7461,28 +7461,56 @@ void DenseTest::testSubvector()
 
       initialize();
 
-      BT   band1 = blaze::band( mat_, 1L );
-      auto sv    = blaze::subvector( band1, 0UL, 4UL );
+      {
+         BT   band1 = blaze::band( mat_, 1L );
+         auto sv    = blaze::subvector( band1, 0UL, 4UL );
 
-      if( sv[1] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sv[1] << "\n"
-             << "   Expected result: 4\n";
-         throw std::runtime_error( oss.str() );
+         if( sv[0] != 0 || sv[1] != 4 || sv[2] != 5 || sv[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sv << "\n"
+                << "   Expected result:\n( 0 4 5 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *sv.begin() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *sv.begin() << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *sv.begin() != 0 ) {
+      try {
+         BT   band1 = blaze::band( mat_, 1L );
+         auto sv    = blaze::subvector( band1, 4UL, 4UL );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
              << " Details:\n"
-             << "   Result: " << *sv.begin() << "\n"
-             << "   Expected result: 0\n";
+             << "   Result:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         BT   band1 = blaze::band( mat_, 1L );
+         auto sv    = blaze::subvector( band1, 0UL, 5UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -7495,28 +7523,56 @@ void DenseTest::testSubvector()
 
       initialize();
 
-      OBT  band1 = blaze::band( tmat_, -1L );
-      auto sv    = blaze::subvector( band1, 0UL, 4UL );
+      {
+         OBT  band1 = blaze::band( tmat_, -1L );
+         auto sv    = blaze::subvector( band1, 0UL, 4UL );
 
-      if( sv[1] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sv[1] << "\n"
-             << "   Expected result: 4\n";
-         throw std::runtime_error( oss.str() );
+         if( sv[0] != 0 || sv[1] != 4 || sv[2] != 5 || sv[3] != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sv << "\n"
+                << "   Expected result:\n( 0 4 5 -6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *sv.begin() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *sv.begin() << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *sv.begin() != 0 ) {
+      try {
+         OBT  band1 = blaze::band( tmat_, -1L );
+         auto sv    = blaze::subvector( band1, 4UL, 4UL );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
              << " Details:\n"
-             << "   Result: " << *sv.begin() << "\n"
-             << "   Expected result: 0\n";
+             << "   Result:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         OBT  band1 = blaze::band( tmat_, -1L );
+         auto sv    = blaze::subvector( band1, 0UL, 5UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -7542,28 +7598,43 @@ void DenseTest::testElements()
 
       initialize();
 
-      BT   band1 = blaze::band( mat_, 1L );
-      auto e     = blaze::elements( band1, { 3UL, 2UL } );
+      {
+         BT   band1 = blaze::band( mat_, 1L );
+         auto e     = blaze::elements( band1, { 3UL, 2UL } );
 
-      if( e[1] != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e[1] << "\n"
-             << "   Expected result: 5\n";
-         throw std::runtime_error( oss.str() );
+         if( e[0] != -6 || e[1] != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n"
+                << "   Expected result:\n( -6 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e.begin() != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e.begin() << "\n"
+                << "   Expected result: -6\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *e.begin() != -6 ) {
+      try {
+         BT   band1 = blaze::band( mat_, 1L );
+         auto e     = blaze::elements( band1, { 4UL } );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
              << " Details:\n"
-             << "   Result: " << *e.begin() << "\n"
-             << "   Expected result: -6\n";
+             << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -7576,28 +7647,43 @@ void DenseTest::testElements()
 
       initialize();
 
-      OBT  band1 = blaze::band( tmat_, -1L );
-      auto e     = blaze::elements( band1, { 3UL, 2UL } );
+      {
+         OBT  band1 = blaze::band( tmat_, -1L );
+         auto e     = blaze::elements( band1, { 3UL, 2UL } );
 
-      if( e[1] != 5 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e[1] << "\n"
-             << "   Expected result: 5\n";
-         throw std::runtime_error( oss.str() );
+         if( e[0] != -6 || e[1] != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n"
+                << "   Expected result:\n( -6 5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e.begin() != -6 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e.begin() << "\n"
+                << "   Expected result: -6\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *e.begin() != -6 ) {
+      try {
+         OBT  band1 = blaze::band( tmat_, -1L );
+         auto e     = blaze::elements( band1, { 4UL } );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
              << " Details:\n"
-             << "   Result: " << *e.begin() << "\n"
-             << "   Expected result: -6\n";
+             << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
