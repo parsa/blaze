@@ -324,7 +324,7 @@
 
    // ... is essentially the same as the following computation, which multiplies
    // A with the 15th column of the row-major matrix B.
-   blaze::DynamicVector<double,blaze::rowVector> x = A * column( B, 15UL );
+   blaze::DynamicVector<double,blaze::columnVector> x = A * column( B, 15UL );
    \endcode
 
 // Although Blaze performs the resulting matrix/vector multiplication as efficiently as possible
