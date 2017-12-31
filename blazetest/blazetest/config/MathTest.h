@@ -639,6 +639,30 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the row selection tests.
+//
+// This compilation switch triggers the row selection tests for all test scenarios. In case
+// the row selection tests are activated, all operations resulting in matrices are tested in
+// combination with a \a rows() operation. The following example demonstrates this by means
+// of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   for( ... )
+      rows( C, ... ) = rows( A + B, ... );  // Rows-wise matrix addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The row selection tests are not included in the compilation process and not executed
+//   - 1: The row selection tests are included in the compilation process, but not executed
+//   - 2: The row selection tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_ROWS_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the column tests.
 //
 // This compilation switch triggers the column tests for all test scenarios. In case the column
