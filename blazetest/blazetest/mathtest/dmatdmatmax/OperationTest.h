@@ -40,10 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
@@ -72,6 +74,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -184,6 +187,8 @@ class OperationTest
                           void testDeclDiagOperation ( blaze::FalseType );
                           void testSubmatrixOperation();
                           void testRowOperation      ();
+                          void testRowsOperation     ( blaze::TrueType  );
+                          void testRowsOperation     ( blaze::FalseType );
                           void testColumnOperation   ();
                           void testBandOperation     ();
 
@@ -334,6 +339,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    , test_()             // Label of the currently performed test
    , error_()            // Description of the current error type
 {
+   using blaze::Or;
+   using blaze::Not;
+
    typedef blaze::UnderlyingNumeric_<DET>  Scalar;
 
    if( lhs_.rows() != rhs_.rows() || lhs_.columns() != rhs_.columns() ) {
@@ -367,13 +375,14 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testInvOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclHermOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclLowOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclUppOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclDiagOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclSymOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclHermOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclLowOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclUppOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclDiagOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
    testSubmatrixOperation();
    testRowOperation();
+   testRowsOperation( Not< Or< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> > >() );
    testColumnOperation();
    testBandOperation();
 }
@@ -8611,6 +8620,664 @@ void OperationTest<MT1,MT2>::testRowOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the rows-wise dense matrix/dense matrix maximum operation.
+//
+// \return void
+// \exception std::runtime_error Maximum error detected.
+//
+// This function tests the rows-wise matrix maximum with plain assignment, addition assignment,
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// maximum operation or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testRowsOperation( blaze::TrueType )
+{
+#if BLAZETEST_MATHTEST_TEST_ROWS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ROWS_OPERATION > 1 )
+   {
+      if( lhs_.rows() == 0UL )
+         return;
+
+
+      std::vector<size_t> indices( lhs_.rows() );
+      std::iota( indices.begin(), indices.end(), 0UL );
+      std::random_shuffle( indices.begin(), indices.end() );
+
+
+      //=====================================================================================
+      // Rows-wise maximum
+      //=====================================================================================
+
+      // Rows-wise maximum with the given matrices
+      {
+         test_  = "Rows-wise maximum with the given matrices";
+         error_ = "Failed maximum operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Rows-wise maximum with evaluated matrices
+      {
+         test_  = "Rows-wise maximum with evaluated matrices";
+         error_ = "Failed maximum operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Rows-wise maximum with addition assignment
+      //=====================================================================================
+
+      // Rows-wise maximum with addition assignment with the given matrices
+      {
+         test_  = "Rows-wise maximum with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Rows-wise maximum with addition assignment with evaluated matrices
+      {
+         test_  = "Rows-wise maximum with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Rows-wise maximum with subtraction assignment
+      //=====================================================================================
+
+      // Rows-wise maximum with subtraction assignment with the given matrices
+      {
+         test_  = "Rows-wise maximum with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Rows-wise maximum with subtraction assignment with evaluated matrices
+      {
+         test_  = "Rows-wise maximum with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Rows-wise maximum with Schur product assignment
+      //=====================================================================================
+
+      // Rows-wise maximum with Schur product assignment with the given matrices
+      {
+         test_  = "Rows-wise maximum with Schur product assignment with the given matrices";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( lhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( lhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( olhs_, rhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( olhs_, orhs_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( ref_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Rows-wise maximum with Schur product assignment with evaluated matrices
+      {
+         test_  = "Rows-wise maximum with Schur product assignment with evaluated matrices";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( eval( lhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( rhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( max( eval( olhs_ ), eval( orhs_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( eval( ref_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the rows-wise dense matrix/dense matrix maximum operation.
+//
+// \return void
+//
+// This function is called in case the row-wise matrix/matrix maximum operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testRowsOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
