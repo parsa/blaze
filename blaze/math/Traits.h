@@ -76,6 +76,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RealTrait.h>
 #include <blaze/math/traits/RowExprTrait.h>
+#include <blaze/math/traits/RowsExprTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurExprTrait.h>
