@@ -2489,7 +2489,7 @@ void DenseTest::testIterator()
    {
       test_ = "ConstIterator subtraction";
 
-      ET e = blaze::elements( vec_, { 5UL, 6U, 7UL } );
+      ET e = blaze::elements( vec_, { 5UL, 6UL, 7UL } );
       const size_t number( cend( e ) - cbegin( e ) );
 
       if( number != 3UL ) {
@@ -3109,14 +3109,13 @@ void DenseTest::testIsDefault()
 */
 void DenseTest::testIsSame()
 {
-   test_ = "isSame() function";
-
-
    //=====================================================================================
    // Vector-based tests
    //=====================================================================================
 
    {
+      test_ = "isSame() function (vector-based)";
+
       // isSame with vector and matching element selection
       {
          auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
@@ -3325,6 +3324,8 @@ void DenseTest::testIsSame()
    //=====================================================================================
 
    {
+      test_ = "isSame() function (row-based)";
+
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 },
                                                            { 4, 5, 6 },
                                                            { 7, 8, 9 } };
@@ -3546,9 +3547,11 @@ void DenseTest::testIsSame()
    //=====================================================================================
 
    {
-      const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 },
-                                                           { 4, 5, 6 },
-                                                           { 7, 8, 9 } };
+      test_ = "isSame() function (column-based)";
+
+      const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 2, 3 },
+                                                              { 4, 5, 6 },
+                                                              { 7, 8, 9 } };
 
       // isSame with column and matching element selection
       {

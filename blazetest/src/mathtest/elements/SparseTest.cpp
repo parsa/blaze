@@ -3482,14 +3482,13 @@ void SparseTest::testIsDefault()
 */
 void SparseTest::testIsSame()
 {
-   test_ = "isSame() function";
-
-
    //=====================================================================================
    // Vector-based tests
    //=====================================================================================
 
    {
+      test_ = "isSame() function (vector-based)";
+
       // isSame with vector and matching element selection
       {
          auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
@@ -3698,6 +3697,8 @@ void SparseTest::testIsSame()
    //=====================================================================================
 
    {
+      test_ = "isSame() function (row-based)";
+
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 },
                                                            { 4, 5, 6 },
                                                            { 7, 8, 9 } };
@@ -3919,6 +3920,8 @@ void SparseTest::testIsSame()
    //=====================================================================================
 
    {
+      test_ = "isSame() function (column-based)";
+
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 2, 3 },
                                                            { 4, 5, 6 },
                                                            { 7, 8, 9 } };
