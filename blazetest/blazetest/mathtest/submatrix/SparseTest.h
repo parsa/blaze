@@ -113,6 +113,7 @@ class SparseTest
    void testIsSame();
    void testSubmatrix();
    void testRow();
+   void testRows();
    void testColumn();
    void testBand();
 
@@ -227,7 +228,7 @@ void SparseTest::checkRows( const Type& matrix, size_t expectedRows ) const
 /*!\brief Checking the number of columns of the given sparse matrix.
 //
 // \param matrix The sparse matrix to be checked.
-// \param expectedRows The expected number of columns of the sparse matrix.
+// \param expectedColumns The expected number of columns of the sparse matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //

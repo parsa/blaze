@@ -104,6 +104,7 @@ class DenseUnalignedTest
    void testIsSame();
    void testSubmatrix();
    void testRow();
+   void testRows();
    void testColumn();
    void testBand();
 
@@ -212,7 +213,7 @@ void DenseUnalignedTest::checkRows( const Type& matrix, size_t expectedRows ) co
 /*!\brief Checking the number of columns of the given dense matrix.
 //
 // \param matrix The dense matrix to be checked.
-// \param expectedRows The expected number of columns of the dense matrix.
+// \param expectedColumns The expected number of columns of the dense matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
