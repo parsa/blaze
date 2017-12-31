@@ -62,6 +62,8 @@ DenseGeneralTest2: DenseGeneralTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseSymmetricTest: DenseSymmetricTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseGeneralTest1: SparseGeneralTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseGeneralTest2: SparseGeneralTest2.o
