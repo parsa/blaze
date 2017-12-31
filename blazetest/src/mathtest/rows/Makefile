@@ -66,6 +66,8 @@ SparseGeneralTest1: SparseGeneralTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SparseGeneralTest2: SparseGeneralTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SparseSymmetricTest: SparseSymmetricTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
