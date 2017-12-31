@@ -135,8 +135,8 @@ class DenseGeneralTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using MT  = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type
-   using OMT = MT::OppositeType;                           //!< Column-major dynamic matrix type
+   using MT  = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type.
+   using OMT = MT::OppositeType;                           //!< Column-major dynamic matrix type.
    using RT  = blaze::Row<MT>;                             //!< Dense row type for row-major matrices.
    using ORT = blaze::Row<OMT>;                            //!< Dense row type for column-major matrices.
    //**********************************************************************************************

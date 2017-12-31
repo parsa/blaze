@@ -145,8 +145,8 @@ class SparseSymmetricTest
 
    //**Type definitions****************************************************************************
    using SMT = blaze::CompressedMatrix<int,blaze::rowMajor>;  //!< Row-major compressed matrix type.
-   using MT  = blaze::SymmetricMatrix<SMT>;                   //!< Row-major compressed matrix type.
-   using OMT = MT::OppositeType;                              //!< Column-major compressed matrix type.
+   using MT  = blaze::SymmetricMatrix<SMT>;                   //!< Symmetric row-major matrix type.
+   using OMT = MT::OppositeType;                              //!< Symmetric column-major matrix type.
    using RT  = blaze::Row<MT>;                                //!< Sparse row type for row-major matrices.
    using ORT = blaze::Row<OMT>;                               //!< Sparse row type for column-major matrices.
    //**********************************************************************************************

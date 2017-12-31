@@ -143,8 +143,8 @@ class SparseGeneralTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using MT  = blaze::CompressedMatrix<int,blaze::rowMajor>;  //!< Row-major compressed matrix type
-   using OMT = MT::OppositeType;                              //!< Column-major compressed matrix type
+   using MT  = blaze::CompressedMatrix<int,blaze::rowMajor>;  //!< Row-major compressed matrix type.
+   using OMT = MT::OppositeType;                              //!< Column-major compressed matrix type.
    using RT  = blaze::Row<MT>;                                //!< Sparse row type for row-major matrices.
    using ORT = blaze::Row<OMT>;                               //!< Sparse row type for column-major matrices.
    //**********************************************************************************************
