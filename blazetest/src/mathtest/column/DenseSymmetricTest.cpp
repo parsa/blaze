@@ -7037,28 +7037,56 @@ void DenseSymmetricTest::testSubvector()
 
       initialize();
 
-      CT   col1 = blaze::column( mat_, 1UL );
-      auto sv   = subvector( col1, 0UL, 4UL );
+      {
+         CT   col1 = blaze::column( mat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 4UL );
 
-      if( sv[1] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sv[1] << "\n"
-             << "   Expected result: 1\n";
-         throw std::runtime_error( oss.str() );
+         if( sv[1] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sv[1] << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *sv.begin() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *sv.begin() << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *sv.begin() != 0 ) {
+      try {
+         CT   col1 = blaze::column( mat_, 1UL );
+         auto sv   = blaze::subvector( col1, 4UL, 4UL );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
              << " Details:\n"
-             << "   Result: " << *sv.begin() << "\n"
-             << "   Expected result: 0\n";
+             << "   Result:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         CT   col1 = blaze::column( mat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 5UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -7071,28 +7099,56 @@ void DenseSymmetricTest::testSubvector()
 
       initialize();
 
-      OCT  col1 = blaze::column( tmat_, 1UL );
-      auto sv   = subvector( col1, 0UL, 4UL );
+      {
+         OCT  col1 = blaze::column( tmat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 4UL );
 
-      if( sv[1] != 1 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << sv[1] << "\n"
-             << "   Expected result: 1\n";
-         throw std::runtime_error( oss.str() );
+         if( sv[1] != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << sv[1] << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *sv.begin() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *sv.begin() << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *sv.begin() != 0 ) {
+      try {
+         OCT  col1 = blaze::column( tmat_, 1UL );
+         auto sv   = blaze::subvector( col1, 4UL, 4UL );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
              << " Details:\n"
-             << "   Result: " << *sv.begin() << "\n"
-             << "   Expected result: 0\n";
+             << "   Result:\n" << sv << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         OCT  col1 = blaze::column( tmat_, 1UL );
+         auto sv   = blaze::subvector( col1, 0UL, 5UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds subvector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -7118,28 +7174,43 @@ void DenseSymmetricTest::testElements()
 
       initialize();
 
-      CT   col2 = blaze::column( mat_, 2UL );
-      auto e    = elements( col2, { 3UL, 2UL } );
+      {
+         CT   col2 = blaze::column( mat_, 2UL );
+         auto e    = blaze::elements( col2, { 3UL, 2UL } );
 
-      if( e[1] != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e[1] << "\n"
-             << "   Expected result: 3\n";
-         throw std::runtime_error( oss.str() );
+         if( e[1] != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e[1] << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e.begin() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e.begin() << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *e.begin() != 4 ) {
+      try {
+         CT   col2 = blaze::column( mat_, 2UL );
+         auto e    = blaze::elements( col2, { 4UL } );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
              << " Details:\n"
-             << "   Result: " << *e.begin() << "\n"
-             << "   Expected result: 4\n";
+             << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -7152,28 +7223,43 @@ void DenseSymmetricTest::testElements()
 
       initialize();
 
-      OCT  col2 = blaze::column( tmat_, 2UL );
-      auto e    = elements( col2, { 3UL, 2UL } );
+      {
+         OCT  col2 = blaze::column( tmat_, 2UL );
+         auto e    = blaze::elements( col2, { 3UL, 2UL } );
 
-      if( e[1] != 3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e[1] << "\n"
-             << "   Expected result: 3\n";
-         throw std::runtime_error( oss.str() );
+         if( e[1] != 3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e[1] << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e.begin() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e.begin() << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *e.begin() != 4 ) {
+      try {
+         OCT  col2 = blaze::column( tmat_, 2UL );
+         auto e    = blaze::elements( col2, { 4UL } );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
              << " Details:\n"
-             << "   Result: " << *e.begin() << "\n"
-             << "   Expected result: 4\n";
+             << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
