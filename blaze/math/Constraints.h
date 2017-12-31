@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Column.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
+#include <blaze/math/constraints/Columns.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConstDataAccess.h>

@@ -95,6 +95,7 @@
 #include <blaze/math/typetraits/IsBLASCompatible.h>
 #include <blaze/math/typetraits/IsColumn.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsColumns.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsContiguous.h>
