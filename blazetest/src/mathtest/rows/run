@@ -39,3 +39,4 @@ echo " Running Rows tests..."
 
 EXE=$PATH_ROWS/DenseGeneralTest1;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_ROWS/DenseGeneralTest2;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_ROWS/DenseSymmetricTest;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
