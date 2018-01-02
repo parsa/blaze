@@ -52,10 +52,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time logical xor evaluation.
+/*!\brief Compile time logical 'xor' evaluation.
 // \ingroup mpl
 //
-// The Xor alias declaration performs at compile time a logical xor evaluation of the two given
+// The Xor alias declaration performs at compile time a logical 'xor' evaluation of the two given
 // compile time conditions:
 
    \code
