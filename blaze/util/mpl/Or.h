@@ -54,10 +54,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time logical or evaluation.
+/*!\brief Compile time logical 'or' evaluation.
 // \ingroup mpl
 //
-// The Or alias declaration performs at compile time a logical or ('&&') evaluation of at least
+// The Or alias declaration performs at compile time a logical 'or' ('||') evaluation of at least
 // two compile time conditions:
 
    \code
