@@ -54,11 +54,11 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time logical and evaluation.
+/*!\brief Compile time logical 'and' evaluation.
 // \ingroup mpl
 //
-// The And alias declaration performs at compile time a logical and ('&&') evaluation of at least
-// two compile time conditions:
+// The And alias declaration performs at compile time a logical 'and' ('&&') evaluation of at
+// least two compile time conditions:
 
    \code
    using namespace blaze;

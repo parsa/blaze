@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/MPL.h
-//  \brief Header file for all meta-programming tools
+//  \file blaze/util/mpl/Nand.h
+//  \brief Header file for the Nand class template
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,34 +32,53 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_H_
-#define _BLAZE_UTIL_MPL_H_
+#ifndef _BLAZE_UTIL_MPL_NAND_H_
+#define _BLAZE_UTIL_MPL_NAND_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Char.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Greater.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Int.h>
-#include <blaze/util/mpl/Less.h>
-#include <blaze/util/mpl/Long.h>
-#include <blaze/util/mpl/Maximum.h>
-#include <blaze/util/mpl/Minimum.h>
-#include <blaze/util/mpl/Minus.h>
-#include <blaze/util/mpl/Modulus.h>
-#include <blaze/util/mpl/Nand.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/Plus.h>
-#include <blaze/util/mpl/PtrdiffT.h>
-#include <blaze/util/mpl/SizeT.h>
-#include <blaze/util/mpl/Times.h>
-#include <blaze/util/mpl/Xor.h>
+#include <blaze/util/mpl/Bools.h>
+#include <blaze/util/typetraits/IsSame.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Compile time logical 'not and' evaluation.
+// \ingroup mpl
+//
+// The And alias declaration performs at compile time a logical 'not and' evaluation of at least
+// two compile time conditions:
+
+   \code
+   using namespace blaze;
+
+   using Type = int;
+
+   Nand< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1
+   Nand< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 1
+   Nand< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 0
+   \endcode
+*/
+template< typename T1       // Type of the first mandatory operand
+        , typename T2       // Type of the second mandatory operand
+        , typename... Ts >  // Types of the optional operands
+struct Nand
+   : public Bool< !IsSame< Bools< true, T1::value, T2::value, (Ts::value)... >
+                         , Bools< T1::value, T2::value, (Ts::value)..., true > >::value >
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
