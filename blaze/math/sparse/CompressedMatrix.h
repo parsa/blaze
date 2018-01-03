@@ -3174,12 +3174,12 @@ class CompressedMatrix<Type,true>
    inline ConstReference operator()( size_t i, size_t j ) const noexcept;
    inline Reference      at( size_t i, size_t j );
    inline ConstReference at( size_t i, size_t j ) const;
-   inline Iterator       begin ( size_t i ) noexcept;
-   inline ConstIterator  begin ( size_t i ) const noexcept;
-   inline ConstIterator  cbegin( size_t i ) const noexcept;
-   inline Iterator       end   ( size_t i ) noexcept;
-   inline ConstIterator  end   ( size_t i ) const noexcept;
-   inline ConstIterator  cend  ( size_t i ) const noexcept;
+   inline Iterator       begin ( size_t j ) noexcept;
+   inline ConstIterator  begin ( size_t j ) const noexcept;
+   inline ConstIterator  cbegin( size_t j ) const noexcept;
+   inline Iterator       end   ( size_t j ) noexcept;
+   inline ConstIterator  end   ( size_t j ) const noexcept;
+   inline ConstIterator  cend  ( size_t j ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3248,7 +3248,7 @@ class CompressedMatrix<Type,true>
    inline void erase( Pred predicate );
 
    template< typename Pred >
-   inline void erase( size_t i, Iterator first, Iterator last, Pred predicate );
+   inline void erase( size_t j, Iterator first, Iterator last, Pred predicate );
    //@}
    //**********************************************************************************************
 
