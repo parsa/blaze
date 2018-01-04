@@ -183,7 +183,9 @@ class Columns<MT,true,true,SF,CCAs...>
    //@{
    template< typename... RCAs >
    explicit inline Columns( MT& matrix, RCAs... args );
-   // No explicitly declared copy constructor.
+
+   inline Columns( const Columns& ) = default;
+   inline Columns( Columns&& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -3555,7 +3557,9 @@ class Columns<MT,false,true,false,CCAs...>
    //@{
    template< typename... RCAs >
    explicit inline Columns( MT& matrix, RCAs... args );
-   // No explicitly declared copy constructor.
+
+   inline Columns( const Columns& ) = default;
+   inline Columns( Columns&& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -6018,7 +6022,9 @@ class Columns<MT,false,true,true,CCAs...>
    //@{
    template< typename... RCAs >
    explicit inline Columns( MT& matrix, RCAs... args );
-   // No explicitly declared copy constructor.
+
+   inline Columns( const Columns& ) = default;
+   inline Columns( Columns&& ) = default;
    //@}
    //**********************************************************************************************
 

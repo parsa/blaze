@@ -196,7 +196,9 @@ struct ColumnsData<>
    //@{
    template< typename T, typename... RCAs >
    explicit inline ColumnsData( const T* indices, size_t n, RCAs... args );
-   // No explicitly declared copy constructor.
+
+   inline ColumnsData( const ColumnsData& ) = default;
+   inline ColumnsData( ColumnsData&& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -221,7 +223,7 @@ struct ColumnsData<>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   const Indices indices_;  //!< The indices of the columns in the matrix.
+   Indices indices_;  //!< The indices of the columns in the matrix.
    //@}
    //**********************************************************************************************
 };
