@@ -686,6 +686,30 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the column selection tests.
+//
+// This compilation switch triggers the column selection tests for all test scenarios. In case
+// the column selection tests are activated, all operations resulting in matrices are tested in
+// combination with a \a columns() operation. The following example demonstrates this by means
+// of the matrix addition:
+
+   \code
+   blaze::DynamicMatrix<double> A, B, C;
+   for( ... )
+      columns( C, ... ) = columns( A + B, ... );  // Columns-wise matrix addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The column selection tests are not included in the compilation process and not executed
+//   - 1: The column selection tests are included in the compilation process, but not executed
+//   - 2: The column selection tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the band tests.
 //
 // This compilation switch triggers the band tests for all test scenarios. In case the band tests
