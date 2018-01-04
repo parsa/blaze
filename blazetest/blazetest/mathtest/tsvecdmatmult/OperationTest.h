@@ -40,10 +40,12 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
@@ -159,6 +161,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testSubvectorOperation();
+                          void testElementsOperation ();
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -303,6 +306,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testEvalOperation();
    testSerialOperation();
    testSubvectorOperation();
+   testElementsOperation();
 }
 //*************************************************************************************************
 
@@ -3627,8 +3631,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) = subvector( lhs_ * orhs_     , index, size );
                subvector( sres_  , index, size ) = subvector( lhs_ * orhs_     , index, size );
                subvector( refres_, index, size ) = subvector( reflhs_ * refrhs_, index, size );
@@ -3663,8 +3667,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) = subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( sres_  , index, size ) = subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( refres_, index, size ) = subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
@@ -3704,8 +3708,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) += subvector( lhs_ * orhs_     , index, size );
                subvector( sres_  , index, size ) += subvector( lhs_ * orhs_     , index, size );
                subvector( refres_, index, size ) += subvector( reflhs_ * refrhs_, index, size );
@@ -3740,8 +3744,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) += subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( sres_  , index, size ) += subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( refres_, index, size ) += subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
@@ -3781,8 +3785,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) -= subvector( lhs_ * orhs_     , index, size );
                subvector( sres_  , index, size ) -= subvector( lhs_ * orhs_     , index, size );
                subvector( refres_, index, size ) -= subvector( reflhs_ * refrhs_, index, size );
@@ -3817,8 +3821,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) -= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( sres_  , index, size ) -= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( refres_, index, size ) -= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
@@ -3858,8 +3862,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) *= subvector( lhs_ * orhs_     , index, size );
                subvector( sres_  , index, size ) *= subvector( lhs_ * orhs_     , index, size );
                subvector( refres_, index, size ) *= subvector( reflhs_ * refrhs_, index, size );
@@ -3894,8 +3898,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                subvector( dres_  , index, size ) *= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( sres_  , index, size ) *= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( refres_, index, size ) *= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
@@ -3936,8 +3940,8 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
                subvector( dres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
                subvector( sres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
@@ -3974,12 +3978,459 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 
          try {
             initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
                if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
                subvector( dres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( sres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
                subvector( refres_, index, size ) /= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the elements-wise sparse vector/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the elements-wise vector/matrix multiplication with plain assignment,
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename MT >  // Type of the right-hand side dense matrix
+void OperationTest<VT,MT>::testElementsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
+   {
+      if( rhs_.columns() == 0UL )
+         return;
+
+
+      std::vector<size_t> indices( rhs_.columns() );
+      std::iota( indices.begin(), indices.end(), 0UL );
+      std::random_shuffle( indices.begin(), indices.end() );
+
+
+      //=====================================================================================
+      // Elements-wise multiplication
+      //=====================================================================================
+
+      // Elements-wise multiplication with the given vector/matrix
+      {
+         test_  = "Elements-wise multiplication with the given vector/matrix";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) = elements( lhs_ * rhs_      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) = elements( lhs_ * rhs_      , &indices[index], size );
+               elements( refres_, &indices[index], size ) = elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) = elements( lhs_ * orhs_     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) = elements( lhs_ * orhs_     , &indices[index], size );
+               elements( refres_, &indices[index], size ) = elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Elements-wise multiplication with evaluated vector/matrix
+      {
+         test_  = "Elements-wise multiplication with evaluated vector/matrix";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) = elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) = elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( refres_, &indices[index], size ) = elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) = elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) = elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( refres_, &indices[index], size ) = elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise multiplication with addition assignment
+      //=====================================================================================
+
+      // Elements-wise multiplication with addition assignment with the given vector/matrix
+      {
+         test_  = "Elements-wise multiplication with addition assignment with the given vector/matrix";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) += elements( lhs_ * rhs_      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) += elements( lhs_ * rhs_      , &indices[index], size );
+               elements( refres_, &indices[index], size ) += elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) += elements( lhs_ * orhs_     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) += elements( lhs_ * orhs_     , &indices[index], size );
+               elements( refres_, &indices[index], size ) += elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Elements-wise multiplication wit addition assignment with evaluated vector/matrix
+      {
+         test_  = "Elements-wise multiplication with addition assignment with evaluated vector/matrix";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) += elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) += elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( refres_, &indices[index], size ) += elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) += elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) += elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( refres_, &indices[index], size ) += elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Elements-wise multiplication with subtraction assignment with the given vector/matrix
+      {
+         test_  = "Elements-wise multiplication with subtraction assignment with the given vector/matrix";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) -= elements( lhs_ * rhs_      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) -= elements( lhs_ * rhs_      , &indices[index], size );
+               elements( refres_, &indices[index], size ) -= elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) -= elements( lhs_ * orhs_     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) -= elements( lhs_ * orhs_     , &indices[index], size );
+               elements( refres_, &indices[index], size ) -= elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Elements-wise multiplication wit subtraction assignment with evaluated vector/matrix
+      {
+         test_  = "Elements-wise multiplication with subtraction assignment with evaluated vector/matrix";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) -= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) -= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( refres_, &indices[index], size ) -= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) -= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) -= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( refres_, &indices[index], size ) -= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Elements-wise multiplication with multiplication assignment with the given vector/matrix
+      {
+         test_  = "Elements-wise multiplication with multiplication assignment with the given vector/matrix";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) *= elements( lhs_ * rhs_      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) *= elements( lhs_ * rhs_      , &indices[index], size );
+               elements( refres_, &indices[index], size ) *= elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) *= elements( lhs_ * orhs_     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) *= elements( lhs_ * orhs_     , &indices[index], size );
+               elements( refres_, &indices[index], size ) *= elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Elements-wise multiplication wit multiplication assignment with evaluated vector/matrix
+      {
+         test_  = "Elements-wise multiplication with multiplication assignment with evaluated vector/matrix";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) *= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) *= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( refres_, &indices[index], size ) *= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               elements( dres_  , &indices[index], size ) *= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) *= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( refres_, &indices[index], size ) *= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+
+      //=====================================================================================
+      // Elements-wise multiplication with division assignment
+      //=====================================================================================
+
+      // Elements-wise multiplication with division assignment with the given vector/matrix
+      {
+         test_  = "Elements-wise multiplication with division assignment with the given vector/matrix";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( lhs_ * rhs_, &indices[index], size ) ) ) continue;
+               elements( dres_  , &indices[index], size ) /= elements( lhs_ * rhs_      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) /= elements( lhs_ * rhs_      , &indices[index], size );
+               elements( refres_, &indices[index], size ) /= elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( lhs_ * orhs_, &indices[index], size ) ) ) continue;
+               elements( dres_  , &indices[index], size ) /= elements( lhs_ * orhs_     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) /= elements( lhs_ * orhs_     , &indices[index], size );
+               elements( refres_, &indices[index], size ) /= elements( reflhs_ * refrhs_, &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TMT>( ex );
+         }
+
+         checkResults<TMT>();
+      }
+
+      // Elements-wise multiplication wit division assignment with evaluated vector/matrix
+      {
+         test_  = "Elements-wise multiplication with division assignment with evaluated vector/matrix";
+         error_ = "Failed division assignment operation";
+
+         try {
+            initResults();
+            std::vector<size_t> indices( rhs_.columns() );
+            std::iota( indices.begin(), indices.end(), 0UL );
+            std::random_shuffle( indices.begin(), indices.end() );
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( lhs_ * rhs_, &indices[index], size ) ) ) continue;
+               elements( dres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( sres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+               elements( refres_, &indices[index], size ) /= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT>( ex );
+         }
+
+         checkResults<MT>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+               size = blaze::rand<size_t>( 1UL, indices.size() - index );
+               if( !blaze::isDivisor( elements( lhs_ * orhs_, &indices[index], size ) ) ) continue;
+               elements( dres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( sres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+               elements( refres_, &indices[index], size ) /= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
             }
          }
          catch( std::exception& ex ) {
