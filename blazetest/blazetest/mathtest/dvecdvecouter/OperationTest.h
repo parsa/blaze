@@ -176,6 +176,7 @@ class OperationTest
                           void testRowOperation      ();
                           void testRowsOperation     ();
                           void testColumnOperation   ();
+                          void testColumnsOperation  ();
                           void testBandOperation     ();
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
@@ -342,6 +343,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testRowOperation();
    testRowsOperation();
    testColumnOperation();
+   testColumnsOperation();
    testBandOperation();
 }
 //*************************************************************************************************
@@ -4198,6 +4200,241 @@ void OperationTest<VT1,VT2>::testColumnOperation()
                column( sres_  , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
                column( osres_ , i ) *= column( eval( lhs_ ) * eval( rhs_ ), i );
                column( refres_, i ) *= column( eval( reflhs_ ) * eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the columns-wise dense vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function tests the columns-wise outer product with plain assignment, addition assignment,
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// outer product or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testColumnsOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION > 1 )
+   {
+      if( rhs_.size() == 0UL )
+         return;
+
+
+      std::vector<size_t> indices( rhs_.size() );
+      std::iota( indices.begin(), indices.end(), 0UL );
+      std::random_shuffle( indices.begin(), indices.end() );
+
+
+      //=====================================================================================
+      // Columns-wise multiplication
+      //=====================================================================================
+
+      // Columns-wise multiplication with the given vectors
+      {
+         test_  = "Columns-wise multiplication with the given vectors";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Columns-wise multiplication with evaluated vectors
+      {
+         test_  = "Columns-wise multiplication with evaluated vectors";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise multiplication with addition assignment
+      //=====================================================================================
+
+      // Columns-wise multiplication with addition assignment with the given vectors
+      {
+         test_  = "Columns-wise multiplication with addition assignment with the given vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Columns-wise multiplication with addition assignment with evaluated vectors
+      {
+         test_  = "Columns-wise multiplication with addition assignment with evaluated vectors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Columns-wise multiplication with subtraction assignment with the given vectors
+      {
+         test_  = "Columns-wise multiplication with subtraction assignment with the given vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Columns-wise multiplication with subtraction assignment with evaluated vectors
+      {
+         test_  = "Columns-wise multiplication with subtraction assignment with evaluated vectors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise multiplication with Schur product assignment
+      //=====================================================================================
+
+      // Columns-wise multiplication with Schur product assignment with the given vectors
+      {
+         test_  = "Columns-wise multiplication with Schur product assignment with the given vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException( ex );
+         }
+
+         checkResults();
+      }
+
+      // Columns-wise multiplication with Schur product assignment with evaluated vectors
+      {
+         test_  = "Columns-wise multiplication with Schur product assignment with evaluated vectors";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
             }
          }
          catch( std::exception& ex ) {
