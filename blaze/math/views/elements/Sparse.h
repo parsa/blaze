@@ -443,7 +443,9 @@ class Elements<VT,TF,false,CEAs...>
    //@{
    template< typename... REAs >
    explicit inline Elements( VT& vector, REAs... args );
-   // No explicitly declared copy constructor.
+
+   inline Elements( const Elements& ) = default;
+   inline Elements( Elements&& ) = default;
    //@}
    //**********************************************************************************************
 

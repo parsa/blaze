@@ -202,7 +202,9 @@ struct ElementsData<>
    //@{
    template< typename T, typename... REAs >
    explicit inline ElementsData( const T* indices, size_t n, REAs... args );
-   // No explicitly declared copy constructor.
+
+   inline ElementsData( const ElementsData& ) = default;
+   inline ElementsData( ElementsData&& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -227,7 +229,7 @@ struct ElementsData<>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   const Indices indices_;  //!< The indices of the elements in the vector.
+   Indices indices_;  //!< The indices of the elements in the vector.
    //@}
    //**********************************************************************************************
 };
