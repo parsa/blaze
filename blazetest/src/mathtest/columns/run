@@ -37,5 +37,6 @@ PATH_COLUMNS=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running Columns tests..."
 
-EXE=$PATH_COLUMNS/DenseGeneralTest1; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
-EXE=$PATH_COLUMNS/DenseGeneralTest2; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COLUMNS/DenseGeneralTest1;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COLUMNS/DenseGeneralTest2;  if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_COLUMNS/DenseSymmetricTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

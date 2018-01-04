@@ -60,6 +60,8 @@ DenseGeneralTest1: DenseGeneralTest1.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DenseGeneralTest2: DenseGeneralTest2.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DenseSymmetricTest: DenseSymmetricTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
