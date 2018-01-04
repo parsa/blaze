@@ -40,8 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <istream>
-#include <ostream>
+#include <iosfwd>
 #include <blaze/util/constraints/Unsigned.h>
 
 
