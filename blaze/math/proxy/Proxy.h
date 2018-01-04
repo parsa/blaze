@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <iosfwd>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/InversionFlag.h>

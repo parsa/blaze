@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <iomanip>
-#include <ostream>
+#include <iosfwd>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Matrix.h>

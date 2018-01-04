@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <iomanip>
-#include <ostream>
+#include <iosfwd>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/TransposeFlag.h>
