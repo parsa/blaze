@@ -196,7 +196,9 @@ struct RowsData<>
    //@{
    template< typename T, typename... RRAs >
    explicit inline RowsData( const T* indices, size_t n, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   inline RowsData( const RowsData& ) = default;
+   inline RowsData( RowsData&& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -221,7 +223,7 @@ struct RowsData<>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   const Indices indices_;  //!< The indices of the rows in the matrix.
+   Indices indices_;  //!< The indices of the rows in the matrix.
    //@}
    //**********************************************************************************************
 };

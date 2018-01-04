@@ -183,7 +183,9 @@ class Rows<MT,true,true,SF,CRAs...>
    //@{
    template< typename... RRAs >
    explicit inline Rows( MT& matrix, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   inline Rows( const Rows& ) = default;
+   inline Rows( Rows&& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -3552,7 +3554,9 @@ class Rows<MT,false,true,false,CRAs...>
    //@{
    template< typename... RRAs >
    explicit inline Rows( MT& matrix, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   inline Rows( const Rows& ) = default;
+   inline Rows( Rows&& ) = default;
    //@}
    //**********************************************************************************************
 
@@ -6009,7 +6013,9 @@ class Rows<MT,false,true,true,CRAs...>
    //@{
    template< typename... RRAs >
    explicit inline Rows( MT& matrix, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   inline Rows( const Rows& ) = default;
+   inline Rows( Rows&& ) = default;
    //@}
    //**********************************************************************************************
 
