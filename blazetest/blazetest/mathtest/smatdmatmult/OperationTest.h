@@ -69,7 +69,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
+#include <blaze/util/mpl/Nor.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -190,6 +190,8 @@ class OperationTest
                           void testRowsOperation     ( blaze::TrueType  );
                           void testRowsOperation     ( blaze::FalseType );
                           void testColumnOperation   ();
+                          void testColumnsOperation  ( blaze::TrueType  );
+                          void testColumnsOperation  ( blaze::FalseType );
                           void testBandOperation     ();
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
@@ -345,7 +347,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    , error_()            // Description of the current error type
 {
    using blaze::Or;
-   using blaze::Not;
+   using blaze::Nor;
 
    typedef blaze::UnderlyingNumeric_<DET>  Scalar;
 
@@ -376,8 +378,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testDeclDiagOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
    testSubmatrixOperation();
    testRowOperation();
-   testRowsOperation( Not< Or< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> > >() );
+   testRowsOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
    testColumnOperation();
+   testColumnsOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
    testBandOperation();
 }
 //*************************************************************************************************
@@ -10626,7 +10629,7 @@ void OperationTest<MT1,MT2>::testRowsOperation( blaze::TrueType )
 //
 // \return void
 //
-// This function is called in case the row-wise matrix/matrix multiplication operation is not
+// This function is called in case the rows-wise matrix/matrix multiplication operation is not
 // available for the given matrix types \a MT1 and \a MT2.
 */
 template< typename MT1    // Type of the left-hand side sparse matrix
@@ -11241,6 +11244,664 @@ void OperationTest<MT1,MT2>::testColumnOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the columns-wise sparse matrix/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the columns-wise matrix multiplication with plain assignment, addition
+// assignment, subtraction assignment, and Schur product assignment. In case any error resulting
+// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testColumnsOperation( blaze::TrueType )
+{
+#if BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION > 1 )
+   {
+      if( rhs_.columns() == 0UL )
+         return;
+
+
+      std::vector<size_t> indices( rhs_.columns() );
+      std::iota( indices.begin(), indices.end(), 0UL );
+      std::random_shuffle( indices.begin(), indices.end() );
+
+
+      //=====================================================================================
+      // Columns-wise multiplication
+      //=====================================================================================
+
+      // Columns-wise multiplication with the given matrices
+      {
+         test_  = "Columns-wise multiplication with the given matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( lhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( lhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( lhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( lhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( olhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( olhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( olhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( olhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( olhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( olhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( olhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( olhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Columns-wise multiplication with evaluated matrices
+      {
+         test_  = "Columns-wise multiplication with evaluated matrices";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise multiplication with addition assignment
+      //=====================================================================================
+
+      // Columns-wise multiplication with addition assignment with the given matrices
+      {
+         test_  = "Columns-wise multiplication with addition assignment with the given matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( lhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( lhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( lhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( lhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( olhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( olhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( olhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( olhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( olhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( olhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( olhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( olhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Columns-wise multiplication with addition assignment with evaluated matrices
+      {
+         test_  = "Columns-wise multiplication with addition assignment with evaluated matrices";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise multiplication with subtraction assignment
+      //=====================================================================================
+
+      // Columns-wise multiplication with subtraction assignment with the given matrices
+      {
+         test_  = "Columns-wise multiplication with subtraction assignment with the given matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( lhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( lhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( lhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( lhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( olhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( olhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( olhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( olhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( olhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( olhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( olhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( olhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Columns-wise multiplication with subtraction assignment with evaluated matrices
+      {
+         test_  = "Columns-wise multiplication with subtraction assignment with evaluated matrices";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise multiplication with Schur product assignment
+      //=====================================================================================
+
+      // Columns-wise multiplication with Schur product assignment with the given matrices
+      {
+         test_  = "Columns-wise multiplication with Schur product assignment with the given matrices";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( lhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( lhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( lhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( lhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( lhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( olhs_ * rhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( olhs_ * rhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( olhs_ * rhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( olhs_ * rhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( olhs_ * orhs_, &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( olhs_ * orhs_, &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( olhs_ * orhs_, &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( olhs_ * orhs_, &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( reflhs_ * refrhs_, &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+
+      // Columns-wise multiplication with Schur product assignment with evaluated matrices
+      {
+         test_  = "Columns-wise multiplication with Schur product assignment with evaluated matrices";
+         error_ = "Failed Schur product assignment operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( eval( lhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( eval( lhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,OMT2>( ex );
+         }
+
+         checkResults<MT1,OMT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( eval( olhs_ ) * eval( rhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,MT2>( ex );
+         }
+
+         checkResults<OMT1,MT2>();
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( eval( olhs_ ) * eval( orhs_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<OMT1,OMT2>( ex );
+         }
+
+         checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the columns-wise sparse matrix/dense matrix multiplication.
+//
+// \return void
+//
+// This function is called in case the columns-wise matrix/matrix multiplication operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testColumnsOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
