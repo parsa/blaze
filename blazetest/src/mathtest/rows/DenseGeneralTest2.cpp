@@ -79,6 +79,7 @@ DenseGeneralTest::DenseGeneralTest()
    testRow();
    testRows();
    testColumn();
+   testColumns();
    testBand();
 }
 //*************************************************************************************************
@@ -4705,6 +4706,121 @@ void DenseGeneralTest::testColumn()
              << " Error: Setup of out-of-bounds column succeeded\n"
              << " Details:\n"
              << "   Result:\n" << col4 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c columns() function with the Rows class template.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c columns() function with the Rows specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseGeneralTest::testColumns()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major columns() function";
+
+      initialize();
+
+      {
+         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( rs, { 1UL, 0UL, 2UL } );
+
+         if( cs(0,0) !=  4 || cs(0,1) != 0 || cs(0,2) != 5 ||
+             cs(1,0) !=  1 || cs(1,1) != 0 || cs(1,2) != 0 ||
+             cs(2,0) != -8 || cs(2,1) != 7 || cs(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n"
+                << "   Expected result:\n(  4  0  5 )\n(  1  0  0 )\n( -8  7  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs.begin( 2UL ) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs.begin( 2UL ) << "\n"
+                << "   Expected result: 5\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( rs, { 4UL } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major columns() function";
+
+      initialize();
+
+      {
+         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( rs, { 1UL, 0UL, 2UL } );
+
+         if( cs(0,0) !=  4 || cs(0,1) != 0 || cs(0,2) != 5 ||
+             cs(1,0) !=  1 || cs(1,1) != 0 || cs(1,2) != 0 ||
+             cs(2,0) != -8 || cs(2,1) != 7 || cs(2,2) != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n"
+                << "   Expected result:\n(  4  0  5 )\n(  1  0  0 )\n( -8  7  9 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs.begin( 2UL ) != 5 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs.begin( 2UL ) << "\n"
+                << "   Expected result: 5\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( rs, { 4UL } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
