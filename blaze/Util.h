@@ -59,7 +59,6 @@
 #include <blaze/util/Indices.h>
 #include <blaze/util/InitializerList.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/InputString.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Limits.h>
 #include <blaze/util/Memory.h>
