@@ -42,6 +42,7 @@
 
 #include <blaze/math/Band.h>
 #include <blaze/math/Column.h>
+#include <blaze/math/Columns.h>
 #include <blaze/math/Elements.h>
 #include <blaze/math/Row.h>
 #include <blaze/math/Rows.h>
