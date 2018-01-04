@@ -106,6 +106,7 @@ class DenseUnalignedTest
    void testRow();
    void testRows();
    void testColumn();
+   void testColumns();
    void testBand();
 
    template< typename Type >
