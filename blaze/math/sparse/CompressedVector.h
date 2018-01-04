@@ -950,6 +950,8 @@ template< typename Type  // Data type of the vector
 inline CompressedVector<Type,TF>&
    CompressedVector<Type,TF>::operator=( const CompressedVector& rhs )
 {
+   using std::swap;
+
    if( &rhs == this ) return *this;
 
    const size_t nonzeros( rhs.nonZeros() );
@@ -957,7 +959,7 @@ inline CompressedVector<Type,TF>&
    if( nonzeros > capacity_ ) {
       Iterator newBegin( allocate<Element>( nonzeros ) );
       end_ = castDown( std::copy( rhs.begin_, rhs.end_, castUp( newBegin ) ) );
-      std::swap( begin_, newBegin );
+      swap( begin_, newBegin );
       deallocate( newBegin );
 
       size_     = rhs.size_;
@@ -1450,6 +1452,8 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 void CompressedVector<Type,TF>::reserve( size_t n )
 {
+   using std::swap;
+
    if( n > capacity_ ) {
       const size_t newCapacity( n );
 
@@ -1458,7 +1462,7 @@ void CompressedVector<Type,TF>::reserve( size_t n )
 
       // Replacing the old data and index array
       end_ = castDown( transfer( begin_, end_, castUp( newBegin ) ) );
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       capacity_ = newCapacity;
       deallocate( newBegin );
    }
@@ -1496,10 +1500,12 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void CompressedVector<Type,TF>::swap( CompressedVector& sv ) noexcept
 {
-   std::swap( size_, sv.size_ );
-   std::swap( capacity_, sv.capacity_ );
-   std::swap( begin_, sv.begin_ );
-   std::swap( end_, sv.end_ );
+   using std::swap;
+
+   swap( size_, sv.size_ );
+   swap( capacity_, sv.capacity_ );
+   swap( begin_, sv.begin_ );
+   swap( end_, sv.end_ );
 }
 //*************************************************************************************************
 
@@ -1647,7 +1653,9 @@ template< typename Type  // Data type of the vector
 typename CompressedVector<Type,TF>::Iterator
    CompressedVector<Type,TF>::insert( Iterator pos, size_t index, const Type& value )
 {
-    if( nonZeros() != capacity_ ) {
+   using std::swap;
+
+   if( nonZeros() != capacity_ ) {
       std::move_backward( pos, end_, castUp( end_+1 ) );
       pos->value_ = value;
       pos->index_ = index;
@@ -1664,7 +1672,7 @@ typename CompressedVector<Type,TF>::Iterator
       tmp->index_ = index;
       end_ = castDown( std::move( pos, end_, castUp( tmp+1 ) ) );
 
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       deallocate( newBegin );
       capacity_ = newCapacity;
 

@@ -686,9 +686,11 @@ inline size_t InitializerMatrix<Type>::nonZeros( size_t i ) const
 template< typename Type >  // Data type of the matrix
 inline void InitializerMatrix<Type>::swap( InitializerMatrix& m ) noexcept
 {
-   std::swap( m_   , m.m_    );
-   std::swap( n_   , m.n_    );
-   std::swap( list_, m.list_ );
+   using std::swap;
+
+   swap( m_   , m.m_    );
+   swap( n_   , m.n_    );
+   swap( list_, m.list_ );
 }
 //*************************************************************************************************
 

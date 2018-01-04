@@ -878,7 +878,9 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void IdentityMatrix<Type,SO>::swap( IdentityMatrix& m ) noexcept
 {
-   std::swap( n_, m.n_ );
+   using std::swap;
+
+   swap( n_, m.n_ );
 }
 //*************************************************************************************************
 

@@ -1132,6 +1132,8 @@ template< typename Type  // Data type of the matrix
 inline CompressedMatrix<Type,SO>&
    CompressedMatrix<Type,SO>::operator=( const CompressedMatrix& rhs )
 {
+   using std::swap;
+
    if( &rhs == this ) return *this;
 
    const size_t nonzeros( rhs.nonZeros() );
@@ -1148,7 +1150,7 @@ inline CompressedMatrix<Type,SO>&
       }
       newEnd[rhs.m_] = newBegin[0UL]+nonzeros;
 
-      std::swap( begin_, newBegin );
+      swap( begin_, newBegin );
       end_ = newEnd;
       capacity_ = rhs.m_;
 
@@ -1648,6 +1650,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 {
+   using std::swap;
+
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
    BLAZE_INTERNAL_ASSERT( begin_ == nullptr || size_t( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 
@@ -1688,7 +1692,7 @@ void CompressedMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 
       newEnd[m] = end_[m_];
 
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       delete[] newBegin;
       end_ = newEnd;
       capacity_ = m;
@@ -1767,6 +1771,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 {
+   using std::swap;
+
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
@@ -1802,7 +1808,7 @@ void CompressedMatrix<Type,SO>::reserve( size_t i, size_t nonzeros )
 
       BLAZE_INTERNAL_ASSERT( newBegin[m_] == newEnd[m_], "Invalid pointer calculations" );
 
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       deallocate( newBegin[0UL] );
       delete[] newBegin;
       end_ = newEnd;
@@ -1897,11 +1903,13 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void CompressedMatrix<Type,SO>::swap( CompressedMatrix& sm ) noexcept
 {
-   std::swap( m_, sm.m_ );
-   std::swap( n_, sm.n_ );
-   std::swap( capacity_, sm.capacity_ );
-   std::swap( begin_, sm.begin_ );
-   std::swap( end_  , sm.end_   );
+   using std::swap;
+
+   swap( m_, sm.m_ );
+   swap( n_, sm.n_ );
+   swap( capacity_, sm.capacity_ );
+   swap( begin_, sm.begin_ );
+   swap( end_  , sm.end_   );
 }
 //*************************************************************************************************
 
@@ -1938,6 +1946,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 {
+   using std::swap;
+
    Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
    Iterator* newEnd   = newBegin+capacity_+1UL;
 
@@ -1951,7 +1961,7 @@ void CompressedMatrix<Type,SO>::reserveElements( size_t nonzeros )
 
    newEnd[m_] = newBegin[0UL]+nonzeros;
 
-   std::swap( newBegin, begin_ );
+   swap( newBegin, begin_ );
    end_ = newEnd;
 
    if( newBegin != nullptr ) {
@@ -2084,6 +2094,8 @@ template< typename Type  // Data type of the matrix
 typename CompressedMatrix<Type,SO>::Iterator
    CompressedMatrix<Type,SO>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
+   using std::swap;
+
    if( begin_[i+1UL] - end_[i] != 0 ) {
       std::move_backward( pos, end_[i], castUp( end_[i]+1UL ) );
       pos->value_ = value;
@@ -2135,7 +2147,7 @@ typename CompressedMatrix<Type,SO>::Iterator
       tmp->index_ = j;
       std::move( pos, end_[m_-1UL], castUp( tmp+1UL ) );
 
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       end_ = newEnd;
       deallocate( newBegin[0UL] );
       delete[] newBegin;
@@ -3935,6 +3947,8 @@ template< typename Type >  // Data type of the matrix
 inline CompressedMatrix<Type,true>&
    CompressedMatrix<Type,true>::operator=( const CompressedMatrix& rhs )
 {
+   using std::swap;
+
    if( &rhs == this ) return *this;
 
    const size_t nonzeros( rhs.nonZeros() );
@@ -3951,7 +3965,7 @@ inline CompressedMatrix<Type,true>&
       }
       newEnd[rhs.n_] = newBegin[0UL]+nonzeros;
 
-      std::swap( begin_, newBegin );
+      swap( begin_, newBegin );
       end_ = newEnd;
       capacity_ = rhs.n_;
 
@@ -4457,6 +4471,8 @@ inline void CompressedMatrix<Type,true>::clear()
 template< typename Type >  // Data type of the matrix
 void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 {
+   using std::swap;
+
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
    BLAZE_INTERNAL_ASSERT( begin_ == nullptr || size_t( end_ - begin_ ) == capacity_ + 1UL, "Invalid storage setting detected" );
 
@@ -4497,7 +4513,7 @@ void CompressedMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 
       newEnd[n] = end_[n_];
 
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       delete[] newBegin;
       end_ = newEnd;
       capacity_ = n;
@@ -4575,6 +4591,8 @@ inline void CompressedMatrix<Type,true>::reserve( size_t nonzeros )
 template< typename Type >  // Data type of the matrix
 void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
 {
+   using std::swap;
+
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
    BLAZE_INTERNAL_ASSERT( end_ >= begin_, "Invalid internal storage detected" );
@@ -4610,7 +4628,7 @@ void CompressedMatrix<Type,true>::reserve( size_t j, size_t nonzeros )
 
       BLAZE_INTERNAL_ASSERT( newBegin[n_] == newEnd[n_], "Invalid pointer calculations" );
 
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       deallocate( newBegin[0UL] );
       delete[] newBegin;
       end_ = newEnd;
@@ -4707,11 +4725,13 @@ inline void CompressedMatrix<Type,true>::shrinkToFit()
 template< typename Type >  // Data type of the matrix
 inline void CompressedMatrix<Type,true>::swap( CompressedMatrix& sm ) noexcept
 {
-   std::swap( m_, sm.m_ );
-   std::swap( n_, sm.n_ );
-   std::swap( capacity_, sm.capacity_ );
-   std::swap( begin_, sm.begin_ );
-   std::swap( end_  , sm.end_   );
+   using std::swap;
+
+   swap( m_, sm.m_ );
+   swap( n_, sm.n_ );
+   swap( capacity_, sm.capacity_ );
+   swap( begin_, sm.begin_ );
+   swap( end_  , sm.end_   );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4750,6 +4770,8 @@ inline size_t CompressedMatrix<Type,true>::extendCapacity() const noexcept
 template< typename Type >  // Data type of the matrix
 void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 {
+   using std::swap;
+
    Iterator* newBegin = new Iterator[2UL*capacity_+2UL];
    Iterator* newEnd   = newBegin+capacity_+1UL;
 
@@ -4763,7 +4785,7 @@ void CompressedMatrix<Type,true>::reserveElements( size_t nonzeros )
 
    newEnd[n_] = newBegin[0UL]+nonzeros;
 
-   std::swap( newBegin, begin_ );
+   swap( newBegin, begin_ );
    end_ = newEnd;
 
    if( newBegin != nullptr ) {
@@ -4897,6 +4919,8 @@ template< typename Type >  // Data type of the matrix
 typename CompressedMatrix<Type,true>::Iterator
    CompressedMatrix<Type,true>::insert( Iterator pos, size_t i, size_t j, const Type& value )
 {
+   using std::swap;
+
    if( begin_[j+1UL] - end_[j] != 0 ) {
       std::move_backward( pos, end_[j], castUp( end_[j]+1UL ) );
       pos->value_ = value;
@@ -4948,7 +4972,7 @@ typename CompressedMatrix<Type,true>::Iterator
       tmp->index_ = i;
       std::move( pos, end_[n_-1UL], castUp( tmp+1UL ) );
 
-      std::swap( newBegin, begin_ );
+      swap( newBegin, begin_ );
       end_ = newEnd;
       deallocate( newBegin[0UL] );
       delete[] newBegin;

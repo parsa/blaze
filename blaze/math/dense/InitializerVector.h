@@ -585,8 +585,10 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void InitializerVector<Type,TF>::swap( InitializerVector& v ) noexcept
 {
-   std::swap( size_, v.size_ );
-   std::swap( list_, v.list_ );
+   using std::swap;
+
+   swap( size_, v.size_ );
+   swap( list_, v.list_ );
 }
 //*************************************************************************************************
 

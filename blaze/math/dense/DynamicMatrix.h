@@ -1777,6 +1777,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 {
+   using std::swap;
    using blaze::min;
 
    if( m == m_ && n == n_ ) return;
@@ -1793,13 +1794,13 @@ void DynamicMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
          transfer( v_+i*nn_, v_+i*nn_+min_n, v+i*nn );
       }
 
-      std::swap( v_, v );
+      swap( v_, v );
       deallocate( v );
       capacity_ = m*nn;
    }
    else if( m*nn > capacity_ ) {
       Type* BLAZE_RESTRICT v = allocate<Type>( m*nn );
-      std::swap( v_, v );
+      swap( v_, v );
       deallocate( v );
       capacity_ = m*nn;
    }
@@ -1853,6 +1854,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
 {
+   using std::swap;
+
    if( elements > capacity_ )
    {
       // Allocating a new array
@@ -1867,7 +1870,7 @@ inline void DynamicMatrix<Type,SO>::reserve( size_t elements )
       }
 
       // Replacing the old array
-      std::swap( tmp, v_ );
+      swap( tmp, v_ );
       deallocate( tmp );
       capacity_ = elements;
    }
@@ -1906,11 +1909,13 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void DynamicMatrix<Type,SO>::swap( DynamicMatrix& m ) noexcept
 {
-   std::swap( m_ , m.m_  );
-   std::swap( n_ , m.n_  );
-   std::swap( nn_, m.nn_ );
-   std::swap( capacity_, m.capacity_ );
-   std::swap( v_ , m.v_  );
+   using std::swap;
+
+   swap( m_ , m.m_  );
+   swap( n_ , m.n_  );
+   swap( nn_, m.nn_ );
+   swap( capacity_, m.capacity_ );
+   swap( v_ , m.v_  );
 }
 //*************************************************************************************************
 
@@ -4831,6 +4836,7 @@ inline void DynamicMatrix<Type,true>::clear()
 template< typename Type >  // Data type of the matrix
 void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
 {
+   using std::swap;
    using blaze::min;
 
    if( m == m_ && n == n_ ) return;
@@ -4847,13 +4853,13 @@ void DynamicMatrix<Type,true>::resize( size_t m, size_t n, bool preserve )
          transfer( v_+j*mm_, v_+min_m+j*mm_, v+j*mm );
       }
 
-      std::swap( v_, v );
+      swap( v_, v );
       deallocate( v );
       capacity_ = mm*n;
    }
    else if( mm*n > capacity_ ) {
       Type* BLAZE_RESTRICT v = allocate<Type>( mm*n );
-      std::swap( v_, v );
+      swap( v_, v );
       deallocate( v );
       capacity_ = mm*n;
    }
@@ -4909,6 +4915,8 @@ inline void DynamicMatrix<Type,true>::extend( size_t m, size_t n, bool preserve 
 template< typename Type >  // Data type of the matrix
 inline void DynamicMatrix<Type,true>::reserve( size_t elements )
 {
+   using std::swap;
+
    if( elements > capacity_ )
    {
       // Allocating a new array
@@ -4923,7 +4931,7 @@ inline void DynamicMatrix<Type,true>::reserve( size_t elements )
       }
 
       // Replacing the old array
-      std::swap( tmp, v_ );
+      swap( tmp, v_ );
       deallocate( tmp );
       capacity_ = elements;
    }
@@ -4964,11 +4972,13 @@ inline void DynamicMatrix<Type,true>::shrinkToFit()
 template< typename Type >  // Data type of the matrix
 inline void DynamicMatrix<Type,true>::swap( DynamicMatrix& m ) noexcept
 {
-   std::swap( m_ , m.m_  );
-   std::swap( mm_, m.mm_ );
-   std::swap( n_ , m.n_  );
-   std::swap( capacity_, m.capacity_ );
-   std::swap( v_ , m.v_  );
+   using std::swap;
+
+   swap( m_ , m.m_  );
+   swap( mm_, m.mm_ );
+   swap( n_ , m.n_  );
+   swap( capacity_, m.capacity_ );
+   swap( v_ , m.v_  );
 }
 /*! \endcond */
 //*************************************************************************************************

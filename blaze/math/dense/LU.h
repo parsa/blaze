@@ -96,6 +96,8 @@ template< typename MT1  // Type of matrix A
         , bool SO2 >    // Storage order of matrix P
 void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 {
+   using std::swap;
+
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
@@ -120,7 +122,7 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
    for( int i=0; i<mindim; ++i ) {
       --ipiv[i];
       if( ipiv[i] != i ) {
-         std::swap( permut[ipiv[i]], permut[i] );
+         swap( permut[ipiv[i]], permut[i] );
       }
    }
 

@@ -1523,6 +1523,8 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
 {
+   using std::swap;
+
    if( n > capacity_ )
    {
       // Allocating a new array
@@ -1540,7 +1542,7 @@ inline void DynamicVector<Type,TF>::resize( size_t n, bool preserve )
       }
 
       // Replacing the old array
-      std::swap( v_, tmp );
+      swap( v_, tmp );
       deallocate( tmp );
       capacity_ = newCapacity;
    }
@@ -1589,6 +1591,8 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void DynamicVector<Type,TF>::reserve( size_t n )
 {
+   using std::swap;
+
    if( n > capacity_ )
    {
       // Allocating a new array
@@ -1604,7 +1608,7 @@ inline void DynamicVector<Type,TF>::reserve( size_t n )
       }
 
       // Replacing the old array
-      std::swap( tmp, v_ );
+      swap( tmp, v_ );
       deallocate( tmp );
       capacity_ = newCapacity;
    }
@@ -1643,9 +1647,11 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void DynamicVector<Type,TF>::swap( DynamicVector& v ) noexcept
 {
-   std::swap( size_, v.size_ );
-   std::swap( capacity_, v.capacity_ );
-   std::swap( v_, v.v_ );
+   using std::swap;
+
+   swap( size_, v.size_ );
+   swap( capacity_, v.capacity_ );
+   swap( v_, v.v_ );
 }
 //*************************************************************************************************
 
