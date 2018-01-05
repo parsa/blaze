@@ -1500,6 +1500,47 @@ inline bool tryMult( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of a band.
+// \ingroup band
+//
+// \param band The target band.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The factor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename ET >      // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryMult( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+
+   const size_t iend( index + size );
+
+   for( size_t i=index; i<iend; ++i ) {
+      if( !tryMult( band.operand(), band.row()+i, band.column()+i, value ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of a band.
 // \ingroup band
 //
@@ -1524,6 +1565,47 @@ inline bool tryDiv( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const E
    BLAZE_INTERNAL_ASSERT( index < band.size(), "Invalid vector access index" );
 
    return tryDiv( band.operand(), band.row()+index, band.column()+index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of a band.
+// \ingroup band
+//
+// \param band The target band.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The divisor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename ET >      // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryDiv( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~band).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~band).size(), "Invalid range size" );
+
+   const size_t iend( index + size );
+
+   for( size_t i=index; i<iend; ++i ) {
+      if( !tryDiv( band.operand(), band.row()+i, band.column()+i, value ) )
+         return false;
+   }
+
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
