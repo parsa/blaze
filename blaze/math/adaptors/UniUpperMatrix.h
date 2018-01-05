@@ -1021,7 +1021,7 @@ inline bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t ibegin( ( column < row )?( 0UL ):( column - row ) );
@@ -1082,7 +1082,7 @@ inline bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t jend( min( row + M - column, N ) );
@@ -1145,7 +1145,7 @@ inline bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t ibegin( ( column < row )?( 0UL ):( column - row ) );
@@ -1211,7 +1211,7 @@ inline bool tryAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t jend( min( row + M - column, N ) );
@@ -1563,7 +1563,7 @@ inline bool tryAddAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t ibegin( ( column <= row )?( 0UL ):( column - row ) );
@@ -1620,7 +1620,7 @@ inline bool tryAddAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t jend( min( row + M - column, N ) );
@@ -1680,7 +1680,7 @@ inline bool tryAddAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t ibegin( ( column < row )?( 0UL ):( column - row ) );
@@ -1740,7 +1740,7 @@ inline bool tryAddAssign( const UniUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t jend( min( row + M - column, N ) );
@@ -2068,7 +2068,7 @@ inline bool trySchurAssign( const UniUpperMatrix<MT1,SO1,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( ( row + 1UL >= column + N ) || ( column + 1UL >= row + M ) )
+   if( ( row >= column + N ) || ( column >= row + M ) )
       return true;
 
    size_t i( row < column ? column - row : 0UL );
