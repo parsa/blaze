@@ -736,7 +736,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t iend( min( column + N - row, M ) );
@@ -794,7 +794,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t jbegin( ( row <= column )?( 0UL ):( row - column ) );
@@ -853,7 +853,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t iend( min( column + N - row, M ) );
@@ -916,7 +916,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t jbegin( ( row < column )?( 0UL ):( row - column ) );
