@@ -1397,7 +1397,7 @@ template< typename MT        // Type of the matrix
         , typename ET >      // Type of the element
 inline bool trySet( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= band.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < band.size(), "Invalid vector access index" );
 
    return trySet( band.operand(), band.row()+index, band.column()+index, value );
 }
@@ -1428,7 +1428,7 @@ template< typename MT        // Type of the matrix
         , typename ET >      // Type of the element
 inline bool tryAdd( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= band.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < band.size(), "Invalid vector access index" );
 
    return tryAdd( band.operand(), band.row()+index, band.column()+index, value );
 }
@@ -1459,7 +1459,7 @@ template< typename MT        // Type of the matrix
         , typename ET >      // Type of the element
 inline bool trySub( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= band.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < band.size(), "Invalid vector access index" );
 
    return trySub( band.operand(), band.row()+index, band.column()+index, value );
 }
@@ -1490,7 +1490,7 @@ template< typename MT        // Type of the matrix
         , typename ET >      // Type of the element
 inline bool tryMult( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= band.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < band.size(), "Invalid vector access index" );
 
    return tryMult( band.operand(), band.row()+index, band.column()+index, value );
 }
@@ -1521,7 +1521,7 @@ template< typename MT        // Type of the matrix
         , typename ET >      // Type of the element
 inline bool tryDiv( const Band<MT,TF,DF,MF,CBAs...>& band, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= band.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < band.size(), "Invalid vector access index" );
 
    return tryDiv( band.operand(), band.row()+index, band.column()+index, value );
 }

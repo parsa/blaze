@@ -347,8 +347,8 @@ template< typename MT    // Type of the adapted matrix
         , typename ET >  // Type of the element
 inline bool trySet( const StrictlyUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
    UNUSED_PARAMETER( mat );
 

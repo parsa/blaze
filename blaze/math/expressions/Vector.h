@@ -725,7 +725,7 @@ template< typename VT    // Type of the vector
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool trySet( const Vector<VT,TF>& vec, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
    UNUSED_PARAMETER( vec, index, value );
 
@@ -755,7 +755,7 @@ template< typename VT    // Type of the vector
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryAdd( const Vector<VT,TF>& vec, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
    UNUSED_PARAMETER( vec, index, value );
 
@@ -785,7 +785,7 @@ template< typename VT    // Type of the vector
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool trySub( const Vector<VT,TF>& vec, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
    UNUSED_PARAMETER( vec, index, value );
 
@@ -815,7 +815,7 @@ template< typename VT    // Type of the vector
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryMult( const Vector<VT,TF>& vec, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
    UNUSED_PARAMETER( vec, index, value );
 
@@ -845,7 +845,7 @@ template< typename VT    // Type of the vector
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryDiv( const Vector<VT,TF>& vec, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
    UNUSED_PARAMETER( vec, index, value );
 

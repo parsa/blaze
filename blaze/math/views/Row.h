@@ -986,7 +986,7 @@ template< typename MT     // Type of the matrix
         , typename ET >   // Type of the element
 inline bool trySet( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= row.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
 
    return trySet( row.operand(), row.row(), index, value );
 }
@@ -1017,7 +1017,7 @@ template< typename MT     // Type of the matrix
         , typename ET >   // Type of the element
 inline bool tryAdd( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= row.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
 
    return tryAdd( row.operand(), row.row(), index, value );
 }
@@ -1048,7 +1048,7 @@ template< typename MT     // Type of the matrix
         , typename ET >   // Type of the element
 inline bool trySub( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= row.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
 
    return trySub( row.operand(), row.row(), index, value );
 }
@@ -1079,7 +1079,7 @@ template< typename MT     // Type of the matrix
         , typename ET >   // Type of the element
 inline bool tryMult( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= row.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
 
    return tryMult( row.operand(), row.row(), index, value );
 }
@@ -1110,7 +1110,7 @@ template< typename MT     // Type of the matrix
         , typename ET >   // Type of the element
 inline bool tryDiv( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= row.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
 
    return tryDiv( row.operand(), row.row(), index, value );
 }

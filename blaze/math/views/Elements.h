@@ -1774,7 +1774,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool trySet( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= e.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
 
    return trySet( e.operand(), e.idx(index), value );
 }
@@ -1804,7 +1804,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool tryAdd( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= e.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
 
    return tryAdd( e.operand(), e.idx(index), value );
 }
@@ -1834,7 +1834,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool trySub( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= e.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
 
    return trySub( e.operand(), e.idx(index), value );
 }
@@ -1864,7 +1864,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool tryMult( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= e.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
 
    return tryMult( e.operand(), e.idx(index), value );
 }
@@ -1894,7 +1894,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool tryDiv( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= e.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
 
    return tryDiv( e.operand(), e.idx(index), value );
 }

@@ -2179,7 +2179,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool trySet( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < sv.size(), "Invalid vector access index" );
 
    return trySet( sv.operand(), sv.offset()+index, value );
 }
@@ -2210,7 +2210,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool tryAdd( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < sv.size(), "Invalid vector access index" );
 
    return tryAdd( sv.operand(), sv.offset()+index, value );
 }
@@ -2241,7 +2241,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool trySub( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < sv.size(), "Invalid vector access index" );
 
    return trySub( sv.operand(), sv.offset()+index, value );
 }
@@ -2272,7 +2272,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool tryMult( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < sv.size(), "Invalid vector access index" );
 
    return tryMult( sv.operand(), sv.offset()+index, value );
 }
@@ -2303,7 +2303,7 @@ template< typename VT       // Type of the vector
         , typename ET >     // Type of the element
 inline bool tryDiv( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= sv.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index < sv.size(), "Invalid vector access index" );
 
    return tryDiv( sv.operand(), sv.offset()+index, value );
 }

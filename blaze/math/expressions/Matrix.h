@@ -1440,8 +1440,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool trySet( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
    UNUSED_PARAMETER( mat, i, j, value );
 
@@ -1472,8 +1472,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryAdd( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
    UNUSED_PARAMETER( mat, i, j, value );
 
@@ -1504,8 +1504,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool trySub( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
    UNUSED_PARAMETER( mat, i, j, value );
 
@@ -1536,8 +1536,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryMult( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
    UNUSED_PARAMETER( mat, i, j, value );
 
@@ -1568,8 +1568,8 @@ template< typename MT    // Type of the matrix
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryDiv( const Matrix<MT,SO>& mat, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
    UNUSED_PARAMETER( mat, i, j, value );
 
