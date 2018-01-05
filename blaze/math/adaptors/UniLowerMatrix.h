@@ -1020,7 +1020,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t iend( min( column + N - row, M ) );
@@ -1081,7 +1081,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t jbegin( ( row < column )?( 0UL ):( row - column ) );
@@ -1144,7 +1144,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t iend( min( column + N - row, M ) );
@@ -1212,7 +1212,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t jbegin( ( row < column )?( 0UL ):( row - column ) );
@@ -1562,7 +1562,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t iend( min( column + N - row, M ) );
@@ -1620,7 +1620,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t jbegin( ( row <= column )?( 0UL ):( row - column ) );
@@ -1679,7 +1679,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t iend( min( column + N - row, M ) );
@@ -1742,7 +1742,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( row + 1UL >= column + N )
+   if( row >= column + N )
       return true;
 
    const size_t jbegin( ( row < column )?( 0UL ):( row - column ) );
@@ -2067,7 +2067,7 @@ inline bool trySchurAssign( const UniLowerMatrix<MT1,SO1,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( ( row + 1UL >= column + N ) || ( column + 1UL >= row + M ) )
+   if( ( row >= column + N ) || ( column >= row + M ) )
       return true;
 
    size_t i( row < column ? column - row : 0UL );
