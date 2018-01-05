@@ -4191,6 +4191,44 @@ inline bool tryMult( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of a submatrix.
+// \ingroup submatrix
+//
+// \param sm The target submatrix.
+// \param row The index of the first row of the range to be modified.
+// \param column The index of the first column of the range to be modified.
+// \param m The number of rows of the range to be modified.
+// \param n The number of columns of the range to be modified.
+// \param value The factor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename ET >     // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryMult( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+
+   return tryMult( sm.operand(), sm.row()+row, sm.column(), m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of a submatrix.
 // \ingroup submatrix
 //
@@ -4217,6 +4255,44 @@ inline bool tryDiv( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
    BLAZE_INTERNAL_ASSERT( j < sm.columns(), "Invalid column access index" );
 
    return tryDiv( sm.operand(), sm.row()+i, sm.column()+j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of a submatrix.
+// \ingroup submatrix
+//
+// \param sm The target submatrix.
+// \param row The index of the first row of the range to be modified.
+// \param column The index of the first column of the range to be modified.
+// \param m The number of rows of the range to be modified.
+// \param n The number of columns of the range to be modified.
+// \param value The divisor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename ET >     // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryDiv( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+
+   return tryDiv( sm.operand(), sm.row()+row, sm.column(), m, n, value );
 }
 /*! \endcond */
 //*************************************************************************************************
