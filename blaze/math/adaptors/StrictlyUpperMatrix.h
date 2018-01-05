@@ -737,7 +737,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t ibegin( ( column <= row )?( 0UL ):( column - row ) );
@@ -794,7 +794,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t jend( min( row + M - column, N ) );
@@ -854,7 +854,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t ibegin( ( column < row )?( 0UL ):( column - row ) );
@@ -914,7 +914,7 @@ inline bool tryAssign( const StrictlyUpperMatrix<MT1,SO,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( column + 1UL >= row + M )
+   if( column >= row + M )
       return true;
 
    const size_t jend( min( row + M - column, N ) );
