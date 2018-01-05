@@ -3655,7 +3655,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
 
    if( IsNumeric<Type>::value ) {
       for( size_t j=n; j<N; ++j ) {
-         for( size_t i=0UL; i<M; ++i )
+         for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
