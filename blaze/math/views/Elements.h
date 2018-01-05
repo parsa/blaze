@@ -1874,6 +1874,46 @@ inline bool tryMult( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of a selection of elements.
+// \ingroup elements
+//
+// \param e The target selection of elements.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The factor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT     // Type of the vector
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , size_t... CEAs  // Compile time element arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryMult( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+
+   const size_t iend( index + size );
+
+   for( size_t i=index; i<iend; ++i ) {
+      if( !tryMult( e.operand(), e.idx(i), value ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of a selection of elements.
 // \ingroup elements
 //
@@ -1897,6 +1937,46 @@ inline bool tryDiv( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET&
    BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
 
    return tryDiv( e.operand(), e.idx(index), value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of a selection of elements.
+// \ingroup elements
+//
+// \param e The target selection of elements.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The divisor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT     // Type of the vector
+        , bool TF         // Transpose flag
+        , bool DF         // Density flag
+        , size_t... CEAs  // Compile time element arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryDiv( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+
+   const size_t iend( index + size );
+
+   for( size_t i=index; i<iend; ++i ) {
+      if( !tryDiv( e.operand(), e.idx(i), value ) )
+         return false;
+   }
+
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
