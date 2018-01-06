@@ -3,6 +3,7 @@
 DenseGeneralTest1
 DenseGeneralTest2
 DenseSymmetricTest
+IncludeTest
 SparseGeneralTest1
 SparseGeneralTest2
 SparseSymmetricTest
