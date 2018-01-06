@@ -1214,7 +1214,7 @@ inline bool tryAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                        const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    return tryAssign( lhs.operand(), ~rhs, index, lhs.column() );
 }
@@ -1247,7 +1247,7 @@ inline bool tryAddAssign( const Column<MT,SO,SF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    return tryAddAssign( lhs.operand(), ~rhs, index, lhs.column() );
 }
@@ -1280,7 +1280,7 @@ inline bool trySubAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    return trySubAssign( lhs.operand(), ~rhs, index, lhs.column() );
 }
@@ -1313,7 +1313,7 @@ inline bool tryMultAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                            const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    return tryMultAssign( lhs.operand(), ~rhs, index, lhs.column() );
 }
@@ -1346,7 +1346,7 @@ inline bool tryDivAssign( const Column<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    return tryDivAssign( lhs.operand(), ~rhs, index, lhs.column() );
 }

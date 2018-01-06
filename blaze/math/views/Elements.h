@@ -2006,7 +2006,7 @@ inline bool tryAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                        const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !trySet( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
@@ -2044,7 +2044,7 @@ inline bool tryAddAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryAdd( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
@@ -2082,7 +2082,7 @@ inline bool trySubAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !trySub( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
@@ -2120,7 +2120,7 @@ inline bool tryMultAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                            const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryMult( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
@@ -2158,7 +2158,7 @@ inline bool tryDivAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.size() - index, "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryDiv( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )

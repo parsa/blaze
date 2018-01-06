@@ -2421,7 +2421,7 @@ inline bool tryAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !trySet( lhs.operand(), lhs.idx( row+i ), column, (~rhs)[i] ) )
@@ -2461,7 +2461,7 @@ inline bool tryAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    return tryAssign( lhs.operand(), ~rhs, lhs.idx( row ), column );
 }
@@ -2498,8 +2498,8 @@ inline bool tryAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !trySet( lhs.operand(), lhs.idx( row+i ), column+i, (~rhs)[i] ) )
@@ -2540,8 +2540,8 @@ inline bool tryAssign( const Rows<MT1,SO1,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       if( !tryAssign( lhs.operand(), blaze::row( ~rhs, i, unchecked ), lhs.idx( row+i ), column ) )
@@ -2583,7 +2583,7 @@ inline bool tryAddAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryAdd( lhs.operand(), lhs.idx( row+i ), column, (~rhs)[i] ) )
@@ -2623,7 +2623,7 @@ inline bool tryAddAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    return tryAddAssign( lhs.operand(), ~rhs, lhs.idx( row ), column );
 }
@@ -2661,8 +2661,8 @@ inline bool tryAddAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryAdd( lhs.operand(), lhs.idx( row+i ), column+i, (~rhs)[i] ) )
@@ -2703,8 +2703,8 @@ inline bool tryAddAssign( const Rows<MT1,SO1,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       if( !tryAddAssign( lhs.operand(), blaze::row( ~rhs, i, unchecked ), lhs.idx( row+i ), column ) )
@@ -2745,7 +2745,7 @@ inline bool trySubAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !trySub( lhs.operand(), lhs.idx( row+i ), column, (~rhs)[i] ) )
@@ -2786,7 +2786,7 @@ inline bool trySubAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    return trySubAssign( lhs.operand(), ~rhs, lhs.idx( row ), column );
 }
@@ -2824,8 +2824,8 @@ inline bool trySubAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !trySub( lhs.operand(), lhs.idx( row+i ), column+i, (~rhs)[i] ) )
@@ -2866,8 +2866,8 @@ inline bool trySubAssign( const Rows<MT1,SO1,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       if( !trySubAssign( lhs.operand(), blaze::row( ~rhs, i, unchecked ), lhs.idx( row+i ), column ) )
@@ -2909,7 +2909,7 @@ inline bool tryMultAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryMult( lhs.operand(), lhs.idx( row+i ), column, (~rhs)[i] ) )
@@ -2950,7 +2950,7 @@ inline bool tryMultAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    return tryMultAssign( lhs.operand(), ~rhs, lhs.idx( row ), column );
 }
@@ -2988,8 +2988,8 @@ inline bool tryMultAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryMult( lhs.operand(), lhs.idx( row+i ), column+i, (~rhs)[i] ) )
@@ -3031,8 +3031,8 @@ inline bool trySchurAssign( const Rows<MT1,SO1,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).columns() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       if( !tryMultAssign( lhs.operand(), blaze::row( ~rhs, i, unchecked ), lhs.idx( row+i ), column ) )
@@ -3074,7 +3074,7 @@ inline bool tryDivAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryDiv( lhs.operand(), lhs.idx( row+i ), column, (~rhs)[i] ) )
@@ -3114,7 +3114,7 @@ inline bool tryDivAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    return tryDivAssign( lhs.operand(), ~rhs, lhs.idx( row ), column );
 }
@@ -3152,8 +3152,8 @@ inline bool tryDivAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.rows() - row, "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( (~rhs).size() <= lhs.columns() - column, "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).size(); ++i ) {
       if( !tryDiv( lhs.operand(), lhs.idx( row+i ), column+i, (~rhs)[i] ) )
