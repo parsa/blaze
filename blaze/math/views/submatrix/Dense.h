@@ -1808,6 +1808,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true,CSAs...> >
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -1840,6 +1841,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,false,true,CSAs...> >
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -2143,6 +2145,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;
@@ -2184,6 +2187,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;
@@ -5125,6 +5129,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true,CSAs...> >&
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -5157,6 +5162,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,unaligned,true,true,CSAs...> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -5443,6 +5449,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;
@@ -5484,6 +5491,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;
@@ -8027,6 +8035,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true,CSAs...> >&
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -8059,6 +8068,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,false,true,CSAs...> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -8362,6 +8372,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;
@@ -8403,6 +8414,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;
@@ -10923,6 +10935,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true,CSAs...> >&
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -10955,6 +10968,7 @@ inline EnableIf_< IsNumeric<Other>, Submatrix<MT,aligned,true,true,CSAs...> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -11241,6 +11255,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;
@@ -11282,6 +11297,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
+
    smpAssign( left, tmp );
 
    return *this;

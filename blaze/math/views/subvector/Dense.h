@@ -1188,6 +1188,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    std::fill( std::copy( list.begin(), list.end(), left.begin() ), left.end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
@@ -1575,6 +1576,7 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
    Subvector<VT,unaligned,TF,true,CSAs...>::operator*=( Other rhs )
 {
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -1603,6 +1605,7 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) / rhs );
 
    return *this;
@@ -3370,6 +3373,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    std::fill( std::copy( list.begin(), list.end(), begin() ), end(), ElementType() );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
@@ -3757,6 +3761,7 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
    Subvector<VT,aligned,TF,true,CSAs...>::operator*=( Other rhs )
 {
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -3785,6 +3790,7 @@ inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
    decltype(auto) left( derestrict( *this ) );
+
    smpAssign( left, (*this) / rhs );
 
    return *this;

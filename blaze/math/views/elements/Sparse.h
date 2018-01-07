@@ -897,7 +897,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -947,7 +947,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
@@ -1004,7 +1004,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1061,7 +1061,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1118,7 +1118,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1181,7 +1181,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -1239,7 +1239,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -1296,7 +1296,7 @@ inline Elements<VT,TF,false,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    assign( left, tmp );
 

@@ -988,6 +988,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    left.reset();
    assign( left, tmp );
 
@@ -2234,6 +2235,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
+
    reset();
    assign( left, tmp );
 
@@ -2279,6 +2281,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans( *this ) );
+
    reset();
    assign( left, tmp );
 
@@ -3501,6 +3504,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    left.reset();
    assign( left, tmp );
 
@@ -4718,6 +4722,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( trans( *this ) );
+
    reset();
    assign( left, tmp );
 
@@ -4763,6 +4768,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
    const ResultType tmp( ctrans(*this) );
+
    reset();
    assign( left, tmp );
 

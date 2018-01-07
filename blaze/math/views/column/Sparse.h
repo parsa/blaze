@@ -622,6 +622,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    left.reset();
    assign( left, tmp );
 
@@ -4741,6 +4742,7 @@ inline Column<MT,false,false,true,CCAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    left.reset();
    assign( left, tmp );
 

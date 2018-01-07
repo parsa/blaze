@@ -913,6 +913,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    reset();
    assign( left, tmp );
 

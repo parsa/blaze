@@ -1010,7 +1010,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
@@ -1065,7 +1065,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1122,7 +1122,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1177,7 +1177,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1233,7 +1233,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1288,7 +1288,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
       const ResultType_<VT2> tmp( right );
@@ -1351,7 +1351,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
 
    assign( left, tmp );
 
@@ -1378,7 +1378,8 @@ template< typename Other >  // Data type of the right-hand side scalar
 inline EnableIf_< IsNumeric<Other>, Elements<VT,TF,true,CEAs...> >&
    Elements<VT,TF,true,CEAs...>::operator*=( Other rhs )
 {
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
+
    smpAssign( left, (*this) * rhs );
 
    return *this;
@@ -1406,7 +1407,8 @@ inline EnableIf_< IsNumeric<Other>, Elements<VT,TF,true,CEAs...> >&
 {
    BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
 
-   decltype(auto) left( derestrict( *this ) );
+   auto left( derestrict( *this ) );
+
    smpAssign( left, (*this) / rhs );
 
    return *this;

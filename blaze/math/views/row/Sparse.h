@@ -623,6 +623,7 @@ inline Row<MT,true,false,SF,CRAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    left.reset();
    assign( left, tmp );
 
@@ -4736,6 +4737,7 @@ inline Row<MT,false,false,true,CRAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    left.reset();
    assign( left, tmp );
 

@@ -930,6 +930,7 @@ inline Band<MT,TF,false,false,CBAs...>&
    }
 
    decltype(auto) left( derestrict( *this ) );
+
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
