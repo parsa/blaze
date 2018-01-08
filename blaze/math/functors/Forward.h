@@ -74,6 +74,7 @@ struct Exp;
 struct Exp2;
 struct Exp10;
 struct Floor;
+struct Hypot;
 struct Imag;
 struct Inv;
 struct InvCbrt;

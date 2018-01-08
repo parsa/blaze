@@ -71,6 +71,7 @@
 #include <blaze/math/functors/Exp2.h>
 #include <blaze/math/functors/Exp10.h>
 #include <blaze/math/functors/Floor.h>
+#include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Imag.h>
 #include <blaze/math/functors/Inv.h>
 #include <blaze/math/functors/InvCbrt.h>
