@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/math/functors/Atan2.h>
+#include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Pow.h>
@@ -1170,6 +1171,37 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Max() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise hypotenous for the dense vectors \a lhs and \a rhs.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector operand.
+// \param rhs The right-hand side dense vector operand.
+// \return The resulting dense vector
+//
+// The \a hypot() function computes the componentwise hypotenous for the two dense vectors
+// \a lhs and \a rhs. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a hypot() function:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   // ... Resizing and initialization
+   c = hypot( a, b );
+   \endcode
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   hypot( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Hypot() );
 }
 //*************************************************************************************************
 
