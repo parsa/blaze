@@ -1991,6 +1991,17 @@
 // Note that in case of sparse vectors only the non-zero elements are taken into account!
 //
 //
+// \n \subsection vector_operations_hypot hypot()
+//
+// The \c hypot() function can be used to compute the componentwise hypotenous for a pair of
+// dense vectors:
+
+   \code
+   blaze::StaticVector<double,3UL> a, b, c;
+
+   c = hypot( a, b );  // Computes the componentwise hypotenuous
+   \endcode
+
 // \n \subsection vector_operations_clamp clamp()
 //
 // The \c clamp() function can be used to restrict all elements of a vector to a specific range:
@@ -4027,6 +4038,17 @@
 // Note that in case of sparse matrices only the non-zero elements are taken into account!
 //
 //
+// \n \subsection matrix_operations_hypot hypot()
+//
+// The \c hypot() function can be used to compute the componentwise hypotenous for a pair of
+// dense matrices:
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> A, B, C;
+
+   C = hypot( A, B );  // Computes the componentwise hypotenuous
+   \endcode
+
 // \n \subsection matrix_operators_clamp clamp()
 //
 // The \c clamp() function can be used to restrict all elements of a matrix to a specific range:
@@ -8722,17 +8744,17 @@
    // contained in the row selection its value is modified.
    rs.set( 2UL, 5UL, -1.2 );
 
-   // An alternative for inserting elements into the row selection is the \c insert() function.
+   // An alternative for inserting elements into the row selection is the insert() function.
    // However, it inserts the element only in case the element is not already contained in the
    // row selection.
    rs.insert( 2UL, 6UL, 3.7 );
 
-   // Just as in the case of sparse matrices, elements can also be inserted via the \c append()
-   // function. In case of row selections, \c append() also requires that the appended element's
+   // Just as in the case of sparse matrices, elements can also be inserted via the append()
+   // function. In case of row selections, append() also requires that the appended element's
    // index is strictly larger than the currently largest non-zero index in the according row
    // of the row selection and that the according row's capacity is large enough to hold the new
    // element. Note however that due to the nature of a row selection, which may be an alias to
-   // an arbitrary collection of rows, the \c append() function does not work as efficiently for
+   // an arbitrary collection of rows, the append() function does not work as efficiently for
    // a row selection as it does for a matrix.
    rs.reserve( 2UL, 10UL );
    rs.append( 2UL, 10UL, -2.1 );
@@ -9339,17 +9361,17 @@
    // already contained in the column selection its value is modified.
    cs.set( 2UL, 5UL, -1.2 );
 
-   // An alternative for inserting elements into the column selection is the \c insert() function.
+   // An alternative for inserting elements into the column selection is the insert() function.
    // However, it inserts the element only in case the element is not already contained in the
    // column selection.
    cs.insert( 2UL, 6UL, 3.7 );
 
-   // Just as in the case of sparse matrices, elements can also be inserted via the \c append()
-   // function. In case of column selections, \c append() also requires that the appended element's
+   // Just as in the case of sparse matrices, elements can also be inserted via the append()
+   // function. In case of column selections, append() also requires that the appended element's
    // index is strictly larger than the currently largest non-zero index in the according column
    // of the column selection and that the according column's capacity is large enough to hold the
    // new element. Note however that due to the nature of a column selection, which may be an alias
-   // to an arbitrary collection of columns, the \c append() function does not work as efficiently
+   // to an arbitrary collection of columns, the append() function does not work as efficiently
    // for a column selection as it does for a matrix.
    cs.reserve( 2UL, 10UL );
    cs.append( 2UL, 10UL, -2.1 );
