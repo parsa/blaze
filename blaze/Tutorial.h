@@ -1171,6 +1171,8 @@
 // \n \section vector_operations_element_access Element Access
 // <hr>
 //
+// \n \subsection vector_operations_subscript_operator_1 Subscript Operator
+//
 // The easiest and most intuitive way to access a dense or sparse vector is via the subscript
 // operator. The indices to access a vector are zero-based:
 
@@ -1199,8 +1201,12 @@
    \endcode
 
 // Although the compressed vector is only used for read access within the for loop, using the
-// subscript operator temporarily inserts 10 non-zero elements into the vector. Therefore, all
-// vectors (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
+// subscript operator temporarily inserts 10 non-zero elements into the vector. Therefore the
+// preferred way to traverse the non-zero elements of a sparse vector is to use iterators.
+//
+// \n \subsection vector_operations_iterators Iterators
+//
+// All vectors (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
 // \c end(), and \c cend() functions to traverse the currently contained elements by iterators.
 // In case of non-const vectors, \c begin() and \c end() return an \c Iterator, which allows a
 // manipulation of the non-zero value, in case of a constant vector or in case \c cbegin() or
@@ -1247,8 +1253,11 @@
 //
 // In contrast to dense vectors, that store all elements independent of their value and that
 // offer direct access to all elements, spares vectors only store the non-zero elements contained
-// in the vector. Therefore it is necessary to explicitly add elements to the vector. The first
-// option to add elements to a sparse vector is the subscript operator:
+// in the vector. Therefore it is necessary to explicitly add elements to the vector.
+//
+// \n \subsection vector_operations_subscript_operator_2 Subscript Operator
+//
+// The first option to add elements to a sparse vector is the subscript operator:
 
    \code
    using blaze::CompressedVector;
@@ -1259,17 +1268,22 @@
 
 // In case the element at the given index is not yet contained in the vector, it is automatically
 // inserted. Otherwise the old value is replaced by the new value 2. The operator returns a
-// reference to the sparse vector element.\n
-// An alternative is the \c set() function: In case the element is not yet contained in the vector
-// the element is inserted, else the element's value is modified:
+// reference to the sparse vector element.
+//
+// \n \subsection vector_operations_set .set()
+//
+// An alternative to the subscript operator is the \c set() function: In case the element is not
+// yet contained in the vector the element is inserted, else the element's value is modified:
 
    \code
    // Insert or modify the value at index 3
    v1.set( 3, 1 );
    \endcode
 
-// However, insertion of elements can be better controlled via the \c insert() function. In contrast
-// to the subscript operator and the \c set() function it emits an exception in case the element is
+// \n \subsection vector_operations_insert .insert()
+//
+// The insertion of elements can be better controlled via the \c insert() function. In contrast to
+// the subscript operator and the \c set() function it emits an exception in case the element is
 // already contained in the vector. In order to check for this case, the \c find() function can be
 // used:
 
@@ -1280,6 +1294,8 @@
       v1.insert( 4, 6 );
    \endcode
 
+// \n \subsection vector_operations_append .append()
+//
 // Although the \c insert() function is very flexible, due to performance reasons it is not suited
 // for the setup of large sparse vectors. A very efficient, yet also very low-level way to fill
 // a sparse vector is the \c append() function. It requires the sparse vector to provide enough
@@ -1288,10 +1304,120 @@
 // behavior!
 
    \code
-   v1.reserve( 10 );     // Reserving space for 10 non-zero elements
+   v1.reserve( 10 );    // Reserving space for 10 non-zero elements
    v1.append( 5, -2 );  // Appending the element -2 at index 5
    v1.append( 6,  4 );  // Appending the element 4 at index 6
    // ...
+   \endcode
+
+// \n \section vector_operations_element_removal Element Removal
+// <hr>
+//
+// \subsection vector_operations_erase .erase()
+//
+// The \c erase() member functions can be used to remove elements from a sparse vector. The
+// following example gives an impression of the five different flavors of \c erase():
+
+   \code
+   using blaze::CompressedVector;
+
+   CompressedVector<int> v( 42 );
+   // ... Initialization of the vector
+
+   // Erasing the element at index 21
+   v.erase( 21 );
+
+   // Erasing a single element via iterator
+   v.erase( v.find( 4 ) );
+
+   // Erasing all non-zero elements in the range [7..24]
+   v.erase( v.lowerBound( 7 ), v.upperBound( 24 ) );
+
+   // Erasing all non-zero elements with a value larger than 9 by passing a unary predicate
+   v.erase( []( int i ){ return i > 9; } );
+
+   // Erasing all non-zero elements in the range [30..40] with a value larger than 5
+   v.erase( v.lowerBound( 30 ), v.upperBound( 40 ), []( int i ){ return i > 5; } );
+   \endcode
+
+// \n \section vector_operations_element_lookup Element Lookup
+// <hr>
+//
+// A sparse vector only stores the non-zero elements contained in the vector. Therefore, whenever
+// accessing a vector element at a specific index a lookup operation is required. Whereas the
+// subscript operator is performing this lookup automatically, it is also possible to use the
+// \c find(), \c lowerBound(), and \c upperBound() member functions for a manual lookup.
+//
+// \n \subsection vector_operations_find .find()
+//
+// The \c find() function can be used to check whether a specific element is contained in a sparse
+// vector. It specifically searches for the element at the given index. In case the element is
+// found, the function returns an iterator to the element. Otherwise an iterator just past the
+// last non-zero element of the compressed vector (the end() iterator) is returned. Note that the
+// returned iterator is subject to invalidation due to inserting operations via the subscript
+// operator, the \c set() function or the \c insert() function!
+
+   \code
+   using blaze::CompressedVector;
+
+   CompressedVector<int> a( 42 );
+   // ... Initialization of the vector
+
+   // Searching the element at index 7. In case the element is not
+   // contained in the vector, the end() iterator is returned.
+   CompressedVector<int>::Iterator pos( a.find( 7 ) );
+
+   if( pos != a.end( 7 ) ) {
+      // ...
+   }
+   \endcode
+
+// \n \subsection vector_operations_lowerbound .lowerBound()
+//
+// The \c lowerBound() function returns an iterator to the first element with an index not less
+// then the given index. In combination with the \c upperBound() function this function can be
+// used to create a pair of iterators specifying a range of indices. Note that the returned
+// iterator is subject to invalidation due to inserting operations via the subscript operator,
+// the \c set() function or the \c insert() function!
+
+   \code
+   using blaze::CompressedVector;
+
+   CompressedVector<int> a( 42 );
+   // ... Initialization of the vector
+
+   // Searching the lower bound of index 17.
+   CompressedVector<int>::Iterator pos1( A.lowerBound( 17 ) );
+
+   // Searching the upper bound of index 28
+   CompressedVector<int>::Iterator pos2( A.upperBound( 28 ) );
+
+   // Erasing all elements in the specified range
+   a.erase( pos1, pos2 );
+   \endcode
+
+// \n \subsection vector_operations_upperbound .upperBound()
+//
+// The \c upperBound function returns an iterator to the first element with an index greater then
+// the given index. In combination with the \c lowerBound() function this function can be used to
+// create a pair of iterators specifying a range of indices. Note that the returned iterator is
+// subject to invalidation due to inserting operations via the subscript operator, the \c set()
+// function or the \c insert() function!
+
+   \code
+   using blaze::CompressedVector;
+
+   CompressedVector<int> a( 42 );
+   // ... Initialization of the vector
+
+   // Searching the lower bound of index 17.
+   CompressedVector<int>::Iterator pos1( A.lowerBound( 17 ) );
+
+   // Searching the upper bound of index 28
+   CompressedVector<int>::Iterator pos2( A.upperBound( 28 ) );
+
+   // Erasing all elements in the specified range
+   a.erase( pos1, pos2 );
    \endcode
 
 // \n \section vector_operations_non_modifying_operations Non-Modifying Operations
@@ -2803,6 +2929,8 @@
 // \n \section matrix_operations_element_access Element Access
 // <hr>
 //
+// \n \subsection matrix_operations_function_call_operator_1 Function Call Operator
+//
 // The easiest way to access a specific dense or sparse matrix element is via the function call
 // operator. The indices to access a matrix are zero-based:
 
@@ -2835,8 +2963,12 @@
    \endcode
 
 // Although the compressed matrix is only used for read access within the for loop, using the
-// function call operator temporarily inserts 16 non-zero elements into the matrix. Therefore,
-// all matrices (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
+// function call operator temporarily inserts 16 non-zero elements into the matrix. Therefore
+// the preferred way to traverse the non-zero elements of a sparse matrix is to use iterators.
+//
+// \n \subsection matrix_operations_iterators Iterators
+//
+// All matrices (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
 // \c end() and \c cend() functions to traverse all contained elements by iterator. Note that
 // it is not possible to traverse all elements of the matrix, but that it is only possible to
 // traverse elements in a row/column-wise fashion. In case of a non-const matrix, \c begin() and
@@ -2890,8 +3022,11 @@
 //
 // Whereas a dense matrix always provides enough capacity to store all matrix elements, a sparse
 // matrix only stores the non-zero elements. Therefore it is necessary to explicitly add elements
-// to the matrix. The first possibility to add elements to a sparse matrix is the function call
-// operator:
+// to the matrix.
+//
+// \n \subsection matrix_operations_function_call_operator_2 Function Call Operator
+//
+// The first possibility to add elements to a sparse matrix is the function call operator:
 
    \code
    using blaze::CompressedMatrix;
@@ -2902,18 +3037,23 @@
 
 // In case the element at the given position is not yet contained in the sparse matrix, it is
 // automatically inserted. Otherwise the old value is replaced by the new value 2. The operator
-// returns a reference to the sparse vector element.\n
-// An alternative is the \c set() function: In case the element is not yet contained in the matrix
-// the element is inserted, else the element's value is modified:
+// returns a reference to the sparse vector element.
+//
+// \n \subsection matrix_operations_set .set()
+//
+// An alternative to the function call operator is the \c set() function: In case the element is
+// not yet contained in the matrix the element is inserted, else the element's value is modified:
 
    \code
    // Insert or modify the value at position (2,0)
    M1.set( 2, 0, 1 );
    \endcode
 
-// However, insertion of elements can be better controlled via the \c insert() function. In
-// contrast to the function call operator and the \c set() function it emits an exception in case
-// the element is already contained in the matrix. In order to check for this case, the \c find()
+// \n \subsection matrix_operations_insert .insert()
+
+// The insertion of elements can be better controlled via the \c insert() function. In contrast
+// to the function call operator and the \c set() function it emits an exception in case the
+// element is already contained in the matrix. In order to check for this case, the \c find()
 // function can be used:
 
    \code
@@ -2923,6 +3063,8 @@
       M1.insert( 2, 3, 4 );
    \endcode
 
+// \n \subsection matrix_operations_append .append()
+//
 // Although the \c insert() function is very flexible, due to performance reasons it is not
 // suited for the setup of large sparse matrices. A very efficient, yet also very low-level
 // way to fill a sparse matrix is the \c append() function. It requires the sparse matrix to
@@ -2963,6 +3105,122 @@
 // returned by the \c end() functions!
 //
 //
+// \n \section matrix_operations_element_removal Element Removal
+// <hr>
+//
+// \subsection matrix_operations_erase .erase()
+//
+// The \c erase() member functions can be used to remove elements from a sparse matrix. The
+// following example gives an impression of the five different flavors of \c erase():
+
+   \code
+   using blaze::CompressedMatrix;
+
+   CompressedMatrix<int,rowMajor> A( 42, 53 );
+   // ... Initialization of the matrix
+
+   // Erasing the element at position (21,23)
+   A.erase( 21, 23 );
+
+   // Erasing a single element in row 17 via iterator
+   A.erase( 17, A.find( 4 ) );
+
+   // Erasing all non-zero elements in the range [7..24] of row 33
+   A.erase( 33, A.lowerBound( 33, 7 ), A.upperBound( 33, 24 ) );
+
+   // Erasing all non-zero elements with a value larger than 9 by passing a unary predicate
+   A.erase( []( int i ){ return i > 9; } );
+
+   // Erasing all non-zero elements in the range [30..40] of row 37 with a value larger than 5
+   CompressedMatrix<int,rowMajor>::Iterator pos1( A.lowerBound( 37, 30 ) );
+   CompressedMatrix<int,rowMajor>::Iterator pos2( A.upperBound( 37, 40 ) );
+   A.erase( 37, pos1, pos2, []( int i ){ return i > 5; } );
+   \endcode
+
+// \n \section matrix_operations_element_lookup Element Lookup
+// <hr>
+//
+// A sparse matrix only stores the non-zero elements contained in the matrix. Therefore, whenever
+// accessing a matrix element at a specific position a lookup operation is required. Whereas the
+// function call operator is performing this lookup automatically, it is also possible to use the
+// \c find(), \c lowerBound(), and \c upperBound() member functions for a manual lookup.
+//
+// \n \subsection matrix_operations_find .find()
+//
+// The \c find() function can be used to check whether a specific element is contained in the
+// sparse matrix. It specifically searches for the element at the specified position. In case the
+// element is found, the function returns an iterator to the element. Otherwise an iterator just
+// past the last non-zero element of the according row or column (the end() iterator) is returned.
+// Note that the returned iterator is subject to invalidation due to inserting operations via the
+// function call operator, the \c set() function or the \c insert() function!
+
+   \code
+   using blaze::CompressedMatrix;
+
+   CompressedMatrix<int,rowMajor> A( 42, 53 );
+   // ... Initialization of the matrix
+
+   // Searching the element at position (7,17). In case the element is not
+   // contained in the vector, the end() iterator of row 7 is returned.
+   CompressedMatrix<int,rowMajor>::Iterator pos( A.find( 7, 17 ) );
+
+   if( pos != A.end( 7 ) ) {
+      // ...
+   }
+   \endcode
+
+// \n \subsection matrix_operations_lowerbound .lowerBound()
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index not less then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less then the given row
+// index. In combination with the upperBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned iterator is subject
+// to invalidation due to inserting operations via the function call operator, the set() function
+// or the insert() function!
+
+   \code
+   using blaze::CompressedMatrix;
+
+   CompressedMatrix<int,rowMajor> A( 42, 53 );
+   // ... Initialization of the matrix
+
+   // Searching the lower bound of column index 17 in row 7.
+   CompressedMatrix<int,rowMajor>::Iterator pos1( A.lowerBound( 7, 17 ) );
+
+   // Searching the upper bound of column index 28 in row 7
+   CompressedMatrix<int,rowMajor>::Iterator pos2( A.upperBound( 7, 28 ) );
+
+   // Erasing all elements in the specified range
+   A.erase( 7, pos1, pos2 );
+   \endcode
+
+// \n \subsection matrix_operations_upperbound .upperBound()
+//
+// In case of a row-major matrix, this function returns a row iterator to the first element with
+// an index greater then the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater then the given row
+// index. In combination with the lowerBound() function this function can be used to create a
+// pair of iterators specifying a range of indices. Note that the returned iterator is subject
+// to invalidation due to inserting operations via the function call operator, the set() function
+// or or the insert() function!
+
+   \code
+   using blaze::CompressedMatrix;
+
+   CompressedMatrix<int,columnMajor> A( 42, 53 );
+   // ... Initialization of the matrix
+
+   // Searching the lower bound of row index 17 in column 9.
+   CompressedMatrix<int,columnMajor>::Iterator pos1( A.lowerBound( 17, 9 ) );
+
+   // Searching the upper bound of row index 28 in column 9
+   CompressedMatrix<int,columnMajor>::Iterator pos2( A.upperBound( 28, 9 ) );
+
+   // Erasing all elements in the specified range
+   A.erase( 9, pos1, pos2 );
+   \endcode
+
 // \n \section matrix_operations_non_modifying_operations Non-Modifying Operations
 // <hr>
 //
