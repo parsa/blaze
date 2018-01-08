@@ -153,6 +153,9 @@
 //**Configuration and Installation*****************************************************************
 /*!\page configuration_and_installation Configuration and Installation
 //
+// \tableofcontents
+//
+//
 // Since \b Blaze is a header-only library, setting up the \b Blaze library on a particular system
 // is a fairly easy two step process. In the following, this two step process is explained in
 // detail, preceded only by a short summary of the requirements.
@@ -290,6 +293,20 @@
 // For an overview of other customization options and more details, please see the section
 // \ref configuration_files.
 //
+//
+// \n \section blaze_version Blaze Version
+// <hr>
+//
+// The current major and minor version number of the \b Blaze library can be found in the
+// <b><tt><blaze/system/Version.h></tt></b> header file. It is automatically included via the
+// <b><tt><blaze/Blaze.h></tt></b> header file. The file contains the two following macros,
+// which can for instance be used for conditional compilation:
+
+   \code
+   #define BLAZE_MAJOR_VERSION 3
+   #define BLAZE_MINOR_VERSION 2
+   \endcode
+
 // \n Next: \ref getting_started
 */
 //*************************************************************************************************
