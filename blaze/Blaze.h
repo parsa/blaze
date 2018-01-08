@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/Math.h>
+#include <blaze/system/Version.h>
 #include <blaze/Util.h>
 
 
