@@ -62,6 +62,7 @@
 #include <blaze/math/simd/Exp10.h>
 #include <blaze/math/simd/Floor.h>
 #include <blaze/math/simd/FMA.h>
+#include <blaze/math/simd/Hypot.h>
 #include <blaze/math/simd/InvCbrt.h>
 #include <blaze/math/simd/InvSqrt.h>
 #include <blaze/math/simd/Loada.h>
