@@ -298,6 +298,14 @@ class CompressedMatrix
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Private class Uninitialized*****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Auxiliary helper class for the construction of compressed matrices.
+   */
+   struct Uninitialized {};
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This           = CompressedMatrix<Type,SO>;   //!< Type of this CompressedMatrix instance.
@@ -492,6 +500,13 @@ class CompressedMatrix
    //**********************************************************************************************
 
  private:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline CompressedMatrix( size_t m, size_t n, Uninitialized );
+   //@}
+   //**********************************************************************************************
+
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
@@ -582,13 +597,9 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix()
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n )
-   : m_       ( m )                     // The current number of rows of the compressed matrix
-   , n_       ( n )                     // The current number of columns of the compressed matrix
-   , capacity_( m )                     // The current capacity of the pointer array
-   , begin_( new Iterator[2UL*m+2UL] )  // Pointers to the first non-zero element of each row
-   , end_  ( begin_+(m+1UL) )           // Pointers one past the last non-zero element of each row
+   : CompressedMatrix( m, n, Uninitialized() )
 {
-   for( size_t i=0UL; i<2UL*m_+2UL; ++i )
+   for( size_t i=1UL; i<2UL*m_+2UL; ++i )
       begin_[i] = nullptr;
 }
 //*************************************************************************************************
@@ -606,11 +617,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n )
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, size_t nonzeros )
-   : m_       ( m )                     // The current number of rows of the compressed matrix
-   , n_       ( n )                     // The current number of columns of the compressed matrix
-   , capacity_( m )                     // The current capacity of the pointer array
-   , begin_( new Iterator[2UL*m+2UL] )  // Pointers to the first non-zero element of each row
-   , end_  ( begin_+(m+1UL) )           // Pointers one past the last non-zero element of each row
+   : CompressedMatrix( m, n, Uninitialized() )
 {
    begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t i=1UL; i<(2UL*m_+1UL); ++i )
@@ -634,11 +641,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, size_t n
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros )
-   : m_       ( m )                      // The current number of rows of the compressed matrix
-   , n_       ( n )                      // The current number of columns of the compressed matrix
-   , capacity_( m )                      // The current capacity of the pointer array
-   , begin_( new Iterator[2UL*m_+2UL] )  // Pointers to the first non-zero element of each row
-   , end_  ( begin_+(m_+1UL) )           // Pointers one past the last non-zero element of each row
+   : CompressedMatrix( m, n, Uninitialized() )
 {
    BLAZE_USER_ASSERT( nonzeros.size() == m, "Size of capacity vector and number of rows don't match" );
 
@@ -706,11 +709,7 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( initializer_list< initialize
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline CompressedMatrix<Type,SO>::CompressedMatrix( const CompressedMatrix& sm )
-   : m_       ( sm.m_ )                  // The current number of rows of the compressed matrix
-   , n_       ( sm.n_ )                  // The current number of columns of the compressed matrix
-   , capacity_( sm.m_ )                  // The current capacity of the pointer array
-   , begin_( new Iterator[2UL*m_+2UL] )  // Pointers to the first non-zero element of each row
-   , end_  ( begin_+(m_+1UL) )           // Pointers one past the last non-zero element of each row
+   : CompressedMatrix( sm.m_, sm.n_, Uninitialized() )
 {
    const size_t nonzeros( sm.nonZeros() );
 
@@ -781,6 +780,26 @@ inline CompressedMatrix<Type,SO>::CompressedMatrix( const SparseMatrix<MT,SO2>& 
    using blaze::assign;
 
    assign( *this, ~sm );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Constructor for an uninitialized matrix of size \f$ M \times N \f$.
+//
+// \param m The number of rows of the matrix.
+// \param n The number of columns of the matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, Uninitialized )
+   : m_       ( m )                     // The current number of rows of the compressed matrix
+   , n_       ( n )                     // The current number of columns of the compressed matrix
+   , capacity_( m )                     // The current capacity of the pointer array
+   , begin_( new Iterator[2UL*m+2UL] )  // Pointers to the first non-zero element of each row
+   , end_  ( begin_+(m+1UL) )           // Pointers one past the last non-zero element of each row
+{
+   begin_[0] = nullptr;
 }
 //*************************************************************************************************
 
@@ -3112,6 +3131,14 @@ class CompressedMatrix<Type,true>
    /*! \endcond */
    //**********************************************************************************************
 
+   //**Private class Uninitialized*****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Auxiliary helper class for the construction of compressed matrices.
+   */
+   struct Uninitialized {};
+   /*! \endcond */
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This           = CompressedMatrix<Type,true>;   //!< Type of this CompressedMatrix instance.
@@ -3306,6 +3333,13 @@ class CompressedMatrix<Type,true>
    //**********************************************************************************************
 
  private:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   explicit inline CompressedMatrix( size_t m, size_t n, Uninitialized );
+   //@}
+   //**********************************************************************************************
+
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
@@ -3398,13 +3432,9 @@ inline CompressedMatrix<Type,true>::CompressedMatrix()
 */
 template< typename Type >  // Data type of the matrix
 inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n )
-   : m_       ( m )                     // The current number of rows of the compressed matrix
-   , n_       ( n )                     // The current number of columns of the compressed matrix
-   , capacity_( n )                     // The current capacity of the pointer array
-   , begin_( new Iterator[2UL*n+2UL] )  // Pointers to the first non-zero element of each column
-   , end_  ( begin_+(n+1UL) )           // Pointers one past the last non-zero element of each column
+   : CompressedMatrix( m, n, Uninitialized() )
 {
-   for( size_t j=0UL; j<2UL*n_+2UL; ++j )
+   for( size_t j=1UL; j<2UL*n_+2UL; ++j )
       begin_[j] = nullptr;
 }
 /*! \endcond */
@@ -3423,11 +3453,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n )
 */
 template< typename Type >  // Data type of the matrix
 inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, size_t nonzeros )
-   : m_       ( m )                     // The current number of rows of the compressed matrix
-   , n_       ( n )                     // The current number of columns of the compressed matrix
-   , capacity_( n )                     // The current capacity of the pointer array
-   , begin_( new Iterator[2UL*n+2UL] )  // Pointers to the first non-zero element of each column
-   , end_  ( begin_+(n+1UL) )           // Pointers one past the last non-zero element of each column
+   : CompressedMatrix( m, n, Uninitialized() )
 {
    begin_[0UL] = allocate<Element>( nonzeros );
    for( size_t j=1UL; j<(2UL*n_+1UL); ++j )
@@ -3451,11 +3477,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, size_t
 */
 template< typename Type >  // Data type of the matrix
 CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros )
-   : m_       ( m )                      // The current number of rows of the compressed matrix
-   , n_       ( n )                      // The current number of columns of the compressed matrix
-   , capacity_( n )                      // The current capacity of the pointer array
-   , begin_( new Iterator[2UL*n_+2UL] )  // Pointers to the first non-zero element of each column
-   , end_  ( begin_+(n_+1UL) )           // Pointers one past the last non-zero element of each column
+   : CompressedMatrix( m, n, Uninitialized() )
 {
    BLAZE_USER_ASSERT( nonzeros.size() == n, "Size of capacity vector and number of columns don't match" );
 
@@ -3530,11 +3552,7 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( initializer_list< initiali
 */
 template< typename Type >  // Data type of the matrix
 inline CompressedMatrix<Type,true>::CompressedMatrix( const CompressedMatrix& sm )
-   : m_       ( sm.m_ )                     // The current number of rows of the compressed matrix
-   , n_       ( sm.n_ )                     // The current number of columns of the compressed matrix
-   , capacity_( sm.n_ )                     // The current capacity of the pointer array
-   , begin_   ( new Iterator[2UL*n_+2UL] )  // Pointers to the first non-zero element of each column
-   , end_     ( begin_+(n_+1UL) )           // Pointers one past the last non-zero element of each column
+   : CompressedMatrix( sm.m_, sm.n_, Uninitialized() )
 {
    const size_t nonzeros( sm.nonZeros() );
 
@@ -3608,6 +3626,27 @@ inline CompressedMatrix<Type,true>::CompressedMatrix( const SparseMatrix<MT,SO>&
    using blaze::assign;
 
    assign( *this, ~sm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Constructor for an uninitialized matrix of size \f$ M \times N \f$.
+//
+// \param m The number of rows of the matrix.
+// \param n The number of columns of the matrix.
+*/
+template< typename Type >  // Data type of the matrix
+inline CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, Uninitialized )
+   : m_       ( m )                     // The current number of rows of the compressed matrix
+   , n_       ( n )                     // The current number of columns of the compressed matrix
+   , capacity_( n )                     // The current capacity of the pointer array
+   , begin_( new Iterator[2UL*n+2UL] )  // Pointers to the first non-zero element of each column
+   , end_  ( begin_+(n+1UL) )           // Pointers one past the last non-zero element of each column
+{
+   begin_[0UL] = nullptr;
 }
 /*! \endcond */
 //*************************************************************************************************
