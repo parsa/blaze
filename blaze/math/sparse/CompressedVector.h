@@ -585,10 +585,7 @@ inline CompressedVector<Type,TF>::CompressedVector( size_t n, size_t nonzeros )
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CompressedVector<Type,TF>::CompressedVector( initializer_list<Type> list )
-   : size_    ( list.size() )                     // The current size/dimension of the compressed vector
-   , capacity_( blaze::nonZeros( list ) )         // The maximum capacity of the compressed vector
-   , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( begin_ )                          // Pointer to the last non-zero element of the compressed vector
+   : CompressedVector( list.size(), blaze::nonZeros( list ) )
 {
    size_t i( 0UL );
 
@@ -612,11 +609,9 @@ inline CompressedVector<Type,TF>::CompressedVector( initializer_list<Type> list 
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline CompressedVector<Type,TF>::CompressedVector( const CompressedVector& sv )
-   : size_    ( sv.size_ )                        // The current size/dimension of the compressed vector
-   , capacity_( sv.nonZeros() )                   // The maximum capacity of the compressed vector
-   , begin_   ( allocate<Element>( capacity_ ) )  // Pointer to the first non-zero element of the compressed vector
-   , end_     ( begin_+capacity_ )                // Pointer to the last non-zero element of the compressed vector
+   : CompressedVector( sv.size_, sv.nonZeros() )
 {
+   end_ = begin_ + capacity_;
    std::copy( sv.begin_, sv.end_, castUp( begin_ ) );
 }
 //*************************************************************************************************
@@ -655,6 +650,7 @@ inline CompressedVector<Type,TF>::CompressedVector( const DenseVector<VT,TF>& dv
    : CompressedVector( (~dv).size() )
 {
    using blaze::assign;
+
    assign( *this, ~dv );
 }
 //*************************************************************************************************
@@ -672,6 +668,7 @@ inline CompressedVector<Type,TF>::CompressedVector( const SparseVector<VT,TF>& s
    : CompressedVector( (~sv).size(), (~sv).nonZeros() )
 {
    using blaze::assign;
+
    assign( *this, ~sv );
 }
 //*************************************************************************************************
