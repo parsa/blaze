@@ -1170,7 +1170,8 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   decltype(auto) c( derestrict( ~C ) );
+   using DerestrictType = decltype( derestrict( ~C ) );
+   DerestrictType c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -1696,7 +1697,8 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   decltype(auto) c( derestrict( ~C ) );
+   using DerestrictType = decltype( derestrict( ~C ) );
+   DerestrictType c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -2240,7 +2242,8 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   decltype(auto) c( derestrict( ~C ) );
+   using DerestrictType = decltype( derestrict( ~C ) );
+   DerestrictType c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -2758,7 +2761,8 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   decltype(auto) c( derestrict( ~C ) );
+   using DerestrictType = decltype( derestrict( ~C ) );
+   DerestrictType c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
