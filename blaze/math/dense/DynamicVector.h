@@ -561,17 +561,10 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n )
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
-   : size_    ( n )                            // The current size/dimension of the vector
-   , capacity_( addPadding( n ) )              // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+   : DynamicVector( n )
 {
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = init;
-
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
-   }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -596,11 +589,9 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector( initializer_list<Type> list )
-   : size_    ( list.size() )                  // The current size/dimension of the vector
-   , capacity_( addPadding( size_ ) )          // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+   : DynamicVector( list.size() )
 {
-   std::fill( std::copy( list.begin(), list.end(), v_ ), v_+capacity_, Type() );
+   std::fill( std::copy( list.begin(), list.end(), begin() ), end(), Type() );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -631,17 +622,10 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
-   : size_    ( n )                            // The current size/dimension of the vector
-   , capacity_( addPadding( n ) )              // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+   : DynamicVector( n )
 {
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
-
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=n; i<capacity_; ++i )
-         v_[i] = Type();
-   }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -670,17 +654,10 @@ template< typename Type   // Data type of the vector
 template< typename Other  // Data type of the initialization array
         , size_t Dim >    // Dimension of the initialization array
 inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[Dim] )
-   : size_    ( Dim )                          // The current size/dimension of the vector
-   , capacity_( addPadding( Dim ) )            // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+   : DynamicVector( Dim )
 {
    for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
-
-   if( IsVectorizable<Type>::value ) {
-      for( size_t i=Dim; i<capacity_; ++i )
-         v_[i] = Type();
-   }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -698,14 +675,11 @@ inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[Dim] )
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline DynamicVector<Type,TF>::DynamicVector( const DynamicVector& v )
-   : size_    ( v.size_ )                      // The current size/dimension of the vector
-   , capacity_( addPadding( v.size_ ) )        // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+   : DynamicVector( v.size_ )
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= v.capacity_, "Invalid capacity estimation" );
 
-   for( size_t i=0UL; i<capacity_; ++i )
-      v_[i] = v.v_[i];
+   smpAssign( *this, ~v );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -740,13 +714,12 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign vector
 inline DynamicVector<Type,TF>::DynamicVector( const Vector<VT,TF>& v )
-   : size_    ( (~v).size() )                  // The current size/dimension of the vector
-   , capacity_( addPadding( size_ ) )          // The maximum capacity of the vector
-   , v_       ( allocate<Type>( capacity_ ) )  // The vector elements
+   : DynamicVector( (~v).size() )
 {
-   for( size_t i=( IsSparseVector<VT>::value   ? 0UL       : size_ );
-               i<( IsVectorizable<Type>::value ? capacity_ : size_ ); ++i ) {
-      v_[i] = Type();
+   if( IsSparseVector<VT>::value ) {
+      for( size_t i=0UL; i<size_; ++i ) {
+         v_[i] = Type();
+      }
    }
 
    smpAssign( *this, ~v );
