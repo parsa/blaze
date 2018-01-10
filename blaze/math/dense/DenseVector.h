@@ -44,13 +44,16 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/TransposeFlag.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
@@ -83,10 +86,10 @@ template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator==( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar );
+inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_<IsNumeric<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec );
+inline EnableIf_< IsNumeric<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec );
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator!=( const DenseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
@@ -98,10 +101,22 @@ template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator!=( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_<IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar );
+inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_<IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec );
+inline EnableIf_< IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST scalar );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>&& vec, ST scalar );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST scalar );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>&& vec, ST scalar );
 //@}
 //*************************************************************************************************
 
@@ -217,7 +232,7 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF
 template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar )
+inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar )
 {
    using CT1 = CompositeType_<T1>;
 
@@ -248,7 +263,7 @@ inline EnableIf_<IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense vector
         , bool TF >    // Transpose flag
-inline EnableIf_<IsNumeric<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec )
+inline EnableIf_< IsNumeric<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec )
 {
    return ( vec == scalar );
 }
@@ -327,7 +342,7 @@ inline bool operator!=( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF
 template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline EnableIf_<IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
+inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
 {
    return !( vec == scalar );
 }
@@ -349,9 +364,131 @@ inline EnableIf_<IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& vec
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side vector
         , bool TF >    // Transpose flag
-inline EnableIf_<IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
+inline EnableIf_< IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
 {
    return !( vec == scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a dense vector and
+//        a scalar value (\f$ \vec{a}*=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST scalar )
+{
+   if( IsRestricted<VT>::value ) {
+      if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( ~vec ) );
+
+   smpAssign( left, left * scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+
+   return ~vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a temporary dense vector
+//        and a scalar (\f$ v*=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>&& vec, ST scalar )
+{
+   return operator*=( ~vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a dense vector by a scalar value
+//        (\f$ \vec{a}/=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+//
+// \note A division by zero is only checked by an user assert.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
+
+   if( IsRestricted<VT>::value ) {
+      if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( ~vec ) );
+
+   smpAssign( left, left / scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+
+   return ~vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a temporary dense vector by a scalar
+//        value (\f$ \vec{a}/=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+//
+// \note A division by zero is only checked by an user assert.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>&& vec, ST scalar )
+{
+   return operator/=( ~vec, scalar );
 }
 //*************************************************************************************************
 
