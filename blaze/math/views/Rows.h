@@ -2496,6 +2496,8 @@ template< typename MT     // Type of the matrix
 inline bool tryAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
                        const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
+   UNUSED_PARAMETER( band );
+
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
@@ -2659,6 +2661,8 @@ template< typename MT     // Type of the matrix
 inline bool tryAddAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
+   UNUSED_PARAMETER( band );
+
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
@@ -2822,6 +2826,8 @@ template< typename MT     // Type of the matrix
 inline bool trySubAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
+   UNUSED_PARAMETER( band );
+
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
@@ -2986,6 +2992,8 @@ template< typename MT     // Type of the matrix
 inline bool tryMultAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
                            const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
+   UNUSED_PARAMETER( band );
+
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
@@ -3150,6 +3158,8 @@ template< typename MT     // Type of the matrix
 inline bool tryDivAssign( const Rows<MT,SO,DF,SF,CRAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
+   UNUSED_PARAMETER( band );
+
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );

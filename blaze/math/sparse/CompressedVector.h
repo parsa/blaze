@@ -371,12 +371,6 @@ class CompressedVector
    template< typename VT > inline CompressedVector& operator*=( const SparseVector<VT,TF>& rhs );
    template< typename VT > inline CompressedVector& operator/=( const DenseVector<VT,TF>& rhs );
    template< typename VT > inline CompressedVector& operator%=( const Vector<VT,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, CompressedVector >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, CompressedVector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1252,70 +1246,6 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator%=( const V
    const CrossType tmp( *this % (~rhs) );
    end_ = begin_;
    assign( *this, tmp );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a compressed vector
-//        and a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the compressed vector.
-//
-// This operator can only be used for built-in data types. Additionally, the elements of the
-// compressed vector must support the multiplication assignment operator for the given scalar
-// built-in data type.
-*/
-template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, CompressedVector<Type,TF> >&
-   CompressedVector<Type,TF>::operator*=( Other rhs )
-{
-   for( Iterator element=begin_; element!=end_; ++element )
-      element->value_ *= rhs;
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division assignment operator for the division of a compressed vector by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the compressed vector.
-//
-// This operator can only be used for built-in data types. Additionally, the elements of the
-// compressed vector must either support the multiplication assignment operator for the given
-// floating point data type or the division assignment operator for the given integral data
-// type.
-*/
-template< typename Type     // Data type of the vector
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, CompressedVector<Type,TF> >&
-   CompressedVector<Type,TF>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   using DT  = DivTrait_<Type,Other>;
-   using Tmp = If_< IsNumeric<DT>, DT, Other >;
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( Iterator element=begin_; element!=end_; ++element )
-         element->value_ *= tmp;
-   }
-   else {
-      for( Iterator element=begin_; element!=end_; ++element )
-         element->value_ /= rhs;
-   }
 
    return *this;
 }
