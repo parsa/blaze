@@ -335,12 +335,6 @@ class DynamicMatrix
    template< typename MT, bool SO2 > inline DynamicMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator-=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline DynamicMatrix& operator%=( const Matrix<MT,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, DynamicMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, DynamicMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1450,52 +1444,6 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator%=( const Matrix<
    else {
       smpSchurAssign( *this, ~rhs );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a matrix and
-//        a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,SO> >&
-   DynamicMatrix<Type,SO>::operator*=( Other rhs )
-{
-   smpAssign( *this, (*this) * rhs );
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division assignment operator for the division of a matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,SO> >&
-   DynamicMatrix<Type,SO>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   smpAssign( *this, (*this) / rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -3351,12 +3299,6 @@ class DynamicMatrix<Type,true>
    template< typename MT, bool SO > inline DynamicMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator-=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline DynamicMatrix& operator%=( const Matrix<MT,SO>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, DynamicMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, DynamicMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -4465,54 +4407,6 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator%=( const Mat
    else {
       smpSchurAssign( *this, ~rhs );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a matrix and
-//        a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the matrix.
-*/
-template< typename Type >   // Data type of the matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,true> >&
-   DynamicMatrix<Type,true>::operator*=( Other rhs )
-{
-   smpAssign( *this, (*this) * rhs );
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-*/
-template< typename Type >   // Data type of the matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, DynamicMatrix<Type,true> >&
-   DynamicMatrix<Type,true>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   smpAssign( *this, (*this) / rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 

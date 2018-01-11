@@ -102,7 +102,6 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/Unused.h>
 
@@ -246,12 +245,6 @@ class Rows<MT,true,true,SF,CRAs...>
    template< typename MT2, bool SO2 >
    inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows& >
       operator%=( const Matrix<MT2,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Rows >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Rows >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1397,74 +1390,6 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,true
    smpAssign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a dense row selection
-//        and a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the dense row selection.
-//
-// This operator cannot be used for row selections on lower or upper unitriangular matrices. The
-// attempt to scale such a row selection results in a compilation error!
-*/
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Rows<MT,true,true,SF,CRAs...> >&
-   Rows<MT,true,true,SF,CRAs...>::operator*=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   auto left( derestrict( *this ) );
-
-   smpAssign( left, (*this) * rhs );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a dense row selection by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the dense row selection.
-//
-// This operator cannot be used for row selections on lower or upper unitriangular matrices. The
-// attempt to scale such a row selection results in a compilation error!
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Rows<MT,true,true,SF,CRAs...> >&
-   Rows<MT,true,true,SF,CRAs...>::operator/=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   auto left( derestrict( *this ) );
-
-   smpAssign( left, (*this) / rhs );
 
    return *this;
 }
@@ -3621,12 +3546,6 @@ class Rows<MT,false,true,false,CRAs...>
    template< typename MT2, bool SO2 >
    inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows& >
       operator%=( const Matrix<MT2,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Rows >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Rows >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -4666,72 +4585,6 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fals
    smpAssign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a dense row selection
-//        and a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the dense row selection.
-//
-// This operator cannot be used for row selections on lower or upper unitriangular matrices. The
-// attempt to scale such a row selection results in a compilation error!
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Rows<MT,false,true,false,CRAs...> >&
-   Rows<MT,false,true,false,CRAs...>::operator*=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   auto left( derestrict( *this ) );
-
-   smpAssign( left, (*this) * rhs );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a dense row selection by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the dense row selection.
-//
-// This operator cannot be used for row selections on lower or upper unitriangular matrices. The
-// attempt to scale such a row selection results in a compilation error!
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CRAs >  // Compile time row arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Rows<MT,false,true,false,CRAs...> >&
-   Rows<MT,false,true,false,CRAs...>::operator/=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE    ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   auto left( derestrict( *this ) );
-
-   smpAssign( left, (*this) / rhs );
 
    return *this;
 }

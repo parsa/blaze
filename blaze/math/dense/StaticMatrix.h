@@ -335,12 +335,6 @@ class StaticMatrix
    template< typename MT   , bool SO2 > inline StaticMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT   , bool SO2 > inline StaticMatrix& operator-=( const Matrix<MT,SO2>& rhs );
    template< typename MT   , bool SO2 > inline StaticMatrix& operator%=( const Matrix<MT,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, StaticMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, StaticMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1540,62 +1534,6 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator%=( const M
    else {
       schurAssign( *this, ~rhs );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a matrix and
-//        a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >&
-   StaticMatrix<Type,M,N,SO>::operator*=( Other rhs )
-{
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division assignment operator for the division of a matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,SO> >&
-   StaticMatrix<Type,M,N,SO>::operator/=( Other rhs )
-{
-   using blaze::assign;
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   assign( *this, (*this) / rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -3274,12 +3212,6 @@ class StaticMatrix<Type,M,N,true>
    template< typename MT   , bool SO > inline StaticMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT   , bool SO > inline StaticMatrix& operator-=( const Matrix<MT,SO>& rhs );
    template< typename MT   , bool SO > inline StaticMatrix& operator%=( const Matrix<MT,SO>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, StaticMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, StaticMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -4485,64 +4417,6 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator%=( con
    else {
       schurAssign( *this, ~rhs );
    }
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a matrix and
-//        a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N >        // Number of columns
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,true> >&
-   StaticMatrix<Type,M,N,true>::operator*=( Other rhs )
-{
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename Type     // Data type of the matrix
-        , size_t M          // Number of rows
-        , size_t N >        // Number of columns
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, StaticMatrix<Type,M,N,true> >&
-   StaticMatrix<Type,M,N,true>::operator/=( Other rhs )
-{
-   using blaze::assign;
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   assign( *this, (*this) / rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 

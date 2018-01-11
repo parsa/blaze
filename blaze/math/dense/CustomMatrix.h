@@ -527,12 +527,6 @@ class CustomMatrix
    template< typename MT, bool SO2 > inline CustomMatrix& operator+=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator-=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CustomMatrix& operator%=( const Matrix<MT,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1572,50 +1566,6 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator%=( con
       smpSchurAssign( *this, ~rhs );
    }
 
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a matrix and
-//        a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,SO> >&
-   CustomMatrix<Type,AF,PF,SO>::operator*=( Other rhs )
-{
-   smpAssign( *this, (*this) * rhs );
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division assignment operator for the division of a matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,SO> >&
-   CustomMatrix<Type,AF,PF,SO>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -3380,12 +3330,6 @@ class CustomMatrix<Type,AF,PF,true>
    template< typename MT, bool SO > inline CustomMatrix& operator+=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator-=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CustomMatrix& operator%=( const Matrix<MT,SO>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -4417,52 +4361,6 @@ inline CustomMatrix<Type,AF,PF,true>&
       smpSchurAssign( *this, ~rhs );
    }
 
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a matrix and
-//        a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF >         // Padding flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,true> >&
-   CustomMatrix<Type,AF,PF,true>::operator*=( Other rhs )
-{
-   smpAssign( *this, (*this) * rhs );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool AF           // Alignment flag
-        , bool PF >         // Padding flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomMatrix<Type,AF,PF,true> >&
-   CustomMatrix<Type,AF,PF,true>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 /*! \endcond */

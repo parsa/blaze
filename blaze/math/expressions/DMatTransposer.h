@@ -57,9 +57,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -147,7 +145,7 @@ class DMatTransposer
    inline ConstReference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < dm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.rows()   , "Invalid column access index" );
-      return dm_(j,i);
+      return const_cast<const MT&>( dm_ )(j,i);
    }
    //**********************************************************************************************
 
@@ -302,40 +300,6 @@ class DMatTransposer
    */
    inline ConstIterator cend( size_t i ) const {
       return dm_.cend( i );
-   }
-   //**********************************************************************************************
-
-   //**Multiplication assignment operator**********************************************************
-   /*!\brief Multiplication assignment operator for the multiplication between a matrix and
-   //        a scalar value (\f$ A*=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the multiplication.
-   // \return Reference to this DMatTransposer.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, DMatTransposer >& operator*=( Other rhs )
-   {
-      (~dm_) *= rhs;
-      return *this;
-   }
-   //**********************************************************************************************
-
-   //**Division assignment operator****************************************************************
-   /*!\brief Division assignment operator for the division of a matrix by a scalar value
-   //        (\f$ A/=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the division.
-   // \return Reference to this DMatTransposer.
-   //
-   // \note A division by zero is only checked by an user assert.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, DMatTransposer >& operator/=( Other rhs )
-   {
-      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-      (~dm_) /= rhs;
-      return *this;
    }
    //**********************************************************************************************
 
@@ -751,7 +715,7 @@ class DMatTransposer<MT,true>
    inline ConstReference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < dm_.columns(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.rows()   , "Invalid column access index" );
-      return dm_(j,i);
+      return const_cast<const MT&>( dm_ )(j,i);
    }
    //**********************************************************************************************
 
@@ -876,40 +840,6 @@ class DMatTransposer<MT,true>
    */
    inline ConstIterator cend( size_t j ) const {
       return dm_.cend(j);
-   }
-   //**********************************************************************************************
-
-   //**Multiplication assignment operator**********************************************************
-   /*!\brief Multiplication assignment operator for the multiplication between a matrix and
-   //        a scalar value (\f$ A*=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the multiplication.
-   // \return Reference to this DMatTransposer.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, DMatTransposer >& operator*=( Other rhs )
-   {
-      (~dm_) *= rhs;
-      return *this;
-   }
-   //**********************************************************************************************
-
-   //**Division assignment operator****************************************************************
-   /*!\brief Division assignment operator for the division of a matrix by a scalar value
-   //        (\f$ A/=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the division.
-   // \return Reference to this DMatTransposer.
-   //
-   // \note A division by zero is only checked by an user assert.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, DMatTransposer >& operator/=( Other rhs )
-   {
-      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-      (~dm_) /= rhs;
-      return *this;
    }
    //**********************************************************************************************
 

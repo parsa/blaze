@@ -61,11 +61,16 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/views/Band.h>
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -77,9 +82,15 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
@@ -711,11 +722,11 @@ class DiagonalMatrix<MT,SO,true>
    template< typename MT2, bool SO2 >
    inline DiagonalMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
 
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DiagonalMatrix >& operator*=( Other rhs );
+   template< typename ST >
+   inline EnableIf_< IsNumeric<ST>, DiagonalMatrix >& operator*=( ST rhs );
 
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, DiagonalMatrix >& operator/=( Other rhs );
+   template< typename ST >
+   inline EnableIf_< IsNumeric<ST>, DiagonalMatrix >& operator/=( ST rhs );
    //@}
    //**********************************************************************************************
 
@@ -1492,14 +1503,8 @@ template< typename MT  // Type of the adapted dense matrix
 inline DiagonalMatrix<MT,SO,true>&
    DiagonalMatrix<MT,SO,true>::operator=( const ElementType& rhs )
 {
-   if( SO ) {
-      for( size_t j=0UL; j<columns(); ++j )
-         matrix_(j,j) = rhs;
-   }
-   else {
-      for( size_t i=0UL; i<rows(); ++i )
-         matrix_(i,i) = rhs;
-   }
+   for( size_t i=0UL; i<rows(); ++i )
+      matrix_(i,i) = rhs;
 
    return *this;
 }
@@ -1932,16 +1937,17 @@ inline DiagonalMatrix<MT,SO,true>&
 /*!\brief Multiplication assignment operator for the multiplication between a matrix and
 //        a scalar value (\f$ A*=s \f$).
 //
-// \param rhs The right-hand side scalar value for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
 // \return Reference to the matrix.
 */
-template< typename MT       // Type of the adapted dense matrix
-        , bool SO >         // Storage order of the adapted dense matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DiagonalMatrix<MT,SO,true> >&
-   DiagonalMatrix<MT,SO,true>::operator*=( Other rhs )
+template< typename MT    // Type of the adapted dense matrix
+        , bool SO >      // Storage order of the adapted dense matrix
+template< typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, DiagonalMatrix<MT,SO,true> >&
+   DiagonalMatrix<MT,SO,true>::operator*=( ST scalar )
 {
-   matrix_ *= rhs;
+   diagonal( matrix_ ) *= scalar;
+
    return *this;
 }
 //*************************************************************************************************
@@ -1952,18 +1958,17 @@ inline EnableIf_< IsNumeric<Other>, DiagonalMatrix<MT,SO,true> >&
 /*!\brief Division assignment operator for the division of a matrix by a scalar value
 //        (\f$ A/=s \f$).
 //
-// \param rhs The right-hand side scalar value for the division.
+// \param scalar The right-hand side scalar value for the division.
 // \return Reference to the matrix.
 */
-template< typename MT       // Type of the adapted dense matrix
-        , bool SO >         // Storage order of the adapted dense matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, DiagonalMatrix<MT,SO,true> >&
-   DiagonalMatrix<MT,SO,true>::operator/=( Other rhs )
+template< typename MT    // Type of the adapted dense matrix
+        , bool SO >      // Storage order of the adapted dense matrix
+template< typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, DiagonalMatrix<MT,SO,true> >&
+   DiagonalMatrix<MT,SO,true>::operator/=( ST scalar )
 {
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+   diagonal( matrix_ ) /= scalar;
 
-   matrix_ /= rhs;
    return *this;
 }
 /*! \endcond */
