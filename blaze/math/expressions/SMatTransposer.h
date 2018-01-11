@@ -493,10 +493,10 @@ class SMatTransposer
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of row-major sparse matrices*******************************************
-   /*!\brief Implementation of the transpose assignment of a row-major sparse matrix.
+   //**Transpose assignment of matrices************************************************************
+   /*!\brief Implementation of the transpose assignment of a matrix.
    //
-   // \param rhs The right-hand side sparse matrix to be assigned.
+   // \param rhs The right-hand side matrix to be assigned.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -504,70 +504,13 @@ class SMatTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,false>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::assign;
 
-      BLAZE_INTERNAL_ASSERT( sm_.columns() == (~rhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
-
-      using RhsIterator = ConstIterator_<MT2>;
-
-      const size_t m( rows() );
-
-      for( size_t i=0UL; i<m; ++i ) {
-         for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            sm_.append( element->index(), i, element->value() );
-         finalize( i );
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose assignment of column-major sparse matrices****************************************
-   /*!\brief Implementation of the transpose assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be assigned.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,true>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( sm_.columns() == (~rhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
-
-      using RhsIterator = ConstIterator_<MT2>;
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      // Counting the number of elements per row
-      std::vector<size_t> rowLengths( m, 0UL );
-      for( size_t j=0UL; j<n; ++j ) {
-         for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            ++rowLengths[element->index()];
-      }
-
-      // Resizing the sparse matrix
-      for( size_t i=0UL; i<m; ++i ) {
-         sm_.reserve( i, rowLengths[i] );
-      }
-
-      // Appending the elements to the rows of the sparse matrix
-      for( size_t j=0UL; j<n; ++j ) {
-         for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-            sm_.append( j, element->index(), element->value() );
-         }
-      }
+      assign( ~sm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -991,10 +934,10 @@ class SMatTransposer<MT,true>
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of row-major sparse matrices*******************************************
-   /*!\brief Implementation of the transpose assignment of a row-major sparse matrix.
+   //**Transpose assignment of matrices************************************************************
+   /*!\brief Implementation of the transpose assignment of a matrix.
    //
-   // \param rhs The right-hand side sparse matrix to be assigned.
+   // \param rhs The right-hand side matrix to be assigned.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1002,70 +945,13 @@ class SMatTransposer<MT,true>
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,false>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::assign;
 
-      BLAZE_INTERNAL_ASSERT( sm_.columns() == (~rhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
-
-      using RhsIterator = ConstIterator_<MT2>;
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      // Counting the number of elements per row
-      std::vector<size_t> columnLengths( n, 0UL );
-      for( size_t i=0UL; i<m; ++i ) {
-         for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            ++columnLengths[element->index()];
-      }
-
-      // Resizing the sparse matrix
-      for( size_t j=0UL; j<n; ++j ) {
-         sm_.reserve( j, columnLengths[j] );
-      }
-
-      // Appending the elements to the columns of the sparse matrix
-      for( size_t i=0UL; i<m; ++i ) {
-         for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-            sm_.append( element->index(), i, element->value() );
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose assignment of column-major sparse matrices****************************************
-   /*!\brief Implementation of the transpose assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be assigned.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,true>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( sm_.columns() == (~rhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( sm_.rows() == (~rhs).columns()     , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( sm_.capacity() >= (~rhs).nonZeros(), "Capacity not sufficient"   );
-
-      using RhsIterator = ConstIterator_<MT2>;
-
-      const size_t n( columns() );
-
-      for( size_t j=0UL; j<n; ++j ) {
-         for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            sm_.append( j, element->index(), element->value() );
-         finalize( j );
-      }
+      assign( ~sm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
