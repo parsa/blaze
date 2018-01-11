@@ -43,6 +43,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Triangular.h>
+#include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
@@ -50,12 +51,17 @@
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/StorageOrder.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -66,14 +72,21 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -100,6 +113,18 @@ inline bool operator==( const SparseMatrix<T1,SO>& lhs, const SparseMatrix<T2,!S
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,SO2>& rhs );
+
+template< typename MT, bool SO, typename ST >
+inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST scalar );
+
+template< typename MT, bool SO, typename ST >
+inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>&& mat, ST scalar );
+
+template< typename MT, bool SO, typename ST >
+inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST scalar );
+
+template< typename MT, bool SO, typename ST >
+inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>&& mat, ST scalar );
 //@}
 //*************************************************************************************************
 
@@ -286,6 +311,171 @@ template< typename T1  // Type of the left-hand side sparse matrix
 inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,SO2>& rhs )
 {
    return !( lhs == rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a sparse matrix and
+//        a scalar value (\f$ A*=s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side sparse matrix for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return Reference to the left-hand side sparse matrix.
+// \exception std::invalid_argument Invalid scaling of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   if( IsRestricted<MT>::value ) {
+      if( !tryMult( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
+      }
+   }
+
+   if( !IsResizable< ElementType_<MT> >::value && isZero( scalar ) )
+   {
+      reset( ~mat );
+   }
+   else
+   {
+      decltype(auto) left( derestrict( ~mat ) );
+
+      const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
+      for( size_t i=0UL; i<iend; ++i ) {
+         const auto last( left.end(i) );
+         for( auto element=left.begin(i); element!=last; ++element ) {
+            element->value() *= scalar;
+         }
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~mat ), "Invariant violation detected" );
+
+   return ~mat;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a temporary sparse matrix
+//        and a scalar value (\f$ A*=s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side temporary sparse matrix for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return Reference to the left-hand side sparse matrix.
+// \exception std::invalid_argument Invalid scaling of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
+{
+   return operator*=( ~mat, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a sparse matrix by a scalar value
+//        (\f$ A/=s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side sparse matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return Reference to the left-hand side sparse matrix.
+// \exception std::invalid_argument Invalid scaling of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+//
+// \note A division by zero is only checked by an user assert.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
+
+   if( IsRestricted<MT>::value ) {
+      if( !tryDiv( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
+      }
+   }
+
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<MT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_<MT> >
+                                   , IsBuiltin<ST> >
+                              , DivTrait_< UnderlyingBuiltin_<MT>, ST >
+                              , DivTrait_< UnderlyingNumeric_<MT>, ST > >
+                         , ST >;
+
+   decltype(auto) left( derestrict( ~mat ) );
+
+   if( IsInvertible<ScalarType>::value ) {
+      const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );
+      const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
+      for( size_t i=0UL; i<iend; ++i ) {
+         const auto last( left.end(i) );
+         for( auto element=left.begin(i); element!=last; ++element ) {
+            element->value() *= tmp;
+         }
+      }
+   }
+   else {
+      const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
+      for( size_t i=0UL; i<iend; ++i ) {
+         const auto last( left.end(i) );
+         for( auto element=left.begin(i); element!=last; ++element ) {
+            element->value() /= scalar;
+         }
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~mat ), "Invariant violation detected" );
+
+   return ~mat;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a temporary sparse matrix by a scalar
+//        value (\f$ A/=s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side temporary sparse matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return Reference to the left-hand side sparse matrix.
+// \exception std::invalid_argument Invalid scaling of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+//
+// \note A division by zero is only checked by an user assert.
+*/
+template< typename MT    // Type of the left-hand side sparse matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
+{
+   return operator/=( ~mat, scalar );
 }
 //*************************************************************************************************
 
