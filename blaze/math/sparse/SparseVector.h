@@ -42,19 +42,33 @@
 
 #include <cmath>
 #include <blaze/math/Aliases.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/shims/Square.h>
 #include <blaze/math/TransposeFlag.h>
+#include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/typetraits/IsInvertible.h>
+#include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -74,6 +88,18 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>&& vec, ST scalar );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST scalar );
+
+template< typename VT, bool TF, typename ST >
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>&& vec, ST scalar );
 //@}
 //*************************************************************************************************
 
@@ -158,6 +184,156 @@ template< typename T1  // Type of the left-hand side sparse vector
 inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
 {
    return !( lhs == rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a sparse vector and
+//        a scalar value (\f$ \vec{a}*=s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side sparse vector for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return Reference to the left-hand side sparse vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar )
+{
+   if( IsRestricted<VT>::value ) {
+      if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
+      }
+   }
+
+   if( !IsResizable< ElementType_<VT> >::value && isZero( scalar ) )
+   {
+      reset( ~vec );
+   }
+   else
+   {
+      decltype(auto) left( derestrict( ~vec ) );
+
+      const auto last( left.end() );
+      for( auto element=left.begin(); element!=last; ++element ) {
+         element->value() *= scalar;
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+
+   return ~vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Multiplication assignment operator for the multiplication of a temporary sparse vector
+//        and a scalar (\f$ v*=s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side temporary sparse vector for the multiplication.
+// \param scalar The right-hand side scalar value for the multiplication.
+// \return Reference to the left-hand side sparse vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>&& vec, ST scalar )
+{
+   return operator*=( ~vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a sparse vector by a scalar value
+//        (\f$ \vec{a}/=s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side sparse vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return Reference to the left-hand side sparse vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+//
+// \note A division by zero is only checked by an user assert.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
+
+   if( IsRestricted<VT>::value ) {
+      if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
+      }
+   }
+
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<VT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_<VT> >
+                                   , IsBuiltin<ST> >
+                              , DivTrait_< UnderlyingBuiltin_<VT>, ST >
+                              , DivTrait_< UnderlyingNumeric_<VT>, ST > >
+                         , ST >;
+
+   decltype(auto) left( derestrict( ~vec ) );
+
+   if( IsInvertible<ScalarType>::value ) {
+      const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );
+      for( auto element=left.begin(); element!=left.end(); ++element ) {
+         element->value() *= tmp;
+      }
+   }
+   else {
+      for( auto element=left.begin(); element!=left.end(); ++element ) {
+         element->value() /= scalar;
+      }
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+
+   return ~vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division assignment operator for the division of a temporary sparse vector by a scalar
+//        value (\f$ \vec{a}/=s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side temporary sparse vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return Reference to the left-hand side sparse vector.
+// \exception std::invalid_argument Invalid scaling of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+//
+// \note A division by zero is only checked by an user assert.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>&& vec, ST scalar )
+{
+   return operator/=( ~vec, scalar );
 }
 //*************************************************************************************************
 
