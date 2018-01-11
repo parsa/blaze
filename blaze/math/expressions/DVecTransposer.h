@@ -472,10 +472,10 @@ class DVecTransposer
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of dense vectors*******************************************************
-   /*!\brief Implementation of the transpose assignment of a dense vector.
+   //**Transpose assignment of vectors*************************************************************
+   /*!\brief Implementation of the transpose assignment of a vector.
    //
-   // \param rhs The right-hand side dense vector to be assigned.
+   // \param rhs The right-hand side vector to be assigned.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -483,31 +483,21 @@ class DVecTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename VT2 >  // Type of the right-hand side dense vector
-   inline void assign( const DenseVector<VT2,TF>& rhs )
+   template< typename VT2 >  // Type of the right-hand side vector
+   inline void assign( const Vector<VT2,TF>& rhs )
    {
+      using blaze::assign;
+
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      const size_t n( size() );
-
-      const size_t ipos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         dv_[i    ] = (~rhs)[i    ];
-         dv_[i+1UL] = (~rhs)[i+1UL];
-      }
-      if( ipos < n )
-         dv_[ipos] = (~rhs)[ipos];
+      assign( ~dv_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of sparse vectors******************************************************
-   /*!\brief Implementation of the transpose assignment of a sparse vector.
+   //**Transpose addition assignment of vectors****************************************************
+   /*!\brief Implementation of the transpose addition assignment of a vector.
    //
-   // \param rhs The right-hand side sparse vector to be assigned.
+   // \param rhs The right-hand side vector to be added.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -515,24 +505,21 @@ class DVecTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename VT2 >  // Type of the right-hand side sparse vector
-   inline void assign( const SparseVector<VT2,TF>& rhs )
+   template< typename VT2 >  // Type of the right-hand side vector
+   inline void addAssign( const Vector<VT2,TF>& rhs )
    {
+      using blaze::addAssign;
+
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      using RhsConstIterator = ConstIterator_<VT2>;
-
-      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-         dv_[element->index()] = element->value();
+      addAssign( ~dv_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose addition assignment of dense vectors**********************************************
-   /*!\brief Implementation of the transpose addition assignment of a dense vector.
+   //**Transpose subtraction assignment of vectors*************************************************
+   /*!\brief Implementation of the transpose subtraction assignment of a vector.
    //
-   // \param rhs The right-hand side dense vector to be added.
+   // \param rhs The right-hand side vector to be subtracted.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -540,31 +527,21 @@ class DVecTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename VT2 >  // Type of the right-hand side dense vector
-   inline void addAssign( const DenseVector<VT2,TF>& rhs )
+   template< typename VT2 >  // Type of the right-hand side vector
+   inline void subAssign( const Vector<VT2,TF>& rhs )
    {
+      using blaze::subAssign;
+
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      const size_t n( size() );
-
-      const size_t ipos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         dv_[i    ] += (~rhs)[i    ];
-         dv_[i+1UL] += (~rhs)[i+1UL];
-      }
-      if( ipos < n )
-         dv_[ipos] += (~rhs)[ipos];
+      subAssign( ~dv_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose addition assignment of sparse vectors*********************************************
-   /*!\brief Implementation of the transpose addition assignment of a sparse vector.
+   //**Transpose multiplication assignment of vectors**********************************************
+   /*!\brief Implementation of the transpose multiplication assignment of a vector.
    //
-   // \param rhs The right-hand side sparse vector to be added.
+   // \param rhs The right-hand side vector to be multiplied.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -572,134 +549,14 @@ class DVecTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename VT2 >  // Type of the right-hand side sparse vector
-   inline void addAssign( const SparseVector<VT2,TF>& rhs )
+   template< typename VT2 >  // Type of the right-hand side vector
+   inline void multAssign( const Vector<VT2,TF>& rhs )
    {
+      using blaze::multAssign;
+
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      using RhsConstIterator = ConstIterator_<VT2>;
-
-      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-         dv_[element->index()] += element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of dense vectors*******************************************
-   /*!\brief Implementation of the transpose subtraction assignment of a dense vector.
-   //
-   // \param rhs The right-hand side dense vector to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename VT2 >  // Type of the right-hand side dense vector
-   inline void subAssign( const DenseVector<VT2,TF>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
-
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      const size_t n( size() );
-
-      const size_t ipos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         dv_[i    ] -= (~rhs)[i    ];
-         dv_[i+1UL] -= (~rhs)[i+1UL];
-      }
-      if( ipos < n )
-         dv_[ipos] -= (~rhs)[ipos];
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of sparse vectors******************************************
-   /*!\brief Implementation of the transpose subtraction assignment of a sparse vector.
-   //
-   // \param rhs The right-hand side sparse vector to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename VT2 >  // Type of the right-hand side sparse vector
-   inline void subAssign( const SparseVector<VT2,TF>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
-
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      using RhsConstIterator = ConstIterator_<VT2>;
-
-      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-         dv_[element->index()] -= element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose multiplication assignment of dense vectors****************************************
-   /*!\brief Implementation of the transpose multiplication assignment of a dense vector.
-   //
-   // \param rhs The right-hand side dense vector to be multiplied.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename VT2 >  // Type of the right-hand side dense vector
-   inline void multAssign( const DenseVector<VT2,TF>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
-
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      const size_t n( size() );
-
-      const size_t ipos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         dv_[i    ] *= (~rhs)[i    ];
-         dv_[i+1UL] *= (~rhs)[i+1UL];
-      }
-      if( ipos < n )
-         dv_[ipos] *= (~rhs)[ipos];
-   }
-   //**********************************************************************************************
-
-   //**Transpose multiplication assignment of sparse vectors***************************************
-   /*!\brief Implementation of the transpose multiplication assignment of a sparse vector.
-   //
-   // \param rhs The right-hand side sparse vector to be multiplied.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename VT2 >  // Type of the right-hand side dense vector
-   inline void multAssign( const SparseVector<VT2,TF>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
-
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      using RhsConstIterator = ConstIterator_<VT2>;
-
-      const VT tmp( dv_ );
-      dv_.reset();
-
-      for( RhsConstIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-         dv_[element->index()] = tmp[element->index()] * element->value();
+      multAssign( ~dv_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -717,21 +574,11 @@ class DVecTransposer
    template< typename VT2 >  // Type of the right-hand side dense vector
    inline void divAssign( const DenseVector<VT2,TF>& rhs )
    {
+      using blaze::divAssign;
+
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      BLAZE_INTERNAL_ASSERT( dv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      const size_t n( size() );
-
-      const size_t ipos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<ipos; i+=2UL ) {
-         dv_[i    ] /= (~rhs)[i    ];
-         dv_[i+1UL] /= (~rhs)[i+1UL];
-      }
-      if( ipos < n )
-         dv_[ipos] /= (~rhs)[ipos];
+      divAssign( ~dv_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
