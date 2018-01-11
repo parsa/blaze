@@ -536,9 +536,10 @@ inline decltype(auto) columns( MT&& matrix, const SmallVector<T,N>& indices, RCA
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix addition.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -562,9 +563,10 @@ inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix subtraction.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -588,9 +590,10 @@ inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given Schur product.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -614,9 +617,10 @@ inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix multiplication.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -639,9 +643,10 @@ inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given outer product.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -664,9 +669,10 @@ inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/scalar multiplication.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -689,9 +695,10 @@ inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/scalar division.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -714,9 +721,10 @@ inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args 
 // This function returns an expression representing the specified selection of columns on the
 // given unary matrix map operation.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -739,9 +747,10 @@ inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given binary matrix map operation.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -766,9 +775,10 @@ inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix evaluation operation.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -791,9 +801,10 @@ inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix serialization operation.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -816,9 +827,10 @@ inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix declaration operation.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -841,9 +853,10 @@ inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix transpose operation.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RCAs >  // Runtime column arguments
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatTransExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;

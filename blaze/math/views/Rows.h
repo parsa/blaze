@@ -87,6 +87,7 @@
 #include <blaze/math/views/rows/Dense.h>
 #include <blaze/math/views/rows/Sparse.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/SmallVector.h>
 #include <blaze/util/TypeList.h>
@@ -536,9 +537,10 @@ inline decltype(auto) rows( MT&& matrix, const SmallVector<T,N>& indices, RRAs..
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/matrix addition.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatMatAddExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -562,9 +564,10 @@ inline decltype(auto) rows( const MatMatAddExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/matrix subtraction.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatMatSubExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -588,9 +591,10 @@ inline decltype(auto) rows( const MatMatSubExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // Schur product.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const SchurExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -614,9 +618,10 @@ inline decltype(auto) rows( const SchurExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/matrix multiplication.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatMatMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -639,9 +644,10 @@ inline decltype(auto) rows( const MatMatMultExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // outer product.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const VecTVecMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -664,9 +670,10 @@ inline decltype(auto) rows( const VecTVecMultExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/scalar multiplication.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -689,9 +696,10 @@ inline decltype(auto) rows( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/scalar division.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -714,9 +722,10 @@ inline decltype(auto) rows( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // unary matrix map operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -739,9 +748,10 @@ inline decltype(auto) rows( const MatMapExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // binary matrix map operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatMatMapExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -766,9 +776,10 @@ inline decltype(auto) rows( const MatMatMapExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix evaluation operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatEvalExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -791,9 +802,10 @@ inline decltype(auto) rows( const MatEvalExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix serialization operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatSerialExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -816,9 +828,10 @@ inline decltype(auto) rows( const MatSerialExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix declaration operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const DeclExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -841,9 +854,10 @@ inline decltype(auto) rows( const DeclExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix transpose operation.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Matrix base type of the expression
-        , typename... RRAs >  // Runtime row arguments
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , typename = EnableIfTrue_< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) > >
 inline decltype(auto) rows( const MatTransExpr<MT>& matrix, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
