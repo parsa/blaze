@@ -63,6 +63,7 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -385,11 +386,11 @@ class SymmetricMatrix<MT,SO,false,true>
    template< typename MT2 >
    inline SymmetricMatrix& operator%=( const Matrix<MT2,!SO>& rhs );
 
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SymmetricMatrix >& operator*=( Other rhs );
+   template< typename ST >
+   inline EnableIf_< IsNumeric<ST>, SymmetricMatrix >& operator*=( ST rhs );
 
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, SymmetricMatrix >& operator/=( Other rhs );
+   template< typename ST >
+   inline EnableIf_< IsNumeric<ST>, SymmetricMatrix >& operator/=( ST rhs );
    //@}
    //**********************************************************************************************
 
@@ -1535,11 +1536,11 @@ inline SymmetricMatrix<MT,SO,false,true>&
 // \param rhs The right-hand side scalar value for the multiplication.
 // \return Reference to the matrix.
 */
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,true> >&
-   SymmetricMatrix<MT,SO,false,true>::operator*=( Other rhs )
+template< typename MT    // Type of the adapted sparse matrix
+        , bool SO >      // Storage order of the adapted sparse matrix
+template< typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,false,true> >&
+   SymmetricMatrix<MT,SO,false,true>::operator*=( ST rhs )
 {
    matrix_ *= rhs;
    return *this;
@@ -1555,13 +1556,13 @@ inline EnableIf_< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,true> >&
 // \param rhs The right-hand side scalar value for the division.
 // \return Reference to the matrix.
 */
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, SymmetricMatrix<MT,SO,false,true> >&
-   SymmetricMatrix<MT,SO,false,true>::operator/=( Other rhs )
+template< typename MT    // Type of the adapted sparse matrix
+        , bool SO >      // Storage order of the adapted sparse matrix
+template< typename ST >  // Data type of the right-hand side scalar
+inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,false,true> >&
+   SymmetricMatrix<MT,SO,false,true>::operator/=( ST rhs )
 {
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
+   BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 
    matrix_ /= rhs;
    return *this;

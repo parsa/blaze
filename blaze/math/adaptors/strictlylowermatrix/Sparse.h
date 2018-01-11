@@ -78,7 +78,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Types.h>
 
 
@@ -223,12 +222,6 @@ class StrictlyLowerMatrix<MT,SO,false>
 
    template< typename MT2, bool SO2 >
    inline StrictlyLowerMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, StrictlyLowerMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, StrictlyLowerMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1233,49 +1226,6 @@ inline StrictlyLowerMatrix<MT,SO,false>&
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly lower matrix detected" );
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a matrix and
-//        a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the matrix.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, StrictlyLowerMatrix<MT,SO,false> >&
-   StrictlyLowerMatrix<MT,SO,false>::operator*=( Other rhs )
-{
-   matrix_ *= rhs;
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-*/
-template< typename MT       // Type of the adapted sparse matrix
-        , bool SO >         // Storage order of the adapted sparse matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, StrictlyLowerMatrix<MT,SO,false> >&
-   StrictlyLowerMatrix<MT,SO,false>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   matrix_ /= rhs;
    return *this;
 }
 /*! \endcond */

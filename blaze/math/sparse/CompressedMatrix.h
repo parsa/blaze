@@ -402,12 +402,6 @@ class CompressedMatrix
    template< typename MT, bool SO2 > inline CompressedMatrix& operator-=( const Matrix<MT,SO2>& rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO2>&  rhs );
    template< typename MT, bool SO2 > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO2>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1412,70 +1406,6 @@ inline CompressedMatrix<Type,SO>&
 
    CompressedMatrix tmp( *this % (~rhs) );
    swap( tmp );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a compressed matrix
-//        and a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the compressed matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,SO> >&
-   CompressedMatrix<Type,SO>::operator*=( Other rhs )
-{
-   for( size_t i=0UL; i<m_; ++i ) {
-      const Iterator last( end(i) );
-      for( Iterator element=begin(i); element!=last; ++element )
-         element->value_ *= rhs;
-   }
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division assignment operator for the division of a compressed matrix by a scalar value
-//        (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-*/
-template< typename Type     // Data type of the matrix
-        , bool SO >         // Storage order
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,SO> >&
-   CompressedMatrix<Type,SO>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   using DT  = DivTrait_<Type,Other>;
-   using Tmp = If_< IsNumeric<DT>, DT, Other >;
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( size_t i=0UL; i<m_; ++i ) {
-         const Iterator last( end(i) );
-         for( Iterator element=begin(i); element!=last; ++element )
-            element->value_ *= tmp;
-      }
-   }
-   else {
-      for( size_t i=0UL; i<m_; ++i ) {
-         const Iterator last( end(i) );
-         for( Iterator element=begin(i); element!=last; ++element )
-            element->value_ /= rhs;
-      }
-   }
 
    return *this;
 }
@@ -3235,12 +3165,6 @@ class CompressedMatrix<Type,true>
    template< typename MT, bool SO > inline CompressedMatrix& operator-=( const Matrix<MT,SO>& rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator%=( const DenseMatrix<MT,SO>&  rhs );
    template< typename MT, bool SO > inline CompressedMatrix& operator%=( const SparseMatrix<MT,SO>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, CompressedMatrix >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -4253,72 +4177,6 @@ inline CompressedMatrix<Type,true>&
 
    CompressedMatrix tmp( *this % (~rhs) );
    swap( tmp );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a compressed matrix and
-// \brief a scalar value (\f$ A*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the compressed matrix.
-*/
-template< typename Type >   // Data type of the matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,true> >&
-   CompressedMatrix<Type,true>::operator*=( Other rhs )
-{
-   for( size_t j=0UL; j<n_; ++j ) {
-      const Iterator last( end(j) );
-      for( Iterator element=begin(j); element!=last; ++element )
-         element->value_ *= rhs;
-   }
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a compressed matrix by a scalar value
-// \brief (\f$ A/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the matrix.
-*/
-template< typename Type >   // Data type of the matrix
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, CompressedMatrix<Type,true> >&
-   CompressedMatrix<Type,true>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   using DT  = DivTrait_<Type,Other>;
-   using Tmp = If_< IsNumeric<DT>, DT, Other >;
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( size_t j=0UL; j<n_; ++j ) {
-         const Iterator last( end(j) );
-         for( Iterator element=begin(j); element!=last; ++element )
-            element->value_ *= tmp;
-      }
-   }
-   else {
-      for( size_t j=0UL; j<n_; ++j ) {
-         const Iterator last( end(j) );
-         for( Iterator element=begin(j); element!=last; ++element )
-            element->value_ /= rhs;
-      }
-   }
 
    return *this;
 }

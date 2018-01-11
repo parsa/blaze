@@ -52,9 +52,7 @@
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -118,8 +116,8 @@ class SMatTransposer
    */
    inline ConstReference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < sm_.columns(), "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( j < sm_.row()    , "Invalid column access index" );
-      return sm_(j,i);
+      BLAZE_INTERNAL_ASSERT( j < sm_.rows()   , "Invalid column access index" );
+      return const_cast<const MT&>( sm_ )(j,i);
    }
    //**********************************************************************************************
 
@@ -235,40 +233,6 @@ class SMatTransposer
    */
    inline ConstIterator cend( size_t i ) const {
       return sm_.cend(i);
-   }
-   //**********************************************************************************************
-
-   //**Multiplication assignment operator**********************************************************
-   /*!\brief Multiplication assignment operator for the multiplication between a matrix and
-   //        a scalar value (\f$ A*=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the multiplication.
-   // \return Reference to this SMatTransposer.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator*=( Other rhs )
-   {
-      (~sm_) *= rhs;
-      return *this;
-   }
-   //**********************************************************************************************
-
-   //**Division assignment operator****************************************************************
-   /*!\brief Division assignment operator for the division of a matrix by a scalar value
-   //        (\f$ A/=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the division.
-   // \return Reference to this SMatTransposer.
-   //
-   // \note A division by zero is only checked by an user assert.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator/=( Other rhs )
-   {
-      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-      (~sm_) /= rhs;
-      return *this;
    }
    //**********************************************************************************************
 
@@ -452,6 +416,7 @@ class SMatTransposer
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
    inline bool isIntact() const noexcept {
+      using blaze::isIntact;
       return isIntact( sm_ );
    }
    //**********************************************************************************************
@@ -592,8 +557,8 @@ class SMatTransposer<MT,true>
    */
    inline ConstReference operator()( size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < sm_.columns(), "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( j < sm_.row()    , "Invalid column access index" );
-      return sm_(j,i);
+      BLAZE_INTERNAL_ASSERT( j < sm_.rows()   , "Invalid column access index" );
+      return const_cast<const MT&>( sm_ )(j,i);
    }
    //**********************************************************************************************
 
@@ -679,40 +644,6 @@ class SMatTransposer<MT,true>
    */
    inline ConstIterator cend( size_t j ) const {
       return sm_.cend(j);
-   }
-   //**********************************************************************************************
-
-   //**Multiplication assignment operator**********************************************************
-   /*!\brief Multiplication assignment operator for the multiplication between a matrix and
-   //        a scalar value (\f$ A*=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the multiplication.
-   // \return Reference to this SMatTransposer.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator*=( Other rhs )
-   {
-      (~sm_) *= rhs;
-      return *this;
-   }
-   //**********************************************************************************************
-
-   //**Division assignment operator****************************************************************
-   /*!\brief Division assignment operator for the division of a matrix by a scalar value
-   //        (\f$ A/=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the division.
-   // \return Reference to this SMatTransposer.
-   //
-   // \note A division by zero is only checked by an user assert.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, SMatTransposer >& operator/=( Other rhs )
-   {
-      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-      (~sm_) /= rhs;
-      return *this;
    }
    //**********************************************************************************************
 
@@ -893,6 +824,7 @@ class SMatTransposer<MT,true>
    // \return \a true in case the matrix's invariants are intact, \a false otherwise.
    */
    inline bool isIntact() const noexcept {
+      using blaze::isIntact;
       return isIntact( sm_ );
    }
    //**********************************************************************************************
