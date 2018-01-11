@@ -102,7 +102,6 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -221,12 +220,6 @@ class Column<MT,true,true,SF,CCAs...>
    template< typename VT > inline Column& operator*=( const Vector<VT,false>& rhs );
    template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline Column& operator%=( const Vector<VT,false>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Column >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1170,62 +1163,6 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a dense column and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the vector.
-//
-// This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
-// to scale such a row results in a compilation error!
-*/
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Column<MT,true,true,SF,CCAs...> >&
-   Column<MT,true,true,SF,CCAs...>::operator*=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   return operator=( (*this) * rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a dense column by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the vector.
-//
-// This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
-// to scale such a row results in a compilation error!
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename MT       // Type of the dense matrix
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Column<MT,true,true,SF,CCAs...> >&
-   Column<MT,true,true,SF,CCAs...>::operator/=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   return operator=( (*this) / rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2739,12 +2676,6 @@ class Column<MT,false,true,false,CCAs...>
    template< typename VT > inline Column& operator*=( const Vector<VT,false>& rhs );
    template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline Column& operator%=( const Vector<VT,false>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Column >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3575,60 +3506,6 @@ inline Column<MT,false,true,false,CCAs...>&
 //*************************************************************************************************
 
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a dense column and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the vector.
-//
-// This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
-// to scale such a row results in a compilation error!
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,false,CCAs...> >&
-   Column<MT,false,true,false,CCAs...>::operator*=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   return operator=( (*this) * rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a dense column by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the vector.
-//
-// This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
-// to scale such a row results in a compilation error!
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,false,CCAs...> >&
-   Column<MT,false,true,false,CCAs...>::operator/=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   return operator=( (*this) / rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 
 
 //=================================================================================================
@@ -4360,12 +4237,6 @@ class Column<MT,false,true,true,CCAs...>
    template< typename VT > inline Column& operator*=( const Vector<VT,false>& rhs );
    template< typename VT > inline Column& operator/=( const DenseVector<VT,false>&  rhs );
    template< typename VT > inline Column& operator%=( const Vector<VT,false>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Column >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Column >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -5284,60 +5155,6 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
 
    return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a dense column and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the vector.
-//
-// This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
-// to scale such a row results in a compilation error!
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,true,CCAs...> >&
-   Column<MT,false,true,true,CCAs...>::operator*=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   return operator=( (*this) * rhs );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a dense column by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the vector.
-//
-// This operator cannot be used for columns on lower or upper unitriangular matrices. The attempt
-// to scale such a row results in a compilation error!
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename MT       // Type of the dense matrix
-        , size_t... CCAs >  // Compile time column arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Column<MT,false,true,true,CCAs...> >&
-   Column<MT,false,true,true,CCAs...>::operator/=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   return operator=( (*this) / rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

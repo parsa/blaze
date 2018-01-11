@@ -72,7 +72,6 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 
 
@@ -506,12 +505,6 @@ class Elements<VT,TF,true,CEAs...>
    template< typename VT2 > inline Elements& operator*=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline Elements& operator/=( const DenseVector<VT2,TF>& rhs );
    template< typename VT2 > inline Elements& operator%=( const Vector<VT2,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Elements >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Elements >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1356,60 +1349,6 @@ inline Elements<VT,TF,true,CEAs...>&
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between an element selection
-//        and a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the assigned element selection.
-*/
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Elements<VT,TF,true,CEAs...> >&
-   Elements<VT,TF,true,CEAs...>::operator*=( Other rhs )
-{
-   auto left( derestrict( *this ) );
-
-   smpAssign( left, (*this) * rhs );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of an element selection by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the assigned element selection.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Elements<VT,TF,true,CEAs...> >&
-   Elements<VT,TF,true,CEAs...>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   auto left( derestrict( *this ) );
-
-   smpAssign( left, (*this) / rhs );
 
    return *this;
 }

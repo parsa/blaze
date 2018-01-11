@@ -98,7 +98,6 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsIntegral.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
@@ -508,12 +507,6 @@ class CustomVector
    template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomVector >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomVector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1474,52 +1467,6 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator%=( con
    const CrossType tmp( *this % (~rhs) );
    assign( *this, tmp );
 
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a vector and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomVector<Type,AF,PF,TF> >&
-   CustomVector<Type,AF,PF,TF>::operator*=( Other rhs )
-{
-   smpAssign( *this, (*this) * rhs );
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division assignment operator for the division of a vector by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the vector.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool PF           // Padding flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomVector<Type,AF,PF,TF> >&
-   CustomVector<Type,AF,PF,TF>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 //*************************************************************************************************
@@ -2774,12 +2721,6 @@ class CustomVector<Type,AF,padded,TF>
    template< typename VT > inline CustomVector& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator/=( const DenseVector<VT,TF>& rhs );
    template< typename VT > inline CustomVector& operator%=( const Vector<VT,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomVector >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, CustomVector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3746,54 +3687,6 @@ inline CustomVector<Type,AF,padded,TF>&
    const CrossType tmp( *this % (~rhs) );
    assign( *this, tmp );
 
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a vector and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomVector<Type,AF,padded,TF> >&
-   CustomVector<Type,AF,padded,TF>::operator*=( Other rhs )
-{
-   smpAssign( *this, (*this) * rhs );
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a vector by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the vector.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename Type     // Data type of the vector
-        , bool AF           // Alignment flag
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, CustomVector<Type,AF,padded,TF> >&
-   CustomVector<Type,AF,padded,TF>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   smpAssign( *this, (*this) / rhs );
    return *this;
 }
 /*! \endcond */

@@ -90,7 +90,6 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -618,12 +617,6 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    template< typename VT2 > inline Subvector& operator*=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator%=( const Vector<VT2,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Subvector >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Subvector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1553,60 +1546,6 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a subvector and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the assigned subvector.
-*/
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... CSAs >  // Compile time subvector arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
-   Subvector<VT,unaligned,TF,true,CSAs...>::operator*=( Other rhs )
-{
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, (*this) * rhs );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a subvector by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the assigned subvector.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... CSAs >  // Compile time subvector arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Subvector<VT,unaligned,TF,true,CSAs...> >&
-   Subvector<VT,unaligned,TF,true,CSAs...>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, (*this) / rhs );
 
    return *this;
 }
@@ -2814,12 +2753,6 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    template< typename VT2 > inline Subvector& operator*=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline Subvector& operator/=( const DenseVector<VT2,TF>&  rhs );
    template< typename VT2 > inline Subvector& operator%=( const Vector<VT2,TF>&  rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Subvector >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Subvector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -3738,60 +3671,6 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a subvector and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the assigned subvector.
-*/
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... CSAs >  // Compile time subvector arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
-   Subvector<VT,aligned,TF,true,CSAs...>::operator*=( Other rhs )
-{
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, (*this) * rhs );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a subvector by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the assigned subvector.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... CSAs >  // Compile time subvector arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Subvector<VT,aligned,TF,true,CSAs...> >&
-   Subvector<VT,aligned,TF,true,CSAs...>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   decltype(auto) left( derestrict( *this ) );
-
-   smpAssign( left, (*this) / rhs );
 
    return *this;
 }

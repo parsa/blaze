@@ -299,12 +299,6 @@ class StaticVector
    template< typename VT > inline StaticVector& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline StaticVector& operator/=( const DenseVector<VT,TF>& rhs );
    template< typename VT > inline StaticVector& operator%=( const Vector<VT,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, StaticVector >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, StaticVector >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1356,60 +1350,6 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator%=( const Vecto
 
    const CrossType tmp( *this % (~rhs) );
    assign( *this, tmp );
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Multiplication assignment operator for the multiplication between a vector and
-//        a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the vector.
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, StaticVector<Type,N,TF> >&
-   StaticVector<Type,N,TF>::operator*=( Other rhs )
-{
-   using blaze::assign;
-
-   assign( *this, (*this) * rhs );
-
-   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
-
-   return *this;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Division assignment operator for the division of a vector by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the vector.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename Type     // Data type of the vector
-        , size_t N          // Number of elements
-        , bool TF >         // Transpose flag
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, StaticVector<Type,N,TF> >&
-   StaticVector<Type,N,TF>::operator/=( Other rhs )
-{
-   using blaze::assign;
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   assign( *this, (*this) / rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 

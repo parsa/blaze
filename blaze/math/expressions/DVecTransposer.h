@@ -55,9 +55,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -140,7 +138,7 @@ class DVecTransposer
    */
    inline ConstReference operator[]( size_t index ) const {
       BLAZE_USER_ASSERT( index < dv_.size(), "Invalid vector access index" );
-      return dv_[index];
+      return const_cast<const VT&>( dv_ )[index];
    }
    //**********************************************************************************************
 
@@ -254,40 +252,6 @@ class DVecTransposer
    }
    //**********************************************************************************************
 
-   //**Multiplication assignment operator**********************************************************
-   /*!\brief Multiplication assignment operator for the multiplication between a vector and
-   //        a scalar value (\f$ \vec{a}*=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the multiplication.
-   // \return Reference to this DVecTransposer.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, DVecTransposer >& operator*=( Other rhs )
-   {
-      (~dv_) *= rhs;
-      return *this;
-   }
-   //**********************************************************************************************
-
-   //**Division assignment operator****************************************************************
-   /*!\brief Division assignment operator for the division of a vector by a scalar value
-   //        (\f$ \vec{a}/=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the division.
-   // \return Reference to this DVecTransposer.
-   //
-   // \note A division by zero is only checked by an user assert.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, DVecTransposer >& operator/=( Other rhs )
-   {
-      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-      (~dv_) /= rhs;
-      return *this;
-   }
-   //**********************************************************************************************
-
    //**Size function*******************************************************************************
    /*!\brief Returns the current size/dimension of the vector.
    //
@@ -305,6 +269,18 @@ class DVecTransposer
    */
    inline void reset() {
       return dv_.reset();
+   }
+   //**********************************************************************************************
+
+   //**IsIntact function***************************************************************************
+   /*!\brief Returns whether the invariants of the vector are intact.
+   //
+   // \return \a true in case the vector's invariants are intact, \a false otherwise.
+   */
+   inline bool isIntact() const noexcept
+   {
+      using blaze::isIntact;
+      return isIntact( dv_ );
    }
    //**********************************************************************************************
 
@@ -619,6 +595,24 @@ template< typename VT  // Type of the dense vector
 inline void reset( DVecTransposer<VT,TF>& v )
 {
    v.reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the given DVecTransposer are intact.
+// \ingroup dense_vector_expression
+//
+// \param v The dense vector to be tested.
+// \return \a true in caes the given vector's invariants are intact, \a false otherwise.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline bool isIntact( const DVecTransposer<VT,TF>& v ) noexcept
+{
+   return v.isIntact();
 }
 /*! \endcond */
 //*************************************************************************************************
