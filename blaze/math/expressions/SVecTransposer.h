@@ -52,9 +52,7 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 
 
 namespace blaze {
@@ -116,7 +114,7 @@ class SVecTransposer
    */
    inline ConstReference operator[]( size_t index ) const {
       BLAZE_USER_ASSERT( index < sv_.size(), "Invalid vector access index" );
-      return sv_[index];
+      return const_cast<const VT&>( sv_ )[index];
    }
    //**********************************************************************************************
 
@@ -192,40 +190,6 @@ class SVecTransposer
    */
    inline ConstIterator cend() const {
       return sv_.cend();
-   }
-   //**********************************************************************************************
-
-   //**Multiplication assignment operator**********************************************************
-   /*!\brief Multiplication assignment operator for the multiplication between a vector and
-   //        a scalar value (\f$ \vec{a}*=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the multiplication.
-   // \return Reference to this SVecTransposer.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, SVecTransposer >& operator*=( Other rhs )
-   {
-      (~sv_) *= rhs;
-      return *this;
-   }
-   //**********************************************************************************************
-
-   //**Division assignment operator****************************************************************
-   /*!\brief Division assignment operator for the division of a vector by a scalar value
-   //        (\f$ \vec{a}/=s \f$).
-   //
-   // \param rhs The right-hand side scalar value for the division.
-   // \return Reference to this SVecTransposer.
-   //
-   // \note A division by zero is only checked by an user assert.
-   */
-   template< typename Other >  // Data type of the right-hand side scalar
-   inline EnableIf_< IsNumeric<Other>, SVecTransposer >& operator/=( Other rhs )
-   {
-      BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-      (~sv_) /= rhs;
-      return *this;
    }
    //**********************************************************************************************
 
@@ -348,6 +312,18 @@ class SVecTransposer
    }
    //**********************************************************************************************
 
+   //**IsIntact function***************************************************************************
+   /*!\brief Returns whether the invariants of the vector are intact.
+   //
+   // \return \a true in case the vector's invariants are intact, \a false otherwise.
+   */
+   inline bool isIntact() const noexcept
+   {
+      using blaze::isIntact;
+      return isIntact( sv_ );
+   }
+   //**********************************************************************************************
+
    //**CanAlias function***************************************************************************
    /*!\brief Returns whether the vector can alias with the given address \a alias.
    //
@@ -467,6 +443,24 @@ template< typename VT  // Type of the sparse vector
 inline void reset( SVecTransposer<VT,TF>& v )
 {
    v.reset();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns whether the invariants of the given SVecTransposer are intact.
+// \ingroup sparse_vector_expression
+//
+// \param v The sparse vector to be tested.
+// \return \a true in caes the given vector's invariants are intact, \a false otherwise.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline bool isIntact( const SVecTransposer<VT,TF>& v ) noexcept
+{
+   return v.isIntact();
 }
 /*! \endcond */
 //*************************************************************************************************

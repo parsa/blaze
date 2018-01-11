@@ -70,15 +70,11 @@
 #include <blaze/math/views/elements/ElementsData.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsIntegral.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsReference.h>
 
 
@@ -480,12 +476,6 @@ class Elements<VT,TF,false,CEAs...>
    template< typename VT2 > inline Elements& operator*=( const Vector<VT2,TF>& rhs );
    template< typename VT2 > inline Elements& operator/=( const DenseVector<VT2,TF>& rhs );
    template< typename VT2 > inline Elements& operator%=( const Vector<VT2,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, Elements >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_<IsNumeric<Other>, Elements >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1301,72 +1291,6 @@ inline Elements<VT,TF,false,CEAs...>&
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( vector_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between an element selection
-//        and a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the assigned element selection.
-*/
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Elements<VT,TF,false,CEAs...> >&
-   Elements<VT,TF,false,CEAs...>::operator*=( Other rhs )
-{
-   const Iterator last( end() );
-   for( Iterator element=begin(); element!=last; ++element )
-      element->value() *= rhs;
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of an element selection by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the assigned element selection.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename Other >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<Other>, Elements<VT,TF,false,CEAs...> >&
-   Elements<VT,TF,false,CEAs...>::operator/=( Other rhs )
-{
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   using DT  = DivTrait_<ElementType,Other>;
-   using Tmp = If_< IsNumeric<DT>, DT, Other >;
-
-   const Iterator last( end() );
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( Iterator element=begin(); element!=last; ++element )
-         element->value() *= tmp;
-   }
-   else {
-      for( Iterator element=begin(); element!=last; ++element )
-         element->value() /= rhs;
-   }
 
    return *this;
 }

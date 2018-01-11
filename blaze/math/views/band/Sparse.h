@@ -81,13 +81,11 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsIntegral.h>
-#include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
 
@@ -512,12 +510,6 @@ class Band<MT,TF,false,false,CBAs...>
    template< typename VT > inline Band& operator*=( const Vector<VT,TF>& rhs );
    template< typename VT > inline Band& operator/=( const DenseVector<VT,TF>&  rhs );
    template< typename VT > inline Band& operator%=( const Vector<VT,TF>& rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Band >& operator*=( Other rhs );
-
-   template< typename Other >
-   inline EnableIf_< IsNumeric<Other>, Band >& operator/=( Other rhs );
    //@}
    //**********************************************************************************************
 
@@ -1310,88 +1302,6 @@ inline Band<MT,TF,false,false,CBAs...>&
    assign( left, tmp );
 
    BLAZE_INTERNAL_ASSERT( isIntact( matrix_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication between a sparse band
-//        and a scalar value (\f$ \vec{a}*=s \f$).
-//
-// \param rhs The right-hand side scalar value for the multiplication.
-// \return Reference to the sparse band.
-//
-// Via this operator it is possible to scale the sparse band. Note however that the function is
-// subject to three restrictions. First, this operator cannot be used for bands on lower or upper
-// unitriangular matrices. The attempt to scale such a band results in a compilation error!
-// Second, this operator can only be used for numeric data types. And third, the elements of
-// the sparse band must support the multiplication assignment operator for the given scalar
-// built-in data type.
-*/
-template< typename MT          // Type of the sparse matrix
-        , bool TF              // Transpose flag
-        , ptrdiff_t... CBAs >  // Compile time band arguments
-template< typename Other >     // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, Band<MT,TF,false,false,CBAs...> >&
-   Band<MT,TF,false,false,CBAs...>::operator*=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   for( Iterator element=begin(); element!=end(); ++element )
-      element->value() *= rhs;
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a sparse band by a scalar value
-//        (\f$ \vec{a}/=s \f$).
-//
-// \param rhs The right-hand side scalar value for the division.
-// \return Reference to the sparse band.
-//
-// Via this operator it is possible to scale the sparse band. Note however that the function is
-// subject to three restrictions. First, this operator cannot be used for bands on lower or upper
-// unitriangular matrices. The attempt to scale such a band results in a compilation error!
-// Second, this operator can only be used for numeric data types. And third, the elements of
-// the sparse band must either support the multiplication assignment operator for the given
-// floating point data type or the division assignment operator for the given integral data
-// type.
-//
-// \note A division by zero is only checked by an user assert.
-*/
-template< typename MT          // Type of the sparse matrix
-        , bool TF              // Transpose flag
-        , ptrdiff_t... CBAs >  // Compile time band arguments
-template< typename Other >     // Data type of the right-hand side scalar
-inline EnableIf_<IsNumeric<Other>, Band<MT,TF,false,false,CBAs...> >&
-   Band<MT,TF,false,false,CBAs...>::operator/=( Other rhs )
-{
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   BLAZE_USER_ASSERT( rhs != Other(0), "Division by zero detected" );
-
-   using DT  = DivTrait_<ElementType,Other>;
-   using Tmp = If_< IsNumeric<DT>, DT, Other >;
-
-   // Depending on the two involved data types, an integer division is applied or a
-   // floating point division is selected.
-   if( IsNumeric<DT>::value && IsFloatingPoint<DT>::value ) {
-      const Tmp tmp( Tmp(1)/static_cast<Tmp>( rhs ) );
-      for( Iterator element=begin(); element!=end(); ++element )
-         element->value() *= tmp;
-   }
-   else {
-      for( Iterator element=begin(); element!=end(); ++element )
-         element->value() /= rhs;
-   }
 
    return *this;
 }
