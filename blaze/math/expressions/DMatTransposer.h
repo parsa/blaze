@@ -47,7 +47,6 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/shims/Reset.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
@@ -56,7 +55,6 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/system/Blocking.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -563,10 +561,10 @@ class DMatTransposer
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of row-major dense matrices********************************************
-   /*!\brief Implementation of the transpose assignment of a row-major dense matrix.
+   //**Transpose assignment of matrices************************************************************
+   /*!\brief Implementation of the transpose assignment of a matrix.
    //
-   // \param rhs The right-hand side dense matrix to be assigned.
+   // \param rhs The right-hand side matrix to be assigned.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -574,36 +572,20 @@ class DMatTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void assign( const DenseMatrix<MT2,SO>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::assign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t jpos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jpos; j+=2UL ) {
-            dm_(j    ,i) = (~rhs)(i,j    );
-            dm_(j+1UL,i) = (~rhs)(i,j+1UL);
-         }
-         if( jpos < n ) {
-            dm_(jpos,i) = (~rhs)(i,jpos);
-         }
-      }
+      assign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of column-major dense matrices*****************************************
-   /*!\brief Implementation of the transpose assignment of a column-major dense matrix.
+   //**Transpose addition assignment of matrices***************************************************
+   /*!\brief Implementation of the transpose addition assignment of a matrix.
    //
-   // \param rhs The right-hand side dense matrix to be assigned.
+   // \param rhs The right-hand side matrix to be added.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -611,37 +593,20 @@ class DMatTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void assign( const DenseMatrix<MT2,!SO>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void addAssign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::addAssign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t ii=0UL; ii<m; ii+=block ) {
-         const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-         for( size_t jj=0UL; jj<n; jj+=block ) {
-            const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-            for( size_t i=ii; i<iend; ++i ) {
-               for( size_t j=jj; j<jend; ++j ) {
-                  dm_(j,i) = (~rhs)(i,j);
-               }
-            }
-         }
-      }
+      addAssign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of row-major sparse matrices*******************************************
-   /*!\brief Implementation of the transpose assignment of a row-major sparse matrix.
+   //**Transpose subtraction assignment of matrices************************************************
+   /*!\brief Implementation of the transpose subtraction assignment of a matrix.
    //
-   // \param rhs The right-hand side sparse matrix to be assigned.
+   // \param rhs The right-hand side matrix to be subtracted.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -649,26 +614,20 @@ class DMatTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,SO>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void subAssign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::subAssign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            dm_(element->index(),i) = element->value();
+      subAssign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of column-major sparse matrices****************************************
-   /*!\brief Implementation of the transpose assignment of a column-major sparse matrix.
+   //**Transpose Schur product assignment of matrices**********************************************
+   /*!\brief Implementation of the transpose Schur product assignment of a matrix.
    //
-   // \param rhs The right-hand side sparse matrix to be assigned.
+   // \param rhs The right-hand side matrix for the Schur product.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -676,446 +635,18 @@ class DMatTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,!SO>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void schurAssign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::schurAssign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            dm_(j,element->index()) = element->value();
+      schurAssign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose addition assignment of row-major dense matrices***********************************
-   /*!\brief Implementation of the transpose addition assignment of a row-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void addAssign( const DenseMatrix<MT2,SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t jpos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jpos; j+=2UL ) {
-            dm_(j    ,i) += (~rhs)(i,j    );
-            dm_(j+1UL,i) += (~rhs)(i,j+1UL);
-
-         }
-         if( jpos < n ) {
-            dm_(jpos,i) += (~rhs)(i,jpos);
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose addition assignment of column-major dense matrices********************************
-   /*!\brief Implementation of the transpose addition assignment of a column-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void addAssign( const DenseMatrix<MT2,!SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t ii=0UL; ii<m; ii+=block ) {
-         const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-         for( size_t jj=0UL; jj<n; jj+=block ) {
-            const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-            for( size_t i=ii; i<iend; ++i ) {
-               for( size_t j=jj; j<jend; ++j ) {
-                  dm_(j,i) += (~rhs)(i,j);
-               }
-            }
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose addition assignment of row-major sparse matrices**********************************
-   /*!\brief Implementation of the transpose addition assignment of a row-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void addAssign( const SparseMatrix<MT2,SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            dm_(element->index(),i) += element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose addition assignment of column-major sparse matrices*******************************
-   /*!\brief Implementation of the transpose addition assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void addAssign( const SparseMatrix<MT2,!SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            dm_(j,element->index()) += element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of row-major dense matrices********************************
-   /*!\brief Implementation of the transpose subtraction assignment of a row-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void subAssign( const DenseMatrix<MT2,SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t jpos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jpos; j+=2UL ) {
-            dm_(j    ,i) -= (~rhs)(i,j    );
-            dm_(j+1UL,i) -= (~rhs)(i,j+1UL);
-
-         }
-         if( jpos < n ) {
-            dm_(jpos,i) -= (~rhs)(i,jpos);
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of column-major dense matrices*****************************
-   /*!\brief Implementation of the transpose subtraction assignment of a column-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void subAssign( const DenseMatrix<MT2,!SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t ii=0UL; ii<m; ii+=block ) {
-         const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-         for( size_t jj=0UL; jj<n; jj+=block ) {
-            const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-            for( size_t i=ii; i<iend; ++i ) {
-               for( size_t j=jj; j<jend; ++j ) {
-                  dm_(j,i) -= (~rhs)(i,j);
-               }
-            }
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of row-major sparse matrices*******************************
-   /*!\brief Implementation of the transpose subtraction assignment of a row-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void subAssign( const SparseMatrix<MT2,SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            dm_(element->index(),i) -= element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of column-major dense matrices*****************************
-   /*!\brief Implementation of the transpose subtraction assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void subAssign( const SparseMatrix<MT2,!SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            dm_(j,element->index()) -= element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose Schur product assignment of row-major dense matrices******************************
-   /*!\brief Implementation of the transpose Schur product assignment of a row-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix for the Schur product.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void schurAssign( const DenseMatrix<MT2,SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t jpos( n & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( n - ( n % 2UL ) ) == jpos, "Invalid end calculation" );
-
-      for( size_t i=0UL; i<m; ++i ) {
-         for( size_t j=0UL; j<jpos; j+=2UL ) {
-            dm_(j    ,i) *= (~rhs)(i,j    );
-            dm_(j+1UL,i) *= (~rhs)(i,j+1UL);
-
-         }
-         if( jpos < n ) {
-            dm_(jpos,i) *= (~rhs)(i,jpos);
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose Schur product assignment of column-major dense matrices***************************
-   /*!\brief Implementation of the transpose Schur product assignment of a column-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix for the Schur product.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void schurAssign( const DenseMatrix<MT2,!SO>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t ii=0UL; ii<m; ii+=block ) {
-         const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-         for( size_t jj=0UL; jj<n; jj+=block ) {
-            const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-            for( size_t i=ii; i<iend; ++i ) {
-               for( size_t j=jj; j<jend; ++j ) {
-                  dm_(j,i) *= (~rhs)(i,j);
-               }
-            }
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose Schur product assignment of row-major sparse matrices*****************************
-   /*!\brief Implementation of the transpose Schur product assignment of a row-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix for the Schur product.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void schurAssign( const SparseMatrix<MT2,SO>& rhs )
-   {
-      using blaze::reset;
-
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      {
-         size_t j( 0UL );
-
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-            for( ; j<element->index(); ++j )
-               reset( dm_(j,i) );
-            dm_(j,i) *= element->value();
-            ++j;
-         }
-
-         for( ; j<(~rhs).columns(); ++j ) {
-            reset( dm_(j,i) );
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose Schur product assignment of column-major sparse matrices**************************
-   /*!\brief Implementation of the transpose Schur product assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix for the Schur product.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void schurAssign( const SparseMatrix<MT2,!SO>& rhs )
-   {
-      using blaze::reset;
-
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      {
-         size_t i( 0UL );
-
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-            for( ; i<element->index(); ++i )
-               reset( dm_(j,i) );
-            dm_(j,i) *= element->value();
-            ++i;
-         }
-
-         for( ; i<(~rhs).rows(); ++i ) {
-            reset( dm_(j,i) );
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose multiplication assignment of dense matrices***************************************
-   // No special implementation for the transpose multiplication assignment of dense matrices.
-   //**********************************************************************************************
-
-   //**Transpose multiplication assignment of sparse matrices**************************************
-   // No special implementation for the transpose multiplication assignment of sparse matrices.
+   //**Transpose multiplication assignment of matrices*********************************************
+   // No special implementation for the transpose multiplication assignment of matrices.
    //**********************************************************************************************
 
  private:
@@ -1604,10 +1135,10 @@ class DMatTransposer<MT,true>
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of column-major dense matrices*****************************************
-   /*!\brief Implementation of the transpose assignment of a column-major dense matrix.
+   //**Transpose assignment of matrices************************************************************
+   /*!\brief Implementation of the transpose assignment of a matrix.
    //
-   // \param rhs The right-hand side dense matrix to be assigned.
+   // \param rhs The right-hand side matrix to be assigned.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1615,36 +1146,20 @@ class DMatTransposer<MT,true>
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void assign( const DenseMatrix<MT2,true>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::assign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t ipos( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<ipos; i+=2UL ) {
-            dm_(j,i    ) = (~rhs)(i    ,j);
-            dm_(j,i+1UL) = (~rhs)(i+1UL,j);
-         }
-         if( ipos < m ) {
-            dm_(j,ipos) = (~rhs)(ipos,j);
-         }
-      }
+      assign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of row-major dense matrices********************************************
-   /*!\brief Implementation of the transpose assignment of a row-major dense matrix.
+   //**Transpose addition assignment of matrices***************************************************
+   /*!\brief Implementation of the transpose addition assignment of a matrix.
    //
-   // \param rhs The right-hand side dense matrix to be assigned.
+   // \param rhs The right-hand side matrix to be added.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1652,37 +1167,20 @@ class DMatTransposer<MT,true>
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void assign( const DenseMatrix<MT2,false>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void addAssign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::addAssign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t jj=0UL; jj<n; jj+=block ) {
-         const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-         for( size_t ii=0UL; ii<m; ii+=block ) {
-            const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-            for( size_t j=jj; j<jend; ++j ) {
-               for( size_t i=ii; i<iend; ++i ) {
-                  dm_(j,i) = (~rhs)(i,j);
-               }
-            }
-         }
-      }
+      addAssign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of column-major sparse matrices****************************************
-   /*!\brief Implementation of the transpose assignment of a column-major sparse matrix.
+   //**Transpose subtraction assignment of matrices************************************************
+   /*!\brief Implementation of the transpose subtraction assignment of a matrix.
    //
-   // \param rhs The right-hand side sparse matrix to be assigned.
+   // \param rhs The right-hand side matrix to be subtracted.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1690,309 +1188,18 @@ class DMatTransposer<MT,true>
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,true>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void subAssign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::subAssign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            dm_(j,element->index()) = element->value();
+      subAssign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of row-major sparse matrices*******************************************
-   /*!\brief Implementation of the transpose assignment of a row-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be assigned.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void assign( const SparseMatrix<MT2,false>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            dm_(element->index(),i) = element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose addition assignment of column-major dense matrices********************************
-   /*!\brief Implementation of the transpose addition assignment of a column-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void addAssign( const DenseMatrix<MT2,true>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t ipos( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<ipos; i+=2UL ) {
-            dm_(j,i    ) += (~rhs)(i    ,j);
-            dm_(j,i+1UL) += (~rhs)(i+1UL,j);
-         }
-         if( ipos < m ) {
-            dm_(j,ipos) += (~rhs)(ipos,j);
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose addition assignment of row-major dense matrices***********************************
-   /*!\brief Implementation of the transpose addition assignment of a row-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void addAssign( const DenseMatrix<MT2,false>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t jj=0UL; jj<n; jj+=block ) {
-         const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-         for( size_t ii=0UL; ii<m; ii+=block ) {
-            const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-            for( size_t j=jj; j<jend; ++j ) {
-               for( size_t i=ii; i<iend; ++i ) {
-                  dm_(j,i) += (~rhs)(i,j);
-               }
-            }
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose addition assignment of column-major sparse matrices*******************************
-   /*!\brief Implementation of the transpose addition assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void addAssign( const SparseMatrix<MT2,true>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            dm_(j,element->index()) += element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose addition assignment of row-major sparse matrices**********************************
-   /*!\brief Implementation of the transpose addition assignment of a row-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be added.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void addAssign( const SparseMatrix<MT2,false>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            dm_(element->index(),i) += element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of column-major dense matrices*****************************
-   /*!\brief Implementation of the transpose subtraction assignment of a column-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void subAssign( const DenseMatrix<MT2,true>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t ipos( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<ipos; i+=2UL ) {
-            dm_(j,i    ) -= (~rhs)(i    ,j);
-            dm_(j,i+1UL) -= (~rhs)(i+1UL,j);
-         }
-         if( ipos < m ) {
-            dm_(j,ipos) -= (~rhs)(ipos,j);
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of row-major dense matrices********************************
-   /*!\brief Implementation of the transpose subtraction assignment of a row-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void subAssign( const DenseMatrix<MT2,false>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t jj=0UL; jj<n; jj+=block ) {
-         const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-         for( size_t ii=0UL; ii<m; ii+=block ) {
-            const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-            for( size_t j=jj; j<jend; ++j ) {
-               for( size_t i=ii; i<iend; ++i ) {
-                  dm_(j,i) -= (~rhs)(i,j);
-               }
-            }
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of column-major sparse matrices****************************
-   /*!\brief Implementation of the transpose subtraction assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void subAssign( const SparseMatrix<MT2,true>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-            dm_(j,element->index()) -= element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose subtraction assignment of row-major dense matrices********************************
-   /*!\brief Implementation of the transpose subtraction assignment of a row-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix to be subtracted.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void subAssign( const SparseMatrix<MT2,false>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-            dm_(element->index(),i) -= element->value();
-   }
-   //**********************************************************************************************
-
-   //**Transpose Schur product assignment of column-major dense matrices***************************
-   /*!\brief Implementation of the transpose Schur product assignment of a column-major dense matrix.
+   //**Transpose Schur product assignment of matrices**********************************************
+   /*!\brief Implementation of the transpose Schur product assignment of a matrix.
    //
    // \param rhs The right-hand side dense matrix for the Schur product.
    // \return void
@@ -2002,158 +1209,18 @@ class DMatTransposer<MT,true>
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void schurAssign( const DenseMatrix<MT2,true>& rhs )
+   template< typename MT2  // Type of the right-hand side matrix
+           , bool SO2 >    // Storage order of the right-hand side matrix
+   inline void schurAssign( const Matrix<MT2,SO2>& rhs )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+      using blaze::schurAssign;
 
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      const size_t ipos( m & size_t(-2) );
-      BLAZE_INTERNAL_ASSERT( ( m - ( m % 2UL ) ) == ipos, "Invalid end calculation" );
-
-      for( size_t j=0UL; j<n; ++j ) {
-         for( size_t i=0UL; i<ipos; i+=2UL ) {
-            dm_(j,i    ) *= (~rhs)(i    ,j);
-            dm_(j,i+1UL) *= (~rhs)(i+1UL,j);
-         }
-         if( ipos < m ) {
-            dm_(j,ipos) *= (~rhs)(ipos,j);
-         }
-      }
+      schurAssign( ~dm_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
-   //**Transpose Schur product assignment of row-major dense matrices******************************
-   /*!\brief Implementation of the transpose Schur product assignment of a row-major dense matrix.
-   //
-   // \param rhs The right-hand side dense matrix for the Schur product.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side dense matrix
-   inline void schurAssign( const DenseMatrix<MT2,false>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      constexpr size_t block( BLOCK_SIZE );
-
-      const size_t m( rows() );
-      const size_t n( columns() );
-
-      for( size_t jj=0UL; jj<n; jj+=block ) {
-         const size_t jend( ( n < jj+block )?( n ):( jj+block ) );
-         for( size_t ii=0UL; ii<m; ii+=block ) {
-            const size_t iend( ( m < ii+block )?( m ):( ii+block ) );
-            for( size_t j=jj; j<jend; ++j ) {
-               for( size_t i=ii; i<iend; ++i ) {
-                  dm_(j,i) *= (~rhs)(i,j);
-               }
-            }
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose Schur product assignment of column-major sparse matrices**************************
-   /*!\brief Implementation of the transpose Schur product assignment of a column-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix for the Schur product.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void schurAssign( const SparseMatrix<MT2,true>& rhs )
-   {
-      using blaze::reset;
-
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      {
-         size_t i( 0UL );
-
-         for( RhsConstIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-            for( ; i<element->index(); ++i )
-               reset( dm_(j,i) );
-            dm_(j,i) *= element->value();
-            ++i;
-         }
-
-         for( ; i<(~rhs).rows(); ++i ) {
-            reset( dm_(j,i) );
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose Schur product assignment of row-major sparse matrices*****************************
-   /*!\brief Implementation of the transpose Schur product assignment of a row-major sparse matrix.
-   //
-   // \param rhs The right-hand side sparse matrix for the Schur product.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename MT2 >  // Type of the right-hand side sparse matrix
-   inline void schurAssign( const SparseMatrix<MT2,false>& rhs )
-   {
-      using blaze::reset;
-
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
-
-      BLAZE_INTERNAL_ASSERT( dm_.columns() == (~rhs).rows(), "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( dm_.rows() == (~rhs).columns(), "Invalid number of columns" );
-
-      using RhsConstIterator = ConstIterator_<MT2>;
-
-      for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      {
-         size_t j( 0UL );
-
-         for( RhsConstIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-            for( ; j<element->index(); ++j )
-               reset( dm_(j,i) );
-            dm_(j,i) *= element->value();
-            ++j;
-         }
-
-         for( ; j<(~rhs).columns(); ++j ) {
-            reset( dm_(j,i) );
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose multiplication assignment of dense matrices***************************************
-   // No special implementation for the transpose multiplication assignment of dense matrices.
-   //**********************************************************************************************
-
-   //**Transpose multiplication assignment of sparse matrices**************************************
-   // No special implementation for the transpose multiplication assignment of sparse matrices.
+   //**Transpose multiplication assignment of matrices*********************************************
+   // No special implementation for the transpose multiplication assignment of matrices.
    //**********************************************************************************************
 
  private:
