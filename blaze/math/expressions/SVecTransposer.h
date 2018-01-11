@@ -385,10 +385,10 @@ class SVecTransposer
    }
    //**********************************************************************************************
 
-   //**Transpose assignment of dense vectors*******************************************************
-   /*!\brief Implementation of the transpose assignment of a dense vector.
+   //**Transpose assignment of vectors*************************************************************
+   /*!\brief Implementation of the transpose assignment of a vector.
    //
-   // \param rhs The right-hand side dense vector to be assigned.
+   // \param rhs The right-hand side vector to be assigned.
    // \return void
    //
    // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -396,51 +396,14 @@ class SVecTransposer
    // in erroneous results and/or in compilation errors. Instead of using this function use the
    // assignment operator.
    */
-   template< typename VT2 >  // Type of the right-hand side dense vector
-   inline void assign( const DenseVector<VT2,TF>& rhs )
+   template< typename VT2 >  // Type of the right-hand side vector
+   inline void assign( const Vector<VT2,TF>& rhs )
    {
+      using blaze::assign;
+
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      BLAZE_INTERNAL_ASSERT( sv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      size_t nonzeros( 0UL );
-
-      for( size_t i=0UL; i<sv_.size(); ++i ) {
-         if( !isDefault( (~rhs)[i] ) ) {
-            if( nonzeros++ == sv_.capacity() )
-               sv_.reserve( extendCapacity() );
-            sv_.append( i, (~rhs)[i] );
-         }
-      }
-   }
-   //**********************************************************************************************
-
-   //**Transpose assignment of sparse vectors******************************************************
-   /*!\brief Implementation of the transpose assignment of a sparse vector.
-   //
-   // \param rhs The right-hand side sparse vector to be assigned.
-   // \return void
-   //
-   // This function must \b NOT be called explicitly! It is used internally for the performance
-   // optimized evaluation of expression templates. Calling this function explicitly might result
-   // in erroneous results and/or in compilation errors. Instead of using this function use the
-   // assignment operator.
-   */
-   template< typename VT2 >  // Type of the right-hand side sparse vector
-   inline void assign( const SparseVector<VT2,TF>& rhs )
-   {
-      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
-
-      BLAZE_INTERNAL_ASSERT( sv_.size() == (~rhs).size(), "Invalid vector sizes" );
-
-      // Using the following formulation instead of a std::copy function call of the form
-      //
-      //          end_ = std::copy( (~rhs).begin(), (~rhs).end(), begin_ );
-      //
-      // results in much less requirements on the ConstIterator type provided from the right-hand
-      // sparse vector type
-      for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
-         sv_.append( element->index(), element->value() );
+      assign( ~sv_, trans( ~rhs ) );
    }
    //**********************************************************************************************
 
