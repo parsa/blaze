@@ -375,11 +375,9 @@ class SVecTransposer
    template< typename VT2 >  // Type of the right-hand side vector
    inline void assign( const Vector<VT2,TF>& rhs )
    {
-      using blaze::assign;
-
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      assign( ~sv_, trans( ~rhs ) );
+      sv_.assign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 

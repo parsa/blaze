@@ -473,9 +473,7 @@ class SMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::assign;
-
-      assign( ~sm_, trans( ~rhs ) );
+      sm_.assign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -881,9 +879,7 @@ class SMatTransposer<MT,true>
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::assign;
-
-      assign( ~sm_, trans( ~rhs ) );
+      sm_.assign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 

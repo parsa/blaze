@@ -462,11 +462,9 @@ class DVecTransposer
    template< typename VT2 >  // Type of the right-hand side vector
    inline void assign( const Vector<VT2,TF>& rhs )
    {
-      using blaze::assign;
-
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      assign( ~dv_, trans( ~rhs ) );
+      dv_.assign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -484,11 +482,9 @@ class DVecTransposer
    template< typename VT2 >  // Type of the right-hand side vector
    inline void addAssign( const Vector<VT2,TF>& rhs )
    {
-      using blaze::addAssign;
-
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      addAssign( ~dv_, trans( ~rhs ) );
+      dv_.addAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -506,11 +502,9 @@ class DVecTransposer
    template< typename VT2 >  // Type of the right-hand side vector
    inline void subAssign( const Vector<VT2,TF>& rhs )
    {
-      using blaze::subAssign;
-
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      subAssign( ~dv_, trans( ~rhs ) );
+      dv_.subAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -528,11 +522,9 @@ class DVecTransposer
    template< typename VT2 >  // Type of the right-hand side vector
    inline void multAssign( const Vector<VT2,TF>& rhs )
    {
-      using blaze::multAssign;
-
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      multAssign( ~dv_, trans( ~rhs ) );
+      dv_.multAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -550,11 +542,9 @@ class DVecTransposer
    template< typename VT2 >  // Type of the right-hand side dense vector
    inline void divAssign( const DenseVector<VT2,TF>& rhs )
    {
-      using blaze::divAssign;
-
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
 
-      divAssign( ~dv_, trans( ~rhs ) );
+      dv_.divAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 

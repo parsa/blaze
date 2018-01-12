@@ -540,9 +540,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::assign;
-
-      assign( ~dm_, trans( ~rhs ) );
+      dm_.assign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -561,9 +559,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void addAssign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::addAssign;
-
-      addAssign( ~dm_, trans( ~rhs ) );
+      dm_.addAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -582,9 +578,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void subAssign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::subAssign;
-
-      subAssign( ~dm_, trans( ~rhs ) );
+      dm_.subAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -603,9 +597,7 @@ class DMatTransposer
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void schurAssign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::schurAssign;
-
-      schurAssign( ~dm_, trans( ~rhs ) );
+      dm_.schurAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -1080,9 +1072,7 @@ class DMatTransposer<MT,true>
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void assign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::assign;
-
-      assign( ~dm_, trans( ~rhs ) );
+      dm_.assign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -1101,9 +1091,7 @@ class DMatTransposer<MT,true>
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void addAssign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::addAssign;
-
-      addAssign( ~dm_, trans( ~rhs ) );
+      dm_.addAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -1122,9 +1110,7 @@ class DMatTransposer<MT,true>
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void subAssign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::subAssign;
-
-      subAssign( ~dm_, trans( ~rhs ) );
+      dm_.subAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
@@ -1143,9 +1129,7 @@ class DMatTransposer<MT,true>
            , bool SO2 >    // Storage order of the right-hand side matrix
    inline void schurAssign( const Matrix<MT2,SO2>& rhs )
    {
-      using blaze::schurAssign;
-
-      schurAssign( ~dm_, trans( ~rhs ) );
+      dm_.schurAssign( trans( ~rhs ) );
    }
    //**********************************************************************************************
 
