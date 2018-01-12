@@ -156,7 +156,7 @@ class SMatDMatSchurExpr
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   using CompositeType = const ResultType;
+   using CompositeType = IfTrue_< useAssign, const ResultType, const SMatDMatSchurExpr& >;
 
    //! Composite type of the left-hand side sparse matrix expression.
    using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
