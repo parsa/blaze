@@ -1015,18 +1015,19 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
 // This function returns an expression representing the specified submatrix of the given
 // outer product.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , size_t I          // Index of the first row
-        , size_t J          // Index of the first column
-        , size_t M          // Number of rows
-        , size_t N          // Number of columns
-        , typename MT >     // Matrix base type of the expression
-inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix )
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,I,M>( (~matrix).leftOperand() ) *
-          subvector<AF,J,N>( (~matrix).rightOperand() );
+   return subvector<AF,I,M>( (~matrix).leftOperand(), args... ) *
+          subvector<AF,J,N>( (~matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1047,15 +1048,16 @@ inline decltype(auto) submatrix( const VecTVecMultExpr<MT>& matrix )
 // This function returns an expression representing the specified submatrix of the given
 // outer product.
 */
-template< AlignmentFlag AF  // Alignment flag
-        , typename MT >     // Matrix base type of the expression
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
 inline decltype(auto)
-   submatrix( const VecTVecMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n )
+   submatrix( const VecTVecMultExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF>( (~matrix).leftOperand(), row, m ) *
-          subvector<AF>( (~matrix).rightOperand(), column, n );
+   return subvector<AF>( (~matrix).leftOperand(), row, m, args... ) *
+          subvector<AF>( (~matrix).rightOperand(), column, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
