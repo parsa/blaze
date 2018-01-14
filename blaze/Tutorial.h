@@ -1370,8 +1370,8 @@
 // The \c find() function can be used to check whether a specific element is contained in a sparse
 // vector. It specifically searches for the element at the given index. In case the element is
 // found, the function returns an iterator to the element. Otherwise an iterator just past the
-// last non-zero element of the compressed vector (the end() iterator) is returned. Note that the
-// returned iterator is subject to invalidation due to inserting operations via the subscript
+// last non-zero element of the compressed vector (the \c end() iterator) is returned. Note that
+// the returned iterator is subject to invalidation due to inserting operations via the subscript
 // operator, the \c set() function or the \c insert() function!
 
    \code
@@ -1415,7 +1415,7 @@
 
 // \n \subsection vector_operations_upperbound .upperBound()
 //
-// The \c upperBound function returns an iterator to the first element with an index greater then
+// The \c upperBound() function returns an iterator to the first element with an index greater then
 // the given index. In combination with the \c lowerBound() function this function can be used to
 // create a pair of iterators specifying a range of indices. Note that the returned iterator is
 // subject to invalidation due to inserting operations via the subscript operator, the \c set()
@@ -3176,11 +3176,11 @@
 // \n \subsection matrix_operations_find .find()
 //
 // The \c find() function can be used to check whether a specific element is contained in the
-// sparse matrix. It specifically searches for the element at the specified position. In case the
-// element is found, the function returns an iterator to the element. Otherwise an iterator just
-// past the last non-zero element of the according row or column (the end() iterator) is returned.
-// Note that the returned iterator is subject to invalidation due to inserting operations via the
-// function call operator, the \c set() function or the \c insert() function!
+// sparse matrix. It specifically searches for the element at the specified position. In case
+// the element is found, the function returns an iterator to the element. Otherwise an iterator
+// just past the last non-zero element of the according row or column (the \c end() iterator)
+// is returned. Note that the returned iterator is subject to invalidation due to inserting
+// operations via the function call operator, the \c set() function or the \c insert() function!
 
    \code
    using blaze::CompressedMatrix;
@@ -3202,10 +3202,10 @@
 // In case of a row-major matrix, this function returns a row iterator to the first element with
 // an index not less then the given column index. In case of a column-major matrix, the function
 // returns a column iterator to the first element with an index not less then the given row
-// index. In combination with the upperBound() function this function can be used to create a
+// index. In combination with the \c upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned iterator is subject
-// to invalidation due to inserting operations via the function call operator, the set() function
-// or the insert() function!
+// to invalidation due to inserting operations via the function call operator, the \c set()
+// function or the \c insert() function!
 
    \code
    using blaze::CompressedMatrix;
@@ -3228,10 +3228,10 @@
 // In case of a row-major matrix, this function returns a row iterator to the first element with
 // an index greater then the given column index. In case of a column-major matrix, the function
 // returns a column iterator to the first element with an index greater then the given row
-// index. In combination with the lowerBound() function this function can be used to create a
+// index. In combination with the \c lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned iterator is subject
-// to invalidation due to inserting operations via the function call operator, the set() function
-// or or the insert() function!
+// to invalidation due to inserting operations via the function call operator, the \c set()
+// function or the \c insert() function!
 
    \code
    using blaze::CompressedMatrix;
@@ -8658,7 +8658,7 @@
    B = rows( rs + C, { 2UL, 3UL, 0UL, 1UL } );
    \endcode
 
-// \n \section views_row_selections_element_access Element access
+// \n \section views_row_selections_element_access Element Access
 //
 // The elements of a row selection can be directly accessed via the function call operator:
 
@@ -9275,7 +9275,7 @@
    B = columns( cs + C, { 2UL, 3UL, 0UL, 1UL } );
    \endcode
 
-// \n \section views_column_selections_element_access Element access
+// \n \section views_column_selections_element_access Element Access
 //
 // The elements of a column selection can be directly accessed via the function call operator:
 
@@ -9763,7 +9763,7 @@
    A = band( A, -1L ) * trans( c );  // Outer product between two vectors
    \endcode
 
-// \n Previous: \ref views_columns &nbsp; &nbsp; Next: \ref arithmetic_operations
+// \n Previous: \ref views_column_selections &nbsp; &nbsp; Next: \ref arithmetic_operations
 */
 //*************************************************************************************************
 
