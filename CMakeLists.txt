@@ -40,9 +40,9 @@ target_include_directories(blaze INTERFACE
    )
 
 if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
-    message(STATUS "Blaze requires compiling in mode supporting C++14 features.")
+   message(STATUS "Blaze requires compiling in mode supporting C++14 features.")
 else()
-    target_compile_features(blaze INTERFACE cxx_std_14)
+   target_compile_features(blaze INTERFACE cxx_std_14)
 endif()
 
 
