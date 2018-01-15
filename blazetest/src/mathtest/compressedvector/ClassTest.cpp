@@ -1475,13 +1475,13 @@ void ClassTest::testIterator()
       }
    }
 
-   // Counting the number of elements via Iterator
+   // Counting the number of elements via Iterator (end-begin)
    {
-      test_ = "Iterator subtraction";
+      test_ = "Iterator subtraction (end-begin)";
 
-      const size_t number( end( vec ) - begin( vec ) );
+      const ptrdiff_t number( end( vec ) - begin( vec ) );
 
-      if( number != 2UL ) {
+      if( number != 2L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
@@ -1492,13 +1492,13 @@ void ClassTest::testIterator()
       }
    }
 
-   // Counting the number of elements via ConstIterator
+   // Counting the number of elements via ConstIterator (end-begin)
    {
-      test_ = "ConstIterator subtraction";
+      test_ = "ConstIterator subtraction (end-begin)";
 
-      const size_t number( cend( vec ) - cbegin( vec ) );
+      const ptrdiff_t number( cend( vec ) - cbegin( vec ) );
 
-      if( number != 2UL ) {
+      if( number != 2L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"

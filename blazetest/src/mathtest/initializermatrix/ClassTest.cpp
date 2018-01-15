@@ -363,13 +363,13 @@ void ClassTest::testIterator()
       }
    }
 
-   // Counting the number of elements in 0th row via Iterator
+   // Counting the number of elements in 0th row via Iterator (end-begin)
    {
-      test_ = "Iterator subtraction";
+      test_ = "Iterator subtraction (end-begin)";
 
-      const size_t number( end( mat, 0UL ) - begin( mat, 0UL ) );
+      const ptrdiff_t number( end( mat, 0UL ) - begin( mat, 0UL ) );
 
-      if( number != 4UL ) {
+      if( number != 4L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
@@ -380,19 +380,53 @@ void ClassTest::testIterator()
       }
    }
 
-   // Counting the number of elements in 1st row via ConstIterator
+   // Counting the number of elements in 0th row via Iterator (begin-end)
    {
-      test_ = "ConstIterator subtraction";
+      test_ = "Iterator subtraction (begin-end)";
 
-      const size_t number( cend( mat, 1UL ) - cbegin( mat, 1UL ) );
+      const ptrdiff_t number( begin( mat, 0UL ) - end( mat, 0UL ) );
 
-      if( number != 4UL ) {
+      if( number != -4L ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: -4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in 1st row via ConstIterator (end-begin)
+   {
+      test_ = "ConstIterator subtraction (end-begin)";
+
+      const ptrdiff_t number( cend( mat, 1UL ) - cbegin( mat, 1UL ) );
+
+      if( number != 4L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
              << " Details:\n"
              << "   Number of elements         : " << number << "\n"
              << "   Expected number of elements: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in 1st row via ConstIterator (begin-end)
+   {
+      test_ = "ConstIterator subtraction (begin-end)";
+
+      const ptrdiff_t number( cbegin( mat, 1UL ) - cend( mat, 1UL ) );
+
+      if( number != -4L ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: -4\n";
          throw std::runtime_error( oss.str() );
       }
    }

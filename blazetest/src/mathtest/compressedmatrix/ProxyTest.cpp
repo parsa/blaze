@@ -1834,13 +1834,13 @@ void ProxyTest::testIterator()
       DVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 4UL, 4 );
 
-      // Counting the number of elements via Iterator
+      // Counting the number of elements via Iterator (end-begin)
       {
          test_ = "Row-major MatrixAccessProxy::begin() and MatrixAccessProxy::end()";
 
-         const size_t number( end( mat(0,1) ) - begin( mat(0,1) ) );
+         const ptrdiff_t number( end( mat(0,1) ) - begin( mat(0,1) ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1851,13 +1851,13 @@ void ProxyTest::testIterator()
          }
       }
 
-      // Counting the number of elements via ConstIterator
+      // Counting the number of elements via ConstIterator (end-begin)
       {
          test_ = "Row-major MatrixAccessProxy::cbegin() and MatrixAccessProxy::cend()";
 
-         const size_t number( cend( mat(0,1) ) - cbegin( mat(0,1) ) );
+         const ptrdiff_t number( cend( mat(0,1) ) - cbegin( mat(0,1) ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1878,13 +1878,13 @@ void ProxyTest::testIterator()
       DMM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DM( 4UL, 4UL, 4 );
 
-      // Counting the number of elements via Iterator
+      // Counting the number of elements via Iterator (end-begin)
       {
          test_ = "Row-major MatrixAccessProxy::begin( size_t ) and MatrixAccessProxy::end( size_t )";
 
-         const size_t number( end( mat(0,1), 1UL ) - begin( mat(0,1), 1UL ) );
+         const ptrdiff_t number( end( mat(0,1), 1UL ) - begin( mat(0,1), 1UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1895,13 +1895,13 @@ void ProxyTest::testIterator()
          }
       }
 
-      // Counting the number of elements via ConstIterator
+      // Counting the number of elements via ConstIterator (end-begin)
       {
          test_ = "Row-major MatrixAccessProxy::cbegin( size_t ) and MatrixAccessProxy::cend( size_t )";
 
-         const size_t number( cend( mat(0,1), 1UL ) - cbegin( mat(0,1), 1UL ) );
+         const ptrdiff_t number( cend( mat(0,1), 1UL ) - cbegin( mat(0,1), 1UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1922,13 +1922,13 @@ void ProxyTest::testIterator()
       ODVM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DV( 4UL, 4 );
 
-      // Counting the number of elements via Iterator
+      // Counting the number of elements via Iterator (end-begin)
       {
          test_ = "Column-major MatrixAccessProxy::begin() and MatrixAccessProxy::end()";
 
-         const size_t number( end( mat(0,1) ) - begin( mat(0,1) ) );
+         const ptrdiff_t number( end( mat(0,1) ) - begin( mat(0,1) ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1939,13 +1939,13 @@ void ProxyTest::testIterator()
          }
       }
 
-      // Counting the number of elements via ConstIterator
+      // Counting the number of elements via ConstIterator (end-begin)
       {
          test_ = "Column-major MatrixAccessProxy::cbegin() and MatrixAccessProxy::cend()";
 
-         const size_t number( cend( mat(0,1) ) - cbegin( mat(0,1) ) );
+         const ptrdiff_t number( cend( mat(0,1) ) - cbegin( mat(0,1) ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1966,13 +1966,13 @@ void ProxyTest::testIterator()
       ODMM mat( 2UL, 2UL, 1UL );
       mat(0,1) = DM( 4UL, 4UL, 4 );
 
-      // Counting the number of elements via Iterator
+      // Counting the number of elements via Iterator (end-begin)
       {
          test_ = "Column-major MatrixAccessProxy::begin( size_t ) and MatrixAccessProxy::end( size_t )";
 
-         const size_t number( end( mat(0,1), 1UL ) - begin( mat(0,1), 1UL ) );
+         const ptrdiff_t number( end( mat(0,1), 1UL ) - begin( mat(0,1), 1UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1983,13 +1983,13 @@ void ProxyTest::testIterator()
          }
       }
 
-      // Counting the number of elements via ConstIterator
+      // Counting the number of elements via ConstIterator (end-begin)
       {
          test_ = "Column-major MatrixAccessProxy::cbegin( size_t ) and MatrixAccessProxy::cend( size_t )";
 
-         const size_t number( cend( mat(0,1), 1UL ) - cbegin( mat(0,1), 1UL ) );
+         const ptrdiff_t number( cend( mat(0,1), 1UL ) - cbegin( mat(0,1), 1UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
