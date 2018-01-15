@@ -1117,13 +1117,13 @@ void DenseNumericTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 0th row via Iterator
+      // Counting the number of elements in 0th row via Iterator (end-begin)
       {
-         test_ = "Row-major Iterator subtraction";
+         test_ = "Row-major Iterator subtraction (end-begin)";
 
-         const size_t number( end( sym, 0UL ) - begin( sym, 0UL ) );
+         const ptrdiff_t number( end( sym, 0UL ) - begin( sym, 0UL ) );
 
-         if( number != 3UL ) {
+         if( number != 3L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1134,19 +1134,53 @@ void DenseNumericTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st row via ConstIterator
+      // Counting the number of elements in 0th row via Iterator (begin-end)
       {
-         test_ = "Row-major ConstIterator subtraction";
+         test_ = "Row-major Iterator subtraction (begin-end)";
 
-         const size_t number( cend( sym, 1UL ) - cbegin( sym, 1UL ) );
+         const ptrdiff_t number( begin( sym, 0UL ) - end( sym, 0UL ) );
 
-         if( number != 3UL ) {
+         if( number != -3L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st row via ConstIterator (end-begin)
+      {
+         test_ = "Row-major ConstIterator subtraction (end-begin)";
+
+         const ptrdiff_t number( cend( sym, 1UL ) - cbegin( sym, 1UL ) );
+
+         if( number != 3L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st row via ConstIterator (begin-end)
+      {
+         test_ = "Row-major ConstIterator subtraction (begin-end)";
+
+         const ptrdiff_t number( cbegin( sym, 1UL ) - cend( sym, 1UL ) );
+
+         if( number != -3L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -3\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -1417,13 +1451,13 @@ void DenseNumericTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 0th column via Iterator
+      // Counting the number of elements in 0th column via Iterator (end-begin)
       {
-         test_ = "Column-major Iterator subtraction";
+         test_ = "Column-major Iterator subtraction (end-begin)";
 
-         const size_t number( end( sym, 0UL ) - begin( sym, 0UL ) );
+         const ptrdiff_t number( end( sym, 0UL ) - begin( sym, 0UL ) );
 
-         if( number != 3UL ) {
+         if( number != 3L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1434,19 +1468,53 @@ void DenseNumericTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st column via ConstIterator
+      // Counting the number of elements in 0th column via Iterator (begin-end)
       {
-         test_ = "Column-major ConstIterator subtraction";
+         test_ = "Column-major Iterator subtraction (begin-end)";
 
-         const size_t number( cend( sym, 1UL ) - cbegin( sym, 1UL ) );
+         const ptrdiff_t number( begin( sym, 0UL ) - end( sym, 0UL ) );
 
-         if( number != 3UL ) {
+         if( number != -3L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st column via ConstIterator (end-begin)
+      {
+         test_ = "Column-major ConstIterator subtraction (end-begin)";
+
+         const ptrdiff_t number( cend( sym, 1UL ) - cbegin( sym, 1UL ) );
+
+         if( number != 3L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st column via ConstIterator (begin-end)
+      {
+         test_ = "Column-major ConstIterator subtraction (begin-end)";
+
+         const ptrdiff_t number( cbegin( sym, 1UL ) - cend( sym, 1UL ) );
+
+         if( number != -3L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -3\n";
             throw std::runtime_error( oss.str() );
          }
       }
