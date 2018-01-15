@@ -72,6 +72,7 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
@@ -599,7 +600,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST s
       }
    }
 
-   decltype(auto) left( derestrict( ~mat ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
 
    smpAssign( left, left * scalar );
 
@@ -663,7 +664,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST s
       }
    }
 
-   decltype(auto) left( derestrict( ~mat ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
 
    smpAssign( left, left / scalar );
 

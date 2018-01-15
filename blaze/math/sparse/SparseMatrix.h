@@ -77,6 +77,7 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/And.h>
@@ -347,7 +348,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST 
    }
    else
    {
-      decltype(auto) left( derestrict( ~mat ) );
+      BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
 
       const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
       for( size_t i=0UL; i<iend; ++i ) {
@@ -426,7 +427,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST 
                               , DivTrait_< UnderlyingNumeric_<MT>, ST > >
                          , ST >;
 
-   decltype(auto) left( derestrict( ~mat ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
 
    if( IsInvertible<ScalarType>::value ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );

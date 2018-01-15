@@ -92,6 +92,7 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
+#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/And.h>
@@ -880,7 +881,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
@@ -943,7 +944,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1004,7 +1005,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsSparseMatrix<MT2>::value ) {
       reset();
@@ -1072,7 +1073,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -1138,7 +1139,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1196,7 +1197,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -1262,7 +1263,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1319,7 +1320,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
@@ -1386,7 +1387,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
@@ -1650,7 +1651,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1696,7 +1697,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4086,7 +4087,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
@@ -4148,7 +4149,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -4208,7 +4209,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsSparseMatrix<MT2>::value ) {
       reset();
@@ -4275,7 +4276,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -4340,7 +4341,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4397,7 +4398,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -4462,7 +4463,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4518,7 +4519,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
@@ -4584,7 +4585,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsSparseMatrix<SchurType>::value ) {
       reset();
@@ -4850,7 +4851,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4895,7 +4896,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       }
    }
 
-   auto left( derestrict( *this ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    smpAssign( left, tmp );
 

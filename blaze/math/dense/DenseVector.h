@@ -59,6 +59,7 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -395,7 +396,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST s
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
 
    smpAssign( left, left * scalar );
 
@@ -457,7 +458,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST s
       }
    }
 
-   decltype(auto) left( derestrict( ~vec ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
 
    smpAssign( left, left / scalar );
 

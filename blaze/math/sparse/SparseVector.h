@@ -62,6 +62,7 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
@@ -218,7 +219,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST 
    }
    else
    {
-      decltype(auto) left( derestrict( ~vec ) );
+      BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
 
       const auto last( left.end() );
       for( auto element=left.begin(); element!=last; ++element ) {
@@ -292,7 +293,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST 
                               , DivTrait_< UnderlyingNumeric_<VT>, ST > >
                          , ST >;
 
-   decltype(auto) left( derestrict( ~vec ) );
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
 
    if( IsInvertible<ScalarType>::value ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );
