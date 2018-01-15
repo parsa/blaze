@@ -1501,14 +1501,14 @@ void SparseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st column via Iterator
+      // Counting the number of elements in 1st column via Iterator (end-begin)
       {
-         test_ = "Row-major Iterator subtraction";
+         test_ = "Row-major Iterator subtraction (end-begin)";
 
          CT cs = blaze::columns( mat_, { 1UL } );
-         const size_t number( end( cs, 0UL ) - begin( cs, 0UL ) );
+         const ptrdiff_t number( end( cs, 0UL ) - begin( cs, 0UL ) );
 
-         if( number != 1UL ) {
+         if( number != 1L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1519,14 +1519,14 @@ void SparseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd column via ConstIterator
+      // Counting the number of elements in 2nd column via ConstIterator (end-begin)
       {
-         test_ = "Row-major ConstIterator subtraction";
+         test_ = "Row-major ConstIterator subtraction (end-begin)";
 
          CT cs = blaze::columns( mat_, { 2UL } );
-         const size_t number( cend( cs, 0UL ) - cbegin( cs, 0UL ) );
+         const ptrdiff_t number( cend( cs, 0UL ) - cbegin( cs, 0UL ) );
 
-         if( number != 2UL ) {
+         if( number != 2L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1812,14 +1812,14 @@ void SparseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st column via Iterator
+      // Counting the number of elements in 1st column via Iterator (end-begin)
       {
-         test_ = "Column-major Iterator subtraction";
+         test_ = "Column-major Iterator subtraction (end-begin)";
 
          OCT cs = blaze::columns( tmat_, { 1UL } );
-         const size_t number( end( cs, 0UL ) - begin( cs, 0UL ) );
+         const ptrdiff_t number( end( cs, 0UL ) - begin( cs, 0UL ) );
 
-         if( number != 1UL ) {
+         if( number != 1L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1830,14 +1830,14 @@ void SparseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd column via ConstIterator
+      // Counting the number of elements in 2nd column via ConstIterator (end-begin)
       {
-         test_ = "Column-major ConstIterator subtraction";
+         test_ = "Column-major ConstIterator subtraction (end-begin)";
 
          OCT cs = blaze::columns( tmat_, { 2UL } );
-         const size_t number( cend( cs, 0UL ) - cbegin( cs, 0UL ) );
+         const ptrdiff_t number( cend( cs, 0UL ) - cbegin( cs, 0UL ) );
 
-         if( number != 2UL ) {
+         if( number != 2L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"

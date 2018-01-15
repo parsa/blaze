@@ -2467,14 +2467,14 @@ void DenseTest::testIterator()
       }
    }
 
-   // Counting the number of elements in first half of the vector via Iterator
+   // Counting the number of elements in first half of the vector via Iterator (end-begin)
    {
-      test_ = "Iterator subtraction";
+      test_ = "Iterator subtraction (end-begin)";
 
       ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL } );
-      const size_t number( end( e ) - begin( e ) );
+      const ptrdiff_t number( end( e ) - begin( e ) );
 
-      if( number != 5UL ) {
+      if( number != 5L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
@@ -2485,20 +2485,56 @@ void DenseTest::testIterator()
       }
    }
 
-   // Counting the number of elements in second half of the vector via ConstIterator
+   // Counting the number of elements in first half of the vector via Iterator (begin-end)
    {
-      test_ = "ConstIterator subtraction";
+      test_ = "Iterator subtraction (begin-end)";
+
+      ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL } );
+      const ptrdiff_t number( begin( e ) - end( e ) );
+
+      if( number != -5L ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: -5\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in second half of the vector via ConstIterator (end-begin)
+   {
+      test_ = "ConstIterator subtraction (end-begin)";
 
       ET e = blaze::elements( vec_, { 5UL, 6UL, 7UL } );
-      const size_t number( cend( e ) - cbegin( e ) );
+      const ptrdiff_t number( cend( e ) - cbegin( e ) );
 
-      if( number != 3UL ) {
+      if( number != 3L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
              << " Details:\n"
              << "   Number of elements         : " << number << "\n"
              << "   Expected number of elements: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in second half of the vector via ConstIterator (begin-end)
+   {
+      test_ = "ConstIterator subtraction (begin-end)";
+
+      ET e = blaze::elements( vec_, { 5UL, 6UL, 7UL } );
+      const ptrdiff_t number( cbegin( e ) - cend( e ) );
+
+      if( number != -3L ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: -3\n";
          throw std::runtime_error( oss.str() );
       }
    }

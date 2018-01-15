@@ -1779,14 +1779,14 @@ void SparseTest::testIterator()
       }
    }
 
-   // Counting the number of elements in first half of the vector via Iterator
+   // Counting the number of elements in first half of the vector via Iterator (end-begin)
    {
-      test_ = "Iterator subtraction";
+      test_ = "Iterator subtraction (end-begin)";
 
       ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL } );
-      const size_t number( end( e ) - begin( e ) );
+      const ptrdiff_t number( end( e ) - begin( e ) );
 
-      if( number != 2UL ) {
+      if( number != 2L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
@@ -1797,14 +1797,14 @@ void SparseTest::testIterator()
       }
    }
 
-   // Counting the number of elements in second half of the vector via ConstIterator
+   // Counting the number of elements in second half of the vector via ConstIterator (end-begin)
    {
-      test_ = "ConstIterator subtraction";
+      test_ = "ConstIterator subtraction (end-begin)";
 
       ET e = blaze::elements( vec_, { 4UL, 5UL, 6UL, 7UL } );
-      const size_t number( cend( e ) - cbegin( e ) );
+      const ptrdiff_t number( cend( e ) - cbegin( e ) );
 
-      if( number != 2UL ) {
+      if( number != 2L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"

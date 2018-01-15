@@ -1040,14 +1040,14 @@ void DenseSymmetricTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st row via Iterator
+      // Counting the number of elements in 1st row via Iterator (end-begin)
       {
-         test_ = "Row-major Iterator subtraction";
+         test_ = "Row-major Iterator subtraction (end-begin)";
 
          RT rs = blaze::rows( mat_, { 1UL } );
-         const size_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
+         const ptrdiff_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1058,20 +1058,56 @@ void DenseSymmetricTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd row via ConstIterator
+      // Counting the number of elements in 1st row via Iterator (begin-end)
       {
-         test_ = "Row-major ConstIterator subtraction";
+         test_ = "Row-major Iterator subtraction (begin-end)";
+
+         RT rs = blaze::rows( mat_, { 1UL } );
+         const ptrdiff_t number( begin( rs, 0UL ) - end( rs, 0UL ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd row via ConstIterator (end-begin)
+      {
+         test_ = "Row-major ConstIterator subtraction (end-begin)";
 
          RT rs = blaze::rows( mat_, { 2UL } );
-         const size_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
+         const ptrdiff_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd row via ConstIterator (begin-end)
+      {
+         test_ = "Row-major ConstIterator subtraction (begin-end)";
+
+         RT rs = blaze::rows( mat_, { 2UL } );
+         const ptrdiff_t number( cbegin( rs, 0UL ) - cend( rs, 0UL ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -1414,14 +1450,14 @@ void DenseSymmetricTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st row via Iterator
+      // Counting the number of elements in 1st row via Iterator (end-begin)
       {
-         test_ = "Column-major Iterator subtraction";
+         test_ = "Column-major Iterator subtraction (end-begin)";
 
          ORT rs = blaze::rows( tmat_, { 1UL } );
-         const size_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
+         const ptrdiff_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1432,20 +1468,56 @@ void DenseSymmetricTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd row via ConstIterator
+      // Counting the number of elements in 1st row via Iterator (begin-end)
       {
-         test_ = "Column-major ConstIterator subtraction";
+         test_ = "Column-major Iterator subtraction (begin-end)";
+
+         ORT rs = blaze::rows( tmat_, { 1UL } );
+         const ptrdiff_t number( begin( rs, 0UL ) - end( rs, 0UL ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd row via ConstIterator (end-begin)
+      {
+         test_ = "Column-major ConstIterator subtraction (end-begin)";
 
          ORT rs = blaze::rows( tmat_, { 2UL } );
-         const size_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
+         const ptrdiff_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd row via ConstIterator (begin-end)
+      {
+         test_ = "Column-major ConstIterator subtraction (begin-end)";
+
+         ORT rs = blaze::rows( tmat_, { 2UL } );
+         const ptrdiff_t number( cbegin( rs, 0UL ) - cend( rs, 0UL ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
             throw std::runtime_error( oss.str() );
          }
       }

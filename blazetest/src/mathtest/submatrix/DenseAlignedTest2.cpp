@@ -1228,14 +1228,14 @@ void DenseAlignedTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 0th row of a 8x16 matrix via Iterator
+      // Counting the number of elements in 0th row of a 8x16 matrix via Iterator (end-begin)
       {
-         test_ = "Row-major Iterator subtraction";
+         test_ = "Row-major Iterator subtraction (end-begin)";
 
          ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
-         const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
+         const ptrdiff_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
-         if( number != 16UL ) {
+         if( number != 16L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1246,20 +1246,56 @@ void DenseAlignedTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 15th row of a 16x8 matrix via ConstIterator
+      // Counting the number of elements in 0th row of a 8x16 matrix via Iterator (begin-end)
       {
-         test_ = "Row-major ConstIterator subtraction";
+         test_ = "Row-major Iterator subtraction (begin-end)";
+
+         ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
+         const ptrdiff_t number( begin( sm, 0UL ) - end( sm, 0UL ) );
+
+         if( number != -16L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -16\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 15th row of a 16x8 matrix via ConstIterator (end-begin)
+      {
+         test_ = "Row-major ConstIterator subtraction (end-begin)";
 
          ASMT sm = submatrix<aligned>( mat1_, 16UL, 8UL, 16UL, 8UL );
-         const size_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
+         const ptrdiff_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
 
-         if( number != 8UL ) {
+         if( number != 8L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 8\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 15th row of a 16x8 matrix via ConstIterator (begin-end)
+      {
+         test_ = "Row-major ConstIterator subtraction (begin-end)";
+
+         ASMT sm = submatrix<aligned>( mat1_, 16UL, 8UL, 16UL, 8UL );
+         const ptrdiff_t number( cbegin( sm, 15UL ) - cend( sm, 15UL ) );
+
+         if( number != -8L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -8\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -1551,14 +1587,14 @@ void DenseAlignedTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 0th column of a 16x8 matrix via Iterator
+      // Counting the number of elements in 0th column of a 16x8 matrix via Iterator (end-begin)
       {
-         test_ = "Column-major Iterator subtraction";
+         test_ = "Column-major Iterator subtraction (end-begin)";
 
          AOSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
-         const size_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
+         const ptrdiff_t number( end( sm, 0UL ) - begin( sm, 0UL ) );
 
-         if( number != 16UL ) {
+         if( number != 16L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -1569,20 +1605,56 @@ void DenseAlignedTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 15th column of a 8x16 matrix via ConstIterator
+      // Counting the number of elements in 0th column of a 16x8 matrix via Iterator (begin-end)
       {
-         test_ = "Column-major ConstIterator subtraction";
+         test_ = "Column-major Iterator subtraction (begin-end)";
+
+         AOSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         const ptrdiff_t number( begin( sm, 0UL ) - end( sm, 0UL ) );
+
+         if( number != -16L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -16\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 15th column of a 8x16 matrix via ConstIterator (end-begin)
+      {
+         test_ = "Column-major ConstIterator subtraction (end-begin)";
 
          AOSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
-         const size_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
+         const ptrdiff_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
 
-         if( number != 8UL ) {
+         if( number != 8L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 8\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 15th column of a 8x16 matrix via ConstIterator (begin-end)
+      {
+         test_ = "Column-major ConstIterator subtraction (begin-end)";
+
+         AOSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
+         const ptrdiff_t number( cbegin( sm, 15UL ) - cend( sm, 15UL ) );
+
+         if( number != -8L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -8\n";
             throw std::runtime_error( oss.str() );
          }
       }

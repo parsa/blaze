@@ -5233,14 +5233,14 @@ void DenseTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st lower band via Iterator
+      // Counting the number of elements in 1st lower band via Iterator (end-begin)
       {
-         test_ = "Row-major Iterator subtraction";
+         test_ = "Row-major Iterator subtraction (end-begin)";
 
          BT band1 = blaze::band( mat_, -1L );
-         const size_t number( end( band1 ) - begin( band1 ) );
+         const ptrdiff_t number( end( band1 ) - begin( band1 ) );
 
-         if( number != 3UL ) {
+         if( number != 3L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -5251,20 +5251,56 @@ void DenseTest::testIterator()
          }
       }
 
-      // Counting the number of elements on the digaonal via ConstIterator
+      // Counting the number of elements in 1st lower band via Iterator (begin-end)
       {
-         test_ = "Row-major ConstIterator subtraction";
+         test_ = "Row-major Iterator subtraction (begin-end)";
+
+         BT band1 = blaze::band( mat_, -1L );
+         const ptrdiff_t number( begin( band1 ) - end( band1 ) );
+
+         if( number != -3L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements on the digaonal via ConstIterator (end-begin)
+      {
+         test_ = "Row-major ConstIterator subtraction (end-begin)";
 
          BT band0 = blaze::band( mat_, 0L );
-         const size_t number( cend( band0 ) - cbegin( band0 ) );
+         const ptrdiff_t number( cend( band0 ) - cbegin( band0 ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements on the digaonal via ConstIterator (begin-end)
+      {
+         test_ = "Row-major ConstIterator subtraction (begin-end)";
+
+         BT band0 = blaze::band( mat_, 0L );
+         const ptrdiff_t number( cbegin( band0 ) - cend( band0 ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -5607,14 +5643,14 @@ void DenseTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st upper band via Iterator
+      // Counting the number of elements in 1st upper band via Iterator (end-begin)
       {
-         test_ = "Column-major Iterator subtraction";
+         test_ = "Column-major Iterator subtraction (end-begin)";
 
          OBT band1 = blaze::band( tmat_, 1L );
-         const size_t number( end( band1 ) - begin( band1 ) );
+         const ptrdiff_t number( end( band1 ) - begin( band1 ) );
 
-         if( number != 3UL ) {
+         if( number != 3L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -5625,20 +5661,56 @@ void DenseTest::testIterator()
          }
       }
 
-      // Counting the number of elements on the diagonal via ConstIterator
+      // Counting the number of elements in 1st upper band via Iterator (begin-end)
       {
-         test_ = "Column-major ConstIterator subtraction";
+         test_ = "Column-major Iterator subtraction (begin-end)";
+
+         OBT band1 = blaze::band( tmat_, 1L );
+         const ptrdiff_t number( begin( band1 ) - end( band1 ) );
+
+         if( number != -3L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements on the diagonal via ConstIterator (end-begin)
+      {
+         test_ = "Column-major ConstIterator subtraction (end-begin)";
 
          OBT band0 = blaze::band( tmat_, 0L );
-         const size_t number( cend( band0 ) - cbegin( band0 ) );
+         const ptrdiff_t number( cend( band0 ) - cbegin( band0 ) );
 
-         if( number != 4UL ) {
+         if( number != 4L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
                 << " Details:\n"
                 << "   Number of elements         : " << number << "\n"
                 << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements on the diagonal via ConstIterator (begin-end)
+      {
+         test_ = "Column-major ConstIterator subtraction (begin-end)";
+
+         OBT band0 = blaze::band( tmat_, 0L );
+         const ptrdiff_t number( cbegin( band0 ) - cend( band0 ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
             throw std::runtime_error( oss.str() );
          }
       }

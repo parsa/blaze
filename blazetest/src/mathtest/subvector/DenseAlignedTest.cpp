@@ -1885,14 +1885,14 @@ void DenseAlignedTest::testIterator()
       }
    }
 
-   // Counting the number of elements in first half of the vector via Iterator
+   // Counting the number of elements in first half of the vector via Iterator (end-begin)
    {
-      test_ = "Iterator subtraction";
+      test_ = "Iterator subtraction (end-begin)";
 
       ASVT sv = subvector<aligned>( vec1_, 0UL, 16UL );
-      const size_t number( end( sv ) - begin( sv ) );
+      const ptrdiff_t number( end( sv ) - begin( sv ) );
 
-      if( number != 16UL ) {
+      if( number != 16L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
@@ -1903,20 +1903,56 @@ void DenseAlignedTest::testIterator()
       }
    }
 
-   // Counting the number of elements in second half of the vector via ConstIterator
+   // Counting the number of elements in first half of the vector via Iterator (begin-end)
    {
-      test_ = "ConstIterator subtraction";
+      test_ = "Iterator subtraction (begin-end)";
+
+      ASVT sv = subvector<aligned>( vec1_, 0UL, 16UL );
+      const ptrdiff_t number( begin( sv ) - end( sv ) );
+
+      if( number != -16L ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: -16\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in second half of the vector via ConstIterator (end-begin)
+   {
+      test_ = "ConstIterator subtraction (end-begin)";
 
       ASVT sv = subvector<aligned>( vec1_, 16UL, 48UL );
-      const size_t number( cend( sv ) - cbegin( sv ) );
+      const ptrdiff_t number( cend( sv ) - cbegin( sv ) );
 
-      if( number != 48UL ) {
+      if( number != 48L ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid number of elements detected\n"
              << " Details:\n"
              << "   Number of elements         : " << number << "\n"
              << "   Expected number of elements: 48\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Counting the number of elements in second half of the vector via ConstIterator (begin-end)
+   {
+      test_ = "ConstIterator subtraction (begin-end)";
+
+      ASVT sv = subvector<aligned>( vec1_, 16UL, 48UL );
+      const ptrdiff_t number( cbegin( sv ) - cend( sv ) );
+
+      if( number != -48L ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid number of elements detected\n"
+             << " Details:\n"
+             << "   Number of elements         : " << number << "\n"
+             << "   Expected number of elements: -48\n";
          throw std::runtime_error( oss.str() );
       }
    }

@@ -3716,14 +3716,14 @@ void SparseTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st lower band via Iterator
+      // Counting the number of elements in 1st lower band via Iterator (end-begin)
       {
-         test_ = "Row-major Iterator subtraction";
+         test_ = "Row-major Iterator subtraction (end-begin)";
 
          BT band1 = blaze::band( mat_, -1L );
-         const size_t number( end( band1 ) - begin( band1 ) );
+         const ptrdiff_t number( end( band1 ) - begin( band1 ) );
 
-         if( number != 1UL ) {
+         if( number != 1L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -3734,14 +3734,14 @@ void SparseTest::testIterator()
          }
       }
 
-      // Counting the number of elements on the digaonal via ConstIterator
+      // Counting the number of elements on the digaonal via ConstIterator (end-begin)
       {
-         test_ = "Row-major ConstIterator subtraction";
+         test_ = "Row-major ConstIterator subtraction (end-begin)";
 
          BT band0 = blaze::band( mat_, 0L );
-         const size_t number( cend( band0 ) - cbegin( band0 ) );
+         const ptrdiff_t number( cend( band0 ) - cbegin( band0 ) );
 
-         if( number != 2UL ) {
+         if( number != 2L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -4027,14 +4027,14 @@ void SparseTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st upper band via Iterator
+      // Counting the number of elements in 1st upper band via Iterator (end-begin)
       {
-         test_ = "Column-major Iterator subtraction";
+         test_ = "Column-major Iterator subtraction (end-begin)";
 
          OBT band1 = blaze::band( tmat_, 1L );
-         const size_t number( end( band1 ) - begin( band1 ) );
+         const ptrdiff_t number( end( band1 ) - begin( band1 ) );
 
-         if( number != 1UL ) {
+         if( number != 1L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
@@ -4045,14 +4045,14 @@ void SparseTest::testIterator()
          }
       }
 
-      // Counting the number of elements on the digaonal via ConstIterator
+      // Counting the number of elements on the digaonal via ConstIterator (end-begin)
       {
-         test_ = "Column-major ConstIterator subtraction";
+         test_ = "Column-major ConstIterator subtraction (end-begin)";
 
          OBT band0 = blaze::band( tmat_, 0L );
-         const size_t number( cend( band0 ) - cbegin( band0 ) );
+         const ptrdiff_t number( cend( band0 ) - cbegin( band0 ) );
 
-         if( number != 2UL ) {
+         if( number != 2L ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid number of elements detected\n"
