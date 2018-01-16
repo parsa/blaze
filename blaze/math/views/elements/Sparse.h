@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>

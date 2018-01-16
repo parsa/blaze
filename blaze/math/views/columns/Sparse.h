@@ -1394,7 +1394,7 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 inline void Columns<MT,true,false,SF,CCAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( !check || !isDefault( value ) )
+   if( !check || !isDefault<strict>( value ) )
       matrix_.insert( i, idx(j), value );
 }
 /*! \endcond */
@@ -3800,7 +3800,7 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,false,false,CCAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( !check || !isDefault( value ) )
+   if( !check || !isDefault<strict>( value ) )
       matrix_.insert( i, idx(j), value );
 }
 /*! \endcond */
@@ -5483,7 +5483,7 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,false,true,CCAs...>::append( size_t i, size_t j, const ElementType& value, bool check )
 {
-   if( !check || !isDefault( value ) )
+   if( !check || !isDefault<strict>( value ) )
       matrix_.insert( idx(j), i, value );
 }
 /*! \endcond */

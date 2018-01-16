@@ -1707,7 +1707,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::append( size_t i, size_t j, co
    if( column() + columns() == matrix_.columns() ) {
       matrix_.append( row() + i, column() + j, value, check );
    }
-   else if( !check || !isDefault( value ) ) {
+   else if( !check || !isDefault<strict>( value ) ) {
       matrix_.insert( row() + i, column() + j, value );
    }
 }
@@ -4104,7 +4104,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::append( size_t i, size_t j, con
    if( row() + rows() == matrix_.rows() ) {
       matrix_.append( row() + i, column() + j, value, check );
    }
-   else if( !check || !isDefault( value ) ) {
+   else if( !check || !isDefault<strict>( value ) ) {
       matrix_.insert( row() + i, column() + j, value );
    }
 }

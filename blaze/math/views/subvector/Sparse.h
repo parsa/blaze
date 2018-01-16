@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/View.h>
 #include <blaze/math/InitializerList.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/SparseElement.h>
@@ -1519,7 +1520,7 @@ inline void Subvector<VT,AF,TF,false,CSAs...>::append( size_t index, const Eleme
 {
    if( offset() + size() == vector_.size() )
       vector_.append( offset() + index, value, check );
-   else if( !check || !isDefault( value ) )
+   else if( !check || !isDefault<strict>( value ) )
       vector_.insert( offset() + index, value );
 }
 /*! \endcond */

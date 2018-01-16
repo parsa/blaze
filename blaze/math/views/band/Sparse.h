@@ -54,6 +54,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/View.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/math/traits/AddTrait.h>
@@ -1546,7 +1547,7 @@ template< typename MT          // Type of the sparse matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 inline void Band<MT,TF,false,false,CBAs...>::append( size_t index, const ElementType& value, bool check )
 {
-   if( !check || !isDefault( value ) )
+   if( !check || !isDefault<strict>( value ) )
       matrix_.insert( row()+index, column()+index, value );
 }
 /*! \endcond */
@@ -2411,7 +2412,7 @@ class Band<MT,TF,false,true,CBAs...>
 
       for( size_t i=0UL; i<n; ++i ) {
          tmp = row( A, rhs.row()+i, unchecked ) * column( B, rhs.column()+i, unchecked );
-         if( !isDefault( tmp ) ) {
+         if( !isDefault<strict>( tmp ) ) {
             if( (~lhs).capacity() <= nonzeros ) {
                (~lhs).reserve( min( max( 2UL*(~lhs).capacity(), 7UL ), (~lhs).size() ) );
             }
