@@ -48,8 +48,8 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/shims/Square.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsInvertible.h>
@@ -497,7 +497,7 @@ const ElementType_<VT> sqrLength( const SparseVector<VT,TF>& sv )
 
    ElementType sum( 0 );
    for( ConstIterator element=(~sv).begin(); element!=(~sv).end(); ++element )
-      sum += sq( element->value() );
+      sum += pow2( element->value() );
    return sum;
 }
 //*************************************************************************************************

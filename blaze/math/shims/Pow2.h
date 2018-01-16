@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/shims/Square.h
-//  \brief Header file for the square shim
+//  \file blaze/math/shims/Pow2.h
+//  \brief Header file for the pow2 shim
 //
 //  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
 //
@@ -32,15 +32,14 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SHIMS_SQUARE_H_
-#define _BLAZE_MATH_SHIMS_SQUARE_H_
+#ifndef _BLAZE_MATH_SHIMS_POW2_H_
+#define _BLAZE_MATH_SHIMS_POW2_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/system/Inline.h>
 
 
@@ -48,7 +47,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  SQUARE SHIM
+//  POW2 SHIM
 //
 //=================================================================================================
 
@@ -59,12 +58,11 @@ namespace blaze {
 // \param a The value/object to be squared.
 // \return The result of the square operation.
 //
-// The \a sq shim represents an abstract interface for squaring a value/object of any given
+// The \a pow2 shim represents an abstract interface for squaring a value/object of any given
 // data type. For values of built-in data type this results in a plain multiplication.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr MultExprTrait_<T,T> sq( const T& a )
-   noexcept( noexcept( a * a ) )
+BLAZE_ALWAYS_INLINE constexpr decltype(auto) pow2( const T& a ) noexcept( noexcept( a * a ) )
 {
    return a * a;
 }

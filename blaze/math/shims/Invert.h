@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/shims/Square.h>
+#include <blaze/math/shims/Pow2.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
@@ -152,7 +152,7 @@ BLAZE_ALWAYS_INLINE constexpr long double inv( long double a ) noexcept
 */
 BLAZE_ALWAYS_INLINE constexpr complex<float> inv( const complex<float>& a ) noexcept
 {
-   const float abs( sq( real(a) ) + sq( imag(a) ) );
+   const float abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0F, "Division by zero detected" );
 
    const float iabs( 1.0F / abs );
@@ -176,7 +176,7 @@ BLAZE_ALWAYS_INLINE constexpr complex<float> inv( const complex<float>& a ) noex
 */
 BLAZE_ALWAYS_INLINE constexpr complex<double> inv( const complex<double>& a ) noexcept
 {
-   const double abs( sq( real(a) ) + sq( imag(a) ) );
+   const double abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0, "Division by zero detected" );
 
    const double iabs( 1.0 / abs );
@@ -200,7 +200,7 @@ BLAZE_ALWAYS_INLINE constexpr complex<double> inv( const complex<double>& a ) no
 */
 BLAZE_ALWAYS_INLINE constexpr complex<long double> inv( const complex<long double>& a ) noexcept
 {
-   const long double abs( sq( real(a) ) + sq( imag(a) ) );
+   const long double abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0L, "Division by zero detected" );
 
    const long double iabs( 1.0L / abs );

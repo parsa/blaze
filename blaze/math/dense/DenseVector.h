@@ -50,8 +50,8 @@
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/shims/Square.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
@@ -666,7 +666,7 @@ const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv )
 
    ElementType sum( 0 );
    for( size_t i=0UL; i<(~dv).size(); ++i )
-      sum += sq( (~dv)[i] );
+      sum += pow2( (~dv)[i] );
    return sum;
 }
 //*************************************************************************************************

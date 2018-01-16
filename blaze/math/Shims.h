@@ -78,6 +78,7 @@
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/shims/Log10.h>
 #include <blaze/math/shims/Pow.h>
+#include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Round.h>
@@ -85,7 +86,6 @@
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/shims/Square.h>
 #include <blaze/math/shims/Tan.h>
 #include <blaze/math/shims/Tanh.h>
 #include <blaze/math/shims/Trunc.h>
