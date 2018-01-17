@@ -85,6 +85,7 @@
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Pow2.h>
+#include <blaze/math/functors/Pow3.h>
 #include <blaze/math/functors/Real.h>
 #include <blaze/math/functors/Round.h>
 #include <blaze/math/functors/SchurAssign.h>

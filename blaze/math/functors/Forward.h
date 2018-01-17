@@ -89,6 +89,7 @@ struct MultAssign;
 struct Noop;
 struct Pow;
 struct Pow2;
+struct Pow3;
 struct Real;
 struct Round;
 struct SchurAssign;
