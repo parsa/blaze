@@ -71,6 +71,8 @@
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/shims/Log10.h>
 #include <blaze/math/shims/Pow.h>
+#include <blaze/math/shims/Pow2.h>
+#include <blaze/math/shims/Pow3.h>
 #include <blaze/math/shims/Round.h>
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
@@ -220,6 +222,10 @@ class OperationTest : private blaze::NonCopyable
    void testHypot         ( blaze::FalseType );
    void testPow           ( blaze::TrueType  );
    void testPow           ( blaze::FalseType );
+   void testPow2          ( blaze::TrueType  );
+   void testPow2          ( blaze::FalseType );
+   void testPow3          ( blaze::TrueType  );
+   void testPow3          ( blaze::FalseType );
 
    void testFloor         ( blaze::TrueType  );
    void testFloor         ( blaze::FalseType );
@@ -365,6 +371,8 @@ OperationTest<T>::OperationTest()
    testInvCbrt       ( blaze::HasSIMDInvCbrt< T >() );
    testHypot         ( blaze::HasSIMDHypot  <T,T>() );
    testPow           ( blaze::HasSIMDPow    <T,T>() );
+   testPow2          ( blaze::HasSIMDMult   <T,T>() );
+   testPow3          ( blaze::HasSIMDMult   <T,T>() );
 
    testFloor         ( blaze::HasSIMDFloor  < T >() );
    testCeil          ( blaze::HasSIMDCeil   < T >() );
@@ -1273,6 +1281,102 @@ void OperationTest<T>::testPow( blaze::TrueType )
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testPow( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the pow2 operation.
+//
+// \return void
+// \exception std::runtime_error Error in pow2 computation detected.
+//
+// This function tests the pow2 operation by comparing the results of a vectorized and a
+// scalar pow2 operation. In case any error is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testPow2( blaze::TrueType )
+{
+   using blaze::pow2;
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Pow2 operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = pow2( a_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, pow2( loada( a_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the pow2 operation.
+//
+// \return void
+//
+// This function is called in case the pow2 operation is not available for the given data type
+// \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testPow2( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the pow3 operation.
+//
+// \return void
+// \exception std::runtime_error Error in pow3 computation detected.
+//
+// This function tests the pow3 operation by comparing the results of a vectorized and a
+// scalar pow3 operation. In case any error is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testPow3( blaze::TrueType )
+{
+   using blaze::pow3;
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Pow3 operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = pow3( a_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, pow3( loada( a_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the pow3 operation.
+//
+// \return void
+//
+// This function is called in case the pow3 operation is not available for the given data type
+// \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testPow3( blaze::FalseType )
 {}
 //*************************************************************************************************
 
