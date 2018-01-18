@@ -54,6 +54,7 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -67,6 +68,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -1457,7 +1459,7 @@ inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const
 // \ingroup sparse_matrix
 //
 // \param sm The input matrix.
-// \param exp The exponent.
+// \param exp The scalar exponent.
 // \return The exponential value of each non-zero element of \a sm.
 //
 // The \a pow() function computes the exponential value for each non-zero element of the input
@@ -1472,14 +1474,15 @@ inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
-        , typename ET  // Type of the exponent
-        , typename = EnableIf_< IsNumeric<ET> > >
-inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ET exp )
+        , typename ST  // Type of the scalar exponent
+        , typename = EnableIf_< IsNumeric<ST> > >
+inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,UnaryPow<ET>,SO>;
-   return ReturnType( ~sm, UnaryPow<ET>( exp ) );
+   using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, ST >;
+   using ReturnType = const SMatMapExpr<MT,UnaryPow<ScalarType>,SO>;
+   return ReturnType( ~sm, UnaryPow<ScalarType>( exp ) );
 }
 //*************************************************************************************************
 

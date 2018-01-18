@@ -54,12 +54,14 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -1577,7 +1579,7 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
 // \ingroup dense_vector
 //
 // \param dv The input vector.
-// \param exp The exponent.
+// \param exp The scalar exponent.
 // \return The exponential value of each single element of \a dv.
 //
 // The \a pow() function computes the exponential value for each element of the input vector
@@ -1592,14 +1594,15 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
 */
 template< typename VT  // Type of the dense vector
         , bool TF      // Transpose flag
-        , typename ET  // Type of the exponent
-        , typename = EnableIf_< IsNumeric<ET> > >
-inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ET exp )
+        , typename ST  // Type of the scalar exponent
+        , typename = EnableIf_< IsNumeric<ST> > >
+inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,UnaryPow<ET>,TF>;
-   return ReturnType( ~dv, UnaryPow<ET>( exp ) );
+   using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, ST >;
+   using ReturnType = const DVecMapExpr<VT,UnaryPow<ScalarType>,TF>;
+   return ReturnType( ~dv, UnaryPow<ScalarType>( exp ) );
 }
 //*************************************************************************************************
 

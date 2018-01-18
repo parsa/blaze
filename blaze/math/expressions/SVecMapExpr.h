@@ -54,11 +54,13 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
+#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -1334,7 +1336,7 @@ inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const
 // \ingroup sparse_vector
 //
 // \param sv The input vector.
-// \param exp The exponent.
+// \param exp The scalar exponent.
 // \return The exponential value of each non-zero element of \a sv.
 //
 // The \a pow() function computes the exponential value for each non-zero element of the input
@@ -1349,14 +1351,15 @@ inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const
 */
 template< typename VT  // Type of the sparse vector
         , bool TF      // Transpose flag
-        , typename ET  // Type of the exponent
-        , typename = EnableIf_< IsNumeric<ET> > >
-inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ET exp )
+        , typename ST  // Type of the scalar exponent
+        , typename = EnableIf_< IsNumeric<ST> > >
+inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SVecMapExpr<VT,UnaryPow<ET>,TF>;
-   return ReturnType( ~sv, UnaryPow<ET>( exp ) );
+   using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, ST >;
+   using ReturnType = const SVecMapExpr<VT,UnaryPow<ScalarType>,TF>;
+   return ReturnType( ~sv, UnaryPow<ScalarType>( exp ) );
 }
 //*************************************************************************************************
 
