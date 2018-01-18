@@ -62,10 +62,6 @@ namespace blaze {
 // \param a The value/object to be evaluated.
 // \return The evaluated value/object.
 //
-// This function forces an evaluation of the given matrix expression and enables an automatic
-// deduction of the correct result type of an operation.
-
-
 // The \a evaluate shim represents an abstract interface for enforcing the evaluation of a given
 // value/object of any data type and deducing the correct result type of an operation. For data
 // types that don't require an evaluation, as for instance built-in or complex data types, the
