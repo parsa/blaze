@@ -46,7 +46,6 @@
 #include <blazemark/blaze/init/DynamicVector.h>
 #include <blazemark/system/Config.h>
 
-
 namespace blazemark {
 
 namespace blaze {

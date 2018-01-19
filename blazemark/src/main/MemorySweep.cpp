@@ -79,5 +79,7 @@ int main( int argc, char** argv )
    std::cout << "\r   Initializing the memory: 100%\n" << std::endl;
 
    delete [] v;
+   
+   return EXIT_SUCCESS;
 }
 //*************************************************************************************************
