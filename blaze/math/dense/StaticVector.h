@@ -305,12 +305,12 @@ class StaticVector
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t size() const noexcept;
-   inline constexpr size_t spacing() const noexcept;
-   inline constexpr size_t capacity() const noexcept;
-   inline size_t           nonZeros() const;
-   inline void             reset();
-   inline void             swap( StaticVector& v ) noexcept;
+   static inline constexpr size_t size() noexcept;
+   static inline constexpr size_t spacing() noexcept;
+   static inline constexpr size_t capacity() noexcept;
+          inline size_t           nonZeros() const;
+          inline void             reset();
+          inline void             swap( StaticVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1374,7 +1374,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator%=( const Vecto
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t StaticVector<Type,N,TF>::size() const noexcept
+inline constexpr size_t StaticVector<Type,N,TF>::size() noexcept
 {
    return N;
 }
@@ -1392,7 +1392,7 @@ inline constexpr size_t StaticVector<Type,N,TF>::size() const noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t StaticVector<Type,N,TF>::spacing() const noexcept
+inline constexpr size_t StaticVector<Type,N,TF>::spacing() noexcept
 {
    return NN;
 }
@@ -1407,7 +1407,7 @@ inline constexpr size_t StaticVector<Type,N,TF>::spacing() const noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t StaticVector<Type,N,TF>::capacity() const noexcept
+inline constexpr size_t StaticVector<Type,N,TF>::capacity() noexcept
 {
    return NN;
 }
