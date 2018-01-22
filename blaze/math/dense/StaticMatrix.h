@@ -341,16 +341,16 @@ class StaticMatrix
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t rows() const noexcept;
-   inline constexpr size_t columns() const noexcept;
-   inline constexpr size_t spacing() const noexcept;
-   inline constexpr size_t capacity() const noexcept;
-   inline           size_t capacity( size_t i ) const noexcept;
-   inline size_t           nonZeros() const;
-   inline size_t           nonZeros( size_t i ) const;
-   inline void             reset();
-   inline void             reset( size_t i );
-   inline void             swap( StaticMatrix& m ) noexcept;
+   static inline constexpr size_t rows() noexcept;
+   static inline constexpr size_t columns() noexcept;
+   static inline constexpr size_t spacing() noexcept;
+   static inline constexpr size_t capacity() noexcept;
+          inline           size_t capacity( size_t i ) const noexcept;
+          inline size_t           nonZeros() const;
+          inline size_t           nonZeros( size_t i ) const;
+          inline void             reset();
+          inline void             reset( size_t i );
+          inline void             swap( StaticMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1559,7 +1559,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t StaticMatrix<Type,M,N,SO>::rows() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::rows() noexcept
 {
    return M;
 }
@@ -1575,7 +1575,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t StaticMatrix<Type,M,N,SO>::columns() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::columns() noexcept
 {
    return N;
 }
@@ -1594,7 +1594,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t StaticMatrix<Type,M,N,SO>::spacing() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::spacing() noexcept
 {
    return NN;
 }
@@ -1610,7 +1610,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t StaticMatrix<Type,M,N,SO>::capacity() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,SO>::capacity() noexcept
 {
    return M*NN;
 }
@@ -3218,15 +3218,15 @@ class StaticMatrix<Type,M,N,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t rows() const noexcept;
-   inline constexpr size_t columns() const noexcept;
-   inline constexpr size_t spacing() const noexcept;
-   inline constexpr size_t capacity() const noexcept;
-   inline           size_t capacity( size_t j ) const noexcept;
-   inline size_t           nonZeros() const;
-   inline size_t           nonZeros( size_t j ) const;
-   inline void             reset();
-   inline void             reset( size_t i );
+   static inline constexpr size_t rows() noexcept;
+   static inline constexpr size_t columns() noexcept;
+   static inline constexpr size_t spacing() noexcept;
+   static inline constexpr size_t capacity() noexcept;
+          inline           size_t capacity( size_t j ) const noexcept;
+          inline size_t           nonZeros() const;
+          inline size_t           nonZeros( size_t j ) const;
+          inline void             reset();
+          inline void             reset( size_t i );
    inline void             swap( StaticMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
@@ -4443,7 +4443,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator%=( con
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t StaticMatrix<Type,M,N,true>::rows() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,true>::rows() noexcept
 {
    return M;
 }
@@ -4460,7 +4460,7 @@ inline constexpr size_t StaticMatrix<Type,M,N,true>::rows() const noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t StaticMatrix<Type,M,N,true>::columns() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,true>::columns() noexcept
 {
    return N;
 }
@@ -4480,7 +4480,7 @@ inline constexpr size_t StaticMatrix<Type,M,N,true>::columns() const noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t StaticMatrix<Type,M,N,true>::spacing() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,true>::spacing() noexcept
 {
    return MM;
 }
@@ -4497,7 +4497,7 @@ inline constexpr size_t StaticMatrix<Type,M,N,true>::spacing() const noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t StaticMatrix<Type,M,N,true>::capacity() const noexcept
+inline constexpr size_t StaticMatrix<Type,M,N,true>::capacity() noexcept
 {
    return MM*N;
 }
