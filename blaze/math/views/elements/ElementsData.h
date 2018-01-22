@@ -98,12 +98,29 @@ struct ElementsData
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline const Indices& idces() const noexcept;
-   inline size_t         idx  ( size_t i ) const noexcept;
-   inline size_t         size () const noexcept;
+   static inline constexpr const Indices& idces() noexcept;
+   static inline constexpr size_t         idx  ( size_t i ) noexcept;
+   static inline constexpr size_t         size () noexcept;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   static constexpr Indices indices_{ { CEAs... } };  //!< The indices of the elements in the vector.
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// Definition and initialization of the static member variables
+template< size_t... CEAs >  // Compile time element arguments
+constexpr typename ElementsData<CEAs...>::Indices ElementsData<CEAs...>::indices_;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -131,10 +148,9 @@ inline ElementsData<CEAs...>::ElementsData( REAs... args ) noexcept
 // \return The indices of the specified elements.
 */
 template< size_t... CEAs >  // Compile time element arguments
-inline const typename ElementsData<CEAs...>::Indices& ElementsData<CEAs...>::idces() const noexcept
+inline constexpr const typename ElementsData<CEAs...>::Indices& ElementsData<CEAs...>::idces() noexcept
 {
-   static constexpr Indices tmp{ { CEAs... } };
-   return tmp;
+   return indices_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -148,11 +164,10 @@ inline const typename ElementsData<CEAs...>::Indices& ElementsData<CEAs...>::idc
 // \return The index of the specified element.
 */
 template< size_t... CEAs >  // Compile time element arguments
-inline size_t ElementsData<CEAs...>::idx( size_t i ) const noexcept
+inline constexpr size_t ElementsData<CEAs...>::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < size(), "Invalid element access index" );
-   static constexpr Indices tmp{ { CEAs... } };
-   return tmp[i];
+   return indices_[i];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -165,7 +180,7 @@ inline size_t ElementsData<CEAs...>::idx( size_t i ) const noexcept
 // \return The number of elements.
 */
 template< size_t... CEAs >  // Compile time element arguments
-inline size_t ElementsData<CEAs...>::size() const noexcept
+inline constexpr size_t ElementsData<CEAs...>::size() noexcept
 {
    return sizeof...( CEAs );
 }
