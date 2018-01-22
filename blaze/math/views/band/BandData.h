@@ -227,9 +227,9 @@ struct BandData<I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline ptrdiff_t band  () const noexcept;
-   inline size_t    row   () const noexcept;
-   inline size_t    column() const noexcept;
+   static inline constexpr ptrdiff_t band  () noexcept;
+   static inline constexpr size_t    row   () noexcept;
+   static inline constexpr size_t    column() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -260,7 +260,7 @@ inline BandData<I>::BandData( RBAs... args )
 // \return The index of the band.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline ptrdiff_t BandData<I>::band() const noexcept
+inline constexpr ptrdiff_t BandData<I>::band() noexcept
 {
    return I;
 }
@@ -275,7 +275,7 @@ inline ptrdiff_t BandData<I>::band() const noexcept
 // \return The first row index.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline size_t BandData<I>::row() const noexcept
+inline constexpr size_t BandData<I>::row() noexcept
 {
    return ( I >= 0L ? 0UL : -I );
 }
@@ -290,7 +290,7 @@ inline size_t BandData<I>::row() const noexcept
 // \return The first column index.
 */
 template< ptrdiff_t I >  // Compile time band index
-inline size_t BandData<I>::column() const noexcept
+inline constexpr size_t BandData<I>::column() noexcept
 {
    return ( I >= 0L ? I : 0UL );
 }
