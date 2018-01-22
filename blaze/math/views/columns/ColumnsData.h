@@ -92,12 +92,29 @@ struct ColumnsData
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline const Indices& idces  () const noexcept;
-   inline size_t         idx    ( size_t i ) const noexcept;
-   inline size_t         columns() const noexcept;
+   static inline constexpr const Indices& idces  () noexcept;
+   static inline constexpr size_t         idx    ( size_t i ) noexcept;
+   static inline constexpr size_t         columns() noexcept;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   static constexpr Indices indices_{ { CCAs... } };  //!< The indices of the columns in the matrix.
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// Definition and initialization of the static member variables
+template< size_t... CCAs >  // Compile time column arguments
+constexpr typename ColumnsData<CCAs...>::Indices ColumnsData<CCAs...>::indices_;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -125,10 +142,9 @@ inline ColumnsData<CCAs...>::ColumnsData( RCAs... args ) noexcept
 // \return The indices of the specified columns.
 */
 template< size_t... CCAs >  // Compile time column arguments
-inline const typename ColumnsData<CCAs...>::Indices& ColumnsData<CCAs...>::idces() const noexcept
+inline constexpr const typename ColumnsData<CCAs...>::Indices& ColumnsData<CCAs...>::idces() noexcept
 {
-   static constexpr Indices tmp{ { CCAs... } };
-   return tmp;
+   return indices_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -142,11 +158,10 @@ inline const typename ColumnsData<CCAs...>::Indices& ColumnsData<CCAs...>::idces
 // \return The index of the specified column.
 */
 template< size_t... CCAs >  // Compile time column arguments
-inline size_t ColumnsData<CCAs...>::idx( size_t i ) const noexcept
+inline constexpr size_t ColumnsData<CCAs...>::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < columns(), "Invalid column access index" );
-   static constexpr Indices tmp{ { CCAs... } };
-   return tmp[i];
+   return indices_[i];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -159,7 +174,7 @@ inline size_t ColumnsData<CCAs...>::idx( size_t i ) const noexcept
 // \return The number of columns.
 */
 template< size_t... CCAs >  // Compile time column arguments
-inline size_t ColumnsData<CCAs...>::columns() const noexcept
+inline constexpr size_t ColumnsData<CCAs...>::columns() noexcept
 {
    return sizeof...( CCAs );
 }
