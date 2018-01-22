@@ -43,6 +43,7 @@
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/simd/Pow.h>
+#include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
 #include <blaze/system/Inline.h>
