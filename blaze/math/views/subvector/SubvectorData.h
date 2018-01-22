@@ -214,8 +214,8 @@ struct SubvectorData<I,N>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t offset() const noexcept;
-   inline size_t size  () const noexcept;
+   static inline constexpr size_t offset() noexcept;
+   static inline constexpr size_t size  () noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -248,7 +248,7 @@ inline SubvectorData<I,N>::SubvectorData( RSAs... args )
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline size_t SubvectorData<I,N>::offset() const noexcept
+inline constexpr size_t SubvectorData<I,N>::offset() noexcept
 {
    return I;
 }
@@ -264,7 +264,7 @@ inline size_t SubvectorData<I,N>::offset() const noexcept
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline size_t SubvectorData<I,N>::size() const noexcept
+inline constexpr size_t SubvectorData<I,N>::size() noexcept
 {
    return N;
 }
