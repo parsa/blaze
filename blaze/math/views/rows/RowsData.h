@@ -92,12 +92,29 @@ struct RowsData
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline const Indices& idces() const noexcept;
-   inline size_t         idx  ( size_t i ) const noexcept;
-   inline size_t         rows () const noexcept;
+   inline static constexpr const Indices& idces() noexcept;
+   inline static constexpr size_t         idx  ( size_t i ) noexcept;
+   inline static constexpr size_t         rows () noexcept;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   static constexpr Indices indices_{ { CRAs... } };  //!< The indices of the rows in the matrix.
    //@}
    //**********************************************************************************************
 };
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// Definition and initialization of the static member variables
+template< size_t... CRAs >  // Compile time row arguments
+constexpr typename RowsData<CRAs...>::Indices RowsData<CRAs...>::indices_;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -125,10 +142,9 @@ inline RowsData<CRAs...>::RowsData( RRAs... args ) noexcept
 // \return The indices of the specified rows.
 */
 template< size_t... CRAs >  // Compile time row arguments
-inline const typename RowsData<CRAs...>::Indices& RowsData<CRAs...>::idces() const noexcept
+inline constexpr const typename RowsData<CRAs...>::Indices& RowsData<CRAs...>::idces() noexcept
 {
-   static constexpr Indices tmp{ { CRAs... } };
-   return tmp;
+   return indices_;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -142,11 +158,10 @@ inline const typename RowsData<CRAs...>::Indices& RowsData<CRAs...>::idces() con
 // \return The index of the specified row.
 */
 template< size_t... CRAs >  // Compile time row arguments
-inline size_t RowsData<CRAs...>::idx( size_t i ) const noexcept
+inline constexpr size_t RowsData<CRAs...>::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-   static constexpr Indices tmp{ { CRAs... } };
-   return tmp[i];
+   return indices_[i];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -159,7 +174,7 @@ inline size_t RowsData<CRAs...>::idx( size_t i ) const noexcept
 // \return The number of rows.
 */
 template< size_t... CRAs >  // Compile time row arguments
-inline size_t RowsData<CRAs...>::rows() const noexcept
+inline constexpr size_t RowsData<CRAs...>::rows() noexcept
 {
    return sizeof...( CRAs );
 }
