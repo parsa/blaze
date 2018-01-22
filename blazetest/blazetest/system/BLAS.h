@@ -3,7 +3,7 @@
 //  \file blazetest/system/BLAS.h
 //  \brief System settings for the BLAS mode
 //
-//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -54,7 +54,7 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 */
-#define BLAZETEST_MATHTEST_BLAS_MODE 0
+#define BLAZETEST_MATHTEST_BLAS_MODE 1
 //*************************************************************************************************
 
 #endif

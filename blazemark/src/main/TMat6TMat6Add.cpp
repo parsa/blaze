@@ -3,7 +3,7 @@
 //  \file src/main/TMat6TMat6Add.cpp
 //  \brief Source file for the 6-dimensional transpose matrix/transpose matrix addition benchmark
 //
-//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

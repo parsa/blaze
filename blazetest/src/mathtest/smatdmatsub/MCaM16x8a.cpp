@@ -3,7 +3,7 @@
 //  \file src/mathtest/smatdmatsub/MCaM16x8a.cpp
 //  \brief Source file for the MCaM16x8a sparse matrix/dense matrix subtraction math test
 //
-//  Copyright (C) 2012-2017 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
