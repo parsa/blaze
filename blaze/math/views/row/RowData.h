@@ -193,7 +193,7 @@ struct RowData<Index>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t row() const noexcept;
+   static inline constexpr size_t row() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -224,7 +224,7 @@ inline RowData<Index>::RowData( RRAs... args )
 // \return The index of the row.
 */
 template< size_t Index >  // Compile time row index
-inline size_t RowData<Index>::row() const noexcept
+inline constexpr size_t RowData<Index>::row() noexcept
 {
    return Index;
 }
