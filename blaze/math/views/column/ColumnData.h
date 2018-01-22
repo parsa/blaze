@@ -193,7 +193,7 @@ struct ColumnData<I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t column() const noexcept;
+   static inline constexpr size_t column() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -224,7 +224,7 @@ inline ColumnData<I>::ColumnData( RCAs... args )
 // \return The index of the column.
 */
 template< size_t I >  // Compile time column index
-inline size_t ColumnData<I>::column() const noexcept
+inline constexpr size_t ColumnData<I>::column() noexcept
 {
    return I;
 }
