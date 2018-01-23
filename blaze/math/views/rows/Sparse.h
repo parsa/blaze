@@ -3493,6 +3493,8 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
 inline size_t Rows<MT,false,false,false,CRAs...>::capacity( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    return columns();
@@ -3693,9 +3695,9 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
 void Rows<MT,false,false,false,CRAs...>::trim( size_t i )
 {
-   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
-
    UNUSED_PARAMETER( i );
+
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    return;
 }
@@ -3915,6 +3917,8 @@ template< typename MT       // Type of the sparse matrix
 inline typename Rows<MT,false,false,false,CRAs...>::Iterator
    Rows<MT,false,false,false,CRAs...>::erase( size_t i, Iterator first, Iterator last )
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    for( ; first!=last; ++first ) {
@@ -3998,6 +4002,8 @@ template< typename MT       // Type of the sparse matrix
 template< typename Pred >   // Type of the unary predicate
 inline void Rows<MT,false,false,false,CRAs...>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
    for( ; first!=last; ++first ) {

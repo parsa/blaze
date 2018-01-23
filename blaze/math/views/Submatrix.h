@@ -101,6 +101,7 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -4218,6 +4219,8 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
+   UNUSED_PARAMETER( column );
+
    BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
@@ -4289,6 +4292,8 @@ template< typename MT       // Type of the matrix
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
+   UNUSED_PARAMETER( column );
+
    BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
