@@ -47,6 +47,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -196,26 +197,31 @@ inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
 
    const size_t N( left.size() );
 
+   constexpr bool remainder( !usePadding || !IsPadded<VT1>::value || !IsPadded<VT2>::value );
+
+   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+
    SIMDTrait_<MultType> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );
 
-   for( ; (i+SIMDSIZE*4UL) <= N; i+=SIMDSIZE*4UL ) {
+   for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       xmm1 = xmm1 + ( left.load(i             ) * right.load(i             ) );
       xmm2 = xmm2 + ( left.load(i+SIMDSIZE    ) * right.load(i+SIMDSIZE    ) );
       xmm3 = xmm3 + ( left.load(i+SIMDSIZE*2UL) * right.load(i+SIMDSIZE*2UL) );
       xmm4 = xmm4 + ( left.load(i+SIMDSIZE*3UL) * right.load(i+SIMDSIZE*3UL) );
    }
-   for( ; (i+SIMDSIZE*2UL) <= N; i+=SIMDSIZE*2UL ) {
+   for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
       xmm1 = xmm1 + ( left.load(i         ) * right.load(i         ) );
       xmm2 = xmm2 + ( left.load(i+SIMDSIZE) * right.load(i+SIMDSIZE) );
    }
-   for( ; (i+SIMDSIZE) <= N; i+=SIMDSIZE ) {
+   for( ; i<ipos; i+=SIMDSIZE ) {
       xmm1 = xmm1 + ( left.load(i) * right.load(i) );
    }
 
    MultType sp( sum( xmm1 + xmm2 + xmm3 + xmm4 ) );
 
-   for( ; i<N; ++i ) {
+   for( ; remainder && i<N; ++i ) {
       sp += left[i] * right[i];
    }
 
