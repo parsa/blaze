@@ -71,6 +71,7 @@
 #include <blaze/math/expressions/DMatEvalExpr.h>
 #include <blaze/math/expressions/DMatInvExpr.h>
 #include <blaze/math/expressions/DMatMapExpr.h>
+#include <blaze/math/expressions/DMatNormExpr.h>
 #include <blaze/math/expressions/DMatScalarDivExpr.h>
 #include <blaze/math/expressions/DMatScalarMultExpr.h>
 #include <blaze/math/expressions/DMatSerialExpr.h>
