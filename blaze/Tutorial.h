@@ -2163,6 +2163,79 @@
 // releases of \b Blaze.
 //
 //
+// \n \section vector_operations_norms Norms
+//
+// \n \subsection vector_operations_norms_norm norm()
+//
+// The \c norm() function computes the L2 norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double l2 = norm( a );
+   \endcode
+
+// \n \subsection vector_operations_norms_sqrnorm sqrNorm()
+//
+// The \c sqrNorm() function computes the squared L2 norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double l2 = sqrNorm( a );
+   \endcode
+
+// \n \subsection vector_operations_norms_l1norm l1Norm()
+//
+// The \c l1Norm() function computes the squared L1 norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double l1 = l1Norm( a );
+   \endcode
+
+// \n \subsection vector_operations_norms_l2norm l2Norm()
+//
+// The \c l2Norm() function computes the squared L2 norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double l2 = l2Norm( a );
+   \endcode
+
+// \n \subsection vector_operations_norms_l3norm l3Norm()
+//
+// The \c l3Norm() function computes the squared L3 norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double l3 = l3Norm( a );
+   \endcode
+
+// \n \subsection vector_operations_norms_lpnorm lpNorm()
+//
+// The \c lpNorm() function computes the general Lp norm of the given dense or sparse vector,
+// where the norm is specified by the runtime argument \a p:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double lp = lpNorm( a, 2.3 );
+   \endcode
+
+// \n \subsection vector_operations_norms_maxnorm maxNorm()
+//
+// The \c maxNorm() function computes the maximum norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double max = maxNorm( a );
+   \endcode
+
 // \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrices
 */
 //*************************************************************************************************
@@ -4205,6 +4278,79 @@
 // releases of \b Blaze.
 //
 //
+// \n \section matrix_operations_norms Norms
+//
+// \n \subsection matrix_operations_norms_norm norm()
+//
+// The \c norm() function computes the L2 norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double l2 = norm( A );
+   \endcode
+
+// \n \subsection matrix_operations_norms_sqrnorm sqrNorm()
+//
+// The \c sqrNorm() function computes the squared L2 norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double l2 = sqrNorm( A );
+   \endcode
+
+// \n \subsection matrix_operations_norms_l1norm l1Norm()
+//
+// The \c l1Norm() function computes the squared L1 norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double l1 = l1Norm( A );
+   \endcode
+
+// \n \subsection matrix_operations_norms_l2norm l2Norm()
+//
+// The \c l2Norm() function computes the squared L2 norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double l2 = l2Norm( A );
+   \endcode
+
+// \n \subsection matrix_operations_norms_l3norm l3Norm()
+//
+// The \c l3Norm() function computes the squared L3 norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double l3 = l3Norm( A );
+   \endcode
+
+// \n \subsection matrix_operations_norms_lpnorm lpNorm()
+//
+// The \c lpNorm() function computes the general Lp norm of the given dense or sparse matrix,
+// where the norm is specified by the runtime argument \a p:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double lp = lpNorm( A, 2.3 );
+   \endcode
+
+// \n \subsection matrix_operations_norms_maxnorm maxNorm()
+//
+// The \c maxNorm() function computes the maximum norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double max = maxNorm( A );
+   \endcode
+
 // \n \section matrix_operations_declaration_operations Declaration Operations
 // <hr>
 //
