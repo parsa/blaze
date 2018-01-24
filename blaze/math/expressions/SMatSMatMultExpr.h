@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <algorithm>
-#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -84,6 +83,7 @@
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Or.h>
+#include <blaze/util/SmallVector.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
@@ -495,9 +495,9 @@ class SMatSMatMultExpr
       nonzeros = 0UL;
 
       // Performing the matrix-matrix multiplication
-      std::vector<ElementType> values ( (~lhs).columns(), ElementType() );
-      std::vector<byte_t>      valid  ( (~lhs).columns(), 0   );
-      std::vector<size_t>      indices( (~lhs).columns(), 0UL );
+      SmallVector<ElementType,128UL> values ( (~lhs).columns(), ElementType() );
+      SmallVector<bool,128UL>        valid  ( (~lhs).columns(), false );
+      SmallVector<size_t,128UL>      indices( (~lhs).columns(), 0UL );
       size_t minIndex( inf ), maxIndex( 0UL );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i )

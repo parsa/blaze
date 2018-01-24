@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
