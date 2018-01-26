@@ -91,6 +91,7 @@ struct Pow;
 struct Pow2;
 struct Pow3;
 struct Pow4;
+struct Qdrt;
 struct Real;
 struct Round;
 struct SchurAssign;
