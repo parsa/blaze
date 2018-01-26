@@ -90,6 +90,7 @@ struct Noop;
 struct Pow;
 struct Pow2;
 struct Pow3;
+struct Pow4;
 struct Real;
 struct Round;
 struct SchurAssign;
