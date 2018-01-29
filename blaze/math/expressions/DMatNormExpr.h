@@ -43,10 +43,18 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/functors/Abs.h>
 #include <blaze/math/functors/Cbrt.h>
+#include <blaze/math/functors/L1Norm.h>
+#include <blaze/math/functors/L2Norm.h>
+#include <blaze/math/functors/L3Norm.h>
+#include <blaze/math/functors/L4Norm.h>
+#include <blaze/math/functors/LpNorm.h>
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/functors/Pow3.h>
+#include <blaze/math/functors/Pow4.h>
+#include <blaze/math/functors/Qdrt.h>
 #include <blaze/math/functors/Sqrt.h>
 #include <blaze/math/functors/UnaryPow.h>
 #include <blaze/math/shims/Evaluate.h>
@@ -61,10 +69,13 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -84,6 +95,7 @@ namespace blaze {
 // \ingroup dense_matrix
 */
 template< typename MT       // Type of the dense matrix
+        , typename Abs      // Type of the abs operation
         , typename Power >  // Type of the power operation
 struct DMatNormHelper
 {
@@ -108,7 +120,9 @@ struct DMatNormHelper
    //**********************************************************************************************
    enum : bool { value = useOptimizedKernels &&
                          CT::simdEnabled &&
-                         If_< HasSIMDEnabled<Power>, UseSIMDEnabledFlag, HasLoad<Power> >::value &&
+                         If_< And< HasSIMDEnabled<Abs>, HasSIMDEnabled<Power> >
+                            , UseSIMDEnabledFlag
+                            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
                          HasSIMDAdd< ElementType_<CT>, ElementType_<CT> >::value };
    //**********************************************************************************************
 };
@@ -130,6 +144,9 @@ struct DMatNormHelper
 // \ingroup dense_matrix
 //
 // \param dm The given row-major dense matrix for the norm computation.
+// \param abs The functor for the abs operation.
+// \param power The functor for the power operation.
+// \param root The functor for the root operation.
 // \return The norm of the given matrix.
 //
 // This function implements the performance optimized norm of a row-major dense matrix. Due to
@@ -137,9 +154,10 @@ struct DMatNormHelper
 // compiler in case vectorization cannot be applied.
 */
 template< typename MT      // Type of the dense matrix
+        , typename Abs     // Type of the abs opertaion
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power, Root root, FalseType )
+inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Power power, Root root, FalseType )
 {
    using CT = CompositeType_<MT>;
    using ET = ElementType_<MT>;
@@ -152,19 +170,20 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   ET norm( power( tmp(0UL,0UL) ) );
+   ET norm( power( abs( tmp(0UL,0UL) ) ) );
 
    {
       size_t j( 1UL );
 
       for( ; (j+4UL) <= N; j+=4UL ) {
-         norm += power( tmp(0UL,j) ) + power( tmp(0UL,j+1UL) ) + power( tmp(0UL,j+2UL) ) + power( tmp(0UL,j+3UL) );
+         norm += power( abs( tmp(0UL,j    ) ) ) + power( abs( tmp(0UL,j+1UL) ) ) +
+                 power( abs( tmp(0UL,j+2UL) ) ) + power( abs( tmp(0UL,j+3UL) ) );
       }
       for( ; (j+2UL) <= N; j+=2UL ) {
-         norm += power( tmp(0UL,j) ) + power( tmp(0UL,j+1UL) );
+         norm += power( abs( tmp(0UL,j) ) ) + power( abs( tmp(0UL,j+1UL) ) );
       }
       for( ; j<N; ++j ) {
-         norm += power( tmp(0UL,j) );
+         norm += power( abs( tmp(0UL,j) ) );
       }
    }
 
@@ -173,13 +192,14 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power
       size_t j( 0UL );
 
       for( ; (j+4UL) <= N; j+=4UL ) {
-         norm += power( tmp(i,j) ) + power( tmp(i,j+1UL) ) + power( tmp(i,j+2UL) ) + power( tmp(i,j+3UL) );
+         norm += power( abs( tmp(i,j    ) ) ) + power( abs( tmp(i,j+1UL) ) ) +
+                 power( abs( tmp(i,j+2UL) ) ) + power( abs( tmp(i,j+3UL) ) );
       }
       for( ; (j+2UL) <= N; j+=2UL ) {
-         norm += power( tmp(i,j) ) + power( tmp(i,j+1UL) );
+         norm += power( abs( tmp(i,j) ) ) + power( abs( tmp(i,j+1UL) ) );
       }
       for( ; j<N; ++j ) {
-         norm += power( tmp(i,j) );
+         norm += power( abs( tmp(i,j) ) );
       }
    }
 
@@ -195,6 +215,9 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power
 // \ingroup dense_matrix
 //
 // \param dm The given column-major dense matrix for the norm computation.
+// \param abs The functor for the abs operation.
+// \param power The functor for the power operation.
+// \param root The functor for the root operation.
 // \return The norm of the given matrix.
 //
 // This function implements the performance optimized norm of a column-major dense matrix. Due
@@ -202,9 +225,10 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power
 // the compiler in case vectorization cannot be applied.
 */
 template< typename MT      // Type of the dense matrix
+        , typename Abs     // Type of the abs operation
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power, Root root, FalseType )
+inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Power power, Root root, FalseType )
 {
    using CT = CompositeType_<MT>;
    using ET = ElementType_<MT>;
@@ -217,19 +241,20 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power,
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   ET norm( power( tmp(0UL,0UL) ) );
+   ET norm( power( abs( tmp(0UL,0UL) ) ) );
 
    {
       size_t i( 1UL );
 
       for( ; (i+4UL) <= M; i+=4UL ) {
-         norm += power( tmp(i,0UL) ) + power( tmp(i+1UL,0UL) ) + power( tmp(i+2UL,0UL) ) + power( tmp(i+3UL,0UL) );
+         norm += power( abs( tmp(i    ,0UL) ) ) + power( abs( tmp(i+1UL,0UL) ) ) +
+                 power( abs( tmp(i+2UL,0UL) ) ) + power( abs( tmp(i+3UL,0UL) ) );
       }
       for( ; (i+2UL) <= M; i+=2UL ) {
-         norm += power( tmp(i,0UL) ) + power( tmp(i+1UL,0UL) );
+         norm += power( abs( tmp(i,0UL) ) ) + power( abs( tmp(i+1UL,0UL) ) );
       }
       for( ; i<M; ++i ) {
-         norm += power( tmp(i,0UL) );
+         norm += power( abs( tmp(i,0UL) ) );
       }
    }
 
@@ -238,13 +263,14 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power,
       size_t i( 0UL );
 
       for( ; (i+4UL) <= M; i+=4UL ) {
-         norm += power( tmp(i,j) ) + power( tmp(i+1UL,j) ) + power( tmp(i+2UL,j) ) + power( tmp(i+3UL,j) );
+         norm += power( abs( tmp(i    ,j) ) ) + power( abs( tmp(i+1UL,j) ) ) +
+                 power( abs( tmp(i+2UL,j) ) ) + power( abs( tmp(i+3UL,j) ) );
       }
       for( ; (i+2UL) <= M; i+=2UL ) {
-         norm += power( tmp(i,j) ) + power( tmp(i+1UL,j) );
+         norm += power( abs( tmp(i,j) ) ) + power( abs( tmp(i+1UL,j) ) );
       }
       for( ; i<M; ++i ) {
-         norm += power( tmp(i,j) );
+         norm += power( abs( tmp(i,j) ) );
       }
    }
 
@@ -260,6 +286,9 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power,
 // \ingroup dense_matrix
 //
 // \param dm The given row-major dense matrix for the norm computation.
+// \param abs The functor for the abs operation.
+// \param power The functor for the power operation.
+// \param root The functor for the root operation.
 // \return The norm of the given matrix.
 //
 // This function implements the performance optimized norm of a row-major dense matrix. Due to
@@ -267,9 +296,10 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power,
 // compiler in case vectorization can be applied.
 */
 template< typename MT      // Type of the dense matrix
+        , typename Abs     // Type of the abs operation
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power, Root root, TrueType )
+inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Power power, Root root, TrueType )
 {
    using CT = CompositeType_<MT>;
    using ET = ElementType_<MT>;
@@ -297,20 +327,20 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power
       size_t j( 0UL );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         xmm1 += power( tmp.load(i,j             ) );
-         xmm2 += power( tmp.load(i,j+SIMDSIZE    ) );
-         xmm3 += power( tmp.load(i,j+SIMDSIZE*2UL) );
-         xmm4 += power( tmp.load(i,j+SIMDSIZE*3UL) );
+         xmm1 += power( abs( tmp.load(i,j             ) ) );
+         xmm2 += power( abs( tmp.load(i,j+SIMDSIZE    ) ) );
+         xmm3 += power( abs( tmp.load(i,j+SIMDSIZE*2UL) ) );
+         xmm4 += power( abs( tmp.load(i,j+SIMDSIZE*3UL) ) );
       }
       for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-         xmm1 += power( tmp.load(i,j         ) );
-         xmm2 += power( tmp.load(i,j+SIMDSIZE) );
+         xmm1 += power( abs( tmp.load(i,j         ) ) );
+         xmm2 += power( abs( tmp.load(i,j+SIMDSIZE) ) );
       }
       for( ; j<jpos; j+=SIMDSIZE ) {
-         xmm1 += power( tmp.load(i,j) );
+         xmm1 += power( abs( tmp.load(i,j) ) );
       }
       for( ; remainder && j<N; ++j ) {
-         norm += power( tmp(i,j) );
+         norm += power( abs( tmp(i,j) ) );
       }
    }
 
@@ -328,6 +358,9 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power
 // \ingroup dense_matrix
 //
 // \param dm The given column-major dense matrix for the norm computation.
+// \param abs The functor for the abs operation.
+// \param power The functor for the power operation.
+// \param root The functor for the root operation.
 // \return The norm of the given matrix.
 //
 // This function implements the performance optimized norm of a column-major dense matrix. Due
@@ -335,9 +368,10 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Power power
 // the compiler in case vectorization can be applied.
 */
 template< typename MT      // Type of the dense matrix
+        , typename Abs     // Type of the abs operation
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power, Root root, TrueType )
+inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Power power, Root root, TrueType )
 {
    using CT = CompositeType_<MT>;
    using ET = ElementType_<MT>;
@@ -365,20 +399,20 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power,
       size_t i( 0UL );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         xmm1 += power( tmp.load(i             ,j) );
-         xmm2 += power( tmp.load(i+SIMDSIZE    ,j) );
-         xmm3 += power( tmp.load(i+SIMDSIZE*2UL,j) );
-         xmm4 += power( tmp.load(i+SIMDSIZE*3UL,j) );
+         xmm1 += power( abs( tmp.load(i             ,j) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE    ,j) ) );
+         xmm3 += power( abs( tmp.load(i+SIMDSIZE*2UL,j) ) );
+         xmm4 += power( abs( tmp.load(i+SIMDSIZE*3UL,j) ) );
       }
       for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
-         xmm1 += power( tmp.load(i         ,j) );
-         xmm2 += power( tmp.load(i+SIMDSIZE,j) );
+         xmm1 += power( abs( tmp.load(i         ,j) ) );
+         xmm2 += power( abs( tmp.load(i+SIMDSIZE,j) ) );
       }
       for( ; i<ipos; i+=SIMDSIZE ) {
-         xmm1 += power( tmp.load(i,j) );
+         xmm1 += power( abs( tmp.load(i,j) ) );
       }
       for( ; remainder && i<M; ++i ) {
-         norm += power( tmp(i,j) );
+         norm += power( abs( tmp(i,j) ) );
       }
    }
 
@@ -396,6 +430,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power,
 // \ingroup dense_matrix
 //
 // \param dm The given dense matrix for the norm computation.
+// \param abs The functor for the abs operation.
 // \param power The functor for the power operation.
 // \param root The functor for the root operation.
 // \return The norm of the given dense matrix.
@@ -412,11 +447,12 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Power power,
 */
 template< typename MT      // Type of the dense matrix
         , bool SO          // Storage order
+        , typename Abs     // Type of the abs operation
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-decltype(auto) norm_backend( const DenseMatrix<MT,SO>& dm, Power power, Root root )
+decltype(auto) norm_backend( const DenseMatrix<MT,SO>& dm, Abs abs, Power power, Root root )
 {
-   return norm_backend( ~dm, power, root, Bool< DMatNormHelper<MT,Power>::value >() );
+   return norm_backend( ~dm, abs, power, root, Bool< DMatNormHelper<MT,Abs,Power>::value >() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -443,7 +479,7 @@ decltype(auto) norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Pow2(), Sqrt() );
+   return norm_backend( ~dm, Noop(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -469,7 +505,7 @@ decltype(auto) sqrNorm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Pow2(), Noop() );
+   return norm_backend( ~dm, Noop(), Pow2(), Noop() );
 }
 //*************************************************************************************************
 
@@ -495,7 +531,7 @@ decltype(auto) l1Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Noop() );
+   return norm_backend( ~dm, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -521,7 +557,7 @@ decltype(auto) l2Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Pow2(), Sqrt() );
+   return norm_backend( ~dm, Noop(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -547,7 +583,33 @@ decltype(auto) l3Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Pow3(), Cbrt() );
+   return norm_backend( ~dm, Abs(), Pow3(), Cbrt() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the L4 norm for the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix for the norm computation.
+// \return The L4 norm of the given dense matrix.
+//
+// This function computes the L4 norm of the given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double l4 = l4Norm( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+decltype(auto) l4Norm( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return norm_backend( ~dm, Noop(), Pow4(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -574,7 +636,7 @@ decltype(auto) l3Norm( const DenseMatrix<MT,SO>& dm )
 */
 template< typename MT    // Type of the dense matrix
         , bool SO        // Storage order
-        , typename ST >  //
+        , typename ST >  // Type of the norm parameter
 decltype(auto) lpNorm( const DenseMatrix<MT,SO>& dm, ST p )
 {
    BLAZE_FUNCTION_TRACE;
@@ -582,7 +644,41 @@ decltype(auto) lpNorm( const DenseMatrix<MT,SO>& dm, ST p )
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
    using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, decltype( inv( p ) ) >;
-   return norm_backend( ~dm, UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
+   return norm_backend( ~dm, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the Lp norm for the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix for the norm computation.
+// \return The Lp norm of the given dense matrix.
+//
+// This function computes the Lp norm of the given dense matrix, where the norm is specified by
+// the runtime argument \a P:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double lp = lpNorm<2>( A );
+   \endcode
+
+// \note The norm parameter \a P is expected to be larger than 0. A value of 0 results in a
+// compile time error!.
+*/
+template< size_t P     // Compile time norm parameter
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) lpNorm( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_STATIC_ASSERT_MSG( P > 0UL, "Invalid norm parameter detected" );
+
+   using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
+   using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
+
+   return Norm()( ~dm );
 }
 //*************************************************************************************************
 
