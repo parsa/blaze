@@ -76,6 +76,7 @@
 #include <blaze/math/functors/Inv.h>
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
+#include <blaze/math/functors/L1Norm.h>
 #include <blaze/math/functors/Log.h>
 #include <blaze/math/functors/Log2.h>
 #include <blaze/math/functors/Log10.h>
