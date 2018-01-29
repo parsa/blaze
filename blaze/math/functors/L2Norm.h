@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Forward.h
-//  \brief Header file for all functor forward declarations
+//  \file blaze/math/functors/L2Norm.h
+//  \brief Header file for the L2Norm functor
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,81 +32,52 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
-#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_FUNCTORS_L2NORM_H_
+#define _BLAZE_MATH_FUNCTORS_L2NORM_H_
+
+
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Inline.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
-struct Abs;
-struct Acos;
-struct Acosh;
-struct AddAssign;
-struct Asin;
-struct Asinh;
-struct Assign;
-struct Atan;
-struct Atan2;
-struct Atanh;
-struct Cbrt;
-struct Ceil;
-template< typename > struct Clamp;
-struct Conj;
-struct Cos;
-struct Cosh;
-struct CTrans;
-struct DeclDiag;
-struct DeclHerm;
-struct DeclId;
-struct DeclLow;
-struct DeclSym;
-struct DeclUpp;
-struct DivAssign;
-struct Erf;
-struct Erfc;
-struct Eval;
-struct Exp;
-struct Exp2;
-struct Exp10;
-struct Floor;
-struct Hypot;
-struct Imag;
-struct Inv;
-struct InvCbrt;
-struct InvSqrt;
-struct L1Norm;
-struct L2Norm;
-struct Log;
-struct Log2;
-struct Log10;
-struct Max;
-struct Min;
-struct MultAssign;
-struct Noop;
-struct Pow;
-struct Pow2;
-struct Pow3;
-struct Pow4;
-struct Qdrt;
-struct Real;
-struct Round;
-struct SchurAssign;
-struct Serial;
-struct Sin;
-struct Sinh;
-struct Sqrt;
-struct SubAssign;
-struct Tan;
-struct Tanh;
-struct Trans;
-struct Trunc;
-template< typename > struct UnaryPow;
+//*************************************************************************************************
+/*!\brief Generic wrapper for the l2Norm() function.
+// \ingroup functors
+*/
+struct L2Norm
+{
+   //**********************************************************************************************
+   /*!\brief Default constructor of the L2Norm functor.
+   */
+   explicit inline L2Norm()
+   {}
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Calls the l2Norm() function with the given object/value.
+   //
+   // \param a The given object/value.
+   // \return The L2 norm of the given object/value.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   {
+      return l2Norm( a );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
 
 } // namespace blaze
 
