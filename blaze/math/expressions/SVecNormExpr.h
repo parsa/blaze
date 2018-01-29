@@ -43,10 +43,18 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/SparseVector.h>
+#include <blaze/math/functors/Abs.h>
 #include <blaze/math/functors/Cbrt.h>
+#include <blaze/math/functors/L1Norm.h>
+#include <blaze/math/functors/L2Norm.h>
+#include <blaze/math/functors/L3Norm.h>
+#include <blaze/math/functors/L4Norm.h>
+#include <blaze/math/functors/LpNorm.h>
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/functors/Pow3.h>
+#include <blaze/math/functors/Pow4.h>
+#include <blaze/math/functors/Qdrt.h>
 #include <blaze/math/functors/Sqrt.h>
 #include <blaze/math/functors/UnaryPow.h>
 #include <blaze/math/shims/Evaluate.h>
@@ -56,6 +64,8 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/StaticAssert.h>
+#include <blaze/util/TypeList.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -73,25 +83,27 @@ namespace blaze {
 // \ingroup sparse_vector
 //
 // \param sv The given sparse vector for the norm computation.
+// \param abs The functor for the abs operation.
 // \param power The functor for the power operation.
 // \param root The functor for the root operation.
 // \return The norm of the given sparse vector.
 //
 // This function computes a custom norm of the given sparse vector by means of the given functors.
-// The following example demonstrates the computation of the L2 norm by means of the blaze::Pow2
-// and blaze::Sqrt functors:
+// The following example demonstrates the computation of the L2 norm by means of the blaze::Noop,
+// blaze::Pow2 and blaze::Sqrt functors:
 
    \code
    blaze::CompressedVector<double> a;
    // ... Resizing and initialization
-   const double l2 = norm( a, blaze::Pow2(), blaze::Sqrt() );
+   const double l2 = norm( a, blaze::Noop(), blaze::Pow2(), blaze::Sqrt() );
    \endcode
 */
 template< typename VT      // Type of the sparse vector
         , bool TF          // Transpose flag
+        , typename Abs     // Type of the abs operation
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Power power, Root root )
+decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Abs abs, Power power, Root root )
 {
    using CT = CompositeType_<VT>;
    using ET = ElementType_<VT>;
@@ -107,11 +119,11 @@ decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Power power, Root ro
 
    if( element == end ) return RT();
 
-   ET norm( power( element->value() ) );
+   ET norm( power( abs( element->value() ) ) );
    ++element;
 
    for( ; element!=end; ++element ) {
-      norm += power( element->value() );
+      norm += power( abs( element->value() ) );
    }
 
    return evaluate( root( norm ) );
@@ -141,7 +153,7 @@ decltype(auto) norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, Pow2(), Sqrt() );
+   return norm_backend( ~sv, Noop(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -167,7 +179,7 @@ decltype(auto) sqrNorm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, Pow2(), Noop() );
+   return norm_backend( ~sv, Noop(), Pow2(), Noop() );
 }
 //*************************************************************************************************
 
@@ -193,7 +205,7 @@ decltype(auto) l1Norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, Noop(), Noop() );
+   return norm_backend( ~sv, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -219,7 +231,7 @@ decltype(auto) l2Norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, Pow2(), Sqrt() );
+   return norm_backend( ~sv, Noop(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -245,7 +257,33 @@ decltype(auto) l3Norm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sv, Pow3(), Cbrt() );
+   return norm_backend( ~sv, Abs(), Pow3(), Cbrt() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the L4 norm for the given sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector for the norm computation.
+// \return The L4 norm of the given sparse vector.
+//
+// This function computes the L4 norm of the given sparse vector:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   const double l4 = l4Norm( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+decltype(auto) l4Norm( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return norm_backend( ~sv, Noop(), Pow4(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -272,7 +310,7 @@ decltype(auto) l3Norm( const SparseVector<VT,TF>& sv )
 */
 template< typename VT    // Type of the sparse vector
         , bool TF        // Transpose flag
-        , typename ST >  //
+        , typename ST >  // Type of the norm parameter
 decltype(auto) lpNorm( const SparseVector<VT,TF>& sv, ST p )
 {
    BLAZE_FUNCTION_TRACE;
@@ -280,7 +318,41 @@ decltype(auto) lpNorm( const SparseVector<VT,TF>& sv, ST p )
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
    using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, decltype( inv( p ) ) >;
-   return norm_backend( ~sv, UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
+   return norm_backend( ~sv, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the Lp norm for the given sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector for the norm computation.
+// \return The Lp norm of the given sparse vector.
+//
+// This function computes the Lp norm of the given sparse vector, where the norm is specified by
+// the runtime argument \a P:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   const double lp = lpNorm<2>( a );
+   \endcode
+
+// \note The norm parameter \a P is expected to be larger than 0. A value of 0 results in a
+// compile time error!.
+*/
+template< size_t P     // Compile time norm parameter
+        , typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) lpNorm( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_STATIC_ASSERT_MSG( P > 0UL, "Invalid norm parameter detected" );
+
+   using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
+   using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
+
+   return Norm()( ~sv );
 }
 //*************************************************************************************************
 
