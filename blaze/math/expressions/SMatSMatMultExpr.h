@@ -510,7 +510,7 @@ class SMatSMatMultExpr
             {
                if( !valid[relem->index()] ) {
                   values[relem->index()] = lelem->value() * relem->value();
-                  valid [relem->index()] = 1;
+                  valid [relem->index()] = true;
                   indices[nonzeros] = relem->index();
                   ++nonzeros;
                   if( relem->index() < minIndex ) minIndex = relem->index();
@@ -540,7 +540,7 @@ class SMatSMatMultExpr
                      reset( values[index] );
                   }
 
-                  reset( valid [index] );
+                  reset( valid[index] );
                }
             }
             else {
@@ -551,7 +551,7 @@ class SMatSMatMultExpr
                      reset( values[j] );
                   }
 
-                  reset( valid [j] );
+                  reset( valid[j] );
                }
             }
 

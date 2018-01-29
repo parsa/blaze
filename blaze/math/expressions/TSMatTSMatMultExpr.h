@@ -546,7 +546,7 @@ class TSMatTSMatMultExpr
             {
                if( !valid[lelem->index()] ) {
                   values[lelem->index()] = lelem->value() * relem->value();
-                  valid [lelem->index()] = 1;
+                  valid [lelem->index()] = true;
                   indices[nonzeros] = lelem->index();
                   ++nonzeros;
                   if( lelem->index() < minIndex ) minIndex = lelem->index();
@@ -576,7 +576,7 @@ class TSMatTSMatMultExpr
                      reset( values[index] );
                   }
 
-                  reset( valid [index] );
+                  reset( valid[index] );
                }
             }
             else {
@@ -587,7 +587,7 @@ class TSMatTSMatMultExpr
                      reset( values[i] );
                   }
 
-                  reset( valid [i] );
+                  reset( valid[i] );
                }
             }
 
