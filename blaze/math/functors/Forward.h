@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_FUNCTORS_FORWARD_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/Types.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -87,6 +94,7 @@ struct L4Norm;
 struct Log;
 struct Log2;
 struct Log10;
+template< size_t... > struct LpNorm;
 struct Max;
 struct Min;
 struct MultAssign;
