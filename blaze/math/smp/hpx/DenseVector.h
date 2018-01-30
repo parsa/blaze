@@ -288,7 +288,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_PARALLEL_SECTION
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          assign( ~lhs, ~rhs );
@@ -379,7 +378,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_PARALLEL_SECTION
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          addAssign( ~lhs, ~rhs );
@@ -470,7 +468,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_PARALLEL_SECTION
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          subAssign( ~lhs, ~rhs );
@@ -561,7 +558,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_PARALLEL_SECTION
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          multAssign( ~lhs, ~rhs );
@@ -652,7 +648,6 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   BLAZE_PARALLEL_SECTION
    {
       if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
          divAssign( ~lhs, ~rhs );
