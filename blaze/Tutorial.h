@@ -2215,6 +2215,16 @@
    const double l3 = l3Norm( a );
    \endcode
 
+// \n \subsection vector_operations_norms_l4norm l4Norm()
+//
+// The \c l4Norm() function computes the squared L4 norm of the given dense or sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double l4 = l4Norm( a );
+   \endcode
+
 // \n \subsection vector_operations_norms_lpnorm lpNorm()
 //
 // The \c lpNorm() function computes the general Lp norm of the given dense or sparse vector,
@@ -4329,6 +4339,16 @@
    blaze::DynamicMatrix<double> A;
    // ... Resizing and initialization
    const double l3 = l3Norm( A );
+   \endcode
+
+// \n \subsection matrix_operations_norms_l4norm l4Norm()
+//
+// The \c l4Norm() function computes the squared L4 norm of the given dense or sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double l4 = l4Norm( A );
    \endcode
 
 // \n \subsection matrix_operations_norms_lpnorm lpNorm()
