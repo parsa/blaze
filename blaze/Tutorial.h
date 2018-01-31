@@ -2218,12 +2218,13 @@
 // \n \subsection vector_operations_norms_lpnorm lpNorm()
 //
 // The \c lpNorm() function computes the general Lp norm of the given dense or sparse vector,
-// where the norm is specified by the runtime argument \a p:
+// where the norm is specified by either a compile time or a runtime argument:
 
    \code
    blaze::DynamicVector<double> a;
    // ... Resizing and initialization
-   const double lp = lpNorm( a, 2.3 );
+   const double lp1 = lpNorm<2>( a );    // Compile time argument
+   const double lp2 = lpNorm( a, 2.3 );  // Runtime argument
    \endcode
 
 // \n \subsection vector_operations_norms_maxnorm maxNorm()
@@ -4333,12 +4334,13 @@
 // \n \subsection matrix_operations_norms_lpnorm lpNorm()
 //
 // The \c lpNorm() function computes the general Lp norm of the given dense or sparse matrix,
-// where the norm is specified by the runtime argument \a p:
+// where the norm is specified by either a compile time or a runtime argument:
 
    \code
    blaze::DynamicMatrix<double> A;
    // ... Resizing and initialization
-   const double lp = lpNorm( A, 2.3 );
+   const double lp1 = lpNorm<2>( A );    // Compile time argument
+   const double lp2 = lpNorm( A, 2.3 );  // Runtime argument
    \endcode
 
 // \n \subsection matrix_operations_norms_maxnorm maxNorm()
