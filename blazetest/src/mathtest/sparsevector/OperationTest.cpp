@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/sparse/SparseVector.h>
 #include <blaze/math/CompressedVector.h>
+#include <blazetest/mathtest/IsEqual.h>
 #include <blazetest/mathtest/sparsevector/OperationTest.h>
 
 
@@ -69,6 +70,11 @@ OperationTest::OperationTest()
    testNormalize();
    testMinimum();
    testMaximum();
+   testL1Norm();
+   testL2Norm();
+   testL3Norm();
+   testL4Norm();
+   testLpNorm();
 }
 //*************************************************************************************************
 
@@ -571,6 +577,394 @@ void OperationTest::testMaximum()
              << " Details:\n"
              << "   Result: " << maximum << "\n"
              << "   Expected result: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c l1Norm() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l1Norm() function for dense vectors template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testL1Norm()
+{
+   test_ = "l1Norm() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const int norm = blaze::l1Norm( vec );
+
+      if( !isEqual( norm, 0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L1 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
+
+      const int norm = blaze::l1Norm( vec );
+
+      if( !isEqual( norm, 0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L1 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, -1, 2, -2, 0, 0, -1, 0, 1, 0 };
+
+      const int norm = blaze::l1Norm( vec );
+
+      if( !isEqual( norm, 7 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L1 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 7\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c l2Norm() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l2Norm() function for dense vectors template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testL2Norm()
+{
+   test_ = "l2Norm() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const double norm = blaze::l2Norm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L2 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
+
+      const double norm = blaze::l2Norm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L2 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, -1, 2, -2, 2, 1, -1, 0, 1, 0 };
+
+      const double norm = blaze::l2Norm( vec );
+
+      if( !isEqual( norm, 4.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L2 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c l3Norm() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l3Norm() function for dense vectors template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testL3Norm()
+{
+   test_ = "l3Norm() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const double norm = blaze::l3Norm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L3 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
+
+      const double norm = l3Norm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L3 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, -1, 2, -2, 2, 0, -1, 0, 1, 0 };
+
+      const double norm = blaze::l3Norm( vec );
+
+      if( !isEqual( norm, 3.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L3 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c l4Norm() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l4Norm() function for dense vectors template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testL4Norm()
+{
+   test_ = "l4Norm() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const double norm = blaze::l4Norm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L4 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
+
+      const double norm = blaze::l4Norm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L4 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 2, 0, -2, 2, -1, 0, -2, 0, 2 };
+
+      const double norm = blaze::l4Norm( vec );
+
+      if( !isEqual( norm, 3.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: L4 norm computation failed\n"
+             << " Details:\n"
+             << "   Result: " << norm << "\n"
+             << "   Expected result: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c lpNorm() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c lpNorm() function for dense vectors template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testLpNorm()
+{
+   test_ = "lpNorm() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const double norm1 = blaze::lpNorm( vec, 2 );
+      const double norm2 = blaze::lpNorm<2UL>( vec );
+
+      if( !isEqual( norm1, 0.0 ) || !isEqual( norm2, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lp norm computation failed\n"
+             << " Details:\n"
+             << "   lpNorm<2>(): " << norm1 << "\n"
+             << "   lpNorm(2): " << norm2 << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
+
+      const double norm1 = blaze::lpNorm( vec, 2 );
+      const double norm2 = blaze::lpNorm<2UL>( vec );
+
+      if( !isEqual( norm1, 0.0 ) || !isEqual( norm2, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lp norm computation failed\n"
+             << " Details:\n"
+             << "   lpNorm<2>(): " << norm1 << "\n"
+             << "   lpNorm(2): " << norm2 << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 10UL );
+      randomize( vec, 5UL, -5, 5 );
+
+      const int norm1( blaze::lpNorm( vec, 1 ) );
+      const int norm2( blaze::lpNorm<1UL>( vec ) );
+      const int norm3( blaze::l1Norm( vec ) );
+
+      if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lp norm computation failed\n"
+             << " Details:\n"
+             << "   lpNorm<1>(): " << norm1 << "\n"
+             << "   lpNorm(1): " << norm2 << "\n"
+             << "   Expected result: " << norm3 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 10UL );
+      randomize( vec, 5UL, -5, 5 );
+
+      const double norm1( blaze::lpNorm( vec, 2 ) );
+      const double norm2( blaze::lpNorm<2UL>( vec ) );
+      const double norm3( blaze::l2Norm( vec ) );
+
+      if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lp norm computation failed\n"
+             << " Details:\n"
+             << "   lpNorm<2>(): " << norm1 << "\n"
+             << "   lpNorm(2): " << norm2 << "\n"
+             << "   Expected result: " << norm3 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 10UL );
+      randomize( vec, 5UL, -5, 5 );
+
+      const double norm1( blaze::lpNorm( vec, 3 ) );
+      const double norm2( blaze::lpNorm<3UL>( vec ) );
+      const double norm3( blaze::l3Norm( vec ) );
+
+      if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lp norm computation failed\n"
+             << " Details:\n"
+             << "   lpNorm<3>(): " << norm1 << "\n"
+             << "   lpNorm(3): " << norm2 << "\n"
+             << "   Expected result: " << norm3 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 10UL );
+      randomize( vec, 5UL, -5, 5 );
+
+      const double norm1( blaze::lpNorm( vec, 4 ) );
+      const double norm2( blaze::lpNorm<4UL>( vec ) );
+      const double norm3( blaze::l4Norm( vec ) );
+
+      if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lp norm computation failed\n"
+             << " Details:\n"
+             << "   lpNorm<4>(): " << norm1 << "\n"
+             << "   lpNorm(4): " << norm2 << "\n"
+             << "   Expected result: " << norm3 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }

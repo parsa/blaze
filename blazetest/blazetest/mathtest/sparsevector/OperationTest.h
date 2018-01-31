@@ -88,6 +88,11 @@ class OperationTest
    void testNormalize();
    void testMinimum();
    void testMaximum();
+   void testL1Norm();
+   void testL2Norm();
+   void testL3Norm();
+   void testL4Norm();
+   void testLpNorm();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
