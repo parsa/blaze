@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
+#include <blazetest/mathtest/IsEqual.h>
 #include <blazetest/mathtest/sparsematrix/GeneralTest.h>
 
 
@@ -78,6 +79,11 @@ GeneralTest::GeneralTest()
    testIsIdentity();
    testMinimum();
    testMaximum();
+   testL1Norm();
+   testL2Norm();
+   testL3Norm();
+   testL4Norm();
+   testLpNorm();
    testTrace();
 }
 //*************************************************************************************************
@@ -4789,6 +4795,804 @@ void GeneralTest::testTrace()
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Test of the \c l1Norm() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l1Norm() function for sparse matrices template. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testL1Norm()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l1Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         const int norm = blaze::l1Norm( mat );
+
+         if( !isEqual( norm, 0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L1 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 7UL );
+
+         const int norm = blaze::l1Norm( mat );
+
+         if( !isEqual( norm, 0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L1 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 0,  0,  1,  0,  1,  0,  0 },
+                                                           { 0, -2,  0,  0,  0, -1,  0 },
+                                                           { 0,  0,  0,  2,  0,  0,  0 } };
+
+         const int norm = blaze::l1Norm( mat );
+
+         if( !isEqual( norm, 7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L1 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 7\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l1Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         const int norm = blaze::l1Norm( mat );
+
+         if( !isEqual( norm, 0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L1 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 7UL, 0 );
+
+         const int norm = blaze::l1Norm( mat );
+
+         if( !isEqual( norm, 0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L1 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 0,  0,  0 },
+                                                              { 0, -2,  0 },
+                                                              { 1,  0,  0 },
+                                                              { 0,  0,  2 },
+                                                              { 1,  0,  0 },
+                                                              { 0, -1,  0 },
+                                                              { 0,  0,  0 } };
+
+         const int norm = blaze::l1Norm( mat );
+
+         if( !isEqual( norm, 7 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L1 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 7\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c l2Norm() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l2Norm() function for sparse matrices template. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testL2Norm()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l2Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         const double norm = blaze::l2Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L2 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 7UL );
+
+         const double norm = blaze::l2Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L2 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 0,  0,  1,  0,  1, -2,  0 },
+                                                           { 0, -2,  0,  0,  0, -1,  0 },
+                                                           { 0,  1,  0,  2,  0,  0,  0 } };
+
+         const double norm = blaze::l2Norm( mat );
+
+         if( !isEqual( norm, 4.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L2 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l2Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         const double norm = blaze::l2Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L2 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 7UL );
+
+         const double norm = blaze::l2Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L2 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0,  0,  0 },
+                                                              {  0, -2,  1 },
+                                                              {  1,  0,  0 },
+                                                              {  0,  0,  2 },
+                                                              {  1,  0,  0 },
+                                                              { -2, -1,  0 },
+                                                              {  0,  0,  0 } };
+
+         const double norm = blaze::l2Norm( mat );
+
+         if( !isEqual( norm, 4.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L2 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c l3Norm() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l3Norm() function for sparse matrices template. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testL3Norm()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l3Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         const double norm = blaze::l3Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L3 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 7UL );
+
+         const double norm = blaze::l3Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L3 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 0,  0,  1,  0,  1, -2,  0 },
+                                                           { 0, -2,  0,  0,  0, -1,  0 },
+                                                           { 0,  0,  0,  2,  0,  0,  0 } };
+
+         const double norm = blaze::l3Norm( mat );
+
+         if( !isEqual( norm, 3.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L3 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l3Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         const double norm = blaze::l3Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L3 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 7UL );
+
+         const double norm = blaze::l3Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L3 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0,  0,  0 },
+                                                              {  0, -2,  0 },
+                                                              {  1,  0,  0 },
+                                                              {  0,  0,  2 },
+                                                              {  1,  0,  0 },
+                                                              { -2, -1,  0 },
+                                                              {  0,  0,  0 } };
+
+         const double norm = blaze::l3Norm( mat );
+
+         if( !isEqual( norm, 3.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L3 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c l4Norm() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c l4Norm() function for sparse matrices template. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testL4Norm()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l4Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         const double norm = blaze::l4Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L4 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 7UL );
+
+         const double norm = blaze::l4Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L4 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 0,  0,  2,  0,  2, -2,  0 },
+                                                           { 0, -2,  0,  0,  0, -1,  0 },
+                                                           { 0,  0,  0,  2,  0,  0,  0 } };
+
+         const double norm = blaze::l4Norm( mat );
+
+         if( !isEqual( norm, 3.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L4 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "l4Norm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         const double norm = blaze::l4Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L4 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 7UL );
+
+         const double norm = blaze::l4Norm( mat );
+
+         if( !isEqual( norm, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L4 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 0,  0,  2,  0,  2, -2,  0 },
+                                                              { 0, -2,  0,  0,  0, -1,  0 },
+                                                              { 0,  0,  0,  2,  0,  0,  0 } };
+
+         const double norm = blaze::l4Norm( mat );
+
+         if( !isEqual( norm, 3.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: L4 norm computation failed\n"
+                << " Details:\n"
+                << "   Result: " << norm << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c lpNorm() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c lpNorm() function for sparse matrices template. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testLpNorm()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "lpNorm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         const double norm1 = blaze::lpNorm( mat, 2 );
+         const double norm2 = blaze::lpNorm<2UL>( mat );
+
+         if( !isEqual( norm1, 0.0 ) || !isEqual( norm2, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<2>(): " << norm1 << "\n"
+                << "   lpNorm(2): " << norm2 << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 7UL );
+
+         const double norm1 = blaze::lpNorm( mat, 2 );
+         const double norm2 = blaze::lpNorm<2UL>( mat );
+
+         if( !isEqual( norm1, 0.0 ) || !isEqual( norm2, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<2>(): " << norm1 << "\n"
+                << "   lpNorm(2): " << norm2 << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const int norm1( blaze::lpNorm( mat, 1 ) );
+         const int norm2( blaze::lpNorm<1UL>( mat ) );
+         const int norm3( blaze::l1Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<1>(): " << norm1 << "\n"
+                << "   lpNorm(1): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const double norm1( blaze::lpNorm( mat, 2 ) );
+         const double norm2( blaze::lpNorm<2UL>( mat ) );
+         const double norm3( blaze::l2Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<2>(): " << norm1 << "\n"
+                << "   lpNorm(2): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const double norm1( blaze::lpNorm( mat, 3 ) );
+         const double norm2( blaze::lpNorm<3UL>( mat ) );
+         const double norm3( blaze::l3Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<4>(): " << norm1 << "\n"
+                << "   lpNorm(4): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const double norm1( blaze::lpNorm( mat, 4 ) );
+         const double norm2( blaze::lpNorm<4UL>( mat ) );
+         const double norm3( blaze::l4Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<4>(): " << norm1 << "\n"
+                << "   lpNorm(4): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "lpNorm() function";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         const double norm1 = blaze::lpNorm( mat, 2 );
+         const double norm2 = blaze::lpNorm<2UL>( mat );
+
+         if( !isEqual( norm1, 0.0 ) || !isEqual( norm2, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<2>(): " << norm1 << "\n"
+                << "   lpNorm(2): " << norm2 << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 7UL );
+
+         const double norm1 = blaze::lpNorm( mat, 2 );
+         const double norm2 = blaze::lpNorm<2UL>( mat );
+
+         if( !isEqual( norm1, 0.0 ) || !isEqual( norm2, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<2>(): " << norm1 << "\n"
+                << "   lpNorm(2): " << norm2 << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const int norm1( blaze::lpNorm( mat, 1 ) );
+         const int norm2( blaze::lpNorm<1UL>( mat ) );
+         const int norm3( blaze::l1Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<1>(): " << norm1 << "\n"
+                << "   lpNorm(1): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const double norm1( blaze::lpNorm( mat, 2 ) );
+         const double norm2( blaze::lpNorm<2UL>( mat ) );
+         const double norm3( blaze::l2Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<2>(): " << norm1 << "\n"
+                << "   lpNorm(2): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const double norm1( blaze::lpNorm( mat, 3 ) );
+         const double norm2( blaze::lpNorm<3UL>( mat ) );
+         const double norm3( blaze::l3Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<3>(): " << norm1 << "\n"
+                << "   lpNorm(3): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 10UL );
+         randomize( mat, 20UL, -5, 5 );
+
+         const double norm1( blaze::lpNorm( mat, 4 ) );
+         const double norm2( blaze::lpNorm<4UL>( mat ) );
+         const double norm3( blaze::l4Norm( mat ) );
+
+         if( !isEqual( norm1, norm3 ) || !isEqual( norm2, norm3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Lp norm computation failed\n"
+                << " Details:\n"
+                << "   lpNorm<4>(): " << norm1 << "\n"
+                << "   lpNorm(4): " << norm2 << "\n"
+                << "   Expected result: " << norm3 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
 
 } // namespace sparsematrix
 
