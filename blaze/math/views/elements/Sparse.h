@@ -64,6 +64,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/views/Check.h>
@@ -1976,10 +1977,15 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const DenseVector<VT2,TF>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   using RT = If_< IsComputation<VT2>, ElementType_<VT>, const ElementType_<VT2>& >;
+
    reserve( (~rhs).size() );
 
    for( size_t i=0UL; i<size(); ++i ) {
-      vector_[idx(i)] = (~rhs)[i];
+      RT value( (~rhs)[i] );
+      if( !isDefault<strict>( value ) )
+         vector_.set( idx(i), std::move( value ) );
+      else vector_.erase( idx(i) );
    }
 }
 /*! \endcond */
@@ -2006,12 +2012,18 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const SparseVector<VT2,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
+   using RT = If_< IsComputation<VT2>, ElementType_<VT>, const ElementType_<VT2>& >;
+
    size_t i( 0UL );
 
    for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       for( ; i<element->index(); ++i )
          vector_.erase( idx(i) );
-      vector_[idx(i++)] = element->value();
+      RT value( element->value() );
+      if( !isDefault<strict>( value ) )
+         vector_.set( idx(i), std::move( value ) );
+      else vector_.erase( idx(i) );
+      ++i;
    }
    for( ; i<size(); ++i ) {
       vector_.erase( idx(i) );
