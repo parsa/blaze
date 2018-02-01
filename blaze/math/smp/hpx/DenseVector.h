@@ -51,7 +51,6 @@
 #include <blaze/math/functors/MultAssign.h>
 #include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
-#include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/Functions.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
@@ -288,13 +287,11 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         assign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, Assign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      assign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, Assign() );
    }
 }
 /*! \endcond */
@@ -378,13 +375,11 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         addAssign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, AddAssign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      addAssign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, AddAssign() );
    }
 }
 /*! \endcond */
@@ -468,13 +463,11 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         subAssign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, SubAssign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      subAssign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, SubAssign() );
    }
 }
 /*! \endcond */
@@ -558,13 +551,11 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         multAssign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, MultAssign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      multAssign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, MultAssign() );
    }
 }
 /*! \endcond */
@@ -648,13 +639,11 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         divAssign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, DivAssign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      divAssign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, DivAssign() );
    }
 }
 /*! \endcond */

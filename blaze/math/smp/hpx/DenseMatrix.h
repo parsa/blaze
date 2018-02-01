@@ -47,7 +47,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/simd/SIMDTrait.h>
-#include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/ThreadMapping.h>
 #include <blaze/math/smp/Functions.h>
@@ -305,13 +304,11 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         assign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, Assign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      assign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, Assign() );
    }
 }
 /*! \endcond */
@@ -397,13 +394,11 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         addAssign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, AddAssign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      addAssign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, AddAssign() );
    }
 }
 /*! \endcond */
@@ -489,13 +484,11 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         subAssign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, SubAssign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      subAssign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, SubAssign() );
    }
 }
 /*! \endcond */
@@ -581,13 +574,11 @@ inline EnableIf_< And< IsDenseMatrix<MT1>, IsSMPAssignable<MT1>, IsSMPAssignable
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         schurAssign( ~lhs, ~rhs );
-      }
-      else {
-         hpxAssign( ~lhs, ~rhs, SchurAssign() );
-      }
+   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
+      schurAssign( ~lhs, ~rhs );
+   }
+   else {
+      hpxAssign( ~lhs, ~rhs, SchurAssign() );
    }
 }
 /*! \endcond */
