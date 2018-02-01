@@ -65,6 +65,7 @@
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -4440,12 +4441,14 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const DenseMatrix<MT2,SO
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
+   using RT = If_< IsComputation<MT2>, ElementType_<MT>, const ElementType_<MT2>& >;
+
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const ElementType_<MT2> value( (~rhs)(i,j) );
+         RT value( (~rhs)(i,j) );
          if( !isDefault<strict>( value ) )
             matrix_.set( idx(i), j, std::move( value ) );
          else matrix_.erase( idx(i), j );
@@ -4476,6 +4479,8 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const SparseMatrix<MT2,f
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
+   using RT = If_< IsComputation<MT2>, ElementType_<MT>, const ElementType_<MT2>& >;
+
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
@@ -4483,7 +4488,7 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const SparseMatrix<MT2,f
    for( size_t i=0UL; i<rows(); ++i ) {
       const size_t index( idx(i) );
       for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-         const ElementType_<MT2> value( element->value() );
+         RT value( element->value() );
          if( !isDefault<strict>( value ) )
             matrix_.set( index, element->index(), std::move( value ) );
          else matrix_.erase( index, element->index() );
@@ -4516,13 +4521,15 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const SparseMatrix<MT2,t
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
+   using RT = If_< IsComputation<MT2>, ElementType_<MT>, const ElementType_<MT2>& >;
+
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-         const ElementType_<MT2> value( element->value() );
+         RT value( element->value() );
          if( !isDefault<strict>( value ) )
             matrix_.set( idx( element->index() ), j, std::move( value ) );
          else matrix_.erase( idx( element->index() ), j );
