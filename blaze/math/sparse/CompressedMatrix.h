@@ -2438,15 +2438,15 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first index not less then the given index.
+/*!\brief Returns an iterator to the first index not less than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
 //
 // In case of a row-major matrix, this function returns a row iterator to the first element with
-// an index not less then the given column index. In case of a column-major matrix, the function
-// returns a column iterator to the first element with an index not less then the given row
+// an index not less than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less than the given row
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed matrix
 // iterator is subject to invalidation due to inserting operations via the function call operator,
@@ -2463,15 +2463,15 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first index not less then the given index.
+/*!\brief Returns an iterator to the first index not less than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
 //
 // In case of a row-major matrix, this function returns a row iterator to the first element with
-// an index not less then the given column index. In case of a column-major matrix, the function
-// returns a column iterator to the first element with an index not less then the given row
+// an index not less than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index not less than the given row
 // index. In combination with the upperBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed matrix
 // iterator is subject to invalidation due to inserting operations via the function call operator,
@@ -2493,15 +2493,15 @@ inline typename CompressedMatrix<Type,SO>::ConstIterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first index greater then the given index.
+/*!\brief Returns an iterator to the first index greater than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
 //
 // In case of a row-major matrix, this function returns a row iterator to the first element with
-// an index greater then the given column index. In case of a column-major matrix, the function
-// returns a column iterator to the first element with an index greater then the given row
+// an index greater than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater than the given row
 // index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed matrix
 // iterator is subject to invalidation due to inserting operations via the function call operator,
@@ -2518,15 +2518,15 @@ inline typename CompressedMatrix<Type,SO>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first index greater then the given index.
+/*!\brief Returns an iterator to the first index greater than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
 //
 // In case of a row-major matrix, this function returns a row iterator to the first element with
-// an index greater then the given column index. In case of a column-major matrix, the function
-// returns a column iterator to the first element with an index greater then the given row
+// an index greater than the given column index. In case of a column-major matrix, the function
+// returns a column iterator to the first element with an index greater than the given row
 // index. In combination with the lowerBound() function this function can be used to create a
 // pair of iterators specifying a range of indices. Note that the returned compressed matrix
 // iterator is subject to invalidation due to inserting operations via the function call operator,
@@ -5212,13 +5212,13 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first index not less then the given index.
+/*!\brief Returns an iterator to the first index not less than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
 //
-// The function returns a column iterator to the first element with an index not less then the
+// The function returns a column iterator to the first element with an index not less than the
 // given row index. In combination with the upperBound() function this function can be used to
 // create a pair of iterators specifying a range of indices. Note that the returned compressed
 // matrix iterator is subject to invalidation due to inserting operations via the function call
@@ -5236,13 +5236,13 @@ inline typename CompressedMatrix<Type,true>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first index not less then the given index.
+/*!\brief Returns an iterator to the first index not less than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index not less then the given index, end() iterator otherwise.
+// \return Iterator to the first index not less than the given index, end() iterator otherwise.
 //
-// The function returns a column iterator to the first element with an index not less then the
+// The function returns a column iterator to the first element with an index not less than the
 // given row index. In combination with the upperBound() function this function can be used to
 // create a pair of iterators specifying a range of indices. Note that the returned compressed
 // matrix iterator is subject to invalidation due to inserting operations via the function call
@@ -5265,13 +5265,13 @@ inline typename CompressedMatrix<Type,true>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first index greater then the given index.
+/*!\brief Returns an iterator to the first index greater than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
 //
-// The function returns a column iterator to the first element with an index greater then the
+// The function returns a column iterator to the first element with an index greater than the
 // given row index. In combination with the lowerBound() function this function can be used to
 // create a pair of iterators specifying a range of indices. Note that the returned compressed
 // matrix iterator is subject to invalidation due to inserting operations via the function call
@@ -5289,13 +5289,13 @@ inline typename CompressedMatrix<Type,true>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first index greater then the given index.
+/*!\brief Returns an iterator to the first index greater than the given index.
 //
 // \param i The row index of the search element. The index has to be in the range \f$[0..M-1]\f$.
 // \param j The column index of the search element. The index has to be in the range \f$[0..N-1]\f$.
-// \return Iterator to the first index greater then the given index, end() iterator otherwise.
+// \return Iterator to the first index greater than the given index, end() iterator otherwise.
 //
-// The function returns a column iterator to the first element with an index greater then the
+// The function returns a column iterator to the first element with an index greater than the
 // given row index. In combination with the lowerBound() function this function can be used to
 // create a pair of iterators specifying a range of indices. Note that the returned compressed
 // matrix iterator is subject to invalidation due to inserting operations via the function call
