@@ -132,11 +132,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::StaticVector<int,4UL,blaze::rowVector>     VT;    //!< Type of the static vector.
-   typedef blaze::StaticVector<int,4UL,blaze::columnVector>  TVT;   //!< Transpose static vector type.
+   using VT  = blaze::StaticVector<int,4UL,blaze::rowVector>;     //!< Type of the static vector.
+   using TVT = blaze::StaticVector<int,4UL,blaze::columnVector>;  //!< Transpose static vector type.
 
-   typedef VT::Rebind<double>::Other   RVT;   //!< Rebound static vector type.
-   typedef TVT::Rebind<double>::Other  TRVT;  //!< Transpose rebound static vector type.
+   using RVT  = VT::Rebind<double>::Other;   //!< Rebound static vector type.
+   using TRVT = TVT::Rebind<double>::Other;  //!< Transpose rebound static vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -211,8 +211,8 @@ class ClassTest
 template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
-   typedef blaze::StaticVector<Type,7UL,blaze::rowVector>  VectorType;
-   typedef blaze::AlignedAllocator<VectorType>             AllocatorType;
+   using VectorType    = blaze::StaticVector<Type,7UL,blaze::rowVector>;
+   using AllocatorType = blaze::AlignedAllocator<VectorType>;
 
    const size_t alignment( blaze::AlignmentOf<Type>::value );
 

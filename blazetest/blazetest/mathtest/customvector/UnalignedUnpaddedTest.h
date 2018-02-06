@@ -127,13 +127,13 @@ class UnalignedUnpaddedTest
 
    //**Type definitions****************************************************************************
    //! Type of the custom row vector.
-   typedef blaze::CustomVector<int,blaze::unaligned,blaze::unpadded,blaze::rowVector>  VT;
+   using VT = blaze::CustomVector<int,blaze::unaligned,blaze::unpadded,blaze::rowVector>;
 
    //! Type of the custom column vector.
-   typedef blaze::CustomVector<int,blaze::unaligned,blaze::unpadded,blaze::columnVector>  TVT;
+   using TVT = blaze::CustomVector<int,blaze::unaligned,blaze::unpadded,blaze::columnVector>;
 
-   typedef VT::Rebind<const double>::Other   RVT;   //!< Rebound custom row vector type.
-   typedef TVT::Rebind<const double>::Other  TRVT;  //!< Rebound custom column vector type.
+   using RVT  = VT::Rebind<const double>::Other;   //!< Rebound custom row vector type.
+   using TRVT = TVT::Rebind<const double>::Other;  //!< Rebound custom column vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

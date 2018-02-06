@@ -85,15 +85,15 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::ElementType_<VT1>  ET1;  //!< Element type 1
-   typedef blaze::ElementType_<VT2>  ET2;  //!< Element type 2
+   using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
 
-   typedef blaze::TransposeType_<VT1>   TVT1;  //!< Transpose vector type 1
-   typedef blaze::TransposeType_<VT2>   TVT2;  //!< Transpose vector type 2
-   typedef blaze::MultTrait_<TVT1,VT2>  RE;    //!< Result type
+   using TVT1 = blaze::TransposeType_<VT1>;   //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_<VT2>;   //!< Transpose vector type 2
+   using RE   = blaze::MultTrait_<TVT1,VT2>;  //!< Result type
 
-   typedef blaze::DynamicVector<ET1,true>   RT1;  //!< Reference type 1
-   typedef blaze::DynamicVector<ET2,false>  RT2;  //!< Reference type 2
+   using RT1 = blaze::DynamicVector<ET1,true>;   //!< Reference type 1
+   using RT2 = blaze::DynamicVector<ET2,false>;  //!< Reference type 2
    //**********************************************************************************************
 
  public:

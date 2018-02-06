@@ -1412,9 +1412,9 @@ void ClassTest::testAt()
 */
 void ClassTest::testIterator()
 {
-   typedef blaze::SmallVector<int,5UL>  VectorType;
-   typedef VectorType::Iterator         Iterator;
-   typedef VectorType::ConstIterator    ConstIterator;
+   using VectorType    = blaze::SmallVector<int,5UL>;
+   using Iterator      = VectorType::Iterator;
+   using ConstIterator = VectorType::ConstIterator;
 
    VectorType vec{ 1, 0, -2, -3 };
 

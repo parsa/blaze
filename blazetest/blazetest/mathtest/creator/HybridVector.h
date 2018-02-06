@@ -66,7 +66,7 @@ class Creator< blaze::HybridVector<T,N,TF> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::HybridVector<T,N,TF>  Type;  //!< Type to be created by the Creator.
+   using Type = blaze::HybridVector<T,N,TF>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

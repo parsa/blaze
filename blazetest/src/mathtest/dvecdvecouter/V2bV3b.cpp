@@ -61,12 +61,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::StaticVector<TypeB,2UL>  V2b;
-      typedef blaze::StaticVector<TypeB,3UL>  V3b;
+      using V2b = blaze::StaticVector<TypeB,2UL>;
+      using V3b = blaze::StaticVector<TypeB,3UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<V2b>  CV2b;
-      typedef blazetest::Creator<V3b>  CV3b;
+      using CV2b = blazetest::Creator<V2b>;
+      using CV3b = blazetest::Creator<V3b>;
 
       // Running the tests
       RUN_DVECDVECOUTER_OPERATION_TEST( CV2b(), CV3b() );

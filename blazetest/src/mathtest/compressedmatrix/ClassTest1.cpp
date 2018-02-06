@@ -1170,7 +1170,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major CompressedMatrix copy assignment stress test";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<int,blaze::rowMajor>;
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1;
       const int min( randmin );
@@ -1268,7 +1268,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major CompressedMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1;
       const int min( randmin );
@@ -1327,7 +1327,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major CompressedMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<int,blaze::columnMajor>;
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1;
       const int min( randmin );
@@ -1522,7 +1522,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major CompressedMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<short,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<short,blaze::rowMajor>;
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1;
       const short min( randmin );
@@ -1578,7 +1578,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major CompressedMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<short,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<short,blaze::columnMajor>;
 
       blaze::CompressedMatrix<int,blaze::rowMajor> mat1;
       const short min( randmin );
@@ -1830,7 +1830,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major CompressedMatrix copy assignment stress test";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<int,blaze::columnMajor>;
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1;
       const int min( randmin );
@@ -1928,7 +1928,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major CompressedMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1;
       const int min( randmin );
@@ -1986,7 +1986,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/column-major CompressedMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<int,blaze::columnMajor>;
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1;
       const int min( randmin );
@@ -2180,7 +2180,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major CompressedMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<short,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<short,blaze::rowMajor>;
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1;
       const short min( randmin );
@@ -2237,7 +2237,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/column-major CompressedMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<short,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<short,blaze::columnMajor>;
 
       blaze::CompressedMatrix<int,blaze::columnMajor> mat1;
       const short min( randmin );

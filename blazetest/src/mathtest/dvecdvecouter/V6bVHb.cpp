@@ -62,12 +62,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::StaticVector<TypeB,6UL>  V6b;
-      typedef blaze::HybridVector<TypeB,8UL>  VHb;
+      using V6b = blaze::StaticVector<TypeB,6UL>;
+      using VHb = blaze::HybridVector<TypeB,8UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<V6b>  CV6b;
-      typedef blazetest::Creator<VHb>  CVHb;
+      using CV6b = blazetest::Creator<V6b>;
+      using CVHb = blazetest::Creator<VHb>;
 
       // Running the tests
       for( size_t i=0UL; i<=8UL; ++i ) {

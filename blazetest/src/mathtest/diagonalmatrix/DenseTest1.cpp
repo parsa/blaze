@@ -510,7 +510,7 @@ void DenseTest::testConstructors()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[5UL] );
       memory[1] = 1;
       memory[2] = 0;
@@ -543,7 +543,7 @@ void DenseTest::testConstructors()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[11UL] );
       memory[1] = 1;
       memory[2] = 0;
@@ -1081,7 +1081,7 @@ void DenseTest::testConstructors()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[5UL] );
       memory[1] = 1;
       memory[2] = 0;
@@ -1114,7 +1114,7 @@ void DenseTest::testConstructors()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[11UL] );
       memory[1] = 1;
       memory[2] = 0;

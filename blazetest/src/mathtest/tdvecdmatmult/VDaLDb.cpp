@@ -64,12 +64,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicVector<TypeA>                        VDa;
-      typedef blaze::LowerMatrix< blaze::DynamicMatrix<TypeB> >  LDb;
+      using VDa = blaze::DynamicVector<TypeA>;
+      using LDb = blaze::LowerMatrix< blaze::DynamicMatrix<TypeB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
-      typedef blazetest::Creator<LDb>  CLDb;
+      using CVDa = blazetest::Creator<VDa>;
+      using CLDb = blazetest::Creator<LDb>;
 
       // Running tests with small vectors and matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

@@ -151,13 +151,13 @@ class SparseTest
 
    //**Type definitions****************************************************************************
    //! Type of the row-major strictly upper matrix.
-   typedef blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  UT;
+   using UT = blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Type of the column-major strictly upper matrix.
-   typedef blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >  OUT;
+   using OUT = blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >;
 
-   typedef UT::Rebind<double>::Other   RUT;   //!< Rebound row-major strictly upper matrix type.
-   typedef OUT::Rebind<double>::Other  ORUT;  //!< Rebound column-major strictly upper matrix type.
+   using RUT  = UT::Rebind<double>::Other;   //!< Rebound row-major strictly upper matrix type.
+   using ORUT = OUT::Rebind<double>::Other;  //!< Rebound column-major strictly upper matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

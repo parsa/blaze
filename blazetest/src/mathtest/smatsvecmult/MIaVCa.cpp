@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::IdentityMatrix<TypeA>    MIa;
-      typedef blaze::CompressedVector<TypeA>  VCa;
+      using MIa = blaze::IdentityMatrix<TypeA>;
+      using VCa = blaze::CompressedVector<TypeA>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MIa>  CMIa;
-      typedef blazetest::Creator<VCa>  CVCa;
+      using CMIa = blazetest::Creator<MIa>;
+      using CVCa = blazetest::Creator<VCa>;
 
       // Running tests with small matrices and vectors
       for( size_t i=0UL; i<=6UL; ++i ) {

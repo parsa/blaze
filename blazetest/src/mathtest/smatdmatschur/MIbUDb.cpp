@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::IdentityMatrix<TypeB>                       MIb;
-      typedef blaze::UpperMatrix< blaze::DynamicMatrix<TypeB> >  UDb;
+      using MIb = blaze::IdentityMatrix<TypeB>;
+      using UDb = blaze::UpperMatrix< blaze::DynamicMatrix<TypeB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<MIb>  CMIb;
-      typedef blazetest::Creator<UDb>  CUDb;
+      using CMIb = blazetest::Creator<MIb>;
+      using CUDb = blazetest::Creator<UDb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

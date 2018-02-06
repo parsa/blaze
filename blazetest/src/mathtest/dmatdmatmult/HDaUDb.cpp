@@ -64,12 +64,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericA> >  HDa;
-      typedef blaze::UpperMatrix< blaze::DynamicMatrix<NumericB> >      UDb;
+      using HDa = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericA> >;
+      using UDb = blaze::UpperMatrix< blaze::DynamicMatrix<NumericB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<HDa>  CHDa;
-      typedef blazetest::Creator<UDb>  CUDb;
+      using CHDa = blazetest::Creator<HDa>;
+      using CUDb = blazetest::Creator<UDb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

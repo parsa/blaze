@@ -942,9 +942,9 @@ void ClassTest::testIterator()
    //=====================================================================================
 
    {
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-      typedef MatrixType::Iterator                          Iterator;
-      typedef MatrixType::ConstIterator                     ConstIterator;
+      using MatrixType    = blaze::CompressedMatrix<int,blaze::rowMajor>;
+      using Iterator      = MatrixType::Iterator;
+      using ConstIterator = MatrixType::ConstIterator;
 
       MatrixType mat{ {  0, 1,  0 },
                       { -2, 0, -3 },
@@ -1179,9 +1179,9 @@ void ClassTest::testIterator()
    //=====================================================================================
 
    {
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
-      typedef MatrixType::Iterator                             Iterator;
-      typedef MatrixType::ConstIterator                        ConstIterator;
+      using MatrixType    = blaze::CompressedMatrix<int,blaze::columnMajor>;
+      using Iterator      = MatrixType::Iterator;
+      using ConstIterator = MatrixType::ConstIterator;
 
       MatrixType mat{ { 0, -2, 0 },
                       { 1,  0, 4 },
@@ -2910,7 +2910,7 @@ void ClassTest::testSet()
    {
       test_ = "Row-major CompressedMatrix::set()";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::Iterator  Iterator;
+      using Iterator = blaze::CompressedMatrix<int,blaze::rowMajor>::Iterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 5UL );
@@ -3148,7 +3148,7 @@ void ClassTest::testSet()
    {
       test_ = "Column-major CompressedMatrix::set()";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::Iterator  Iterator;
+      using Iterator = blaze::CompressedMatrix<int,blaze::columnMajor>::Iterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 4UL );
@@ -3395,7 +3395,7 @@ void ClassTest::testInsert()
    {
       test_ = "Row-major CompressedMatrix::insert()";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::Iterator  Iterator;
+      using Iterator = blaze::CompressedMatrix<int,blaze::rowMajor>::Iterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 4UL, 5UL );
@@ -3611,7 +3611,7 @@ void ClassTest::testInsert()
    {
       test_ = "Column-major CompressedMatrix::insert()";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::Iterator  Iterator;
+      using Iterator = blaze::CompressedMatrix<int,blaze::columnMajor>::Iterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 4UL );
@@ -4325,8 +4325,8 @@ void ClassTest::testErase()
    {
       test_ = "Row-major CompressedMatrix::erase( size_t, Iterator )";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-      typedef MatrixType::Iterator  Iterator;
+      using MatrixType = blaze::CompressedMatrix<int,blaze::rowMajor>;
+      using Iterator   = MatrixType::Iterator;
 
       // Initialization check
       MatrixType mat{ { 1, 0, 2, 0, 0 },
@@ -4504,8 +4504,8 @@ void ClassTest::testErase()
    {
       test_ = "Row-major CompressedMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  MatrixType;
-      typedef MatrixType::Iterator  Iterator;
+      using MatrixType = blaze::CompressedMatrix<int,blaze::rowMajor>;
+      using Iterator   = MatrixType::Iterator;
 
       // Initialization check
       MatrixType mat{ { 1, 0, 2, 0, 0 },
@@ -4972,8 +4972,8 @@ void ClassTest::testErase()
    {
       test_ = "Column-major CompressedMatrix::erase( size_t, Iterator )";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
-      typedef MatrixType::Iterator  Iterator;
+      using MatrixType = blaze::CompressedMatrix<int,blaze::columnMajor>;
+      using Iterator   = MatrixType::Iterator;
 
       // Initialization check
       MatrixType mat{ { 1, 0, 0 },
@@ -5153,8 +5153,8 @@ void ClassTest::testErase()
    {
       test_ = "Column-major CompressedMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  MatrixType;
-      typedef MatrixType::Iterator  Iterator;
+      using MatrixType = blaze::CompressedMatrix<int,blaze::columnMajor>;
+      using Iterator   = MatrixType::Iterator;
 
       // Initialization check
       MatrixType mat{ { 1, 0, 0 },
@@ -5512,7 +5512,7 @@ void ClassTest::testFind()
    {
       test_ = "Row-major CompressedMatrix::find()";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 8UL, 6UL, 3UL );
@@ -5641,7 +5641,7 @@ void ClassTest::testFind()
    {
       test_ = "Column-major CompressedMatrix::find()";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 8UL, 6UL, 3UL );
@@ -5781,7 +5781,7 @@ void ClassTest::testLowerBound()
    {
       test_ = "Row-major CompressedMatrix::lowerBound()";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 6UL, 3UL );
@@ -5928,7 +5928,7 @@ void ClassTest::testLowerBound()
    {
       test_ = "Column-major CompressedMatrix::lowerBound()";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 6UL, 3UL, 3UL );
@@ -6088,7 +6088,7 @@ void ClassTest::testUpperBound()
    {
       test_ = "Row-major CompressedMatrix::upperBound()";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::CompressedMatrix<int,blaze::rowMajor>::ConstIterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 6UL, 3UL );
@@ -6223,7 +6223,7 @@ void ClassTest::testUpperBound()
    {
       test_ = "Column-major CompressedMatrix::upperBound()";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::CompressedMatrix<int,blaze::columnMajor>::ConstIterator;
 
       // Initialization check
       blaze::CompressedMatrix<int,blaze::columnMajor> mat( 6UL, 3UL, 3UL );
@@ -6656,7 +6656,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Row-major self-transpose via ctranspose()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       // Self-transpose of a 3x5 matrix
       {
@@ -6742,7 +6742,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Row-major self-transpose via ctrans()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       // Self-transpose of a 3x5 matrix
       {
@@ -6833,7 +6833,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Column-major self-transpose via ctranspose()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       // Self-transpose of a 3x5 matrix
       {
@@ -6919,7 +6919,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Column-major self-transpose via ctrans()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       // Self-transpose of a 3x5 matrix
       {

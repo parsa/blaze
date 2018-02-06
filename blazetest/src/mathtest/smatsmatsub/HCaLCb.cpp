@@ -64,12 +64,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::HermitianMatrix< blaze::CompressedMatrix<NumericA> >  HCa;
-      typedef blaze::LowerMatrix< blaze::CompressedMatrix<NumericB> >      LCb;
+      using HCa = blaze::HermitianMatrix< blaze::CompressedMatrix<NumericA> >;
+      using LCb = blaze::LowerMatrix< blaze::CompressedMatrix<NumericB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<HCa>  CHCa;
-      typedef blazetest::Creator<LCb>  CLCb;
+      using CHCa = blazetest::Creator<HCa>;
+      using CLCb = blazetest::Creator<LCb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

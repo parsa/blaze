@@ -112,37 +112,37 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::ElementType_<MT1>  ET1;  //!< Element type 1
-   typedef blaze::ElementType_<MT2>  ET2;  //!< Element type 2
+   using ET1 = blaze::ElementType_<MT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_<MT2>;  //!< Element type 2
 
-   typedef blaze::OppositeType_<MT1>    OMT1;   //!< Matrix type 1 with opposite storage order
-   typedef blaze::OppositeType_<MT2>    OMT2;   //!< Matrix type 2 with opposite storage order
-   typedef blaze::TransposeType_<MT1>   TMT1;   //!< Transpose matrix type 1
-   typedef blaze::TransposeType_<MT2>   TMT2;   //!< Transpose matrix type 2
-   typedef blaze::TransposeType_<OMT1>  TOMT1;  //!< Transpose matrix type 1 with opposite storage order
-   typedef blaze::TransposeType_<OMT2>  TOMT2;  //!< Transpose matrix type 2 with opposite storage order
+   using OMT1  = blaze::OppositeType_<MT1>;    //!< Matrix type 1 with opposite storage order
+   using OMT2  = blaze::OppositeType_<MT2>;    //!< Matrix type 2 with opposite storage order
+   using TMT1  = blaze::TransposeType_<MT1>;   //!< Transpose matrix type 1
+   using TMT2  = blaze::TransposeType_<MT2>;   //!< Transpose matrix type 2
+   using TOMT1 = blaze::TransposeType_<OMT1>;  //!< Transpose matrix type 1 with opposite storage order
+   using TOMT2 = blaze::TransposeType_<OMT2>;  //!< Transpose matrix type 2 with opposite storage order
 
    //! Dense result type
-   typedef blaze::AddTrait_<MT1,MT2>  DRE;
+   using DRE = blaze::AddTrait_<MT1,MT2>;
 
-   typedef blaze::ElementType_<DRE>     DET;    //!< Element type of the dense result
-   typedef blaze::OppositeType_<DRE>    ODRE;   //!< Dense result type with opposite storage order
-   typedef blaze::TransposeType_<DRE>   TDRE;   //!< Transpose dense result type
-   typedef blaze::TransposeType_<ODRE>  TODRE;  //!< Transpose dense result type with opposite storage order
+   using DET   = blaze::ElementType_<DRE>;     //!< Element type of the dense result
+   using ODRE  = blaze::OppositeType_<DRE>;    //!< Dense result type with opposite storage order
+   using TDRE  = blaze::TransposeType_<DRE>;   //!< Transpose dense result type
+   using TODRE = blaze::TransposeType_<ODRE>;  //!< Transpose dense result type with opposite storage order
 
    //! Sparse result type
-   typedef MatchAdaptor_< DRE, blaze::CompressedMatrix<DET,false> >  SRE;
+   using SRE = MatchAdaptor_< DRE, blaze::CompressedMatrix<DET,false> >;
 
-   typedef blaze::ElementType_<SRE>     SET;    //!< Element type of the sparse result
-   typedef blaze::OppositeType_<SRE>    OSRE;   //!< Sparse result type with opposite storage order
-   typedef blaze::TransposeType_<SRE>   TSRE;   //!< Transpose sparse result type
-   typedef blaze::TransposeType_<OSRE>  TOSRE;  //!< Transpose sparse result type with opposite storage order
+   using SET   = blaze::ElementType_<SRE>;     //!< Element type of the sparse result
+   using OSRE  = blaze::OppositeType_<SRE>;    //!< Sparse result type with opposite storage order
+   using TSRE  = blaze::TransposeType_<SRE>;   //!< Transpose sparse result type
+   using TOSRE = blaze::TransposeType_<OSRE>;  //!< Transpose sparse result type with opposite storage order
 
-   typedef blaze::DynamicMatrix<ET1,false>     RT1;  //!< Reference type 1
-   typedef blaze::CompressedMatrix<ET2,false>  RT2;  //!< Reference type 2
+   using RT1 = blaze::DynamicMatrix<ET1,false>;     //!< Reference type 1
+   using RT2 = blaze::CompressedMatrix<ET2,false>;  //!< Reference type 2
 
    //! Reference result type
-   typedef MatchSymmetry_< DRE, blaze::AddTrait_<RT1,RT2> >  RRE;
+   using RRE = MatchSymmetry_< DRE, blaze::AddTrait_<RT1,RT2> >;
    //**********************************************************************************************
 
  public:
@@ -352,7 +352,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    using blaze::Or;
    using blaze::Nor;
 
-   typedef blaze::UnderlyingNumeric_<DET>  Scalar;
+   using Scalar = blaze::UnderlyingNumeric_<DET>;
 
    testInitialStatus();
    testAssignment();

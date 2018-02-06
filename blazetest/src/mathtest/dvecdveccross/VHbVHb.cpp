@@ -61,10 +61,10 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::HybridVector<TypeB,3UL>  VHb;
+      using VHb = blaze::HybridVector<TypeB,3UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VHb>  CVHb;
+      using CVHb = blazetest::Creator<VHb>;
 
       // Running the tests
       RUN_DVECDVECCROSS_OPERATION_TEST( CVHb( 3UL ), CVHb( 3UL ) );

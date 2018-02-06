@@ -155,8 +155,8 @@ class OperationTest : private blaze::NonCopyable
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::SIMDTrait<T>  SIMD;      //!< SIMD trait for the given numeric type.
-   typedef typename SIMD::Type  SIMDType;  //!< SIMD type for the given numeric type.
+   using SIMD     = blaze::SIMDTrait<T>;  //!< SIMD trait for the given numeric type.
+   using SIMDType = typename SIMD::Type;  //!< SIMD type for the given numeric type.
    //**********************************************************************************************
 
    //**********************************************************************************************

@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<TypeB> >  DCb;
-      typedef blaze::DiagonalMatrix< blaze::DynamicMatrix<TypeB> >     DDb;
+      using DCb = blaze::DiagonalMatrix< blaze::CompressedMatrix<TypeB> >;
+      using DDb = blaze::DiagonalMatrix< blaze::DynamicMatrix<TypeB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<DCb>  CDCb;
-      typedef blazetest::Creator<DDb>  CDDb;
+      using CDCb = blazetest::Creator<DCb>;
+      using CDDb = blazetest::Creator<DDb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

@@ -61,10 +61,10 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::StaticVector<TypeA,5UL>  V5a;
+      using V5a = blaze::StaticVector<TypeA,5UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<V5a>  CV5a;
+      using CV5a = blazetest::Creator<V5a>;
 
       // Running the tests
       RUN_DVECDVECMAX_OPERATION_TEST( CV5a(), CV5a() );

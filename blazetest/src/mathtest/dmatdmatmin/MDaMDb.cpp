@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicMatrix<TypeA>  MDa;
-      typedef blaze::DynamicMatrix<TypeB>  MDb;
+      using MDa = blaze::DynamicMatrix<TypeA>;
+      using MDb = blaze::DynamicMatrix<TypeB>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MDa>  CMDa;
-      typedef blazetest::Creator<MDb>  CMDb;
+      using CMDa = blazetest::Creator<MDa>;
+      using CMDb = blazetest::Creator<MDb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=9UL; ++i ) {

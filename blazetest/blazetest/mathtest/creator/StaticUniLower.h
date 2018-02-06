@@ -69,7 +69,7 @@ class Creator< blaze::UniLowerMatrix< blaze::StaticMatrix<T,N,N,SO> > >
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
-   typedef blaze::UniLowerMatrix< blaze::StaticMatrix<T,N,N,SO> >  Type;
+   using Type = blaze::UniLowerMatrix< blaze::StaticMatrix<T,N,N,SO> >;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

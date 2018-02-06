@@ -394,7 +394,7 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector copy assignment stress test";
 
-      typedef blaze::CompressedVector<int,blaze::rowVector>  RandomVectorType;
+      using RandomVectorType = blaze::CompressedVector<int,blaze::rowVector>;
 
       blaze::CompressedVector<int,blaze::rowVector> vec1;
       const int min( randmin );
@@ -476,7 +476,7 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector dense vector assignment stress test";
 
-      typedef blaze::DynamicVector<int,blaze::rowVector>  RandomVectorType;
+      using RandomVectorType = blaze::DynamicVector<int,blaze::rowVector>;
 
       blaze::CompressedVector<int,blaze::rowVector> vec1;
       const int min( randmin );
@@ -530,7 +530,7 @@ void ClassTest::testAssignment()
    {
       test_ = "CompressedVector sparse vector assignment stress test";
 
-      typedef blaze::CompressedVector<short,blaze::rowVector>  RandomVectorType;
+      using RandomVectorType = blaze::CompressedVector<short,blaze::rowVector>;
 
       blaze::CompressedVector<int,blaze::rowVector> vec1;
       const short min( randmin );
@@ -1427,9 +1427,9 @@ void ClassTest::testAt()
 */
 void ClassTest::testIterator()
 {
-   typedef blaze::CompressedVector<int>  VectorType;
-   typedef VectorType::Iterator          Iterator;
-   typedef VectorType::ConstIterator     ConstIterator;
+   using VectorType    = blaze::CompressedVector<int>;
+   using Iterator      = VectorType::Iterator;
+   using ConstIterator = VectorType::ConstIterator;
 
    VectorType vec{ 0, -2, -3, 0 };
 
@@ -2089,7 +2089,7 @@ void ClassTest::testSet()
 {
    test_ = "CompressedVector::set()";
 
-   typedef blaze::CompressedVector<int,blaze::rowVector>::Iterator  Iterator;
+   using Iterator = blaze::CompressedVector<int,blaze::rowVector>::Iterator;
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
@@ -2268,7 +2268,7 @@ void ClassTest::testInsert()
 {
    test_ = "CompressedVector::insert()";
 
-   typedef blaze::CompressedVector<int,blaze::rowVector>::Iterator  Iterator;
+   using Iterator = blaze::CompressedVector<int,blaze::rowVector>::Iterator;
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec( 7UL );
@@ -2588,8 +2588,8 @@ void ClassTest::testErase()
    {
       test_ = "CompressedVector::erase( Iterator )";
 
-      typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
-      typedef VectorType::Iterator  Iterator;
+      using VectorType = blaze::CompressedVector<int,blaze::rowVector>;
+      using Iterator   = VectorType::Iterator;
 
       // Initialization check
       VectorType vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
@@ -2735,8 +2735,8 @@ void ClassTest::testErase()
    {
       test_ = "CompressedVector::erase( Iterator, Iterator )";
 
-      typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
-      typedef VectorType::Iterator  Iterator;
+      using VectorType = blaze::CompressedVector<int,blaze::rowVector>;
+      using Iterator   = VectorType::Iterator;
 
       // Initialization check
       VectorType vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
@@ -2942,7 +2942,7 @@ void ClassTest::testErase()
    {
       test_ = "CompressedVector::erase( Iterator, Iterator, Predicate )";
 
-      typedef blaze::CompressedVector<int,blaze::rowVector>  VectorType;
+      using VectorType = blaze::CompressedVector<int,blaze::rowVector>;
 
       // Initialization check
       VectorType vec{ 1, 0, 2, 0, 0, 3, 0, 4, 5 };
@@ -3017,7 +3017,7 @@ void ClassTest::testFind()
 {
    test_ = "CompressedVector::find()";
 
-   typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
+   using ConstIterator = blaze::CompressedVector<int,blaze::rowVector>::ConstIterator;
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 0, 0, 3 };
@@ -3141,7 +3141,7 @@ void ClassTest::testLowerBound()
 {
    test_ = "CompressedVector::lowerBound()";
 
-   typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
+   using ConstIterator = blaze::CompressedVector<int,blaze::rowVector>::ConstIterator;
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 0, 0, 3 };
@@ -3301,7 +3301,7 @@ void ClassTest::testUpperBound()
 {
    test_ = "CompressedVector::upperBound()";
 
-   typedef blaze::CompressedVector<int,blaze::rowVector>::ConstIterator  ConstIterator;
+   using ConstIterator = blaze::CompressedVector<int,blaze::rowVector>::ConstIterator;
 
    // Initialization check
    blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 0, 0, 0, 3 };

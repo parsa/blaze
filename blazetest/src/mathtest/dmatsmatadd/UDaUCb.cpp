@@ -41,7 +41,7 @@
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/LowerMatrix.h>
+#include <blaze/math/UpperMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dmatsmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -64,12 +64,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::LowerMatrix< blaze::DynamicMatrix<TypeA> >     UDa;
-      typedef blaze::LowerMatrix< blaze::CompressedMatrix<TypeB> >  UCb;
+      using UDa = blaze::UpperMatrix< blaze::DynamicMatrix<TypeA> >;
+      using UCb = blaze::UpperMatrix< blaze::CompressedMatrix<TypeB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<UDa>  CUDa;
-      typedef blazetest::Creator<UCb>  CUCb;
+      using CUDa = blazetest::Creator<UDa>;
+      using CUCb = blazetest::Creator<UCb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

@@ -115,11 +115,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::InitializerVector<int,blaze::rowVector>     VT;   //!< Type of the initializer vector.
-   typedef blaze::InitializerVector<int,blaze::columnVector>  TVT;  //!< Transpose initializer vector type.
+   using VT  = blaze::InitializerVector<int,blaze::rowVector>;     //!< Type of the initializer vector.
+   using TVT = blaze::InitializerVector<int,blaze::columnVector>;  //!< Transpose initializer vector type.
 
-   typedef VT::Rebind<double>::Other   RVT;   //!< Rebound initializer vector type.
-   typedef TVT::Rebind<double>::Other  TRVT;  //!< Transpose rebound initializer vector type.
+   using RVT  = VT::Rebind<double>::Other;   //!< Rebound initializer vector type.
+   using TRVT = TVT::Rebind<double>::Other;  //!< Transpose rebound initializer vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

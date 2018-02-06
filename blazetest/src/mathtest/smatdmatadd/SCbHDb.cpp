@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/smatdmatadd/SDbHDb.cpp
-//  \brief Source file for the SDbHDb sparse matrix/dense matrix addition math test
+//  \file src/mathtest/smatdmatadd/SCbHDb.cpp
+//  \brief Source file for the SCbHDb sparse matrix/dense matrix addition math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -57,30 +57,30 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'SDbHDb'..." << std::endl;
+   std::cout << "   Running 'SCbHDb'..." << std::endl;
 
    using blazetest::mathtest::NumericB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<NumericB> >  SDb;
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >     HDb;
+      using SCb = blaze::SymmetricMatrix< blaze::CompressedMatrix<NumericB> >;
+      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<SDb>  CSDb;
-      typedef blazetest::Creator<HDb>  CHDb;
+      using CSCb = blazetest::Creator<SCb>;
+      using CHDb = blazetest::Creator<HDb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_SMATDMATADD_OPERATION_TEST( CSDb( i, j ), CHDb( i ) );
+            RUN_SMATDMATADD_OPERATION_TEST( CSCb( i, j ), CHDb( i ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_SMATDMATADD_OPERATION_TEST( CSDb(  67UL,  7UL ), CHDb(  67UL ) );
-      RUN_SMATDMATADD_OPERATION_TEST( CSDb( 128UL, 16UL ), CHDb( 128UL ) );
+      RUN_SMATDMATADD_OPERATION_TEST( CSCb(  67UL,  7UL ), CHDb(  67UL ) );
+      RUN_SMATDMATADD_OPERATION_TEST( CSCb( 128UL, 16UL ), CHDb( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse matrix/dense matrix addition:\n"

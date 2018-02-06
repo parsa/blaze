@@ -64,12 +64,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<NumericB> >  SCb;
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >     HDb;
+      using SCb = blaze::SymmetricMatrix< blaze::CompressedMatrix<NumericB> >;
+      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<SCb>  CSCb;
-      typedef blazetest::Creator<HDb>  CHDb;
+      using CSCb = blazetest::Creator<SCb>;
+      using CHDb = blazetest::Creator<HDb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

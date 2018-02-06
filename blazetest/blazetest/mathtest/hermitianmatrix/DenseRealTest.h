@@ -144,13 +144,13 @@ class DenseRealTest
 
    //**Type definitions****************************************************************************
    //! Type of the row-major Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  HT;
+   using HT = blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Type of the column-major Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> >  OHT;
+   using OHT = blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> >;
 
-   typedef HT::Rebind<double>::Other   RHT;   //!< Rebound row-major Hermitian matrix type.
-   typedef OHT::Rebind<double>::Other  ORHT;  //!< Rebound column-major Hermitian matrix type.
+   using RHT  = HT::Rebind<double>::Other;   //!< Rebound row-major Hermitian matrix type.
+   using ORHT = OHT::Rebind<double>::Other;  //!< Rebound column-major Hermitian matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

@@ -1456,8 +1456,8 @@ void SparseNumericTest::testIterator()
    //=====================================================================================
 
    {
-      typedef ST::Iterator       Iterator;
-      typedef ST::ConstIterator  ConstIterator;
+      using Iterator      = ST::Iterator;
+      using ConstIterator = ST::ConstIterator;
 
       ST sym( 3UL );
       sym(0,1) =  1;
@@ -1686,7 +1686,7 @@ void SparseNumericTest::testIterator()
    }
 
    {
-      typedef ST::Iterator  Iterator;
+      using Iterator = ST::Iterator;
 
       // Testing assignment to via Iterator non-synced elements
       {
@@ -1895,8 +1895,8 @@ void SparseNumericTest::testIterator()
    //=====================================================================================
 
    {
-      typedef OST::Iterator       Iterator;
-      typedef OST::ConstIterator  ConstIterator;
+      using Iterator      = OST::Iterator;
+      using ConstIterator = OST::ConstIterator;
 
       OST sym( 3UL );
       sym(0,1) =  1;
@@ -2125,7 +2125,7 @@ void SparseNumericTest::testIterator()
    }
 
    {
-      typedef OST::Iterator  Iterator;
+      using Iterator = OST::Iterator;
 
       // Testing assignment to via Iterator non-synced elements
       {
@@ -3709,7 +3709,7 @@ void SparseNumericTest::testSet()
    {
       test_ = "Row-major SymmetricMatrix::set()";
 
-      typedef ST::Iterator  Iterator;
+      using Iterator = ST::Iterator;
 
       // Initialization check
       ST sym( 4UL );
@@ -3875,7 +3875,7 @@ void SparseNumericTest::testSet()
    {
       test_ = "Column-major SymmetricMatrix::set()";
 
-      typedef OST::Iterator  Iterator;
+      using Iterator = OST::Iterator;
 
       // Initialization check
       OST sym( 4UL );
@@ -4054,7 +4054,7 @@ void SparseNumericTest::testInsert()
    {
       test_ = "Row-major SymmetricMatrix::insert()";
 
-      typedef ST::Iterator  Iterator;
+      using Iterator = ST::Iterator;
 
       // Initialization check
       ST sym( 4UL );
@@ -4198,7 +4198,7 @@ void SparseNumericTest::testInsert()
    {
       test_ = "Column-major SymmetricMatrix::insert()";
 
-      typedef OST::Iterator  Iterator;
+      using Iterator = OST::Iterator;
 
       // Initialization check
       OST sym( 4UL );
@@ -4885,7 +4885,7 @@ void SparseNumericTest::testErase()
    {
       test_ = "Row-major SymmetricMatrix::erase( size_t, Iterator )";
 
-      typedef ST::Iterator  Iterator;
+      using Iterator = ST::Iterator;
 
       // Initialization check
       ST sym( 4UL );
@@ -5078,7 +5078,7 @@ void SparseNumericTest::testErase()
    {
       test_ = "Row-major SymmetricMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef ST::Iterator  Iterator;
+      using Iterator = ST::Iterator;
 
       // Initialization check
       ST sym( 4UL );
@@ -5595,7 +5595,7 @@ void SparseNumericTest::testErase()
    {
       test_ = "Column-major SymmetricMatrix::erase( size_t, Iterator )";
 
-      typedef OST::Iterator  Iterator;
+      using Iterator = OST::Iterator;
 
       // Initialization check
       OST sym( 4UL );
@@ -5788,7 +5788,7 @@ void SparseNumericTest::testErase()
    {
       test_ = "Column-major SymmetricMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef OST::Iterator  Iterator;
+      using Iterator = OST::Iterator;
 
       // Initialization check
       OST sym( 4UL );
@@ -6177,7 +6177,7 @@ void SparseNumericTest::testFind()
    {
       test_ = "Row-major SymmetricMatrix::find()";
 
-      typedef ST::ConstIterator  ConstIterator;
+      using ConstIterator = ST::ConstIterator;
 
       // Initialization check
       ST sym( 8UL, 3UL );
@@ -6306,7 +6306,7 @@ void SparseNumericTest::testFind()
    {
       test_ = "Column-major SymmetricMatrix::find()";
 
-      typedef OST::ConstIterator  ConstIterator;
+      using ConstIterator = OST::ConstIterator;
 
       // Initialization check
       OST sym( 8UL, 3UL );
@@ -6448,7 +6448,7 @@ void SparseNumericTest::testLowerBound()
    {
       test_ = "Row-major SymmetricMatrix::lowerBound()";
 
-      typedef ST::ConstIterator  ConstIterator;
+      using ConstIterator = ST::ConstIterator;
 
       // Initialization check
       ST sym( 6UL, 3UL );
@@ -6598,7 +6598,7 @@ void SparseNumericTest::testLowerBound()
    {
       test_ = "Column-major SymmetricMatrix::lowerBound()";
 
-      typedef OST::ConstIterator  ConstIterator;
+      using ConstIterator = OST::ConstIterator;
 
       // Initialization check
       OST sym( 6UL, 3UL );
@@ -6761,7 +6761,7 @@ void SparseNumericTest::testUpperBound()
    {
       test_ = "Row-major SymmetricMatrix::upperBound()";
 
-      typedef ST::ConstIterator  ConstIterator;
+      using ConstIterator = ST::ConstIterator;
 
       // Initialization check
       ST sym( 6UL, 3UL );
@@ -6899,7 +6899,7 @@ void SparseNumericTest::testUpperBound()
    {
       test_ = "Column-major SymmetricMatrix::upperBound()";
 
-      typedef OST::ConstIterator  ConstIterator;
+      using ConstIterator = OST::ConstIterator;
 
       // Initialization check
       OST sym( 6UL, 3UL );
@@ -7547,7 +7547,7 @@ void SparseNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::Submatrix<ST>  SMT;
+      using SMT = blaze::Submatrix<ST>;
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -7639,7 +7639,7 @@ void SparseNumericTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::Submatrix<OST>  SMT;
+      using SMT = blaze::Submatrix<OST>;
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -7744,7 +7744,7 @@ void SparseNumericTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<ST>  RT;
+      using RT = blaze::Row<ST>;
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -7834,7 +7834,7 @@ void SparseNumericTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<OST>  RT;
+      using RT = blaze::Row<OST>;
 
       OST sym( 3UL );
       sym(0,0) =  1;
@@ -7937,7 +7937,7 @@ void SparseNumericTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<ST>  CT;
+      using CT = blaze::Column<ST>;
 
       ST sym( 3UL );
       sym(0,0) =  1;
@@ -8027,7 +8027,7 @@ void SparseNumericTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<OST>  CT;
+      using CT = blaze::Column<OST>;
 
       OST sym( 3UL );
       sym(0,0) =  1;

@@ -63,12 +63,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::DynamicVector<TypeB>     VDb;
-      typedef blaze::HybridVector<TypeA,3UL>  VHa;
+      using VDb = blaze::DynamicVector<TypeB>;
+      using VHa = blaze::HybridVector<TypeA,3UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDb>  CVDb;
-      typedef blazetest::Creator<VHa>  CVHa;
+      using CVDb = blazetest::Creator<VDb>;
+      using CVHa = blazetest::Creator<VHa>;
 
       // Running the tests
       RUN_DVECDVECCROSS_OPERATION_TEST( CVDb( 3UL ), CVHa() );

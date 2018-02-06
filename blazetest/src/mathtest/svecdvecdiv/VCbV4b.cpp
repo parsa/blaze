@@ -62,12 +62,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::CompressedVector<TypeB>  VCb;
-      typedef blaze::StaticVector<TypeB,4UL>  V4b;
+      using VCb = blaze::CompressedVector<TypeB>;
+      using V4b = blaze::StaticVector<TypeB,4UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCb>  CVCb;
-      typedef blazetest::Creator<V4b>  CV4b;
+      using CVCb = blazetest::Creator<VCb>;
+      using CV4b = blazetest::Creator<V4b>;
 
       // Running the tests
       for( size_t i=0UL; i<=4UL; ++i ) {

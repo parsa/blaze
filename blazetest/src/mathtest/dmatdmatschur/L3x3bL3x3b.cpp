@@ -62,10 +62,10 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::LowerMatrix< blaze::StaticMatrix<TypeB,3UL,3UL> >  L3x3b;
+      using L3x3b = blaze::LowerMatrix< blaze::StaticMatrix<TypeB,3UL,3UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<L3x3b>  CL3x3b;
+      using CL3x3b = blazetest::Creator<L3x3b>;
 
       // Running the tests
       RUN_DMATDMATSCHUR_OPERATION_TEST( CL3x3b(), CL3x3b() );

@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StaticMatrix<TypeB,2UL,2UL>  M2x2b;
-      typedef blaze::StaticMatrix<TypeA,2UL,2UL>  M2x2a;
+      using M2x2b = blaze::StaticMatrix<TypeB,2UL,2UL>;
+      using M2x2a = blaze::StaticMatrix<TypeA,2UL,2UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<M2x2b>  CM2x2b;
-      typedef blazetest::Creator<M2x2a>  CM2x2a;
+      using CM2x2b = blazetest::Creator<M2x2b>;
+      using CM2x2a = blazetest::Creator<M2x2a>;
 
       // Running the tests
       RUN_DMATDMATMAX_OPERATION_TEST( CM2x2b(), CM2x2a() );

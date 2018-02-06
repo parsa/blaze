@@ -77,16 +77,16 @@ class RowRealTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DHT;
+   using DHT = blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense Hermitian matrix type.
-   typedef DHT::OppositeType  DOHT;
+   using DOHT = DHT::OppositeType;
 
    //! Type of the sparse Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SHT;
+   using SHT = blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse Hermitian matrix type.
-   typedef SHT::OppositeType  SOHT;
+   using SOHT = SHT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class RowRealTest
 template< typename HT >  // Type of the Hermitian matrix
 void RowRealTest::testAssignment()
 {
-   typedef blaze::RowExprTrait_<HT>  RT;
+   using RT = blaze::RowExprTrait_<HT>;
 
 
    //=====================================================================================
@@ -274,7 +274,7 @@ void RowRealTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void RowRealTest::testAddAssign()
 {
-   typedef blaze::RowExprTrait_<HT>  RT;
+   using RT = blaze::RowExprTrait_<HT>;
 
 
    //=====================================================================================
@@ -389,7 +389,7 @@ void RowRealTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void RowRealTest::testSubAssign()
 {
-   typedef blaze::RowExprTrait_<HT>  RT;
+   using RT = blaze::RowExprTrait_<HT>;
 
 
    //=====================================================================================
@@ -504,7 +504,7 @@ void RowRealTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void RowRealTest::testMultAssign()
 {
-   typedef blaze::RowExprTrait_<HT>  RT;
+   using RT = blaze::RowExprTrait_<HT>;
 
 
    //=====================================================================================

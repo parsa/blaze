@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::CompressedVector<NumericB>                         VCb;
-      typedef blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >  HDb;
+      using VCb = blaze::CompressedVector<NumericB>;
+      using HDb = blaze::HermitianMatrix< blaze::DynamicMatrix<NumericB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCb>  CVCb;
-      typedef blazetest::Creator<HDb>  CHDb;
+      using CVCb = blazetest::Creator<VCb>;
+      using CHDb = blazetest::Creator<HDb>;
 
       // Running tests with small vectors and matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

@@ -151,13 +151,13 @@ class SparseTest
 
    //**Type definitions****************************************************************************
    //! Type of the row-major lower matrix.
-   typedef blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  LT;
+   using LT = blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Type of the column-major lower matrix.
-   typedef blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >  OLT;
+   using OLT = blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >;
 
-   typedef LT::Rebind<double>::Other   RLT;   //!< Rebound row-major lower matrix type.
-   typedef OLT::Rebind<double>::Other  ORLT;  //!< Rebound column-major lower matrix type.
+   using RLT  = LT::Rebind<double>::Other;   //!< Rebound row-major lower matrix type.
+   using ORLT = OLT::Rebind<double>::Other;  //!< Rebound column-major lower matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

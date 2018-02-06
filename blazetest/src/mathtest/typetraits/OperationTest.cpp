@@ -144,12 +144,12 @@ void OperationTest::testIsColumnMajorMatrix()
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef blaze::StaticMatrix<float,3U,3U,columnMajor>       Type1;
-   typedef const blaze::DynamicMatrix<double,columnMajor>     Type2;
-   typedef volatile blaze::CompressedMatrix<int,columnMajor>  Type3;
-   typedef blaze::StaticMatrix<float,3U,3U,rowMajor>          Type4;
-   typedef const blaze::DynamicMatrix<double,rowMajor>        Type5;
-   typedef volatile blaze::CompressedMatrix<int,rowMajor>     Type6;
+   using Type1 = blaze::StaticMatrix<float,3U,3U,columnMajor>;
+   using Type2 = const blaze::DynamicMatrix<double,columnMajor>;
+   using Type3 = volatile blaze::CompressedMatrix<int,columnMajor>;
+   using Type4 = blaze::StaticMatrix<float,3U,3U,rowMajor>;
+   using Type5 = const blaze::DynamicMatrix<double,rowMajor>;
+   using Type6 = volatile blaze::CompressedMatrix<int,rowMajor>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE    ( Type2 );
@@ -175,12 +175,12 @@ void OperationTest::testIsColumnVector()
    using blaze::columnVector;
    using blaze::rowVector;
 
-   typedef blaze::StaticVector<float,3U,columnVector>          Type1;
-   typedef const blaze::DynamicVector<double,columnVector>     Type2;
-   typedef volatile blaze::CompressedVector<int,columnVector>  Type3;
-   typedef blaze::StaticVector<float,3U,rowVector>             Type4;
-   typedef const blaze::DynamicVector<double,rowVector>        Type5;
-   typedef volatile blaze::CompressedVector<int,rowVector>     Type6;
+   using Type1 = blaze::StaticVector<float,3U,columnVector>;
+   using Type2 = const blaze::DynamicVector<double,columnVector>;
+   using Type3 = volatile blaze::CompressedVector<int,columnVector>;
+   using Type4 = blaze::StaticVector<float,3U,rowVector>;
+   using Type5 = const blaze::DynamicVector<double,rowVector>;
+   using Type6 = volatile blaze::CompressedVector<int,rowVector>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE    ( Type2 );
@@ -209,18 +209,18 @@ void OperationTest::testIsDiagonal()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
-   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
-   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
-   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type1  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( Type2  );
@@ -255,18 +255,18 @@ void OperationTest::testIsIdentity()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
-   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
-   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
-   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type1  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_IDENTITY_MATRIX_TYPE( Type2  );
@@ -301,18 +301,18 @@ void OperationTest::testIsLower()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
-   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
-   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
-   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type1  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( Type2  );
@@ -341,12 +341,12 @@ void OperationTest::testIsLower()
 */
 void OperationTest::testIsMatrix()
 {
-   typedef blaze::StaticMatrix<float,3U,3U,false>      Type1;
-   typedef const blaze::DynamicMatrix<double,true>     Type2;
-   typedef volatile blaze::CompressedMatrix<int,true>  Type3;
-   typedef blaze::StaticVector<float,3U,false>         Type4;
-   typedef const blaze::DynamicVector<double,true>     Type5;
-   typedef volatile blaze::CompressedVector<int,true>  Type6;
+   using Type1 = blaze::StaticMatrix<float,3U,3U,false>;
+   using Type2 = const blaze::DynamicMatrix<double,true>;
+   using Type3 = volatile blaze::CompressedMatrix<int,true>;
+   using Type4 = blaze::StaticVector<float,3U,false>;
+   using Type5 = const blaze::DynamicVector<double,true>;
+   using Type6 = volatile blaze::CompressedVector<int,true>;
 
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type1 );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE    ( Type2 );
@@ -372,12 +372,12 @@ void OperationTest::testIsRowMajorMatrix()
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   typedef blaze::StaticMatrix<float,3U,3U,rowMajor>          Type1;
-   typedef const blaze::DynamicMatrix<double,rowMajor>        Type2;
-   typedef volatile blaze::CompressedMatrix<int,rowMajor>     Type3;
-   typedef blaze::StaticMatrix<float,3U,3U,columnMajor>       Type4;
-   typedef const blaze::DynamicMatrix<double,columnMajor>     Type5;
-   typedef volatile blaze::CompressedMatrix<int,columnMajor>  Type6;
+   using Type1 = blaze::StaticMatrix<float,3U,3U,rowMajor>;
+   using Type2 = const blaze::DynamicMatrix<double,rowMajor>;
+   using Type3 = volatile blaze::CompressedMatrix<int,rowMajor>;
+   using Type4 = blaze::StaticMatrix<float,3U,3U,columnMajor>;
+   using Type5 = const blaze::DynamicMatrix<double,columnMajor>;
+   using Type6 = volatile blaze::CompressedMatrix<int,columnMajor>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type1 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE    ( Type2 );
@@ -403,12 +403,12 @@ void OperationTest::testIsRowVector()
    using blaze::columnVector;
    using blaze::rowVector;
 
-   typedef blaze::StaticVector<float,3U,rowVector>             Type1;
-   typedef const blaze::DynamicVector<double,rowVector>        Type2;
-   typedef volatile blaze::CompressedVector<int,rowVector>     Type3;
-   typedef blaze::StaticVector<float,3U,columnVector>          Type4;
-   typedef const blaze::DynamicVector<double,columnVector>     Type5;
-   typedef volatile blaze::CompressedVector<int,columnVector>  Type6;
+   using Type1 = blaze::StaticVector<float,3U,rowVector>;
+   using Type2 = const blaze::DynamicVector<double,rowVector>;
+   using Type3 = volatile blaze::CompressedVector<int,rowVector>;
+   using Type4 = blaze::StaticVector<float,3U,columnVector>;
+   using Type5 = const blaze::DynamicVector<double,columnVector>;
+   using Type6 = volatile blaze::CompressedVector<int,columnVector>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type1 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( Type2 );
@@ -437,18 +437,18 @@ void OperationTest::testIsSymmetric()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
-   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
-   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
-   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type1  );
    BLAZE_CONSTRAINT_MUST_BE_SYMMETRIC_MATRIX_TYPE    ( Type2  );
@@ -483,18 +483,18 @@ void OperationTest::testIsUniLower()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
-   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
-   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
-   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2  );
@@ -529,18 +529,18 @@ void OperationTest::testIsUniUpper()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
-   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
-   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
-   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type1  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNIUPPER_MATRIX_TYPE( Type2  );
@@ -575,18 +575,18 @@ void OperationTest::testIsUpper()
    using blaze::UpperMatrix;
    using blaze::DiagonalMatrix;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >           Type1;
-   typedef const SymmetricMatrix< DynamicMatrix<int> >     Type2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<int> >  Type3;
-   typedef LowerMatrix< DynamicMatrix<int> >               Type4;
-   typedef const LowerMatrix< DynamicMatrix<int> >         Type5;
-   typedef volatile LowerMatrix< DynamicMatrix<int> >      Type6;
-   typedef UpperMatrix< DynamicMatrix<int> >               Type7;
-   typedef const UpperMatrix< DynamicMatrix<int> >         Type8;
-   typedef volatile UpperMatrix< DynamicMatrix<int> >      Type9;
-   typedef DiagonalMatrix< DynamicMatrix<int> >            Type10;
-   typedef const DiagonalMatrix< DynamicMatrix<int> >      Type11;
-   typedef volatile DiagonalMatrix< DynamicMatrix<int> >   Type12;
+   using Type1  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type2  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type3  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type1  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( Type2  );
@@ -615,12 +615,12 @@ void OperationTest::testIsUpper()
 */
 void OperationTest::testIsVector()
 {
-   typedef blaze::StaticVector<float,3U,false>         Type1;
-   typedef const blaze::DynamicVector<double,true>     Type2;
-   typedef volatile blaze::CompressedVector<int,true>  Type3;
-   typedef blaze::StaticMatrix<double,3U,3U,false>     Type4;
-   typedef const blaze::DynamicMatrix<double,true>     Type5;
-   typedef volatile blaze::CompressedMatrix<int,true>  Type6;
+   using Type1 = blaze::StaticVector<float,3U,false>;
+   using Type2 = const blaze::DynamicVector<double,true>;
+   using Type3 = volatile blaze::CompressedVector<int,true>;
+   using Type4 = blaze::StaticMatrix<double,3U,3U,false>;
+   using Type5 = const blaze::DynamicMatrix<double,true>;
+   using Type6 = volatile blaze::CompressedMatrix<int,true>;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type1 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE    ( Type2 );
@@ -649,19 +649,19 @@ void OperationTest::testRemoveAdaptor()
    using blaze::SymmetricMatrix;
    using blaze::RemoveAdaptor;
 
-   typedef SymmetricMatrix< DynamicMatrix<int> >              Source1;
-   typedef const SymmetricMatrix< CompressedMatrix<float> >   Source2;
-   typedef volatile SymmetricMatrix< DynamicMatrix<double> >  Source3;
-   typedef int                                                Source4;
-   typedef const DynamicVector<int>                           Source5;
-   typedef volatile DynamicMatrix<int>                        Source6;
+   using Source1 = SymmetricMatrix< DynamicMatrix<int> >;
+   using Source2 = const SymmetricMatrix< CompressedMatrix<float> >;
+   using Source3 = volatile SymmetricMatrix< DynamicMatrix<double> >;
+   using Source4 = int;
+   using Source5 = const DynamicVector<int>;
+   using Source6 = volatile DynamicMatrix<int>;
 
-   typedef DynamicMatrix<int>              Result1;
-   typedef const CompressedMatrix<float>   Result2;
-   typedef volatile DynamicMatrix<double>  Result3;
-   typedef int                             Result4;
-   typedef const DynamicVector<int>        Result5;
-   typedef volatile DynamicMatrix<int>     Result6;
+   using Result1 = DynamicMatrix<int>;
+   using Result2 = const CompressedMatrix<float>;
+   using Result3 = volatile DynamicMatrix<double>;
+   using Result4 = int;
+   using Result5 = const DynamicVector<int>;
+   using Result6 = volatile DynamicMatrix<int>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source1>::Type, Result1 );
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( RemoveAdaptor<Source2>::Type, Result2 );
@@ -690,10 +690,10 @@ void OperationTest::testUnderlyingBuiltin()
    using blaze::CompressedVector;
    using blaze::UnderlyingBuiltin;
 
-   typedef double                                    Type1;  // Built-in data type
-   typedef complex<float>                            Type2;  // Complex data type
-   typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
-   typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
+   using Type1 = double;                                    // Built-in data type
+   using Type2 = complex<float>;                            // Complex data type
+   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type1>::Type, double );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type2>::Type, float );
@@ -720,10 +720,10 @@ void OperationTest::testUnderlyingNumeric()
    using blaze::CompressedVector;
    using blaze::UnderlyingNumeric;
 
-   typedef double                                    Type1;  // Built-in data type
-   typedef complex<float>                            Type2;  // Complex data type
-   typedef StaticVector<int,3UL>                     Type3;  // Vector with built-in element type
-   typedef CompressedVector< DynamicVector<float> >  Type4;  // Vector with vector element type
+   using Type1 = double;                                    // Built-in data type
+   using Type2 = complex<float>;                            // Complex data type
+   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type1>::Type, double );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<Type2>::Type, complex<float> );

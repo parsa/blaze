@@ -136,11 +136,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicVector<int,blaze::rowVector>     VT;   //!< Type of the dynamic vector.
-   typedef blaze::DynamicVector<int,blaze::columnVector>  TVT;  //!< Transpose dynamic vector type.
+   using VT  = blaze::DynamicVector<int,blaze::rowVector>;     //!< Type of the dynamic vector.
+   using TVT = blaze::DynamicVector<int,blaze::columnVector>;  //!< Transpose dynamic vector type.
 
-   typedef VT::Rebind<double>::Other   RVT;   //!< Rebound dynamic vector type.
-   typedef TVT::Rebind<double>::Other  TRVT;  //!< Transpose rebound dynamic vector type.
+   using RVT  = VT::Rebind<double>::Other;   //!< Rebound dynamic vector type.
+   using TRVT = TVT::Rebind<double>::Other;  //!< Transpose rebound dynamic vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -215,7 +215,7 @@ class ClassTest
 template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
-   typedef blaze::DynamicVector<Type,blaze::rowVector>  VectorType;
+   using VectorType = blaze::DynamicVector<Type,blaze::rowVector>;
 
    const size_t alignment( blaze::AlignmentOf<Type>::value );
 

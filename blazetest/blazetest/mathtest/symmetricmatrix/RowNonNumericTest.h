@@ -77,19 +77,19 @@ class RowNonNumericTest
  private:
    //**Type definitions****************************************************************************
    //! Type of a resizable, non-numeric element.
-   typedef blaze::DynamicVector<int,blaze::rowVector>  VT;
+   using VT = blaze::DynamicVector<int,blaze::rowVector>;
 
    //! Type of the dense non-numeric symmetric matrix.
-   typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::rowMajor> >  DST;
+   using DST = blaze::SymmetricMatrix< blaze::DynamicMatrix<VT,blaze::rowMajor> >;
 
    //! Opposite dense non-numeric symmetric matrix type.
-   typedef DST::OppositeType  DOST;
+   using DOST = DST::OppositeType;
 
    //! Type of the sparse non-numeric symmetric matrix.
-   typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> >  SST;
+   using SST = blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> >;
 
    //! Opposite sparse non-numeric symmetric matrix type.
-   typedef SST::OppositeType  SOST;
+   using SOST = SST::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -160,7 +160,7 @@ class RowNonNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void RowNonNumericTest::testAssignment()
 {
-   typedef blaze::RowExprTrait_<ST>  RT;
+   using RT = blaze::RowExprTrait_<ST>;
 
 
    //=====================================================================================

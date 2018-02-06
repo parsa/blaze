@@ -142,11 +142,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor>     MT;   //!< Type of the row-major hybrid matrix.
-   typedef blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor>  OMT;  //!< Type of the column-major hybrid matrix.
+   using MT  = blaze::HybridMatrix<int,2UL,3UL,blaze::rowMajor>;     //!< Type of the row-major hybrid matrix.
+   using OMT = blaze::HybridMatrix<int,2UL,3UL,blaze::columnMajor>;  //!< Type of the column-major hybrid matrix.
 
-   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound row-major hybrid matrix type.
-   typedef OMT::Rebind<double>::Other  ORMT;  //!< Rebound column-major hybrid matrix type.
+   using RMT  = MT::Rebind<double>::Other;   //!< Rebound row-major hybrid matrix type.
+   using ORMT = OMT::Rebind<double>::Other;  //!< Rebound column-major hybrid matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -238,11 +238,11 @@ class ClassTest
 template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
-   typedef blaze::HybridMatrix<Type,7UL,5UL,blaze::rowMajor>     RowMajorMatrixType;
-   typedef blaze::HybridMatrix<Type,7UL,5UL,blaze::columnMajor>  ColumnMajorMatrixType;
+   using RowMajorMatrixType    = blaze::HybridMatrix<Type,7UL,5UL,blaze::rowMajor>;
+   using ColumnMajorMatrixType = blaze::HybridMatrix<Type,7UL,5UL,blaze::columnMajor>;
 
-   typedef blaze::AlignedAllocator<RowMajorMatrixType>     RowMajorAllocatorType;
-   typedef blaze::AlignedAllocator<ColumnMajorMatrixType>  ColumnMajorAllocatorType;
+   using RowMajorAllocatorType    = blaze::AlignedAllocator<RowMajorMatrixType>;
+   using ColumnMajorAllocatorType = blaze::AlignedAllocator<ColumnMajorMatrixType>;
 
    const size_t alignment( blaze::AlignmentOf<Type>::value );
 

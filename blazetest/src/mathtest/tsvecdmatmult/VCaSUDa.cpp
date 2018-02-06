@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::CompressedVector<TypeA>                             VCa;
-      typedef blaze::StrictlyUpperMatrix< blaze::DynamicMatrix<TypeA> >  SUDa;
+      using VCa = blaze::CompressedVector<TypeA>;
+      using SUDa = blaze::StrictlyUpperMatrix< blaze::DynamicMatrix<TypeA> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCa>   CVCa;
-      typedef blazetest::Creator<SUDa>  CSUDa;
+      using CVCa = blazetest::Creator<VCa>;
+      using CSUDa = blazetest::Creator<SUDa>;
 
       // Running tests with small vectors and matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

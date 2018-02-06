@@ -68,7 +68,7 @@ class HermitianTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::complex<int>  cplx;  //!< Complex element type.
+   using cplx = blaze::complex<int>;  //!< Complex element type.
    //**********************************************************************************************
 
  public:

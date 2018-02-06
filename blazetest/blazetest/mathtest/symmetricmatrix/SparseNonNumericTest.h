@@ -154,16 +154,16 @@ class SparseNonNumericTest
 
    //**Type definitions****************************************************************************
    //! Type of a resizable, non-numeric element.
-   typedef blaze::DynamicVector<int,blaze::rowVector>  VT;
+   using VT = blaze::DynamicVector<int,blaze::rowVector>;
 
    //! Type of the non-numeric row-major symmetric matrix.
-   typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> >  ST;
+   using ST = blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::rowMajor> >;
 
    //! Type of the non-numeric column-major symmetric matrix.
-   typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::columnMajor> >  OST;
+   using OST = blaze::SymmetricMatrix< blaze::CompressedMatrix<VT,blaze::columnMajor> >;
 
-   typedef ST::Rebind<double>::Other   RST;   //!< Rebound row-major symmetric matrix type.
-   typedef OST::Rebind<double>::Other  ORST;  //!< Rebound column-major symmetric matrix type.
+   using RST  = ST::Rebind<double>::Other;   //!< Rebound row-major symmetric matrix type.
+   using ORST = OST::Rebind<double>::Other;  //!< Rebound column-major symmetric matrix type.
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************

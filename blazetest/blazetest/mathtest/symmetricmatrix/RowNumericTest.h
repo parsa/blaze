@@ -77,16 +77,16 @@ class RowNumericTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense numeric symmetric matrix.
-   typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DST;
+   using DST = blaze::SymmetricMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense numeric symmetric matrix type.
-   typedef DST::OppositeType  DOST;
+   using DOST = DST::OppositeType;
 
    //! Type of the sparse numeric symmetric matrix.
-   typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SST;
+   using SST = blaze::SymmetricMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse numeric symmetric matrix type.
-   typedef SST::OppositeType  SOST;
+   using SOST = SST::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class RowNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testAssignment()
 {
-   typedef blaze::RowExprTrait_<ST>  RT;
+   using RT = blaze::RowExprTrait_<ST>;
 
 
    //=====================================================================================
@@ -274,7 +274,7 @@ void RowNumericTest::testAssignment()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testAddAssign()
 {
-   typedef blaze::RowExprTrait_<ST>  RT;
+   using RT = blaze::RowExprTrait_<ST>;
 
 
    //=====================================================================================
@@ -389,7 +389,7 @@ void RowNumericTest::testAddAssign()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testSubAssign()
 {
-   typedef blaze::RowExprTrait_<ST>  RT;
+   using RT = blaze::RowExprTrait_<ST>;
 
 
    //=====================================================================================
@@ -504,7 +504,7 @@ void RowNumericTest::testSubAssign()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testMultAssign()
 {
-   typedef blaze::RowExprTrait_<ST>  RT;
+   using RT = blaze::RowExprTrait_<ST>;
 
 
    //=====================================================================================

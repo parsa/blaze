@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatdvecmult/SDLbVDa.cpp
-//  \brief Source file for the SDLbVDa dense matrix/dense vector multiplication math test
+//  \file src/mathtest/dmatdvecmult/SLDbVDa.cpp
+//  \brief Source file for the SLDbVDa dense matrix/dense vector multiplication math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -56,7 +56,7 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'SDLbVDa'..." << std::endl;
+   std::cout << "   Running 'SLDbVDa'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
@@ -64,23 +64,23 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<TypeB> >  SDLb;
-      typedef blaze::DynamicVector<TypeA>                                VDa;
+      using SLDb = blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<TypeB> >;
+      using VDa = blaze::DynamicVector<TypeA>;
 
       // Creator type definitions
-      typedef blazetest::Creator<SDLb>  CSDLb;
-      typedef blazetest::Creator<VDa>   CVDa;
+      using CSLDb = blazetest::Creator<SLDb>;
+      using CVDa = blazetest::Creator<VDa>;
 
       // Running tests with small matrices and vectors
       for( size_t i=0UL; i<=6UL; ++i ) {
-         RUN_DMATDVECMULT_OPERATION_TEST( CSDLb( i ), CVDa( i ) );
+         RUN_DMATDVECMULT_OPERATION_TEST( CSLDb( i ), CVDa( i ) );
       }
 
       // Running tests with large matrices and vectors
-      RUN_DMATDVECMULT_OPERATION_TEST( CSDLb(  67UL ), CVDa(  67UL ) );
-      RUN_DMATDVECMULT_OPERATION_TEST( CSDLb( 127UL ), CVDa( 127UL ) );
-      RUN_DMATDVECMULT_OPERATION_TEST( CSDLb(  64UL ), CVDa(  64UL ) );
-      RUN_DMATDVECMULT_OPERATION_TEST( CSDLb( 128UL ), CVDa( 128UL ) );
+      RUN_DMATDVECMULT_OPERATION_TEST( CSLDb(  67UL ), CVDa(  67UL ) );
+      RUN_DMATDVECMULT_OPERATION_TEST( CSLDb( 127UL ), CVDa( 127UL ) );
+      RUN_DMATDVECMULT_OPERATION_TEST( CSLDb(  64UL ), CVDa(  64UL ) );
+      RUN_DMATDVECMULT_OPERATION_TEST( CSLDb( 128UL ), CVDa( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense matrix/dense vector multiplication:\n"

@@ -77,16 +77,16 @@ class ColumnTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense upper unitriangular matrix.
-   typedef blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DUT;
+   using DUT = blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense upper unitriangular matrix type.
-   typedef DUT::OppositeType  DOUT;
+   using DOUT = DUT::OppositeType;
 
    //! Type of the sparse upper unitriangular matrix.
-   typedef blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SUT;
+   using SUT = blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse upper unitriangular matrix type.
-   typedef SUT::OppositeType  SOUT;
+   using SOUT = SUT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class ColumnTest
 template< typename UT >  // Type of the uniupper matrix
 void ColumnTest::testAssignment()
 {
-   typedef blaze::ColumnExprTrait_<UT>  CT;
+   using CT = blaze::ColumnExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -385,7 +385,7 @@ void ColumnTest::testAssignment()
 template< typename UT >  // Type of the uniupper matrix
 void ColumnTest::testAddAssign()
 {
-   typedef blaze::ColumnExprTrait_<UT>  CT;
+   using CT = blaze::ColumnExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -609,7 +609,7 @@ void ColumnTest::testAddAssign()
 template< typename UT >  // Type of the uniupper matrix
 void ColumnTest::testSubAssign()
 {
-   typedef blaze::ColumnExprTrait_<UT>  CT;
+   using CT = blaze::ColumnExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -833,7 +833,7 @@ void ColumnTest::testSubAssign()
 template< typename UT >  // Type of the uniupper matrix
 void ColumnTest::testMultAssign()
 {
-   typedef blaze::ColumnExprTrait_<UT>  CT;
+   using CT = blaze::ColumnExprTrait_<UT>;
 
 
    //=====================================================================================

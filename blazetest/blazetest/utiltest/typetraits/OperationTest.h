@@ -152,8 +152,8 @@ class OperationTest
    class  Type2 { volatile int value_; };
    struct Type3 { void compute(); };
    class  Type4 { void compute() const; };
-   struct Type5 { typedef float  DataType; };
-   struct Type6 { typedef const double  DataType; };
+   struct Type5 { using DataType = float; };
+   struct Type6 { using DataType = const double; };
    class  Type7 {};
    /*! \endcond */
    //**********************************************************************************************

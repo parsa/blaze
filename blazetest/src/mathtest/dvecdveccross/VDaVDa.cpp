@@ -61,10 +61,10 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::DynamicVector<TypeA>  VDa;
+      using VDa = blaze::DynamicVector<TypeA>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
+      using CVDa = blazetest::Creator<VDa>;
 
       // Running the tests
       RUN_DVECDVECCROSS_OPERATION_TEST( CVDa( 3UL ), CVDa( 3UL ) );

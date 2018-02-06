@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::CompressedVector<TypeB>      VCb;
-      typedef blaze::StaticMatrix<TypeB,6UL,6UL>  M6x6b;
+      using VCb = blaze::CompressedVector<TypeB>;
+      using M6x6b = blaze::StaticMatrix<TypeB,6UL,6UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCb>    CVCb;
-      typedef blazetest::Creator<M6x6b>  CM6x6b;
+      using CVCb = blazetest::Creator<VCb>;
+      using CM6x6b = blazetest::Creator<M6x6b>;
 
       // Running the tests
       for( size_t i=0UL; i<=6UL; ++i ) {

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/smatdmatmult/DCbSDa.cpp
-//  \brief Source file for the DCbSDa sparse matrix/dense matrix multiplication math test
+//  \file src/mathtest/smatdmatmult/DCbSDb.cpp
+//  \brief Source file for the DCbSDb sparse matrix/dense matrix multiplication math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -57,34 +57,34 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'DCbSDa'..." << std::endl;
+   std::cout << "   Running 'DCbSDb'..." << std::endl;
 
    using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<TypeB> >  DCb;
-      typedef blaze::SymmetricMatrix< blaze::DynamicMatrix<TypeB> >    SDa;
+      using DCb = blaze::DiagonalMatrix< blaze::CompressedMatrix<TypeB> >;
+      using SDb = blaze::SymmetricMatrix< blaze::DynamicMatrix<TypeB> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<DCb>  CDCb;
-      typedef blazetest::Creator<SDa>  CSDa;
+      using CDCb = blazetest::Creator<DCb>;
+      using CSDb = blazetest::Creator<SDb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
-            RUN_SMATDMATMULT_OPERATION_TEST( CDCb( i, j ), CSDa( i ) );
+            RUN_SMATDMATMULT_OPERATION_TEST( CDCb( i, j ), CSDb( i ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  31UL,  7UL ), CSDa(  31UL ) );
-      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  67UL,  7UL ), CSDa(  67UL ) );
-      RUN_SMATDMATMULT_OPERATION_TEST( CDCb( 127UL, 13UL ), CSDa( 127UL ) );
-      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  32UL,  8UL ), CSDa(  32UL ) );
-      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  64UL,  8UL ), CSDa(  64UL ) );
-      RUN_SMATDMATMULT_OPERATION_TEST( CDCb( 128UL, 16UL ), CSDa( 128UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  31UL,  7UL ), CSDb(  31UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  67UL,  7UL ), CSDb(  67UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CDCb( 127UL, 13UL ), CSDb( 127UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  32UL,  8UL ), CSDb(  32UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CDCb(  64UL,  8UL ), CSDb(  64UL ) );
+      RUN_SMATDMATMULT_OPERATION_TEST( CDCb( 128UL, 16UL ), CSDb( 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse matrix/dense matrix multiplication:\n"

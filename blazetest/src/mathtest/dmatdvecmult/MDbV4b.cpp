@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicMatrix<TypeB>     MDb;
-      typedef blaze::StaticVector<TypeB,4UL>  V4b;
+      using MDb = blaze::DynamicMatrix<TypeB>;
+      using V4b = blaze::StaticVector<TypeB,4UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MDb>  CMDb;
-      typedef blazetest::Creator<V4b>  CV4b;
+      using CMDb = blazetest::Creator<MDb>;
+      using CV4b = blazetest::Creator<V4b>;
 
       // Running the tests
       for( size_t i=0UL; i<=6UL; ++i ) {

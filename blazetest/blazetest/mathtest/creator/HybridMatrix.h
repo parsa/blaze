@@ -67,7 +67,7 @@ class Creator< blaze::HybridMatrix<T,M,N,SO> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::HybridMatrix<T,M,N,SO>  Type;  //!< Type to be created by the Creator.
+   using Type = blaze::HybridMatrix<T,M,N,SO>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

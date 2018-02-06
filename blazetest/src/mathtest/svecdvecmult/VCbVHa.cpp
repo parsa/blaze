@@ -63,12 +63,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::CompressedVector<TypeB>    VCb;
-      typedef blaze::HybridVector<TypeA,128UL>  VHa;
+      using VCb = blaze::CompressedVector<TypeB>;
+      using VHa = blaze::HybridVector<TypeA,128UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCb>  CVCb;
-      typedef blazetest::Creator<VHa>  CVHa;
+      using CVCb = blazetest::Creator<VCb>;
+      using CVHa = blazetest::Creator<VHa>;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {

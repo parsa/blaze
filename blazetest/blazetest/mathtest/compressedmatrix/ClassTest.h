@@ -147,11 +147,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>     MT;   //!< Type of the compressed matrix.
-   typedef blaze::CompressedMatrix<int,blaze::columnMajor>  OMT;  //!< Opposite compressed matrix type.
+   using MT  = blaze::CompressedMatrix<int,blaze::rowMajor>;     //!< Type of the compressed matrix.
+   using OMT = blaze::CompressedMatrix<int,blaze::columnMajor>;  //!< Opposite compressed matrix type.
 
-   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound compressed matrix type.
-   typedef OMT::Rebind<double>::Other  ORMT;  //!< Opposite rebound compressed matrix type.
+   using RMT  = MT::Rebind<double>::Other;   //!< Rebound compressed matrix type.
+   using ORMT = OMT::Rebind<double>::Other;  //!< Opposite rebound compressed matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

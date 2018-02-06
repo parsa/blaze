@@ -70,7 +70,7 @@ class Creator< blaze::SymmetricMatrix< blaze::CompressedMatrix<T,SO> > >
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
-   typedef blaze::SymmetricMatrix< blaze::CompressedMatrix<T,SO> >  Type;
+   using Type = blaze::SymmetricMatrix< blaze::CompressedMatrix<T,SO> >;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

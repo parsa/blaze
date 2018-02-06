@@ -176,7 +176,7 @@ void DenseNonNumericTest::testConstructors()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>;
       std::unique_ptr<VT[]> memory( new VT[5UL] );
       memory[1] = vec( 1 );
       memory[2] = vec( 2 );
@@ -210,7 +210,7 @@ void DenseNonNumericTest::testConstructors()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<VT,unaligned,unpadded,rowMajor>;
       std::unique_ptr<VT[]> memory( new VT[11UL] );
       memory[1] = vec( 1 );
       memory[2] = vec( 2 );
@@ -525,7 +525,7 @@ void DenseNonNumericTest::testConstructors()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>;
       std::unique_ptr<VT[]> memory( new VT[5UL] );
       memory[1] = vec( 1 );
       memory[2] = vec( 2 );
@@ -559,7 +559,7 @@ void DenseNonNumericTest::testConstructors()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<VT,unaligned,unpadded,columnMajor>;
       std::unique_ptr<VT[]> memory( new VT[11UL] );
       memory[1] = vec( 1 );
       memory[2] = vec( 2 );

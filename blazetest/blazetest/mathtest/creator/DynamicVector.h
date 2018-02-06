@@ -66,7 +66,7 @@ class Creator< blaze::DynamicVector<T,TF> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicVector<T,TF>  Type;  //!< Type to be created by the Creator.
+   using Type = blaze::DynamicVector<T,TF>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

@@ -68,7 +68,7 @@ class Creator< blaze::CompressedVector<T,TF> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedVector<T,TF>  Type;  //!< Type to be created by the Creator.
+   using Type = blaze::CompressedVector<T,TF>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

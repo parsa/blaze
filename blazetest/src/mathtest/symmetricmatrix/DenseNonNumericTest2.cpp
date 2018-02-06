@@ -1063,8 +1063,8 @@ void DenseNonNumericTest::testIterator()
    //=====================================================================================
 
    {
-      typedef ST::Iterator       Iterator;
-      typedef ST::ConstIterator  ConstIterator;
+      using Iterator      = ST::Iterator;
+      using ConstIterator = ST::ConstIterator;
 
       ST sym( 3UL );
       sym(0,1) = vec( 1 );
@@ -1407,8 +1407,8 @@ void DenseNonNumericTest::testIterator()
    //=====================================================================================
 
    {
-      typedef OST::Iterator       Iterator;
-      typedef OST::ConstIterator  ConstIterator;
+      using Iterator      = OST::Iterator;
+      using ConstIterator = OST::ConstIterator;
 
       OST sym( 3UL );
       sym(0,1) = vec( 1 );
@@ -3545,7 +3545,7 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (non-overlapping submatrix)";
 
-      typedef blaze::Submatrix<ST>  SMT;
+      using SMT = blaze::Submatrix<ST>;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -3642,7 +3642,7 @@ void DenseNonNumericTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (non-overlapping submatrix)";
 
-      typedef blaze::Submatrix<OST>  SMT;
+      using SMT = blaze::Submatrix<OST>;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -3752,7 +3752,7 @@ void DenseNonNumericTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<ST>  RT;
+      using RT = blaze::Row<ST>;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -3846,7 +3846,7 @@ void DenseNonNumericTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<OST>  RT;
+      using RT = blaze::Row<OST>;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -3953,7 +3953,7 @@ void DenseNonNumericTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<ST>  CT;
+      using CT = blaze::Column<ST>;
 
       ST sym( 3UL );
       sym(0,0) = vec(  1 );
@@ -4047,7 +4047,7 @@ void DenseNonNumericTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<OST>  CT;
+      using CT = blaze::Column<OST>;
 
       OST sym( 3UL );
       sym(0,0) = vec(  1 );

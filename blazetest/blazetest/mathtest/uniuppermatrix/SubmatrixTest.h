@@ -75,16 +75,16 @@ class SubmatrixTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense upper unitriangular matrix.
-   typedef blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DUT;
+   using DUT = blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense upper unitriangular matrix type.
-   typedef DUT::OppositeType  DOUT;
+   using DOUT = DUT::OppositeType;
 
    //! Type of the sparse upper unitriangular matrix.
-   typedef blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SUT;
+   using SUT = blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse upper unitriangular matrix type.
-   typedef SUT::OppositeType  SOUT;
+   using SOUT = SUT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -157,7 +157,7 @@ class SubmatrixTest
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testAssignment()
 {
-   typedef blaze::SubmatrixExprTrait_<UT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -856,7 +856,7 @@ void SubmatrixTest::testAssignment()
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testAddAssign()
 {
-   typedef blaze::SubmatrixExprTrait_<UT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -1535,7 +1535,7 @@ void SubmatrixTest::testAddAssign()
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testSubAssign()
 {
-   typedef blaze::SubmatrixExprTrait_<UT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -2214,7 +2214,7 @@ void SubmatrixTest::testSubAssign()
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testSchurAssign()
 {
-   typedef blaze::SubmatrixExprTrait_<UT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
 
 
    //=====================================================================================

@@ -72,10 +72,10 @@ class AliasingTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicVector<int,blaze::columnVector>     DVec;  //!< Dense column vector type.
-   typedef blaze::CompressedVector<int,blaze::columnVector>  SVec;  //!< Sparse column vector type.
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>      SMat;  //!< Row-major sparse matrix type.
-   typedef blaze::StaticVector<int,3UL,blaze::columnVector>  RVec;  //!< Result column vector type.
+   using DVec = blaze::DynamicVector<int,blaze::columnVector>;     //!< Dense column vector type.
+   using SVec = blaze::CompressedVector<int,blaze::columnVector>;  //!< Sparse column vector type.
+   using SMat = blaze::CompressedMatrix<int,blaze::rowMajor>;      //!< Row-major sparse matrix type.
+   using RVec = blaze::StaticVector<int,3UL,blaze::columnVector>;  //!< Result column vector type.
    //**********************************************************************************************
 
  public:

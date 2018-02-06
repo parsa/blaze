@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::CompressedMatrix<TypeB>       MCb;
-      typedef blaze::StaticMatrix<TypeA,16UL,8UL>  M16x8a;
+      using MCb = blaze::CompressedMatrix<TypeB>;
+      using M16x8a = blaze::StaticMatrix<TypeA,16UL,8UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MCb>     CMCb;
-      typedef blazetest::Creator<M16x8a>  CM16x8a;
+      using CMCb = blazetest::Creator<MCb>;
+      using CM16x8a = blazetest::Creator<M16x8a>;
 
       // Running the tests
       RUN_SMATDMATADD_OPERATION_TEST( CMCb( 16UL, 8UL,   0UL ), CM16x8a() );

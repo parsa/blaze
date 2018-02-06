@@ -61,10 +61,10 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::StaticVector<TypeA,3UL>  V3a;
+      using V3a = blaze::StaticVector<TypeA,3UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<V3a>  CV3a;
+      using CV3a = blazetest::Creator<V3a>;
 
       // Running the tests
       RUN_DVECDVECCROSS_OPERATION_TEST( CV3a(), CV3a() );

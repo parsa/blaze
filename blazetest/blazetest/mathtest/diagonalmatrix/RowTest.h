@@ -77,16 +77,16 @@ class RowTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense diagonal matrix.
-   typedef blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DDT;
+   using DDT = blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense diagonal matrix type.
-   typedef DDT::OppositeType  DODT;
+   using DODT = DDT::OppositeType;
 
    //! Type of the sparse diagonal matrix.
-   typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SDT;
+   using SDT = blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse diagonal matrix type.
-   typedef SDT::OppositeType  SODT;
+   using SODT = SDT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class RowTest
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testAssignment()
 {
-   typedef blaze::RowExprTrait_<DT>  RT;
+   using RT = blaze::RowExprTrait_<DT>;
 
 
    //=====================================================================================
@@ -386,7 +386,7 @@ void RowTest::testAssignment()
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testAddAssign()
 {
-   typedef blaze::RowExprTrait_<DT>  RT;
+   using RT = blaze::RowExprTrait_<DT>;
 
 
    //=====================================================================================
@@ -613,7 +613,7 @@ void RowTest::testAddAssign()
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testSubAssign()
 {
-   typedef blaze::RowExprTrait_<DT>  RT;
+   using RT = blaze::RowExprTrait_<DT>;
 
 
    //=====================================================================================
@@ -840,7 +840,7 @@ void RowTest::testSubAssign()
 template< typename DT >  // Type of the diagonal matrix
 void RowTest::testMultAssign()
 {
-   typedef blaze::RowExprTrait_<DT>  RT;
+   using RT = blaze::RowExprTrait_<DT>;
 
 
    //=====================================================================================

@@ -134,11 +134,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::HybridVector<int,4UL,blaze::rowVector>     VT;    //!< Type of the hybrid vector.
-   typedef blaze::HybridVector<int,4UL,blaze::columnVector>  TVT;   //!< Transpose hybrid vector type.
+   using VT  = blaze::HybridVector<int,4UL,blaze::rowVector>;     //!< Type of the hybrid vector.
+   using TVT = blaze::HybridVector<int,4UL,blaze::columnVector>;  //!< Transpose hybrid vector type.
 
-   typedef VT::Rebind<double>::Other   RVT;   //!< Rebound hybrid vector type.
-   typedef TVT::Rebind<double>::Other  TRVT;  //!< Transpose rebound hybrid vector type.
+   using RVT  = VT::Rebind<double>::Other;   //!< Rebound hybrid vector type.
+   using TRVT = TVT::Rebind<double>::Other;  //!< Transpose rebound hybrid vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -213,8 +213,8 @@ class ClassTest
 template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
-   typedef blaze::HybridVector<Type,7UL,blaze::rowVector>  VectorType;
-   typedef blaze::AlignedAllocator<VectorType>             AllocatorType;
+   using VectorType    = blaze::HybridVector<Type,7UL,blaze::rowVector>;
+   using AllocatorType = blaze::AlignedAllocator<VectorType>;
 
    const size_t alignment( blaze::AlignmentOf<Type>::value );
 

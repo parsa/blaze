@@ -125,9 +125,9 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::InitializerMatrix<int>  MT;   //!< Type of the initializer matrix.
+   using MT = blaze::InitializerMatrix<int>;   //!< Type of the initializer matrix.
 
-   typedef MT::Rebind<double>::Other  RMT;   //!< Rebound initializer matrix type.
+   using RMT = MT::Rebind<double>::Other;   //!< Rebound initializer matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

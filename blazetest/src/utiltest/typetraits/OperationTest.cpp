@@ -268,10 +268,10 @@ void OperationTest::testAll()
    const bool value1( All<IsIntegral,int,short,long>::value );
    const bool value2( All<IsIntegral,int,float,double >::value );
 
-   typedef All<IsPointer,int*,float*>::Type           T1;
-   typedef All<IsCharacter,char,signed char,wchar_t>  T2;
-   typedef All<IsPointer,int*,float&>::Type           T3;
-   typedef All<IsCharacter,char,signed int,wchar_t>   T4;
+   using T1 = All<IsPointer,int*,float*>::Type;
+   using T2 = All<IsCharacter,char,signed char,wchar_t>;
+   using T3 = All<IsPointer,int*,float&>::Type;
+   using T4 = All<IsCharacter,char,signed int,wchar_t>;
 
    BLAZE_STATIC_ASSERT( value1 == true );
    BLAZE_STATIC_ASSERT( value2 == false );
@@ -303,10 +303,10 @@ void OperationTest::testAny()
    const bool value1( Any<IsIntegral,int,float>::value );
    const bool value2( Any<IsIntegral,float,double>::value );
 
-   typedef Any<IsPointer,int&,float*>::Type  T1;
-   typedef Any<IsCharacter,float,wchar_t>    T2;
-   typedef Any<IsPointer,int,float&>::Type   T3;
-   typedef Any<IsCharacter,int,double>       T4;
+   using T1 = Any<IsPointer,int&,float*>::Type;
+   using T2 = Any<IsCharacter,float,wchar_t>;
+   using T3 = Any<IsPointer,int,float&>::Type;
+   using T4 = Any<IsCharacter,int,double>;
 
    BLAZE_STATIC_ASSERT( value1 == true );
    BLAZE_STATIC_ASSERT( value2 == false );
@@ -332,9 +332,9 @@ void OperationTest::testCommonType()
 {
    using blaze::CommonType;
 
-   typedef CommonType<short,int>::Type                         T1;
-   typedef CommonType<const double,int&>::Type                 T2;
-   typedef CommonType<char&, volatile int, const float>::Type  T3;
+   using T1 = CommonType<short,int>::Type;
+   using T2 = CommonType<const double,int&>::Type;
+   using T3 = CommonType<char&, volatile int, const float>::Type;
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T1, int    );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2, double );
@@ -461,12 +461,12 @@ void OperationTest::testHasSize()
 {
    using blaze::HasSize;
 
-   typedef HasSize<int,4>              T1;
-   typedef HasSize<float,4>            T2;
-   typedef HasSize<const double,8>     T3;
-   typedef HasSize<volatile double,2>  T4;
-   typedef HasSize<const char,8>       T5;
-   typedef HasSize<unsigned char,4>    T6;
+   using T1 = HasSize<int,4>;
+   using T2 = HasSize<float,4>;
+   using T3 = HasSize<const double,8>;
+   using T4 = HasSize<volatile double,2>;
+   using T5 = HasSize<const char,8>;
+   using T6 = HasSize<unsigned char,4>;
 
    BLAZE_STATIC_ASSERT( T1::value == true );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
@@ -491,12 +491,12 @@ void OperationTest::testHaveSameSize()
 {
    using blaze::HaveSameSize;
 
-   typedef blaze::HaveSameSize<int,unsigned int>  T1;
-   typedef blaze::HaveSameSize<int,unsigned int>  T2;
-   typedef blaze::HaveSameSize<int,unsigned int>  T3;
-   typedef blaze::HaveSameSize<char,wchar_t>      T4;
-   typedef blaze::HaveSameSize<char,wchar_t>      T5;
-   typedef blaze::HaveSameSize<char,wchar_t>      T6;
+   using T1 = blaze::HaveSameSize<int,unsigned int>;
+   using T2 = blaze::HaveSameSize<int,unsigned int>;
+   using T3 = blaze::HaveSameSize<int,unsigned int>;
+   using T4 = blaze::HaveSameSize<char,wchar_t>;
+   using T5 = blaze::HaveSameSize<char,wchar_t>;
+   using T6 = blaze::HaveSameSize<char,wchar_t>;
 
    BLAZE_STATIC_ASSERT( T1::value == true );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
@@ -572,12 +572,12 @@ void OperationTest::testIsBaseOf()
    class B : public A {};
    class C {};
 
-   typedef IsBaseOf<A,B>  T1;
-   typedef IsBaseOf<A,B>  T2;
-   typedef IsBaseOf<A,B>  T3;
-   typedef IsBaseOf<A,C>  T4;
-   typedef IsBaseOf<B,A>  T5;
-   typedef IsBaseOf<B,A>  T6;
+   using T1 = IsBaseOf<A,B>;
+   using T2 = IsBaseOf<A,B>;
+   using T3 = IsBaseOf<A,B>;
+   using T4 = IsBaseOf<A,C>;
+   using T5 = IsBaseOf<B,A>;
+   using T6 = IsBaseOf<B,A>;
 
    BLAZE_STATIC_ASSERT( T1::value == true );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
@@ -797,15 +797,15 @@ void OperationTest::testIsConvertible()
       D( const C& ) {}
    };
 
-   typedef IsConvertible<int,unsigned int>    T1;
-   typedef IsConvertible<float,const double>  T2;
-   typedef IsConvertible<B,A>                 T3;
-   typedef IsConvertible<B*,A*>               T4;
-   typedef IsConvertible<C,D>                 T5;
-   typedef IsConvertible<char*,std::string>   T6;
-   typedef IsConvertible<std::string,char*>   T7;
-   typedef IsConvertible<A,B>                 T8;
-   typedef IsConvertible<A*,B*>               T9;
+   using T1 = IsConvertible<int,unsigned int>;
+   using T2 = IsConvertible<float,const double>;
+   using T3 = IsConvertible<B,A>;
+   using T4 = IsConvertible<B*,A*>;
+   using T5 = IsConvertible<C,D>;
+   using T6 = IsConvertible<char*,std::string>;
+   using T7 = IsConvertible<std::string,char*>;
+   using T8 = IsConvertible<A,B>;
+   using T9 = IsConvertible<A*,B*>;
 
    BLAZE_STATIC_ASSERT( T1::value == true );
    BLAZE_STATIC_ASSERT( T2::value == true );
@@ -1225,12 +1225,12 @@ void OperationTest::testIsSame()
 {
    using blaze::IsSame;
 
-   typedef IsSame<int,int>               T1;
-   typedef IsSame<int,const int>         T2;
-   typedef IsSame<float,volatile float>  T3;
-   typedef IsSame<char,wchar_t>          T4;
-   typedef IsSame<char,volatile float>   T5;
-   typedef IsSame<int,double>            T6;
+   using T1 = IsSame<int,int>;
+   using T2 = IsSame<int,const int>;
+   using T3 = IsSame<float,volatile float>;
+   using T4 = IsSame<char,wchar_t>;
+   using T5 = IsSame<char,volatile float>;
+   using T6 = IsSame<int,double>;
 
    BLAZE_STATIC_ASSERT( T1::value == true );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );
@@ -1255,12 +1255,12 @@ void OperationTest::testIsStrictlySame()
 {
    using blaze::IsStrictlySame;
 
-   typedef IsStrictlySame<int,int>                        T1;
-   typedef IsStrictlySame<const double,const double>      T2;
-   typedef IsStrictlySame<volatile float,volatile float>  T3;
-   typedef IsStrictlySame<char,wchar_t>                   T4;
-   typedef IsStrictlySame<int,const int>                  T5;
-   typedef IsStrictlySame<float,volatile float>           T6;
+   using T1 = IsStrictlySame<int,int>;
+   using T2 = IsStrictlySame<const double,const double>;
+   using T3 = IsStrictlySame<volatile float,volatile float>;
+   using T4 = IsStrictlySame<char,wchar_t>;
+   using T5 = IsStrictlySame<int,const int>;
+   using T6 = IsStrictlySame<float,volatile float>;
 
    BLAZE_STATIC_ASSERT( T1::value == true );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( T2::Type, blaze::TrueType );

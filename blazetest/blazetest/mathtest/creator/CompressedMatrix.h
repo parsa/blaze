@@ -67,7 +67,7 @@ class Creator< blaze::CompressedMatrix<T,SO> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedMatrix<T,SO>  Type;  //!< Type to be created by the Creator.
+   using Type = blaze::CompressedMatrix<T,SO>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

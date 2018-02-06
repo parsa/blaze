@@ -71,9 +71,9 @@ class AliasingTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedVector<int,blaze::columnVector>  SVec;  //!< Sparse column vector type.
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>      SMat;  //!< Row-major sparse matrix type.
-   typedef blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor>  RMat;  //!< Result row-major matrix type.
+   using SVec = blaze::CompressedVector<int,blaze::columnVector>;  //!< Sparse column vector type.
+   using SMat = blaze::CompressedMatrix<int,blaze::rowMajor>;      //!< Row-major sparse matrix type.
+   using RMat = blaze::StaticMatrix<int,3UL,3UL,blaze::rowMajor>;  //!< Result row-major matrix type.
    //**********************************************************************************************
 
  public:

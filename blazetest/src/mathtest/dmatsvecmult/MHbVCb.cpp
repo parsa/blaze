@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::HybridMatrix<TypeB,128UL,128UL>  MHb;
-      typedef blaze::CompressedVector<TypeB>          VCb;
+      using MHb = blaze::HybridMatrix<TypeB,128UL,128UL>;
+      using VCb = blaze::CompressedVector<TypeB>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MHb>  CMHb;
-      typedef blazetest::Creator<VCb>  CVCb;
+      using CMHb = blazetest::Creator<MHb>;
+      using CVCb = blazetest::Creator<VCb>;
 
       // Running tests with large matrices and vectors
       for( size_t i=0UL; i<=6UL; ++i ) {

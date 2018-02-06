@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicMatrix<TypeB>         MDb;
-      typedef blaze::StaticMatrix<TypeA,7UL,9UL>  M7x9a;
+      using MDb = blaze::DynamicMatrix<TypeB>;
+      using M7x9a = blaze::StaticMatrix<TypeA,7UL,9UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MDb>    CMDb;
-      typedef blazetest::Creator<M7x9a>  CM7x9a;
+      using CMDb = blazetest::Creator<MDb>;
+      using CM7x9a = blazetest::Creator<M7x9a>;
 
       // Running the tests
       RUN_DMATDMATMULT_OPERATION_TEST( CMDb( 5UL, 7UL ), CM7x9a() );

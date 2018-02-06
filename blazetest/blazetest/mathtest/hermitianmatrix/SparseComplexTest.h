@@ -154,16 +154,16 @@ class SparseComplexTest
 
    //**Type definitions****************************************************************************
    //! Complex element type.
-   typedef blaze::complex<int>  cplx;
+   using cplx = blaze::complex<int>;
 
    //! Type of the row-major Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> >  HT;
+   using HT = blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> >;
 
    //! Type of the column-major Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> >  OHT;
+   using OHT = blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::columnMajor> >;
 
-   typedef HT::Rebind< complex<double> >::Other   RHT;   //!< Rebound row-major Hermitian matrix type.
-   typedef OHT::Rebind< complex<double> >::Other  ORHT;  //!< Rebound column-major Hermitian matrix type.
+   using RHT  = HT::Rebind< complex<double> >::Other;   //!< Rebound row-major Hermitian matrix type.
+   using ORHT = OHT::Rebind< complex<double> >::Other;  //!< Rebound column-major Hermitian matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

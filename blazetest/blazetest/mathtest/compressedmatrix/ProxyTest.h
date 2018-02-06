@@ -151,34 +151,34 @@ class ProxyTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicVector<int,blaze::rowVector>     DV;  //!< Type of the dense vector elements.
-   typedef blaze::CompressedVector<int,blaze::rowVector>  SV;  //!< Type of the sparse vector elements.
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>      DM;  //!< Type of the dense matrix elements.
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>   SM;  //!< Type of the sparse matrix elements.
+   using DV = blaze::DynamicVector<int,blaze::rowVector>;     //!< Type of the dense vector elements.
+   using SV = blaze::CompressedVector<int,blaze::rowVector>;  //!< Type of the sparse vector elements.
+   using DM = blaze::DynamicMatrix<int,blaze::rowMajor>;      //!< Type of the dense matrix elements.
+   using SM = blaze::CompressedMatrix<int,blaze::rowMajor>;   //!< Type of the sparse matrix elements.
 
    //! Row-major compressed matrix type with dense vector elements.
-   typedef blaze::CompressedMatrix<DV,blaze::rowMajor>  DVM;
+   using DVM = blaze::CompressedMatrix<DV,blaze::rowMajor>;
 
    //! Column-major compressed matrix type with dense vector elements.
-   typedef DVM::OppositeType  ODVM;
+   using ODVM = DVM::OppositeType;
 
    //! Row-major compressed matrix type with sparse vector elements.
-   typedef blaze::CompressedMatrix<SV,blaze::rowMajor>  SVM;
+   using SVM = blaze::CompressedMatrix<SV,blaze::rowMajor>;
 
    //! Column-major compressed matrix type with sparse vector elements.
-   typedef SVM::OppositeType  OSVM;
+   using OSVM = SVM::OppositeType;
 
    //! Row-major compressed matrix type with dense matrix elements.
-   typedef blaze::CompressedMatrix<DM,blaze::rowMajor>  DMM;
+   using DMM = blaze::CompressedMatrix<DM,blaze::rowMajor>;
 
    //! Column-major compressed matrix type with dense matrix elements.
-   typedef DMM::OppositeType  ODMM;
+   using ODMM = DMM::OppositeType;
 
    //! Row-major compressed matrix type with sparse matrix elements.
-   typedef blaze::CompressedMatrix<SM,blaze::rowMajor>  SMM;
+   using SMM = blaze::CompressedMatrix<SM,blaze::rowMajor>;
 
    //! Column-major compressed matrix type with sparse matrix elements.
-   typedef SMM::OppositeType  OSMM;
+   using OSMM = SMM::OppositeType;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

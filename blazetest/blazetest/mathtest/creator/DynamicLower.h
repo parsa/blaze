@@ -68,7 +68,7 @@ class Creator< blaze::LowerMatrix< blaze::DynamicMatrix<T,SO> > >
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
-   typedef blaze::LowerMatrix< blaze::DynamicMatrix<T,SO> >  Type;
+   using Type = blaze::LowerMatrix< blaze::DynamicMatrix<T,SO> >;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

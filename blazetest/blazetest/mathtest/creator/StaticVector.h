@@ -66,7 +66,7 @@ class Creator< blaze::StaticVector<T,N,TF> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::StaticVector<T,N,TF>  Type;  //!< Type to be created by the Creator.
+   using Type = blaze::StaticVector<T,N,TF>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

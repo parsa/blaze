@@ -63,12 +63,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::CompressedVector<TypeA>  VCa;
-      typedef blaze::DynamicVector<TypeB>     VDb;
+      using VCa = blaze::CompressedVector<TypeA>;
+      using VDb = blaze::DynamicVector<TypeB>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VCa>  CVCa;
-      typedef blazetest::Creator<VDb>  CVDb;
+      using CVCa = blazetest::Creator<VCa>;
+      using CVDb = blazetest::Creator<VDb>;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=8UL; ++i ) {

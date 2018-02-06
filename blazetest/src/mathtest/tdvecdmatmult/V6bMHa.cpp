@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StaticVector<TypeB,6UL>      V6b;
-      typedef blaze::HybridMatrix<TypeA,6UL,8UL>  MHa;
+      using V6b = blaze::StaticVector<TypeB,6UL>;
+      using MHa = blaze::HybridMatrix<TypeA,6UL,8UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<V6b>  CV6b;
-      typedef blazetest::Creator<MHa>  CMHa;
+      using CV6b = blazetest::Creator<V6b>;
+      using CMHa = blazetest::Creator<MHa>;
 
       // Running the tests
       for( size_t i=0UL; i<=8UL; ++i ) {

@@ -129,11 +129,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::IdentityMatrix<int,blaze::rowMajor>     MT;   //!< Type of the identity matrix.
-   typedef blaze::IdentityMatrix<int,blaze::columnMajor>  OMT;  //!< Opposite identity matrix type.
+   using MT  = blaze::IdentityMatrix<int,blaze::rowMajor>;     //!< Type of the identity matrix.
+   using OMT = blaze::IdentityMatrix<int,blaze::columnMajor>;  //!< Opposite identity matrix type.
 
-   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound identity matrix type.
-   typedef OMT::Rebind<double>::Other  ORMT;  //!< Opposite rebound identity matrix type.
+   using RMT  = MT::Rebind<double>::Other;   //!< Rebound identity matrix type.
+   using ORMT = OMT::Rebind<double>::Other;  //!< Opposite rebound identity matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

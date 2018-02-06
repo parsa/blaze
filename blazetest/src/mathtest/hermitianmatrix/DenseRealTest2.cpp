@@ -1906,8 +1906,8 @@ void DenseRealTest::testIterator()
    //=====================================================================================
 
    {
-      typedef HT::Iterator       Iterator;
-      typedef HT::ConstIterator  ConstIterator;
+      using Iterator      = HT::Iterator;
+      using ConstIterator = HT::ConstIterator;
 
       HT herm( 3UL );
       herm(0,1) =  1;
@@ -2212,8 +2212,8 @@ void DenseRealTest::testIterator()
    //=====================================================================================
 
    {
-      typedef OHT::Iterator       Iterator;
-      typedef OHT::ConstIterator  ConstIterator;
+      using Iterator      = OHT::Iterator;
+      using ConstIterator = OHT::ConstIterator;
 
       OHT herm( 3UL );
       herm(0,1) =  1;
@@ -4326,7 +4326,7 @@ void DenseRealTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::Submatrix<HT>  SMT;
+      using SMT = blaze::Submatrix<HT>;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -4418,7 +4418,7 @@ void DenseRealTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::Submatrix<OHT>  SMT;
+      using SMT = blaze::Submatrix<OHT>;
 
       OHT herm( 3UL );
       herm(0,0) =  1;
@@ -4523,7 +4523,7 @@ void DenseRealTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<HT>  RT;
+      using RT = blaze::Row<HT>;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -4613,7 +4613,7 @@ void DenseRealTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<OHT>  RT;
+      using RT = blaze::Row<OHT>;
 
       OHT herm( 3UL );
       herm(0,0) =  1;
@@ -4716,7 +4716,7 @@ void DenseRealTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<HT>  CT;
+      using CT = blaze::Column<HT>;
 
       HT herm( 3UL );
       herm(0,0) =  1;
@@ -4806,7 +4806,7 @@ void DenseRealTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<OHT>  CT;
+      using CT = blaze::Column<OHT>;
 
       OHT herm( 3UL );
       herm(0,0) =  1;

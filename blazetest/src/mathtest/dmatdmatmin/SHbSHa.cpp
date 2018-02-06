@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::SymmetricMatrix< blaze::HybridMatrix<TypeB,128UL,128UL> >  SHb;
-      typedef blaze::SymmetricMatrix< blaze::HybridMatrix<TypeA,128UL,128UL> >  SHa;
+      using SHb = blaze::SymmetricMatrix< blaze::HybridMatrix<TypeB,128UL,128UL> >;
+      using SHa = blaze::SymmetricMatrix< blaze::HybridMatrix<TypeA,128UL,128UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<SHb>  CSHb;
-      typedef blazetest::Creator<SHa>  CSHa;
+      using CSHb = blazetest::Creator<SHb>;
+      using CSHa = blazetest::Creator<SHa>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=9UL; ++i ) {

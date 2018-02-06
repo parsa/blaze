@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StrictlyUpperMatrix< blaze::HybridMatrix<TypeA,64UL,64UL> >  SUHa;
-      typedef blaze::StrictlyUpperMatrix< blaze::HybridMatrix<TypeB,64UL,64UL> >  SUHb;
+      using SUHa = blaze::StrictlyUpperMatrix< blaze::HybridMatrix<TypeA,64UL,64UL> >;
+      using SUHb = blaze::StrictlyUpperMatrix< blaze::HybridMatrix<TypeB,64UL,64UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<SUHa>  CSUHa;
-      typedef blazetest::Creator<SUHb>  CSUHb;
+      using CSUHa = blazetest::Creator<SUHa>;
+      using CSUHb = blazetest::Creator<SUHb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

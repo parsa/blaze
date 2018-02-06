@@ -68,7 +68,7 @@ class Creator< blaze::UniUpperMatrix< blaze::DynamicMatrix<T,SO> > >
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
-   typedef blaze::UniUpperMatrix< blaze::DynamicMatrix<T,SO> >  Type;
+   using Type = blaze::UniUpperMatrix< blaze::DynamicMatrix<T,SO> >;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

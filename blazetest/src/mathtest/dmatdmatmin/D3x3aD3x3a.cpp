@@ -62,10 +62,10 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DiagonalMatrix< blaze::StaticMatrix<TypeA,3UL,3UL> >  D3x3a;
+      using D3x3a = blaze::DiagonalMatrix< blaze::StaticMatrix<TypeA,3UL,3UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<D3x3a>  CD3x3a;
+      using CD3x3a = blazetest::Creator<D3x3a>;
 
       // Running the tests
       RUN_DMATDMATMIN_OPERATION_TEST( CD3x3a(), CD3x3a() );

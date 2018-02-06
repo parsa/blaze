@@ -140,13 +140,13 @@ class DenseTest
 
    //**Type definitions****************************************************************************
    //! Type of the row-major diagonal matrix.
-   typedef blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DT;
+   using DT = blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Type of the column-major diagonal matrix.
-   typedef blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> >  ODT;
+   using ODT = blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::columnMajor> >;
 
-   typedef DT::Rebind<double>::Other   RDT;   //!< Rebound row-major diagonal matrix type.
-   typedef ODT::Rebind<double>::Other  ORDT;  //!< Rebound column-major diagonal matrix type.
+   using RDT  = DT::Rebind<double>::Other;   //!< Rebound row-major diagonal matrix type.
+   using ORDT = ODT::Rebind<double>::Other;  //!< Rebound column-major diagonal matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

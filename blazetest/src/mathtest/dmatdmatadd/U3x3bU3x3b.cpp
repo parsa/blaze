@@ -62,10 +62,10 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::UpperMatrix< blaze::StaticMatrix<TypeB,3UL,3UL> >  U3x3b;
+      using U3x3b = blaze::UpperMatrix< blaze::StaticMatrix<TypeB,3UL,3UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<U3x3b>  CU3x3b;
+      using CU3x3b = blazetest::Creator<U3x3b>;
 
       // Running the tests
       RUN_DMATDMATADD_OPERATION_TEST( CU3x3b(), CU3x3b() );

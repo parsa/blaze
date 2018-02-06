@@ -271,9 +271,9 @@ void ClassTest::testAt()
 */
 void ClassTest::testIterator()
 {
-   typedef blaze::InitializerVector<int>  VectorType;
-   typedef VectorType::Iterator           Iterator;
-   typedef VectorType::ConstIterator      ConstIterator;
+   using VectorType    = blaze::InitializerVector<int>;
+   using Iterator      = VectorType::Iterator;
+   using ConstIterator = VectorType::ConstIterator;
 
    auto list = { 1, 0, -2, -3 };
 

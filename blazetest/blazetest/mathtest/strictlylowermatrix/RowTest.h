@@ -77,16 +77,16 @@ class RowTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense strictly lower triangular matrix.
-   typedef blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DLT;
+   using DLT = blaze::StrictlyLowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense strictly lower triangular matrix type.
-   typedef DLT::OppositeType  DOLT;
+   using DOLT = DLT::OppositeType;
 
    //! Type of the sparse strictly lower triangular matrix.
-   typedef blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SLT;
+   using SLT = blaze::StrictlyLowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse strictly lower triangular matrix type.
-   typedef SLT::OppositeType  SOLT;
+   using SOLT = SLT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class RowTest
 template< typename LT >  // Type of the strictly lower matrix
 void RowTest::testAssignment()
 {
-   typedef blaze::RowExprTrait_<LT>  RT;
+   using RT = blaze::RowExprTrait_<LT>;
 
 
    //=====================================================================================
@@ -383,7 +383,7 @@ void RowTest::testAssignment()
 template< typename LT >  // Type of the strictly lower matrix
 void RowTest::testAddAssign()
 {
-   typedef blaze::RowExprTrait_<LT>  RT;
+   using RT = blaze::RowExprTrait_<LT>;
 
 
    //=====================================================================================
@@ -607,7 +607,7 @@ void RowTest::testAddAssign()
 template< typename LT >  // Type of the strictly lower matrix
 void RowTest::testSubAssign()
 {
-   typedef blaze::RowExprTrait_<LT>  RT;
+   using RT = blaze::RowExprTrait_<LT>;
 
 
    //=====================================================================================
@@ -831,7 +831,7 @@ void RowTest::testSubAssign()
 template< typename LT >  // Type of the strictly lower matrix
 void RowTest::testMultAssign()
 {
-   typedef blaze::RowExprTrait_<LT>  RT;
+   using RT = blaze::RowExprTrait_<LT>;
 
 
    //=====================================================================================

@@ -1806,8 +1806,8 @@ void DenseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef LT::Iterator       Iterator;
-      typedef LT::ConstIterator  ConstIterator;
+      using Iterator      = LT::Iterator;
+      using ConstIterator = LT::ConstIterator;
 
       LT lower( 3UL );
       lower(2,0) = 3;
@@ -2316,8 +2316,8 @@ void DenseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef OLT::Iterator       Iterator;
-      typedef OLT::ConstIterator  ConstIterator;
+      using Iterator      = OLT::Iterator;
+      using ConstIterator = OLT::ConstIterator;
 
       OLT lower( 3UL );
       lower(1,0) = 2;
@@ -4457,7 +4457,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::Submatrix<LT>  SMT;
+      using SMT = blaze::Submatrix<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -4551,7 +4551,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (scalar assignment test 1)";
 
-      typedef blaze::Submatrix<LT>  SMT;
+      using SMT = blaze::Submatrix<LT>;
 
       LT lower( 4UL );
       lower(1,0) = -4;
@@ -4607,7 +4607,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (scalar assignment test 2)";
 
-      typedef blaze::Submatrix<LT>  SMT;
+      using SMT = blaze::Submatrix<LT>;
 
       LT lower( 4UL );
       lower(1,0) = -4;
@@ -4661,7 +4661,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function (scalar assignment test 3)";
 
-      typedef blaze::Submatrix<LT>  SMT;
+      using SMT = blaze::Submatrix<LT>;
 
       LT lower( 4UL );
       lower(1,0) = -4;
@@ -4716,7 +4716,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::Submatrix<OLT>  SMT;
+      using SMT = blaze::Submatrix<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;
@@ -4810,7 +4810,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (scalar assignment test 1)";
 
-      typedef blaze::Submatrix<OLT>  SMT;
+      using SMT = blaze::Submatrix<OLT>;
 
       OLT lower( 4UL );
       lower(1,0) = -4;
@@ -4866,7 +4866,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (scalar assignment test 2)";
 
-      typedef blaze::Submatrix<OLT>  SMT;
+      using SMT = blaze::Submatrix<OLT>;
 
       OLT lower( 4UL );
       lower(1,0) = -4;
@@ -4920,7 +4920,7 @@ void DenseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function (scalar assignment test 3)";
 
-      typedef blaze::Submatrix<OLT>  SMT;
+      using SMT = blaze::Submatrix<OLT>;
 
       OLT lower( 4UL );
       lower(1,0) = -4;
@@ -4988,7 +4988,7 @@ void DenseTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<LT>  RT;
+      using RT = blaze::Row<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -5075,7 +5075,7 @@ void DenseTest::testRow()
    {
       test_ = "Row-major row() function (scalar assignment test)";
 
-      typedef blaze::Row<LT>  RT;
+      using RT = blaze::Row<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -5122,7 +5122,7 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<OLT>  RT;
+      using RT = blaze::Row<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;
@@ -5209,7 +5209,7 @@ void DenseTest::testRow()
    {
       test_ = "Column-major row() function (scalar assignment test)";
 
-      typedef blaze::Row<OLT>  RT;
+      using RT = blaze::Row<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;
@@ -5269,7 +5269,7 @@ void DenseTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<LT>  CT;
+      using CT = blaze::Column<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -5356,7 +5356,7 @@ void DenseTest::testColumn()
    {
       test_ = "Row-major column() function (scalar assignment test)";
 
-      typedef blaze::Column<LT>  CT;
+      using CT = blaze::Column<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -5403,7 +5403,7 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<OLT>  CT;
+      using CT = blaze::Column<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;
@@ -5490,7 +5490,7 @@ void DenseTest::testColumn()
    {
       test_ = "Column-major column() function (scalar assignment test)";
 
-      typedef blaze::Column<OLT>  CT;
+      using CT = blaze::Column<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;

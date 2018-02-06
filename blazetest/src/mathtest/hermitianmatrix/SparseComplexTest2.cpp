@@ -1188,8 +1188,8 @@ void SparseComplexTest::testIterator()
    //=====================================================================================
 
    {
-      typedef HT::Iterator       Iterator;
-      typedef HT::ConstIterator  ConstIterator;
+      using Iterator      = HT::Iterator;
+      using ConstIterator = HT::ConstIterator;
 
       HT herm( 3UL );
       herm(0,0) = cplx( 4, 0);
@@ -1523,8 +1523,8 @@ void SparseComplexTest::testIterator()
    //=====================================================================================
 
    {
-      typedef OHT::Iterator       Iterator;
-      typedef OHT::ConstIterator  ConstIterator;
+      using Iterator      = OHT::Iterator;
+      using ConstIterator = OHT::ConstIterator;
 
       OHT herm( 3UL );
       herm(0,0) = cplx( 4, 0);
@@ -3295,7 +3295,7 @@ void SparseComplexTest::testSet()
    {
       test_ = "Row-major HermitianMatrix::set()";
 
-      typedef HT::Iterator  Iterator;
+      using Iterator = HT::Iterator;
 
       // Initialization check
       HT herm( 4UL );
@@ -3492,7 +3492,7 @@ void SparseComplexTest::testSet()
    {
       test_ = "Column-major HermitianMatrix::set()";
 
-      typedef OHT::Iterator  Iterator;
+      using Iterator = OHT::Iterator;
 
       // Initialization check
       OHT herm( 4UL );
@@ -3702,7 +3702,7 @@ void SparseComplexTest::testInsert()
    {
       test_ = "Row-major HermitianMatrix::insert()";
 
-      typedef HT::Iterator  Iterator;
+      using Iterator = HT::Iterator;
 
       // Initialization check
       HT herm( 4UL );
@@ -3876,7 +3876,7 @@ void SparseComplexTest::testInsert()
    {
       test_ = "Column-major HermitianMatrix::insert()";
 
-      typedef OHT::Iterator  Iterator;
+      using Iterator = OHT::Iterator;
 
       // Initialization check
       OHT herm( 4UL );
@@ -4678,7 +4678,7 @@ void SparseComplexTest::testErase()
    {
       test_ = "Row-major HermitianMatrix::erase( size_t, Iterator )";
 
-      typedef HT::Iterator  Iterator;
+      using Iterator = HT::Iterator;
 
       // Initialization check
       HT herm( 4UL );
@@ -4886,7 +4886,7 @@ void SparseComplexTest::testErase()
    {
       test_ = "Row-major HermitianMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef HT::Iterator  Iterator;
+      using Iterator = HT::Iterator;
 
       // Initialization check
       HT herm( 4UL );
@@ -5453,7 +5453,7 @@ void SparseComplexTest::testErase()
    {
       test_ = "Column-major HermitianMatrix::erase( size_t, Iterator )";
 
-      typedef OHT::Iterator  Iterator;
+      using Iterator = OHT::Iterator;
 
       // Initialization check
       OHT herm( 4UL );
@@ -5661,7 +5661,7 @@ void SparseComplexTest::testErase()
    {
       test_ = "Column-major HermitianMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef OHT::Iterator  Iterator;
+      using Iterator = OHT::Iterator;
 
       // Initialization check
       OHT herm( 4UL );
@@ -6085,7 +6085,7 @@ void SparseComplexTest::testFind()
    {
       test_ = "Row-major HermitianMatrix::find()";
 
-      typedef HT::ConstIterator  ConstIterator;
+      using ConstIterator = HT::ConstIterator;
 
       // Initialization check
       HT herm( 8UL, 3UL );
@@ -6214,7 +6214,7 @@ void SparseComplexTest::testFind()
    {
       test_ = "Column-major HermitianMatrix::find()";
 
-      typedef OHT::ConstIterator  ConstIterator;
+      using ConstIterator = OHT::ConstIterator;
 
       // Initialization check
       OHT herm( 8UL, 3UL );
@@ -6356,7 +6356,7 @@ void SparseComplexTest::testLowerBound()
    {
       test_ = "Row-major HermitianMatrix::lowerBound()";
 
-      typedef HT::ConstIterator  ConstIterator;
+      using ConstIterator = HT::ConstIterator;
 
       // Initialization check
       HT herm( 6UL, 3UL );
@@ -6506,7 +6506,7 @@ void SparseComplexTest::testLowerBound()
    {
       test_ = "Column-major HermitianMatrix::lowerBound()";
 
-      typedef OHT::ConstIterator  ConstIterator;
+      using ConstIterator = OHT::ConstIterator;
 
       // Initialization check
       OHT herm( 6UL, 3UL );
@@ -6669,7 +6669,7 @@ void SparseComplexTest::testUpperBound()
    {
       test_ = "Row-major HermitianMatrix::upperBound()";
 
-      typedef HT::ConstIterator  ConstIterator;
+      using ConstIterator = HT::ConstIterator;
 
       // Initialization check
       HT herm( 6UL, 3UL );
@@ -6807,7 +6807,7 @@ void SparseComplexTest::testUpperBound()
    {
       test_ = "Column-major HermitianMatrix::upperBound()";
 
-      typedef OHT::ConstIterator  ConstIterator;
+      using ConstIterator = OHT::ConstIterator;
 
       // Initialization check
       OHT herm( 6UL, 3UL );
@@ -7479,7 +7479,7 @@ void SparseComplexTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::Submatrix<HT>  SMT;
+      using SMT = blaze::Submatrix<HT>;
 
       HT herm( 3UL );
       herm(0,0) = cplx( 1, 0);
@@ -7577,7 +7577,7 @@ void SparseComplexTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::Submatrix<OHT>  SMT;
+      using SMT = blaze::Submatrix<OHT>;
 
       OHT herm( 3UL );
       herm(0,0) = cplx( 1, 0);
@@ -7688,7 +7688,7 @@ void SparseComplexTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<HT>  RT;
+      using RT = blaze::Row<HT>;
 
       HT herm( 3UL );
       herm(0,0) = cplx( 1, 0);
@@ -7782,7 +7782,7 @@ void SparseComplexTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<OHT>  RT;
+      using RT = blaze::Row<OHT>;
 
       OHT herm( 3UL );
       herm(0,0) = cplx( 1, 0);
@@ -7889,7 +7889,7 @@ void SparseComplexTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<HT>  CT;
+      using CT = blaze::Column<HT>;
 
       HT herm( 3UL );
       herm(0,0) = cplx( 1, 0);
@@ -7983,7 +7983,7 @@ void SparseComplexTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<OHT>  CT;
+      using CT = blaze::Column<OHT>;
 
       OHT herm( 3UL );
       herm(0,0) = cplx( 1, 0);

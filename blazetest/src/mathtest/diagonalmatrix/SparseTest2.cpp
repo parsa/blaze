@@ -1285,8 +1285,8 @@ void SparseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef DT::Iterator       Iterator;
-      typedef DT::ConstIterator  ConstIterator;
+      using Iterator      = DT::Iterator;
+      using ConstIterator = DT::ConstIterator;
 
       DT diag( 3UL );
       diag(0,0) =  1;
@@ -1510,8 +1510,8 @@ void SparseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef ODT::Iterator       Iterator;
-      typedef ODT::ConstIterator  ConstIterator;
+      using Iterator      = ODT::Iterator;
+      using ConstIterator = ODT::ConstIterator;
 
       ODT diag( 3UL );
       diag(0,0) =  1;
@@ -3204,7 +3204,7 @@ void SparseTest::testSet()
    {
       test_ = "Row-major DiagonalMatrix::set()";
 
-      typedef DT::Iterator  Iterator;
+      using Iterator = DT::Iterator;
 
       // Initialization check
       DT diag( 4UL );
@@ -3370,7 +3370,7 @@ void SparseTest::testSet()
    {
       test_ = "Column-major DiagonalMatrix::set()";
 
-      typedef ODT::Iterator  Iterator;
+      using Iterator = ODT::Iterator;
 
       // Initialization check
       ODT diag( 4UL );
@@ -3549,7 +3549,7 @@ void SparseTest::testInsert()
    {
       test_ = "Row-major DiagonalMatrix::insert()";
 
-      typedef DT::Iterator  Iterator;
+      using Iterator = DT::Iterator;
 
       // Initialization check
       DT diag( 4UL );
@@ -3693,7 +3693,7 @@ void SparseTest::testInsert()
    {
       test_ = "Column-major DiagonalMatrix::insert()";
 
-      typedef ODT::Iterator  Iterator;
+      using Iterator = ODT::Iterator;
 
       // Initialization check
       ODT diag( 4UL );
@@ -4303,7 +4303,7 @@ void SparseTest::testErase()
    {
       test_ = "Row-major DiagonalMatrix::erase( size_t, Iterator )";
 
-      typedef DT::Iterator  Iterator;
+      using Iterator = DT::Iterator;
 
       // Initialization check
       DT diag( 4UL, 4UL );
@@ -4559,7 +4559,7 @@ void SparseTest::testErase()
    {
       test_ = "Row-major DiagonalMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef DT::Iterator  Iterator;
+      using Iterator = DT::Iterator;
 
       // Initialization check
       DT diag( 4UL, 4UL );
@@ -5074,7 +5074,7 @@ void SparseTest::testErase()
    {
       test_ = "Column-major DiagonalMatrix::erase( size_t, Iterator )";
 
-      typedef ODT::Iterator  Iterator;
+      using Iterator = ODT::Iterator;
 
       // Initialization check
       ODT diag( 4UL, 4UL );
@@ -5330,7 +5330,7 @@ void SparseTest::testErase()
    {
       test_ = "Column-major DiagonalMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef ODT::Iterator  Iterator;
+      using Iterator = ODT::Iterator;
 
       // Initialization check
       ODT diag( 4UL, 4UL );
@@ -5670,7 +5670,7 @@ void SparseTest::testFind()
    {
       test_ = "Row-major DiagonalMatrix::find()";
 
-      typedef DT::ConstIterator  ConstIterator;
+      using ConstIterator = DT::ConstIterator;
 
       // Initialization check
       DT diag( 8UL, 3UL );
@@ -5799,7 +5799,7 @@ void SparseTest::testFind()
    {
       test_ = "Column-major DiagonalMatrix::find()";
 
-      typedef ODT::ConstIterator  ConstIterator;
+      using ConstIterator = ODT::ConstIterator;
 
       // Initialization check
       ODT diag( 8UL, 3UL );
@@ -5941,7 +5941,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Row-major DiagonalMatrix::lowerBound()";
 
-      typedef DT::ConstIterator  ConstIterator;
+      using ConstIterator = DT::ConstIterator;
 
       // Initialization check
       DT diag( 3UL, 1UL );
@@ -6033,7 +6033,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Column-major DiagonalMatrix::lowerBound()";
 
-      typedef ODT::ConstIterator  ConstIterator;
+      using ConstIterator = ODT::ConstIterator;
 
       // Initialization check
       ODT diag( 3UL, 1UL );
@@ -6138,7 +6138,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Row-major DiagonalMatrix::upperBound()";
 
-      typedef DT::ConstIterator  ConstIterator;
+      using ConstIterator = DT::ConstIterator;
 
       // Initialization check
       DT diag( 3UL, 1UL );
@@ -6218,7 +6218,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Column-major DiagonalMatrix::lowerBound()";
 
-      typedef ODT::ConstIterator  ConstIterator;
+      using ConstIterator = ODT::ConstIterator;
 
       // Initialization check
       ODT diag( 3UL, 1UL );
@@ -6464,7 +6464,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::Submatrix<DT>  SMT;
+      using SMT = blaze::Submatrix<DT>;
 
       DT diag( 3UL );
       diag(0,0) = 1;
@@ -6554,7 +6554,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::Submatrix<ODT>  SMT;
+      using SMT = blaze::Submatrix<ODT>;
 
       ODT diag( 3UL );
       diag(0,0) = 1;
@@ -6657,7 +6657,7 @@ void SparseTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<DT>  RT;
+      using RT = blaze::Row<DT>;
 
       DT diag( 3UL );
       diag(0,0) = 1;
@@ -6745,7 +6745,7 @@ void SparseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<ODT>  RT;
+      using RT = blaze::Row<ODT>;
 
       ODT diag( 3UL );
       diag(0,0) = 1;
@@ -6846,7 +6846,7 @@ void SparseTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<DT>  CT;
+      using CT = blaze::Column<DT>;
 
       DT diag( 3UL );
       diag(0,0) = 1;
@@ -6934,7 +6934,7 @@ void SparseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<ODT>  CT;
+      using CT = blaze::Column<ODT>;
 
       ODT diag( 3UL );
       diag(0,0) = 1;

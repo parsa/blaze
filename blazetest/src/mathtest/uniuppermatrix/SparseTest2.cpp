@@ -753,8 +753,8 @@ void SparseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef UT::Iterator       Iterator;
-      typedef UT::ConstIterator  ConstIterator;
+      using Iterator      = UT::Iterator;
+      using ConstIterator = UT::ConstIterator;
 
       UT upper( 3UL );
       upper(0,2) = 2;
@@ -1141,8 +1141,8 @@ void SparseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef OUT::Iterator       Iterator;
-      typedef OUT::ConstIterator  ConstIterator;
+      using Iterator      = OUT::Iterator;
+      using ConstIterator = OUT::ConstIterator;
 
       OUT upper( 3UL );
       upper(0,1) = 3;
@@ -3076,7 +3076,7 @@ void SparseTest::testSet()
    {
       test_ = "Row-major UniUpperMatrix::set()";
 
-      typedef UT::Iterator  Iterator;
+      using Iterator = UT::Iterator;
 
       // Initialization check
       UT upper( 4UL );
@@ -3215,7 +3215,7 @@ void SparseTest::testSet()
    {
       test_ = "Column-major UniUpperMatrix::set()";
 
-      typedef OUT::Iterator  Iterator;
+      using Iterator = OUT::Iterator;
 
       // Initialization check
       OUT upper( 4UL );
@@ -3367,7 +3367,7 @@ void SparseTest::testInsert()
    {
       test_ = "Row-major UniUpperMatrix::insert()";
 
-      typedef UT::Iterator  Iterator;
+      using Iterator = UT::Iterator;
 
       // Initialization check
       UT upper( 4UL );
@@ -3481,7 +3481,7 @@ void SparseTest::testInsert()
    {
       test_ = "Column-major UniUpperMatrix::insert()";
 
-      typedef OUT::Iterator  Iterator;
+      using Iterator = OUT::Iterator;
 
       // Initialization check
       OUT upper( 4UL );
@@ -3977,7 +3977,7 @@ void SparseTest::testErase()
    {
       test_ = "Row-major UniUpperMatrix::erase( size_t, Iterator )";
 
-      typedef UT::Iterator  Iterator;
+      using Iterator = UT::Iterator;
 
       // Initialization check
       UT upper( 4UL, 9UL );
@@ -4143,7 +4143,7 @@ void SparseTest::testErase()
    {
       test_ = "Row-major UniUpperMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef UT::Iterator  Iterator;
+      using Iterator = UT::Iterator;
 
       // Initialization check
       UT upper( 4UL, 9UL );
@@ -4619,7 +4619,7 @@ void SparseTest::testErase()
    {
       test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator )";
 
-      typedef OUT::Iterator  Iterator;
+      using Iterator = OUT::Iterator;
 
       // Initialization check
       OUT upper( 4UL, 9UL );
@@ -4788,7 +4788,7 @@ void SparseTest::testErase()
    {
       test_ = "Column-major UniUpperMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef OUT::Iterator  Iterator;
+      using Iterator = OUT::Iterator;
 
       // Initialization check
       OUT upper( 4UL, 9UL );
@@ -5152,7 +5152,7 @@ void SparseTest::testFind()
    {
       test_ = "Row-major UniUpperMatrix::find()";
 
-      typedef UT::ConstIterator  ConstIterator;
+      using ConstIterator = UT::ConstIterator;
 
       // Initialization check
       UT upper( 8UL, 10UL );
@@ -5280,7 +5280,7 @@ void SparseTest::testFind()
    {
       test_ = "Column-major UniUpperMatrix::find()";
 
-      typedef OUT::ConstIterator  ConstIterator;
+      using ConstIterator = OUT::ConstIterator;
 
       // Initialization check
       OUT upper( 8UL, 10UL );
@@ -5421,7 +5421,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Row-major UniUpperMatrix::lowerBound()";
 
-      typedef UT::ConstIterator  ConstIterator;
+      using ConstIterator = UT::ConstIterator;
 
       // Initialization check
       UT upper( 6UL, 7UL );
@@ -5570,7 +5570,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Column-major UniUpperMatrix::lowerBound()";
 
-      typedef OUT::ConstIterator  ConstIterator;
+      using ConstIterator = OUT::ConstIterator;
 
       // Initialization check
       OUT upper( 6UL, 7UL );
@@ -5732,7 +5732,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Row-major UniUpperMatrix::upperBound()";
 
-      typedef UT::ConstIterator  ConstIterator;
+      using ConstIterator = UT::ConstIterator;
 
       // Initialization check
       UT upper( 6UL, 7UL );
@@ -5869,7 +5869,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Column-major UniUpperMatrix::upperBound()";
 
-      typedef OUT::ConstIterator  ConstIterator;
+      using ConstIterator = OUT::ConstIterator;
 
       // Initialization check
       OUT upper( 6UL, 7UL );
@@ -6208,7 +6208,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::Submatrix<UT>  SMT;
+      using SMT = blaze::Submatrix<UT>;
 
       UT upper( 3UL );
       upper(0,1) = -4;
@@ -6297,7 +6297,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::Submatrix<OUT>  SMT;
+      using SMT = blaze::Submatrix<OUT>;
 
       OUT upper( 3UL );
       upper(0,1) = -4;
@@ -6399,7 +6399,7 @@ void SparseTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<UT>  RT;
+      using RT = blaze::Row<UT>;
 
       UT upper( 3UL );
       upper(0,1) = -4;
@@ -6486,7 +6486,7 @@ void SparseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<OUT>  RT;
+      using RT = blaze::Row<OUT>;
 
       OUT upper( 3UL );
       upper(0,1) = -4;
@@ -6586,7 +6586,7 @@ void SparseTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<UT>  CT;
+      using CT = blaze::Column<UT>;
 
       UT upper( 3UL );
       upper(0,1) = -4;
@@ -6673,7 +6673,7 @@ void SparseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<OUT>  CT;
+      using CT = blaze::Column<OUT>;
 
       OUT upper( 3UL );
       upper(0,1) = -4;

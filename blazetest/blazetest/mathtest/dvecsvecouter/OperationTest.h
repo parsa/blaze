@@ -103,31 +103,31 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::ElementType_<VT1>  ET1;  //!< Element type 1
-   typedef blaze::ElementType_<VT2>  ET2;  //!< Element type 2
+   using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
 
-   typedef blaze::TransposeType_<VT1>  TVT1;  //!< Transpose vector type 1
-   typedef blaze::TransposeType_<VT2>  TVT2;  //!< Transpose vector type 2
+   using TVT1 = blaze::TransposeType_<VT1>;  //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
 
    //! Sparse result type
-   typedef blaze::MultTrait_<VT1,TVT2>  SRE;
+   using SRE = blaze::MultTrait_<VT1,TVT2>;
 
-   typedef blaze::ElementType_<SRE>     SET;    //!< Element type of the sparse result
-   typedef blaze::OppositeType_<SRE>    OSRE;   //!< Sparse result type with opposite storage order
-   typedef blaze::TransposeType_<SRE>   TSRE;   //!< Transpose sparse result type
-   typedef blaze::TransposeType_<OSRE>  TOSRE;  //!< Transpose sparse result type with opposite storage order
+   using SET   = blaze::ElementType_<SRE>;     //!< Element type of the sparse result
+   using OSRE  = blaze::OppositeType_<SRE>;    //!< Sparse result type with opposite storage order
+   using TSRE  = blaze::TransposeType_<SRE>;   //!< Transpose sparse result type
+   using TOSRE = blaze::TransposeType_<OSRE>;  //!< Transpose sparse result type with opposite storage order
 
    //! Dense result type
-   typedef blaze::DynamicMatrix<SET,false>  DRE;
+   using DRE = blaze::DynamicMatrix<SET,false>;
 
-   typedef blaze::ElementType_<DRE>     DET;    //!< Element type of the dense result
-   typedef blaze::OppositeType_<DRE>    ODRE;   //!< Dense result type with opposite storage order
-   typedef blaze::TransposeType_<DRE>   TDRE;   //!< Transpose dense result type
-   typedef blaze::TransposeType_<ODRE>  TODRE;  //!< Transpose dense result type with opposite storage order
+   using DET   = blaze::ElementType_<DRE>;     //!< Element type of the dense result
+   using ODRE  = blaze::OppositeType_<DRE>;    //!< Dense result type with opposite storage order
+   using TDRE  = blaze::TransposeType_<DRE>;   //!< Transpose dense result type
+   using TODRE = blaze::TransposeType_<ODRE>;  //!< Transpose dense result type with opposite storage order
 
-   typedef blaze::DynamicVector<ET1,false>  RT1;  //!< Reference type 1
-   typedef blaze::DynamicVector<ET2,true>   RT2;  //!< Reference type 2
-   typedef blaze::MultTrait_<RT1,RT2>       RRE;  //!< Reference result type
+   using RT1 = blaze::DynamicVector<ET1,false>;  //!< Reference type 1
+   using RT2 = blaze::DynamicVector<ET2,true>;   //!< Reference type 2
+   using RRE = blaze::MultTrait_<RT1,RT2>;       //!< Reference result type
    //**********************************************************************************************
 
  public:
@@ -313,7 +313,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()                      // Label of the currently performed test
    , error_()                     // Description of the current error type
 {
-   typedef blaze::UnderlyingNumeric_<SET>  Scalar;
+   using Scalar = blaze::UnderlyingNumeric_<SET>;
 
    testInitialStatus();
    testAssignment();

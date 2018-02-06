@@ -1220,8 +1220,8 @@ void SparseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef LT::Iterator       Iterator;
-      typedef LT::ConstIterator  ConstIterator;
+      using Iterator      = LT::Iterator;
+      using ConstIterator = LT::ConstIterator;
 
       LT lower( 3UL );
       lower(1,0) = 2;
@@ -1454,8 +1454,8 @@ void SparseTest::testIterator()
    //=====================================================================================
 
    {
-      typedef OLT::Iterator       Iterator;
-      typedef OLT::ConstIterator  ConstIterator;
+      using Iterator      = OLT::Iterator;
+      using ConstIterator = OLT::ConstIterator;
 
       OLT lower( 3UL );
       lower(1,0) = 4;
@@ -3153,7 +3153,7 @@ void SparseTest::testSet()
    {
       test_ = "Row-major StrictlyLowerMatrix::set()";
 
-      typedef LT::Iterator  Iterator;
+      using Iterator = LT::Iterator;
 
       // Initialization check
       LT lower( 4UL );
@@ -3283,7 +3283,7 @@ void SparseTest::testSet()
    {
       test_ = "Column-major StrictlyLowerMatrix::set()";
 
-      typedef OLT::Iterator  Iterator;
+      using Iterator = OLT::Iterator;
 
       // Initialization check
       OLT lower( 4UL );
@@ -3426,7 +3426,7 @@ void SparseTest::testInsert()
    {
       test_ = "Row-major StrictlyLowerMatrix::insert()";
 
-      typedef LT::Iterator  Iterator;
+      using Iterator = LT::Iterator;
 
       // Initialization check
       LT lower( 4UL );
@@ -3534,7 +3534,7 @@ void SparseTest::testInsert()
    {
       test_ = "Column-major StrictlyLowerMatrix::set()";
 
-      typedef OLT::Iterator  Iterator;
+      using Iterator = OLT::Iterator;
 
       // Initialization check
       OLT lower( 4UL );
@@ -4153,7 +4153,7 @@ void SparseTest::testErase()
    {
       test_ = "Row-major StrictlyLowerMatrix::erase( size_t, Iterator )";
 
-      typedef LT::Iterator  Iterator;
+      using Iterator = LT::Iterator;
 
       // Initialization check
       LT lower( 4UL, 5UL );
@@ -4337,7 +4337,7 @@ void SparseTest::testErase()
    {
       test_ = "Row-major StrictlyLowerMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef LT::Iterator  Iterator;
+      using Iterator = LT::Iterator;
 
       // Initialization check
       LT lower( 4UL, 5UL );
@@ -4791,7 +4791,7 @@ void SparseTest::testErase()
    {
       test_ = "Column-major StrictlyLowerMatrix::erase( size_t, Iterator )";
 
-      typedef OLT::Iterator  Iterator;
+      using Iterator = OLT::Iterator;
 
       // Initialization check
       OLT lower( 4UL, 5UL );
@@ -4974,7 +4974,7 @@ void SparseTest::testErase()
    {
       test_ = "Column-major StrictlyLowerMatrix::erase( size_t, Iterator, Iterator )";
 
-      typedef OLT::Iterator  Iterator;
+      using Iterator = OLT::Iterator;
 
       // Initialization check
       OLT lower( 4UL, 5UL );
@@ -5303,7 +5303,7 @@ void SparseTest::testFind()
    {
       test_ = "Row-major StrictlyLowerMatrix::find()";
 
-      typedef LT::ConstIterator  ConstIterator;
+      using ConstIterator = LT::ConstIterator;
 
       // Initialization check
       LT lower( 8UL, 3UL );
@@ -5432,7 +5432,7 @@ void SparseTest::testFind()
    {
       test_ = "Column-major StrictlyLowerMatrix::find()";
 
-      typedef OLT::ConstIterator  ConstIterator;
+      using ConstIterator = OLT::ConstIterator;
 
       // Initialization check
       OLT lower( 8UL, 3UL );
@@ -5574,7 +5574,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Row-major StrictlyLowerMatrix::lowerBound()";
 
-      typedef LT::ConstIterator  ConstIterator;
+      using ConstIterator = LT::ConstIterator;
 
       // Initialization check
       LT lower( 6UL, 2UL );
@@ -5724,7 +5724,7 @@ void SparseTest::testLowerBound()
    {
       test_ = "Column-major StrictlyLowerMatrix::lowerBound()";
 
-      typedef OLT::ConstIterator  ConstIterator;
+      using ConstIterator = OLT::ConstIterator;
 
       // Initialization check
       OLT lower( 6UL, 2UL );
@@ -5887,7 +5887,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Row-major StrictlyLowerMatrix::upperBound()";
 
-      typedef LT::ConstIterator  ConstIterator;
+      using ConstIterator = LT::ConstIterator;
 
       // Initialization check
       LT lower( 6UL, 2UL );
@@ -6025,7 +6025,7 @@ void SparseTest::testUpperBound()
    {
       test_ = "Column-major StrictlyLowerMatrix::lowerBound()";
 
-      typedef OLT::ConstIterator  ConstIterator;
+      using ConstIterator = OLT::ConstIterator;
 
       // Initialization check
       OLT lower( 6UL, 2UL );
@@ -6365,7 +6365,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Row-major submatrix() function";
 
-      typedef blaze::Submatrix<LT>  SMT;
+      using SMT = blaze::Submatrix<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -6455,7 +6455,7 @@ void SparseTest::testSubmatrix()
    {
       test_ = "Column-major submatrix() function";
 
-      typedef blaze::Submatrix<OLT>  SMT;
+      using SMT = blaze::Submatrix<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;
@@ -6558,7 +6558,7 @@ void SparseTest::testRow()
    {
       test_ = "Row-major row() function";
 
-      typedef blaze::Row<LT>  RT;
+      using RT = blaze::Row<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -6645,7 +6645,7 @@ void SparseTest::testRow()
    {
       test_ = "Column-major row() function";
 
-      typedef blaze::Row<OLT>  RT;
+      using RT = blaze::Row<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;
@@ -6745,7 +6745,7 @@ void SparseTest::testColumn()
    {
       test_ = "Row-major column() function";
 
-      typedef blaze::Column<LT>  CT;
+      using CT = blaze::Column<LT>;
 
       LT lower( 3UL );
       lower(1,0) = -4;
@@ -6832,7 +6832,7 @@ void SparseTest::testColumn()
    {
       test_ = "Column-major column() function";
 
-      typedef blaze::Column<OLT>  CT;
+      using CT = blaze::Column<OLT>;
 
       OLT lower( 3UL );
       lower(1,0) = -4;

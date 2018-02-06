@@ -77,16 +77,16 @@ class ColumnRealTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DHT;
+   using DHT = blaze::HermitianMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense Hermitian matrix type.
-   typedef DHT::OppositeType  DOHT;
+   using DOHT = DHT::OppositeType;
 
    //! Type of the sparse Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SHT;
+   using SHT = blaze::HermitianMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse Hermitian matrix type.
-   typedef SHT::OppositeType  SOHT;
+   using SOHT = SHT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class ColumnRealTest
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testAssignment()
 {
-   typedef blaze::ColumnExprTrait_<HT>  CT;
+   using CT = blaze::ColumnExprTrait_<HT>;
 
 
    //=====================================================================================
@@ -274,7 +274,7 @@ void ColumnRealTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testAddAssign()
 {
-   typedef blaze::ColumnExprTrait_<HT>  CT;
+   using CT = blaze::ColumnExprTrait_<HT>;
 
 
    //=====================================================================================
@@ -389,7 +389,7 @@ void ColumnRealTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testSubAssign()
 {
-   typedef blaze::ColumnExprTrait_<HT>  CT;
+   using CT = blaze::ColumnExprTrait_<HT>;
 
 
    //=====================================================================================
@@ -504,7 +504,7 @@ void ColumnRealTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testMultAssign()
 {
-   typedef blaze::ColumnExprTrait_<HT>  CT;
+   using CT = blaze::ColumnExprTrait_<HT>;
 
 
    //=====================================================================================

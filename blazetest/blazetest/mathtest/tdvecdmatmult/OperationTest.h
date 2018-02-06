@@ -102,30 +102,30 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   typedef blaze::ElementType_<VT>  VET;  //!< Element type of the vector type
-   typedef blaze::ElementType_<MT>  MET;  //!< Element type of the matrix type
+   using VET = blaze::ElementType_<VT>;  //!< Element type of the vector type
+   using MET = blaze::ElementType_<MT>;  //!< Element type of the matrix type
 
-   typedef blaze::TransposeType_<VT>   TVT;   //!< Transpose vector type
-   typedef blaze::OppositeType_<MT>    OMT;   //!< Matrix type with opposite storage order
-   typedef blaze::TransposeType_<MT>   TMT;   //!< Transpose matrix type
-   typedef blaze::TransposeType_<OMT>  TOMT;  //!< Transpose matrix type with opposite storage order
+   using TVT  = blaze::TransposeType_<VT>;   //!< Transpose vector type
+   using OMT  = blaze::OppositeType_<MT>;    //!< Matrix type with opposite storage order
+   using TMT  = blaze::TransposeType_<MT>;   //!< Transpose matrix type
+   using TOMT = blaze::TransposeType_<OMT>;  //!< Transpose matrix type with opposite storage order
 
    //! Dense result type
-   typedef blaze::MultTrait_<TVT,MT>  DRE;
+   using DRE = blaze::MultTrait_<TVT,MT>;
 
-   typedef blaze::ElementType_<DRE>    DET;   //!< Element type of the dense result
-   typedef blaze::TransposeType_<DRE>  TDRE;  //!< Transpose dense result type
+   using DET  = blaze::ElementType_<DRE>;    //!< Element type of the dense result
+   using TDRE = blaze::TransposeType_<DRE>;  //!< Transpose dense result type
 
    //! Sparse result type
-   typedef blaze::CompressedVector<DET,true>  SRE;
+   using SRE = blaze::CompressedVector<DET,true>;
 
-   typedef blaze::ElementType_<SRE>    SET;   //!< Element type of the sparse result
-   typedef blaze::TransposeType_<SRE>  TSRE;  //!< Transpose sparse result type
+   using SET  = blaze::ElementType_<SRE>;    //!< Element type of the sparse result
+   using TSRE = blaze::TransposeType_<SRE>;  //!< Transpose sparse result type
 
-   typedef blaze::CompressedVector<VET,true>  VRT;   //!< Vector reference type
-   typedef blaze::DynamicMatrix<MET,false>    MRT;   //!< Matrix reference type
-   typedef blaze::MultTrait_<VRT,MRT>         RRE;   //!< Reference result type
-   typedef blaze::TransposeType_<RRE>         TRRE;  //!< Transpose reference result type
+   using VRT  = blaze::CompressedVector<VET,true>;  //!< Vector reference type
+   using MRT  = blaze::DynamicMatrix<MET,false>;    //!< Matrix reference type
+   using RRE  = blaze::MultTrait_<VRT,MRT>;         //!< Reference result type
+   using TRRE = blaze::TransposeType_<RRE>;         //!< Transpose reference result type
    //**********************************************************************************************
 
  public:
@@ -284,7 +284,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    , test_()                       // Label of the currently performed test
    , error_()                      // Description of the current error type
 {
-   typedef blaze::UnderlyingNumeric_<DET>  Scalar;
+   using Scalar = blaze::UnderlyingNumeric_<DET>;
 
    testInitialStatus();
    testAssignment();

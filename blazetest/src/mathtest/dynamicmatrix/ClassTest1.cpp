@@ -501,7 +501,7 @@ void ClassTest::testConstructors()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -539,7 +539,7 @@ void ClassTest::testConstructors()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -577,7 +577,7 @@ void ClassTest::testConstructors()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -615,7 +615,7 @@ void ClassTest::testConstructors()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -1095,7 +1095,7 @@ void ClassTest::testConstructors()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -1134,7 +1134,7 @@ void ClassTest::testConstructors()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -1173,7 +1173,7 @@ void ClassTest::testConstructors()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -1212,7 +1212,7 @@ void ClassTest::testConstructors()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -1478,7 +1478,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major DynamicMatrix copy assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<int,blaze::rowMajor>;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
       const int min( randmin );
@@ -1576,7 +1576,7 @@ void ClassTest::testAssignment()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -1615,7 +1615,7 @@ void ClassTest::testAssignment()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -1650,7 +1650,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<short,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<short,blaze::rowMajor>;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
       const short min( randmin );
@@ -1709,7 +1709,7 @@ void ClassTest::testAssignment()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -1748,7 +1748,7 @@ void ClassTest::testAssignment()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -1783,7 +1783,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<short,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<short,blaze::columnMajor>;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
       const short min( randmin );
@@ -1980,7 +1980,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major DynamicMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<int,blaze::rowMajor>;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
       const int min( randmin );
@@ -2040,7 +2040,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/column-major DynamicMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<int,blaze::columnMajor>;
 
       blaze::DynamicMatrix<int,blaze::rowMajor> mat1;
       const int min( randmin );
@@ -2357,7 +2357,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major DynamicMatrix copy assignment stress test";
 
-      typedef blaze::DynamicMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<int,blaze::columnMajor>;
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
       const int min( randmin );
@@ -2457,7 +2457,7 @@ void ClassTest::testAssignment()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -2497,7 +2497,7 @@ void ClassTest::testAssignment()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -2533,7 +2533,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<short,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<short,blaze::rowMajor>;
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
       const short min( randmin );
@@ -2593,7 +2593,7 @@ void ClassTest::testAssignment()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1(0,0) = 1;
@@ -2633,7 +2633,7 @@ void ClassTest::testAssignment()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1(0,0) = 1;
@@ -2669,7 +2669,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/column-major DynamicMatrix dense matrix assignment stress test";
 
-      typedef blaze::DynamicMatrix<short,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::DynamicMatrix<short,blaze::columnMajor>;
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
       const short min( randmin );
@@ -2867,7 +2867,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/row-major DynamicMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<int,blaze::rowMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<int,blaze::rowMajor>;
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
       const int min( randmin );
@@ -2928,7 +2928,7 @@ void ClassTest::testAssignment()
    {
       test_ = "Column-major/column-major DynamicMatrix sparse matrix assignment stress test";
 
-      typedef blaze::CompressedMatrix<int,blaze::columnMajor>  RandomMatrixType;
+      using RandomMatrixType = blaze::CompressedMatrix<int,blaze::columnMajor>;
 
       blaze::DynamicMatrix<int,blaze::columnMajor> mat1;
       const int min( randmin );
@@ -3141,7 +3141,7 @@ void ClassTest::testAddAssign()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -3181,7 +3181,7 @@ void ClassTest::testAddAssign()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;
@@ -3251,7 +3251,7 @@ void ClassTest::testAddAssign()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -3291,7 +3291,7 @@ void ClassTest::testAddAssign()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;
@@ -3690,7 +3690,7 @@ void ClassTest::testAddAssign()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -3731,7 +3731,7 @@ void ClassTest::testAddAssign()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;
@@ -3803,7 +3803,7 @@ void ClassTest::testAddAssign()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -3844,7 +3844,7 @@ void ClassTest::testAddAssign()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;
@@ -4258,7 +4258,7 @@ void ClassTest::testSubAssign()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -4300,7 +4300,7 @@ void ClassTest::testSubAssign()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;
@@ -4372,7 +4372,7 @@ void ClassTest::testSubAssign()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -4414,7 +4414,7 @@ void ClassTest::testSubAssign()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;
@@ -4815,7 +4815,7 @@ void ClassTest::testSubAssign()
       using blaze::padded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,rowMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -4856,7 +4856,7 @@ void ClassTest::testSubAssign()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;
@@ -4928,7 +4928,7 @@ void ClassTest::testSubAssign()
       using blaze::padded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,aligned,padded,columnMajor>  AlignedPadded;
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
       mat1 = 0;
@@ -4969,7 +4969,7 @@ void ClassTest::testSubAssign()
       using blaze::unpadded;
       using blaze::columnMajor;
 
-      typedef blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
       std::unique_ptr<int[]> memory( new int[7UL] );
       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
       mat1 = 0;

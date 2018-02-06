@@ -63,12 +63,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::StaticVector<TypeA,6UL>  V6a;
-      typedef blaze::HybridVector<TypeB,6UL>  VHb;
+      using V6a = blaze::StaticVector<TypeA,6UL>;
+      using VHb = blaze::HybridVector<TypeB,6UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<V6a>  CV6a;
-      typedef blazetest::Creator<VHb>  CVHb;
+      using CV6a = blazetest::Creator<V6a>;
+      using CVHb = blazetest::Creator<VHb>;
 
       // Running the tests
       RUN_DVECDVECMAX_OPERATION_TEST( CV6a(), CVHb( 6UL ) );

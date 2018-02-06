@@ -62,10 +62,10 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::SymmetricMatrix< blaze::StaticMatrix<TypeA,3UL,3UL> >  S3x3a;
+      using S3x3a = blaze::SymmetricMatrix< blaze::StaticMatrix<TypeA,3UL,3UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<S3x3a>  CS3x3a;
+      using CS3x3a = blazetest::Creator<S3x3a>;
 
       // Running the tests
       RUN_DMATDMATMIN_OPERATION_TEST( CS3x3a(), CS3x3a() );

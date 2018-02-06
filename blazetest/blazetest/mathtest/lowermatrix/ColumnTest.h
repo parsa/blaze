@@ -77,16 +77,16 @@ class ColumnTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense lower triangular matrix.
-   typedef blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DLT;
+   using DLT = blaze::LowerMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense lower triangular matrix type.
-   typedef DLT::OppositeType  DOLT;
+   using DOLT = DLT::OppositeType;
 
    //! Type of the sparse lower triangular matrix.
-   typedef blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SLT;
+   using SLT = blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse lower triangular matrix type.
-   typedef SLT::OppositeType  SOLT;
+   using SOLT = SLT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class ColumnTest
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testAssignment()
 {
-   typedef blaze::ColumnExprTrait_<LT>  CT;
+   using CT = blaze::ColumnExprTrait_<LT>;
 
 
    //=====================================================================================
@@ -331,7 +331,7 @@ void ColumnTest::testAssignment()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testAddAssign()
 {
-   typedef blaze::ColumnExprTrait_<LT>  CT;
+   using CT = blaze::ColumnExprTrait_<LT>;
 
 
    //=====================================================================================
@@ -502,7 +502,7 @@ void ColumnTest::testAddAssign()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testSubAssign()
 {
-   typedef blaze::ColumnExprTrait_<LT>  CT;
+   using CT = blaze::ColumnExprTrait_<LT>;
 
 
    //=====================================================================================
@@ -673,7 +673,7 @@ void ColumnTest::testSubAssign()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testMultAssign()
 {
-   typedef blaze::ColumnExprTrait_<LT>  CT;
+   using CT = blaze::ColumnExprTrait_<LT>;
 
 
    //=====================================================================================

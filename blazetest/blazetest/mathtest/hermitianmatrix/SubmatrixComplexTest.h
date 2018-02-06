@@ -75,19 +75,19 @@ class SubmatrixComplexTest
  private:
    //**Type definitions****************************************************************************
    //! Complex element type.
-   typedef blaze::complex<int>  cplx;
+   using cplx = blaze::complex<int>;
 
    //! Type of the dense Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::DynamicMatrix<cplx,blaze::rowMajor> >  DHT;
+   using DHT = blaze::HermitianMatrix< blaze::DynamicMatrix<cplx,blaze::rowMajor> >;
 
    //! Opposite dense Hermitian matrix type.
-   typedef DHT::OppositeType  DOHT;
+   using DOHT = DHT::OppositeType;
 
    //! Type of the sparse Hermitian matrix.
-   typedef blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> >  SHT;
+   using SHT = blaze::HermitianMatrix< blaze::CompressedMatrix<cplx,blaze::rowMajor> >;
 
    //! Opposite sparse Hermitian matrix type.
-   typedef SHT::OppositeType  SOHT;
+   using SOHT = SHT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -160,7 +160,7 @@ class SubmatrixComplexTest
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testAssignment()
 {
-   typedef blaze::SubmatrixExprTrait_<HT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<HT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -2863,7 +2863,7 @@ void SubmatrixComplexTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testAddAssign()
 {
-   typedef blaze::SubmatrixExprTrait_<HT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<HT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -5566,7 +5566,7 @@ void SubmatrixComplexTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testSubAssign()
 {
-   typedef blaze::SubmatrixExprTrait_<HT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<HT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -8269,7 +8269,7 @@ void SubmatrixComplexTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testSchurAssign()
 {
-   typedef blaze::SubmatrixExprTrait_<HT,blaze::unaligned>  SMT;
+   using SMT = blaze::SubmatrixExprTrait_<HT,blaze::unaligned>;
 
 
    //=====================================================================================

@@ -144,11 +144,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>     MT;   //!< Type of the row-major dynamic matrix.
-   typedef blaze::DynamicMatrix<int,blaze::columnMajor>  OMT;  //!< Type of the column-major dynamic matrix.
+   using MT  = blaze::DynamicMatrix<int,blaze::rowMajor>;     //!< Type of the row-major dynamic matrix.
+   using OMT = blaze::DynamicMatrix<int,blaze::columnMajor>;  //!< Type of the column-major dynamic matrix.
 
-   typedef MT::Rebind<double>::Other   RMT;   //!< Rebound row-major dynamic matrix type.
-   typedef OMT::Rebind<double>::Other  ORMT;  //!< Rebound column-major dynamic matrix type.
+   using RMT  = MT::Rebind<double>::Other;   //!< Rebound row-major dynamic matrix type.
+   using ORMT = OMT::Rebind<double>::Other;  //!< Rebound column-major dynamic matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -240,8 +240,8 @@ class ClassTest
 template< typename Type >
 void ClassTest::testAlignment( const std::string& type )
 {
-   typedef blaze::DynamicMatrix<Type,blaze::rowMajor>     RowMajorMatrixType;
-   typedef blaze::DynamicMatrix<Type,blaze::columnMajor>  ColumnMajorMatrixType;
+   using RowMajorMatrixType    = blaze::DynamicMatrix<Type,blaze::rowMajor>;
+   using ColumnMajorMatrixType = blaze::DynamicMatrix<Type,blaze::columnMajor>;
 
    const size_t alignment( blaze::AlignmentOf<Type>::value );
 

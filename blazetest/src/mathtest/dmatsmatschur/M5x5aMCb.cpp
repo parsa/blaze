@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StaticMatrix<TypeA,5UL,5UL>  M5x5a;
-      typedef blaze::CompressedMatrix<TypeB>      MCb;
+      using M5x5a = blaze::StaticMatrix<TypeA,5UL,5UL>;
+      using MCb = blaze::CompressedMatrix<TypeB>;
 
       // Creator type definitions
-      typedef blazetest::Creator<M5x5a>  CM5x5a;
-      typedef blazetest::Creator<MCb>    CMCb;
+      using CM5x5a = blazetest::Creator<M5x5a>;
+      using CMCb = blazetest::Creator<MCb>;
 
       // Running the tests
       for( size_t i=0UL; i<=25UL; ++i ) {

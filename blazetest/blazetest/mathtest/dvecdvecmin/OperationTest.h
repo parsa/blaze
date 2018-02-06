@@ -100,22 +100,22 @@ class OperationTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::ElementType_<VT1>  ET1;  //!< Element type 1
-   typedef blaze::ElementType_<VT2>  ET2;  //!< Element type 2
+   using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
 
-   typedef blaze::TransposeType_<VT1>  TVT1;  //!< Transpose vector type 1
-   typedef blaze::TransposeType_<VT2>  TVT2;  //!< Transpose vector type 2
+   using TVT1 = blaze::TransposeType_<VT1>;  //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
 
-   typedef blaze::BinaryMapTrait_<VT1,VT2,blaze::Min>    DRE;   //!< Dense result type
-   typedef blaze::BinaryMapTrait_<TVT1,TVT2,blaze::Min>  TDRE;  //!< Transpose dense result type
-   typedef blaze::ElementType_<DRE>                      DET;   //!< Element type of the dense result
+   using DRE  = blaze::BinaryMapTrait_<VT1,VT2,blaze::Min>;    //!< Dense result type
+   using TDRE = blaze::BinaryMapTrait_<TVT1,TVT2,blaze::Min>;  //!< Transpose dense result type
+   using DET  = blaze::ElementType_<DRE>;                      //!< Element type of the dense result
 
-   typedef blaze::CompressedVector<DET,TF>  SRE;   //!< Sparse result type
-   typedef blaze::TransposeType_<SRE>       TSRE;  //!< Transpose sparse result type
-   typedef blaze::ElementType_<SRE>         SET;   //!< Element type of the sparse result
+   using SRE  = blaze::CompressedVector<DET,TF>;  //!< Sparse result type
+   using TSRE = blaze::TransposeType_<SRE>;       //!< Transpose sparse result type
+   using SET  = blaze::ElementType_<SRE>;         //!< Element type of the sparse result
 
-   typedef blaze::DynamicVector<blaze::ElementType_<DRE>,TF>  RT;   //!< Reference type
-   typedef blaze::TransposeType_<RT>                          TRT;  //!< Transpose reference type
+   using RT  = blaze::DynamicVector<blaze::ElementType_<DRE>,TF>;  //!< Reference type
+   using TRT = blaze::TransposeType_<RT>;                          //!< Transpose reference type
    //**********************************************************************************************
 
  public:
@@ -265,7 +265,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()                // Label of the currently performed test
    , error_()               // Description of the current error type
 {
-   typedef blaze::UnderlyingNumeric_<DET>  Scalar;
+   using Scalar = blaze::UnderlyingNumeric_<DET>;
 
    if( lhs_.size() != rhs_.size() ) {
       throw std::runtime_error( "Non-matching operands detected" );

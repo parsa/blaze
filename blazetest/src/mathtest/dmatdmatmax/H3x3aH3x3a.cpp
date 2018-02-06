@@ -62,10 +62,10 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::HermitianMatrix< blaze::StaticMatrix<NumericA,3UL,3UL> >  H3x3a;
+      using H3x3a = blaze::HermitianMatrix< blaze::StaticMatrix<NumericA,3UL,3UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<H3x3a>  CH3x3a;
+      using CH3x3a = blazetest::Creator<H3x3a>;
 
       // Running the tests
       RUN_DMATDMATMAX_OPERATION_TEST( CH3x3a(), CH3x3a() );

@@ -311,9 +311,9 @@ void ClassTest::testIterator()
    using blaze::initializer_list;
 
 
-   typedef blaze::InitializerMatrix<int>  MatrixType;
-   typedef MatrixType::Iterator           Iterator;
-   typedef MatrixType::ConstIterator      ConstIterator;
+   using MatrixType    = blaze::InitializerMatrix<int>;
+   using Iterator      = MatrixType::Iterator;
+   using ConstIterator = MatrixType::ConstIterator;
 
    initializer_list< initializer_list<int> > list = { {  0,  1 },
                                                       { -2,  0, -3 },

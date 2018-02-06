@@ -63,7 +63,7 @@ class Creator< blaze::IdentityMatrix<T,SO> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef blaze::IdentityMatrix<T,SO>  Type;  //!< Type to be created by the Creator.
+   using Type = blaze::IdentityMatrix<T,SO>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

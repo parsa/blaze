@@ -77,16 +77,16 @@ class RowTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense upper unitriangular matrix.
-   typedef blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DUT;
+   using DUT = blaze::UniUpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense upper unitriangular matrix type.
-   typedef DUT::OppositeType  DOUT;
+   using DOUT = DUT::OppositeType;
 
    //! Type of the sparse upper unitriangular matrix.
-   typedef blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SUT;
+   using SUT = blaze::UniUpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse upper unitriangular matrix type.
-   typedef SUT::OppositeType  SOUT;
+   using SOUT = SUT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class RowTest
 template< typename UT >  // Type of the uniupper matrix
 void RowTest::testAssignment()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -385,7 +385,7 @@ void RowTest::testAssignment()
 template< typename UT >  // Type of the uniupper matrix
 void RowTest::testAddAssign()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -609,7 +609,7 @@ void RowTest::testAddAssign()
 template< typename UT >  // Type of the uniupper matrix
 void RowTest::testSubAssign()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -833,7 +833,7 @@ void RowTest::testSubAssign()
 template< typename UT >  // Type of the uniupper matrix
 void RowTest::testMultAssign()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================

@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicVector<TypeA>             VDa;
-      typedef blaze::HybridMatrix<TypeB,128UL,128UL>  MHb;
+      using VDa = blaze::DynamicVector<TypeA>;
+      using MHb = blaze::HybridMatrix<TypeB,128UL,128UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
-      typedef blazetest::Creator<MHb>  CMHb;
+      using CVDa = blazetest::Creator<VDa>;
+      using CMHb = blazetest::Creator<MHb>;
 
       // Running tests with small vectors and matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

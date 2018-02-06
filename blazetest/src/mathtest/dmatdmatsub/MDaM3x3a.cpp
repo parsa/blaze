@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::DynamicMatrix<TypeA>         MDa;
-      typedef blaze::StaticMatrix<TypeA,3UL,3UL>  M3x3a;
+      using MDa = blaze::DynamicMatrix<TypeA>;
+      using M3x3a = blaze::StaticMatrix<TypeA,3UL,3UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MDa>    CMDa;
-      typedef blazetest::Creator<M3x3a>  CM3x3a;
+      using CMDa = blazetest::Creator<MDa>;
+      using CM3x3a = blazetest::Creator<M3x3a>;
 
       // Running the tests
       RUN_DMATDMATSUB_OPERATION_TEST( CMDa( 3UL, 3UL ), CM3x3a() );

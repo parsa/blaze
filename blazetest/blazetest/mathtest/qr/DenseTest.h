@@ -104,8 +104,8 @@ class DenseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::complex<float>   cfloat;   //!< Single precision complex test type.
-   typedef blaze::complex<double>  cdouble;  //!< Double precision complex test type.
+   using cfloat  = blaze::complex<float>;   //!< Single precision complex test type.
+   using cdouble = blaze::complex<double>;  //!< Double precision complex test type.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -142,7 +142,7 @@ void DenseTest::testRandom()
 
    test_ = "QR decomposition";
 
-   typedef blaze::RemoveAdaptor_<Type>  MT;
+   using MT = blaze::RemoveAdaptor_<Type>;
 
    const size_t m( blaze::rand<size_t>( 3UL, 8UL ) );
    const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );

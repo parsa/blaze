@@ -61,10 +61,10 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::DynamicVector<TypeB>  VDb;
+      using VDb = blaze::DynamicVector<TypeB>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDb>  CVDb;
+      using CVDb = blazetest::Creator<VDb>;
 
       // Running tests with small vectors
       for( size_t i=0UL; i<=6UL; ++i ) {

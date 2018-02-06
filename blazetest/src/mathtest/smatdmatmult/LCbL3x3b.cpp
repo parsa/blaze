@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::LowerMatrix< blaze::CompressedMatrix<TypeB> >      LCb;
-      typedef blaze::LowerMatrix< blaze::StaticMatrix<TypeB,3UL,3UL> >  L3x3b;
+      using LCb = blaze::LowerMatrix< blaze::CompressedMatrix<TypeB> >;
+      using L3x3b = blaze::LowerMatrix< blaze::StaticMatrix<TypeB,3UL,3UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<LCb>    CLCb;
-      typedef blazetest::Creator<L3x3b>  CL3x3b;
+      using CLCb = blazetest::Creator<LCb>;
+      using CL3x3b = blazetest::Creator<L3x3b>;
 
       // Running the tests
       for( size_t i=0UL; i<=6UL; ++i ) {

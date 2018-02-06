@@ -67,7 +67,7 @@ class Creator< complex<T> >
 {
  public:
    //**Type definitions****************************************************************************
-   typedef complex<T>  Type;  //!< Type to be created by the Creator.
+   using Type = complex<T>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

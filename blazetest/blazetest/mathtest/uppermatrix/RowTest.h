@@ -77,16 +77,16 @@ class RowTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense upper triangular matrix.
-   typedef blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DUT;
+   using DUT = blaze::UpperMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense upper triangular matrix type.
-   typedef DUT::OppositeType  DOUT;
+   using DOUT = DUT::OppositeType;
 
    //! Type of the sparse upper triangular matrix.
-   typedef blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SUT;
+   using SUT = blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse upper triangular matrix type.
-   typedef SUT::OppositeType  SOUT;
+   using SOUT = SUT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class RowTest
 template< typename UT >  // Type of the upper matrix
 void RowTest::testAssignment()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -331,7 +331,7 @@ void RowTest::testAssignment()
 template< typename UT >  // Type of the upper matrix
 void RowTest::testAddAssign()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -503,7 +503,7 @@ void RowTest::testAddAssign()
 template< typename UT >  // Type of the upper matrix
 void RowTest::testSubAssign()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================
@@ -675,7 +675,7 @@ void RowTest::testSubAssign()
 template< typename UT >  // Type of the upper matrix
 void RowTest::testMultAssign()
 {
-   typedef blaze::RowExprTrait_<UT>  RT;
+   using RT = blaze::RowExprTrait_<UT>;
 
 
    //=====================================================================================

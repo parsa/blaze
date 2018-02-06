@@ -71,7 +71,7 @@ class Creator< blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> > >
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
-   typedef blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> >  Type;
+   using Type = blaze::HermitianMatrix< blaze::HybridMatrix<T,M,N,SO> >;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

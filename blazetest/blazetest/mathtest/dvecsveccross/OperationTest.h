@@ -99,27 +99,27 @@ class OperationTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::ElementType_<VT1>  ET1;  //!< Element type 1
-   typedef blaze::ElementType_<VT2>  ET2;  //!< Element type 2
+   using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
 
-   typedef blaze::TransposeType_<VT1>  TVT1;  //!< Transpose vector type 1
-   typedef blaze::TransposeType_<VT2>  TVT2;  //!< Transpose vector type 2
+   using TVT1 = blaze::TransposeType_<VT1>;  //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
 
-   typedef blaze::CrossTrait_<VT1,VT2>    DRE;   //!< Dense result type
-   typedef blaze::CrossTrait_<TVT1,TVT2>  TDRE;  //!< Transpose dense result type
-   typedef blaze::ElementType_<DRE>       DET;   //!< Element type of the dense result
+   using DRE  = blaze::CrossTrait_<VT1,VT2>;    //!< Dense result type
+   using TDRE = blaze::CrossTrait_<TVT1,TVT2>;  //!< Transpose dense result type
+   using DET  = blaze::ElementType_<DRE>;       //!< Element type of the dense result
 
-   typedef blaze::CompressedVector<DET,TF>  SRE;   //!< Sparse result type
-   typedef blaze::TransposeType_<SRE>       TSRE;  //!< Transpose sparse result type
-   typedef blaze::ElementType_<SRE>         SET;   //!< Element type of the sparse result
+   using SRE  = blaze::CompressedVector<DET,TF>;  //!< Sparse result type
+   using TSRE = blaze::TransposeType_<SRE>;       //!< Transpose sparse result type
+   using SET  = blaze::ElementType_<SRE>;         //!< Element type of the sparse result
 
-   typedef blaze::DynamicVector<ET1,TF>  RT1;  //!< Reference type 1
-   typedef blaze::DynamicVector<ET2,TF>  RT2;  //!< Reference type 2
-   typedef blaze::CrossTrait_<RT1,RT2>   RRE;  //!< Reference result type
+   using RT1 = blaze::DynamicVector<ET1,TF>;  //!< Reference type 1
+   using RT2 = blaze::DynamicVector<ET2,TF>;  //!< Reference type 2
+   using RRE = blaze::CrossTrait_<RT1,RT2>;   //!< Reference result type
 
-   typedef blaze::TransposeType_<RT1>     TRT1;  //!< Transpose reference type 1
-   typedef blaze::TransposeType_<RT2>     TRT2;  //!< Transpose reference type 2
-   typedef blaze::CrossTrait_<TRT1,TRT2>  TRRE;  //!< Transpose reference result type
+   using TRT1 = blaze::TransposeType_<RT1>;     //!< Transpose reference type 1
+   using TRT2 = blaze::TransposeType_<RT2>;     //!< Transpose reference type 2
+   using TRRE = blaze::CrossTrait_<TRT1,TRT2>;  //!< Transpose reference result type
    //**********************************************************************************************
 
  public:
@@ -284,7 +284,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()               // Label of the currently performed test
    , error_()              // Description of the current error type
 {
-   typedef blaze::UnderlyingNumeric_<DET>  Scalar;
+   using Scalar = blaze::UnderlyingNumeric_<DET>;
 
    if( lhs_.size() != 3UL ) {
       throw std::runtime_error( "Invalid size of left-hand side operand" );

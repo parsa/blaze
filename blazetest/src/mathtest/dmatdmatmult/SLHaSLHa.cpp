@@ -62,10 +62,10 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StrictlyLowerMatrix< blaze::HybridMatrix<TypeA,64UL,64UL> >  SLHa;
+      using SLHa = blaze::StrictlyLowerMatrix< blaze::HybridMatrix<TypeA,64UL,64UL> >;
 
       // Creator type definitions
-      typedef blazetest::Creator<SLHa>  CSLHa;
+      using CSLHa = blazetest::Creator<SLHa>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {

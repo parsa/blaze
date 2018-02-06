@@ -135,13 +135,13 @@ class AlignedUnpaddedTest
 
    //**Type definitions****************************************************************************
    //! Type of the row-major custom matrix.
-   typedef blaze::CustomMatrix<int,blaze::aligned,blaze::unpadded,blaze::rowMajor>  MT;
+   using MT = blaze::CustomMatrix<int,blaze::aligned,blaze::unpadded,blaze::rowMajor>;
 
    //! Type of the column-major custom matrix.
-   typedef blaze::CustomMatrix<int,blaze::aligned,blaze::unpadded,blaze::columnMajor>  OMT;
+   using OMT = blaze::CustomMatrix<int,blaze::aligned,blaze::unpadded,blaze::columnMajor>;
 
-   typedef MT::Rebind<const double>::Other   RMT;   //!< Rebound row-major custom matrix type.
-   typedef OMT::Rebind<const double>::Other  ORMT;  //!< Rebound column-major custom matrix type.
+   using RMT  = MT::Rebind<const double>::Other;   //!< Rebound row-major custom matrix type.
+   using ORMT = OMT::Rebind<const double>::Other;  //!< Rebound column-major custom matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

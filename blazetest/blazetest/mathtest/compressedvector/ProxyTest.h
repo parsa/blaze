@@ -149,34 +149,34 @@ class ProxyTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::DynamicVector<int,blaze::rowVector>     DV;  //!< Type of the dense vector elements.
-   typedef blaze::CompressedVector<int,blaze::rowVector>  SV;  //!< Type of the sparse vector elements.
-   typedef blaze::DynamicMatrix<int,blaze::rowMajor>      DM;  //!< Type of the dense matrix elements.
-   typedef blaze::CompressedMatrix<int,blaze::rowMajor>   SM;  //!< Type of the sparse matrix elements.
+   using DV = blaze::DynamicVector<int,blaze::rowVector>;     //!< Type of the dense vector elements.
+   using SV = blaze::CompressedVector<int,blaze::rowVector>;  //!< Type of the sparse vector elements.
+   using DM = blaze::DynamicMatrix<int,blaze::rowMajor>;      //!< Type of the dense matrix elements.
+   using SM = blaze::CompressedMatrix<int,blaze::rowMajor>;   //!< Type of the sparse matrix elements.
 
    //! Type of the compressed vector with dense vector elements.
-   typedef blaze::CompressedVector<DV,blaze::rowVector>  DVV;
+   using DVV = blaze::CompressedVector<DV,blaze::rowVector>;
 
    //! Transpose compressed vector type with dense vector elements.
-   typedef DVV::TransposeType  TDVV;
+   using TDVV = DVV::TransposeType;
 
    //! Type of the compressed vector with sparse vector elements.
-   typedef blaze::CompressedVector<SV,blaze::rowVector>  SVV;
+   using SVV = blaze::CompressedVector<SV,blaze::rowVector>;
 
    //! Transpose compressed vector type with sparse vector elements.
-   typedef SVV::TransposeType  TSVV;
+   using TSVV = SVV::TransposeType;
 
    //! Type of the compressed vector with dense matrix elements.
-   typedef blaze::CompressedVector<DM,blaze::rowVector>  DMV;
+   using DMV = blaze::CompressedVector<DM,blaze::rowVector>;
 
    //! Transpose compressed vector type with dense matrix elements.
-   typedef DMV::TransposeType  TDMV;
+   using TDMV = DMV::TransposeType;
 
    //! Type of the compressed vector with sparse matrix elements.
-   typedef blaze::CompressedVector<SM,blaze::rowVector>  SMV;
+   using SMV = blaze::CompressedVector<SM,blaze::rowVector>;
 
    //! Transpose compressed vector type with sparse matrix elements.
-   typedef SMV::TransposeType  TSMV;
+   using TSMV = SMV::TransposeType;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

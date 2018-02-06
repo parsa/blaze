@@ -150,13 +150,13 @@ class SparseTest
 
    //**Type definitions****************************************************************************
    //! Type of the row-major unilower matrix.
-   typedef blaze::UniLowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  LT;
+   using LT = blaze::UniLowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Type of the column-major unilower matrix.
-   typedef blaze::UniLowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >  OLT;
+   using OLT = blaze::UniLowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> >;
 
-   typedef LT::Rebind<double>::Other   RLT;   //!< Rebound row-major unilower matrix type.
-   typedef OLT::Rebind<double>::Other  ORLT;  //!< Rebound column-major unilower matrix type.
+   using RLT  = LT::Rebind<double>::Other;   //!< Rebound row-major unilower matrix type.
+   using ORLT = OLT::Rebind<double>::Other;  //!< Rebound column-major unilower matrix type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

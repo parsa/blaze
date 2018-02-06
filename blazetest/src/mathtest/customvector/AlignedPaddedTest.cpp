@@ -473,7 +473,7 @@ void AlignedPaddedTest::testAssignment()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<short,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<short,aligned,padded,rowVector>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] = 1;
@@ -508,7 +508,7 @@ void AlignedPaddedTest::testAssignment()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<unsigned int,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<unsigned int,aligned,padded,rowVector>;
       std::unique_ptr<unsigned int[],blaze::Deallocate> memory1( blaze::allocate<unsigned int>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] = 1U;
@@ -543,7 +543,7 @@ void AlignedPaddedTest::testAssignment()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
       std::unique_ptr<int[]> memory1( new int[6UL] );
       UnalignedUnpadded vec1( memory1.get()+1UL, 5UL );
       vec1[0] = 1;
@@ -628,7 +628,7 @@ void AlignedPaddedTest::testAddAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<short,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<short,aligned,padded,rowVector>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] =  1;
@@ -669,7 +669,7 @@ void AlignedPaddedTest::testAddAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] =  1;
@@ -710,7 +710,7 @@ void AlignedPaddedTest::testAddAssign()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
       std::unique_ptr<int[]> memory1( new int[6UL] );
       UnalignedUnpadded vec1( memory1.get()+1UL, 5UL );
       vec1[0] =  1;
@@ -807,7 +807,7 @@ void AlignedPaddedTest::testSubAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<short,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<short,aligned,padded,rowVector>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] = -1;
@@ -848,7 +848,7 @@ void AlignedPaddedTest::testSubAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] = -1;
@@ -889,7 +889,7 @@ void AlignedPaddedTest::testSubAssign()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
       std::unique_ptr<int[]> memory1( new int[6UL] );
       UnalignedUnpadded vec1( memory1.get()+1UL, 5UL );
       vec1[0] = -1;
@@ -986,7 +986,7 @@ void AlignedPaddedTest::testMultAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<short,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<short,aligned,padded,rowVector>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] =  1;
@@ -1027,7 +1027,7 @@ void AlignedPaddedTest::testMultAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] =  1;
@@ -1068,7 +1068,7 @@ void AlignedPaddedTest::testMultAssign()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
       std::unique_ptr<int[]> memory1( new int[6UL] );
       UnalignedUnpadded vec1( memory1.get()+1UL, 5UL );
       vec1[0] =  1;
@@ -1165,7 +1165,7 @@ void AlignedPaddedTest::testDivAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<short,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<short,aligned,padded,rowVector>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] =  1;
@@ -1206,7 +1206,7 @@ void AlignedPaddedTest::testDivAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 5UL, 16UL );
       vec1[0] =  1;
@@ -1247,7 +1247,7 @@ void AlignedPaddedTest::testDivAssign()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
       std::unique_ptr<int[]> memory1( new int[6UL] );
       UnalignedUnpadded vec1( memory1.get()+1UL, 5UL );
       vec1[0] =  1;
@@ -1306,7 +1306,7 @@ void AlignedPaddedTest::testCrossAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<short,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<short,aligned,padded,rowVector>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 3UL, 16UL );
       vec1[0] =  1;
@@ -1343,7 +1343,7 @@ void AlignedPaddedTest::testCrossAssign()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,aligned,padded,rowVector>  AlignedPadded;
+      using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 16UL ) );
       AlignedPadded vec1( memory1.get(), 3UL, 16UL );
       vec1[0] =  1;
@@ -1380,7 +1380,7 @@ void AlignedPaddedTest::testCrossAssign()
       using blaze::unpadded;
       using blaze::rowVector;
 
-      typedef blaze::CustomVector<int,unaligned,unpadded,rowVector>  UnalignedUnpadded;
+      using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
       std::unique_ptr<int[]> memory1( new int[4UL] );
       UnalignedUnpadded vec1( memory1.get()+1UL, 3UL );
       vec1[0] =  1;
@@ -1696,8 +1696,8 @@ void AlignedPaddedTest::testScaling()
       using blaze::padded;
       using blaze::rowVector;
 
-      typedef complex<float>  cplx;
-      typedef blaze::CustomVector<cplx,aligned,padded,rowVector>  AlignedPadded;
+      using cplx = complex<float>;
+      using AlignedPadded = blaze::CustomVector<cplx,aligned,padded,rowVector>;
       std::unique_ptr<cplx[],blaze::Deallocate> memory( blaze::allocate<cplx>( 8UL ) );
       AlignedPadded vec( memory.get(), 2UL, 8UL );
       vec[0] = cplx( 1.0F, 0.0F );
@@ -2059,8 +2059,8 @@ void AlignedPaddedTest::testAt()
 */
 void AlignedPaddedTest::testIterator()
 {
-   typedef VT::Iterator       Iterator;
-   typedef VT::ConstIterator  ConstIterator;
+   using Iterator      = VT::Iterator;
+   using ConstIterator = VT::ConstIterator;
 
    std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
    VT vec( memory.get(), 4UL, 16UL );

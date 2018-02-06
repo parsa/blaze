@@ -77,16 +77,16 @@ class ColumnTest
  private:
    //**Type definitions****************************************************************************
    //! Type of the dense diagonal matrix.
-   typedef blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >  DDT;
+   using DDT = blaze::DiagonalMatrix< blaze::DynamicMatrix<int,blaze::rowMajor> >;
 
    //! Opposite dense diagonal matrix type.
-   typedef DDT::OppositeType  DODT;
+   using DODT = DDT::OppositeType;
 
    //! Type of the sparse diagonal matrix.
-   typedef blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >  SDT;
+   using SDT = blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> >;
 
    //! Opposite sparse diagonal matrix type.
-   typedef SDT::OppositeType  SODT;
+   using SODT = SDT::OppositeType;
    //**********************************************************************************************
 
  public:
@@ -159,7 +159,7 @@ class ColumnTest
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testAssignment()
 {
-   typedef blaze::ColumnExprTrait_<DT>  CT;
+   using CT = blaze::ColumnExprTrait_<DT>;
 
 
    //=====================================================================================
@@ -386,7 +386,7 @@ void ColumnTest::testAssignment()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testAddAssign()
 {
-   typedef blaze::ColumnExprTrait_<DT>  CT;
+   using CT = blaze::ColumnExprTrait_<DT>;
 
 
    //=====================================================================================
@@ -613,7 +613,7 @@ void ColumnTest::testAddAssign()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testSubAssign()
 {
-   typedef blaze::ColumnExprTrait_<DT>  CT;
+   using CT = blaze::ColumnExprTrait_<DT>;
 
 
    //=====================================================================================
@@ -840,7 +840,7 @@ void ColumnTest::testSubAssign()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testMultAssign()
 {
-   typedef blaze::ColumnExprTrait_<DT>  CT;
+   using CT = blaze::ColumnExprTrait_<DT>;
 
 
    //=====================================================================================

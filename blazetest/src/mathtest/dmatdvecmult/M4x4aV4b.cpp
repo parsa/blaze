@@ -63,12 +63,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StaticMatrix<TypeA,4UL,4UL>  M4x4a;
-      typedef blaze::StaticVector<TypeB,4UL>      V4b;
+      using M4x4a = blaze::StaticMatrix<TypeA,4UL,4UL>;
+      using V4b = blaze::StaticVector<TypeB,4UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<M4x4a>  CM4x4a;
-      typedef blazetest::Creator<V4b>    CV4b;
+      using CM4x4a = blazetest::Creator<M4x4a>;
+      using CV4b = blazetest::Creator<V4b>;
 
       // Running the tests
       RUN_DMATDVECMULT_OPERATION_TEST( CM4x4a(), CV4b() );

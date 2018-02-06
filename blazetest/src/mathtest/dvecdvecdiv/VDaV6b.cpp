@@ -63,12 +63,12 @@ int main()
    try
    {
       // Vector type definitions
-      typedef blaze::DynamicVector<TypeA>     VDa;
-      typedef blaze::StaticVector<TypeB,6UL>  V6b;
+      using VDa = blaze::DynamicVector<TypeA>;
+      using V6b = blaze::StaticVector<TypeB,6UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<VDa>  CVDa;
-      typedef blazetest::Creator<V6b>  CV6b;
+      using CVDa = blazetest::Creator<VDa>;
+      using CV6b = blazetest::Creator<V6b>;
 
       // Running the tests
       RUN_DVECDVECDIV_OPERATION_TEST( CVDa( 6UL ), CV6b() );

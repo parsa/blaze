@@ -70,7 +70,7 @@ class Creator< blaze::StrictlyUpperMatrix< blaze::HybridMatrix<T,M,N,SO> > >
  public:
    //**Type definitions****************************************************************************
    //! Type to be created by the Creator.
-   typedef blaze::StrictlyUpperMatrix< blaze::HybridMatrix<T,M,N,SO> >  Type;
+   using Type = blaze::StrictlyUpperMatrix< blaze::HybridMatrix<T,M,N,SO> >;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

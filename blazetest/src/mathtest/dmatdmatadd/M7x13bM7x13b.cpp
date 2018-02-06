@@ -61,10 +61,10 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::StaticMatrix<TypeB,7UL,13UL>  M7x13b;
+      using M7x13b = blaze::StaticMatrix<TypeB,7UL,13UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<M7x13b>  CM7x13b;
+      using CM7x13b = blazetest::Creator<M7x13b>;
 
       // Running the tests
       RUN_DMATDMATADD_OPERATION_TEST( CM7x13b(), CM7x13b() );

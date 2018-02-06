@@ -132,11 +132,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   typedef blaze::CompressedVector<int,blaze::rowVector>     VT;   //!< Type of the compressed vector.
-   typedef blaze::CompressedVector<int,blaze::columnVector>  TVT;  //!< Transpose compressed vector type.
+   using VT  = blaze::CompressedVector<int,blaze::rowVector>;     //!< Type of the compressed vector.
+   using TVT = blaze::CompressedVector<int,blaze::columnVector>;  //!< Transpose compressed vector type.
 
-   typedef VT::Rebind<double>::Other   RVT;   //!< Rebound compressed vector type.
-   typedef TVT::Rebind<double>::Other  TRVT;  //!< Transpose rebound compressed vector type.
+   using RVT  = VT::Rebind<double>::Other;   //!< Rebound compressed vector type.
+   using TRVT = TVT::Rebind<double>::Other;  //!< Transpose rebound compressed vector type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************

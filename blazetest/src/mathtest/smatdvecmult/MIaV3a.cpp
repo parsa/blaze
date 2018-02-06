@@ -62,12 +62,12 @@ int main()
    try
    {
       // Matrix type definitions
-      typedef blaze::IdentityMatrix<TypeA>    MIa;
-      typedef blaze::StaticVector<TypeA,3UL>  V3a;
+      using MIa = blaze::IdentityMatrix<TypeA>;
+      using V3a = blaze::StaticVector<TypeA,3UL>;
 
       // Creator type definitions
-      typedef blazetest::Creator<MIa>  CMIa;
-      typedef blazetest::Creator<V3a>  CV3a;
+      using CMIa = blazetest::Creator<MIa>;
+      using CV3a = blazetest::Creator<V3a>;
 
       // Running the tests
       RUN_SMATDVECMULT_OPERATION_TEST( CMIa( 3UL ), CV3a() );

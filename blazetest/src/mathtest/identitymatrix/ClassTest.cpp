@@ -1131,8 +1131,8 @@ void ClassTest::testIterator()
    //=====================================================================================
 
    {
-      typedef blaze::IdentityMatrix<int,blaze::rowMajor>  MatrixType;
-      typedef MatrixType::ConstIterator                   ConstIterator;
+      using MatrixType    = blaze::IdentityMatrix<int,blaze::rowMajor>;
+      using ConstIterator = MatrixType::ConstIterator;
 
       MatrixType I( 3UL );
 
@@ -1222,8 +1222,8 @@ void ClassTest::testIterator()
    //=====================================================================================
 
    {
-      typedef blaze::IdentityMatrix<int,blaze::columnMajor>  MatrixType;
-      typedef MatrixType::ConstIterator                      ConstIterator;
+      using MatrixType    = blaze::IdentityMatrix<int,blaze::columnMajor>;
+      using ConstIterator = MatrixType::ConstIterator;
 
       MatrixType I( 3UL );
 
@@ -1896,7 +1896,7 @@ void ClassTest::testFind()
    {
       test_ = "Row-major IdentityMatrix::find()";
 
-      typedef blaze::IdentityMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::IdentityMatrix<int,blaze::rowMajor>::ConstIterator;
 
       // Initialization check
       blaze::IdentityMatrix<int,blaze::rowMajor> I( 8UL );
@@ -2021,7 +2021,7 @@ void ClassTest::testFind()
    {
       test_ = "Column-major IdentityMatrix::find()";
 
-      typedef blaze::IdentityMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::IdentityMatrix<int,blaze::columnMajor>::ConstIterator;
 
       // Initialization check
       blaze::IdentityMatrix<int,blaze::columnMajor> I( 8UL );
@@ -2159,7 +2159,7 @@ void ClassTest::testLowerBound()
    {
       test_ = "Row-major IdentityMatrix::lowerBound()";
 
-      typedef blaze::IdentityMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::IdentityMatrix<int,blaze::rowMajor>::ConstIterator;
 
       // Initialization check
       blaze::IdentityMatrix<int,blaze::rowMajor> I( 3UL );
@@ -2249,7 +2249,7 @@ void ClassTest::testLowerBound()
    {
       test_ = "Column-major IdentityMatrix::lowerBound()";
 
-      typedef blaze::IdentityMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::IdentityMatrix<int,blaze::columnMajor>::ConstIterator;
 
       // Initialization check
       blaze::IdentityMatrix<int,blaze::columnMajor> I( 3UL );
@@ -2352,7 +2352,7 @@ void ClassTest::testUpperBound()
    {
       test_ = "Row-major IdentityMatrix::upperBound()";
 
-      typedef blaze::IdentityMatrix<int,blaze::rowMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::IdentityMatrix<int,blaze::rowMajor>::ConstIterator;
 
       // Initialization check
       blaze::IdentityMatrix<int,blaze::rowMajor> I( 3UL );
@@ -2430,7 +2430,7 @@ void ClassTest::testUpperBound()
    {
       test_ = "Column-major IdentityMatrix::upperBound()";
 
-      typedef blaze::IdentityMatrix<int,blaze::columnMajor>::ConstIterator  ConstIterator;
+      using ConstIterator = blaze::IdentityMatrix<int,blaze::columnMajor>::ConstIterator;
 
       // Initialization check
       blaze::IdentityMatrix<int,blaze::columnMajor> I( 3UL );
@@ -2662,7 +2662,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Row-major self-transpose via ctranspose()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       blaze::IdentityMatrix<cplx,blaze::rowMajor> I( 4UL );
 
@@ -2696,7 +2696,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Row-major self-transpose via ctranspose()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       blaze::IdentityMatrix<cplx,blaze::rowMajor> I( 4UL );
 
@@ -2735,7 +2735,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Column-major self-transpose via ctranspose()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       blaze::IdentityMatrix<cplx,blaze::columnMajor> I( 4UL );
 
@@ -2769,7 +2769,7 @@ void ClassTest::testCTranspose()
    {
       test_ = "Column-major self-transpose via ctranspose()";
 
-      typedef blaze::complex<int>  cplx;
+      using cplx = blaze::complex<int>;
 
       blaze::IdentityMatrix<cplx,blaze::columnMajor> I( 4UL );
 
