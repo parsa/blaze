@@ -62,9 +62,9 @@ namespace blaze {
 // of a value/object of any given data type.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE decltype(auto) qdrt( const T& value )
+BLAZE_ALWAYS_INLINE decltype(auto) qdrt( const T& a )
 {
-   return sqrt( sqrt( value ) );
+   return sqrt( sqrt( a ) );
 }
 //*************************************************************************************************
 
