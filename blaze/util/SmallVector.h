@@ -414,6 +414,8 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 inline SmallVector<T,N,A>::~SmallVector()
 {
+   using blaze::destroy;
+
    destroy( begin_, end_ );
 
    if( isDynamic() ) {
@@ -798,6 +800,8 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 inline void SmallVector<T,N,A>::clear()
 {
+   using blaze::destroy;
+
    destroy( begin_, end_ );
 
    if( isDynamic() ) {
@@ -826,6 +830,8 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallVector<T,N,A>::resize( size_t n )
 {
+   using blaze::destroy;
+
    if( n > size() )
    {
       reserve( n );
@@ -857,6 +863,8 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallVector<T,N,A>::resize( size_t n, const T& value )
 {
+   using blaze::destroy;
+
    if( n > size() )
    {
       reserve( n );
@@ -886,6 +894,8 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallVector<T,N,A>::reserve( size_t n )
 {
+   using blaze::destroy;
+
    const size_t oldCapacity( capacity() );
 
    if( n > oldCapacity )
@@ -928,6 +938,8 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallVector<T,N,A>::shrinkToFit()
 {
+   using blaze::destroy;
+
    const size_t oldCapacity( capacity() );
    const size_t oldSize    ( size() );
 
@@ -1016,6 +1028,8 @@ template< typename T    // Data type of the elements
 typename SmallVector<T,N,A>::Iterator
    SmallVector<T,N,A>::insert( Iterator pos, const T& value )
 {
+   using blaze::destroy;
+
    const size_t oldCapacity( capacity() );
    const size_t oldSize    ( size() );
 
@@ -1083,6 +1097,8 @@ template< typename T    // Data type of the elements
 typename SmallVector<T,N,A>::Iterator
    SmallVector<T,N,A>::insert( Iterator pos, T&& value )
 {
+   using blaze::destroy;
+
    const size_t oldCapacity( capacity() );
    const size_t oldSize    ( size() );
 
@@ -1175,6 +1191,8 @@ template< typename T    // Data type of the elements
 typename SmallVector<T,N,A>::Iterator
    SmallVector<T,N,A>::erase( Iterator first, Iterator last )
 {
+   using blaze::destroy;
+
    BLAZE_USER_ASSERT( first <= last, "Invalid range detected" );
 
    const size_t n( last - first );
@@ -1204,6 +1222,7 @@ template< typename T    // Data type of the elements
 void SmallVector<T,N,A>::swap( SmallVector& sv ) noexcept( IsNothrowMoveConstructible<T>::value )
 {
    using std::swap;
+   using blaze::destroy;
 
    if( isDynamic() && sv.isDynamic() )
    {
