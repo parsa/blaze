@@ -64,7 +64,7 @@ namespace blaze {
 template< typename T >
 BLAZE_ALWAYS_INLINE constexpr decltype(auto) pow2( const T& a ) noexcept( noexcept( a * a ) )
 {
-   return a * a;
+   return ( a * a );
 }
 //*************************************************************************************************
 
