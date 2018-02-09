@@ -3846,7 +3846,7 @@ void SparseGeneralTest::testErase()
       }
 
       // Erasing the non-zero element at the beginning of the 1st row
-      rs.erase( 1UL, 0UL );
+      rs.erase( 1UL, size_t(0) );
 
       checkRows    ( rs  , 2UL );
       checkColumns ( rs  , 4UL );
@@ -4345,7 +4345,7 @@ void SparseGeneralTest::testErase()
       }
 
       // Erasing the non-zero element at the beginning of the 1st row
-      rs.erase( 1UL, 0UL );
+      rs.erase( 1UL, size_t(0) );
 
       checkRows    ( rs   , 2UL );
       checkColumns ( rs   , 4UL );
