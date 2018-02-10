@@ -44,6 +44,7 @@
 #include <blaze/util/constraints/DerivedFrom.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/constraints/SameSize.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeTraits.h>
@@ -1403,9 +1404,9 @@ void OperationTest::testIsVectorizable()
 {
    using blaze::IsVectorizable;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable< int >::value == true );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVectorizable< const float >::Type, blaze::TrueType );
-   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVectorizable< volatile double >, blaze::TrueType );
+   BLAZE_STATIC_ASSERT( IsVectorizable< int >::value == bool( BLAZE_SSE2_MODE ) );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVectorizable< const float >::Type, blaze::BoolConstant< BLAZE_SSE_MODE > );
+   BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVectorizable< volatile double >, blaze::BoolConstant< BLAZE_SSE2_MODE > );
    BLAZE_STATIC_ASSERT( IsVectorizable< void >::value == false );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( IsVectorizable< const bool >::Type, blaze::FalseType );
    BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( IsVectorizable< volatile Type7 >, blaze::FalseType );
