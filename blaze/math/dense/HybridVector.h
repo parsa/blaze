@@ -1543,7 +1543,7 @@ inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
    }
 
-   if( IsVectorizable<Type>::value && n < size_ ) {
+   if( IsNumeric<Type>::value && n < size_ ) {
       for( size_t i=n; i<size_; ++i )
          v_[i] = Type();
    }
@@ -1828,7 +1828,7 @@ inline bool HybridVector<Type,N,TF>::isIntact() const noexcept
    if( size_ > N )
       return false;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsVectorizable<Type>::value ) {
       for( size_t i=size_; i<NN; ++i ) {
          if( v_[i] != Type() )
             return false;
