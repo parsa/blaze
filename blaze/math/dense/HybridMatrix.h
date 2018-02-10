@@ -2327,7 +2327,7 @@ inline bool HybridMatrix<Type,M,N,SO>::isIntact() const noexcept
    if( m_ > M || n_ > N )
       return false;
 
-   if( IsNumeric<Type>::value )
+   if( IsVectorizable<Type>::value )
    {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<NN; ++j ) {
@@ -5397,7 +5397,7 @@ inline bool HybridMatrix<Type,M,N,true>::isIntact() const noexcept
    if( m_ > M || n_ > N )
       return false;
 
-   if( IsNumeric<Type>::value )
+   if( IsVectorizable<Type>::value )
    {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<MM; ++i ) {
