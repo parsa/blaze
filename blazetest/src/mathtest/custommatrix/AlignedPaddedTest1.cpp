@@ -147,7 +147,7 @@ void AlignedPaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      if( blaze::AlignmentOf<int>::value > 1UL )
+      if( blaze::AlignmentOf<int>::value > sizeof(int) )
       {
          try {
             std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 33UL ) );
@@ -164,7 +164,7 @@ void AlignedPaddedTest::testConstructors()
       }
 
       // Trying to construct a custom matrix with invalid row alignment
-      if( blaze::AlignmentOf<int>::value > 1UL )
+      if( blaze::AlignmentOf<int>::value > sizeof(int) )
       {
          try {
             std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 30UL ) );
@@ -387,7 +387,7 @@ void AlignedPaddedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       // Trying to construct a custom matrix with invalid alignment
-      if( blaze::AlignmentOf<int>::value > 1UL )
+      if( blaze::AlignmentOf<int>::value > sizeof(int) )
       {
          try {
             std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 33UL ) );
@@ -404,7 +404,7 @@ void AlignedPaddedTest::testConstructors()
       }
 
       // Trying to construct a custom matrix with invalid column alignment
-      if( blaze::AlignmentOf<int>::value > 1UL )
+      if( blaze::AlignmentOf<int>::value > sizeof(int) )
       {
          try {
             std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 30UL ) );

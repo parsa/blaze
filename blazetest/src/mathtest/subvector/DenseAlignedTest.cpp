@@ -171,17 +171,20 @@ void DenseAlignedTest::testConstructors()
    }
    catch( std::invalid_argument& ) {}
 
-   try {
-      ASVT sv = subvector<aligned>( vec1_, 7UL, 16UL );
+   if( blaze::AlignmentOf<int>::value > sizeof(int) )
+   {
+      try {
+         ASVT sv = subvector<aligned>( vec1_, 7UL, 16UL );
 
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of unaligned subvector succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << sv << "\n";
-      throw std::runtime_error( oss.str() );
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of unaligned subvector succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sv << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
-   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 

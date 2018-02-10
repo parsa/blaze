@@ -200,17 +200,20 @@ void DenseAlignedTest::testConstructors()
       }
       catch( std::invalid_argument& ) {}
 
-      try {
-         ASMT sm = submatrix<aligned>( mat1_, 8UL, 7UL, 8UL, 8UL );
+      if( blaze::AlignmentOf<int>::value > sizeof(int) )
+      {
+         try {
+            ASMT sm = submatrix<aligned>( mat1_, 8UL, 7UL, 8UL, 8UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of unaligned submatrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of unaligned submatrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 
 
@@ -306,17 +309,20 @@ void DenseAlignedTest::testConstructors()
       }
       catch( std::invalid_argument& ) {}
 
-      try {
-         AOSMT sm = submatrix<aligned>( tmat1_, 7UL, 8UL, 8UL, 8UL );
+      if( blaze::AlignmentOf<int>::value > sizeof(int) )
+      {
+         try {
+            AOSMT sm = submatrix<aligned>( tmat1_, 7UL, 8UL, 8UL, 8UL );
 
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of unaligned submatrix succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n";
-         throw std::runtime_error( oss.str() );
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of unaligned submatrix succeeded\n"
+                << " Details:\n"
+                << "   Result:\n" << sm << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+         catch( std::invalid_argument& ) {}
       }
-      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
