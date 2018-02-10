@@ -113,7 +113,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
-   return *address;
+   return If_< IsSigned<T>, SIMDcint8, SIMDcuint8 >( *address );
 #endif
 }
 //*************************************************************************************************
@@ -179,7 +179,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
-   return *address;
+   return If_< IsSigned<T>, SIMDcint16, SIMDcuint16 >( *address );
 #endif
 }
 //*************************************************************************************************
@@ -220,7 +220,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 #elif BLAZE_SSE2_MODE
    return _mm_loadu_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
-   return *address;
+   return If_< IsSigned<T>, SIMDint32, SIMDuint32 >( *address );
 #endif
 }
 //*************************************************************************************************
