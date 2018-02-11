@@ -6,7 +6,7 @@ The **Blaze** library offers ...
 
   * ... **high performance** through the integration of BLAS libraries and manually tuned HPC math kernels
   * ... **vectorization** by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, and SVML
-  * ... **parallel execution** by OpenMP, C++11 threads and Boost threads
+  * ... **parallel execution** by OpenMP, HPX, C++11 threads and Boost threads
   * ... the **intuitive** and **easy to use** API of a domain specific language
   * ... **unified arithmetic** with dense and sparse vectors and matrices
   * ... **thoroughly tested** matrix and vector arithmetic
@@ -19,9 +19,9 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.2.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.2.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.2.tar.gz)
+[![blaze-3.3.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.3.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.3.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.2.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.2.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.2.tar.gz)
+[![blaze-docu-3.3.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.3.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.3.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
@@ -30,38 +30,13 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 ## Blaze Projects ##
 
 [BlazeIterative](https://github.com/tjolsen/BlazeIterative): A collection of iterative solvers (CG, BiCGSTAB, ...) for the **Blaze** library (Tyler Olsen)
+[RcppBlaze](https://github.com/ChingChuan-Chen/RcppBlaze): A **Blaze** port for the R language (ChingChuan Chen)
 
 ----
 
 ## News ##
 
-**05.12.2017**: One of the big new features of **Blaze** 3.3 is now available: Element selections! The following code snippet gives you an impression of the possibilities that element selections provide. For further details, please see [Issue #48](https://bitbucket.org/blaze-lib/blaze/issues/48/introduce-non-contiguous-views-into-blaze).
-
-```
-#!c++
-blaze::DynamicVector<double,blaze::rowVector> x;
-// ... Resizing and initialization
-
-// Selecting the elements 4, 6, 8, and 10 (compile time arguments)
-auto e1 = elements<4UL,6UL,8UL,10UL>( x );
-
-// Selecting the elements 3, 2, and 1 (runtime arguments via an initializer list)
-const std::initializer_list<size_t> list{ 3UL, 2UL, 1UL };
-auto e2 = elements( x, { 3UL, 2UL, 1UL } );
-auto e3 = elements( x, list );
-
-// Selecting the elements 1, 2, 3, 3, 2, and 1 (runtime arguments via a std::array)
-const std::array<size_t> array{ 1UL, 2UL, 3UL, 3UL, 2UL, 1UL };
-auto e4 = elements( x, array );
-auto e5 = elements( x, array.data(), array.size() );
-
-// Selecting the element 4 fives times (runtime arguments via a std::vector)
-const std::vector<size_t> vector{ 4UL, 4UL, 4UL, 4UL, 4UL };
-auto e6 = elements( x, vector );
-auto e7 = elements( x, vector.data(), vector.size() );
-```
-
-**15.9.2017**: Attention early adopters: We have spent the last weeks to update all available views. One highlight of this refactoring is that it is now possible to provide the arguments of views as template arguments! As an example, consider the following two code snippets that demonstrate the setup of subvectors and submatrices, respectively:
+**11.02.2018**: Today we proudly present the next release of the **Blaze** library! In **Blaze** 3.3 we have focused on views. First of all, we have upgraded all existing views. Subvectors, submatrices, rows and columns have been introduced in the **Blaze** 1.x releases when we were still limited by C++03. Now we have completely reworked them with C++14 and have made them more flexible and more powerful than ever before. Most remarkable, it is now possible to configure views at compile time:
 
 ```
 #!c++
@@ -87,15 +62,44 @@ auto sm1 = submatrix<3UL,0UL,4UL,8UL>( A );
 auto sm2 = submatrix( A, 0UL, 4UL, 8UL, 16UL );
 ```
 
-The same works with rows, columns and bands. We are happy to share this new feature with you and welcome any kind of feedback you might have at this time.
+Furthermore, we have introduced [element selections](https://bitbucket.org/blaze-lib/blaze/wiki/Element%20Selections), [row selections](https://bitbucket.org/blaze-lib/blaze/wiki/Row%20Selections), [column selections](https://bitbucket.org/blaze-lib/blaze/wiki/Column%20Selections) and [bands](https://bitbucket.org/blaze-lib/blaze/wiki/Bands) to enable almost every possible view on vectors and matrices:
+
+```
+#!c++
+blaze::DynamicVector<double,blaze::rowVector> x;
+blaze::DynamicMatrix<double,blaze::rowMajor> A;
+// ... Resizing and initialization
+
+// Selecting the elements 4, 6, 8, and 10 (compile time arguments)
+auto e1 = elements<4UL,6UL,8UL,10UL>( x );
+
+// Selecting the elements 3, 2, and 1 (runtime arguments via an initializer list)
+auto e2 = elements( x, { 3UL, 2UL, 1UL } );
+
+// Selecting the rows 4, 6, 8, and 10 (compile time arguments)
+auto rs1 = rows<4UL,6UL,8UL,10UL>( A );
+
+// Selecting the rows 3, 2, and 1 (runtime arguments via an initializer list)
+auto rs2 = rows( A, { 3UL, 2UL, 1UL } );
+
+// Selecting the columns 4, 6, 8, and 10 (compile time arguments)
+auto cs1 = columns<4UL,6UL,8UL,10UL>( A );
+
+// Selecting the columns 3, 2, and 1 (runtime arguments via an initializer list)
+auto cs2 = columns( A, { 3UL, 2UL, 1UL } );
+
+// Creating a reference to the 1st lower band of matrix A (compile time index)
+auto b1 = band<-1L>( A );
+
+// Creating a reference to the 2nd upper band of matrix A (runtime index)
+auto b2 = band( A, 2L );
+```
+
+Also noteworthy are our new [HPX shared-memory parallelization backend](https://bitbucket.org/blaze-lib/blaze/wiki/HPX%20Parallelization) and the introduction of [vector norms](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!norms) and [matrix norms](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Operations#!norms). We hope you enjoy this new release!
 
 **18.8.2017**: Today, after nearly six month of hard work, we officially release **Blaze** 3.2! This version is dedicated to several of the most anticipated features: **Blaze** finally provides [CMake support](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration%20and%20Installation) and an [advanced configuration system](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration Files), which allows you to configure each single detail of **Blaze** from the command line. Additionally, **Blaze** finally provides complete support of AVX-512 and introduces the [`IdentityMatrix`](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix Types#!identitymatrix) class. Furthermore, **Blaze** finally features [binary custom operations](https://bitbucket.org/blaze-lib/blaze/wiki/Vector and Matrix Customization#!custom-operations) and the [componentwise matrix multiplication (Schur Product)](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!componentwise-multiplication-schur-product). Of course we have also spent time on a lot of smaller features and tweaked countless little details. We hope you enjoy this new release and the ton of new features.
 
 We don't want to miss the opportunity to thank our many contributors: Thanks a lot for your efforts to make **Blaze** a better library!
-
-**3.7.2017**: We are proud to announce the first of hopefully many **Blaze** projects: [BlazeIterative](https://github.com/tjolsen/BlazeIterative). Check out this collection of iterative solves, which neatly integrate with the **Blaze** library.
-
-**20.2.2017**: We are happy to announce that there is now a port of the **Blaze** library for the R language available: [RcppBlaze](https://github.com/ChingChuan-Chen/RcppBlaze).
 
 ----
 
@@ -114,9 +118,13 @@ We don't want to miss the opportunity to thank our many contributors: Thanks a l
     * [Triangular Matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Triangular Matrices)
 * [Views](https://bitbucket.org/blaze-lib/blaze/wiki/Views)
     * [Subvectors](https://bitbucket.org/blaze-lib/blaze/wiki/Subvectors)
+    * [Element Selections](https://bitbucket.org/blaze-lib/blaze/wiki/Element Selections)
     * [Submatrices](https://bitbucket.org/blaze-lib/blaze/wiki/Submatrices)
     * [Rows](https://bitbucket.org/blaze-lib/blaze/wiki/Rows)
+    * [Row Selections](https://bitbucket.org/blaze-lib/blaze/wiki/Row Selections)
     * [Columns](https://bitbucket.org/blaze-lib/blaze/wiki/Columns)
+    * [Column Selections](https://bitbucket.org/blaze-lib/blaze/wiki/Column Selections)
+    * [Bands](https://bitbucket.org/blaze-lib/blaze/wiki/Bands)
 * [Arithmetic Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Arithmetic Operations)
     * [Addition](https://bitbucket.org/blaze-lib/blaze/wiki/Addition)
     * [Subtraction](https://bitbucket.org/blaze-lib/blaze/wiki/Subtraction)
@@ -135,6 +143,7 @@ We don't want to miss the opportunity to thank our many contributors: Thanks a l
     * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
     * [C++11 Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Cpp Thread Parallelization)
     * [Boost Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Boost Thread Parallelization)
+    * [HPX Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/HPX Parallelization)
     * [Serial Execution](https://bitbucket.org/blaze-lib/blaze/wiki/Serial Execution)
 * [Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Serialization)
     * [Vector Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Serialization)
@@ -169,7 +178,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 4.9 through 7.1), the Intel C++ compiler (16.0), the Clang compiler (version 3.7 through 4.0), and Visual C++ 2015 and 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 5.0 through 7.2), the Intel C++ compiler (16.0 through 17.4), the Clang compiler (version 3.9 through 5.0), and Visual C++ 2015 and 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 If you are looking for a C++98 compatible math library you might consider using an older release of **Blaze**. Until the release 2.6 **Blaze** was written in C++-98 and constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only).
 
