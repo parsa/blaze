@@ -30,6 +30,7 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 ## Blaze Projects ##
 
 [BlazeIterative](https://github.com/tjolsen/BlazeIterative): A collection of iterative solvers (CG, BiCGSTAB, ...) for the **Blaze** library (Tyler Olsen)
+
 [RcppBlaze](https://github.com/ChingChuan-Chen/RcppBlaze): A **Blaze** port for the R language (ChingChuan Chen)
 
 ----
