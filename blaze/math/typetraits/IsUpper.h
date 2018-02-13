@@ -128,6 +128,24 @@ struct IsUpper< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsUpper type trait.
+// \ingroup type_traits
+//
+// The IsUpper_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsUpper class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsUpper<T>::value;
+   constexpr bool value2 = IsUpper_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsUpper_v = IsUpper<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

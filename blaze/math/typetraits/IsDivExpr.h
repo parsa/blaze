@@ -99,6 +99,24 @@ struct IsDivExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsDivExpr type trait.
+// \ingroup type_traits
+//
+// The IsDivExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsDivExpr class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDivExpr<T>::value;
+   constexpr bool value2 = IsDivExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDivExpr_v = IsDivExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

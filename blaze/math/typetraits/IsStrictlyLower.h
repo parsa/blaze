@@ -127,6 +127,24 @@ struct IsStrictlyLower< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsStrictlyLower type trait.
+// \ingroup type_traits
+//
+// The IsStrictlyLower_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsStrictlyLower class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsStrictlyLower<T>::value;
+   constexpr bool value2 = IsStrictlyLower_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsStrictlyLower_v = IsStrictlyLower<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

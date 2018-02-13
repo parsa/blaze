@@ -114,6 +114,24 @@ struct HasSIMDCeil
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDCeil type trait.
+// \ingroup type_traits
+//
+// The HasSIMDCeil_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDCeil class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDCeil<T>::value;
+   constexpr bool value2 = HasSIMDCeil_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDCeil_v = HasSIMDCeil<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

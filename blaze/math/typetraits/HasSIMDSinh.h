@@ -112,6 +112,24 @@ struct HasSIMDSinh
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDSinh type trait.
+// \ingroup type_traits
+//
+// The HasSIMDSinh_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDSinh class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDSinh<T>::value;
+   constexpr bool value2 = HasSIMDSinh_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDSinh_v = HasSIMDSinh<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

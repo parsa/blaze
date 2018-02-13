@@ -114,6 +114,25 @@ struct HasSIMDHypot
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDHypot type trait.
+// \ingroup type_traits
+//
+// The HasSIMDHypot_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDHypot class template. For instance, given the types \a T1 and \a T2
+// the following two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDHypot<T1,T2>::value;
+   constexpr bool value2 = HasSIMDHypot_v<T1,T2>;
+   \endcode
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+constexpr bool HasSIMDHypot_v = HasSIMDHypot<T1,T2>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

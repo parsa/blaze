@@ -112,6 +112,24 @@ struct HasSIMDErf
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDErf type trait.
+// \ingroup type_traits
+//
+// The HasSIMDErf_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDErf class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDErf<T>::value;
+   constexpr bool value2 = HasSIMDErf_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDErf_v = HasSIMDErf<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

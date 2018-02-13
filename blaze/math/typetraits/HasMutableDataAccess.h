@@ -116,6 +116,24 @@ struct HasMutableDataAccess< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasMutableDataAccess type trait.
+// \ingroup type_traits
+//
+// The HasMutableDataAccess_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasMutableDataAccess class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = HasMutableDataAccess<T>::value;
+   constexpr bool value2 = HasMutableDataAccess_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool HasMutableDataAccess_v = HasMutableDataAccess<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

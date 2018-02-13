@@ -135,6 +135,24 @@ struct HasAdd< T1, T2, EnableIf_< And< IsMatrix<T1>, IsMatrix<T2> > > >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasAdd type trait.
+// \ingroup type_traits
+//
+// The HasAdd_v variable template provides a convenient shortcut to access the nested \a value
+// of the HasAdd class template. For instance, given the types \a T1 and \a T2 the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasAdd<T1,T2>::value;
+   constexpr bool value2 = HasAdd_v<T1,T2>;
+   \endcode
+*/
+template< typename T1, typename T2 >
+constexpr bool HasAdd_v = HasAdd<T1,T2>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

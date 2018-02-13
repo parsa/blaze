@@ -126,6 +126,24 @@ struct IsSymmetric< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSymmetric type trait.
+// \ingroup type_traits
+//
+// The IsSymmetric_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSymmetric class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSymmetric<T>::value;
+   constexpr bool value2 = IsSymmetric_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSymmetric_v = IsSymmetric<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -121,6 +121,24 @@ struct Size< const volatile T, N >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Size type trait.
+// \ingroup type_traits
+//
+// The Size_v variable template provides a convenient shortcut to access the nested \a value
+// of the Size class template. For instance, given the type \a T and the dimension \a N the
+// following two statements are identical:
+
+   \code
+   constexpr size_t value1 = Size<T,N>::value;
+   constexpr size_t value2 = Size_v<T,N>;
+   \endcode
+*/
+template< typename T, size_t N >
+constexpr ptrdiff_t Size_v = Size<T,N>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

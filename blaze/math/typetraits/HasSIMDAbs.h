@@ -125,6 +125,24 @@ struct HasSIMDAbs
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDAbs type trait.
+// \ingroup type_traits
+//
+// The HasSIMDAbs_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDAbs class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDAbs<T>::value;
+   constexpr bool value2 = HasSIMDAbs_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDAbs_v = HasSIMDAbs<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

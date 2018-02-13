@@ -112,6 +112,24 @@ struct IsColumnMajorMatrix
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsColumnMajorMatrix type trait.
+// \ingroup type_traits
+//
+// The IsColumnMajorMatrix_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsColumnMajorMatrix class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsColumnMajorMatrix<T>::value;
+   constexpr bool value2 = IsColumnMajorMatrix_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsColumnMajorMatrix_v = IsColumnMajorMatrix<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

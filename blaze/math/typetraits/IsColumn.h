@@ -144,6 +144,24 @@ struct IsColumn< const volatile Column<MT,SO,DF,SF,CCAs...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsColumn type trait.
+// \ingroup type_traits
+//
+// The IsColumn_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsColumn class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsColumn<T>::value;
+   constexpr bool value2 = IsColumn_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsColumn_v = IsColumn<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -72,6 +72,24 @@ struct IsTransformation
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsTransformation type trait.
+// \ingroup type_traits
+//
+// The IsTransformation_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsTransformation class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsTransformation<T>::value;
+   constexpr bool value2 = IsTransformation_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsTransformation_v = IsTransformation<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

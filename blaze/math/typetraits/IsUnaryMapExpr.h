@@ -97,6 +97,24 @@ struct IsUnaryMapExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsUnaryMapExpr type trait.
+// \ingroup type_traits
+//
+// The IsUnaryMapExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsUnaryMapExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsUnaryMapExpr<T>::value;
+   constexpr bool value2 = IsUnaryMapExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsUnaryMapExpr_v = IsUnaryMapExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

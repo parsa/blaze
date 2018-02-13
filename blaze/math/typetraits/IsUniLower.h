@@ -127,6 +127,24 @@ struct IsUniLower< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsUniLower type trait.
+// \ingroup type_traits
+//
+// The IsUniLower_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsUniLower class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsUniLower<T>::value;
+   constexpr bool value2 = IsUniLower_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsUniLower_v = IsUniLower<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -112,6 +112,24 @@ struct HasSIMDCos
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDCos type trait.
+// \ingroup type_traits
+//
+// The HasSIMDCos_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDCos class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDCos<T>::value;
+   constexpr bool value2 = HasSIMDCos_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDCos_v = HasSIMDCos<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -123,6 +123,24 @@ struct IsRestricted< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsRestricted type trait.
+// \ingroup type_traits
+//
+// The IsRestricted_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsRestricted class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsRestricted<T>::value;
+   constexpr bool value2 = IsRestricted_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsRestricted_v = IsRestricted<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

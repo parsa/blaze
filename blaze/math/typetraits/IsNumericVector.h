@@ -87,6 +87,24 @@ struct IsNumericVector
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsNumericVector type trait.
+// \ingroup type_traits
+//
+// The IsNumericVector_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsNumericVector class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsNumericVector<T>::value;
+   constexpr bool value2 = IsNumericVector_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsNumericVector_v = IsNumericVector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -88,6 +88,24 @@ struct IsTriangular
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsTriangular type trait.
+// \ingroup type_traits
+//
+// The IsTriangular_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsTriangular class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsTriangular<T>::value;
+   constexpr bool value2 = IsTriangular_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsTriangular_v = IsTriangular<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

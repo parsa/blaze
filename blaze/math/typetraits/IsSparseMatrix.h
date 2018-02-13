@@ -105,6 +105,24 @@ struct IsSparseMatrix
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSparseMatrix type trait.
+// \ingroup type_traits
+//
+// The IsSparseMatrix_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSparseMatrix class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSparseMatrix<T>::value;
+   constexpr bool value2 = IsSparseMatrix_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSparseMatrix_v = IsSparseMatrix<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

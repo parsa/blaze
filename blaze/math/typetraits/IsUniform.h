@@ -108,6 +108,24 @@ struct IsUniform< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsUniform type trait.
+// \ingroup type_traits
+//
+// The IsUniform_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsUniform class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsUniform<T>::value;
+   constexpr bool value2 = IsUniform_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsUniform_v = IsUniform<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

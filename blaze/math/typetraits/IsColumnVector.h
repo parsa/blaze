@@ -109,6 +109,24 @@ struct IsColumnVector
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsColumnVector type trait.
+// \ingroup type_traits
+//
+// The IsColumnVector_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsColumnVector class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsColumnVector<T>::value;
+   constexpr bool value2 = IsColumnVector_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsColumnVector_v = IsColumnVector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

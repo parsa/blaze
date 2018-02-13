@@ -130,6 +130,24 @@ struct IsGeneral< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsGeneral type trait.
+// \ingroup type_traits
+//
+// The IsGeneral_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsGeneral class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsGeneral<T>::value;
+   constexpr bool value2 = IsGeneral_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsGeneral_v = IsGeneral<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

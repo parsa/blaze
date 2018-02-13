@@ -105,6 +105,24 @@ struct IsSparseVector
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSparseVector type trait.
+// \ingroup type_traits
+//
+// The IsSparseVector_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSparseVector class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSparseVector<T>::value;
+   constexpr bool value2 = IsSparseVector_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSparseVector_v = IsSparseVector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

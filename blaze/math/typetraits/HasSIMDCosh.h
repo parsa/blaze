@@ -112,6 +112,24 @@ struct HasSIMDCosh
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDCosh type trait.
+// \ingroup type_traits
+//
+// The HasSIMDCosh_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDCosh class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDCosh<T>::value;
+   constexpr bool value2 = HasSIMDCosh_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDCosh_v = HasSIMDCosh<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -105,6 +105,24 @@ struct IsDenseVector
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsDenseVector type trait.
+// \ingroup type_traits
+//
+// The IsDenseVector_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsDenseVector class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDenseVector<T>::value;
+   constexpr bool value2 = IsDenseVector_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDenseVector_v = IsDenseVector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

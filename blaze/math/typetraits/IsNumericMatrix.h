@@ -87,6 +87,24 @@ struct IsNumericMatrix
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsNumericMatrix type trait.
+// \ingroup type_traits
+//
+// The IsNumericMatrix_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsNumericMatrix class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsNumericMatrix<T>::value;
+   constexpr bool value2 = IsNumericMatrix_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsNumericMatrix_v = IsNumericMatrix<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

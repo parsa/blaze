@@ -98,6 +98,24 @@ struct IsMatInvExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsMatInvExpr type trait.
+// \ingroup type_traits
+//
+// The IsMatInvExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsMatInvExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMatInvExpr<T>::value;
+   constexpr bool value2 = IsMatInvExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatInvExpr_v = IsMatInvExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

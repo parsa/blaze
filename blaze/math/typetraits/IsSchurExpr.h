@@ -98,6 +98,24 @@ struct IsSchurExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSchurExpr type trait.
+// \ingroup type_traits
+//
+// The IsSchurExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSchurExpr class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSchurExpr<T>::value;
+   constexpr bool value2 = IsSchurExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSchurExpr_v = IsSchurExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

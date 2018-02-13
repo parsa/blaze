@@ -128,6 +128,24 @@ struct IsLower< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsLower type trait.
+// \ingroup type_traits
+//
+// The IsLower_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsLower class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsLower<T>::value;
+   constexpr bool value2 = IsLower_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsLower_v = IsLower<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

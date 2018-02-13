@@ -112,6 +112,24 @@ struct HasSIMDAcos
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDAcos type trait.
+// \ingroup type_traits
+//
+// The HasSIMDAcos_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDAcos class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDAcos<T>::value;
+   constexpr bool value2 = HasSIMDAcos_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDAcos_v = HasSIMDAcos<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -112,6 +112,24 @@ struct HasSIMDAsin
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDAsin type trait.
+// \ingroup type_traits
+//
+// The HasSIMDAsin_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDAsin class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDAsin<T>::value;
+   constexpr bool value2 = HasSIMDAsin_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDAsin_v = HasSIMDAsin<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -112,6 +112,24 @@ struct HasSIMDTan
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDTan type trait.
+// \ingroup type_traits
+//
+// The HasSIMDTan_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDTan class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDTan<T>::value;
+   constexpr bool value2 = HasSIMDTan_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDTan_v = HasSIMDTan<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -99,6 +99,24 @@ struct IsVecScalarDivExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsVecScalarDivExpr type trait.
+// \ingroup type_traits
+//
+// The IsVecScalarDivExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsVecScalarDivExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsVecScalarDivExpr<T>::value;
+   constexpr bool value2 = IsVecScalarDivExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsVecScalarDivExpr_v = IsVecScalarDivExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

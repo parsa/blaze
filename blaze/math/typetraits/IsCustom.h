@@ -128,6 +128,24 @@ struct IsCustom< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsCustom type trait.
+// \ingroup type_traits
+//
+// The IsCustom_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsCustom class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsCustom<T>::value;
+   constexpr bool value2 = IsCustom_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsCustom_v = IsCustom<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

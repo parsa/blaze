@@ -99,6 +99,24 @@ struct IsVecVecSubExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsVecVecSubExpr type trait.
+// \ingroup type_traits
+//
+// The IsVecVecSubExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsVecVecSubExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsVecVecSubExpr<T>::value;
+   constexpr bool value2 = IsVecVecSubExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsVecVecSubExpr_v = IsVecVecSubExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

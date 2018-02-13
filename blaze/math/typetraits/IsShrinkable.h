@@ -116,6 +116,24 @@ struct IsShrinkable< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsShrinkable type trait.
+// \ingroup type_traits
+//
+// The IsShrinkable_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsShrinkable class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsShrinkable<T>::value;
+   constexpr bool value2 = IsShrinkable_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsShrinkable_v = IsShrinkable<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

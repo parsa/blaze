@@ -126,6 +126,24 @@ struct IsHermitian< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsHermitian type trait.
+// \ingroup type_traits
+//
+// The IsHermitian_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsHermitian class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsHermitian<T>::value;
+   constexpr bool value2 = IsHermitian_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsHermitian_v = IsHermitian<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

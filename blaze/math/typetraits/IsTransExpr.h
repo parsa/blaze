@@ -98,6 +98,24 @@ struct IsTransExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsTransExpr type trait.
+// \ingroup type_traits
+//
+// The IsTransExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsTransExpr class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsTransExpr<T>::value;
+   constexpr bool value2 = IsTransExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsTransExpr_v = IsTransExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

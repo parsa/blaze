@@ -116,6 +116,24 @@ struct IsResizable< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsResizable type trait.
+// \ingroup type_traits
+//
+// The IsResizable_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsResizable class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsResizable<T>::value;
+   constexpr bool value2 = IsResizable_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsResizable_v = IsResizable<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

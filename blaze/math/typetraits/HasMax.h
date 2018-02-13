@@ -136,6 +136,24 @@ struct HasMax< T1, T2, EnableIf_< And< IsVector<T1>, IsVector<T2> > > >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasMax type trait.
+// \ingroup type_traits
+//
+// The HasMax_v variable template provides a convenient shortcut to access the nested \a value
+// of the HasMax class template. For instance, given the types \a T1 and \a T2 the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasMax<T1,T2>::value;
+   constexpr bool value2 = HasMax_v<T1,T2>;
+   \endcode
+*/
+template< typename T1, typename T2 >
+constexpr bool HasMax_v = HasMax<T1,T2>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

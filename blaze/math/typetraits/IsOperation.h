@@ -72,6 +72,24 @@ struct IsOperation
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsOperation type trait.
+// \ingroup type_traits
+//
+// The IsOperation_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsOperation class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsOperation<T>::value;
+   constexpr bool value2 = IsOperation_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsOperation_v = IsOperation<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

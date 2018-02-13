@@ -144,6 +144,24 @@ struct IsSubmatrix< const volatile Submatrix<MT,AF,SO,DF,CSAs...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSubmatrix type trait.
+// \ingroup type_traits
+//
+// The IsSubmatrix_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSubmatrix class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSubmatrix<T>::value;
+   constexpr bool value2 = IsSubmatrix_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSubmatrix_v = IsSubmatrix<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

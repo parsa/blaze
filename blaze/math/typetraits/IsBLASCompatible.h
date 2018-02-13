@@ -81,6 +81,24 @@ struct IsBLASCompatible
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsBLASCompatible type trait.
+// \ingroup type_traits
+//
+// The IsBLASCompatible_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsBLASCompatible class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsBLASCompatible<T>::value;
+   constexpr bool value2 = IsBLASCompatible_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsBLASCompatible_v = IsBLASCompatible<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

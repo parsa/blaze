@@ -111,6 +111,24 @@ struct HasSIMDConj
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDConj type trait.
+// \ingroup type_traits
+//
+// The HasSIMDConj_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDConj class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDConj<T>::value;
+   constexpr bool value2 = HasSIMDConj_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDConj_v = HasSIMDConj<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

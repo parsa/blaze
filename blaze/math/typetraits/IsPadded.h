@@ -117,6 +117,24 @@ struct IsPadded< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsPadded type trait.
+// \ingroup type_traits
+//
+// The IsPadded_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsPadded class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsPadded<T>::value;
+   constexpr bool value2 = IsPadded_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsPadded_v = IsPadded<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -98,6 +98,24 @@ struct IsVecVecMapExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsVecVecMapExpr type trait.
+// \ingroup type_traits
+//
+// The IsVecVecMapExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsVecVecMapExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsVecVecMapExpr<T>::value;
+   constexpr bool value2 = IsVecVecMapExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsVecVecMapExpr_v = IsVecVecMapExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

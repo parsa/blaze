@@ -73,6 +73,24 @@ struct IsComputation
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsComputation type trait.
+// \ingroup type_traits
+//
+// The IsComputation_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsComputation class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsComputation<T>::value;
+   constexpr bool value2 = IsComputation_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsComputation_v = IsComputation<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -97,6 +97,24 @@ struct IsBinaryMapExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsBinaryMapExpr type trait.
+// \ingroup type_traits
+//
+// The IsBinaryMapExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsBinaryMapExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsBinaryMapExpr<T>::value;
+   constexpr bool value2 = IsBinaryMapExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsBinaryMapExpr_v = IsBinaryMapExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

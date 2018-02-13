@@ -140,6 +140,24 @@ struct IsSIMDPack
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSIMDPack type trait.
+// \ingroup type_traits
+//
+// The IsSIMDPack_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSIMDPack class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSIMDPack<T>::value;
+   constexpr bool value2 = IsSIMDPack_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSIMDPack_v = IsSIMDPack<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

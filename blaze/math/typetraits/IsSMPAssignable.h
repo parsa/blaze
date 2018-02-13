@@ -125,6 +125,24 @@ struct IsSMPAssignable
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSMPAssignable type trait.
+// \ingroup type_traits
+//
+// The IsSMPAssignable_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSMPAssignable class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSMPAssignable<T>::value;
+   constexpr bool value2 = IsSMPAssignable_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSMPAssignable_v = IsSMPAssignable<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

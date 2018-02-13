@@ -114,6 +114,24 @@ struct HasSIMDFloor
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDFloor type trait.
+// \ingroup type_traits
+//
+// The HasSIMDFloor_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDFloor class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDFloor<T>::value;
+   constexpr bool value2 = HasSIMDFloor_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDFloor_v = HasSIMDFloor<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

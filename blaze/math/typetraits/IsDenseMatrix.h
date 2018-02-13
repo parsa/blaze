@@ -105,6 +105,24 @@ struct IsDenseMatrix
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsDenseMatrix type trait.
+// \ingroup type_traits
+//
+// The IsDenseMatrix_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsDenseMatrix class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDenseMatrix<T>::value;
+   constexpr bool value2 = IsDenseMatrix_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDenseMatrix_v = IsDenseMatrix<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

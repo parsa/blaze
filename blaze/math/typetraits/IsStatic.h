@@ -126,6 +126,24 @@ struct IsStatic< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsStatic type trait.
+// \ingroup type_traits
+//
+// The IsStatic_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsStatic class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsStatic<T>::value;
+   constexpr bool value2 = IsStatic_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsStatic_v = IsStatic<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

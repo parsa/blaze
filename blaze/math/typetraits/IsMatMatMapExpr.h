@@ -98,6 +98,24 @@ struct IsMatMatMapExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsMatMatMapExpr type trait.
+// \ingroup type_traits
+//
+// The IsMatMatMapExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsMatMatMapExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMatMatMapExpr<T>::value;
+   constexpr bool value2 = IsMatMatMapExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatMatMapExpr_v = IsMatMatMapExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

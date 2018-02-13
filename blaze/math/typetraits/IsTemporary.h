@@ -71,6 +71,24 @@ struct IsTemporary
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsTemporary type trait.
+// \ingroup type_traits
+//
+// The IsTemporary_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsTemporary class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsTemporary<T>::value;
+   constexpr bool value2 = IsTemporary_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsTemporary_v = IsTemporary<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

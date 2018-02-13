@@ -144,6 +144,24 @@ struct IsRows< const volatile Rows<MT,SO,DF,SF,CRAs...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsRows type trait.
+// \ingroup type_traits
+//
+// The IsRows_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsRows class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsRows<T>::value;
+   constexpr bool value2 = IsRows_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsRows_v = IsRows<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

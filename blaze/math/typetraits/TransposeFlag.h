@@ -101,6 +101,24 @@ struct TransposeFlag
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the TransposeFlag type trait.
+// \ingroup type_traits
+//
+// The TransposeFlag_v variable template provides a convenient shortcut to access the nested
+// \a value of the TransposeFlag class template. For instance, given the vector type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = TransposeFlag<T>::value;
+   constexpr bool value2 = TransposeFlag_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool TransposeFlag_v = TransposeFlag<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

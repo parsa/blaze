@@ -144,6 +144,24 @@ struct IsSubvector< const volatile Subvector<VT,AF,TF,DF,CSAs...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSubvector type trait.
+// \ingroup type_traits
+//
+// The IsSubvector_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSubvector class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSubvector<T>::value;
+   constexpr bool value2 = IsSubvector_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSubvector_v = IsSubvector<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

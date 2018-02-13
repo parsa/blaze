@@ -112,6 +112,24 @@ struct HasSIMDCbrt
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDCbrt type trait.
+// \ingroup type_traits
+//
+// The HasSIMDCbrt_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDCbrt class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDCbrt<T>::value;
+   constexpr bool value2 = HasSIMDCbrt_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDCbrt_v = HasSIMDCbrt<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

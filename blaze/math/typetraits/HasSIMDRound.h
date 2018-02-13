@@ -116,6 +116,24 @@ struct HasSIMDRound
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDRound type trait.
+// \ingroup type_traits
+//
+// The HasSIMDRound_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDRound class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDRound<T>::value;
+   constexpr bool value2 = HasSIMDRound_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDRound_v = HasSIMDRound<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

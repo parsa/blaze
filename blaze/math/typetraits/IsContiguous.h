@@ -127,6 +127,24 @@ struct IsContiguous< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsContiguous type trait.
+// \ingroup type_traits
+//
+// The IsContiguous_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsContiguous class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsContiguous<T>::value;
+   constexpr bool value2 = IsContiguous_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsContiguous_v = IsContiguous<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

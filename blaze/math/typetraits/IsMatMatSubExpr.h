@@ -98,6 +98,24 @@ struct IsMatMatSubExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsMatMatSubExpr type trait.
+// \ingroup type_traits
+//
+// The IsMatMatSubExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsMatMatSubExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMatMatSubExpr<T>::value;
+   constexpr bool value2 = IsMatMatSubExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatMatSubExpr_v = IsMatMatSubExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

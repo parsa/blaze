@@ -102,6 +102,24 @@ struct IsSIMDEnabled
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSIMDEnabled type trait.
+// \ingroup type_traits
+//
+// The IsSIMDEnabled_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSIMDEnabled class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSIMDEnabled<T>::value;
+   constexpr bool value2 = IsSIMDEnabled_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSIMDEnabled_v = IsSIMDEnabled<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

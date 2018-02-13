@@ -123,6 +123,24 @@ struct IsInitializer< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsInitializer type trait.
+// \ingroup type_traits
+//
+// The IsInitializer_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsInitializer class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsInitializer<T>::value;
+   constexpr bool value2 = IsInitializer_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsInitializer_v = IsInitializer<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

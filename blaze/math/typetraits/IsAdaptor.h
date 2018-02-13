@@ -129,6 +129,24 @@ struct IsAdaptor< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsAdaptor type trait.
+// \ingroup type_traits
+//
+// The IsAdaptor_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsAdaptor class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsAdaptor<T>::value;
+   constexpr bool value2 = IsAdaptor_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsAdaptor_v = IsAdaptor<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

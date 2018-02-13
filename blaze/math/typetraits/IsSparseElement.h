@@ -72,6 +72,24 @@ struct IsSparseElement
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSparseElement type trait.
+// \ingroup type_traits
+//
+// The IsSparseElement_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsSparseElement class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSparseElement<T>::value;
+   constexpr bool value2 = IsSparseElement_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSparseElement_v = IsSparseElement<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

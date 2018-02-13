@@ -110,6 +110,24 @@ struct IsProxy
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsProxy type trait.
+// \ingroup type_traits
+//
+// The IsProxy_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsProxy class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsProxy<T>::value;
+   constexpr bool value2 = IsProxy_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsProxy_v = IsProxy<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

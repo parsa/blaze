@@ -112,6 +112,24 @@ struct HasSIMDExp2
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDExp2 type trait.
+// \ingroup type_traits
+//
+// The HasSIMDExp2_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDExp2 class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDExp2<T>::value;
+   constexpr bool value2 = HasSIMDExp2_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDExp2_v = HasSIMDExp2<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

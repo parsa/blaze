@@ -97,6 +97,24 @@ struct IsExpression
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsExpression type trait.
+// \ingroup type_traits
+//
+// The IsExpression_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsExpression class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsExpression<T>::value;
+   constexpr bool value2 = IsExpression_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsExpression_v = IsExpression<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

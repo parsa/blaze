@@ -142,6 +142,24 @@ struct IsElements< const volatile Elements<VT,TF,DF,CEAs...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsElements type trait.
+// \ingroup type_traits
+//
+// The IsElements_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsElements class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsElements<T>::value;
+   constexpr bool value2 = IsElements_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsElements_v = IsElements<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

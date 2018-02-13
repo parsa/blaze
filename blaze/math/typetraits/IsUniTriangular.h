@@ -88,6 +88,24 @@ struct IsUniTriangular
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsUniTriangular type trait.
+// \ingroup type_traits
+//
+// The IsUniTriangular_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsUniTriangular class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsUniTriangular<T>::value;
+   constexpr bool value2 = IsUniTriangular_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsUniTriangular_v = IsUniTriangular<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

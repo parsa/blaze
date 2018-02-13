@@ -112,6 +112,24 @@ struct HasSIMDSin
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDSin type trait.
+// \ingroup type_traits
+//
+// The HasSIMDSin_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDSin class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDSin<T>::value;
+   constexpr bool value2 = HasSIMDSin_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDSin_v = HasSIMDSin<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

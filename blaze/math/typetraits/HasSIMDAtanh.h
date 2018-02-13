@@ -112,6 +112,24 @@ struct HasSIMDAtanh
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDAtanh type trait.
+// \ingroup type_traits
+//
+// The HasSIMDAtanh_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDAtanh class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDAtanh<T>::value;
+   constexpr bool value2 = HasSIMDAtanh_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDAtanh_v = HasSIMDAtanh<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

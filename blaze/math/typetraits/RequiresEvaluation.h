@@ -73,6 +73,24 @@ struct RequiresEvaluation
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the RequiresEvaluation type trait.
+// \ingroup type_traits
+//
+// The RequiresEvaluation_v variable template provides a convenient shortcut to access the nested
+// \a value of the RequiresEvaluation class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = RequiresEvaluation<T>::value;
+   constexpr bool value2 = RequiresEvaluation_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool RequiresEvaluation_v = RequiresEvaluation<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

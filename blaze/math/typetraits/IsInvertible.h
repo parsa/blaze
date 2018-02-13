@@ -89,6 +89,24 @@ struct IsInvertible
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsInvertible type trait.
+// \ingroup type_traits
+//
+// The IsInvertible_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsInvertible class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsInvertible<T>::value;
+   constexpr bool value2 = IsInvertible_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsInvertible_v = IsInvertible<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

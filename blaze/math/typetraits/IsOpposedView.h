@@ -122,6 +122,24 @@ struct IsOpposedView< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsOpposedView type trait.
+// \ingroup type_traits
+//
+// The IsOpposedView_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsOpposedView class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsOpposedView<T>::value;
+   constexpr bool value2 = IsOpposedView_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsOpposedView_v = IsOpposedView<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

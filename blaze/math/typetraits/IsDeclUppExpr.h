@@ -97,6 +97,24 @@ struct IsDeclUppExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsDeclUppExpr type trait.
+// \ingroup type_traits
+//
+// The IsDeclUppExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsDeclUppExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDeclUppExpr<T>::value;
+   constexpr bool value2 = IsDeclUppExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDeclUppExpr_v = IsDeclUppExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

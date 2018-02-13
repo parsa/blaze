@@ -100,6 +100,24 @@ struct IsMatScalarMultExpr
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsMatScalarMultExpr type trait.
+// \ingroup type_traits
+//
+// The IsMatScalarMultExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsMatScalarMultExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMatScalarMultExpr<T>::value;
+   constexpr bool value2 = IsMatScalarMultExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatScalarMultExpr_v = IsMatScalarMultExpr<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

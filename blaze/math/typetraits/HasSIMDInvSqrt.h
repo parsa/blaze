@@ -112,6 +112,24 @@ struct HasSIMDInvSqrt
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDInvSqrt type trait.
+// \ingroup type_traits
+//
+// The HasSIMDInvSqrt_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDInvSqrt class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDInvSqrt<T>::value;
+   constexpr bool value2 = HasSIMDInvSqrt_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDInvSqrt_v = HasSIMDInvSqrt<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

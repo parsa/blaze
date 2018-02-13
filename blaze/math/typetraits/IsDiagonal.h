@@ -130,6 +130,24 @@ struct IsDiagonal< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsDiagonal type trait.
+// \ingroup type_traits
+//
+// The IsDiagonal_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsDiagonal class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDiagonal<T>::value;
+   constexpr bool value2 = IsDiagonal_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDiagonal_v = IsDiagonal<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

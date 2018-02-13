@@ -112,6 +112,24 @@ struct HasSIMDLog10
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSIMDLog10 type trait.
+// \ingroup type_traits
+//
+// The HasSIMDLog10_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSIMDLog10 class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSIMDLog10<T>::value;
+   constexpr bool value2 = HasSIMDLog10_v<T>;
+   \endcode
+*/
+template< typename T >  // Type of the operand
+constexpr bool HasSIMDLog10_v = HasSIMDLog10<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

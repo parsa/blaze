@@ -117,6 +117,24 @@ struct IsView
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsView type trait.
+// \ingroup type_traits
+//
+// The IsView_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsView class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsView<T>::value;
+   constexpr bool value2 = IsView_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsView_v = IsView<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
