@@ -149,6 +149,24 @@ class HaveSameSize<void,void>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HaveSameSize type trait.
+// \ingroup type_traits
+//
+// The HaveSameSize_v variable template provides a convenient shortcut to access the nested
+// \a value of the HaveSameSize class template. For instance, given the typew \a T1 and \a T2
+// the following two statements are identical:
+
+   \code
+   constexpr bool value1 = HaveSameSize<T1,T2>::value;
+   constexpr bool value2 = HaveSameSize_v<T1,T2>;
+   \endcode
+*/
+template< typename T1, typename T2 >
+constexpr bool HaveSameSize_v = HaveSameSize<T1,T2>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

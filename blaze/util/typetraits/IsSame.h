@@ -142,6 +142,24 @@ struct IsSame
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSame type trait.
+// \ingroup type_traits
+//
+// The IsSame_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsSame class template. For instance, given the types \a T1 and \a T2 the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsSame<T1,T2>::value;
+   constexpr bool value2 = IsSame_v<T1,T2>;
+   \endcode
+*/
+template< typename A, typename B >
+constexpr bool IsSame_v = IsSame<A,B>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

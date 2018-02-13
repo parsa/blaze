@@ -77,6 +77,24 @@ struct IsConst
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsConst type trait.
+// \ingroup type_traits
+//
+// The IsConst_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsConst class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsConst<T>::value;
+   constexpr bool value2 = IsConst_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsConst_v = IsConst<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

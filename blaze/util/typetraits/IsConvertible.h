@@ -89,6 +89,24 @@ struct IsConvertible
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsConvertible type trait.
+// \ingroup type_traits
+//
+// The IsConvertible_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsConvertible class template. For instance, given the types \a T1 and \a T2
+// the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsConvertible<T1,T2>::value;
+   constexpr bool value2 = IsConvertible_v<T1,T2>;
+   \endcode
+*/
+template< typename From, typename To >
+constexpr bool IsConvertible_v = IsConvertible<From,To>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

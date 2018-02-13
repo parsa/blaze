@@ -166,6 +166,24 @@ struct IsShort<const volatile unsigned short>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsShort type trait.
+// \ingroup type_traits
+//
+// The IsShort_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsShort class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsShort<T>::value;
+   constexpr bool value2 = IsShort_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsShort_v = IsShort<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

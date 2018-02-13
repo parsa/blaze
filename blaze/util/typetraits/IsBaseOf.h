@@ -82,6 +82,24 @@ class IsBaseOf
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsBaseOf type trait.
+// \ingroup type_traits
+//
+// The IsBaseOf_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsBaseOf class template. For instance, given the types \a T1 and \a T2 the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsBaseOf<T1,T2>::value;
+   constexpr bool value2 = IsBaseOf_v<T1,T2>;
+   \endcode
+*/
+template< typename Base, typename Derived >
+constexpr bool IsBaseOf_v = IsBaseOf<Base,Derived>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

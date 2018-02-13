@@ -125,6 +125,24 @@ struct IsNumeric< const volatile complex<T> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsNumeric type trait.
+// \ingroup type_traits
+//
+// The IsNumeric_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsNumeric class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsNumeric<T>::value;
+   constexpr bool value2 = IsNumeric_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsNumeric_v = IsNumeric<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

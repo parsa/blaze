@@ -79,6 +79,24 @@ struct IsSigned
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsSigned type trait.
+// \ingroup type_traits
+//
+// The IsSigned_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsSigned class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsSigned<T>::value;
+   constexpr bool value2 = IsSigned_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsSigned_v = IsSigned<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

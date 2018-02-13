@@ -77,6 +77,24 @@ struct IsFloatingPoint
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsFloatingPoint type trait.
+// \ingroup type_traits
+//
+// The IsFloatingPoint_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsFloatingPoint class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsFloatingPoint<T>::value;
+   constexpr bool value2 = IsFloatingPoint_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsFloatingPoint_v = IsFloatingPoint<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -80,6 +80,24 @@ struct IsEmpty
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsEmpty type trait.
+// \ingroup type_traits
+//
+// The IsEmpty_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsEmpty class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsEmpty<T>::value;
+   constexpr bool value2 = IsEmpty_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsEmpty_v = IsEmpty<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

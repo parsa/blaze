@@ -154,6 +154,24 @@ struct HasSize<const volatile void,Size>
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the HasSize type trait.
+// \ingroup type_traits
+//
+// The HasSize_v variable template provides a convenient shortcut to access the nested
+// \a value of the HasSize class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = HasSize<T,8UL>::value;
+   constexpr bool value2 = HasSize_v<T,8UL>;
+   \endcode
+*/
+template< typename T, size_t Size >
+constexpr bool HasSize_v = HasSize<T,Size>::value;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -185,6 +203,24 @@ template< typename T >
 struct Has1Byte
    : public HasSize<T,1UL>
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Has1Byte type trait.
+// \ingroup type_traits
+//
+// The Has1Byte_v variable template provides a convenient shortcut to access the nested
+// \a value of the Has1Byte class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = Has1Byte<T>::value;
+   constexpr bool value2 = Has1Byte_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool Has1Byte_v = Has1Byte<T>::value;
 //*************************************************************************************************
 
 
@@ -222,6 +258,24 @@ struct Has2Bytes
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Has2Bytes type trait.
+// \ingroup type_traits
+//
+// The Has2Bytes_v variable template provides a convenient shortcut to access the nested
+// \a value of the Has2Bytes class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = Has2Bytes<T>::value;
+   constexpr bool value2 = Has2Bytes_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool Has2Bytes_v = Has2Bytes<T>::value;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -256,6 +310,24 @@ struct Has4Bytes
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Has4Bytes type trait.
+// \ingroup type_traits
+//
+// The Has4Bytes_v variable template provides a convenient shortcut to access the nested
+// \a value of the Has4Bytes class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = Has4Bytes<T>::value;
+   constexpr bool value2 = Has4Bytes_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool Has4Bytes_v = Has4Bytes<T>::value;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -287,6 +359,24 @@ template< typename T >
 struct Has8Bytes
    : public HasSize<T,8UL>
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Has8Bytes type trait.
+// \ingroup type_traits
+//
+// The Has8Bytes_v variable template provides a convenient shortcut to access the nested
+// \a value of the Has8Bytes class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = Has8Bytes<T>::value;
+   constexpr bool value2 = Has8Bytes_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool Has8Bytes_v = Has8Bytes<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -85,6 +85,27 @@ struct Any
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Any type trait.
+// \ingroup type_traits
+//
+// The Any_v variable template provides a convenient shortcut to access the nested \a value
+// of the Any class template. For instance, given the type trait \a TypeTrait and the two
+// types \a T1 and \a T2 the following two statements are identical:
+
+   \code
+   constexpr bool value1 = Any<TypeTrait,T1,T2>::value;
+   constexpr bool value2 = Any_v<TypeTrait,T1,T2>;
+   \endcode
+*/
+template< template< typename > class TypeTrait  // Type trait to be evaluated on all operands
+        , typename T1                           // Type of the first mandatory operand
+        , typename T2                           // Type of the second mandatory operand
+        , typename... Ts >                      // Types of the optional operands
+constexpr bool Any_v = Any<TypeTrait,T1,T2,Ts...>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

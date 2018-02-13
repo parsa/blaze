@@ -123,6 +123,24 @@ struct Extent<T[E],0UL>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Extent type trait.
+// \ingroup type_traits
+//
+// The Extent_v variable template provides a convenient shortcut to access the nested \a value
+// of the Extent class template. For instance, given the type \a T and the compile time constant
+// \a N the following two statements are identical:
+
+   \code
+   constexpr size_t value1 = Extent<T,N>::value;
+   constexpr size_t value2 = Extent_v<T,N>;
+   \endcode
+*/
+template< typename T, size_t N >
+constexpr size_t Extent_v = Extent<T,N>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

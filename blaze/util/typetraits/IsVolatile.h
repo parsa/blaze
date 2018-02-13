@@ -77,6 +77,24 @@ struct IsVolatile
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsVolatile type trait.
+// \ingroup type_traits
+//
+// The IsVolatile_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsVolatile class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsVolatile<T>::value;
+   constexpr bool value2 = IsVolatile_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsVolatile_v = IsVolatile<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

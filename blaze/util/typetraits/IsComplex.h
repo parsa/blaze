@@ -122,6 +122,24 @@ struct IsComplex< const volatile complex<T> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsComplex type trait.
+// \ingroup type_traits
+//
+// The IsComplex_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsComplex class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsComplex<T>::value;
+   constexpr bool value2 = IsComplex_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsComplex_v = IsComplex<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

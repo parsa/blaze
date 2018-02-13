@@ -121,6 +121,24 @@ struct IsLongDouble<const volatile long double>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsLongDouble type trait.
+// \ingroup type_traits
+//
+// The IsLongDouble_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsLongDouble class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsLongDouble<T>::value;
+   constexpr bool value2 = IsLongDouble_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsLongDouble_v = IsLongDouble<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

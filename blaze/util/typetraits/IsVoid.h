@@ -77,6 +77,24 @@ struct IsVoid
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsVoid type trait.
+// \ingroup type_traits
+//
+// The IsVoid_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsVoid class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsVoid<T>::value;
+   constexpr bool value2 = IsVoid_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsVoid_v = IsVoid<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

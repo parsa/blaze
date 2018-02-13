@@ -122,6 +122,24 @@ struct IsValid<const volatile INVALID_TYPE>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsValid type trait.
+// \ingroup type_traits
+//
+// The IsValid_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsValid class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsValid<T>::value;
+   constexpr bool value2 = IsValid_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsValid_v = IsValid<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

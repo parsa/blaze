@@ -77,6 +77,24 @@ struct IsArray
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsArray type trait.
+// \ingroup type_traits
+//
+// The IsArray_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsArray class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsArray<T>::value;
+   constexpr bool value2 = IsArray_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsArray_v = IsArray<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

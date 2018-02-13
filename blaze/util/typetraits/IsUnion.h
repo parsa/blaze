@@ -80,6 +80,24 @@ struct IsUnion
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsUnion type trait.
+// \ingroup type_traits
+//
+// The IsUnion_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsUnion class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsUnion<T>::value;
+   constexpr bool value2 = IsUnion_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsUnion_v = IsUnion<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

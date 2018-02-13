@@ -166,6 +166,24 @@ struct IsLong<const volatile unsigned long>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsLong type trait.
+// \ingroup type_traits
+//
+// The IsLong_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsLong class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsLong<T>::value;
+   constexpr bool value2 = IsLong_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsLong_v = IsLong<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

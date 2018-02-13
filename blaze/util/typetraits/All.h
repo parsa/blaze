@@ -85,6 +85,27 @@ struct All
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the All type trait.
+// \ingroup type_traits
+//
+// The All_v variable template provides a convenient shortcut to access the nested \a value
+// of the All class template. For instance, given the type trait \a TypeTrait and the two
+// types \a T1 and \a T2 the following two statements are identical:
+
+   \code
+   constexpr bool value1 = All<TypeTrait,T1,T2>::value;
+   constexpr bool value2 = All_v<TypeTrait,T1,T2>;
+   \endcode
+*/
+template< template< typename > class TypeTrait  // Type trait to be evaluated on all operands
+        , typename T1                           // Type of the first mandatory operand
+        , typename T2                           // Type of the second mandatory operand
+        , typename... Ts >                      // Types of the optional operands
+constexpr bool All_v = All<TypeTrait,T1,T2,Ts...>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

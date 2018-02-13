@@ -260,6 +260,24 @@ struct AlignmentOf< const volatile T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the AlignmentOf type trait.
+// \ingroup type_traits
+//
+// The AlignmentOf_v variable template provides a convenient shortcut to access the nested
+// \a value of the AlignmentOf class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr size_t value1 = AlignmentOf<T>::value;
+   constexpr size_t value2 = AlignmentOf_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr size_t AlignmentOf_v = AlignmentOf<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

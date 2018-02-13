@@ -77,6 +77,24 @@ struct IsPointer
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsPointer type trait.
+// \ingroup type_traits
+//
+// The IsPointer_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsPointer class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsPointer<T>::value;
+   constexpr bool value2 = IsPointer_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsPointer_v = IsPointer<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

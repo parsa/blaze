@@ -121,6 +121,24 @@ struct IsBoolean<const volatile bool>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsBoolean type trait.
+// \ingroup type_traits
+//
+// The IsBoolean_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsBoolean class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsBoolean<T>::value;
+   constexpr bool value2 = IsBoolean_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsBoolean_v = IsBoolean<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

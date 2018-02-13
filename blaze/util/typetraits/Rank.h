@@ -96,6 +96,24 @@ struct Rank<T[N]>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Rank type trait.
+// \ingroup type_traits
+//
+// The Rank_v variable template provides a convenient shortcut to access the nested \a value of
+// the Rank class template. For instance, given the type \a T the following two statements are
+// identical:
+
+   \code
+   constexpr size_t value1 = Rank<T>::value;
+   constexpr size_t value2 = Rank_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr size_t Rank_v = Rank<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

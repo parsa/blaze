@@ -80,6 +80,24 @@ struct IsArithmetic
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsArithmetic type trait.
+// \ingroup type_traits
+//
+// The IsArithmetic_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsArithmetic class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsArithmetic<T>::value;
+   constexpr bool value2 = IsArithmetic_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsArithmetic_v = IsArithmetic<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -77,6 +77,24 @@ struct IsBuiltin
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsBuiltin type trait.
+// \ingroup type_traits
+//
+// The IsBuiltin_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsBuiltin class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsBuiltin<T>::value;
+   constexpr bool value2 = IsBuiltin_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsBuiltin_v = IsBuiltin<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

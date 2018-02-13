@@ -137,6 +137,24 @@ struct IsVectorizable
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsVectorizable type trait.
+// \ingroup type_traits
+//
+// The IsVectorizable_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsVectorizable class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsVectorizable<T>::value;
+   constexpr bool value2 = IsVectorizable_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsVectorizable_v = IsVectorizable<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -79,6 +79,24 @@ struct IsUnsigned
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsUnsigned type trait.
+// \ingroup type_traits
+//
+// The IsUnsigned_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsUnsigned class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsUnsigned<T>::value;
+   constexpr bool value2 = IsUnsigned_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsUnsigned_v = IsUnsigned<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

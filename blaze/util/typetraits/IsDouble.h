@@ -121,6 +121,24 @@ struct IsDouble<const volatile double>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsDouble type trait.
+// \ingroup type_traits
+//
+// The IsDouble_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsDouble class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsDouble<T>::value;
+   constexpr bool value2 = IsDouble_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDouble_v = IsDouble<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

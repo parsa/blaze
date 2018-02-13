@@ -75,6 +75,24 @@ struct IsDestructible
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsDestructible type trait.
+// \ingroup type_traits
+//
+// The IsDestructible_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsDestructible class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsDestructible<T>::value;
+   constexpr bool value2 = IsDestructible_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsDestructible_v = IsDestructible<T>::value;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -103,6 +121,24 @@ template< typename T >
 struct IsNothrowDestructible
    : public BoolConstant< std::is_nothrow_destructible<T>::value >
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsNothrowDestructible type trait.
+// \ingroup type_traits
+//
+// The IsNothrowDestructible_v variable template provides a convenient shortcut to access the
+// nested \a value of the IsNothrowDestructible class template. For instance, given the type
+// \a T the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsNothrowDestructible<T>::value;
+   constexpr bool value2 = IsNothrowDestructible_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsNothrowDestructible_v = IsNothrowDestructible<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

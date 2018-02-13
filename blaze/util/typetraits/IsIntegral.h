@@ -77,6 +77,24 @@ struct IsIntegral
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsIntegral type trait.
+// \ingroup type_traits
+//
+// The IsIntegral_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsIntegral class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsIntegral<T>::value;
+   constexpr bool value2 = IsIntegral_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsIntegral_v = IsIntegral<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

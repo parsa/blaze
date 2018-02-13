@@ -78,6 +78,24 @@ struct IsLValueReference
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsLValueReference type trait.
+// \ingroup type_traits
+//
+// The IsLValueReference_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsLValueReference class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsLValueReference<T>::value;
+   constexpr bool value2 = IsLValueReference_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsLValueReference_v = IsLValueReference<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

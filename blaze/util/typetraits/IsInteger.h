@@ -170,6 +170,24 @@ struct IsInteger<const volatile unsigned int>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsInteger type trait.
+// \ingroup type_traits
+//
+// The IsInteger_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsInteger class template. For instance, given the type \a T the following
+// two statements are identical:
+
+   \code
+   constexpr bool value1 = IsInteger<T>::value;
+   constexpr bool value2 = IsInteger_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsInteger_v = IsInteger<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

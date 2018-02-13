@@ -122,6 +122,24 @@ struct IsComplexFloat< const volatile complex<float> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsComplexFloat type trait.
+// \ingroup type_traits
+//
+// The IsComplexFloat_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsComplexFloat class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsComplexFloat<T>::value;
+   constexpr bool value2 = IsComplexFloat_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsComplexFloat_v = IsComplexFloat<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

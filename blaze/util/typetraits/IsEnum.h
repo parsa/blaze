@@ -82,6 +82,24 @@ struct IsEnum
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsEnum type trait.
+// \ingroup type_traits
+//
+// The IsEnum_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsEnum class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = IsEnum<T>::value;
+   constexpr bool value2 = IsEnum_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsEnum_v = IsEnum<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

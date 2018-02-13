@@ -89,6 +89,24 @@ struct IsPod
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsPod type trait.
+// \ingroup type_traits
+//
+// The IsPod_v variable template provides a convenient shortcut to access the nested \a value of
+// the IsPod class template. For instance, given the type \a T the following two statements are
+// identical:
+
+   \code
+   constexpr bool value1 = IsPod<T>::value;
+   constexpr bool value2 = IsPod_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsPod_v = IsPod<T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
