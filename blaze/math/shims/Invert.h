@@ -69,7 +69,7 @@ namespace blaze {
 // \note A division by zero is only checked by an user assert.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE EnableIf_< IsIntegral<T>, double > inv( T a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr EnableIf_< IsIntegral<T>, double > inv( T a ) noexcept
 {
    BLAZE_USER_ASSERT( a != T(0), "Division by zero detected" );
    return ( 1.0 / a );
@@ -89,7 +89,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< IsIntegral<T>, double > inv( T a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE float inv( float a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr float inv( float a ) noexcept
 {
    BLAZE_USER_ASSERT( a != 0.0F, "Division by zero detected" );
    return ( 1.0F / a );
@@ -109,7 +109,7 @@ BLAZE_ALWAYS_INLINE float inv( float a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE double inv( double a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr double inv( double a ) noexcept
 {
    BLAZE_USER_ASSERT( a != 0.0, "Division by zero detected" );
    return ( 1.0 / a );
@@ -129,7 +129,7 @@ BLAZE_ALWAYS_INLINE double inv( double a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE long double inv( long double a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr long double inv( long double a ) noexcept
 {
    BLAZE_USER_ASSERT( a != 0.0L, "Division by zero detected" );
    return ( 1.0L / a );
@@ -150,7 +150,7 @@ BLAZE_ALWAYS_INLINE long double inv( long double a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr complex<float> inv( const complex<float>& a ) noexcept
 {
    const float abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0F, "Division by zero detected" );
@@ -174,7 +174,7 @@ BLAZE_ALWAYS_INLINE complex<float> inv( const complex<float>& a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr complex<double> inv( const complex<double>& a ) noexcept
 {
    const double abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0, "Division by zero detected" );
@@ -198,7 +198,7 @@ BLAZE_ALWAYS_INLINE complex<double> inv( const complex<double>& a ) noexcept
 //
 // \note A division by zero is only checked by an user assert.
 */
-BLAZE_ALWAYS_INLINE complex<long double> inv( const complex<long double>& a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr complex<long double> inv( const complex<long double>& a ) noexcept
 {
    const long double abs( pow2( real(a) ) + pow2( imag(a) ) );
    BLAZE_USER_ASSERT( abs != 0.0L, "Division by zero detected" );
