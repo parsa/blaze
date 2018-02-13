@@ -225,6 +225,24 @@ struct IsPowerOf<0,0>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsPowerOf value trait.
+// \ingroup value_traits
+//
+// The IsPowerOf_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsPowerOf class template. For instance, given the compile time constant values \a B and
+// \a N the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsPowerOf<B,N>::value;
+   constexpr bool value2 = IsPowerOf_v<B,N>;
+   \endcode
+*/
+template< size_t B, size_t N >
+constexpr bool IsPowerOf_v = IsPowerOf<B,N>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

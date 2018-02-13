@@ -107,6 +107,24 @@ struct IsMultipleOf<0,0>
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsMultipleOf value trait.
+// \ingroup value_traits
+//
+// The IsMultipleOf_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsMultipleOf class template. For instance, given the compile time constant
+// values \a M and \a N the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsMultipleOf<M,N>::value;
+   constexpr bool value2 = IsMultipleOf_v<M,N>;
+   \endcode
+*/
+template< size_t M, size_t N >
+constexpr bool IsMultipleOf_v = IsMultipleOf<M,N>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

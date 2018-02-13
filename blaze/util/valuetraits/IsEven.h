@@ -75,6 +75,24 @@ struct IsEven
 {};
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsEven value trait.
+// \ingroup value_traits
+//
+// The IsEven_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsEven class template. For instance, given the compile time constant value \a N the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsEven<N>::value;
+   constexpr bool value2 = IsEven_v<N>;
+   \endcode
+*/
+template< size_t N >
+constexpr bool IsEven_v = IsEven<N>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
