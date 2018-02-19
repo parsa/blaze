@@ -73,10 +73,29 @@ namespace blaze {
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-struct Nor
-   : public Bool< IsSame< Bools< false, T1::value, T2::value, (Ts::value)... >
-                        , Bools< T1::value, T2::value, (Ts::value)..., false > >::value >
-{};
+using Nor =
+   Bool< IsSame< Bools< false, T1::value, T2::value, (Ts::value)... >
+               , Bools< T1::value, T2::value, (Ts::value)..., false > >::value >;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Nor alias.
+// \ingroup mpl
+//
+// The Nor_v variable template provides a convenient shortcut to access the nested \a value of
+// the Nor alias. For instance, given the types \a T1 and \a T2 the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = Nor<T1,T2>::value;
+   constexpr bool value2 = Nor_v<T1,T2>;
+   \endcode
+*/
+template< typename T1       // Type of the first mandatory operand
+        , typename T2       // Type of the second mandatory operand
+        , typename... Ts >  // Types of the optional operands
+constexpr bool Nor_v = Nor<T1,T2,Ts...>::value;
 //*************************************************************************************************
 
 } // namespace blaze

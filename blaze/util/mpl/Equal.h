@@ -70,9 +70,26 @@ namespace blaze {
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-struct Equal
-   : public Bool< ( T1::value == T2::value ) >
-{};
+using Equal = Bool< ( T1::value == T2::value ) >;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Equal alias.
+// \ingroup mpl
+//
+// The Equal_v variable template provides a convenient shortcut to access the nested \a value of
+// the Equal alias. For instance, given the types \a T1 and \a T2 the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = Equal<T1,T2>::value;
+   constexpr bool value2 = Equal_v<T1,T2>;
+   \endcode
+*/
+template< typename T1    // The type of the left-hand side operand
+        , typename T2 >  // The type of the right-hand side operand
+constexpr bool Equal_v = Equal<T1,T2>::value;
 //*************************************************************************************************
 
 } // namespace blaze

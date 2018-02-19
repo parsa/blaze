@@ -55,7 +55,7 @@ namespace blaze {
 /*!\brief Compile time logical 'not xor' evaluation.
 // \ingroup mpl
 //
-// The Xor alias declaration performs at compile time a logical 'not xor' evaluation of the two
+// The Xnor alias declaration performs at compile time a logical 'not xor' evaluation of the two
 // given compile time conditions:
 
    \code
@@ -71,9 +71,26 @@ namespace blaze {
 */
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
-struct Xnor
-   : public Bool< !( T1::value ^ T2::value ) >
-{};
+using Xnor = Bool< !( T1::value ^ T2::value ) >;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Xnor alias.
+// \ingroup mpl
+//
+// The Xnor_v variable template provides a convenient shortcut to access the nested \a value of
+// the Xnor alias. For instance, given the types \a T1 and \a T2 the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = Xnor<T1,T2>::value;
+   constexpr bool value2 = Xnor_v<T1,T2>;
+   \endcode
+*/
+template< typename T1    // Type of the first operand
+        , typename T2 >  // Type of the second operand
+constexpr bool Xnor_v = Xnor<T1,T2>::value;
 //*************************************************************************************************
 
 } // namespace blaze

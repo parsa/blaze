@@ -67,9 +67,24 @@ namespace blaze {
    \endcode
 */
 template< typename C >  // Condition to be negated
-struct Not
-   : public Bool< !C::value >
-{};
+using Not = Bool< !C::value >;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Not alias.
+// \ingroup mpl
+//
+// The Not_v variable template provides a convenient shortcut to access the nested \a value of
+// the Not alias. For instance, given the type \a C the following two statements are identical:
+
+   \code
+   constexpr bool value1 = Not<C>::value;
+   constexpr bool value2 = Not_v<C>;
+   \endcode
+*/
+template< typename C >  // Condition to be negated
+constexpr bool Not_v = Not<C>::value;
 //*************************************************************************************************
 
 } // namespace blaze

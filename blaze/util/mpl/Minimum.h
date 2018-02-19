@@ -70,9 +70,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-struct Minimum
-   : public If_< Less<T1,T2>, T1, T2 >
-{};
+using Minimum = If_< Less<T1,T2>, T1, T2 >;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -67,9 +67,7 @@ namespace blaze {
    \endcode
 */
 template< int N >
-struct Int
-   : public IntegralConstant<int,N>
-{};
+using Int = IntegralConstant<int,N>;
 //*************************************************************************************************
 
 } // namespace blaze
