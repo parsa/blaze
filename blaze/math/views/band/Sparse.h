@@ -2190,10 +2190,10 @@ class Band<MT,TF,false,true,CBAs...>
    using DataType = BandData<CBAs...>;
 
    //! The type of the left-hand side matrix operand.
-   using LeftOperand = RemoveReference_< LeftOperand_<MT> >;
+   using LeftOperand = RemoveReference_t< LeftOperand_<MT> >;
 
    //! The type of the right-hand side matrix operand.
-   using RightOperand = RemoveReference_< RightOperand_<MT> >;
+   using RightOperand = RemoveReference_t< RightOperand_<MT> >;
    //**********************************************************************************************
 
  public:

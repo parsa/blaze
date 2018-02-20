@@ -86,7 +86,7 @@ struct UnaryMapExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsVector< RemoveReference_<T> >, IsMatrix< RemoveReference_<T> > >
+   using Type = typename If_< Or< IsVector< RemoveReference_t<T> >, IsMatrix< RemoveReference_t<T> > >
                             , Result
                             , Failure
                             >::Type;

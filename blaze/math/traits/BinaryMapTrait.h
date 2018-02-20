@@ -101,7 +101,7 @@ struct BinaryMapTrait
    /*! \cond BLAZE_INTERNAL */
    struct MappedType
    {
-      using Type = Decay_< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
+      using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -111,8 +111,8 @@ struct BinaryMapTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>, IsAdaptor<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2>, IsAdaptor<T2> >
-                            , BinaryMapTrait< RemoveAdaptor_< Decay_<T1> >
-                                            , RemoveAdaptor_< Decay_<T2> >, OP >
+                            , BinaryMapTrait< RemoveAdaptor_< Decay_t<T1> >
+                                            , RemoveAdaptor_< Decay_t<T2> >, OP >
                             , MappedType >::Type;
    /*! \endcond */
    //**********************************************************************************************

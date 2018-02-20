@@ -77,10 +77,10 @@ struct DVecDVecInnerExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
-   using CT1 = RemoveReference_< CompositeType_<VT1> >;
+   using CT1 = RemoveReference_t< CompositeType_<VT1> >;
 
    //! Composite type of the right-hand side dense vector expression.
-   using CT2 = RemoveReference_< CompositeType_<VT2> >;
+   using CT2 = RemoveReference_t< CompositeType_<VT2> >;
    //**********************************************************************************************
 
    //**********************************************************************************************

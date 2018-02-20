@@ -127,7 +127,7 @@ struct ImagTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , ImagTrait< Decay_<T> >
+                            , ImagTrait< Decay_t<T> >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************

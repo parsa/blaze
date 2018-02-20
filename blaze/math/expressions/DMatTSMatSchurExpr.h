@@ -176,7 +176,7 @@ class DMatTSMatSchurExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse matrix expression.
-      using RightIterator = ConstIterator_< RemoveReference_<RightOperand> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RightOperand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = Element;                    //!< Type of the underlying pointers.
@@ -526,7 +526,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -568,7 +568,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -628,7 +628,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -676,7 +676,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -723,7 +723,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -769,7 +769,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand

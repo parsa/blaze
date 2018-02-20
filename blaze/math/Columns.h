@@ -106,7 +106,7 @@ inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns ) co
 {
    using blaze::randomize;
 
-   using ColumnsType = RemoveReference_<CT>;
+   using ColumnsType = RemoveReference_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnsType );
@@ -150,7 +150,7 @@ inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns,
 {
    using blaze::randomize;
 
-   using ColumnsType = RemoveReference_<CT>;
+   using ColumnsType = RemoveReference_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnsType );
@@ -231,7 +231,7 @@ template< typename MT       // Type of the matrix
 template< typename CT >     // Type of the column selection
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns ) const
 {
-   using ColumnsType = RemoveReference_<CT>;
+   using ColumnsType = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
@@ -271,7 +271,7 @@ template< typename MT       // Type of the matrix
 template< typename CT >     // Type of the column selection
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns, size_t nonzeros ) const
 {
-   using ColumnsType = RemoveReference_<CT>;
+   using ColumnsType = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
@@ -315,7 +315,7 @@ template< typename CT       // Type of the column selection
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns,
                                                                 const Arg& min, const Arg& max ) const
 {
-   using ColumnsType = RemoveReference_<CT>;
+   using ColumnsType = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );
@@ -359,7 +359,7 @@ template< typename CT       // Type of the column selection
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns, size_t nonzeros,
                                                                 const Arg& min, const Arg& max ) const
 {
-   using ColumnsType = RemoveReference_<CT>;
+   using ColumnsType = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMNS_TYPE( ColumnsType );

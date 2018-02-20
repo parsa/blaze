@@ -112,7 +112,7 @@ struct HasSIMDRoundHelper< T, EnableIf_< IsDouble<T> > >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDRound
-   : public BoolConstant< HasSIMDRoundHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDRoundHelper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

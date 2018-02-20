@@ -119,7 +119,7 @@ struct SubvectorTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , SubvectorTrait< Decay_<VT>, CSAs... >
+                            , SubvectorTrait< Decay_t<VT>, CSAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************

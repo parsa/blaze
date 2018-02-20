@@ -342,7 +342,7 @@ class SMatTSMatAddExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       assign( ~lhs, rhs.lhs_ );
 
@@ -394,7 +394,7 @@ class SMatTSMatAddExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
       using RightIterator = ConstIterator_< OppositeType_<RT2> >;
 
       // Evaluation of the left-hand side sparse matrix operand
@@ -507,7 +507,7 @@ class SMatTSMatAddExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       using LeftIterator  = ConstIterator_< OppositeType_<RT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       // Evaluation of the left-hand side sparse matrix operand
       const OppositeType_<RT1> A( serial( rhs.lhs_ ) );

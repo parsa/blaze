@@ -143,7 +143,7 @@ struct HighType
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Helper = HighType< Decay_<T1>, Decay_<T2> >;
+   using Helper = HighType< Decay_t<T1>, Decay_t<T2> >;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -741,7 +741,7 @@ BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( long double    );
 template< typename T >
 struct HighType< complex<T>, complex<T> >
 {
-   using Type = complex< Decay_<T> >;
+   using Type = complex< Decay_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -77,7 +77,7 @@ struct HasMinHelper
 // \ingroup math_type_traits
 */
 template< typename T1, typename T2 >
-struct HasMinHelper< T1, T2, Void_< decltype( min( std::declval<T1>(), std::declval<T2>() ) ) > >
+struct HasMinHelper< T1, T2, Void_t< decltype( min( std::declval<T1>(), std::declval<T2>() ) ) > >
    : public TrueType
 {};
 /*! \endcond */

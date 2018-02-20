@@ -110,7 +110,7 @@ struct HasSIMDFloorHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDFloor
-   : public BoolConstant< HasSIMDFloorHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDFloorHelper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

@@ -102,7 +102,7 @@ struct DVecNormHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the dense vector expression.
-   using CT = RemoveReference_< CompositeType_<VT> >;
+   using CT = RemoveReference_t< CompositeType_<VT> >;
    //**********************************************************************************************
 
    //**SIMD support detection**********************************************************************

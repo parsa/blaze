@@ -171,7 +171,7 @@ inline bool operator==( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF
 {
    using CT1 = CompositeType_<T1>;
    using CT2 = CompositeType_<T2>;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -624,7 +624,7 @@ template< typename VT  // Type of the dense vector
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
    using CT = CompositeType_<VT>;
-   using ConstReference = ConstReference_< RemoveReference_<CT> >;
+   using ConstReference = ConstReference_< RemoveReference_t<CT> >;
 
    if( IsUniform<VT>::value || (~dv).size() < 2UL )
       return true;

@@ -103,7 +103,7 @@ inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements ) con
 {
    using blaze::randomize;
 
-   using ElementsType = RemoveReference_<ET>;
+   using ElementsType = RemoveReference_t<ET>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ElementsType );
@@ -134,7 +134,7 @@ inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements, cons
 {
    using blaze::randomize;
 
-   using ElementsType = RemoveReference_<ET>;
+   using ElementsType = RemoveReference_t<ET>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ElementsType );
@@ -202,7 +202,7 @@ template< typename VT       // Type of the vector
 template< typename ET >     // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements ) const
 {
-   using ElementsType = RemoveReference_<ET>;
+   using ElementsType = RemoveReference_t<ET>;
    using ElementType  = ElementType_<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
@@ -240,7 +240,7 @@ template< typename VT       // Type of the vector
 template< typename ET >     // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, size_t nonzeros ) const
 {
-   using ElementsType = RemoveReference_<ET>;
+   using ElementsType = RemoveReference_t<ET>;
    using ElementType  = ElementType_<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
@@ -282,7 +282,7 @@ template< typename ET       // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements,
                                                               const Arg& min, const Arg& max ) const
 {
-   using ElementsType = RemoveReference_<ET>;
+   using ElementsType = RemoveReference_t<ET>;
    using ElementType  = ElementType_<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
@@ -324,7 +324,7 @@ template< typename ET       // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, size_t nonzeros,
                                                               const Arg& min, const Arg& max ) const
 {
-   using ElementsType = RemoveReference_<ET>;
+   using ElementsType = RemoveReference_t<ET>;
    using ElementType  = ElementType_<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );

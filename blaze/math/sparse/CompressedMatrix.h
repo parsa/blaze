@@ -265,7 +265,7 @@ class CompressedMatrix
       }
 
       template< typename Other >
-      inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+      inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
                            , IsRValueReference<Other&&> >, Element& >
          operator=( Other&& rhs )
       {
@@ -282,7 +282,7 @@ class CompressedMatrix
       }
 
       template< typename Other >
-      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
                            , IsRValueReference<Other&&> >, Element& >
          operator=( Other&& v )
       {
@@ -3028,7 +3028,7 @@ class CompressedMatrix<Type,true>
       }
 
       template< typename Other >
-      inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+      inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
                            , IsRValueReference<Other&&> >, Element& >
          operator=( Other&& rhs )
       {
@@ -3045,7 +3045,7 @@ class CompressedMatrix<Type,true>
       }
 
       template< typename Other >
-      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
                            , IsRValueReference<Other&&> >, Element& >
          operator=( Other&& v )
       {

@@ -170,7 +170,7 @@ class SVecDVecMultExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      using IteratorType = ConstIterator_< RemoveReference_<LeftOperand> >;
+      using IteratorType = ConstIterator_< RemoveReference_t<LeftOperand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = ElementType;                //!< Type of the underlying pointers.
@@ -476,7 +476,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -513,7 +513,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -554,7 +554,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -595,7 +595,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -636,7 +636,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_<CT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand

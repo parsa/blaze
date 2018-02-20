@@ -119,7 +119,7 @@ struct SubmatrixTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , SubmatrixTrait< Decay_<MT>, CSAs... >
+                            , SubmatrixTrait< Decay_t<MT>, CSAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************

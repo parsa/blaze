@@ -129,7 +129,7 @@ struct DeclSymTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , DeclSymTrait< Decay_<MT> >
+                            , DeclSymTrait< Decay_t<MT> >
                             , If_< IsMatrix<MT>
                                  , Result
                                  , Failure > >::Type;

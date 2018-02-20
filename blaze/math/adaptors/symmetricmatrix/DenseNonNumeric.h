@@ -165,7 +165,7 @@ class SymmetricMatrix<MT,SO,true,false>
                            , Reference_<MatrixType> >;
 
       using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
-      using ValueType        = RemoveReference_<Reference>;      //!< Type of the underlying elements.
+      using ValueType        = RemoveReference_t<Reference>;     //!< Type of the underlying elements.
       using PointerType      = ValueType*;                       //!< Pointer return type.
       using ReferenceType    = Reference;                        //!< Reference return type.
       using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.

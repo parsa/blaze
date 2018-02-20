@@ -148,7 +148,7 @@ template< typename T1        // Type of the left-hand side operand
         , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDDiv
-   : public BoolConstant< HasSIMDDivHelper< Decay_<T1>, Decay_<T2> >::value >
+   : public BoolConstant< HasSIMDDivHelper< Decay_t<T1>, Decay_t<T2> >::value >
 {};
 //*************************************************************************************************
 

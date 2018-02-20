@@ -968,8 +968,8 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT1 = RemoveReference_< LeftOperand_< MatrixType_<MT> > >;
-   using MT2 = RemoveReference_< RightOperand_< MatrixType_<MT> > >;
+   using MT1 = RemoveReference_t< LeftOperand_< MatrixType_<MT> > >;
+   using MT2 = RemoveReference_t< RightOperand_< MatrixType_<MT> > >;
 
    const SubmatrixData<CSAs...> sd( args... );
 
@@ -1729,7 +1729,7 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT = RemoveReference_< LeftOperand_< VectorType_<VT> > >;
+   using MT = RemoveReference_t< LeftOperand_< VectorType_<VT> > >;
 
    const SubvectorData<CSAs...> sd( args... );
 
@@ -1773,7 +1773,7 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT = RemoveReference_< RightOperand_< VectorType_<VT> > >;
+   using MT = RemoveReference_t< RightOperand_< VectorType_<VT> > >;
 
    const SubvectorData<CSAs...> sd( args... );
 

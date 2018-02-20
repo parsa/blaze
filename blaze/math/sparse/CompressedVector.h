@@ -243,7 +243,7 @@ class CompressedVector
       }
 
       template< typename Other >
-      inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+      inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
                            , IsRValueReference<Other&&> >, Element& >
          operator=( Other&& rhs )
       {
@@ -260,7 +260,7 @@ class CompressedVector
       }
 
       template< typename Other >
-      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
                            , IsRValueReference<Other&&> >, Element& >
          operator=( Other&& v )
       {

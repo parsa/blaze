@@ -106,7 +106,7 @@ inline void Rand< Rows<MT,SO,true,SF,CRAs...> >::randomize( RT&& rows ) const
 {
    using blaze::randomize;
 
-   using RowsType = RemoveReference_<RT>;
+   using RowsType = RemoveReference_t<RT>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROWS_TYPE( RowsType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RowsType );
@@ -150,7 +150,7 @@ inline void Rand< Rows<MT,SO,true,SF,CRAs...> >::randomize( RT&& rows,
 {
    using blaze::randomize;
 
-   using RowsType = RemoveReference_<RT>;
+   using RowsType = RemoveReference_t<RT>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROWS_TYPE( RowsType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RowsType );
@@ -231,7 +231,7 @@ template< typename MT       // Type of the matrix
 template< typename RT >     // Type of the row selection
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows ) const
 {
-   using RowsType    = RemoveReference_<RT>;
+   using RowsType    = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROWS_TYPE( RowsType );
@@ -271,7 +271,7 @@ template< typename MT       // Type of the matrix
 template< typename RT >     // Type of the row selection
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows, size_t nonzeros ) const
 {
-   using RowsType    = RemoveReference_<RT>;
+   using RowsType    = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROWS_TYPE( RowsType );
@@ -315,7 +315,7 @@ template< typename RT       // Type of the row selection
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows,
                                                              const Arg& min, const Arg& max ) const
 {
-   using RowsType    = RemoveReference_<RT>;
+   using RowsType    = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROWS_TYPE( RowsType );
@@ -359,7 +359,7 @@ template< typename RT       // Type of the row selection
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows, size_t nonzeros,
                                                              const Arg& min, const Arg& max ) const
 {
-   using RowsType    = RemoveReference_<RT>;
+   using RowsType    = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROWS_TYPE( RowsType );

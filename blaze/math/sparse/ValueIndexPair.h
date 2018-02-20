@@ -103,7 +103,7 @@ class ValueIndexPair
       operator=( const Other& rhs );
 
    template< typename Other >
-   inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+   inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
                         , IsRValueReference<Other&&> >, ValueIndexPair& >
       operator=( Other&& rhs );
 
@@ -112,7 +112,7 @@ class ValueIndexPair
       operator=( const Other& v );
 
    template< typename Other >
-   inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+   inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
                         , IsRValueReference<Other&&> >, ValueIndexPair& >
       operator=( Other&& v );
 
@@ -235,7 +235,7 @@ inline EnableIf_< IsSparseElement<Other>, ValueIndexPair<Type>& >
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value-index-pair
-inline EnableIf_< And< IsSparseElement< RemoveReference_<Other> >
+inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
                      , IsRValueReference<Other&&> >, ValueIndexPair<Type>& >
    ValueIndexPair<Type>::operator=( Other&& rhs )
 {
@@ -271,7 +271,7 @@ inline EnableIf_< Not< IsSparseElement<Other> >, ValueIndexPair<Type>& >
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline EnableIf_< And< Not< IsSparseElement< RemoveReference_<Other> > >
+inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
                      , IsRValueReference<Other&&> >, ValueIndexPair<Type>& >
    ValueIndexPair<Type>::operator=( Other&& v )
 {

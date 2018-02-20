@@ -121,8 +121,8 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
 {
    using CT1 = CompositeType_<T1>;
    using CT2 = CompositeType_<T2>;
-   using LhsConstIterator = ConstIterator_< RemoveReference_<CT1> >;
-   using RhsConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+   using LhsConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+   using RhsConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -396,7 +396,7 @@ template< typename VT  // Type of the sparse vector
 inline bool isnan( const SparseVector<VT,TF>& sv )
 {
    using CT = CompositeType_<VT>;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
@@ -440,8 +440,8 @@ template< typename VT  // Type of the sparse vector
 bool isUniform( const SparseVector<VT,TF>& sv )
 {
    using CT = CompositeType_<VT>;
-   using ConstReference = ConstReference_< RemoveReference_<CT> >;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstReference = ConstReference_< RemoveReference_t<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    if( IsUniform<VT>::value || (~sv).size() < 2UL )
       return true;
@@ -579,7 +579,7 @@ const ElementType_<VT> min( const SparseVector<VT,TF>& sv )
 
    using ET = ElementType_<VT>;
    using CT = CompositeType_<VT>;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
@@ -636,7 +636,7 @@ const ElementType_<VT> max( const SparseVector<VT,TF>& sv )
 
    using ET = ElementType_<VT>;
    using CT = CompositeType_<VT>;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 

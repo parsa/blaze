@@ -99,7 +99,7 @@ struct UnaryMapTrait
    /*! \cond BLAZE_INTERNAL */
    struct MappedType
    {
-      using Type = Decay_< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
+      using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -108,7 +108,7 @@ struct UnaryMapTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T>, IsAdaptor<T> >
-                            , UnaryMapTrait< RemoveAdaptor_< Decay_<T> >, OP >
+                            , UnaryMapTrait< RemoveAdaptor_< Decay_t<T> >, OP >
                             , MappedType >::Type;
    /*! \endcond */
    //**********************************************************************************************

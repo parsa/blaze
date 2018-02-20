@@ -84,7 +84,7 @@ struct DeclHermExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< IsMatrix< RemoveReference_<T> >
+   using Type = typename If_< IsMatrix< RemoveReference_t<T> >
                             , Result
                             , Failure >::Type;
    /*! \endcond */

@@ -106,7 +106,7 @@ inline void Rand< Row<MT,SO,true,SF,CRAs...> >::randomize( RT&& row ) const
 {
    using blaze::randomize;
 
-   using RowType = RemoveReference_<RT>;
+   using RowType = RemoveReference_t<RT>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RowType );
@@ -138,7 +138,7 @@ inline void Rand< Row<MT,SO,true,SF,CRAs...> >::randomize( RT&& row, const Arg& 
 {
    using blaze::randomize;
 
-   using RowType = RemoveReference_<RT>;
+   using RowType = RemoveReference_t<RT>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RowType );
@@ -208,7 +208,7 @@ template< typename MT       // Type of the matrix
 template< typename RT >     // Type of the row
 inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row ) const
 {
-   using RowType     = RemoveReference_<RT>;
+   using RowType     = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
@@ -247,7 +247,7 @@ template< typename MT       // Type of the matrix
 template< typename RT >     // Type of the row
 inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row, size_t nonzeros ) const
 {
-   using RowType     = RemoveReference_<RT>;
+   using RowType     = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
@@ -289,7 +289,7 @@ template< typename RT       // Type of the row
         , typename Arg >    // Min/max argument type
 inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row, const Arg& min, const Arg& max ) const
 {
-   using RowType     = RemoveReference_<RT>;
+   using RowType     = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
@@ -332,7 +332,7 @@ template< typename RT       // Type of the row
 inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row, size_t nonzeros,
                                                             const Arg& min, const Arg& max ) const
 {
-   using RowType     = RemoveReference_<RT>;
+   using RowType     = RemoveReference_t<RT>;
    using ElementType = ElementType_<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );

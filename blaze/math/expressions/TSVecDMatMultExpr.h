@@ -435,7 +435,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -515,7 +515,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -629,7 +629,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseVectorizedKernel<VT1,VT2,MT1> >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -858,7 +858,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -914,7 +914,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -996,7 +996,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseVectorizedKernel<VT1,VT2,MT1> >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1144,7 +1144,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1200,7 +1200,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1282,7 +1282,7 @@ class TSVecDMatMultExpr
    static inline EnableIf_< UseVectorizedKernel<VT1,VT2,MT1> >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<LT> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 

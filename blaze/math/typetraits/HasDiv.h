@@ -77,7 +77,7 @@ struct HasDivHelper
 // \ingroup math_type_traits
 */
 template< typename T1, typename T2 >
-struct HasDivHelper< T1, T2, Void_< decltype( std::declval<T1>() / std::declval<T2>() ) > >
+struct HasDivHelper< T1, T2, Void_t< decltype( std::declval<T1>() / std::declval<T2>() ) > >
    : public TrueType
 {};
 /*! \endcond */

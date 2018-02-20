@@ -92,7 +92,7 @@ struct RowsExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< IsMatrix< RemoveReference_<MT> >
+   using Type = typename If_< IsMatrix< RemoveReference_t<MT> >
                             , IfTrue_< ( sizeof...( CRAs ) > 0UL )
                                      , CompileTime
                                      , Runtime >

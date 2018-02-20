@@ -105,7 +105,7 @@ inline void Rand< Band<MT,TF,true,MF,CBAs...> >::randomize( BT&& band ) const
 {
    using blaze::randomize;
 
-   using BandType = RemoveReference_<BT>;
+   using BandType = RemoveReference_t<BT>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( BandType );
@@ -137,7 +137,7 @@ inline void Rand< Band<MT,TF,true,MF,CBAs...> >::randomize( BT&& band, const Arg
 {
    using blaze::randomize;
 
-   using BandType = RemoveReference_<BT>;
+   using BandType = RemoveReference_t<BT>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( BandType );
@@ -207,7 +207,7 @@ template< typename MT          // Type of the matrix
 template< typename BT >        // Type of the band
 inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band ) const
 {
-   using BandType    = RemoveReference_<BT>;
+   using BandType    = RemoveReference_t<BT>;
    using ElementType = ElementType_<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
@@ -246,7 +246,7 @@ template< typename MT          // Type of the matrix
 template< typename BT >        // Type of the band
 inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, size_t nonzeros ) const
 {
-   using BandType    = RemoveReference_<BT>;
+   using BandType    = RemoveReference_t<BT>;
    using ElementType = ElementType_<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
@@ -288,7 +288,7 @@ template< typename BT          // Type of the band
         , typename Arg >       // Min/max argument type
 inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
-   using BandType    = RemoveReference_<BT>;
+   using BandType    = RemoveReference_t<BT>;
    using ElementType = ElementType_<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
@@ -331,7 +331,7 @@ template< typename BT          // Type of the band
 inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, size_t nonzeros,
                                                              const Arg& min, const Arg& max ) const
 {
-   using BandType    = RemoveReference_<BT>;
+   using BandType    = RemoveReference_t<BT>;
    using ElementType = ElementType_<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );

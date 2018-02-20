@@ -108,7 +108,7 @@ struct HasSIMDExp2Helper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDExp2
-   : public BoolConstant< HasSIMDExp2Helper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDExp2Helper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

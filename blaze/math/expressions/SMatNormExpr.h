@@ -107,7 +107,7 @@ inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Powe
    using ET = ElementType_<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ) return RT();
 

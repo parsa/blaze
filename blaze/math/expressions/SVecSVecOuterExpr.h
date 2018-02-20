@@ -300,8 +300,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -348,8 +348,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -394,8 +394,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -456,8 +456,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -511,8 +511,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -559,8 +559,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -609,8 +609,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -657,8 +657,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -707,8 +707,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -778,8 +778,8 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<LT> >;
-      using RightIterator = ConstIterator_< RemoveReference_<RT> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<LT> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand

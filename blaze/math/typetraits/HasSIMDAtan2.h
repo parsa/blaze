@@ -111,7 +111,7 @@ struct HasSIMDAtan2Helper< T, T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 struct HasSIMDAtan2
-   : public BoolConstant< HasSIMDAtan2Helper< Decay_<T1>, Decay_<T2> >::value >
+   : public BoolConstant< HasSIMDAtan2Helper< Decay_t<T1>, Decay_t<T2> >::value >
 {};
 //*************************************************************************************************
 

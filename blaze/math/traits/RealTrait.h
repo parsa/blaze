@@ -127,7 +127,7 @@ struct RealTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , RealTrait< Decay_<T> >
+                            , RealTrait< Decay_t<T> >
                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************

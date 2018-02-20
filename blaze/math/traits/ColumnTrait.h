@@ -118,7 +118,7 @@ struct ColumnTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , ColumnTrait< Decay_<MT>, CCAs... >
+                            , ColumnTrait< Decay_t<MT>, CCAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************

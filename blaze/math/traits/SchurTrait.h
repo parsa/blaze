@@ -123,7 +123,7 @@ struct SchurTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , SchurTrait< Decay_<T1>, Decay_<T2> >
+                            , SchurTrait< Decay_t<T1>, Decay_t<T2> >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************

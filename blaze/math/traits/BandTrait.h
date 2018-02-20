@@ -119,7 +119,7 @@ struct BandTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , BandTrait< Decay_<MT>, CBAs... >
+                            , BandTrait< Decay_t<MT>, CBAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************

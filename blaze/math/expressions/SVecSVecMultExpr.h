@@ -263,8 +263,8 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -310,8 +310,8 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -361,8 +361,8 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -412,8 +412,8 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -463,8 +463,8 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
@@ -519,8 +519,8 @@ class SVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       using Iterator1 = ConstIterator_<VT>;
-      using Iterator2 = ConstIterator_< RemoveReference_<CT1> >;
-      using Iterator3 = ConstIterator_< RemoveReference_<CT2> >;
+      using Iterator2 = ConstIterator_< RemoveReference_t<CT1> >;
+      using Iterator3 = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand

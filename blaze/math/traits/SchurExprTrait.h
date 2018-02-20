@@ -86,7 +86,7 @@ struct SchurExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< And< IsMatrix< RemoveReference_<T1> >, IsMatrix< RemoveReference_<T2> > >
+   using Type = typename If_< And< IsMatrix< RemoveReference_t<T1> >, IsMatrix< RemoveReference_t<T2> > >
                             , Result
                             , Failure >::Type;
    /*! \endcond */

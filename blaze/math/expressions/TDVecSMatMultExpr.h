@@ -357,7 +357,7 @@ class TDVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
 
       for( size_t i=0UL; i<x.size(); ++i )
       {
@@ -458,7 +458,7 @@ class TDVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
 
       for( size_t i=0UL; i<x.size(); ++i )
       {
@@ -531,7 +531,7 @@ class TDVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
 
       for( size_t i=0UL; i<x.size(); ++i )
       {

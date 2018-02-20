@@ -108,7 +108,7 @@ struct HasSIMDLogHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDLog
-   : public BoolConstant< HasSIMDLogHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDLogHelper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

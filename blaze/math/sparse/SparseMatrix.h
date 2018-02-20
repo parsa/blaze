@@ -144,8 +144,8 @@ inline bool operator==( const SparseMatrix<T1,false>& lhs, const SparseMatrix<T2
 {
    using CT1 = CompositeType_<T1>;
    using CT2 = CompositeType_<T2>;
-   using LhsConstIterator = ConstIterator_< RemoveReference_<CT1> >;
-   using RhsConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+   using LhsConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+   using RhsConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -218,8 +218,8 @@ inline bool operator==( const SparseMatrix<T1,true>& lhs, const SparseMatrix<T2,
 {
    using CT1 = CompositeType_<T1>;
    using CT2 = CompositeType_<T2>;
-   using LhsConstIterator = ConstIterator_< RemoveReference_<CT1> >;
-   using RhsConstIterator = ConstIterator_< RemoveReference_<CT2> >;
+   using LhsConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+   using RhsConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -562,7 +562,7 @@ template< typename MT  // Type of the sparse matrix
 bool isnan( const SparseMatrix<MT,SO>& sm )
 {
    using CT = CompositeType_<MT>;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 
@@ -626,7 +626,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsSymmetric<MT>::value )
       return true;
@@ -720,7 +720,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsHermitian<MT>::value )
       return true;
@@ -1056,7 +1056,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsLower<MT>::value )
       return true;
@@ -1147,7 +1147,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsUniLower<MT>::value )
       return true;
@@ -1254,7 +1254,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsStrictlyLower<MT>::value )
       return true;
@@ -1343,7 +1343,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsUpper<MT>::value )
       return true;
@@ -1434,7 +1434,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsUniUpper<MT>::value )
       return true;
@@ -1541,7 +1541,7 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsStrictlyUpper<MT>::value )
       return true;
@@ -1630,7 +1630,7 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsDiagonal<MT>::value )
       return true;
@@ -1715,7 +1715,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_<MT>;
    using CT  = CompositeType_<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_< RemoveReference_<Tmp> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<Tmp> >;
 
    if( IsIdentity<MT>::value )
       return true;
@@ -1795,7 +1795,7 @@ const ElementType_<MT> min( const SparseMatrix<MT,SO>& sm )
 
    using ET = ElementType_<MT>;
    using CT = CompositeType_<MT>;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 
@@ -1844,7 +1844,7 @@ const ElementType_<MT> max( const SparseMatrix<MT,SO>& sm )
 
    using ET = ElementType_<MT>;
    using CT = CompositeType_<MT>;
-   using ConstIterator = ConstIterator_< RemoveReference_<CT> >;
+   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
 
    CT A( ~sm );  // Evaluation of the sparse matrix operand
 

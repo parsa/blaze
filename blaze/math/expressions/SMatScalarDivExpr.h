@@ -196,7 +196,7 @@ class SMatScalarDivExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse matrix expression.
-      using IteratorType = ConstIterator_< RemoveReference_<LeftOperand> >;
+      using IteratorType = ConstIterator_< RemoveReference_t<LeftOperand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = Element;                    //!< Type of the underlying pointers.

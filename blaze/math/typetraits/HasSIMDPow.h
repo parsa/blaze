@@ -110,7 +110,7 @@ struct HasSIMDPowHelper< T, T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 struct HasSIMDPow
-   : public BoolConstant< HasSIMDPowHelper< Decay_<T1>, Decay_<T2> >::value >
+   : public BoolConstant< HasSIMDPowHelper< Decay_t<T1>, Decay_t<T2> >::value >
 {};
 //*************************************************************************************************
 

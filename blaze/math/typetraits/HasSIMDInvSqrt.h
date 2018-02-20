@@ -108,7 +108,7 @@ struct HasSIMDInvSqrtHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDInvSqrt
-   : public BoolConstant< HasSIMDInvSqrtHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDInvSqrtHelper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

@@ -137,7 +137,7 @@ struct DivTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , DivTrait< Decay_<T1>, Decay_<T2> >
+                            , DivTrait< Decay_t<T1>, Decay_t<T2> >
                             , If_< HasDiv<T1,T2>
                                  , DivType
                                  , Failure > >::Type;
@@ -157,7 +157,7 @@ struct DivTrait< T, T, EnableIf_< IsBuiltin<T> > >
 {
  public:
    //**********************************************************************************************
-   using Type = Decay_<T>;
+   using Type = Decay_t<T>;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -174,7 +174,7 @@ struct DivTrait< complex<T1>, T2, EnableIf_< IsBuiltin<T2> > >
 {
  public:
    //**********************************************************************************************
-   using Type = CommonType_< complex<T1> , T2 >;
+   using Type = CommonType_t< complex<T1> , T2 >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -191,7 +191,7 @@ struct DivTrait< T1, complex<T2>, EnableIf_< IsBuiltin<T1> > >
 {
  public:
    //**********************************************************************************************
-   using Type = CommonType_< T1, complex<T2> >;
+   using Type = CommonType_t< T1, complex<T2> >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -208,7 +208,7 @@ struct DivTrait< complex<T1>, complex<T2> >
 {
  public:
    //**********************************************************************************************
-   using Type = CommonType_< complex<T1>, complex<T2> >;
+   using Type = CommonType_t< complex<T1>, complex<T2> >;
    //**********************************************************************************************
 };
 /*! \endcond */

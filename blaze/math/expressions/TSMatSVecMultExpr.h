@@ -364,8 +364,8 @@ class TSMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_<MT1> >;
-      using VectorIterator = ConstIterator_< RemoveReference_<VT2> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_t<MT1> >;
+      using VectorIterator = ConstIterator_< RemoveReference_t<VT2> >;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );
@@ -470,8 +470,8 @@ class TSMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_<MT1> >;
-      using VectorIterator = ConstIterator_< RemoveReference_<VT2> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_t<MT1> >;
+      using VectorIterator = ConstIterator_< RemoveReference_t<VT2> >;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );
@@ -551,8 +551,8 @@ class TSMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_<MT1> >;
-      using VectorIterator = ConstIterator_< RemoveReference_<VT2> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_t<MT1> >;
+      using VectorIterator = ConstIterator_< RemoveReference_t<VT2> >;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );

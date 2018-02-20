@@ -131,7 +131,7 @@ struct DeclIdTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , DeclIdTrait< Decay_<MT> >
+                            , DeclIdTrait< Decay_t<MT> >
                             , If_< IsMatrix<MT>
                                  , Result
                                  , Failure > >::Type;

@@ -294,7 +294,7 @@ struct SIMDTraitBase< complex<double> >
 */
 template< typename T >
 class SIMDTrait
-   : public SIMDTraitBase< RemoveCV_<T> >
+   : public SIMDTraitBase< RemoveCV_t<T> >
 {};
 //*************************************************************************************************
 

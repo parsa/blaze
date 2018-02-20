@@ -88,7 +88,7 @@ struct InvExprTrait
 
    //**struct Result*******************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = RemoveReference_<T>;
+   using Tmp = RemoveReference_t<T>;
    /*! \endcond */
    //**********************************************************************************************
 

@@ -101,7 +101,7 @@ struct DMatNormHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the dense matrix expression.
-   using CT = RemoveReference_< CompositeType_<MT> >;
+   using CT = RemoveReference_t< CompositeType_<MT> >;
    //**********************************************************************************************
 
    //**SIMD support detection**********************************************************************

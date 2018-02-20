@@ -107,7 +107,7 @@ struct HasSIMDConjHelper< complex<T> >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDConj
-   : public BoolConstant< HasSIMDConjHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDConjHelper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

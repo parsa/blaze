@@ -109,7 +109,7 @@ struct HasSIMDErfcHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDErfc
-   : public BoolConstant< HasSIMDErfcHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDErfcHelper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

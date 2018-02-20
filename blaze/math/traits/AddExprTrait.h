@@ -85,7 +85,7 @@ struct AddExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< HasAdd< RemoveReference_<T1>, RemoveReference_<T2> >
+   using Type = typename If_< HasAdd< RemoveReference_t<T1>, RemoveReference_t<T2> >
                             , Result
                             , Failure >::Type;
    /*! \endcond */

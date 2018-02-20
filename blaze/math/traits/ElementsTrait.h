@@ -118,7 +118,7 @@ struct ElementsTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , ElementsTrait< Decay_<VT>, CEAs... >
+                            , ElementsTrait< Decay_t<VT>, CEAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************

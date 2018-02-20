@@ -337,8 +337,8 @@ class SMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_<LT> >;
-      using VectorIterator = ConstIterator_< RemoveReference_<RT> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using VectorIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       const VectorIterator vend( x.end() );
 
@@ -412,8 +412,8 @@ class SMatSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using MatrixIterator = ConstIterator_< RemoveReference_<LT> >;
-      using VectorIterator = ConstIterator_< RemoveReference_<RT> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using VectorIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       RT x( rhs.vec_ );  // Evaluation of the right-hand side sparse vector operand
       if( x.nonZeros() == 0UL ) return;
@@ -541,8 +541,8 @@ class SMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_<LT> >;
-      using VectorIterator = ConstIterator_< RemoveReference_<RT> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using VectorIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       const VectorIterator vend( x.end() );
 
@@ -638,8 +638,8 @@ class SMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_<LT> >;
-      using VectorIterator = ConstIterator_< RemoveReference_<RT> >;
+      using MatrixIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using VectorIterator = ConstIterator_< RemoveReference_t<RT> >;
 
       const VectorIterator vend( x.end() );
 

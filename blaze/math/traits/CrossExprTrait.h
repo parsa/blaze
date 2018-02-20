@@ -88,10 +88,10 @@ struct CrossExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< And< IsColumnVector< RemoveReference_<T1> >
-                                     , IsColumnVector< RemoveReference_<T2> > >
-                                , And< IsRowVector< RemoveReference_<T1> >
-                                     , IsRowVector< RemoveReference_<T2> > > >
+   using Type = typename If_< Or< And< IsColumnVector< RemoveReference_t<T1> >
+                                     , IsColumnVector< RemoveReference_t<T2> > >
+                                , And< IsRowVector< RemoveReference_t<T1> >
+                                     , IsRowVector< RemoveReference_t<T2> > > >
                             , Result
                             , Failure >::Type;
    /*! \endcond */

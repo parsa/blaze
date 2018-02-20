@@ -119,7 +119,7 @@ struct RowsTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , RowsTrait< Decay_<MT>, CRAs... >
+                            , RowsTrait< Decay_t<MT>, CRAs... >
                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************

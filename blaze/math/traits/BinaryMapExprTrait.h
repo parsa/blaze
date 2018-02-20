@@ -91,8 +91,8 @@ struct BinaryMapExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< And< IsVector< RemoveReference_<T1> >, IsVector< RemoveReference_<T2> > >
-                                , And< IsMatrix< RemoveReference_<T1> >, IsMatrix< RemoveReference_<T2> > > >
+   using Type = typename If_< Or< And< IsVector< RemoveReference_t<T1> >, IsVector< RemoveReference_t<T2> > >
+                                , And< IsMatrix< RemoveReference_t<T1> >, IsMatrix< RemoveReference_t<T2> > > >
                             , Result
                             , Failure >::Type;
    /*! \endcond */

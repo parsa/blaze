@@ -403,10 +403,10 @@ class CustomVector
    using BaseType = DenseVector<This,TF>;         //!< Base type of this CustomVector instance.
 
    //! Result type for expression template evaluations.
-   using ResultType = DynamicVector<RemoveConst_<Type>,TF>;
+   using ResultType = DynamicVector<RemoveConst_t<Type>,TF>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = DynamicVector<RemoveConst_<Type>,!TF>;
+   using TransposeType = DynamicVector<RemoveConst_t<Type>,!TF>;
 
    using ElementType   = Type;                     //!< Type of the vector elements.
    using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
@@ -2618,10 +2618,10 @@ class CustomVector<Type,AF,padded,TF>
    using BaseType = DenseVector<This,TF>;             //!< Base type of this CustomVector instance.
 
    //! Result type for expression template evaluations.
-   using ResultType = DynamicVector<RemoveConst_<Type>,TF>;
+   using ResultType = DynamicVector<RemoveConst_t<Type>,TF>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = DynamicVector<RemoveConst_<Type>,!TF>;
+   using TransposeType = DynamicVector<RemoveConst_t<Type>,!TF>;
 
    using ElementType   = Type;                     //!< Type of the vector elements.
    using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
@@ -5172,13 +5172,13 @@ struct BinaryMapTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF>,
 template< typename T, bool AF, bool PF, bool TF, size_t I, size_t N >
 struct SubvectorTrait< CustomVector<T,AF,PF,TF>, I, N >
 {
-   using Type = StaticVector<RemoveConst_<T>,N,TF>;
+   using Type = StaticVector<RemoveConst_t<T>,N,TF>;
 };
 
 template< typename T, bool AF, bool PF, bool TF >
 struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
 {
-   using Type = DynamicVector<RemoveConst_<T>,TF>;
+   using Type = DynamicVector<RemoveConst_t<T>,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5197,13 +5197,13 @@ struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
 template< typename T, bool AF, bool PF, bool TF, size_t... CEAs >
 struct ElementsTrait< CustomVector<T,AF,PF,TF>, CEAs... >
 {
-   using Type = StaticVector<RemoveConst_<T>,sizeof...(CEAs),TF>;
+   using Type = StaticVector<RemoveConst_t<T>,sizeof...(CEAs),TF>;
 };
 
 template< typename T, bool AF, bool PF, bool TF >
 struct ElementsTrait< CustomVector<T,AF,PF,TF> >
 {
-   using Type = DynamicVector<RemoveConst_<T>,TF>;
+   using Type = DynamicVector<RemoveConst_t<T>,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

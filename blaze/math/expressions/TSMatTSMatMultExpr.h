@@ -500,8 +500,8 @@ class TSMatTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_<CT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_<CT2> >;
+      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
+      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand

@@ -85,7 +85,7 @@ struct SubExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< HasSub< RemoveReference_<T1>, RemoveReference_<T2> >
+   using Type = typename If_< HasSub< RemoveReference_t<T1>, RemoveReference_t<T2> >
                             , Result
                             , Failure >::Type;
    /*! \endcond */

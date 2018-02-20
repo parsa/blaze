@@ -110,7 +110,7 @@ struct HasSIMDCeilHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDCeil
-   : public BoolConstant< HasSIMDCeilHelper< Decay_<T> >::value >
+   : public BoolConstant< HasSIMDCeilHelper< Decay_t<T> >::value >
 {};
 //*************************************************************************************************
 

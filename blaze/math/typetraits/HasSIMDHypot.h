@@ -110,7 +110,7 @@ struct HasSIMDHypotHelper< T, T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 struct HasSIMDHypot
-   : public BoolConstant< HasSIMDHypotHelper< Decay_<T1>, Decay_<T2> >::value >
+   : public BoolConstant< HasSIMDHypotHelper< Decay_t<T1>, Decay_t<T2> >::value >
 {};
 //*************************************************************************************************
 

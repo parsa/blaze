@@ -363,7 +363,7 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {
@@ -466,7 +466,7 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {
@@ -539,7 +539,7 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_<MT1> >;
+      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {

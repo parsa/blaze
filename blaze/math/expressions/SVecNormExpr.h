@@ -108,7 +108,7 @@ decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Abs abs, Power power
    using CT = CompositeType_<VT>;
    using ET = ElementType_<VT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
-   using Iterator = ConstIterator_< RemoveReference_<CT> >;
+   using Iterator = ConstIterator_< RemoveReference_t<CT> >;
 
    if( (~sv).size() == 0UL ) return RT();
 

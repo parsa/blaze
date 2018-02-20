@@ -106,7 +106,7 @@ inline void Rand< Column<MT,SO,true,SF,CCAs...> >::randomize( CT&& column ) cons
 {
    using blaze::randomize;
 
-   using ColumnType = RemoveReference_<CT>;
+   using ColumnType = RemoveReference_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ColumnType );
@@ -138,7 +138,7 @@ inline void Rand< Column<MT,SO,true,SF,CCAs...> >::randomize( CT&& column, const
 {
    using blaze::randomize;
 
-   using ColumnType = RemoveReference_<CT>;
+   using ColumnType = RemoveReference_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ColumnType );
@@ -208,7 +208,7 @@ template< typename MT       // Type of the matrix
 template< typename CT >     // Type of the column
 inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column ) const
 {
-   using ColumnType  = RemoveReference_<CT>;
+   using ColumnType  = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
@@ -247,7 +247,7 @@ template< typename MT       // Type of the matrix
 template< typename CT >     // Type of the column
 inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column, size_t nonzeros ) const
 {
-   using ColumnType  = RemoveReference_<CT>;
+   using ColumnType  = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
@@ -289,7 +289,7 @@ template< typename CT       // Type of the column
         , typename Arg >    // Min/max argument type
 inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column, const Arg& min, const Arg& max ) const
 {
-   using ColumnType  = RemoveReference_<CT>;
+   using ColumnType  = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
@@ -332,7 +332,7 @@ template< typename CT       // Type of the column
 inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column, size_t nonzeros,
                                                                const Arg& min, const Arg& max ) const
 {
-   using ColumnType  = RemoveReference_<CT>;
+   using ColumnType  = RemoveReference_t<CT>;
    using ElementType = ElementType_<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );

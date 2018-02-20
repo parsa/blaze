@@ -73,7 +73,7 @@ struct IsDeclHermExprHelper
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_<T> >() ) );
+   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
