@@ -885,7 +885,7 @@ inline void Rand< complex<T> >::randomize( complex<T>& value, const T& realmin, 
 template< typename T >  // Type of the random number
 inline T rand()
 {
-   Rand< RemoveCV_<T> > tmp;
+   Rand< RemoveCV_t<T> > tmp;
    return tmp.generate();
 }
 //*************************************************************************************************
@@ -904,7 +904,7 @@ template< typename T          // Type of the random number
         , typename... Args >  // Types of the optional arguments
 inline T rand( Args&&... args )
 {
-   Rand< RemoveCV_<T> > tmp;
+   Rand< RemoveCV_t<T> > tmp;
    return tmp.generate( std::forward<Args>( args )... );
 }
 //*************************************************************************************************
@@ -928,7 +928,7 @@ inline T rand( Args&&... args )
 template< typename T >  // Type of the random number
 inline void randomize( T&& value )
 {
-   Rand< Decay_<T> > tmp;
+   Rand< Decay_t<T> > tmp;
    tmp.randomize( std::forward<T>( value ) );
 }
 //*************************************************************************************************
@@ -948,7 +948,7 @@ template< typename T          // Type of the random number
         , typename... Args >  // Types of the optional arguments
 inline void randomize( T&& value, Args&&... args )
 {
-   Rand< Decay_<T> > tmp;
+   Rand< Decay_t<T> > tmp;
    tmp.randomize( std::forward<T>( value ), std::forward<Args>( args )... );
 }
 //*************************************************************************************************

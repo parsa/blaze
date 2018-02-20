@@ -61,7 +61,7 @@ namespace blaze {
 // This function adds the 'const' qualifier to the given lvalue.
 */
 template< typename T >
-inline constexpr AddConst_<T>& as_const( T& v ) noexcept
+inline constexpr AddConst_t<T>& as_const( T& v ) noexcept
 {
    return v;
 }

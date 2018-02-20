@@ -133,7 +133,7 @@ struct IsVectorizableHelper<void>
 */
 template< typename T >
 struct IsVectorizable
-   : public BoolConstant< IsVectorizableHelper< RemoveCV_<T> >::value >
+   : public BoolConstant< IsVectorizableHelper< RemoveCV_t<T> >::value >
 {};
 //*************************************************************************************************
 
