@@ -343,8 +343,8 @@ void EigenvalueTest::testSyev()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::syev( A, wA, 'N', 'L' );
       blaze::syev( B, wB, 'N', 'U' );
@@ -370,8 +370,8 @@ void EigenvalueTest::testSyev()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::syev( A, wA, 'V', 'L' );
       blaze::syev( B, wB, 'V', 'L' );
@@ -426,8 +426,8 @@ void EigenvalueTest::testSyevd()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::syevd( A, wA, 'N', 'L' );
       blaze::syevd( B, wB, 'N', 'U' );
@@ -453,8 +453,8 @@ void EigenvalueTest::testSyevd()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::syevd( A, wA, 'V', 'L' );
       blaze::syevd( B, wB, 'V', 'U' );
@@ -509,8 +509,8 @@ void EigenvalueTest::testSyevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       const size_t numA = blaze::syevx( A, wA, 'L' );
       const size_t numB = blaze::syevx( B, wB, 'U' );
@@ -538,8 +538,8 @@ void EigenvalueTest::testSyevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       const size_t numA = blaze::syevx( A, wA, 'L', 0.0, 5.0 );
       const size_t numB = blaze::syevx( B, wB, 'U', 0.0, 5.0 );
@@ -567,8 +567,8 @@ void EigenvalueTest::testSyevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wB;
 
       const size_t numA = blaze::syevx( A, wA, 'L', 0, 1 );
       const size_t numB = blaze::syevx( B, wB, 'U', 0, 1 );
@@ -596,8 +596,8 @@ void EigenvalueTest::testSyevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    ZA;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> ZB;
@@ -636,8 +636,8 @@ void EigenvalueTest::testSyevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    ZA;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> ZB;
@@ -676,8 +676,8 @@ void EigenvalueTest::testSyevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wB;
 
       blaze::StaticMatrix<Type,2UL,3UL,blaze::rowMajor>    ZA;
       blaze::StaticMatrix<Type,3UL,2UL,blaze::columnMajor> ZB;
@@ -735,8 +735,8 @@ void EigenvalueTest::testHeev()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::heev( A, wA, 'N', 'L' );
       blaze::heev( B, wB, 'N', 'U' );
@@ -762,8 +762,8 @@ void EigenvalueTest::testHeev()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::heev( A, wA, 'V', 'L' );
       blaze::heev( B, wB, 'V', 'U' );
@@ -818,8 +818,8 @@ void EigenvalueTest::testHeevd()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::heevd( A, wA, 'N', 'L' );
       blaze::heevd( B, wB, 'N', 'U' );
@@ -845,8 +845,8 @@ void EigenvalueTest::testHeevd()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::heevd( A, wA, 'V', 'L' );
       blaze::heevd( B, wB, 'V', 'U' );
@@ -901,8 +901,8 @@ void EigenvalueTest::testHeevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       const size_t numA = blaze::heevx( A, wA, 'L' );
       const size_t numB = blaze::heevx( B, wB, 'U' );
@@ -930,8 +930,8 @@ void EigenvalueTest::testHeevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       const size_t numA = blaze::heevx( A, wA, 'L', 0.0, 5.0 );
       const size_t numB = blaze::heevx( B, wB, 'U', 0.0, 5.0 );
@@ -959,8 +959,8 @@ void EigenvalueTest::testHeevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wB;
 
       const size_t numA = blaze::heevx( A, wA, 'L', 0, 1 );
       const size_t numB = blaze::heevx( B, wB, 'U', 0, 1 );
@@ -988,8 +988,8 @@ void EigenvalueTest::testHeevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    ZA;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> ZB;
@@ -1028,8 +1028,8 @@ void EigenvalueTest::testHeevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::rowVector> wB;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    ZA;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> ZB;
@@ -1068,8 +1068,8 @@ void EigenvalueTest::testHeevx()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wA;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::rowVector> wB;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wA;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::rowVector> wB;
 
       blaze::StaticMatrix<Type,2UL,3UL,blaze::rowMajor>    ZA;
       blaze::StaticMatrix<Type,3UL,2UL,blaze::columnMajor> ZB;

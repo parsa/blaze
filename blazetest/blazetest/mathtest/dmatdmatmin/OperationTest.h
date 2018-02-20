@@ -344,7 +344,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    using blaze::Or;
    using blaze::Nor;
 
-   using Scalar = blaze::UnderlyingNumeric_<DET>;
+   using Scalar = blaze::UnderlyingNumeric_t<DET>;
 
    if( lhs_.rows() != rhs_.rows() || lhs_.columns() != rhs_.columns() ) {
       throw std::runtime_error( "Non-matching operands detected" );
@@ -11834,8 +11834,8 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 void OperationTest<MT1,MT2>::initResults()
 {
-   const blaze::UnderlyingBuiltin_<DRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<DRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<DRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<DRE> max( randmax );
 
    resize( dres_, rows( lhs_ ), columns( lhs_ ) );
    randomize( dres_, min, max );
@@ -11860,8 +11860,8 @@ template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 void OperationTest<MT1,MT2>::initTransposeResults()
 {
-   const blaze::UnderlyingBuiltin_<TDRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<TDRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<TDRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<TDRE> max( randmax );
 
    resize( tdres_, columns( lhs_ ), rows( lhs_ ) );
    randomize( tdres_, min, max );

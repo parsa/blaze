@@ -143,7 +143,7 @@ void DenseTest::testRandom()
 
    test_ = "LU decomposition";
 
-   using MT = blaze::RemoveAdaptor_<Type>;
+   using MT = blaze::RemoveAdaptor_t<Type>;
 
    const size_t m( blaze::rand<size_t>( 3UL, 8UL ) );
    const size_t n( blaze::IsSquare<Type>::value ? m : blaze::rand<size_t>( 3UL, 8UL ) );

@@ -284,7 +284,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()               // Label of the currently performed test
    , error_()              // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_<DET>;
+   using Scalar = blaze::UnderlyingNumeric_t<DET>;
 
    if( lhs_.size() != 3UL ) {
       throw std::runtime_error( "Invalid size of left-hand side operand" );
@@ -4909,8 +4909,8 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void OperationTest<VT1,VT2>::initResults()
 {
-   const blaze::UnderlyingBuiltin_<DRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<DRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<DRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<DRE> max( randmax );
 
    resize( dres_, 3UL );
    randomize( dres_, min, max );
@@ -4933,8 +4933,8 @@ template< typename VT1    // Type of the left-hand side sparse vector
         , typename VT2 >  // Type of the right-hand side dense vector
 void OperationTest<VT1,VT2>::initTransposeResults()
 {
-   const blaze::UnderlyingBuiltin_<TDRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<TDRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<TDRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<TDRE> max( randmax );
 
    resize( tdres_, 3UL );
    randomize( tdres_, min, max );

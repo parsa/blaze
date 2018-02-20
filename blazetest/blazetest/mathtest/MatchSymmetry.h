@@ -76,7 +76,7 @@ struct MatchSymmetry
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = blaze::RemoveAdaptor_<T2>;
+   using Tmp = blaze::RemoveAdaptor_t<T2>;
    /*! \endcond */
    //**********************************************************************************************
 

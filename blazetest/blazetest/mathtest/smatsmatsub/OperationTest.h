@@ -348,7 +348,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    using blaze::Or;
    using blaze::Nor;
 
-   using Scalar = blaze::UnderlyingNumeric_<SET>;
+   using Scalar = blaze::UnderlyingNumeric_t<SET>;
 
    testInitialStatus();
    testAssignment();
@@ -12078,8 +12078,8 @@ template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 void OperationTest<MT1,MT2>::initResults()
 {
-   const blaze::UnderlyingBuiltin_<SRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<SRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<SRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<SRE> max( randmax );
 
    resize( sres_, rows( lhs_ ), columns( lhs_ ) );
    randomize( sres_, min, max );
@@ -12104,8 +12104,8 @@ template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 void OperationTest<MT1,MT2>::initTransposeResults()
 {
-   const blaze::UnderlyingBuiltin_<TSRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<TSRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<TSRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<TSRE> max( randmax );
 
    resize( tsres_, columns( lhs_ ), rows( lhs_ ) );
    randomize( tsres_, min, max );

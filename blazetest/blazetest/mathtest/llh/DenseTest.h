@@ -142,7 +142,7 @@ void DenseTest::testRandom()
 
    test_ = "LLH decomposition";
 
-   using MT = blaze::RemoveAdaptor_<Type>;
+   using MT = blaze::RemoveAdaptor_t<Type>;
 
    const size_t n( blaze::rand<size_t>( 3UL, 8UL ) );
 

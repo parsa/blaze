@@ -138,8 +138,8 @@ void SingularValueTest::testGesvd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvd( A1, s1, 'N', 'N' );
       blaze::gesvd( A2, s2, 'N', 'N' );
@@ -168,8 +168,8 @@ void SingularValueTest::testGesvd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvd( A1, s1, 'N', 'N' );
       blaze::gesvd( A2, s2, 'N', 'N' );
@@ -198,8 +198,8 @@ void SingularValueTest::testGesvd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvd( A1, s1, 'N', 'O' );
       blaze::gesvd( A2, s2, 'N', 'O' );
@@ -228,8 +228,8 @@ void SingularValueTest::testGesvd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvd( A1, s1, 'N', 'O' );
       blaze::gesvd( A2, s2, 'N', 'O' );
@@ -258,8 +258,8 @@ void SingularValueTest::testGesvd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvd( A1, s1, 'O', 'N' );
       blaze::gesvd( A2, s2, 'O', 'N' );
@@ -288,8 +288,8 @@ void SingularValueTest::testGesvd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvd( A1, s1, 'O', 'N' );
       blaze::gesvd( A2, s2, 'O', 'N' );
@@ -322,8 +322,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
 
@@ -358,8 +358,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
 
@@ -394,8 +394,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
 
@@ -430,8 +430,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
 
@@ -466,8 +466,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
 
@@ -502,8 +502,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,5UL,blaze::rowMajor> U1;
 
@@ -543,8 +543,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
 
@@ -579,8 +579,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
 
@@ -615,8 +615,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
 
@@ -651,8 +651,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
 
@@ -687,8 +687,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,5UL,blaze::rowMajor> V1;
 
@@ -723,8 +723,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
 
@@ -764,8 +764,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
@@ -804,8 +804,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -844,8 +844,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
@@ -894,8 +894,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -944,8 +944,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,5UL,5UL,blaze::rowMajor> V1;
@@ -994,8 +994,8 @@ void SingularValueTest::testGesvd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,5UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -1068,8 +1068,8 @@ void SingularValueTest::testGesdd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesdd( A1, s1 );
       blaze::gesdd( A2, s2 );
@@ -1098,8 +1098,8 @@ void SingularValueTest::testGesdd()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesdd( A1, s1 );
       blaze::gesdd( A2, s2 );
@@ -1132,8 +1132,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
 
@@ -1168,8 +1168,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
 
@@ -1204,8 +1204,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
 
@@ -1245,8 +1245,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
 
@@ -1281,8 +1281,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
 
@@ -1317,8 +1317,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
 
@@ -1358,8 +1358,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
@@ -1398,8 +1398,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -1438,8 +1438,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
@@ -1488,8 +1488,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -1538,8 +1538,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,5UL,5UL,blaze::rowMajor> V1;
@@ -1588,8 +1588,8 @@ void SingularValueTest::testGesdd()
       randomize( A1 );
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,5UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -1662,8 +1662,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvdx( A1, s1 );
       blaze::gesvdx( A2, s2 );
@@ -1692,8 +1692,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvdx( A1, s1 );
       blaze::gesvdx( A2, s2 );
@@ -1727,8 +1727,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvdx( A1, s1, 0.0, 5.0 );
       blaze::gesvdx( A2, s2, 0.0, 5.0 );
@@ -1757,8 +1757,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::gesvdx( A1, s1, 0.0, 5.0 );
       blaze::gesvdx( A2, s2, 0.0, 5.0 );
@@ -1792,8 +1792,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::gesvdx( A1, s1, 0, 1 );
       blaze::gesvdx( A2, s2, 0, 1 );
@@ -1822,8 +1822,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::gesvdx( A1, s1, 0, 1 );
       blaze::gesvdx( A2, s2, 0, 1 );
@@ -1857,8 +1857,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
 
@@ -1893,8 +1893,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
 
@@ -1934,8 +1934,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
 
@@ -1970,8 +1970,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
 
@@ -2011,8 +2011,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,2UL,blaze::rowMajor> U1;
 
@@ -2047,8 +2047,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> U1;
 
@@ -2088,8 +2088,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
 
@@ -2124,8 +2124,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
 
@@ -2165,8 +2165,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
 
@@ -2201,8 +2201,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
 
@@ -2242,8 +2242,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> V1;
 
@@ -2278,8 +2278,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,2UL,3UL,blaze::rowMajor> V1;
 
@@ -2319,8 +2319,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
@@ -2369,8 +2369,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -2424,8 +2424,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,5UL,blaze::rowMajor> V1;
@@ -2464,8 +2464,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,3UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,3UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> V1;
@@ -2509,8 +2509,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,3UL,5UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,3UL,2UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> V1;
@@ -2549,8 +2549,8 @@ void SingularValueTest::testGesvdx()
 
       blaze::StaticMatrix<Type,5UL,3UL,blaze::columnMajor> A2( A1 );
 
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s1;
-      blaze::StaticVector<blaze::UnderlyingElement_<Type>,2UL,blaze::columnVector> s2;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s1;
+      blaze::StaticVector<blaze::UnderlyingElement_t<Type>,2UL,blaze::columnVector> s2;
 
       blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> U1;
       blaze::StaticMatrix<Type,2UL,3UL,blaze::rowMajor> V1;

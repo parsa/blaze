@@ -283,7 +283,7 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
    , test_()              // Label of the currently performed test
    , error_()             // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_<DET>;
+   using Scalar = blaze::UnderlyingNumeric_t<DET>;
 
    testInitialStatus();
    testAssignment();
@@ -4980,8 +4980,8 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side dense vector
 void OperationTest<MT,VT>::initResults()
 {
-   const blaze::UnderlyingBuiltin_<DRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<DRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<DRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<DRE> max( randmax );
 
    resize( dres_, rows( lhs_ ) );
    randomize( dres_, min, max );
@@ -5004,8 +5004,8 @@ template< typename MT    // Type of the left-hand side sparse matrix
         , typename VT >  // Type of the right-hand side dense vector
 void OperationTest<MT,VT>::initTransposeResults()
 {
-   const blaze::UnderlyingBuiltin_<TDRE> min( randmin );
-   const blaze::UnderlyingBuiltin_<TDRE> max( randmax );
+   const blaze::UnderlyingBuiltin_t<TDRE> min( randmin );
+   const blaze::UnderlyingBuiltin_t<TDRE> max( randmax );
 
    resize( tdres_, rows( lhs_ ) );
    randomize( tdres_, min, max );
