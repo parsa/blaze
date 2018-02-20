@@ -242,11 +242,11 @@ class TDMatTSMatMultExpr
    //! Type of this TDMatTSMatMultExpr instance.
    using This = TDMatTSMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 

@@ -109,13 +109,13 @@ class Elements<VT,TF,true,CEAs...>
    //! Type of this Elements instance.
    using This = Elements<VT,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Elements instance.
-   using ViewedType    = VT;                          //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_<VT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;            //!< Type of the elements.
-   using ReturnType    = ReturnType_<VT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Elements&;             //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
+   using ResultType    = ElementsTrait_t<VT,CEAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;             //!< Type of the elements.
+   using ReturnType    = ReturnType_<VT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Elements&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant element value.
    using ConstReference = ConstReference_<VT>;
@@ -1325,7 +1325,7 @@ inline Elements<VT,TF,true,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -1937,13 +1937,13 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Elements instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;           //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;            //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
+   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
+   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2092,13 +2092,13 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Elements instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;           //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;            //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
+   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
+   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2247,13 +2247,13 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Elements instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;           //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;            //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
+   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
+   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2402,13 +2402,13 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    //! Type of this Elements instance.
    using This = Elements<CPE,TF,true,CEAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Elements instance.
-   using ViewedType    = CPE;                         //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;           //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;            //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
+   using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
+   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
+   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

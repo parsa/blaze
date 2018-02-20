@@ -1992,7 +1992,7 @@ struct IsOpposedView< Band<MT,TF,DF,MF,CBAs...> >
 template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs, size_t... CSAs >
 struct SubvectorTrait< Band<MT,TF,DF,MF,CBAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< Band<MT,TF,DF,MF,CBAs...> >, CSAs... >;
+   using Type = SubvectorTrait_t< ResultType_< Band<MT,TF,DF,MF,CBAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2011,7 +2011,7 @@ struct SubvectorTrait< Band<MT,TF,DF,MF,CBAs...>, CSAs... >
 template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs, size_t... CEAs >
 struct ElementsTrait< Band<MT,TF,DF,MF,CBAs...>, CEAs... >
 {
-   using Type = ElementsTrait_< ResultType_< Band<MT,TF,DF,MF,CBAs...> >, CEAs... >;
+   using Type = ElementsTrait_t< ResultType_< Band<MT,TF,DF,MF,CBAs...> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

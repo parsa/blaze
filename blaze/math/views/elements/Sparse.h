@@ -114,13 +114,13 @@ class Elements<VT,TF,false,CEAs...>
    //! Type of this Elements instance.
    using This = Elements<VT,TF,false,CEAs...>;
 
-   using BaseType      = SparseVector<This,TF>;       //!< Base type of this Elements instance.
-   using ViewedType    = VT;                          //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_<VT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;            //!< Type of the elements.
-   using ReturnType    = ReturnType_<VT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Elements&;             //!< Data type for composite expression templates.
+   using BaseType      = SparseVector<This,TF>;        //!< Base type of this Elements instance.
+   using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
+   using ResultType    = ElementsTrait_t<VT,CEAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;             //!< Type of the elements.
+   using ReturnType    = ReturnType_<VT>;              //!< Return type for expression template evaluations
+   using CompositeType = const Elements&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant element value.
    using ConstReference = ConstReference_<VT>;
@@ -1155,7 +1155,7 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   using MultType = MultTrait_< ResultType, ResultType_<VT2> >;
+   using MultType = MultTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1212,7 +1212,7 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   using DivType = DivTrait_< ResultType, ResultType_<VT2> >;
+   using DivType = DivTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1269,7 +1269,7 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2051,7 +2051,7 @@ template< typename VT       // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side vector
 inline void Elements<VT,TF,false,CEAs...>::addAssign( const Vector<VT2,TF>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<VT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2083,7 +2083,7 @@ template< typename VT       // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side vector
 inline void Elements<VT,TF,false,CEAs...>::subAssign( const Vector<VT2,TF>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<VT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );

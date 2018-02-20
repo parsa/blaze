@@ -126,7 +126,7 @@ class DMatDMatSubExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = SubExprTrait_<RN1,RN2>;
+   using ExprReturnType = SubExprTrait_t<RN1,RN2>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -166,7 +166,7 @@ class DMatDMatSubExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatDMatSubExpr<MT1,MT2,SO>;  //!< Type of this DMatDMatSubExpr instance.
-   using ResultType    = SubTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
+   using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.

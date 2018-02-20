@@ -108,13 +108,13 @@ class SVecSVecMultExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_<RN1,RN2>;
+   using ExprReturnType = MultExprTrait_t<RN1,RN2>;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    using This          = SVecSVecMultExpr<VT1,VT2,TF>;  //!< Type of this SVecSVecMultExpr instance.
-   using ResultType    = MultTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
 

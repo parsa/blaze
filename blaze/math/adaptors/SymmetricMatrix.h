@@ -730,79 +730,79 @@ struct RemoveAdaptor< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
 {
-   using Type = AddTrait_< MT, StaticMatrix<T,M,N,SO2> >;
+   using Type = AddTrait_t< MT, StaticMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = AddTrait_< StaticMatrix<T,M,N,SO1>, MT >;
+   using Type = AddTrait_t< StaticMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
 {
-   using Type = AddTrait_< MT, HybridMatrix<T,M,N,SO2> >;
+   using Type = AddTrait_t< MT, HybridMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = AddTrait_< HybridMatrix<T,M,N,SO1>, MT >;
+   using Type = AddTrait_t< HybridMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 {
-   using Type = AddTrait_< MT, DynamicMatrix<T,SO2> >;
+   using Type = AddTrait_t< MT, DynamicMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = AddTrait_< DynamicMatrix<T,SO1>, MT >;
+   using Type = AddTrait_t< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
 {
-   using Type = AddTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
+   using Type = AddTrait_t< MT, CustomMatrix<T,AF,PF,SO2> >;
 };
 
 template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = AddTrait_< CustomMatrix<T,AF,PF,SO1>, MT >;
+   using Type = AddTrait_t< CustomMatrix<T,AF,PF,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
-   using Type = AddTrait_< MT, CompressedMatrix<T,SO2> >;
+   using Type = AddTrait_t< MT, CompressedMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = AddTrait_< CompressedMatrix<T,SO1>, MT >;
+   using Type = AddTrait_t< CompressedMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct AddTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
 {
-   using Type = SymmetricMatrix< AddTrait_< MT, IdentityMatrix<T,SO2> > >;
+   using Type = SymmetricMatrix< AddTrait_t< MT, IdentityMatrix<T,SO2> > >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct AddTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SymmetricMatrix< AddTrait_< IdentityMatrix<T,SO1>, MT > >;
+   using Type = SymmetricMatrix< AddTrait_t< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
-   using Type = SymmetricMatrix< AddTrait_<MT1,MT2> >;
+   using Type = SymmetricMatrix< AddTrait_t<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -821,79 +821,79 @@ struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,N
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
 {
-   using Type = SubTrait_< MT, StaticMatrix<T,M,N,SO2> >;
+   using Type = SubTrait_t< MT, StaticMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SubTrait_< StaticMatrix<T,M,N,SO1>, MT >;
+   using Type = SubTrait_t< StaticMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
 {
-   using Type = SubTrait_< MT, HybridMatrix<T,M,N,SO2> >;
+   using Type = SubTrait_t< MT, HybridMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SubTrait_< HybridMatrix<T,M,N,SO1>, MT >;
+   using Type = SubTrait_t< HybridMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 {
-   using Type = SubTrait_< MT, DynamicMatrix<T,SO2> >;
+   using Type = SubTrait_t< MT, DynamicMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SubTrait_< DynamicMatrix<T,SO1>, MT >;
+   using Type = SubTrait_t< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
 {
-   using Type = SubTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
+   using Type = SubTrait_t< MT, CustomMatrix<T,AF,PF,SO2> >;
 };
 
 template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SubTrait_< CustomMatrix<T,AF,PF,SO1>, MT >;
+   using Type = SubTrait_t< CustomMatrix<T,AF,PF,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
-   using Type = SubTrait_< MT, CompressedMatrix<T,SO2> >;
+   using Type = SubTrait_t< MT, CompressedMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SubTrait_< CompressedMatrix<T,SO1>, MT >;
+   using Type = SubTrait_t< CompressedMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
 {
-   using Type = SymmetricMatrix< SubTrait_< MT, IdentityMatrix<T,SO2> > >;
+   using Type = SymmetricMatrix< SubTrait_t< MT, IdentityMatrix<T,SO2> > >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SubTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SymmetricMatrix< SubTrait_< IdentityMatrix<T,SO1>, MT > >;
+   using Type = SymmetricMatrix< SubTrait_t< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
-   using Type = SymmetricMatrix< SubTrait_<MT1,MT2> >;
+   using Type = SymmetricMatrix< SubTrait_t<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -912,79 +912,79 @@ struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,N
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
 {
-   using Type = SchurTrait_< MT, StaticMatrix<T,M,N,SO2> >;
+   using Type = SchurTrait_t< MT, StaticMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SchurTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SchurTrait_< StaticMatrix<T,M,N,SO1>, MT >;
+   using Type = SchurTrait_t< StaticMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
 {
-   using Type = SchurTrait_< MT, HybridMatrix<T,M,N,SO2> >;
+   using Type = SchurTrait_t< MT, HybridMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SchurTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SchurTrait_< HybridMatrix<T,M,N,SO1>, MT >;
+   using Type = SchurTrait_t< HybridMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 {
-   using Type = SchurTrait_< MT, DynamicMatrix<T,SO2> >;
+   using Type = SchurTrait_t< MT, DynamicMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SchurTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SchurTrait_< DynamicMatrix<T,SO1>, MT >;
+   using Type = SchurTrait_t< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
 struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
 {
-   using Type = SchurTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
+   using Type = SchurTrait_t< MT, CustomMatrix<T,AF,PF,SO2> >;
 };
 
 template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SchurTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SchurTrait_< CustomMatrix<T,AF,PF,SO1>, MT >;
+   using Type = SchurTrait_t< CustomMatrix<T,AF,PF,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
-   using Type = SchurTrait_< MT, CompressedMatrix<T,SO2> >;
+   using Type = SchurTrait_t< MT, CompressedMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SchurTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SchurTrait_< CompressedMatrix<T,SO1>, MT >;
+   using Type = SchurTrait_t< CompressedMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct SchurTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
 {
-   using Type = DiagonalMatrix< SchurTrait_< MT, IdentityMatrix<T,SO2> > >;
+   using Type = DiagonalMatrix< SchurTrait_t< MT, IdentityMatrix<T,SO2> > >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct SchurTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = DiagonalMatrix< SchurTrait_< IdentityMatrix<T,SO1>, MT > >;
+   using Type = DiagonalMatrix< SchurTrait_t< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
-   using Type = SymmetricMatrix< SchurTrait_<MT1,MT2> >;
+   using Type = SymmetricMatrix< SchurTrait_t<MT1,MT2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1003,151 +1003,151 @@ struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 {
-   using Type = SymmetricMatrix< MultTrait_<MT,T> >;
+   using Type = SymmetricMatrix< MultTrait_t<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, EnableIf_< IsNumeric<T> > >
 {
-   using Type = SymmetricMatrix< MultTrait_<T,MT> >;
+   using Type = SymmetricMatrix< MultTrait_t<T,MT> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T, size_t N >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, StaticVector<T,N,false> >
 {
-   using Type = MultTrait_< MT, StaticVector<T,N,false> >;
+   using Type = MultTrait_t< MT, StaticVector<T,N,false> >;
 };
 
 template< typename T, size_t N, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< StaticVector<T,N,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = MultTrait_< StaticVector<T,N,true>, MT >;
+   using Type = MultTrait_t< StaticVector<T,N,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T, size_t N >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, HybridVector<T,N,false> >
 {
-   using Type = MultTrait_< MT, HybridVector<T,N,false> >;
+   using Type = MultTrait_t< MT, HybridVector<T,N,false> >;
 };
 
 template< typename T, size_t N, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< HybridVector<T,N,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = MultTrait_< HybridVector<T,N,true>, MT >;
+   using Type = MultTrait_t< HybridVector<T,N,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, DynamicVector<T,false> >
 {
-   using Type = MultTrait_< MT, DynamicVector<T,false> >;
+   using Type = MultTrait_t< MT, DynamicVector<T,false> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< DynamicVector<T,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = MultTrait_< DynamicVector<T,true>, MT >;
+   using Type = MultTrait_t< DynamicVector<T,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T, bool AF, bool PF >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, CustomVector<T,AF,PF,false> >
 {
-   using Type = MultTrait_< MT, CustomVector<T,AF,PF,false> >;
+   using Type = MultTrait_t< MT, CustomVector<T,AF,PF,false> >;
 };
 
 template< typename T, bool AF, bool PF, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< CustomVector<T,AF,PF,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = MultTrait_< CustomVector<T,AF,PF,true>, MT >;
+   using Type = MultTrait_t< CustomVector<T,AF,PF,true>, MT >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, CompressedVector<T,false> >
 {
-   using Type = MultTrait_< MT, CompressedVector<T,false> >;
+   using Type = MultTrait_t< MT, CompressedVector<T,false> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
 struct MultTrait< CompressedVector<T,true>, SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = MultTrait_< CompressedVector<T,true>, MT >;
+   using Type = MultTrait_t< CompressedVector<T,true>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
 {
-   using Type = MultTrait_< MT, StaticMatrix<T,M,N,SO2> >;
+   using Type = MultTrait_t< MT, StaticMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = MultTrait_< StaticMatrix<T,M,N,SO1>, MT >;
+   using Type = MultTrait_t< StaticMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
 {
-   using Type = MultTrait_< MT, HybridMatrix<T,M,N,SO2> >;
+   using Type = MultTrait_t< MT, HybridMatrix<T,M,N,SO2> >;
 };
 
 template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = MultTrait_< HybridMatrix<T,M,N,SO1>, MT >;
+   using Type = MultTrait_t< HybridMatrix<T,M,N,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
 {
-   using Type = MultTrait_< MT, DynamicMatrix<T,SO2> >;
+   using Type = MultTrait_t< MT, DynamicMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = MultTrait_< DynamicMatrix<T,SO1>, MT >;
+   using Type = MultTrait_t< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
 {
-   using Type = MultTrait_< MT, CustomMatrix<T,AF,PF,SO2> >;
+   using Type = MultTrait_t< MT, CustomMatrix<T,AF,PF,SO2> >;
 };
 
 template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = MultTrait_< DynamicMatrix<T,SO1>, MT >;
+   using Type = MultTrait_t< DynamicMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
 {
-   using Type = MultTrait_< MT, CompressedMatrix<T,SO2> >;
+   using Type = MultTrait_t< MT, CompressedMatrix<T,SO2> >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = MultTrait_< CompressedMatrix<T,SO1>, MT >;
+   using Type = MultTrait_t< CompressedMatrix<T,SO1>, MT >;
 };
 
 template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
 struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
 {
-   using Type = SymmetricMatrix< MultTrait_< MT, IdentityMatrix<T,SO2> > >;
+   using Type = SymmetricMatrix< MultTrait_t< MT, IdentityMatrix<T,SO2> > >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
 struct MultTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
 {
-   using Type = SymmetricMatrix< MultTrait_< IdentityMatrix<T,SO1>, MT > >;
+   using Type = SymmetricMatrix< MultTrait_t< IdentityMatrix<T,SO1>, MT > >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
 {
-   using Type = MultTrait_<MT1,MT2>;
+   using Type = MultTrait_t<MT1,MT2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1166,7 +1166,7 @@ struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,
 template< typename MT, bool SO, bool DF, bool NF, typename T >
 struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 {
-   using Type = SymmetricMatrix< DivTrait_<MT,T> >;
+   using Type = SymmetricMatrix< DivTrait_t<MT,T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1185,181 +1185,181 @@ struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Abs >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Abs> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Abs> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Floor >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Floor> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Floor> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Ceil >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Ceil> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Ceil> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Trunc >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Trunc> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Trunc> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Round >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Round> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Round> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Conj >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Conj> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Conj> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Real >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Real> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Real> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Imag >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Imag> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Imag> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Sqrt >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Sqrt> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Sqrt> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, InvSqrt >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,InvSqrt> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,InvSqrt> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Cbrt >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Cbrt> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Cbrt> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, InvCbrt >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,InvCbrt> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,InvCbrt> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF, typename ET >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, UnaryPow<ET> >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_< MT, UnaryPow<ET> > >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t< MT, UnaryPow<ET> > >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Exp >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Exp> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Exp> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Log >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Log> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Log> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Log10 >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Log10> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Log10> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Sin >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Sin> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Sin> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Asin >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Asin> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Asin> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Sinh >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Sinh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Sinh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Asinh >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Asinh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Asinh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Cos >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Cos> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Cos> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Acos >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Acos> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Acos> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Cosh >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Cosh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Cosh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Acosh >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Acosh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Acosh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Tan >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Tan> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Tan> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Atan >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Atan> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Atan> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Tanh >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Tanh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Tanh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Atanh >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Atanh> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Atanh> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Erf >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Erf> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Erf> >;
 };
 
 template< typename MT, bool SO, bool DF, bool NF >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Erfc >
 {
-   using Type = SymmetricMatrix< UnaryMapTrait_<MT,Erfc> >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t<MT,Erfc> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1378,13 +1378,13 @@ struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, Erfc >
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2>, Min >
 {
-   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Min> >;
+   using Type = SymmetricMatrix< BinaryMapTrait_t<MT1,MT2,Min> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
 struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2>, Max >
 {
-   using Type = SymmetricMatrix< BinaryMapTrait_<MT1,MT2,Max> >;
+   using Type = SymmetricMatrix< BinaryMapTrait_t<MT1,MT2,Max> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1536,7 +1536,7 @@ struct LowType< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF
 template< typename MT, bool SO, bool DF, bool NF, size_t... CSAs >
 struct SubmatrixTrait< SymmetricMatrix<MT,SO,DF,NF>, CSAs... >
 {
-   using Type = SubmatrixTrait_<MT,CSAs...>;
+   using Type = SubmatrixTrait_t<MT,CSAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1555,7 +1555,7 @@ struct SubmatrixTrait< SymmetricMatrix<MT,SO,DF,NF>, CSAs... >
 template< typename MT, bool SO, bool DF, bool NF, size_t... CRAs >
 struct RowTrait< SymmetricMatrix<MT,SO,DF,NF>, CRAs... >
 {
-   using Type = RowTrait_<MT,CRAs...>;
+   using Type = RowTrait_t<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1574,7 +1574,7 @@ struct RowTrait< SymmetricMatrix<MT,SO,DF,NF>, CRAs... >
 template< typename MT, bool SO, bool DF, bool NF, size_t... CRAs >
 struct RowsTrait< SymmetricMatrix<MT,SO,DF,NF>, CRAs... >
 {
-   using Type = RowsTrait_<MT,CRAs...>;
+   using Type = RowsTrait_t<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1593,7 +1593,7 @@ struct RowsTrait< SymmetricMatrix<MT,SO,DF,NF>, CRAs... >
 template< typename MT, bool SO, bool DF, bool NF, size_t... CCAs >
 struct ColumnTrait< SymmetricMatrix<MT,SO,DF,NF>, CCAs... >
 {
-   using Type = ColumnTrait_<MT,CCAs...>;
+   using Type = ColumnTrait_t<MT,CCAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1612,7 +1612,7 @@ struct ColumnTrait< SymmetricMatrix<MT,SO,DF,NF>, CCAs... >
 template< typename MT, bool SO, bool DF, bool NF, size_t... CCAs >
 struct ColumnsTrait< SymmetricMatrix<MT,SO,DF,NF>, CCAs... >
 {
-   using Type = ColumnsTrait_<MT,CCAs...>;
+   using Type = ColumnsTrait_t<MT,CCAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1631,7 +1631,7 @@ struct ColumnsTrait< SymmetricMatrix<MT,SO,DF,NF>, CCAs... >
 template< typename MT, bool SO, bool DF, bool NF, ptrdiff_t... CBAs >
 struct BandTrait< SymmetricMatrix<MT,SO,DF,NF>, CBAs... >
 {
-   using Type = BandTrait_<MT,CBAs...>;
+   using Type = BandTrait_t<MT,CBAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

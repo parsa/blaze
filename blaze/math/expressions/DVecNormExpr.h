@@ -230,7 +230,7 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   SIMDTrait_<ET> xmm1, xmm2, xmm3, xmm4;
+   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
@@ -478,7 +478,7 @@ decltype(auto) lpNorm( const DenseVector<VT,TF>& dv, ST p )
 
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_t<VT>, decltype( inv( p ) ) >;
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, decltype( inv( p ) ) >;
    return norm_backend( ~dv, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
 }
 //*************************************************************************************************

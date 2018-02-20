@@ -157,7 +157,7 @@ class DMatSVecMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatSVecMultExpr<MT,VT>;     //!< Type of this DMatSVecMultExpr instance.
-   using ResultType    = MultTrait_<MRT,VRT>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<MRT,VRT>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
    using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.

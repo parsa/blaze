@@ -73,7 +73,7 @@ class DenseIterator
    using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
    //! SIMD type of the elements.
-   using SIMDType = SIMDTrait_<Type>;
+   using SIMDType = SIMDTrait_t<Type>;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

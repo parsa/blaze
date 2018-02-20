@@ -194,7 +194,7 @@ class StaticVector
    using ResultType    = This;                      //!< Result type for expression template evaluations.
    using TransposeType = StaticVector<Type,N,!TF>;  //!< Transpose type for expression template evaluations.
    using ElementType   = Type;                      //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_<ElementType>;   //!< SIMD type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
    using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
    using CompositeType = const StaticVector&;       //!< Data type for composite expression templates.
 
@@ -1338,7 +1338,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator%=( const Vecto
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< This, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< This, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2756,7 +2756,7 @@ struct IsPadded< StaticVector<T,N,TF> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< AddTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2775,7 +2775,7 @@ struct AddTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< SubTrait_t<T1,T2>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2794,31 +2794,31 @@ struct SubTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< StaticVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, typename T2, size_t N, bool TF >
 struct MultTrait< T1, StaticVector<T2,N,TF>, EnableIf_<IsNumeric<T1> > >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N >
 struct MultTrait< StaticVector<T1,M,false>, StaticVector<T2,N,true> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
 {
-   using Type = MultTrait_<T1,T2>;
+   using Type = MultTrait_t<T1,T2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2837,13 +2837,13 @@ struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
 template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< StaticVector<T1,N,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< DivTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< DivTrait_t<T1,T2>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2863,10 +2863,10 @@ template< typename T1, typename T2, bool TF >
 struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
 {
  private:
-   using T = MultTrait_<T1,T2>;
+   using T = MultTrait_t<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2885,7 +2885,7 @@ struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
 template< typename T, size_t N, bool TF, typename OP >
 struct UnaryMapTrait< StaticVector<T,N,TF>, OP >
 {
-   using Type = StaticVector< UnaryMapTrait_<T,OP>, N, TF >;
+   using Type = StaticVector< UnaryMapTrait_t<T,OP>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2904,7 +2904,7 @@ struct UnaryMapTrait< StaticVector<T,N,TF>, OP >
 template< typename T1, size_t N, bool TF, typename T2, typename OP >
 struct BinaryMapTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF>, OP >
 {
-   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

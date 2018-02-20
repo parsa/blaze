@@ -172,7 +172,7 @@ class DMatDMatMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatDMatMapExpr<MT1,MT2,OP,SO>;  //!< Type of this DMatDMatMapExpr instance.
-   using ResultType    = BinaryMapTrait_<RT1,RT2,OP>;     //!< Result type for expression template evaluations.
+   using ResultType    = BinaryMapTrait_t<RT1,RT2,OP>;    //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;       //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;      //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;        //!< Resulting element type.

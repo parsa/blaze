@@ -79,20 +79,20 @@ class DMatTransposer
 {
  public:
    //**Type definitions****************************************************************************
-   using This           = DMatTransposer<MT,SO>;    //!< Type of this DMatTransposer instance.
-   using ResultType     = TransposeType_<MT>;       //!< Result type for expression template evaluations.
-   using OppositeType   = OppositeType_<MT>;        //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType  = ResultType_<MT>;          //!< Transpose type for expression template evaluations.
-   using ElementType    = ElementType_<MT>;         //!< Type of the matrix elements.
-   using SIMDType       = SIMDTrait_<ElementType>;  //!< SIMD type of the matrix elements.
-   using ReturnType     = ReturnType_<MT>;          //!< Return type for expression template evaluations.
-   using CompositeType  = const This&;              //!< Data type for composite expression templates.
-   using Reference      = Reference_<MT>;           //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<MT>;      //!< Reference to a constant matrix value.
-   using Pointer        = Pointer_<MT>;             //!< Pointer to a non-constant matrix value.
-   using ConstPointer   = ConstPointer_<MT>;        //!< Pointer to a constant matrix value.
-   using Iterator       = Iterator_<MT>;            //!< Iterator over non-constant elements.
-   using ConstIterator  = ConstIterator_<MT>;       //!< Iterator over constant elements.
+   using This           = DMatTransposer<MT,SO>;     //!< Type of this DMatTransposer instance.
+   using ResultType     = TransposeType_<MT>;        //!< Result type for expression template evaluations.
+   using OppositeType   = OppositeType_<MT>;         //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType  = ResultType_<MT>;           //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_<MT>;          //!< Type of the matrix elements.
+   using SIMDType       = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using ReturnType     = ReturnType_<MT>;           //!< Return type for expression template evaluations.
+   using CompositeType  = const This&;               //!< Data type for composite expression templates.
+   using Reference      = Reference_<MT>;            //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_<MT>;       //!< Reference to a constant matrix value.
+   using Pointer        = Pointer_<MT>;              //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = ConstPointer_<MT>;         //!< Pointer to a constant matrix value.
+   using Iterator       = Iterator_<MT>;             //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_<MT>;        //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -747,7 +747,7 @@ struct IsPadded< DMatTransposer<MT,SO> >
 template< typename MT, bool SO, size_t... CSAs >
 struct SubmatrixTrait< DMatTransposer<MT,SO>, CSAs... >
 {
-   using Type = SubmatrixTrait_< ResultType_< DMatTransposer<MT,SO> >, CSAs... >;
+   using Type = SubmatrixTrait_t< ResultType_< DMatTransposer<MT,SO> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -766,7 +766,7 @@ struct SubmatrixTrait< DMatTransposer<MT,SO>, CSAs... >
 template< typename MT, bool SO, size_t... CRAs >
 struct RowsTrait< DMatTransposer<MT,SO>, CRAs... >
 {
-   using Type = RowsTrait_< ResultType_< DMatTransposer<MT,SO> >, CRAs... >;
+   using Type = RowsTrait_t< ResultType_< DMatTransposer<MT,SO> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -785,7 +785,7 @@ struct RowsTrait< DMatTransposer<MT,SO>, CRAs... >
 template< typename MT, bool SO, size_t... CCAs >
 struct ColumnsTrait< DMatTransposer<MT,SO>, CCAs... >
 {
-   using Type = ColumnsTrait_< ResultType_< DMatTransposer<MT,SO> >, CCAs... >;
+   using Type = ColumnsTrait_t< ResultType_< DMatTransposer<MT,SO> >, CCAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -88,12 +88,12 @@ class DMatSerialExpr
 {
  public:
    //**Type definitions****************************************************************************
-   using This = DMatSerialExpr<MT,SO>;        //!< Type of this DMatSerialExpr instance.
-   using ResultType = ResultType_<MT>;        //!< Result type for expression template evaluations.
-   using OppositeType = OppositeType_<MT>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<MT>;  //!< Transpose type for expression template evaluations.
-   using ElementType = ElementType_<MT>;      //!< Resulting element type.
-   using ReturnType = ReturnType_<MT>;        //!< Return type for expression template evaluations.
+   using This          = DMatSerialExpr<MT,SO>;  //!< Type of this DMatSerialExpr instance.
+   using ResultType    = ResultType_<MT>;        //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<MT>;      //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<MT>;     //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;       //!< Resulting element type.
+   using ReturnType    = ReturnType_<MT>;        //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;

@@ -143,11 +143,11 @@ class Columns<MT,true,true,SF,CCAs...>
 
    using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Columns instance.
    using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
    using CompositeType = const Columns&;              //!< Data type for composite expression templates.
 
@@ -1056,7 +1056,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1120,7 +1120,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1180,7 +1180,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1244,7 +1244,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1304,7 +1304,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -1369,7 +1369,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -3119,7 +3119,7 @@ class Columns<MT,false,true,false,CCAs...>
 
    using BaseType      = DenseMatrix<This,true>;     //!< Base type of this Columns instance.
    using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
@@ -4259,7 +4259,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4322,7 +4322,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4381,7 +4381,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4444,7 +4444,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4503,7 +4503,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -4567,7 +4567,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -5844,11 +5844,11 @@ class Columns<MT,false,true,true,CCAs...>
 
    using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Columns instance.
    using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
    using CompositeType = const Columns&;              //!< Data type for composite expression templates.
 

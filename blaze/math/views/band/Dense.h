@@ -130,7 +130,7 @@ class Band<MT,TF,true,false,CBAs...>
 
    using BaseType      = DenseVector<This,TF>;        //!< Base type of this Band instance.
    using ViewedType    = MT;                          //!< The type viewed by this Band instance.
-   using ResultType    = BandTrait_<RT,CBAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = BandTrait_t<RT,CBAs...>;     //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the band elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -1399,7 +1399,7 @@ inline Band<MT,TF,true,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2111,7 +2111,7 @@ class Band<MT,TF,true,true,CBAs...>
    using ViewedType = MT;
 
    //! Result type for expression template evaluations.
-   using ResultType = BandTrait_<ResultType_<MT>,CBAs...>;
+   using ResultType = BandTrait_t<ResultType_<MT>,CBAs...>;
 
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.

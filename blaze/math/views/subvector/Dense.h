@@ -126,14 +126,14 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //! Type of this Subvector instance.
    using This = Subvector<VT,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = VT;                           //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_<VT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;             //!< Type of the subvector elements.
-   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the subvector elements.
-   using ReturnType    = ReturnType_<VT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Subvector&;             //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;              //!< Type of the subvector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the subvector elements.
+   using ReturnType    = ReturnType_<VT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Subvector&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
    using ConstReference = ConstReference_<VT>;
@@ -1525,7 +1525,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2674,14 +2674,14 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //! Type of this Subvector instance.
    using This = Subvector<VT,aligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = VT;                           //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_<VT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;             //!< Type of the subvector elements.
-   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the subvector elements.
-   using ReturnType    = ReturnType_<VT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Subvector&;             //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<VT>;              //!< Type of the subvector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the subvector elements.
+   using ReturnType    = ReturnType_<VT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Subvector&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
    using ConstReference = ConstReference_<VT>;
@@ -3650,7 +3650,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -4790,13 +4790,13 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = CPE;                          //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4945,13 +4945,13 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = CPE;                          //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -5100,13 +5100,13 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = CPE;                          //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -5255,13 +5255,13 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    //! Type of this Subvector instance.
    using This = Subvector<CPE,unaligned,TF,true,CSAs...>;
 
-   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Subvector instance.
-   using ViewedType    = CPE;                          //!< The type viewed by this Subvector instance.
-   using ResultType    = SubvectorTrait_<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
-   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
+   using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
+   using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

@@ -408,10 +408,10 @@ class CustomVector
    //! Transpose type for expression template evaluations.
    using TransposeType = DynamicVector<RemoveConst_t<Type>,!TF>;
 
-   using ElementType   = Type;                     //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
-   using ReturnType    = const Type&;              //!< Return type for expression template evaluations
-   using CompositeType = const CustomVector&;      //!< Data type for composite expression templates.
+   using ElementType   = Type;                      //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations
+   using CompositeType = const CustomVector&;       //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -1363,7 +1363,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator*=( con
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1408,7 +1408,7 @@ inline CustomVector<Type,AF,PF,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1454,7 +1454,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator%=( con
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2623,10 +2623,10 @@ class CustomVector<Type,AF,padded,TF>
    //! Transpose type for expression template evaluations.
    using TransposeType = DynamicVector<RemoveConst_t<Type>,!TF>;
 
-   using ElementType   = Type;                     //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
-   using ReturnType    = const Type&;              //!< Return type for expression template evaluations
-   using CompositeType = const CustomVector&;      //!< Data type for composite expression templates.
+   using ElementType   = Type;                      //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations
+   using CompositeType = const CustomVector&;       //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -3580,7 +3580,7 @@ inline CustomVector<Type,AF,padded,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -3626,7 +3626,7 @@ inline CustomVector<Type,AF,padded,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -3674,7 +3674,7 @@ inline CustomVector<Type,AF,padded,TF>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -5098,7 +5098,7 @@ struct IsPadded< CustomVector<T,AF,padded,TF> >
 template< typename T, bool AF, bool PF, bool TF, typename OP >
 struct UnaryMapTrait< CustomVector<T,AF,PF,TF>, OP >
 {
-   using Type = DynamicVector< UnaryMapTrait_<T,OP>, TF >;
+   using Type = DynamicVector< UnaryMapTrait_t<T,OP>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5117,43 +5117,43 @@ struct UnaryMapTrait< CustomVector<T,AF,PF,TF>, OP >
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N, typename OP >
 struct BinaryMapTrait< CustomVector<T1,AF,PF,TF>, StaticVector<T2,N,TF>, OP >
 {
-   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF, typename OP >
 struct BinaryMapTrait< StaticVector<T1,N,TF>, CustomVector<T2,AF,PF,TF>, OP >
 {
-   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2, size_t N, typename OP >
 struct BinaryMapTrait< CustomVector<T1,AF,PF,TF>, HybridVector<T2,N,TF>, OP >
 {
-   using Type = HybridVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = HybridVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, bool AF, bool PF, typename OP >
 struct BinaryMapTrait< HybridVector<T1,N,TF>, CustomVector<T2,AF,PF,TF>, OP >
 {
-   using Type = HybridVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = HybridVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, bool AF, bool PF, bool TF, typename T2, typename OP >
 struct BinaryMapTrait< CustomVector<T1,AF,PF,TF>, DynamicVector<T2,TF>, OP >
 {
-   using Type = DynamicVector< BinaryMapTrait_<T1,T2,OP>, TF >;
+   using Type = DynamicVector< BinaryMapTrait_t<T1,T2,OP>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, bool AF, bool PF, typename OP >
 struct BinaryMapTrait< DynamicVector<T1,TF>, CustomVector<T2,AF,PF,TF>, OP >
 {
-   using Type = DynamicVector< BinaryMapTrait_<T1,T2,OP>, TF >;
+   using Type = DynamicVector< BinaryMapTrait_t<T1,T2,OP>, TF >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool TF, typename T2, bool AF2, bool PF2, typename OP >
 struct BinaryMapTrait< CustomVector<T1,AF1,PF1,TF>, CustomVector<T2,AF2,PF2,TF>, OP >
 {
-   using Type = DynamicVector< BinaryMapTrait_<T1,T2,OP>, TF >;
+   using Type = DynamicVector< BinaryMapTrait_t<T1,T2,OP>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

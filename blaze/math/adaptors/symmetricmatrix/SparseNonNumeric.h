@@ -1344,7 +1344,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 {
    using blaze::resize;
 
-   using Tmp = AddTrait_< MT, ResultType_<MT2> >;
+   using Tmp = AddTrait_t< MT, ResultType_<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1416,7 +1416,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 {
    using blaze::resize;
 
-   using Tmp = SubTrait_< MT, ResultType_<MT2> >;
+   using Tmp = SubTrait_t< MT, ResultType_<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1488,7 +1488,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 {
    using blaze::resize;
 
-   using Tmp = SchurTrait_< MT, ResultType_<MT2> >;
+   using Tmp = SchurTrait_t< MT, ResultType_<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );

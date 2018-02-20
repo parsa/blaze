@@ -127,7 +127,7 @@ class SMatScalarDivExpr
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = DivExprTrait_<RN,ST>;
+   using ExprReturnType = DivExprTrait_t<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -167,7 +167,7 @@ class SMatScalarDivExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatScalarDivExpr<MT,ST,SO>;  //!< Type of this SMatScalarDivExpr instance.
-   using ResultType    = MultTrait_<RT,ST>;            //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT,ST>;           //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
@@ -859,8 +859,8 @@ struct SMatScalarDivExprHelper
                              , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
                          , If_< And< IsComplex< UnderlyingNumeric_t<MT> >
                                    , IsBuiltin<ST> >
-                              , DivTrait_< UnderlyingBuiltin_t<MT>, ST >
-                              , DivTrait_< UnderlyingNumeric_t<MT>, ST > >
+                              , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
+                              , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
                          , ST >;
    //**********************************************************************************************
 
@@ -1008,7 +1008,7 @@ inline decltype(auto) operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 sc
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   using MultType   = MultTrait_<ST1,ST2>;
+   using MultType   = MultTrait_t<ST1,ST2>;
    using ReturnType = typename SMatScalarDivExprHelper<MT,MultType,SO>::Type;
    using ScalarType = RightOperand_<ReturnType>;
 

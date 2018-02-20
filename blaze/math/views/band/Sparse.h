@@ -126,7 +126,7 @@ class Band<MT,TF,false,false,CBAs...>
 
    using BaseType      = SparseVector<This,TF>;       //!< Base type of this Band instance.
    using ViewedType    = MT;                          //!< The type viewed by this Band instance.
-   using ResultType    = BandTrait_<RT,CBAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = BandTrait_t<RT,CBAs...>;     //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the band elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -1063,7 +1063,7 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1119,7 +1119,7 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1174,7 +1174,7 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1229,7 +1229,7 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1282,7 +1282,7 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2114,7 +2114,7 @@ template< typename MT          // Type of the sparse matrix
 template< typename VT >        // Type of the right-hand side vector
 inline void Band<MT,TF,false,false,CBAs...>::addAssign( const Vector<VT,TF>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2146,7 +2146,7 @@ template< typename MT          // Type of the sparse matrix
 template< typename VT >        // Type of the right-hand side vector
 inline void Band<MT,TF,false,false,CBAs...>::subAssign( const Vector<VT,TF>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -2208,7 +2208,7 @@ class Band<MT,TF,false,true,CBAs...>
    using ViewedType = MT;
 
    //! Result type for expression template evaluations.
-   using ResultType = BandTrait_<ResultType_<MT>,CBAs...>;
+   using ResultType = BandTrait_t<ResultType_<MT>,CBAs...>;
 
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.

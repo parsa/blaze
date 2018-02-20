@@ -126,7 +126,7 @@ class DMatScalarMultExpr
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_<RN,ST>;
+   using ExprReturnType = MultExprTrait_t<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -166,7 +166,7 @@ class DMatScalarMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatScalarMultExpr<MT,ST,SO>;  //!< Type of this DMatScalarMultExpr instance.
-   using ResultType    = MultTrait_<RT,ST>;             //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
@@ -1068,7 +1068,7 @@ inline decltype(auto) operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, ST >;
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~mat, scalar );
 }
@@ -1104,7 +1104,7 @@ inline decltype(auto) operator*( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_t<MT> >;
+   using ScalarType = MultTrait_t< ST, UnderlyingBuiltin_t<MT> >;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~mat, scalar );
 }

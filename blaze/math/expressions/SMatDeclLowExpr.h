@@ -157,7 +157,7 @@ class SMatDeclLowExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatDeclLowExpr<MT,SO>;      //!< Type of this SMatDeclLowExpr instance.
-   using ResultType    = DeclLowTrait_<RT>;           //!< Result type for expression template evaluations.
+   using ResultType    = DeclLowTrait_t<RT>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Resulting element type.

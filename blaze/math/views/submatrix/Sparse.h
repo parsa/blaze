@@ -129,14 +129,14 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,false,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
+   using BaseType      = SparseMatrix<This,false>;      //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -1131,7 +1131,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -1186,7 +1186,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -1241,7 +1241,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -2455,7 +2455,7 @@ template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,false,false,CSAs...>::addAssign( const Matrix<MT2,SO>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -2489,7 +2489,7 @@ template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,false,false,CSAs...>::subAssign( const Matrix<MT2,SO>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -2523,7 +2523,7 @@ template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,false,false,CSAs...>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
@@ -2577,14 +2577,14 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,AF,true,false,CSAs...>;
 
-   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
+   using BaseType      = SparseMatrix<This,true>;       //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -3549,7 +3549,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -3604,7 +3604,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -3659,7 +3659,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -4843,7 +4843,7 @@ template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,true,false,CSAs...>::addAssign( const Matrix<MT2,SO>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -4877,7 +4877,7 @@ template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,true,false,CSAs...>::subAssign( const Matrix<MT2,SO>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -4911,7 +4911,7 @@ template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline void Submatrix<MT,AF,true,false,CSAs...>::schurAssign( const Matrix<MT2,SO>& rhs )
 {
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 

@@ -187,14 +187,14 @@ class DynamicVector
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = DynamicVector<Type,TF>;   //!< Type of this DynamicVector instance.
-   using BaseType      = DenseVector<This,TF>;     //!< Base type of this DynamicVector instance.
-   using ResultType    = This;                     //!< Result type for expression template evaluations.
-   using TransposeType = DynamicVector<Type,!TF>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                     //!< Type of the vector elements.
-   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the vector elements.
-   using ReturnType    = const Type&;              //!< Return type for expression template evaluations
-   using CompositeType = const DynamicVector&;     //!< Data type for composite expression templates.
+   using This          = DynamicVector<Type,TF>;    //!< Type of this DynamicVector instance.
+   using BaseType      = DenseVector<This,TF>;      //!< Base type of this DynamicVector instance.
+   using ResultType    = This;                      //!< Result type for expression template evaluations.
+   using TransposeType = DynamicVector<Type,!TF>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                      //!< Type of the vector elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the vector elements.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations
+   using CompositeType = const DynamicVector&;      //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant vector value.
    using ConstReference = const Type&;  //!< Reference to a constant vector value.
@@ -1280,7 +1280,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator%=( const Vector<
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< This, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< This, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2733,31 +2733,31 @@ struct IsShrinkable< DynamicVector<T,TF> >
 template< typename T1, bool TF, typename T2, size_t N >
 struct AddTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< AddTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = StaticVector< AddTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct AddTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
 {
-   using Type = HybridVector< AddTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< AddTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct AddTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = HybridVector< AddTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< AddTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct AddTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   using Type = DynamicVector< AddTrait_<T1,T2>, TF >;
+   using Type = DynamicVector< AddTrait_t<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2776,31 +2776,31 @@ struct AddTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 template< typename T1, bool TF, typename T2, size_t N >
 struct SubTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< SubTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = StaticVector< SubTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< SubTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct SubTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
 {
-   using Type = HybridVector< SubTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< SubTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct SubTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = HybridVector< SubTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< SubTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct SubTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   using Type = DynamicVector< SubTrait_<T1,T2>, TF >;
+   using Type = DynamicVector< SubTrait_t<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2819,103 +2819,103 @@ struct SubTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< DynamicVector<T1,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, bool TF >
 struct MultTrait< T1, DynamicVector<T2,TF>, EnableIf_<IsNumeric<T1> > >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct MultTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< DynamicVector<T1,false>, StaticVector<T2,N,true> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< DynamicVector<T1,true>, StaticVector<T2,N,false> >
 {
-   using Type = MultTrait_<T1,T2>;
+   using Type = MultTrait_t<T1,T2>;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< StaticVector<T1,N,false>, DynamicVector<T2,true> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< StaticVector<T1,N,true>, DynamicVector<T2,false> >
 {
-   using Type = MultTrait_<T1,T2>;
+   using Type = MultTrait_t<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct MultTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
 {
-   using Type = HybridVector< MultTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< MultTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< DynamicVector<T1,false>, HybridVector<T2,N,true> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, size_t N >
 struct MultTrait< DynamicVector<T1,true>, HybridVector<T2,N,false> >
 {
-   using Type = MultTrait_<T1,T2>;
+   using Type = MultTrait_t<T1,T2>;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct MultTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = HybridVector< MultTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< MultTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< HybridVector<T1,N,false>, DynamicVector<T2,true> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2 >
 struct MultTrait< HybridVector<T1,N,true>, DynamicVector<T2,false> >
 {
-   using Type = MultTrait_<T1,T2>;
+   using Type = MultTrait_t<T1,T2>;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, TF >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< DynamicVector<T1,false>, DynamicVector<T2,true> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, typename T2 >
 struct MultTrait< DynamicVector<T1,true>, DynamicVector<T2,false> >
 {
-   using Type = MultTrait_<T1,T2>;
+   using Type = MultTrait_t<T1,T2>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2934,37 +2934,37 @@ struct MultTrait< DynamicVector<T1,true>, DynamicVector<T2,false> >
 template< typename T1, bool TF, typename T2 >
 struct DivTrait< DynamicVector<T1,TF>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
+   using Type = DynamicVector< DivTrait_t<T1,T2>, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct DivTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
 {
-   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< DivTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = StaticVector< DivTrait_<T1,T2>, N, TF >;
+   using Type = StaticVector< DivTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct DivTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
 {
-   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< DivTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct DivTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
-   using Type = HybridVector< DivTrait_<T1,T2>, N, TF >;
+   using Type = HybridVector< DivTrait_t<T1,T2>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct DivTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
-   using Type = DynamicVector< DivTrait_<T1,T2>, TF >;
+   using Type = DynamicVector< DivTrait_t<T1,T2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2984,50 +2984,50 @@ template< typename T1, bool TF, typename T2 >
 struct CrossTrait< DynamicVector<T1,TF>, StaticVector<T2,3UL,TF> >
 {
  private:
-   using T = MultTrait_<T1,T2>;
+   using T = MultTrait_t<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct CrossTrait< StaticVector<T1,3UL,TF>, DynamicVector<T2,TF> >
 {
  private:
-   using T = MultTrait_<T1,T2>;
+   using T = MultTrait_t<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N >
 struct CrossTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
 {
  private:
-   using T = MultTrait_<T1,T2>;
+   using T = MultTrait_t<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2 >
 struct CrossTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
 {
  private:
-   using T = MultTrait_<T1,T2>;
+   using T = MultTrait_t<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
 };
 
 template< typename T1, bool TF, typename T2 >
 struct CrossTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 {
  private:
-   using T = MultTrait_<T1,T2>;
+   using T = MultTrait_t<T1,T2>;
 
  public:
-   using Type = StaticVector< SubTrait_<T,T>, 3UL, TF >;
+   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3046,7 +3046,7 @@ struct CrossTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 template< typename T, bool TF, typename OP >
 struct UnaryMapTrait< DynamicVector<T,TF>, OP >
 {
-   using Type = DynamicVector< UnaryMapTrait_<T,OP>, TF >;
+   using Type = DynamicVector< UnaryMapTrait_t<T,OP>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3065,31 +3065,31 @@ struct UnaryMapTrait< DynamicVector<T,TF>, OP >
 template< typename T1, bool TF, typename T2, size_t N, typename OP >
 struct BinaryMapTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF>, OP >
 {
-   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, typename OP >
 struct BinaryMapTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF>, OP >
 {
-   using Type = StaticVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2, size_t N, typename OP >
 struct BinaryMapTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF>, OP >
 {
-   using Type = HybridVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = HybridVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, size_t N, bool TF, typename T2, typename OP >
 struct BinaryMapTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF>, OP >
 {
-   using Type = HybridVector< BinaryMapTrait_<T1,T2,OP>, N, TF >;
+   using Type = HybridVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
 };
 
 template< typename T1, bool TF, typename T2, typename OP >
 struct BinaryMapTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF>, OP >
 {
-   using Type = DynamicVector< BinaryMapTrait_<T1,T2,OP>, TF >;
+   using Type = DynamicVector< BinaryMapTrait_t<T1,T2,OP>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************

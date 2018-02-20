@@ -102,7 +102,7 @@ inline decltype(auto)
    using X2            = RemoveReference_t<Rhs>;  // Auxiliary type for the right-hand side composite type
    using E1            = ElementType_<X1>;        // Element type of the left-hand side sparse vector expression
    using E2            = ElementType_<X2>;        // Element type of the right-hand side sparse vector expression
-   using MultType      = MultTrait_<E1,E2>;       // Multiplication result type
+   using MultType      = MultTrait_t<E1,E2>;      // Multiplication result type
    using LeftIterator  = ConstIterator_<X1>;      // Iterator type of the left-hand sparse vector expression
    using RightIterator = ConstIterator_<X2>;      // Iterator type of the right-hand sparse vector expression
 

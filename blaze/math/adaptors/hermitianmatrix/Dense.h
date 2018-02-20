@@ -900,7 +900,7 @@ class HermitianMatrix<MT,SO,true>
    inline const MT2& construct( const Matrix<MT2,SO2>& m, T );
 
    template< typename MT2 >
-   inline TransExprTrait_<MT2> construct( const Matrix<MT2,!SO>& m, TrueType );
+   inline TransExprTrait_t<MT2> construct( const Matrix<MT2,!SO>& m, TrueType );
    //@}
    //**********************************************************************************************
 
@@ -3066,7 +3066,7 @@ inline const MT2& HermitianMatrix<MT,SO,true>::construct( const Matrix<MT2,SO2>&
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the foreign matrix
-inline TransExprTrait_<MT2>
+inline TransExprTrait_t<MT2>
    HermitianMatrix<MT,SO,true>::construct( const Matrix<MT2,!SO>& m, TrueType )
 {
    return trans( ~m );

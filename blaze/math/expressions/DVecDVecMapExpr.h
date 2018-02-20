@@ -164,7 +164,7 @@ class DVecDVecMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecDVecMapExpr<VT1,VT2,OP,TF>;  //!< Type of this DVecDVecMapExpr instance.
-   using ResultType    = BinaryMapTrait_<RT1,RT2,OP>;     //!< Result type for expression template evaluations.
+   using ResultType    = BinaryMapTrait_t<RT1,RT2,OP>;    //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;      //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;        //!< Resulting element type.
 

@@ -106,7 +106,7 @@ inline decltype(auto)
    using X2            = RemoveReference_t<Rhs>;  // Auxiliary type for the right-hand side composite type
    using ET1           = ElementType_<X1>;        // Element type of the left-hand side sparse vector expression
    using ET2           = ElementType_<X2>;        // Element type of the right-hand side dense vector expression
-   using MultType      = MultTrait_<ET1,ET2>;     // Multiplication result type
+   using MultType      = MultTrait_t<ET1,ET2>;    // Multiplication result type
    using ConstIterator = ConstIterator_<X1>;      // Iterator type of the left-hand sparse vector expression
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );

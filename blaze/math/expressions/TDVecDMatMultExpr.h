@@ -204,10 +204,10 @@ class TDVecDMatMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = TDVecDMatMultExpr<VT,MT>;    //!< Type of this TDVecDMatMultExpr instance.
-   using ResultType    = MultTrait_<VRT,MRT>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<VRT,MRT>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 
@@ -2554,10 +2554,10 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
  public:
    //**Type definitions****************************************************************************
    using This          = DVecScalarMultExpr<VMM,ST,true>;  //!< Type of this DVecScalarMultExpr instance.
-   using ResultType    = MultTrait_<RES,ST>;               //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RES,ST>;              //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;       //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;         //!< Resulting element type.
-   using SIMDType      = SIMDTrait_<ElementType>;          //!< Resulting SIMD element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;         //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;                //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;                 //!< Data type for composite expression templates.
 

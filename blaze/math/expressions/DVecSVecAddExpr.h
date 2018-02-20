@@ -110,7 +110,7 @@ class DVecSVecAddExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = AddExprTrait_<RN1,RN2>;
+   using ExprReturnType = AddExprTrait_t<RN1,RN2>;
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
@@ -130,7 +130,7 @@ class DVecSVecAddExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecSVecAddExpr<VT1,VT2,TF>;  //!< Type of this DVecSVecAddExpr instance.
-   using ResultType    = AddTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
+   using ResultType    = AddTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 

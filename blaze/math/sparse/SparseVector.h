@@ -289,8 +289,8 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST 
                              , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
                          , If_< And< IsComplex< UnderlyingNumeric_t<VT> >
                                    , IsBuiltin<ST> >
-                              , DivTrait_< UnderlyingBuiltin_t<VT>, ST >
-                              , DivTrait_< UnderlyingNumeric_t<VT>, ST > >
+                              , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
+                              , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
                          , ST >;
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );

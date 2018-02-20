@@ -5228,7 +5228,7 @@ struct IsStrictlyUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs1, size_t... CSAs2 >
 struct SubmatrixTrait< Submatrix<MT,AF,SO,DF,CSAs1...>, CSAs2... >
 {
-   using Type = SubmatrixTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs1...> >, CSAs2... >;
+   using Type = SubmatrixTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs1...> >, CSAs2... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5247,7 +5247,7 @@ struct SubmatrixTrait< Submatrix<MT,AF,SO,DF,CSAs1...>, CSAs2... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CRAs >
 struct RowTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 {
-   using Type = RowTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
+   using Type = RowTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5266,7 +5266,7 @@ struct RowTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CRAs >
 struct RowsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 {
-   using Type = RowsTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
+   using Type = RowsTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5285,7 +5285,7 @@ struct RowsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CCAs >
 struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 {
-   using Type = ColumnTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
+   using Type = ColumnTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5304,7 +5304,7 @@ struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CCAs >
 struct ColumnsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 {
-   using Type = ColumnsTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
+   using Type = ColumnsTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5323,7 +5323,7 @@ struct ColumnsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, ptrdiff_t... CBAs >
 struct BandTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CBAs... >
 {
-   using Type = BandTrait_< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CBAs... >;
+   using Type = BandTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CBAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

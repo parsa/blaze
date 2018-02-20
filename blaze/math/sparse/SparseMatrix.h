@@ -423,8 +423,8 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST 
                              , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
                          , If_< And< IsComplex< UnderlyingNumeric_t<MT> >
                                    , IsBuiltin<ST> >
-                              , DivTrait_< UnderlyingBuiltin_t<MT>, ST >
-                              , DivTrait_< UnderlyingNumeric_t<MT>, ST > >
+                              , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
+                              , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
                          , ST >;
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );

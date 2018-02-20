@@ -546,7 +546,7 @@ inline bool isIntact( const SMatTransposer<MT,SO>& m ) noexcept
 template< typename MT, bool SO, size_t... CSAs >
 struct SubmatrixTrait< SMatTransposer<MT,SO>, CSAs... >
 {
-   using Type = SubmatrixTrait_< ResultType_< SMatTransposer<MT,SO> >, CSAs... >;
+   using Type = SubmatrixTrait_t< ResultType_< SMatTransposer<MT,SO> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -565,7 +565,7 @@ struct SubmatrixTrait< SMatTransposer<MT,SO>, CSAs... >
 template< typename MT, bool SO, size_t... CRAs >
 struct RowsTrait< SMatTransposer<MT,SO>, CRAs... >
 {
-   using Type = RowsTrait_< ResultType_< SMatTransposer<MT,SO> >, CRAs... >;
+   using Type = RowsTrait_t< ResultType_< SMatTransposer<MT,SO> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -584,7 +584,7 @@ struct RowsTrait< SMatTransposer<MT,SO>, CRAs... >
 template< typename MT, bool SO, size_t... CCAs >
 struct ColumnsTrait< SMatTransposer<MT,SO>, CCAs... >
 {
-   using Type = ColumnsTrait_< ResultType_< SMatTransposer<MT,SO> >, CCAs... >;
+   using Type = ColumnsTrait_t< ResultType_< SMatTransposer<MT,SO> >, CCAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

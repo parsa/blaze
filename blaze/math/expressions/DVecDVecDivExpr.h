@@ -118,7 +118,7 @@ class DVecDVecDivExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = DivExprTrait_<RN1,RN2>;
+   using ExprReturnType = DivExprTrait_t<RN1,RN2>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -158,7 +158,7 @@ class DVecDVecDivExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecDVecDivExpr<VT1,VT2,TF>;  //!< Type of this DVecDVecDivExpr instance.
-   using ResultType    = DivTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
+   using ResultType    = DivTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 

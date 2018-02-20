@@ -168,7 +168,7 @@ class DMatMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatMapExpr<MT,OP,SO>;       //!< Type of this DMatMapExpr instance.
-   using ResultType    = UnaryMapTrait_<RT,OP>;       //!< Result type for expression template evaluations.
+   using ResultType    = UnaryMapTrait_t<RT,OP>;      //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
@@ -1609,7 +1609,7 @@ inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, ST >;
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const DMatMapExpr<MT,UnaryPow<ScalarType>,SO>;
    return ReturnType( ~dm, UnaryPow<ScalarType>( exp ) );
 }

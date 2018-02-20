@@ -110,13 +110,13 @@ class DVecDVecCrossExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = SubExprTrait_< MultExprTrait_<RN1,RN2>, MultExprTrait_<RN1,RN2> >;
+   using ExprReturnType = SubExprTrait_t< MultExprTrait_t<RN1,RN2>, MultExprTrait_t<RN1,RN2> >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
    using This          = DVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of this DVecDVecCrossExpr instance.
-   using ResultType    = CrossTrait_<RT1,RT2>;           //!< Result type for expression template evaluations.
+   using ResultType    = CrossTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;     //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;       //!< Resulting element type.
 

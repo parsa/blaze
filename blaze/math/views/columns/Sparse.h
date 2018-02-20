@@ -129,7 +129,7 @@ class Columns<MT,true,false,SF,CCAs...>
 
    using BaseType      = SparseMatrix<This,true>;     //!< Base type of this Columns instance.
    using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
@@ -827,7 +827,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -887,7 +887,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -947,7 +947,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -2126,7 +2126,7 @@ inline void Columns<MT,true,false,SF,CCAs...>::addAssign( const Matrix<MT2,SO>& 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -2163,7 +2163,7 @@ inline void Columns<MT,true,false,SF,CCAs...>::subAssign( const Matrix<MT2,SO>& 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -2200,7 +2200,7 @@ inline void Columns<MT,true,false,SF,CCAs...>::schurAssign( const Matrix<MT2,SO>
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
@@ -2255,7 +2255,7 @@ class Columns<MT,false,false,false,CCAs...>
 
    using BaseType      = SparseMatrix<This,true>;     //!< Base type of this Columns instance.
    using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
@@ -3243,7 +3243,7 @@ inline Columns<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -3305,7 +3305,7 @@ inline Columns<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -3367,7 +3367,7 @@ inline Columns<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -4553,7 +4553,7 @@ inline void Columns<MT,false,false,false,CCAs...>::addAssign( const Matrix<MT2,S
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -4589,7 +4589,7 @@ inline void Columns<MT,false,false,false,CCAs...>::subAssign( const Matrix<MT2,S
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -4625,7 +4625,7 @@ inline void Columns<MT,false,false,false,CCAs...>::schurAssign( const Matrix<MT2
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
@@ -4680,7 +4680,7 @@ class Columns<MT,false,false,true,CCAs...>
 
    using BaseType      = SparseMatrix<This,true>;     //!< Base type of this Columns instance.
    using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.

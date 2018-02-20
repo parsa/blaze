@@ -158,7 +158,7 @@ class SMatDeclHermExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatDeclHermExpr<MT,SO>;     //!< Type of this SMatDeclHermExpr instance.
-   using ResultType    = DeclHermTrait_<RT>;          //!< Result type for expression template evaluations.
+   using ResultType    = DeclHermTrait_t<RT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Resulting element type.

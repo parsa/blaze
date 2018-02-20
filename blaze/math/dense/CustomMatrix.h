@@ -427,10 +427,10 @@ class CustomMatrix
    //! Transpose type for expression template evaluations.
    using TransposeType = DynamicMatrix<RemoveConst_t<Type>,!SO>;
 
-   using ElementType   = Type;                     //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the matrix elements.
-   using ReturnType    = const Type&;              //!< Return type for expression template evaluations.
-   using CompositeType = const This&;              //!< Data type for composite expression templates.
+   using ElementType   = Type;                      //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using CompositeType = const This&;               //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant matrix value.
    using ConstReference = const Type&;  //!< Reference to a constant matrix value.
@@ -1437,9 +1437,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   using TT = TransExprTrait_<This>;
-   using CT = CTransExprTrait_<This>;
-   using IT = InvExprTrait_<This>;
+   using TT = TransExprTrait_t<This>;
+   using CT = CTransExprTrait_t<This>;
+   using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -3230,10 +3230,10 @@ class CustomMatrix<Type,AF,PF,true>
    //! Transpose type for expression template evaluations.
    using TransposeType = DynamicMatrix<RemoveConst_t<Type>,false>;
 
-   using ElementType   = Type;                     //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the matrix elements.
-   using ReturnType    = const Type&;              //!< Return type for expression template evaluations.
-   using CompositeType = const This&;              //!< Data type for composite expression templates.
+   using ElementType   = Type;                      //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using CompositeType = const This&;               //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant matrix value.
    using ConstReference = const Type&;  //!< Reference to a constant matrix value.
@@ -4226,9 +4226,9 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,true>&
    CustomMatrix<Type,AF,PF,true>::operator=( const Matrix<MT,SO>& rhs )
 {
-   using TT = TransExprTrait_<This>;
-   using CT = CTransExprTrait_<This>;
-   using IT = InvExprTrait_<This>;
+   using TT = TransExprTrait_t<This>;
+   using CT = CTransExprTrait_t<This>;
+   using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -6323,7 +6323,7 @@ struct IsPadded< CustomMatrix<T,AF,padded,SO> >
 template< typename T, bool AF, bool PF, bool SO, typename OP >
 struct UnaryMapTrait< CustomMatrix<T,AF,PF,SO>, OP >
 {
-   using Type = DynamicMatrix< UnaryMapTrait_<T,OP>, SO >;
+   using Type = DynamicMatrix< UnaryMapTrait_t<T,OP>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6342,85 +6342,85 @@ struct UnaryMapTrait< CustomMatrix<T,AF,PF,SO>, OP >
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF,PF,SO>, StaticMatrix<T2,M,N,SO>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF,PF,SO1>, StaticMatrix<T2,M,N,SO2>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF, typename OP >
 struct BinaryMapTrait< StaticMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2, typename OP >
 struct BinaryMapTrait< StaticMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2, size_t M, size_t N, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF,PF,SO>, HybridMatrix<T2,M,N,SO>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, size_t M, size_t N, bool SO2, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF,PF,SO1>, HybridMatrix<T2,M,N,SO2>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF, typename OP >
 struct BinaryMapTrait< HybridMatrix<T1,M,N,SO>, CustomMatrix<T2,AF,PF,SO>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool AF, bool PF, bool SO2, typename OP >
 struct BinaryMapTrait< HybridMatrix<T1,M,N,SO1>, CustomMatrix<T2,AF,PF,SO2>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF,PF,SO>, DynamicMatrix<T2,SO>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, SO >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF,PF,SO1>, DynamicMatrix<T2,SO2>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, false >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, false >;
 };
 
 template< typename T1, bool SO, typename T2, bool AF, bool PF, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, SO >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, false >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, false >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO, typename T2, bool AF2, bool PF2, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF1,PF1,SO>, CustomMatrix<T2,AF2,PF2,SO>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, SO >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, SO >;
 };
 
 template< typename T1, bool AF1, bool PF1, bool SO1, typename T2, bool AF2, bool PF2, bool SO2, typename OP >
 struct BinaryMapTrait< CustomMatrix<T1,AF1,PF1,SO1>, CustomMatrix<T2,AF2,PF2,SO2>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, false >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************

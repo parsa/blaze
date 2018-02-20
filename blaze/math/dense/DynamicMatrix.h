@@ -219,15 +219,15 @@ class DynamicMatrix
 {
  public:
    //**Type definitions****************************************************************************
-   using This          = DynamicMatrix<Type,SO>;   //!< Type of this DynamicMatrix instance.
-   using BaseType      = DenseMatrix<This,SO>;     //!< Base type of this DynamicMatrix instance.
-   using ResultType    = This;                     //!< Result type for expression template evaluations.
-   using OppositeType  = DynamicMatrix<Type,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = DynamicMatrix<Type,!SO>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = Type;                     //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;  //!< SIMD type of the matrix elements.
-   using ReturnType    = const Type&;              //!< Return type for expression template evaluations.
-   using CompositeType = const This&;              //!< Data type for composite expression templates.
+   using This          = DynamicMatrix<Type,SO>;    //!< Type of this DynamicMatrix instance.
+   using BaseType      = DenseMatrix<This,SO>;      //!< Base type of this DynamicMatrix instance.
+   using ResultType    = This;                      //!< Result type for expression template evaluations.
+   using OppositeType  = DynamicMatrix<Type,!SO>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = DynamicMatrix<Type,!SO>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = Type;                      //!< Type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
+   using ReturnType    = const Type&;               //!< Return type for expression template evaluations.
+   using CompositeType = const This&;               //!< Data type for composite expression templates.
 
    using Reference      = Type&;        //!< Reference to a non-constant matrix value.
    using ConstReference = const Type&;  //!< Reference to a constant matrix value.
@@ -1319,9 +1319,9 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   using TT = TransExprTrait_<This>;
-   using CT = CTransExprTrait_<This>;
-   using IT = InvExprTrait_<This>;
+   using TT = TransExprTrait_t<This>;
+   using CT = CTransExprTrait_t<This>;
+   using IT = InvExprTrait_t<This>;
 
    if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
       transpose();
@@ -3190,7 +3190,7 @@ class DynamicMatrix<Type,true>
    using OppositeType  = DynamicMatrix<Type,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = DynamicMatrix<Type,false>;  //!< Transpose type for expression template evaluations.
    using ElementType   = Type;                       //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;    //!< SIMD type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;   //!< SIMD type of the matrix elements.
    using ReturnType    = const Type&;                //!< Return type for expression template evaluations.
    using CompositeType = const This&;                //!< Data type for composite expression templates.
 
@@ -4279,9 +4279,9 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matrix<MT,SO>& rhs )
 {
-   using TT = TransExprTrait_<This>;
-   using CT = CTransExprTrait_<This>;
-   using IT = InvExprTrait_<This>;
+   using TT = TransExprTrait_t<This>;
+   using CT = CTransExprTrait_t<This>;
+   using IT = InvExprTrait_t<This>;
 
    if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
       transpose();
@@ -6460,61 +6460,61 @@ struct IsShrinkable< DynamicMatrix<T,SO> >
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct AddTrait< DynamicMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct AddTrait< DynamicMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, false >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct AddTrait< HybridMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct AddTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, false >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6533,61 +6533,61 @@ struct AddTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct SubTrait< DynamicMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct SubTrait< DynamicMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, false >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SubTrait< HybridMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, false >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6606,61 +6606,61 @@ struct SubTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct SchurTrait< DynamicMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SchurTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SchurTrait< StaticMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct SchurTrait< DynamicMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SchurTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, false >;
+   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SchurTrait< HybridMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, false >;
+   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SchurTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, false >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6679,103 +6679,103 @@ struct SchurTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< DynamicMatrix<T1,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, typename T2, bool SO >
 struct MultTrait< T1, DynamicMatrix<T2,SO>, EnableIf_<IsNumeric<T1> > >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO, typename T2, size_t N >
 struct MultTrait< DynamicMatrix<T1,SO>, StaticVector<T2,N,false> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool SO >
 struct MultTrait< StaticVector<T1,N,true>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO, typename T2, size_t N >
 struct MultTrait< DynamicMatrix<T1,SO>, HybridVector<T2,N,false> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool SO >
 struct MultTrait< HybridVector<T1,N,true>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< DynamicMatrix<T1,SO>, DynamicVector<T2,false> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, bool SO >
 struct MultTrait< DynamicVector<T1,true>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO, typename T2, bool AF, bool PF >
 struct MultTrait< DynamicMatrix<T1,SO>, CustomVector<T2,AF,PF,false> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, bool SO >
 struct MultTrait< CustomVector<T1,AF,PF,true>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< DynamicMatrix<T1,SO>, CompressedVector<T2,false> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, bool SO >
 struct MultTrait< CompressedVector<T1,true>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct MultTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct MultTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct MultTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct MultTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6794,7 +6794,7 @@ struct MultTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct DivTrait< DynamicMatrix<T1,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = DynamicMatrix< DivTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< DivTrait_t<T1,T2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6813,7 +6813,7 @@ struct DivTrait< DynamicMatrix<T1,SO>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T, bool SO, typename OP >
 struct UnaryMapTrait< DynamicMatrix<T,SO>, OP >
 {
-   using Type = DynamicMatrix< UnaryMapTrait_<T,OP>, SO >;
+   using Type = DynamicMatrix< UnaryMapTrait_t<T,OP>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6832,61 +6832,61 @@ struct UnaryMapTrait< DynamicMatrix<T,SO>, OP >
 template< typename T1, bool SO, typename T2, size_t M, size_t N, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO>, StaticMatrix<T2,M,N,SO>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, typename OP >
 struct BinaryMapTrait< StaticMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2, typename OP >
 struct BinaryMapTrait< StaticMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2, size_t M, size_t N, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO>, HybridMatrix<T2,M,N,SO>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, typename OP >
 struct BinaryMapTrait< HybridMatrix<T1,M,N,SO>, DynamicMatrix<T2,SO>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2, typename OP >
 struct BinaryMapTrait< HybridMatrix<T1,M,N,SO1>, DynamicMatrix<T2,SO2>, OP >
 {
-   using Type = HybridMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = HybridMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 
 template< typename T1, bool SO, typename T2, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, SO >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2, typename OP >
 struct BinaryMapTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2>, OP >
 {
-   using Type = DynamicMatrix< BinaryMapTrait_<T1,T2,OP>, false >;
+   using Type = DynamicMatrix< BinaryMapTrait_t<T1,T2,OP>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -142,10 +142,10 @@ class Column<MT,true,true,SF,CCAs...>
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
    using CompositeType = const Column&;               //!< Data type for composite expression templates.
 
@@ -1140,7 +1140,7 @@ inline Column<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -2270,7 +2270,7 @@ class Column<MT,false,true,false,CCAs...>
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -3478,7 +3478,7 @@ inline Column<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -4159,10 +4159,10 @@ class Column<MT,false,true,true,CCAs...>
 
    using BaseType      = DenseVector<This,false>;     //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the column elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
    using CompositeType = const Column&;               //!< Data type for composite expression templates.
 
@@ -5132,7 +5132,7 @@ inline Column<MT,false,true,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );

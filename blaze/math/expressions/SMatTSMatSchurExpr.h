@@ -124,7 +124,7 @@ class SMatTSMatSchurExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_<RN1,RN2>;
+   using ExprReturnType = MultExprTrait_t<RN1,RN2>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -146,7 +146,7 @@ class SMatTSMatSchurExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatTSMatSchurExpr<MT1,MT2>;  //!< Type of this SMatTSMatSchurExpr instance.
-   using ResultType    = SchurTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using ResultType    = SchurTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
@@ -1091,7 +1091,7 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >
+inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, false >
    smattsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1101,7 +1101,7 @@ inline const IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >,
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_< ElementType_<MT1>, ElementType_<MT2> >, false >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, false >( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************

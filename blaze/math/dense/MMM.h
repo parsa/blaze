@@ -108,7 +108,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
    using ET3 = ElementType_<MT3>;
-   using SIMDType = SIMDTrait_<ET1>;
+   using SIMDType = SIMDTrait_t<ET1>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
@@ -608,7 +608,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
    using ET3 = ElementType_<MT3>;
-   using SIMDType = SIMDTrait_<ET1>;
+   using SIMDType = SIMDTrait_t<ET1>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE       ( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT1 );
@@ -1132,7 +1132,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
    using ET3 = ElementType_<MT3>;
-   using SIMDType = SIMDTrait_<ET1>;
+   using SIMDType = SIMDTrait_t<ET1>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE         ( MT1 );
@@ -1658,7 +1658,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
    using ET3 = ElementType_<MT3>;
-   using SIMDType = SIMDTrait_<ET1>;
+   using SIMDType = SIMDTrait_t<ET1>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE      ( MT1 );
@@ -2202,7 +2202,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
    using ET3 = ElementType_<MT3>;
-   using SIMDType = SIMDTrait_<ET1>;
+   using SIMDType = SIMDTrait_t<ET1>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE         ( MT1 );
@@ -2720,7 +2720,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    using ET1 = ElementType_<MT1>;
    using ET2 = ElementType_<MT2>;
    using ET3 = ElementType_<MT3>;
-   using SIMDType = SIMDTrait_<ET1>;
+   using SIMDType = SIMDTrait_t<ET1>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE             ( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE      ( MT1 );

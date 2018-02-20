@@ -2366,7 +2366,7 @@ struct HasMutableDataAccess< Elements<VT,TF,true,CEAs...> >
 template< typename VT, bool TF, bool DF, size_t... CEAs, size_t... CSAs >
 struct SubvectorTrait< Elements<VT,TF,DF,CEAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< Elements<VT,TF,DF,CEAs...> >, CSAs... >;
+   using Type = SubvectorTrait_t< ResultType_< Elements<VT,TF,DF,CEAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2385,7 +2385,7 @@ struct SubvectorTrait< Elements<VT,TF,DF,CEAs...>, CSAs... >
 template< typename VT, bool TF, bool DF, size_t... CEAs1, size_t... CEAs2 >
 struct ElementsTrait< Elements<VT,TF,DF,CEAs1...>, CEAs2... >
 {
-   using Type = ElementsTrait_< ResultType_< Elements<VT,TF,DF,CEAs1...> >, CEAs2... >;
+   using Type = ElementsTrait_t< ResultType_< Elements<VT,TF,DF,CEAs1...> >, CEAs2... >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -149,15 +149,15 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -1475,7 +1475,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1532,7 +1532,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1584,7 +1584,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1641,7 +1641,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1693,7 +1693,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -1751,7 +1751,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -3421,15 +3421,15 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,unaligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -4728,7 +4728,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4785,7 +4785,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4837,7 +4837,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4894,7 +4894,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4946,7 +4946,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -5004,7 +5004,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -6652,15 +6652,15 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -7566,7 +7566,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -7623,7 +7623,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -7675,7 +7675,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -7732,7 +7732,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -7784,7 +7784,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -7842,7 +7842,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -9504,15 +9504,15 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //! Type of this Submatrix instance.
    using This = Submatrix<MT,aligned,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Submatrix instance.
-   using ViewedType    = MT;                           //!< The type viewed by this Submatrix instance.
-   using ResultType    = SubmatrixTrait_<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;             //!< Type of the submatrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;              //!< Return type for expression template evaluations
-   using CompositeType = const Submatrix&;             //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
+   using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
+   using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
+   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
    using ConstReference = ConstReference_<MT>;
@@ -10398,7 +10398,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -10455,7 +10455,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -10507,7 +10507,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -10564,7 +10564,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -10616,7 +10616,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -10674,7 +10674,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
 
-   using SchurType = SchurTrait_< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 

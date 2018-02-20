@@ -123,7 +123,7 @@ class DVecScalarMultExpr
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_<RN,ST>;
+   using ExprReturnType = MultExprTrait_t<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -163,7 +163,7 @@ class DVecScalarMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecScalarMultExpr<VT,ST,TF>;  //!< Type of this DVecScalarMultExpr instance.
-   using ResultType    = MultTrait_<RT,ST>;             //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
 
@@ -1079,7 +1079,7 @@ inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_t<VT>, ST >;
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
    using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~vec, scalar );
 }
@@ -1116,7 +1116,7 @@ inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_t<VT> >;
+   using ScalarType = MultTrait_t< ST, UnderlyingBuiltin_t<VT> >;
    using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~vec, scalar );
 }

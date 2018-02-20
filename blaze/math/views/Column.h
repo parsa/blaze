@@ -1621,7 +1621,7 @@ struct IsOpposedView< Column<MT,false,DF,false,CCAs...> >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CSAs >
 struct SubvectorTrait< Column<MT,SO,DF,SF,CCAs...>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< Column<MT,SO,DF,SF,CCAs...> >, CSAs... >;
+   using Type = SubvectorTrait_t< ResultType_< Column<MT,SO,DF,SF,CCAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1640,7 +1640,7 @@ struct SubvectorTrait< Column<MT,SO,DF,SF,CCAs...>, CSAs... >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CEAs >
 struct ElementsTrait< Column<MT,SO,DF,SF,CCAs...>, CEAs... >
 {
-   using Type = ElementsTrait_< ResultType_< Column<MT,SO,DF,SF,CCAs...> >, CEAs... >;
+   using Type = ElementsTrait_t< ResultType_< Column<MT,SO,DF,SF,CCAs...> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

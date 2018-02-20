@@ -194,10 +194,10 @@ class TSVecDMatMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = TSVecDMatMultExpr<VT,MT>;    //!< Type of this TSVecDMatMultExpr instance.
-   using ResultType    = MultTrait_<VRT,MRT>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<VRT,MRT>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 

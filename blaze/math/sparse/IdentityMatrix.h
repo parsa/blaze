@@ -1670,7 +1670,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return IdentityMatrix< MultTrait_<T1,T2>, SO1 >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t<T1,T2>, SO1 >( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1840,133 +1840,133 @@ struct IsResizable< IdentityMatrix<T,SO> >
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct AddTrait< IdentityMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct AddTrait< IdentityMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO2 >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO2 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO1 >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct AddTrait< IdentityMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct AddTrait< IdentityMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO2 >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO2 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct AddTrait< HybridMatrix<T1,M,N,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct AddTrait< HybridMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = HybridMatrix< AddTrait_<T1,T2>, M, N, SO1 >;
+   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< IdentityMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< IdentityMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO2 >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< DynamicMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< DynamicMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2, bool AF, bool PF >
 struct AddTrait< IdentityMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct AddTrait< IdentityMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO2 >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
 struct AddTrait< CustomMatrix<T1,AF,PF,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< AddTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< IdentityMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< IdentityMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< AddTrait_<T1,T2>, false >;
+   using Type = CompressedMatrix< AddTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< CompressedMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< CompressedMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< AddTrait_<T1,T2>, false >;
+   using Type = CompressedMatrix< AddTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct AddTrait< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< AddTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< AddTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct AddTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< AddTrait_<T1,T2>, false >;
+   using Type = CompressedMatrix< AddTrait_t<T1,T2>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1985,133 +1985,133 @@ struct AddTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct SubTrait< IdentityMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SubTrait< IdentityMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO2 >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO2 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO1 >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2, size_t M, size_t N >
 struct SubTrait< IdentityMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SubTrait< IdentityMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO2 >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO2 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SubTrait< HybridMatrix<T1,M,N,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< HybridMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = HybridMatrix< SubTrait_<T1,T2>, M, N, SO1 >;
+   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< IdentityMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< IdentityMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO2 >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< DynamicMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< DynamicMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2, bool AF, bool PF >
 struct SubTrait< IdentityMatrix<T1,SO>, CustomMatrix<T2,AF,PF,SO> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct SubTrait< IdentityMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO2 >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO, typename T2 >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
 struct SubTrait< CustomMatrix<T1,AF,PF,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< SubTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< IdentityMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< SubTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< IdentityMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2>, false >;
+   using Type = CompressedMatrix< SubTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< CompressedMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< SubTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< CompressedMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2>, false >;
+   using Type = CompressedMatrix< SubTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SubTrait< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2> , SO >;
+   using Type = CompressedMatrix< SubTrait_t<T1,T2> , SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SubTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< SubTrait_<T1,T2> , false >;
+   using Type = CompressedMatrix< SubTrait_t<T1,T2> , false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2130,79 +2130,79 @@ struct SubTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SchurTrait< IdentityMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< StaticMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct SchurTrait< IdentityMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< HybridMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< IdentityMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< DynamicMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct SchurTrait< IdentityMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO2 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SchurTrait< IdentityMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< IdentityMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, false >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct SchurTrait< CompressedMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< CompressedMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, false >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = IdentityMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = IdentityMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2221,139 +2221,139 @@ struct SchurTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, typename T2, bool SO >
 struct MultTrait< T1, IdentityMatrix<T2,SO>, EnableIf_< IsNumeric<T1> > >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, bool SO, typename T2, size_t N >
 struct MultTrait< IdentityMatrix<T1,SO>, StaticVector<T2,N,false> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, false >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool SO >
 struct MultTrait< StaticVector<T1,N,true>, IdentityMatrix<T2,SO> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
 };
 
 template< typename T1, bool SO, typename T2, size_t N >
 struct MultTrait< IdentityMatrix<T1,SO>, HybridVector<T2,N,false> >
 {
-   using Type = HybridVector< MultTrait_<T1,T2>, N, false >;
+   using Type = HybridVector< MultTrait_t<T1,T2>, N, false >;
 };
 
 template< typename T1, size_t N, typename T2, bool SO >
 struct MultTrait< HybridVector<T1,N,true>, IdentityMatrix<T2,SO> >
 {
-   using Type = HybridVector< MultTrait_<T1,T2>, N, true >;
+   using Type = HybridVector< MultTrait_t<T1,T2>, N, true >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< IdentityMatrix<T1,SO>, DynamicVector<T2,false> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, bool SO >
 struct MultTrait< DynamicVector<T1,true>, IdentityMatrix<T2,SO> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO, typename T2, bool AF, bool PF >
 struct MultTrait< IdentityMatrix<T1,SO>, CustomVector<T2,AF,PF,false> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, false >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, bool SO >
 struct MultTrait< CustomVector<T1,AF,PF,true>, IdentityMatrix<T2,SO> >
 {
-   using Type = DynamicVector< MultTrait_<T1,T2>, true >;
+   using Type = DynamicVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO, typename T2 >
 struct MultTrait< IdentityMatrix<T1,SO>, CompressedVector<T2,false> >
 {
-   using Type = CompressedVector< MultTrait_<T1,T2>, false >;
+   using Type = CompressedVector< MultTrait_t<T1,T2>, false >;
 };
 
 template< typename T1, typename T2, bool SO >
 struct MultTrait< CompressedVector<T1,true>, IdentityMatrix<T2,SO> >
 {
-   using Type = CompressedVector< MultTrait_<T1,T2>, true >;
+   using Type = CompressedVector< MultTrait_t<T1,T2>, true >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct MultTrait< IdentityMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO1 >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO1 >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
 struct MultTrait< IdentityMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
 {
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO1 >;
+   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct MultTrait< HybridMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = HybridMatrix< MultTrait_<T1,T2>, M, N, SO1 >;
+   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct MultTrait< IdentityMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct MultTrait< DynamicMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
 struct MultTrait< IdentityMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
 struct MultTrait< CustomMatrix<T1,AF,PF,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = DynamicMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct MultTrait< IdentityMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct MultTrait< CompressedMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = CompressedMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 struct MultTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 {
-   using Type = IdentityMatrix< MultTrait_<T1,T2>, SO1 >;
+   using Type = IdentityMatrix< MultTrait_t<T1,T2>, SO1 >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2372,7 +2372,7 @@ struct MultTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 template< typename T1, bool SO, typename T2 >
 struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 {
-   using Type = CompressedMatrix< DivTrait_<T1,T2>, SO >;
+   using Type = CompressedMatrix< DivTrait_t<T1,T2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2391,49 +2391,49 @@ struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
 template< typename T, bool SO, typename OP >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, OP >
 {
-   using Type = CompressedMatrix< UnaryMapTrait_<T,OP>, SO >;
+   using Type = CompressedMatrix< UnaryMapTrait_t<T,OP>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Abs >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_<T,Abs>, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t<T,Abs>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Floor >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_<T,Floor>, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t<T,Floor>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Ceil >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_<T,Ceil>, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t<T,Ceil>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Trunc >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_<T,Trunc>, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t<T,Trunc>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Round >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_<T,Round>, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t<T,Round>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Conj >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_<T,Conj>, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t<T,Conj>, SO >;
 };
 
 template< typename T, bool SO >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, Real >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_<T,Real>, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t<T,Real>, SO >;
 };
 
 template< typename T, bool SO >

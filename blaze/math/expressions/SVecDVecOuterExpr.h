@@ -122,7 +122,7 @@ class SVecDVecOuterExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_<RN1,RN2>;
+   using ExprReturnType = MultExprTrait_t<RN1,RN2>;
    //**********************************************************************************************
 
    //**Evaluation strategy*************************************************************************
@@ -176,7 +176,7 @@ class SVecDVecOuterExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SVecDVecOuterExpr<VT1,VT2>;  //!< Type of this SVecDVecOuterExpr instance.
-   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
@@ -644,7 +644,7 @@ class SVecDVecOuterExpr
 
       for( ConstIterator element=begin; element!=end; ++element )
       {
-         const SIMDTrait_<ElementType> x1( set( element->value() ) );
+         const SIMDTrait_t<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
 
@@ -933,7 +933,7 @@ class SVecDVecOuterExpr
       {
          if( isDefault( element->value() ) ) continue;
 
-         const SIMDTrait_<ElementType> x1( set( element->value() ) );
+         const SIMDTrait_t<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
 
@@ -1107,7 +1107,7 @@ class SVecDVecOuterExpr
       {
          if( isDefault( element->value() ) ) continue;
 
-         const SIMDTrait_<ElementType> x1( set( element->value() ) );
+         const SIMDTrait_t<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
 
@@ -1304,7 +1304,7 @@ class SVecDVecOuterExpr
                reset( (~A)(i,j) );
          }
 
-         const SIMDTrait_<ElementType> x1( set( element->value() ) );
+         const SIMDTrait_t<ElementType> x1( set( element->value() ) );
 
          size_t j( 0UL );
 

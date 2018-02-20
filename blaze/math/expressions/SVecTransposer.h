@@ -477,7 +477,7 @@ inline bool isIntact( const SVecTransposer<VT,TF>& v ) noexcept
 template< typename VT, bool TF, size_t... CSAs >
 struct SubvectorTrait< SVecTransposer<VT,TF>, CSAs... >
 {
-   using Type = SubvectorTrait_< ResultType_< SVecTransposer<VT,TF> >, CSAs... >;
+   using Type = SubvectorTrait_t< ResultType_< SVecTransposer<VT,TF> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -496,7 +496,7 @@ struct SubvectorTrait< SVecTransposer<VT,TF>, CSAs... >
 template< typename VT, bool TF, size_t... CEAs >
 struct ElementsTrait< SVecTransposer<VT,TF>, CEAs... >
 {
-   using Type = ElementsTrait_< ResultType_< SVecTransposer<VT,TF> >, CEAs... >;
+   using Type = ElementsTrait_t< ResultType_< SVecTransposer<VT,TF> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

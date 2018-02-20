@@ -157,7 +157,7 @@ class SMatDeclUppExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatDeclUppExpr<MT,SO>;      //!< Type of this SMatDeclUppExpr instance.
-   using ResultType    = DeclUppTrait_<RT>;           //!< Result type for expression template evaluations.
+   using ResultType    = DeclUppTrait_t<RT>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Resulting element type.

@@ -126,7 +126,7 @@ class DVecScalarDivExpr
    enum : bool { returnExpr = !IsTemporary<RN>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = DivExprTrait_<RN,ST>;
+   using ExprReturnType = DivExprTrait_t<RN,ST>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -166,7 +166,7 @@ class DVecScalarDivExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecScalarDivExpr<VT,ST,TF>;  //!< Type of this DVecScalarDivExpr instance.
-   using ResultType    = DivTrait_<RT,ST>;             //!< Result type for expression template evaluations.
+   using ResultType    = DivTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
 
@@ -1032,8 +1032,8 @@ struct DVecScalarDivExprHelper
                              , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
                          , If_< And< IsComplex< UnderlyingNumeric_t<VT> >
                                    , IsBuiltin<ST> >
-                              , DivTrait_< UnderlyingBuiltin_t<VT>, ST >
-                              , DivTrait_< UnderlyingNumeric_t<VT>, ST > >
+                              , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
+                              , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
                          , ST >;
    //**********************************************************************************************
 
@@ -1183,7 +1183,7 @@ inline decltype(auto) operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 sc
 
    BLAZE_USER_ASSERT( scalar != ST2(0), "Division by zero detected" );
 
-   using MultType   = MultTrait_<ST1,ST2>;
+   using MultType   = MultTrait_t<ST1,ST2>;
    using ReturnType = typename DVecScalarDivExprHelper<VT,MultType,TF>::Type;
    using ScalarType = RightOperand_<ReturnType>;
 

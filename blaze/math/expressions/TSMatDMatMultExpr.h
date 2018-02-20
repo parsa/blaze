@@ -234,7 +234,7 @@ class TSMatDMatMultExpr
    //! Type of this TSMatDMatMultExpr instance.
    using This = TSMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.

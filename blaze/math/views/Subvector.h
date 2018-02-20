@@ -2777,7 +2777,7 @@ struct IsContiguous< Subvector<VT,AF,TF,true,CSAs...> >
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs1, size_t... CSAs2 >
 struct SubvectorTrait< Subvector<VT,AF,TF,DF,CSAs1...>, CSAs2... >
 {
-   using Type = SubvectorTrait_< ResultType_< Subvector<VT,AF,TF,DF,CSAs1...> >, CSAs2... >;
+   using Type = SubvectorTrait_t< ResultType_< Subvector<VT,AF,TF,DF,CSAs1...> >, CSAs2... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2796,7 +2796,7 @@ struct SubvectorTrait< Subvector<VT,AF,TF,DF,CSAs1...>, CSAs2... >
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs, size_t... CEAs >
 struct ElementsTrait< Subvector<VT,AF,TF,DF,CSAs...>, CEAs... >
 {
-   using Type = ElementsTrait_< ResultType_< Subvector<VT,AF,TF,DF,CSAs...> >, CEAs... >;
+   using Type = ElementsTrait_t< ResultType_< Subvector<VT,AF,TF,DF,CSAs...> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

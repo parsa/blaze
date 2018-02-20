@@ -149,7 +149,7 @@ class SMatMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatMapExpr<MT,OP,SO>;       //!< Type of this SMatMapExpr instance.
-   using ResultType    = UnaryMapTrait_<RT,OP>;       //!< Result type for expression template evaluations.
+   using ResultType    = UnaryMapTrait_t<RT,OP>;      //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
@@ -1480,7 +1480,7 @@ inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, ST >;
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const SMatMapExpr<MT,UnaryPow<ScalarType>,SO>;
    return ReturnType( ~sm, UnaryPow<ScalarType>( exp ) );
 }

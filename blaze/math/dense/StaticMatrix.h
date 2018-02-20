@@ -230,7 +230,7 @@ class StaticMatrix
    using OppositeType  = StaticMatrix<Type,M,N,!SO>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = StaticMatrix<Type,N,M,!SO>;  //!< Transpose type for expression template evaluations.
    using ElementType   = Type;                        //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< SIMD type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the matrix elements.
    using ReturnType    = const Type&;                 //!< Return type for expression template evaluations.
    using CompositeType = const This&;                 //!< Data type for composite expression templates.
 
@@ -1394,9 +1394,9 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   using TT = TransExprTrait_<This>;
-   using CT = CTransExprTrait_<This>;
-   using IT = InvExprTrait_<This>;
+   using TT = TransExprTrait_t<This>;
+   using CT = CTransExprTrait_t<This>;
+   using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -3107,7 +3107,7 @@ class StaticMatrix<Type,M,N,true>
    using OppositeType  = StaticMatrix<Type,M,N,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = StaticMatrix<Type,N,M,false>;  //!< Transpose type for expression template evaluations.
    using ElementType   = Type;                          //!< Type of the matrix elements.
-   using SIMDType      = SIMDTrait_<ElementType>;       //!< SIMD type of the matrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the matrix elements.
    using ReturnType    = const Type&;                   //!< Return type for expression template evaluations.
    using CompositeType = const This&;                   //!< Data type for composite expression templates.
 
@@ -4274,9 +4274,9 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   using TT = TransExprTrait_<This>;
-   using CT = CTransExprTrait_<This>;
-   using IT = InvExprTrait_<This>;
+   using TT = TransExprTrait_t<This>;
+   using CT = CTransExprTrait_t<This>;
+   using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
@@ -6338,13 +6338,13 @@ struct IsPadded< StaticMatrix<T,M,N,SO> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct AddTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< AddTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6363,13 +6363,13 @@ struct AddTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SubTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< SubTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6388,13 +6388,13 @@ struct SubTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct SchurTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
 struct SchurTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, false >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6413,79 +6413,79 @@ struct SchurTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< T1, StaticMatrix<T2,M,N,SO>, EnableIf_<IsNumeric<T1> > >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, StaticVector<T2,N,false> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
 };
 
 template< typename T1, size_t M, typename T2, size_t N, bool SO >
 struct MultTrait< StaticVector<T1,M,true>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t L >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, HybridVector<T2,L,false> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
 };
 
 template< typename T1, size_t L, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< HybridVector<T1,L,true>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< DynamicVector<T1,true>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, CustomVector<T2,AF,PF,false> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
 };
 
 template< typename T1, bool AF, bool PF, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< CustomVector<T1,AF,PF,true>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct MultTrait< StaticMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, M, false >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
 };
 
 template< typename T1, typename T2, size_t M, size_t N, bool SO >
 struct MultTrait< CompressedVector<T1,true>, StaticMatrix<T2,M,N,SO> >
 {
-   using Type = StaticVector< MultTrait_<T1,T2>, N, true >;
+   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
 };
 
 template< typename T1, size_t M, size_t K, bool SO1, typename T2, size_t N, bool SO2 >
 struct MultTrait< StaticMatrix<T1,M,K,SO1>, StaticMatrix<T2,K,N,SO2> >
 {
-   using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO1 >;
+   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO1 >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6504,7 +6504,7 @@ struct MultTrait< StaticMatrix<T1,M,K,SO1>, StaticMatrix<T2,K,N,SO2> >
 template< typename T1, size_t M, size_t N, bool SO, typename T2 >
 struct DivTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 {
-   using Type = StaticMatrix< DivTrait_<T1,T2>, M, N, SO >;
+   using Type = StaticMatrix< DivTrait_t<T1,T2>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6523,7 +6523,7 @@ struct DivTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_<IsNumeric<T2> > >
 template< typename T, size_t M, size_t N, bool SO, typename OP >
 struct UnaryMapTrait< StaticMatrix<T,M,N,SO>, OP >
 {
-   using Type = StaticMatrix< UnaryMapTrait_<T,OP>, M, N, SO >;
+   using Type = StaticMatrix< UnaryMapTrait_t<T,OP>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6542,13 +6542,13 @@ struct UnaryMapTrait< StaticMatrix<T,M,N,SO>, OP >
 template< typename T1, size_t M, size_t N, bool SO, typename T2, typename OP >
 struct BinaryMapTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, SO >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
 };
 
 template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2, typename OP >
 struct BinaryMapTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2>, OP >
 {
-   using Type = StaticMatrix< BinaryMapTrait_<T1,T2,OP>, M, N, false >;
+   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
 };
 /*! \endcond */
 //*************************************************************************************************

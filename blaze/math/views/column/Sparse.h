@@ -130,7 +130,7 @@ class Column<MT,true,false,SF,CCAs...>
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -833,7 +833,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -892,7 +892,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -953,7 +953,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -1013,7 +1013,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -1071,7 +1071,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1127,7 +1127,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
@@ -1181,7 +1181,7 @@ inline Column<MT,true,false,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -1942,7 +1942,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,true,false,SF,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -1976,7 +1976,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,true,false,SF,CCAs...>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -2011,7 +2011,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,true,false,SF,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -2045,7 +2045,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,true,false,SF,CCAs...>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -2101,7 +2101,7 @@ class Column<MT,false,false,false,CCAs...>
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -3009,7 +3009,7 @@ inline Column<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -3064,7 +3064,7 @@ inline Column<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -3118,7 +3118,7 @@ inline Column<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -3172,7 +3172,7 @@ inline Column<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
@@ -3224,7 +3224,7 @@ inline Column<MT,false,false,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -4003,7 +4003,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side vector
 inline void Column<MT,false,false,false,CCAs...>::addAssign( const Vector<VT,false>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4034,7 +4034,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side vector
 inline void Column<MT,false,false,false,CCAs...>::subAssign( const Vector<VT,false>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4087,7 +4087,7 @@ class Column<MT,false,false,true,CCAs...>
 
    using BaseType      = SparseVector<This,false>;    //!< Base type of this Column instance.
    using ViewedType    = MT;                          //!< The type viewed by this Column instance.
-   using ResultType    = ColumnTrait_<MT,CCAs...>;    //!< Result type for expression template evaluations.
+   using ResultType    = ColumnTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
    using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
@@ -4775,7 +4775,7 @@ inline Column<MT,false,false,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -4833,7 +4833,7 @@ inline Column<MT,false,false,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -4893,7 +4893,7 @@ inline Column<MT,false,false,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -4952,7 +4952,7 @@ inline Column<MT,false,false,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -5009,7 +5009,7 @@ inline Column<MT,false,false,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using MultType = MultTrait_< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( MultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -5064,7 +5064,7 @@ inline Column<MT,false,false,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using DivType = DivTrait_< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( DivType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( DivType );
@@ -5117,7 +5117,7 @@ inline Column<MT,false,false,true,CCAs...>&
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType_<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
 
-   using CrossType = CrossTrait_< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( CrossType );
@@ -5850,7 +5850,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,false,false,true,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -5883,7 +5883,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,false,true,CCAs...>::addAssign( const SparseVector<VT,false>& rhs )
 {
-   using AddType = AddTrait_< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( AddType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( AddType );
@@ -5917,7 +5917,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side dense vector
 inline void Column<MT,false,false,true,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );
@@ -5950,7 +5950,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename VT >     // Type of the right-hand side sparse vector
 inline void Column<MT,false,false,true,CCAs...>::subAssign( const SparseVector<VT,false>& rhs )
 {
-   using SubType = SubTrait_< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( SubType );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( SubType );

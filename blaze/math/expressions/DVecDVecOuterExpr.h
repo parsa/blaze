@@ -135,7 +135,7 @@ class DVecDVecOuterExpr
    enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_<RN1,RN2>;
+   using ExprReturnType = MultExprTrait_t<RN1,RN2>;
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -202,11 +202,11 @@ class DVecDVecOuterExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecDVecOuterExpr<VT1,VT2>;  //!< Type of this DVecDVecOuterExpr instance.
-   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;

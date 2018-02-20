@@ -277,11 +277,11 @@ class DMatDMatMultExpr
    //! Type of this DMatDMatMultExpr instance.
    using This = DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   using ResultType    = MultTrait_<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 
@@ -4747,11 +4747,11 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    //! Type of this DMatScalarMultExpr instance.
    using This = DMatScalarMultExpr<MMM,ST,false>;
 
-   using ResultType    = MultTrait_<RES,ST>;          //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<RES,ST>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_<ElementType>;     //!< Resulting SIMD element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;            //!< Data type for composite expression templates.
 

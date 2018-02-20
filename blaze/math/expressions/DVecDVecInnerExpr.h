@@ -121,14 +121,14 @@ struct DVecDVecInnerExprHelper
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
-                 , const MultTrait_< ElementType_<VT1>, ElementType_<VT2> > >
+                 , const MultTrait_t< ElementType_<VT1>, ElementType_<VT2> > >
    dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
    using Lhs      = CompositeType_<VT1>;
    using Rhs      = CompositeType_<VT2>;
    using ET1      = ElementType_<VT1>;
    using ET2      = ElementType_<VT2>;
-   using MultType = MultTrait_<ET1,ET2>;
+   using MultType = MultTrait_t<ET1,ET2>;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -177,14 +177,14 @@ inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
-                , const MultTrait_< ElementType_<VT1>, ElementType_<VT2> > >
+                , const MultTrait_t< ElementType_<VT1>, ElementType_<VT2> > >
    dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
    using Lhs      = CompositeType_<VT1>;
    using Rhs      = CompositeType_<VT2>;
    using ET1      = ElementType_<VT1>;
    using ET2      = ElementType_<VT2>;
-   using MultType = MultTrait_<ET1,ET2>;
+   using MultType = MultTrait_t<ET1,ET2>;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -202,7 +202,7 @@ inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   SIMDTrait_<MultType> xmm1, xmm2, xmm3, xmm4;
+   SIMDTrait_t<MultType> xmm1, xmm2, xmm3, xmm4;
    size_t i( 0UL );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {

@@ -158,7 +158,7 @@ class DVecMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecMapExpr<VT,OP,TF>;       //!< Type of this DVecMapExpr instance.
-   using ResultType    = UnaryMapTrait_<RT,OP>;       //!< Result type for expression template evaluations.
+   using ResultType    = UnaryMapTrait_t<RT,OP>;      //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
 
@@ -1600,7 +1600,7 @@ inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_t<VT>, ST >;
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
    using ReturnType = const DVecMapExpr<VT,UnaryPow<ScalarType>,TF>;
    return ReturnType( ~dv, UnaryPow<ScalarType>( exp ) );
 }

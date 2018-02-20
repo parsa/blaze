@@ -148,7 +148,7 @@ class TDVecTSMatMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = TDVecTSMatMultExpr<VT,MT>;   //!< Type of this TDVecTSMatMultExpr instance.
-   using ResultType    = MultTrait_<VRT,MRT>;         //!< Result type for expression template evaluations.
+   using ResultType    = MultTrait_t<VRT,MRT>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
    using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.

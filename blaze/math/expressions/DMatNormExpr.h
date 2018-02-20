@@ -319,7 +319,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
    const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
-   SIMDTrait_<ET> xmm1, xmm2, xmm3, xmm4;
+   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};
 
    for( size_t i=0UL; i<M; ++i )
@@ -391,7 +391,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
    const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   SIMDTrait_<ET> xmm1, xmm2, xmm3, xmm4;
+   SIMDTrait_t<ET> xmm1, xmm2, xmm3, xmm4;
    ET norm{};
 
    for( size_t j=0UL; j<N; ++j )
@@ -643,7 +643,7 @@ decltype(auto) lpNorm( const DenseMatrix<MT,SO>& dm, ST p )
 
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
    return norm_backend( ~dm, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
 }
 //*************************************************************************************************
