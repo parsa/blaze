@@ -82,17 +82,17 @@ struct AddVolatile
 /*!\brief Auxiliary alias declaration for the AddVolatile type trait.
 // \ingroup type_traits
 //
-// The AddVolatile_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The AddVolatile_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the AddVolatile class template. For instance, given the type \a T the following two type
 // definitions are identical:
 
    \code
    using Type1 = typename AddVolatile<T>::Type;
-   using Type2 = AddVolatile_<T>;
+   using Type2 = AddVolatile_t<T>;
    \endcode
 */
 template< typename T >
-using AddVolatile_ = typename AddVolatile<T>::Type;
+using AddVolatile_t = typename AddVolatile<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

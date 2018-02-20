@@ -86,17 +86,17 @@ struct MakeUnsigned
 /*!\brief Auxiliary alias declaration for the MakeUnsigned type trait.
 // \ingroup type_traits
 //
-// The MakeUnsigned_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The MakeUnsigned_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the MakeUnsigned class template. For instance, given the type \a T the following two type
 // definitions are identical:
 
    \code
    using Type1 = typename MakeUnsigned<T>::Type;
-   using Type2 = MakeUnsigned_<T>;
+   using Type2 = MakeUnsigned_t<T>;
    \endcode
 */
 template< typename T >
-using MakeUnsigned_ = typename MakeUnsigned<T>::Type;
+using MakeUnsigned_t = typename MakeUnsigned<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

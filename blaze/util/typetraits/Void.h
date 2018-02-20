@@ -52,16 +52,16 @@ namespace blaze {
 // be used to determine the validity of an expression:
 
    \code
-   template< typename T1, typename T2, typename = Void_<> >
+   template< typename T1, typename T2, typename = Void_t<> >
    struct HasAdd : public FalseType {};
 
    template< typename T1, typename T2
-           , Void_< decltype( std::declval<T1>() + std::declval<T2>() ) >
+           , Void_t< decltype( std::declval<T1>() + std::declval<T2>() ) >
    struct HasAdd : public TrueType {};
    \endcode
 */
 template< typename... Ts >
-using Void_ = void;
+using Void_t = void;
 //*************************************************************************************************
 
 } // namespace blaze

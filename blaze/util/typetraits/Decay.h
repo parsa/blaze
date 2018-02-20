@@ -85,17 +85,17 @@ struct Decay
 /*!\brief Auxiliary alias declaration for the Decay type trait.
 // \ingroup type_traits
 //
-// The Decay_ alias declaration provides a convenient shortcut to access the nested \a Type of
+// The Decay_t alias declaration provides a convenient shortcut to access the nested \a Type of
 // the Decay class template. For instance, given the type \a T the following two type definitions
 // are identical:
 
    \code
    using Type1 = typename Decay<T>::Type;
-   using Type2 = Decay_<T>;
+   using Type2 = Decay_t<T>;
    \endcode
 */
 template< typename T >
-using Decay_ = typename Decay<T>::Type;
+using Decay_t = typename Decay<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

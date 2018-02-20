@@ -82,17 +82,17 @@ struct RemoveExtent
 /*!\brief Auxiliary alias declaration for the RemoveExtent type trait.
 // \ingroup type_traits
 //
-// The RemoveExtent_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The RemoveExtent_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the RemoveExtent class template. For instance, given the type \a T the following two type
 // definitions are identical:
 
    \code
    using Type1 = typename RemoveExtent<T>::Type;
-   using Type2 = RemoveExtent_<T>;
+   using Type2 = RemoveExtent_t<T>;
    \endcode
 */
 template< typename T >
-using RemoveExtent_ = typename RemoveExtent<T>::Type;
+using RemoveExtent_t = typename RemoveExtent<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

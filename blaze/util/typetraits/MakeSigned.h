@@ -86,17 +86,17 @@ struct MakeSigned
 /*!\brief Auxiliary alias declaration for the MakeSigned type trait.
 // \ingroup type_traits
 //
-// The MakeSigned_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The MakeSigned_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the MakeSigned class template. For instance, given the type \a T the following two type
 // definitions are identical:
 
    \code
    using Type1 = typename MakeSigned<T>::Type;
-   using Type2 = MakeSigned_<T>;
+   using Type2 = MakeSigned_t<T>;
    \endcode
 */
 template< typename T >
-using MakeSigned_ = typename MakeSigned<T>::Type;
+using MakeSigned_t = typename MakeSigned<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

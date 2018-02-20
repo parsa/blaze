@@ -82,17 +82,17 @@ struct RemovePointer
 /*!\brief Auxiliary alias declaration for the RemovePointer type trait.
 // \ingroup type_traits
 //
-// The RemovePointer_ alias declaration provides a convenient shortcut to access the nested
+// The RemovePointer_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RemovePointer class template. For instance, given the type \a T the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename RemovePointer<T>::Type;
-   using Type2 = RemovePointer_<T>;
+   using Type2 = RemovePointer_t<T>;
    \endcode
 */
 template< typename T >
-using RemovePointer_ = typename RemovePointer<T>::Type;
+using RemovePointer_t = typename RemovePointer<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
