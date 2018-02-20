@@ -478,7 +478,7 @@ decltype(auto) lpNorm( const DenseVector<VT,TF>& dv, ST p )
 
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, decltype( inv( p ) ) >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<VT>, decltype( inv( p ) ) >;
    return norm_backend( ~dv, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
 }
 //*************************************************************************************************

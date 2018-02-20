@@ -428,7 +428,7 @@ class DVecScalarMultExpr
    enum : bool { simdEnabled = VT::simdEnabled &&
                                IsNumeric<ET>::value &&
                                ( HasSIMDMult<ET,ST>::value ||
-                                 HasSIMDMult<UnderlyingElement_<ET>,ST>::value ) };
+                                 HasSIMDMult<UnderlyingElement_t<ET>,ST>::value ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -1034,7 +1034,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = UnderlyingBuiltin_<VT>;
+   using ScalarType = UnderlyingBuiltin_t<VT>;
    using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~dv, ScalarType(-1) );
 }
@@ -1079,7 +1079,7 @@ inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<VT>, ST >;
    using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~vec, scalar );
 }
@@ -1116,7 +1116,7 @@ inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_<VT> >;
+   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_t<VT> >;
    using ReturnType = const DVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~vec, scalar );
 }

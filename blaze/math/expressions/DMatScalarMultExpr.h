@@ -432,7 +432,7 @@ class DMatScalarMultExpr
    enum : bool { simdEnabled = MT::simdEnabled &&
                                IsNumeric<ET>::value &&
                                ( HasSIMDMult<ET,ST>::value ||
-                                 HasSIMDMult<UnderlyingElement_<ET>,ST>::value ) };
+                                 HasSIMDMult<UnderlyingElement_t<ET>,ST>::value ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -1024,7 +1024,7 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = UnderlyingBuiltin_<MT>;
+   using ScalarType = UnderlyingBuiltin_t<MT>;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~dm, ScalarType(-1) );
 }
@@ -1068,7 +1068,7 @@ inline decltype(auto) operator*( const DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~mat, scalar );
 }
@@ -1104,7 +1104,7 @@ inline decltype(auto) operator*( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_<MT> >;
+   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_t<MT> >;
    using ReturnType = const DMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~mat, scalar );
 }

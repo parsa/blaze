@@ -179,7 +179,7 @@ inline EnableIf_< IsComplex< ElementType_<MT> > >
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
@@ -435,7 +435,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
@@ -719,7 +719,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
@@ -1014,7 +1014,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );

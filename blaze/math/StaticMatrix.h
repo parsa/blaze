@@ -292,7 +292,7 @@ void makeHermitian( StaticMatrix<Type,M,N,SO>& matrix )
    BLAZE_STATIC_ASSERT( M == N );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
 
-   using BT = UnderlyingBuiltin_<Type>;
+   using BT = UnderlyingBuiltin_t<Type>;
 
    for( size_t i=0UL; i<N; ++i ) {
       for( size_t j=0UL; j<i; ++j ) {
@@ -330,7 +330,7 @@ void makeHermitian( StaticMatrix<Type,M,N,SO>& matrix, const Arg& min, const Arg
    BLAZE_STATIC_ASSERT( M == N );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( Type );
 
-   using BT = UnderlyingBuiltin_<Type>;
+   using BT = UnderlyingBuiltin_t<Type>;
 
    for( size_t i=0UL; i<N; ++i ) {
       for( size_t j=0UL; j<i; ++j ) {

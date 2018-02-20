@@ -285,12 +285,12 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST 
       }
    }
 
-   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<VT> >
-                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
-                         , If_< And< IsComplex< UnderlyingNumeric_<VT> >
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_t<VT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_t<VT> >
                                    , IsBuiltin<ST> >
-                              , DivTrait_< UnderlyingBuiltin_<VT>, ST >
-                              , DivTrait_< UnderlyingNumeric_<VT>, ST > >
+                              , DivTrait_< UnderlyingBuiltin_t<VT>, ST >
+                              , DivTrait_< UnderlyingNumeric_t<VT>, ST > >
                          , ST >;
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );

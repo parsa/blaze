@@ -326,7 +326,7 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
    using ET = ElementType_<MT>;
-   using BT = UnderlyingBuiltin_<ET>;
+   using BT = UnderlyingBuiltin_t<ET>;
 
    const size_t n( matrix.rows() );
 
@@ -384,7 +384,7 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
    using ET = ElementType_<MT>;
-   using BT = UnderlyingBuiltin_<ET>;
+   using BT = UnderlyingBuiltin_t<ET>;
 
    const size_t n( matrix.rows() );
 
@@ -452,7 +452,7 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
    using ET = ElementType_<MT>;
-   using BT = UnderlyingBuiltin_<ET>;
+   using BT = UnderlyingBuiltin_t<ET>;
 
    const size_t n( matrix.rows() );
 
@@ -518,7 +518,7 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
    using ET = ElementType_<MT>;
-   using BT = UnderlyingBuiltin_<ET>;
+   using BT = UnderlyingBuiltin_t<ET>;
 
    const size_t n( matrix.rows() );
 
@@ -565,7 +565,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 void makeSymmetric( HermitianMatrix<MT,SO,DF>& matrix )
 {
-   using BT = UnderlyingBuiltin_< ElementType_<MT> >;
+   using BT = UnderlyingBuiltin_t< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 
@@ -596,7 +596,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeSymmetric( HermitianMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   using BT = UnderlyingBuiltin_< ElementType_<MT> >;
+   using BT = UnderlyingBuiltin_t< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 
@@ -669,7 +669,7 @@ void makePositiveDefinite( HermitianMatrix<MT,SO,DF>& matrix )
 {
    using blaze::randomize;
 
-   using BT = UnderlyingBuiltin_< ElementType_<MT> >;
+   using BT = UnderlyingBuiltin_t< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 

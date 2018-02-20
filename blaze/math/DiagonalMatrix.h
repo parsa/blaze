@@ -617,7 +617,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix )
 {
-   using Type = UnderlyingBuiltin_< ElementType_<MT> >;
+   using Type = UnderlyingBuiltin_t< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 
@@ -648,7 +648,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   using Type = UnderlyingBuiltin_< ElementType_<MT> >;
+   using Type = UnderlyingBuiltin_t< ElementType_<MT> >;
 
    const size_t n( matrix.rows() );
 

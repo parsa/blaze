@@ -856,7 +856,7 @@ inline decltype(auto) operator-( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = UnderlyingBuiltin_<MT>;
+   using ScalarType = UnderlyingBuiltin_t<MT>;
    using ReturnType = const SMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~sm, ScalarType(-1) );
 }
@@ -900,7 +900,7 @@ inline decltype(auto) operator*( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const SMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~mat, scalar );
 }
@@ -936,7 +936,7 @@ inline decltype(auto) operator*( ST scalar, const SparseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_<MT> >;
+   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_t<MT> >;
    using ReturnType = const SMatScalarMultExpr<MT,ScalarType,SO>;
    return ReturnType( ~mat, scalar );
 }

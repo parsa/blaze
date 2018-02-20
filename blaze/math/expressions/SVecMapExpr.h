@@ -1357,7 +1357,7 @@ inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<VT>, ST >;
    using ReturnType = const SVecMapExpr<VT,UnaryPow<ScalarType>,TF>;
    return ReturnType( ~sv, UnaryPow<ScalarType>( exp ) );
 }

@@ -177,7 +177,7 @@ inline EnableIf_< IsComplex< ElementType_<MT> > >
    BLAZE_INTERNAL_ASSERT( (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -416,7 +416,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -681,7 +681,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -963,7 +963,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );

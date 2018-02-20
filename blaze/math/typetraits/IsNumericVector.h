@@ -83,7 +83,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsNumericVector
-   : public And< IsVector<T>, IsNumeric< UnderlyingElement_<T> > >
+   : public And< IsVector<T>, IsNumeric< UnderlyingElement_t<T> > >
 {};
 //*************************************************************************************************
 

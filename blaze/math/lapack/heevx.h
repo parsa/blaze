@@ -125,7 +125,7 @@ inline size_t heevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
    BLAZE_INTERNAL_ASSERT( range != 'I' || (~w).size() == size_t( iu-il+1 ), "Invalid vector dimension detected" );
 
    using CT = ElementType_<MT>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -233,7 +233,7 @@ inline size_t heevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo )
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_<VT> );
 
    using CT = ElementType_<MT>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    const size_t N( (~A).rows() );
 
@@ -445,7 +445,7 @@ inline size_t heevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_INTERNAL_ASSERT( !SO2 || (~Z).columns() == (~w).size(), "Invalid matrix dimension detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -570,7 +570,7 @@ inline size_t heevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT2> );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    const size_t N( (~A).rows() );
 

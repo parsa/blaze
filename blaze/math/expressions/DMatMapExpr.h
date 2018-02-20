@@ -1609,7 +1609,7 @@ inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const DMatMapExpr<MT,UnaryPow<ScalarType>,SO>;
    return ReturnType( ~dm, UnaryPow<ScalarType>( exp ) );
 }

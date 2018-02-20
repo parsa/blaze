@@ -108,7 +108,7 @@ struct UnaryMapTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T>, IsAdaptor<T> >
-                            , UnaryMapTrait< RemoveAdaptor_< Decay_t<T> >, OP >
+                            , UnaryMapTrait< RemoveAdaptor_t< Decay_t<T> >, OP >
                             , MappedType >::Type;
    /*! \endcond */
    //**********************************************************************************************

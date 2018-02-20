@@ -319,7 +319,7 @@ decltype(auto) lpNorm( const SparseMatrix<MT,SO>& sm, ST p )
 
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, decltype( inv( p ) ) >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
    return norm_backend( ~sm, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
 }
 //*************************************************************************************************

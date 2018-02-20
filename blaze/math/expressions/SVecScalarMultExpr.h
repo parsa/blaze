@@ -792,7 +792,7 @@ inline decltype(auto) operator-( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = UnderlyingBuiltin_<VT>;
+   using ScalarType = UnderlyingBuiltin_t<VT>;
    using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~sv, ScalarType(-1) );
 }
@@ -836,7 +836,7 @@ inline decltype(auto) operator*( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<VT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<VT>, ST >;
    using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~vec, scalar );
 }
@@ -872,7 +872,7 @@ inline decltype(auto) operator*( ST scalar, const SparseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_<VT> >;
+   using ScalarType = MultTrait_< ST, UnderlyingBuiltin_t<VT> >;
    using ReturnType = const SVecScalarMultExpr<VT,ScalarType,TF>;
    return ReturnType( ~vec, scalar );
 }

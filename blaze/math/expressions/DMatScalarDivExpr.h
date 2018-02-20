@@ -438,7 +438,7 @@ class DMatScalarDivExpr
    enum : bool { simdEnabled = MT::simdEnabled &&
                                IsNumeric<ET>::value &&
                                ( HasSIMDDiv<ET,ST>::value ||
-                                 HasSIMDDiv<UnderlyingElement_<ET>,ST>::value ) };
+                                 HasSIMDDiv<UnderlyingElement_t<ET>,ST>::value ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -1021,12 +1021,12 @@ struct DMatScalarDivExprHelper
 {
  private:
    //**********************************************************************************************
-   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<MT> >
-                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
-                         , If_< And< IsComplex< UnderlyingNumeric_<MT> >
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_t<MT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_t<MT> >
                                    , IsBuiltin<ST> >
-                              , DivTrait_< UnderlyingBuiltin_<MT>, ST >
-                              , DivTrait_< UnderlyingNumeric_<MT>, ST > >
+                              , DivTrait_< UnderlyingBuiltin_t<MT>, ST >
+                              , DivTrait_< UnderlyingNumeric_t<MT>, ST > >
                          , ST >;
    //**********************************************************************************************
 

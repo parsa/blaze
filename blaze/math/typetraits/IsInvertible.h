@@ -83,9 +83,9 @@ struct IsInvertible
    : public Or< IsBLASCompatible<T>
               , IsLongDouble<T>
               , And< IsComplex<T>
-                   , IsLongDouble< UnderlyingElement_<T> > >
+                   , IsLongDouble< UnderlyingElement_t<T> > >
               , And< IsDenseMatrix<T>
-                   , IsBLASCompatible< UnderlyingElement_<T> > > >
+                   , IsBLASCompatible< UnderlyingElement_t<T> > > >
 {};
 //*************************************************************************************************
 

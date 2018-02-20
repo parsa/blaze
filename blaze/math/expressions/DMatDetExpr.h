@@ -327,7 +327,7 @@ ElementType_<MT> detNxN( const DenseMatrix<MT,SO>& dm )
 
    using RT  = ResultType_<MT>;
    using ET  = ElementType_<MT>;
-   using URT = RemoveAdaptor_<RT>;
+   using URT = RemoveAdaptor_t<RT>;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( URT );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( URT );

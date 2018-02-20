@@ -139,7 +139,7 @@ inline void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
 
-   using Tmp = ResultType_< RemoveAdaptor_<MT> >;
+   using Tmp = ResultType_< RemoveAdaptor_t<MT> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
@@ -236,7 +236,7 @@ inline void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
 
-   using Tmp = ResultType_< RemoveAdaptor_<MT1> >;
+   using Tmp = ResultType_< RemoveAdaptor_t<MT1> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
@@ -328,7 +328,7 @@ inline size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, S
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   using Tmp = ResultType_< RemoveAdaptor_<MT> >;
+   using Tmp = ResultType_< RemoveAdaptor_t<MT> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
@@ -449,7 +449,7 @@ inline size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   using Tmp = ResultType_< RemoveAdaptor_<MT1> >;
+   using Tmp = ResultType_< RemoveAdaptor_t<MT1> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );

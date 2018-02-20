@@ -236,7 +236,7 @@ inline EnableIf_< IsComplex< ElementType_<MT> >, size_t >
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_<MT>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -357,7 +357,7 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
 
    using ET = ElementType_<MT>;
-   using UT = UnderlyingElement_<ET>;
+   using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -676,7 +676,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -834,7 +834,7 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVecto
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
 
    using ET = ElementType_<MT1>;
-   using UT = UnderlyingElement_<ET>;
+   using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -1175,7 +1175,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -1333,7 +1333,7 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
 
    using ET = ElementType_<MT1>;
-   using UT = UnderlyingElement_<ET>;
+   using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -1698,7 +1698,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
    using CT = ElementType_<MT1>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -1883,7 +1883,7 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
 
    using ET = ElementType_<MT1>;
-   using UT = UnderlyingElement_<ET>;
+   using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );

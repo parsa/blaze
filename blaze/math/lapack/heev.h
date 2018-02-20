@@ -150,7 +150,7 @@ inline void heev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ElementType_<VT> );
 
    using CT = ElementType_<MT>;
-   using BT = UnderlyingElement_<CT>;
+   using BT = UnderlyingElement_t<CT>;
 
    if( !isSquare( ~A ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );

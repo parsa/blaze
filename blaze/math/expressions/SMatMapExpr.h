@@ -1480,7 +1480,7 @@ inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = MultTrait_< UnderlyingBuiltin_<MT>, ST >;
+   using ScalarType = MultTrait_< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const SMatMapExpr<MT,UnaryPow<ScalarType>,SO>;
    return ReturnType( ~sm, UnaryPow<ScalarType>( exp ) );
 }

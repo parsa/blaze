@@ -97,7 +97,7 @@ struct InvExprTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsDenseMatrix<Tmp>
                                 , IsFloatingPoint<Tmp>
-                                , And< IsComplex<Tmp>, IsFloatingPoint< UnderlyingElement_<Tmp> > > >
+                                , And< IsComplex<Tmp>, IsFloatingPoint< UnderlyingElement_t<Tmp> > > >
                             , Result
                             , Failure >::Type;
    /*! \endcond */

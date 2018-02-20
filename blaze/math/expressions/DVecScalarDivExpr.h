@@ -431,7 +431,7 @@ class DVecScalarDivExpr
    enum : bool { simdEnabled = VT::simdEnabled &&
                                IsNumeric<ET>::value &&
                                ( HasSIMDDiv<ET,ST>::value ||
-                                 HasSIMDDiv<UnderlyingElement_<ET>,ST>::value ) };
+                                 HasSIMDDiv<UnderlyingElement_t<ET>,ST>::value ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -1028,12 +1028,12 @@ struct DVecScalarDivExprHelper
 {
  private:
    //**********************************************************************************************
-   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_<VT> >
-                             , IsFloatingPoint< UnderlyingBuiltin_<ST> > >
-                         , If_< And< IsComplex< UnderlyingNumeric_<VT> >
+   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_t<VT> >
+                             , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
+                         , If_< And< IsComplex< UnderlyingNumeric_t<VT> >
                                    , IsBuiltin<ST> >
-                              , DivTrait_< UnderlyingBuiltin_<VT>, ST >
-                              , DivTrait_< UnderlyingNumeric_<VT>, ST > >
+                              , DivTrait_< UnderlyingBuiltin_t<VT>, ST >
+                              , DivTrait_< UnderlyingNumeric_t<VT>, ST > >
                          , ST >;
    //**********************************************************************************************
 

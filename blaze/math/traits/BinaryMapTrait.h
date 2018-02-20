@@ -111,8 +111,8 @@ struct BinaryMapTrait
    /*! \cond BLAZE_INTERNAL */
    using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>, IsAdaptor<T1>
                                 , IsConst<T2>, IsVolatile<T2>, IsReference<T2>, IsAdaptor<T2> >
-                            , BinaryMapTrait< RemoveAdaptor_< Decay_t<T1> >
-                                            , RemoveAdaptor_< Decay_t<T2> >, OP >
+                            , BinaryMapTrait< RemoveAdaptor_t< Decay_t<T1> >
+                                            , RemoveAdaptor_t< Decay_t<T2> >, OP >
                             , MappedType >::Type;
    /*! \endcond */
    //**********************************************************************************************
