@@ -120,17 +120,17 @@ struct UnderlyingBuiltin
 /*!\brief Auxiliary alias declaration for the UnderlyingBuiltin type trait.
 // \ingroup type_traits
 //
-// The UnderlyingBuiltin_ alias declaration provides a convenient shortcut to access the
+// The UnderlyingBuiltin_t alias declaration provides a convenient shortcut to access the
 // nested \a Type of the UnderlyingBuiltin class template. For instance, given the type \a T
 // the following two type definitions are identical:
 
    \code
    using Type1 = typename UnderlyingBuiltin<T>::Type;
-   using Type2 = UnderlyingBuiltin_<T>;
+   using Type2 = UnderlyingBuiltin_t<T>;
    \endcode
 */
 template< typename T >
-using UnderlyingBuiltin_ = typename UnderlyingBuiltin<T>::Type;
+using UnderlyingBuiltin_t = typename UnderlyingBuiltin<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

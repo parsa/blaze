@@ -140,17 +140,17 @@ struct RemoveAdaptor< const volatile T >
 /*!\brief Auxiliary alias declaration for the RemoveAdaptor type trait.
 // \ingroup type_traits
 //
-// The RemoveAdaptor_ alias declaration provides a convenient shortcut to access the nested
+// The RemoveAdaptor_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RemoveAdaptor class template. For instance, given the type \a T the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename RemoveAdaptor<T>::Type;
-   using Type2 = RemoveAdaptor_<T>;
+   using Type2 = RemoveAdaptor_t<T>;
    \endcode
 */
 template< typename T >
-using RemoveAdaptor_ = typename RemoveAdaptor<T>::Type;
+using RemoveAdaptor_t = typename RemoveAdaptor<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

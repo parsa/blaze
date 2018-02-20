@@ -119,17 +119,17 @@ struct UnderlyingElement
 /*!\brief Auxiliary alias declaration for the UnderlyingElement type trait.
 // \ingroup type_traits
 //
-// The UnderlyingElement_ alias declaration provides a convenient shortcut to access the
+// The UnderlyingElement_t alias declaration provides a convenient shortcut to access the
 // nested \a Type of the UnderlyingElement class template. For instance, given the type \a T
 // the following two type definitions are identical:
 
    \code
    using Type1 = typename UnderlyingElement<T>::Type;
-   using Type2 = UnderlyingElement_<T>;
+   using Type2 = UnderlyingElement_t<T>;
    \endcode
 */
 template< typename T >
-using UnderlyingElement_ = typename UnderlyingElement<T>::Type;
+using UnderlyingElement_t = typename UnderlyingElement<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

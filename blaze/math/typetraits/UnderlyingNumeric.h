@@ -112,17 +112,17 @@ struct UnderlyingNumeric
 /*!\brief Auxiliary alias declaration for the UnderlyingNumeric type trait.
 // \ingroup type_traits
 //
-// The UnderlyingNumeric_ alias declaration provides a convenient shortcut to access the
+// The UnderlyingNumeric_t alias declaration provides a convenient shortcut to access the
 // nested \a Type of the UnderlyingNumeric class template. For instance, given the type \a T
 // the following two type definitions are identical:
 
    \code
    using Type1 = typename UnderlyingNumeric<T>::Type;
-   using Type2 = UnderlyingNumeric_<T>;
+   using Type2 = UnderlyingNumeric_t<T>;
    \endcode
 */
 template< typename T >
-using UnderlyingNumeric_ = typename UnderlyingNumeric<T>::Type;
+using UnderlyingNumeric_t = typename UnderlyingNumeric<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
