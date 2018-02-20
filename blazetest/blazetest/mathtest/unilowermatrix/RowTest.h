@@ -159,7 +159,7 @@ class RowTest
 template< typename LT >  // Type of the unilower matrix
 void RowTest::testAssignment()
 {
-   using RT = blaze::RowExprTrait_<LT>;
+   using RT = blaze::RowExprTrait_t<LT>;
 
 
    //=====================================================================================
@@ -385,7 +385,7 @@ void RowTest::testAssignment()
 template< typename LT >  // Type of the unilower matrix
 void RowTest::testAddAssign()
 {
-   using RT = blaze::RowExprTrait_<LT>;
+   using RT = blaze::RowExprTrait_t<LT>;
 
 
    //=====================================================================================
@@ -609,7 +609,7 @@ void RowTest::testAddAssign()
 template< typename LT >  // Type of the unilower matrix
 void RowTest::testSubAssign()
 {
-   using RT = blaze::RowExprTrait_<LT>;
+   using RT = blaze::RowExprTrait_t<LT>;
 
 
    //=====================================================================================
@@ -833,7 +833,7 @@ void RowTest::testSubAssign()
 template< typename LT >  // Type of the unilower matrix
 void RowTest::testMultAssign()
 {
-   using RT = blaze::RowExprTrait_<LT>;
+   using RT = blaze::RowExprTrait_t<LT>;
 
 
    //=====================================================================================

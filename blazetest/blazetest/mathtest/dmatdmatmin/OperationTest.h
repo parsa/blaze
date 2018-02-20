@@ -125,7 +125,7 @@ class OperationTest
    using TOMT2 = blaze::TransposeType_<OMT2>;  //!< Transpose matrix type 2 with opposite storage order
 
    //! Dense result type
-   using DRE = blaze::BinaryMapTrait_<MT1,MT2,blaze::Min>;
+   using DRE = blaze::BinaryMapTrait_t<MT1,MT2,blaze::Min>;
 
    using DET   = blaze::ElementType_<DRE>;     //!< Element type of the dense result
    using ODRE  = blaze::OppositeType_<DRE>;    //!< Dense result type with opposite storage order

@@ -159,7 +159,7 @@ class ColumnTest
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_<DT>;
+   using CT = blaze::ColumnExprTrait_t<DT>;
 
 
    //=====================================================================================
@@ -386,7 +386,7 @@ void ColumnTest::testAssignment()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_<DT>;
+   using CT = blaze::ColumnExprTrait_t<DT>;
 
 
    //=====================================================================================
@@ -613,7 +613,7 @@ void ColumnTest::testAddAssign()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_<DT>;
+   using CT = blaze::ColumnExprTrait_t<DT>;
 
 
    //=====================================================================================
@@ -840,7 +840,7 @@ void ColumnTest::testSubAssign()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_<DT>;
+   using CT = blaze::ColumnExprTrait_t<DT>;
 
 
    //=====================================================================================

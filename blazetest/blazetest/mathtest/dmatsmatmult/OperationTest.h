@@ -120,7 +120,7 @@ class OperationTest
    using TOMT2 = blaze::TransposeType_<OMT2>;  //!< Transpose matrix type 2 with opposite storage order
 
    //! Dense result type
-   using DRE = blaze::MultTrait_<MT1,MT2>;
+   using DRE = blaze::MultTrait_t<MT1,MT2>;
 
    using DET   = blaze::ElementType_<DRE>;     //!< Element type of the dense result
    using ODRE  = blaze::OppositeType_<DRE>;    //!< Dense result type with opposite storage order
@@ -139,7 +139,7 @@ class OperationTest
    using RT2 = blaze::DynamicMatrix<ET2,false>;  //!< Reference type 2
 
    //! Reference result type
-   using RRE = MatchSymmetry_< DRE, blaze::MultTrait_<RT1,RT2> >;
+   using RRE = MatchSymmetry_< DRE, blaze::MultTrait_t<RT1,RT2> >;
    //**********************************************************************************************
 
  public:

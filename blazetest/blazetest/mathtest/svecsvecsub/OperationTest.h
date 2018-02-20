@@ -105,9 +105,9 @@ class OperationTest
    using TVT1 = blaze::TransposeType_<VT1>;  //!< Transpose vector type 1
    using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
 
-   using SRE  = blaze::SubTrait_<VT1,VT2>;    //!< Sparse result type
-   using TSRE = blaze::SubTrait_<TVT1,TVT2>;  //!< Transpose sparse result type
-   using SET  = blaze::ElementType_<SRE>;     //!< Element type of the sparse result
+   using SRE  = blaze::SubTrait_t<VT1,VT2>;    //!< Sparse result type
+   using TSRE = blaze::SubTrait_t<TVT1,TVT2>;  //!< Transpose sparse result type
+   using SET  = blaze::ElementType_<SRE>;      //!< Element type of the sparse result
 
    using DRE  = blaze::DynamicVector<SET,TF>;  //!< Dense result type
    using TDRE = blaze::TransposeType_<DRE>;    //!< Transpose dense result type
@@ -115,11 +115,11 @@ class OperationTest
 
    using RT1 = blaze::DynamicVector<ET1,TF>;  //!< Reference type 1
    using RT2 = blaze::DynamicVector<ET2,TF>;  //!< Reference type 2
-   using RRE = blaze::SubTrait_<RT1,RT2>;     //!< Reference result type
+   using RRE = blaze::SubTrait_t<RT1,RT2>;    //!< Reference result type
 
-   using TRT1 = blaze::TransposeType_<RT1>;   //!< Transpose reference type 1
-   using TRT2 = blaze::TransposeType_<RT2>;   //!< Transpose reference type 2
-   using TRRE = blaze::SubTrait_<TRT1,TRT2>;  //!< Transpose reference result type
+   using TRT1 = blaze::TransposeType_<RT1>;    //!< Transpose reference type 1
+   using TRT2 = blaze::TransposeType_<RT2>;    //!< Transpose reference type 2
+   using TRRE = blaze::SubTrait_t<TRT1,TRT2>;  //!< Transpose reference result type
    //**********************************************************************************************
 
  public:

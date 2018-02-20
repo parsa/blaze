@@ -159,7 +159,7 @@ class ColumnTest
 template< typename UT >  // Type of the upper matrix
 void ColumnTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_<UT>;
+   using CT = blaze::ColumnExprTrait_t<UT>;
 
 
    //=====================================================================================
@@ -331,7 +331,7 @@ void ColumnTest::testAssignment()
 template< typename UT >  // Type of the upper matrix
 void ColumnTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_<UT>;
+   using CT = blaze::ColumnExprTrait_t<UT>;
 
 
    //=====================================================================================
@@ -503,7 +503,7 @@ void ColumnTest::testAddAssign()
 template< typename UT >  // Type of the upper matrix
 void ColumnTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_<UT>;
+   using CT = blaze::ColumnExprTrait_t<UT>;
 
 
    //=====================================================================================
@@ -675,7 +675,7 @@ void ColumnTest::testSubAssign()
 template< typename UT >  // Type of the upper matrix
 void ColumnTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_<UT>;
+   using CT = blaze::ColumnExprTrait_t<UT>;
 
 
    //=====================================================================================

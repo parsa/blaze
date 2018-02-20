@@ -157,7 +157,7 @@ class SubmatrixTest
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testAssignment()
 {
-   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<UT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -856,7 +856,7 @@ void SubmatrixTest::testAssignment()
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testAddAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<UT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -1535,7 +1535,7 @@ void SubmatrixTest::testAddAssign()
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testSubAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<UT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -2214,7 +2214,7 @@ void SubmatrixTest::testSubAssign()
 template< typename UT >  // Type of the uniupper matrix
 void SubmatrixTest::testSchurAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_<UT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<UT,blaze::unaligned>;
 
 
    //=====================================================================================

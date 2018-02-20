@@ -157,7 +157,7 @@ class SubmatrixTest
 template< typename LT >  // Type of the strictly lower matrix
 void SubmatrixTest::testAssignment()
 {
-   using SMT = blaze::SubmatrixExprTrait_<LT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -836,7 +836,7 @@ void SubmatrixTest::testAssignment()
 template< typename LT >  // Type of the strictly lower matrix
 void SubmatrixTest::testAddAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_<LT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -1515,7 +1515,7 @@ void SubmatrixTest::testAddAssign()
 template< typename LT >  // Type of the strictly lower matrix
 void SubmatrixTest::testSubAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_<LT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
 
 
    //=====================================================================================
@@ -2194,7 +2194,7 @@ void SubmatrixTest::testSubAssign()
 template< typename LT >  // Type of the strictly lower matrix
 void SubmatrixTest::testSchurAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_<LT,blaze::unaligned>;
+   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
 
 
    //=====================================================================================

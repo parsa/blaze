@@ -162,7 +162,7 @@ class ColumnComplexTest
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnComplexTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_<HT>;
+   using CT = blaze::ColumnExprTrait_t<HT>;
 
 
    //=====================================================================================
@@ -339,7 +339,7 @@ void ColumnComplexTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnComplexTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_<HT>;
+   using CT = blaze::ColumnExprTrait_t<HT>;
 
 
    //=====================================================================================
@@ -516,7 +516,7 @@ void ColumnComplexTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnComplexTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_<HT>;
+   using CT = blaze::ColumnExprTrait_t<HT>;
 
 
    //=====================================================================================
@@ -693,7 +693,7 @@ void ColumnComplexTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnComplexTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_<HT>;
+   using CT = blaze::ColumnExprTrait_t<HT>;
 
 
    //=====================================================================================

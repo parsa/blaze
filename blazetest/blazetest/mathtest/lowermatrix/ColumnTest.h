@@ -159,7 +159,7 @@ class ColumnTest
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_<LT>;
+   using CT = blaze::ColumnExprTrait_t<LT>;
 
 
    //=====================================================================================
@@ -331,7 +331,7 @@ void ColumnTest::testAssignment()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_<LT>;
+   using CT = blaze::ColumnExprTrait_t<LT>;
 
 
    //=====================================================================================
@@ -502,7 +502,7 @@ void ColumnTest::testAddAssign()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_<LT>;
+   using CT = blaze::ColumnExprTrait_t<LT>;
 
 
    //=====================================================================================
@@ -673,7 +673,7 @@ void ColumnTest::testSubAssign()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_<LT>;
+   using CT = blaze::ColumnExprTrait_t<LT>;
 
 
    //=====================================================================================

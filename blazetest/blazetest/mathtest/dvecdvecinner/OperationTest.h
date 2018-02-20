@@ -88,9 +88,9 @@ class OperationTest
    using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
    using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
 
-   using TVT1 = blaze::TransposeType_<VT1>;   //!< Transpose vector type 1
-   using TVT2 = blaze::TransposeType_<VT2>;   //!< Transpose vector type 2
-   using RE   = blaze::MultTrait_<TVT1,VT2>;  //!< Result type
+   using TVT1 = blaze::TransposeType_<VT1>;    //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_<VT2>;    //!< Transpose vector type 2
+   using RE   = blaze::MultTrait_t<TVT1,VT2>;  //!< Result type
 
    using RT1 = blaze::DynamicVector<ET1,true>;      //!< Reference type 1
    using RT2 = blaze::CompressedVector<ET2,false>;  //!< Reference type 2

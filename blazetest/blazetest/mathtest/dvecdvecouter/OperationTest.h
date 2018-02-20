@@ -110,7 +110,7 @@ class OperationTest
    using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
 
    //! Dense result type
-   using DRE = blaze::MultTrait_<VT1,TVT2>;
+   using DRE = blaze::MultTrait_t<VT1,TVT2>;
 
    using DET   = blaze::ElementType_<DRE>;     //!< Element type of the dense result
    using ODRE  = blaze::OppositeType_<DRE>;    //!< Dense result type with opposite storage order
@@ -127,7 +127,7 @@ class OperationTest
 
    using RT1 = blaze::DynamicVector<ET1,false>;    //!< Reference type 1
    using RT2 = blaze::CompressedVector<ET2,true>;  //!< Reference type 2
-   using RRE = blaze::MultTrait_<RT1,RT2>;         //!< Reference result type
+   using RRE = blaze::MultTrait_t<RT1,RT2>;        //!< Reference result type
    //**********************************************************************************************
 
  public:

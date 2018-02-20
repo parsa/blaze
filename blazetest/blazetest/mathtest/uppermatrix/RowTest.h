@@ -159,7 +159,7 @@ class RowTest
 template< typename UT >  // Type of the upper matrix
 void RowTest::testAssignment()
 {
-   using RT = blaze::RowExprTrait_<UT>;
+   using RT = blaze::RowExprTrait_t<UT>;
 
 
    //=====================================================================================
@@ -331,7 +331,7 @@ void RowTest::testAssignment()
 template< typename UT >  // Type of the upper matrix
 void RowTest::testAddAssign()
 {
-   using RT = blaze::RowExprTrait_<UT>;
+   using RT = blaze::RowExprTrait_t<UT>;
 
 
    //=====================================================================================
@@ -503,7 +503,7 @@ void RowTest::testAddAssign()
 template< typename UT >  // Type of the upper matrix
 void RowTest::testSubAssign()
 {
-   using RT = blaze::RowExprTrait_<UT>;
+   using RT = blaze::RowExprTrait_t<UT>;
 
 
    //=====================================================================================
@@ -675,7 +675,7 @@ void RowTest::testSubAssign()
 template< typename UT >  // Type of the upper matrix
 void RowTest::testMultAssign()
 {
-   using RT = blaze::RowExprTrait_<UT>;
+   using RT = blaze::RowExprTrait_t<UT>;
 
 
    //=====================================================================================

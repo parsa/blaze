@@ -108,7 +108,7 @@ class OperationTest
    using TVT  = blaze::TransposeType_<VT>;   //!< Transpose vector type
 
    //! Sparse result type
-   using SRE = blaze::MultTrait_<MT,VT>;
+   using SRE = blaze::MultTrait_t<MT,VT>;
 
    using SET  = blaze::ElementType_<SRE>;    //!< Element type of the sparse result
    using TSRE = blaze::TransposeType_<SRE>;  //!< Transpose sparse result type
@@ -121,7 +121,7 @@ class OperationTest
 
    using MRT  = blaze::DynamicMatrix<MET,false>;  //!< Matrix reference type
    using VRT  = blaze::DynamicVector<VET,false>;  //!< Vector reference type
-   using RRE  = blaze::MultTrait_<MRT,VRT>;       //!< Reference result type
+   using RRE  = blaze::MultTrait_t<MRT,VRT>;      //!< Reference result type
    using TRRE = blaze::TransposeType_<RRE>;       //!< Transpose reference result type
    //**********************************************************************************************
 

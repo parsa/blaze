@@ -119,7 +119,7 @@ class OperationTest
    using TOMT2 = blaze::TransposeType_<OMT2>;  //!< Transpose matrix type 2 with opposite storage order
 
    //! Sparse result type
-   using SRE = RemoveIdentity_< blaze::MultTrait_<MT1,MT2> >;
+   using SRE = RemoveIdentity_< blaze::MultTrait_t<MT1,MT2> >;
 
    using SET   = blaze::ElementType_<SRE>;     //!< Element type of the sparse result
    using OSRE  = blaze::OppositeType_<SRE>;    //!< Sparse result type with opposite storage order
@@ -138,7 +138,7 @@ class OperationTest
    using RT2 = blaze::DynamicMatrix<ET2,false>;  //!< Reference type 2
 
    //! Reference result type
-   using RRE = MatchSymmetry_< DRE, blaze::MultTrait_<RT1,RT2> >;
+   using RRE = MatchSymmetry_< DRE, blaze::MultTrait_t<RT1,RT2> >;
    //**********************************************************************************************
 
  public:

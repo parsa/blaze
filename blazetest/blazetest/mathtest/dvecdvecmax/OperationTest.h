@@ -106,9 +106,9 @@ class OperationTest
    using TVT1 = blaze::TransposeType_<VT1>;  //!< Transpose vector type 1
    using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
 
-   using DRE  = blaze::BinaryMapTrait_<VT1,VT2,blaze::Max>;    //!< Dense result type
-   using TDRE = blaze::BinaryMapTrait_<TVT1,TVT2,blaze::Max>;  //!< Transpose dense result type
-   using DET  = blaze::ElementType_<DRE>;                      //!< Element type of the dense result
+   using DRE  = blaze::BinaryMapTrait_t<VT1,VT2,blaze::Max>;    //!< Dense result type
+   using TDRE = blaze::BinaryMapTrait_t<TVT1,TVT2,blaze::Max>;  //!< Transpose dense result type
+   using DET  = blaze::ElementType_<DRE>;                       //!< Element type of the dense result
 
    using SRE  = blaze::CompressedVector<DET,TF>;  //!< Sparse result type
    using TSRE = blaze::TransposeType_<SRE>;       //!< Transpose sparse result type

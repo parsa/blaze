@@ -159,7 +159,7 @@ class ColumnNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void ColumnNumericTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_<ST>;
+   using CT = blaze::ColumnExprTrait_t<ST>;
 
 
    //=====================================================================================
@@ -274,7 +274,7 @@ void ColumnNumericTest::testAssignment()
 template< typename ST >  // Type of the symmetric matrix
 void ColumnNumericTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_<ST>;
+   using CT = blaze::ColumnExprTrait_t<ST>;
 
 
    //=====================================================================================
@@ -389,7 +389,7 @@ void ColumnNumericTest::testAddAssign()
 template< typename ST >  // Type of the symmetric matrix
 void ColumnNumericTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_<ST>;
+   using CT = blaze::ColumnExprTrait_t<ST>;
 
 
    //=====================================================================================
@@ -504,7 +504,7 @@ void ColumnNumericTest::testSubAssign()
 template< typename ST >  // Type of the symmetric matrix
 void ColumnNumericTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_<ST>;
+   using CT = blaze::ColumnExprTrait_t<ST>;
 
 
    //=====================================================================================
