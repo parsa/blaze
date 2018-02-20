@@ -112,19 +112,19 @@ struct SubmatrixExprTrait
 /*!\brief Auxiliary alias declaration for the SubmatrixExprTrait type trait.
 // \ingroup math_traits
 //
-// The SubmatrixExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The SubmatrixExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the SubmatrixExprTrait class template. For instance, given the matrix type \a MT
 // and the alignment flag \a AF the following two type definitions are identical:
 
    \code
    using Type1 = typename SubmatrixExprTrait<MT,AF>::Type;
-   using Type2 = SubmatrixExprTrait_<MT,AF>;
+   using Type2 = SubmatrixExprTrait_t<MT,AF>;
    \endcode
 */
 template< typename MT                   // Type of the matrix operand
         , AlignmentFlag AF = unaligned  // Alignment flag
         , size_t... CSAs >              // Compile time submatrix arguments
-using SubmatrixExprTrait_ = typename SubmatrixExprTrait<MT,AF,CSAs...>::Type;
+using SubmatrixExprTrait_t = typename SubmatrixExprTrait<MT,AF,CSAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -97,17 +97,17 @@ struct DeclLowExprTrait
 /*!\brief Auxiliary alias declaration for the DeclLowExprTrait class template.
 // \ingroup math_traits
 //
-// The DeclLowExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DeclLowExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DeclLowExprTrait class template. For instance, given the type \a T the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename DeclLowExprTrait<T>::Type;
-   using Type2 = DeclLowExprTrait_<T>;
+   using Type2 = DeclLowExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the decllow operand
-using DeclLowExprTrait_ = typename DeclLowExprTrait<T>::Type;
+using DeclLowExprTrait_t = typename DeclLowExprTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

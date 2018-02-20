@@ -143,17 +143,17 @@ struct DeclSymTrait
 /*!\brief Auxiliary alias declaration for the DeclSymTrait type trait.
 // \ingroup math_traits
 //
-// The DeclSymTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DeclSymTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DeclSymTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename DeclSymTrait<MT>::Type;
-   using Type2 = DeclSymTrait_<MT>;
+   using Type2 = DeclSymTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix
-using DeclSymTrait_ = typename DeclSymTrait<MT>::Type;
+using DeclSymTrait_t = typename DeclSymTrait<MT>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

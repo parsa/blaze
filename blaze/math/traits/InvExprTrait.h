@@ -110,17 +110,17 @@ struct InvExprTrait
 /*!\brief Auxiliary alias declaration for the InvExprTrait class template.
 // \ingroup math_traits
 //
-// The InvExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The InvExprTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the InvExprTrait class template. For instance, given the type \a T the following two type
 // definitions are identical:
 
    \code
    using Type1 = typename InvExprTrait<T>::Type;
-   using Type2 = InvExprTrait_<T>;
+   using Type2 = InvExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the inversion operand
-using InvExprTrait_ = typename InvExprTrait<T>::Type;
+using InvExprTrait_t = typename InvExprTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

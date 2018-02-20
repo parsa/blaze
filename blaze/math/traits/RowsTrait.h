@@ -131,18 +131,18 @@ struct RowsTrait
 /*!\brief Auxiliary alias declaration for the RowsTrait type trait.
 // \ingroup math_traits
 //
-// The RowsTrait_ alias declaration provides a convenient shortcut to access the nested
+// The RowsTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RowsTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename RowsTrait<MT>::Type;
-   using Type2 = RowsTrait_<MT>;
+   using Type2 = RowsTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix
         , size_t... CRAs >  // Compile time row arguments
-using RowsTrait_ = typename RowsTrait<MT,CRAs...>::Type;
+using RowsTrait_t = typename RowsTrait<MT,CRAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

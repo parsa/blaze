@@ -99,17 +99,17 @@ struct TransExprTrait
 /*!\brief Auxiliary alias declaration for the TransExprTrait class template.
 // \ingroup math_traits
 //
-// The TransExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The TransExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the TransExprTrait class template. For instance, given the type \a T the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename TransExprTrait<T>::Type;
-   using Type2 = TransExprTrait_<T>;
+   using Type2 = TransExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the transpose operand
-using TransExprTrait_ = typename TransExprTrait<T>::Type;
+using TransExprTrait_t = typename TransExprTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

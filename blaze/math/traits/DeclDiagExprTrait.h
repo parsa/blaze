@@ -97,17 +97,17 @@ struct DeclDiagExprTrait
 /*!\brief Auxiliary alias declaration for the DeclDiagExprTrait class template.
 // \ingroup math_traits
 //
-// The DeclDiagExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DeclDiagExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DeclDiagExprTrait class template. For instance, given the type \a T the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename DeclDiagExprTrait<T>::Type;
-   using Type2 = DeclDiagExprTrait_<T>;
+   using Type2 = DeclDiagExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the decldiag operand
-using DeclDiagExprTrait_ = typename DeclDiagExprTrait<T>::Type;
+using DeclDiagExprTrait_t = typename DeclDiagExprTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -110,19 +110,19 @@ struct SubvectorExprTrait
 /*!\brief Auxiliary alias declaration for the SubvectorExprTrait type trait.
 // \ingroup math_traits
 //
-// The SubvectorExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The SubvectorExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the SubvectorExprTrait class template. For instance, given the vector type \a VT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename SubvectorExprTrait<VT,AF>::Type;
-   using Type2 = SubvectorExprTrait_<VT,AF>;
+   using Type2 = SubvectorExprTrait_t<VT,AF>;
    \endcode
 */
 template< typename VT                   // Type of the vector operand
         , AlignmentFlag AF = unaligned  // Alignment Flag
         , size_t... CSAs >              // Compile time subvector arguments
-using SubvectorExprTrait_ = typename SubvectorExprTrait<VT,AF,CSAs...>::Type;
+using SubvectorExprTrait_t = typename SubvectorExprTrait<VT,AF,CSAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

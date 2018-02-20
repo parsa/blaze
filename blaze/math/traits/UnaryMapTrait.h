@@ -120,18 +120,18 @@ struct UnaryMapTrait
 /*!\brief Auxiliary alias declaration for the UnaryMapTrait class template.
 // \ingroup math_traits
 //
-// The UnaryMapTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The UnaryMapTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the UnaryMapTrait class template. For instance, given the type \a T and the custom operation
 // type \a OP the following two type definitions are identical:
 
    \code
    using Type1 = typename UnaryMapTrait<T,OP>::Type;
-   using Type2 = UnaryMapTrait_<T,OP>;
+   using Type2 = UnaryMapTrait_t<T,OP>;
    \endcode
 */
 template< typename T     // Type of the operand
         , typename OP >  // Type of the custom operation
-using UnaryMapTrait_ = typename UnaryMapTrait<T,OP>::Type;
+using UnaryMapTrait_t = typename UnaryMapTrait<T,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

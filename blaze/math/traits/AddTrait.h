@@ -278,17 +278,17 @@ struct AddTrait< T1, T2
 /*!\brief Auxiliary alias declaration for the AddTrait class template.
 // \ingroup math_traits
 //
-// The AddTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The AddTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the AddTrait class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename AddTrait<T1,T2>::Type;
-   using Type2 = AddTrait_<T1,T2>;
+   using Type2 = AddTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >
-using AddTrait_ = typename AddTrait<T1,T2>::Type;
+using AddTrait_t = typename AddTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

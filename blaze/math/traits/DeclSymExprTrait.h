@@ -97,17 +97,17 @@ struct DeclSymExprTrait
 /*!\brief Auxiliary alias declaration for the DeclSymExprTrait class template.
 // \ingroup math_traits
 //
-// The DeclSymExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DeclSymExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DeclSymExprTrait class template. For instance, given the type \a T the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename DeclSymExprTrait<T>::Type;
-   using Type2 = DeclSymExprTrait_<T>;
+   using Type2 = DeclSymExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the declsym operand
-using DeclSymExprTrait_ = typename DeclSymExprTrait<T>::Type;
+using DeclSymExprTrait_t = typename DeclSymExprTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

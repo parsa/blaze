@@ -105,19 +105,19 @@ struct BinaryMapExprTrait
 /*!\brief Auxiliary alias declaration for the BinaryMapExprTrait class template.
 // \ingroup math_traits
 //
-// The BinaryMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The BinaryMapExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the BinaryMapExprTrait class template. For instance, given the data types \a T1 and
 // and \a T2 and the custom operation type \a OP the following two type definitions are identical:
 
    \code
    using Type1 = typename BinaryMapExprTrait<T1,T2,OP>::Type;
-   using Type2 = BinaryMapExprTrait_<T1,T2,OP>;
+   using Type2 = BinaryMapExprTrait_t<T1,T2,OP>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side map operand
         , typename T2    // Type of the right-hand side map operand
         , typename OP >  // Type of the custom operation
-using BinaryMapExprTrait_ = typename BinaryMapExprTrait<T1,T2,OP>::Type;
+using BinaryMapExprTrait_t = typename BinaryMapExprTrait<T1,T2,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

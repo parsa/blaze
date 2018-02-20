@@ -131,18 +131,18 @@ struct SubmatrixTrait
 /*!\brief Auxiliary alias declaration for the SubmatrixTrait type trait.
 // \ingroup math_traits
 //
-// The SubmatrixTrait_ alias declaration provides a convenient shortcut to access the nested
+// The SubmatrixTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the SubmatrixTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename SubmatrixTrait<MT>::Type;
-   using Type2 = SubmatrixTrait_<MT>;
+   using Type2 = SubmatrixTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
-using SubmatrixTrait_ = typename SubmatrixTrait<MT,CSAs...>::Type;
+using SubmatrixTrait_t = typename SubmatrixTrait<MT,CSAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -139,17 +139,17 @@ struct RealTrait
 /*!\brief Auxiliary alias declaration for the RealTrait class template.
 // \ingroup math_traits
 //
-// The RealTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The RealTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the RealTrait class template. For instance, given the type \a T the following two type
 // definitions are identical:
 
    \code
    using Type1 = typename RealTrait<T>::Type;
-   using Type2 = RealTrait_<T>;
+   using Type2 = RealTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the operand
-using RealTrait_ = typename RealTrait<T>::Type;
+using RealTrait_t = typename RealTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

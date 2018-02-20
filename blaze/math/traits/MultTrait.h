@@ -278,17 +278,17 @@ struct MultTrait< T1, T2
 /*!\brief Auxiliary alias declaration for the MultTrait class template.
 // \ingroup math_traits
 //
-// The MultTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The MultTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the MultTrait class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename MultTrait<T1,T2>::Type;
-   using Type2 = MultTrait_<T1,T2>;
+   using Type2 = MultTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >
-using MultTrait_ = typename MultTrait<T1,T2>::Type;
+using MultTrait_t = typename MultTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

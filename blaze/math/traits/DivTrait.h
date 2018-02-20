@@ -279,17 +279,17 @@ struct DivTrait< T1, T2
 /*!\brief Auxiliary alias declaration for the DivTrait class template.
 // \ingroup math_traits
 //
-// The DivTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The DivTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the DivTrait class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename DivTrait<T1,T2>::Type;
-   using Type2 = DivTrait_<T1,T2>;
+   using Type2 = DivTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >
-using DivTrait_ = typename DivTrait<T1,T2>::Type;
+using DivTrait_t = typename DivTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -97,17 +97,17 @@ struct DeclHermExprTrait
 /*!\brief Auxiliary alias declaration for the DeclHermExprTrait class template.
 // \ingroup math_traits
 //
-// The DeclHermExprTrait_ alias declaration provides a convenient shortcut to access the
+// The DeclHermExprTrait_t alias declaration provides a convenient shortcut to access the
 // nested \a Type of the DeclHermExprTrait class template. For instance, given the type
 // \a T the following two type definitions are identical:
 
    \code
    using Type1 = typename DeclHermExprTrait<T>::Type;
-   using Type2 = DeclHermExprTrait_<T>;
+   using Type2 = DeclHermExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the declherm operand
-using DeclHermExprTrait_ = typename DeclHermExprTrait<T>::Type;
+using DeclHermExprTrait_t = typename DeclHermExprTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -278,17 +278,17 @@ struct SubTrait< T1, T2
 /*!\brief Auxiliary alias declaration for the SubTrait class template.
 // \ingroup math_traits
 //
-// The SubTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The SubTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the SubTrait class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename SubTrait<T1,T2>::Type;
-   using Type2 = SubTrait_<T1,T2>;
+   using Type2 = SubTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >
-using SubTrait_ = typename SubTrait<T1,T2>::Type;
+using SubTrait_t = typename SubTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

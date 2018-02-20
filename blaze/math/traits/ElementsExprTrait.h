@@ -107,18 +107,18 @@ struct ElementsExprTrait
 /*!\brief Auxiliary alias declaration for the ElementsExprTrait type trait.
 // \ingroup math_traits
 //
-// The ElementsExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The ElementsExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the ElementsExprTrait class template. For instance, given the vector type \a VT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename ElementsExprTrait<VT>::Type;
-   using Type2 = ElementsExprTrait_<VT>;
+   using Type2 = ElementsExprTrait_t<VT>;
    \endcode
 */
 template< typename VT       // Type of the vector operand
         , size_t... CEAs >  // Compile time element arguments
-using ElementsExprTrait_ = typename ElementsExprTrait<VT,CEAs...>::Type;
+using ElementsExprTrait_t = typename ElementsExprTrait<VT,CEAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

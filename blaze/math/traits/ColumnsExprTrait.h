@@ -107,18 +107,18 @@ struct ColumnsExprTrait
 /*!\brief Auxiliary alias declaration for the ColumnsExprTrait type trait.
 // \ingroup math_traits
 //
-// The ColumnsExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The ColumnsExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the ColumnsExprTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename ColumnsExprTrait<MT>::Type;
-   using Type2 = ColumnsExprTrait_<MT>;
+   using Type2 = ColumnsExprTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix operand
         , size_t... CRAs >  // Compile time column arguments
-using ColumnsExprTrait_ = typename ColumnsExprTrait<MT,CRAs...>::Type;
+using ColumnsExprTrait_t = typename ColumnsExprTrait<MT,CRAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

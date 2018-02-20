@@ -100,18 +100,18 @@ struct UnaryMapExprTrait
 /*!\brief Auxiliary alias declaration for the UnaryMapExprTrait class template.
 // \ingroup math_traits
 //
-// The UnaryMapExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The UnaryMapExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the UnaryMapExprTrait class template. For instance, given the data type \a T and
 // custom operation type \a OP the following two type definitions are identical:
 
    \code
    using Type1 = typename UnaryMapExprTrait<T,OP>::Type;
-   using Type2 = UnaryMapExprTrait_<T,OP>;
+   using Type2 = UnaryMapExprTrait_t<T,OP>;
    \endcode
 */
 template< typename T     // Type of the unary map operand
         , typename OP >  // Type of the custom operation
-using UnaryMapExprTrait_ = typename UnaryMapExprTrait<T,OP>::Type;
+using UnaryMapExprTrait_t = typename UnaryMapExprTrait<T,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -98,18 +98,18 @@ struct AddExprTrait
 /*!\brief Auxiliary alias declaration for the AddExprTrait class template.
 // \ingroup math_traits
 //
-// The AddExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The AddExprTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the AddExprTrait class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename AddExprTrait<T1,T2>::Type;
-   using Type2 = AddExprTrait_<T1,T2>;
+   using Type2 = AddExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side addition operand
         , typename T2 >  // Type of the right-hand side addition operand
-using AddExprTrait_ = typename AddExprTrait<T1,T2>::Type;
+using AddExprTrait_t = typename AddExprTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

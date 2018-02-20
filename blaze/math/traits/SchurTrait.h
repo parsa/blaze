@@ -88,7 +88,7 @@ namespace blaze {
    template< typename T1, size_t M, size_t N, bool SO, typename T2 >
    struct SchurTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
    {
-      using Type = StaticMatrix< MultTrait_<T1,T2>, M, N, SO >;
+      using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
    };
    \endcode
 
@@ -195,17 +195,17 @@ struct SchurTrait< T1, T2
 /*!\brief Auxiliary alias declaration for the SchurTrait class template.
 // \ingroup math_traits
 //
-// The SchurTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The SchurTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the SchurTrait class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename SchurTrait<T1,T2>::Type;
-   using Type2 = SchurTrait_<T1,T2>;
+   using Type2 = SchurTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >
-using SchurTrait_ = typename SchurTrait<T1,T2>::Type;
+using SchurTrait_t = typename SchurTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

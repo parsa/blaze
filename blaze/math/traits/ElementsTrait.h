@@ -130,18 +130,18 @@ struct ElementsTrait
 /*!\brief Auxiliary alias declaration for the ElementsTrait type trait.
 // \ingroup math_traits
 //
-// The ElementsTrait_ alias declaration provides a convenient shortcut to access the nested
+// The ElementsTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the ElementsTrait class template. For instance, given the vector type \a VT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename ElementsTrait<VT>::Type;
-   using Type2 = ElementsTrait_<VT>;
+   using Type2 = ElementsTrait_t<VT>;
    \endcode
 */
 template< typename VT       // Type of the vector
         , size_t... CEAs >  // Compile time element arguments
-using ElementsTrait_ = typename ElementsTrait<VT,CEAs...>::Type;
+using ElementsTrait_t = typename ElementsTrait<VT,CEAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

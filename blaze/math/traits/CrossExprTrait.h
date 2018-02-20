@@ -104,18 +104,18 @@ struct CrossExprTrait
 /*!\brief Auxiliary alias declaration for the CrossExprTrait class template.
 // \ingroup math_traits
 //
-// The CrossExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The CrossExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the CrossExprTrait class template. For instance, given the types \a T1 and \a T2
 // the following two type definitions are identical:
 
    \code
    using Type1 = typename CrossExprTrait<T1,T2>::Type;
-   using Type2 = CrossExprTrait_<T1,T2>;
+   using Type2 = CrossExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side cross product operand
         , typename T2 >  // Type of the right-hand side cross product operand
-using CrossExprTrait_ = typename CrossExprTrait<T1,T2>::Type;
+using CrossExprTrait_t = typename CrossExprTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

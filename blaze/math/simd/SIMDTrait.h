@@ -303,17 +303,17 @@ class SIMDTrait
 /*!\brief Auxiliary alias declaration for the SIMDTrait class template.
 // \ingroup simd
 //
-// The SIMDTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The SIMDTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the SIMDTrait class template. For instance, given the type \a T the following two type
 // definitions are identical:
 
    \code
    using Type1 = typename SIMDTrait<T>::Type;
-   using Type2 = SIMDTrait_<T>;
+   using Type2 = SIMDTrait_t<T>;
    \endcode
 */
 template< typename T >
-using SIMDTrait_ = typename SIMDTrait<T>::Type;
+using SIMDTrait_t = typename SIMDTrait<T>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

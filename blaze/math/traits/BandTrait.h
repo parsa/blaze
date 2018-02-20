@@ -131,18 +131,18 @@ struct BandTrait
 /*!\brief Auxiliary alias declaration for the BandTrait type trait.
 // \ingroup math_traits
 //
-// The BandTrait_ alias declaration provides a convenient shortcut to access the nested
+// The BandTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the BandTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename BandTrait<MT>::Type;
-   using Type2 = BandTrait_<MT>;
+   using Type2 = BandTrait_t<MT>;
    \endcode
 */
 template< typename MT          // Type of the matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
-using BandTrait_ = typename BandTrait<MT,CBAs...>::Type;
+using BandTrait_t = typename BandTrait<MT,CBAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

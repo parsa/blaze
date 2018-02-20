@@ -124,19 +124,19 @@ struct BinaryMapTrait
 /*!\brief Auxiliary alias declaration for the BinaryMapTrait class template.
 // \ingroup math_traits
 //
-// The BinaryMapTrait_ alias declaration provides a convenient shortcut to access the nested
+// The BinaryMapTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the BinaryMapTrait class template. For instance, given the types \a T1 and \a T2
 // and the custom operation type \a OP the following two type definitions are identical:
 
    \code
    using Type1 = typename BinaryMapTrait<T1,T2,OP>::Type;
-   using Type2 = BinaryMapTrait_<T1,T2,OP>;
+   using Type2 = BinaryMapTrait_t<T1,T2,OP>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand
         , typename T2    // Type of the right-hand side operand
         , typename OP >  // Type of the custom operation
-using BinaryMapTrait_ = typename BinaryMapTrait<T1,T2,OP>::Type;
+using BinaryMapTrait_t = typename BinaryMapTrait<T1,T2,OP>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

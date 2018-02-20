@@ -143,17 +143,17 @@ struct DeclUppTrait
 /*!\brief Auxiliary alias declaration for the DeclUppTrait type trait.
 // \ingroup math_traits
 //
-// The DeclUppTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DeclUppTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DeclUppTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename DeclUppTrait<MT>::Type;
-   using Type2 = DeclUppTrait_<MT>;
+   using Type2 = DeclUppTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix
-using DeclUppTrait_ = typename DeclUppTrait<MT>::Type;
+using DeclUppTrait_t = typename DeclUppTrait<MT>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

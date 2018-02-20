@@ -99,18 +99,18 @@ struct SchurExprTrait
 /*!\brief Auxiliary alias declaration for the SchurExprTrait class template.
 // \ingroup math_traits
 //
-// The SchurExprTrait_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The SchurExprTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the SchurExprTrait class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename SchurExprTrait<T1,T2>::Type;
-   using Type2 = SchurExprTrait_<T1,T2>;
+   using Type2 = SchurExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side Schur product operand
         , typename T2 >  // Type of the right-hand side Schur product operand
-using SchurExprTrait_ = typename SchurExprTrait<T1,T2>::Type;
+using SchurExprTrait_t = typename SchurExprTrait<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

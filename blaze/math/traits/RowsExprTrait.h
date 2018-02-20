@@ -107,18 +107,18 @@ struct RowsExprTrait
 /*!\brief Auxiliary alias declaration for the RowsExprTrait type trait.
 // \ingroup math_traits
 //
-// The RowsExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The RowsExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RowsExprTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename RowsExprTrait<MT>::Type;
-   using Type2 = RowsExprTrait_<MT>;
+   using Type2 = RowsExprTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix operand
         , size_t... CRAs >  // Compile time row arguments
-using RowsExprTrait_ = typename RowsExprTrait<MT,CRAs...>::Type;
+using RowsExprTrait_t = typename RowsExprTrait<MT,CRAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

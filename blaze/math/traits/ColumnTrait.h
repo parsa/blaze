@@ -130,18 +130,18 @@ struct ColumnTrait
 /*!\brief Auxiliary alias declaration for the ColumnTrait type trait.
 // \ingroup math_traits
 //
-// The ColumnTrait_ alias declaration provides a convenient shortcut to access the nested
+// The ColumnTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the ColumnTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename ColumnTrait<MT>::Type;
-   using Type2 = ColumnTrait_<MT>;
+   using Type2 = ColumnTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix
         , size_t... CCAs >  // Compile time column arguments
-using ColumnTrait_ = typename ColumnTrait<MT,CCAs...>::Type;
+using ColumnTrait_t = typename ColumnTrait<MT,CCAs...>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

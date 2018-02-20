@@ -107,18 +107,18 @@ struct BandExprTrait
 /*!\brief Auxiliary alias declaration for the BandExprTrait type trait.
 // \ingroup math_traits
 //
-// The BandExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The BandExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the BandExprTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename BandExprTrait<MT>::Type;
-   using Type2 = BandExprTrait_<MT>;
+   using Type2 = BandExprTrait_t<MT>;
    \endcode
 */
 template< typename MT          // Type of the matrix operand
         , ptrdiff_t... CBAs >  // Compile time band arguments
-using BandExprTrait_ = typename BandExprTrait<MT,CBAs...>::Type;
+using BandExprTrait_t = typename BandExprTrait<MT,CBAs...>::Type;
 //*************************************************************************************************
 
 
@@ -140,17 +140,17 @@ using DiagonalExprTrait = BandExprTrait<MT,0L>;
 /*!\brief Auxiliary alias declaration for the DiagonalExprTrait type trait.
 // \ingroup math_traits
 //
-// The DiagonalExprTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DiagonalExprTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DiagonalExprTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename DiagonalExprTrait<MT>::Type;
-   using Type2 = DiagonalExprTrait_<MT>;
+   using Type2 = DiagonalExprTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix operand
-using DiagonalExprTrait_ = typename DiagonalExprTrait<MT>::Type;
+using DiagonalExprTrait_t = typename DiagonalExprTrait<MT>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -143,17 +143,17 @@ struct DeclHermTrait
 /*!\brief Auxiliary alias declaration for the DeclHermTrait type trait.
 // \ingroup math_traits
 //
-// The DeclHermTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DeclHermTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DeclHermTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename DeclHermTrait<MT>::Type;
-   using Type2 = DeclHermTrait_<MT>;
+   using Type2 = DeclHermTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix
-using DeclHermTrait_ = typename DeclHermTrait<MT>::Type;
+using DeclHermTrait_t = typename DeclHermTrait<MT>::Type;
 //*************************************************************************************************
 
 } // namespace blaze

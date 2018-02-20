@@ -145,17 +145,17 @@ struct DeclIdTrait
 /*!\brief Auxiliary alias declaration for the DeclIdTrait type trait.
 // \ingroup math_traits
 //
-// The DeclIdTrait_ alias declaration provides a convenient shortcut to access the nested
+// The DeclIdTrait_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the DeclIdTrait class template. For instance, given the matrix type \a MT the
 // following two type definitions are identical:
 
    \code
    using Type1 = typename DeclIdTrait<MT>::Type;
-   using Type2 = DeclIdTrait_<MT>;
+   using Type2 = DeclIdTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix
-using DeclIdTrait_ = typename DeclIdTrait<MT>::Type;
+using DeclIdTrait_t = typename DeclIdTrait<MT>::Type;
 //*************************************************************************************************
 
 } // namespace blaze
