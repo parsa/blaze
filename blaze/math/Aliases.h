@@ -48,19 +48,19 @@ namespace blaze {
 /*!\brief Alias declaration for nested \c BaseType type definitions.
 // \ingroup aliases
 //
-// The BaseType_ alias declaration provides a convenient shortcut to access the nested
+// The BaseType_t alias declaration provides a convenient shortcut to access the nested
 // \a BaseType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::BaseType;
-   using Type2 = BaseType_<T>;
+   using Type2 = BaseType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using BaseType_ = typename T::BaseType;
+using BaseType_t = typename T::BaseType;
 //*************************************************************************************************
 
 
@@ -68,19 +68,19 @@ using BaseType_ = typename T::BaseType;
 /*!\brief Alias declaration for nested \c CompositeType type definitions.
 // \ingroup aliases
 //
-// The CompositeType_ alias declaration provides a convenient shortcut to access the nested
+// The CompositeType_t alias declaration provides a convenient shortcut to access the nested
 // \a CompositeType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::CompositeType;
-   using Type2 = CompositeType_<T>;
+   using Type2 = CompositeType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using CompositeType_ = typename T::CompositeType;
+using CompositeType_t = typename T::CompositeType;
 //*************************************************************************************************
 
 
@@ -88,19 +88,19 @@ using CompositeType_ = typename T::CompositeType;
 /*!\brief Alias declaration for nested \c ConstIterator type definitions.
 // \ingroup aliases
 //
-// The ConstIterator_ alias declaration provides a convenient shortcut to access the nested
+// The ConstIterator_t alias declaration provides a convenient shortcut to access the nested
 // \a ConstIterator type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ConstIterator;
-   using Type2 = ConstIterator_<T>;
+   using Type2 = ConstIterator_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ConstIterator_ = typename T::ConstIterator;
+using ConstIterator_t = typename T::ConstIterator;
 //*************************************************************************************************
 
 
@@ -108,19 +108,19 @@ using ConstIterator_ = typename T::ConstIterator;
 /*!\brief Alias declaration for nested \c ConstPointer type definitions.
 // \ingroup aliases
 //
-// The ConstPointer_ alias declaration provides a convenient shortcut to access the nested
+// The ConstPointer_t alias declaration provides a convenient shortcut to access the nested
 // \a ConstPointer type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ConstPointer;
-   using Type2 = ConstPointer_<T>;
+   using Type2 = ConstPointer_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ConstPointer_ = typename T::ConstPointer;
+using ConstPointer_t = typename T::ConstPointer;
 //*************************************************************************************************
 
 
@@ -128,19 +128,19 @@ using ConstPointer_ = typename T::ConstPointer;
 /*!\brief Alias declaration for nested \c ConstReference type definitions.
 // \ingroup aliases
 //
-// The ConstReference_ alias declaration provides a convenient shortcut to access the nested
+// The ConstReference_t alias declaration provides a convenient shortcut to access the nested
 // \a ConstReference type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ConstReference;
-   using Type2 = ConstReference_<T>;
+   using Type2 = ConstReference_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ConstReference_ = typename T::ConstReference;
+using ConstReference_t = typename T::ConstReference;
 //*************************************************************************************************
 
 
@@ -148,19 +148,19 @@ using ConstReference_ = typename T::ConstReference;
 /*!\brief Alias declaration for nested \c ElementType type definitions.
 // \ingroup aliases
 //
-// The ElementType_ alias declaration provides a convenient shortcut to access the nested
+// The ElementType_t alias declaration provides a convenient shortcut to access the nested
 // \a ElementType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ElementType;
-   using Type2 = ElementType_<T>;
+   using Type2 = ElementType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ElementType_ = typename T::ElementType;
+using ElementType_t = typename T::ElementType;
 //*************************************************************************************************
 
 
@@ -168,19 +168,19 @@ using ElementType_ = typename T::ElementType;
 /*!\brief Alias declaration for nested \c Iterator type definitions.
 // \ingroup aliases
 //
-// The Iterator_ alias declaration provides a convenient shortcut to access the nested
+// The Iterator_t alias declaration provides a convenient shortcut to access the nested
 // \a Iterator type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::Iterator;
-   using Type2 = Iterator_<T>;
+   using Type2 = Iterator_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using Iterator_ = typename T::Iterator;
+using Iterator_t = typename T::Iterator;
 //*************************************************************************************************
 
 
@@ -188,19 +188,19 @@ using Iterator_ = typename T::Iterator;
 /*!\brief Alias declaration for nested \c LeftOperand type definitions.
 // \ingroup aliases
 //
-// The LeftOperand_ alias declaration provides a convenient shortcut to access the nested
+// The LeftOperand_t alias declaration provides a convenient shortcut to access the nested
 // \a LeftOperand type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::LeftOperand;
-   using Type2 = LeftOperand_<T>;
+   using Type2 = LeftOperand_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using LeftOperand_ = typename T::LeftOperand;
+using LeftOperand_t = typename T::LeftOperand;
 //*************************************************************************************************
 
 
@@ -208,19 +208,19 @@ using LeftOperand_ = typename T::LeftOperand;
 /*!\brief Alias declaration for nested \c MatrixType type definitions.
 // \ingroup aliases
 //
-// The MatrixType_ alias declaration provides a convenient shortcut to access the nested
+// The MatrixType_t alias declaration provides a convenient shortcut to access the nested
 // \a MatrixType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::MatrixType;
-   using Type2 = MatrixType_<T>;
+   using Type2 = MatrixType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using MatrixType_ = typename T::MatrixType;
+using MatrixType_t = typename T::MatrixType;
 //*************************************************************************************************
 
 
@@ -228,19 +228,19 @@ using MatrixType_ = typename T::MatrixType;
 /*!\brief Alias declaration for nested \c Operand type definitions.
 // \ingroup aliases
 //
-// The Operand_ alias declaration provides a convenient shortcut to access the nested \a Operand
+// The Operand_t alias declaration provides a convenient shortcut to access the nested \a Operand
 // type definition of the given type \a T. The following code example shows both ways to access
 // the nested type definition:
 
    \code
    using Type1 = typename T::Operand;
-   using Type2 = Operand_<T>;
+   using Type2 = Operand_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using Operand_ = typename T::Operand;
+using Operand_t = typename T::Operand;
 //*************************************************************************************************
 
 
@@ -248,19 +248,19 @@ using Operand_ = typename T::Operand;
 /*!\brief Alias declaration for nested \c OppositeType type definitions.
 // \ingroup aliases
 //
-// The OppositeType_ alias declaration provides a convenient shortcut to access the nested
+// The OppositeType_t alias declaration provides a convenient shortcut to access the nested
 // \a OppositeType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::OppositeType;
-   using Type2 = OppositeType_<T>;
+   using Type2 = OppositeType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using OppositeType_ = typename T::OppositeType;
+using OppositeType_t = typename T::OppositeType;
 //*************************************************************************************************
 
 
@@ -268,19 +268,19 @@ using OppositeType_ = typename T::OppositeType;
 /*!\brief Alias declaration for nested \c Pointer type definitions.
 // \ingroup aliases
 //
-// The Pointer_ alias declaration provides a convenient shortcut to access the nested
+// The Pointer_t alias declaration provides a convenient shortcut to access the nested
 // \a Pointer type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::Pointer;
-   using Type2 = Pointer_<T>;
+   using Type2 = Pointer_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using Pointer_ = typename T::Pointer;
+using Pointer_t = typename T::Pointer;
 //*************************************************************************************************
 
 
@@ -288,19 +288,19 @@ using Pointer_ = typename T::Pointer;
 /*!\brief Alias declaration for nested \c Reference type definitions.
 // \ingroup aliases
 //
-// The Reference_ alias declaration provides a convenient shortcut to access the nested
+// The Reference_t alias declaration provides a convenient shortcut to access the nested
 // \a Reference type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::Reference;
-   using Type2 = Reference_<T>;
+   using Type2 = Reference_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using Reference_ = typename T::Reference;
+using Reference_t = typename T::Reference;
 //*************************************************************************************************
 
 
@@ -308,19 +308,19 @@ using Reference_ = typename T::Reference;
 /*!\brief Alias declaration for nested \c RepresentedType type definitions.
 // \ingroup aliases
 //
-// The RepresentedType_ alias declaration provides a convenient shortcut to access the nested
+// The RepresentedType_t alias declaration provides a convenient shortcut to access the nested
 // \a RepresentedType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::RepresentedType;
-   using Type2 = RepresentedType_<T>;
+   using Type2 = RepresentedType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using RepresentedType_ = typename T::RepresentedType;
+using RepresentedType_t = typename T::RepresentedType;
 //*************************************************************************************************
 
 
@@ -328,19 +328,19 @@ using RepresentedType_ = typename T::RepresentedType;
 /*!\brief Alias declaration for nested \c ResultType type definitions.
 // \ingroup aliases
 //
-// The ResultType_ alias declaration provides a convenient shortcut to access the nested
+// The ResultType_t alias declaration provides a convenient shortcut to access the nested
 // \a ResultType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ResultType;
-   using Type2 = ResultType_<T>;
+   using Type2 = ResultType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ResultType_ = typename T::ResultType;
+using ResultType_t = typename T::ResultType;
 //*************************************************************************************************
 
 
@@ -348,19 +348,19 @@ using ResultType_ = typename T::ResultType;
 /*!\brief Alias declaration for nested \c ReturnType type definitions.
 // \ingroup aliases
 //
-// The ReturnType_ alias declaration provides a convenient shortcut to access the nested
+// The ReturnType_t alias declaration provides a convenient shortcut to access the nested
 // \a ReturnType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ReturnType;
-   using Type2 = ReturnType_<T>;
+   using Type2 = ReturnType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ReturnType_ = typename T::ReturnType;
+using ReturnType_t = typename T::ReturnType;
 //*************************************************************************************************
 
 
@@ -368,19 +368,19 @@ using ReturnType_ = typename T::ReturnType;
 /*!\brief Alias declaration for nested \c RightOperand type definitions.
 // \ingroup aliases
 //
-// The RightOperand_ alias declaration provides a convenient shortcut to access the nested
+// The RightOperand_t alias declaration provides a convenient shortcut to access the nested
 // \a RightOperand type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::RightOperand;
-   using Type2 = RightOperand_<T>;
+   using Type2 = RightOperand_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using RightOperand_ = typename T::RightOperand;
+using RightOperand_t = typename T::RightOperand;
 //*************************************************************************************************
 
 
@@ -388,19 +388,19 @@ using RightOperand_ = typename T::RightOperand;
 /*!\brief Alias declaration for nested \c SIMDType type definitions.
 // \ingroup aliases
 //
-// The SIMDType_ alias declaration provides a convenient shortcut to access the nested
+// The SIMDType_t alias declaration provides a convenient shortcut to access the nested
 // \a SIMDType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::SIMDType;
-   using Type2 = SIMDType_<T>;
+   using Type2 = SIMDType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using SIMDType_ = typename T::SIMDType;
+using SIMDType_t = typename T::SIMDType;
 //*************************************************************************************************
 
 
@@ -408,19 +408,19 @@ using SIMDType_ = typename T::SIMDType;
 /*!\brief Alias declaration for nested \c TransposeType type definitions.
 // \ingroup aliases
 //
-// The TransposeType_ alias declaration provides a convenient shortcut to access the nested
+// The TransposeType_t alias declaration provides a convenient shortcut to access the nested
 // \a TransposeType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::TransposeType;
-   using Type2 = TransposeType_<T>;
+   using Type2 = TransposeType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using TransposeType_ = typename T::TransposeType;
+using TransposeType_t = typename T::TransposeType;
 //*************************************************************************************************
 
 
@@ -428,19 +428,19 @@ using TransposeType_ = typename T::TransposeType;
 /*!\brief Alias declaration for nested \c ValueType type definitions.
 // \ingroup aliases
 //
-// The ValueType_ alias declaration provides a convenient shortcut to access the nested
+// The ValueType_t alias declaration provides a convenient shortcut to access the nested
 // \a ValueType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ValueType;
-   using Type2 = ValueType_<T>;
+   using Type2 = ValueType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ValueType_ = typename T::ValueType;
+using ValueType_t = typename T::ValueType;
 //*************************************************************************************************
 
 
@@ -448,19 +448,19 @@ using ValueType_ = typename T::ValueType;
 /*!\brief Alias declaration for nested \c VectorType type definitions.
 // \ingroup aliases
 //
-// The VectorType_ alias declaration provides a convenient shortcut to access the nested
+// The VectorType_t alias declaration provides a convenient shortcut to access the nested
 // \a VectorType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::VectorType;
-   using Type2 = VectorType_<T>;
+   using Type2 = VectorType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using VectorType_ = typename T::VectorType;
+using VectorType_t = typename T::VectorType;
 //*************************************************************************************************
 
 
@@ -468,19 +468,19 @@ using VectorType_ = typename T::VectorType;
 /*!\brief Alias declaration for nested \c ViewedType type definitions.
 // \ingroup aliases
 //
-// The ViewedType_ alias declaration provides a convenient shortcut to access the nested
+// The ViewedType_t alias declaration provides a convenient shortcut to access the nested
 // \a ViewedType type definition of the given type \a T. The following code example shows
 // both ways to access the nested type definition:
 
    \code
    using Type1 = typename T::ViewedType;
-   using Type2 = ViewedType_<T>;
+   using Type2 = ViewedType_t<T>;
 
    BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
    \endcode
 */
 template< typename T >
-using ViewedType_ = typename T::ViewedType;
+using ViewedType_t = typename T::ViewedType;
 //*************************************************************************************************
 
 } // namespace blaze
