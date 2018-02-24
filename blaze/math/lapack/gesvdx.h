@@ -134,7 +134,7 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_<MT> >, size_t >
+inline DisableIf_< IsComplex< ElementType_t<MT> >, size_t >
    gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -145,7 +145,7 @@ inline DisableIf_< IsComplex< ElementType_<MT> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -224,7 +224,7 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_<MT> >, size_t >
+inline EnableIf_< IsComplex< ElementType_t<MT> >, size_t >
    gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -235,7 +235,7 @@ inline EnableIf_< IsComplex< ElementType_<MT> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using CT = ElementType_<MT>;
+   using CT = ElementType_t<MT>;
    using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
@@ -350,13 +350,13 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
    using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
@@ -465,11 +465,11 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST u
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
@@ -542,7 +542,7 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
+inline DisableIf_< IsComplex< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -555,7 +555,7 @@ inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -662,7 +662,7 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
+inline EnableIf_< IsComplex< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -675,7 +675,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
@@ -822,18 +822,18 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVecto
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
    using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
@@ -954,16 +954,16 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
@@ -1041,7 +1041,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
+inline DisableIf_< IsComplex< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -1054,7 +1054,7 @@ inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -1161,7 +1161,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
+inline EnableIf_< IsComplex< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -1174,7 +1174,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
@@ -1321,18 +1321,18 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
    using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
@@ -1453,16 +1453,16 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
@@ -1542,7 +1542,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
+inline DisableIf_< IsComplex< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
 {
@@ -1557,7 +1557,7 @@ inline DisableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -1682,7 +1682,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
+inline EnableIf_< IsComplex< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
 {
@@ -1697,7 +1697,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> >, size_t >
    BLAZE_INTERNAL_ASSERT( vl <= vu, "Invalid floating point range detected" );
    BLAZE_INTERNAL_ASSERT( il <= iu, "Invalid integral range detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    const size_t M( (~A).rows() );
@@ -1866,23 +1866,23 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
    using UT = UnderlyingElement_t<ET>;
 
    const size_t M( (~A).rows() );
@@ -2012,21 +2012,21 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 

@@ -126,12 +126,12 @@ class SMatDMatMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side dense matrix expression.
-   using ET1 = ElementType_<RT1>;    //!< Element type of the left-hand side sparse matrix expression.
-   using ET2 = ElementType_<RT2>;    //!< Element type of the right-hand side dense matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side dense matrix expression.
+   using ET1 = ElementType_t<RT1>;    //!< Element type of the left-hand side sparse matrix expression.
+   using ET2 = ElementType_t<RT2>;    //!< Element type of the right-hand side dense matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -178,11 +178,11 @@ class SMatDMatMultExpr
                             !IsDiagonal<T3>::value &&
                             T1::simdEnabled && T3::simdEnabled &&
                             IsRowMajorMatrix<T1>::value &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+                            IsSIMDCombinable< ElementType_t<T1>
+                                            , ElementType_t<T2>
+                                            , ElementType_t<T3> >::value &&
+                            HasSIMDAdd< ElementType_t<T2>, ElementType_t<T3> >::value &&
+                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -198,7 +198,7 @@ class SMatDMatMultExpr
       enum : bool { value = useOptimizedKernels &&
                             !UseVectorizedKernel<T1,T2,T3>::value &&
                             !IsDiagonal<T3>::value &&
-                            !IsResizable< ElementType_<T1> >::value &&
+                            !IsResizable< ElementType_t<T1> >::value &&
                             !IsResizable<ET1>::value };
    };
    /*! \endcond */
@@ -241,13 +241,13 @@ class SMatDMatMultExpr
    //! Type of this SMatDMatMultExpr instance.
    using This = SMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
    using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
@@ -507,7 +507,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseDefaultKernel<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
 
@@ -590,7 +590,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
 
@@ -726,7 +726,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
@@ -928,7 +928,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseDefaultKernel<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
 
@@ -1008,7 +1008,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
 
@@ -1134,7 +1134,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
@@ -1291,7 +1291,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseDefaultKernel<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
 
@@ -1371,7 +1371,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
 
@@ -1497,7 +1497,7 @@ class SMatDMatMultExpr
    static inline EnableIf_< UseVectorizedKernel<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT4>;
+      using ConstIterator = ConstIterator_t<MT4>;
 
       constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
 
@@ -2212,7 +2212,7 @@ template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsSymmetric< SMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
    : public Or< Bool<SF>
               , And< Bool<HF>
-                   , IsBuiltin< ElementType_< SMatDMatMultExpr<MT1,MT2,false,true,false,false> > > >
+                   , IsBuiltin< ElementType_t< SMatDMatMultExpr<MT1,MT2,false,true,false,false> > > >
               , And< Bool<LF>, Bool<UF> > >
 {};
 /*! \endcond */

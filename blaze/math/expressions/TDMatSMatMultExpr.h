@@ -125,12 +125,12 @@ class TDMatSMatMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side dense matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
-   using ET1 = ElementType_<RT1>;    //!< Element type of the left-hand side dense matrix expression.
-   using ET2 = ElementType_<RT2>;    //!< Element type of the right-hand side sparse matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
+   using ET1 = ElementType_t<RT1>;    //!< Element type of the left-hand side dense matrix expression.
+   using ET2 = ElementType_t<RT2>;    //!< Element type of the right-hand side sparse matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -191,7 +191,7 @@ class TDMatSMatMultExpr
    struct UseOptimizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
-                            !IsResizable< ElementType_<T1> >::value &&
+                            !IsResizable< ElementType_t<T1> >::value &&
                             !( IsColumnMajorMatrix<T1>::value && IsResizable<ET2>::value ) };
    };
    /*! \endcond */
@@ -233,12 +233,12 @@ class TDMatSMatMultExpr
    //! Type of this TDMatSMatMultExpr instance.
    using This = TDMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
@@ -515,7 +515,7 @@ class TDMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT5>;
+      using ConstIterator = ConstIterator_t<MT5>;
 
       reset( C );
 
@@ -617,7 +617,7 @@ class TDMatSMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT5>;
+      using ConstIterator = ConstIterator_t<MT5>;
 
       reset( C );
 
@@ -787,11 +787,11 @@ class TDMatSMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_t<MT5> );
 
       const ForwardFunctor fwd;
 
-      const OppositeType_<MT5> tmp( serial( B ) );
+      const OppositeType_t<MT5> tmp( serial( B ) );
       assign( C, fwd( A * tmp ) );
    }
    /*! \endcond */
@@ -953,7 +953,7 @@ class TDMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT5>;
+      using ConstIterator = ConstIterator_t<MT5>;
 
       size_t i( 0UL );
 
@@ -1054,7 +1054,7 @@ class TDMatSMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT5>;
+      using ConstIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
@@ -1214,11 +1214,11 @@ class TDMatSMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_t<MT5> );
 
       const ForwardFunctor fwd;
 
-      const OppositeType_<MT5> tmp( serial( B ) );
+      const OppositeType_t<MT5> tmp( serial( B ) );
       addAssign( C, fwd( A * tmp ) );
    }
    /*! \endcond */
@@ -1342,7 +1342,7 @@ class TDMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT5>;
+      using ConstIterator = ConstIterator_t<MT5>;
 
       size_t i( 0UL );
 
@@ -1443,7 +1443,7 @@ class TDMatSMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_<MT5>;
+      using ConstIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
@@ -1603,11 +1603,11 @@ class TDMatSMatMultExpr
    static inline EnableIf_< UseOptimizedKernel<MT3,MT4,MT5> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT5> );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_t<MT5> );
 
       const ForwardFunctor fwd;
 
-      const OppositeType_<MT5> tmp( serial( B ) );
+      const OppositeType_t<MT5> tmp( serial( B ) );
       subAssign( C, fwd( A * tmp ) );
    }
    /*! \endcond */
@@ -2375,7 +2375,7 @@ template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsSymmetric< TDMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
    : public Or< Bool<SF>
               , And< Bool<HF>
-                   , IsBuiltin< ElementType_< TDMatSMatMultExpr<MT1,MT2,false,true,false,false> > > >
+                   , IsBuiltin< ElementType_t< TDMatSMatMultExpr<MT1,MT2,false,true,false,false> > > >
               , And< Bool<LF>, Bool<UF> > >
 {};
 /*! \endcond */

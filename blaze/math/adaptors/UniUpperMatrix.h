@@ -343,7 +343,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO >         // Storage order of the dense matrix
 inline void invert( UniUpperMatrix<MT,SO,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    if( IF == asLower || IF == asUniLower ) {
       BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
@@ -385,7 +385,7 @@ template< typename MT1, bool SO1, typename MT2, typename MT3, typename MT4, bool
 inline void lu( const UniUpperMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
                 DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT2 );
@@ -397,8 +397,8 @@ inline void lu( const UniUpperMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
 
-   using ET2 = ElementType_<MT2>;
-   using ET4 = ElementType_<MT4>;
+   using ET2 = ElementType_t<MT2>;
+   using ET4 = ElementType_t<MT4>;
 
    const size_t n( (~A).rows() );
 
@@ -2793,13 +2793,13 @@ struct SchurTrait< CompressedMatrix<T,SO1>, UniUpperMatrix<MT,SO2,DF> >
 template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
 struct SchurTrait< UniUpperMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
 {
-   using Type = IdentityMatrix< MultTrait_t< ElementType_<MT>, T >, SO2 >;
+   using Type = IdentityMatrix< MultTrait_t< ElementType_t<MT>, T >, SO2 >;
 };
 
 template< typename T, bool SO1, typename MT, bool SO2, bool DF >
 struct SchurTrait< IdentityMatrix<T,SO1>, UniUpperMatrix<MT,SO2,DF> >
 {
-   using Type = IdentityMatrix< MultTrait_t< T, ElementType_<MT> >, SO1 >;
+   using Type = IdentityMatrix< MultTrait_t< T, ElementType_t<MT> >, SO1 >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
@@ -2841,13 +2841,13 @@ struct SchurTrait< LowerMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SchurTrait< UniUpperMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 {
-   using Type = IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, SO1 >;
+   using Type = IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO1 >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SchurTrait< UniLowerMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2> >
 {
-   using Type = IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, SO1 >;
+   using Type = IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO1 >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -3272,7 +3272,7 @@ struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>,
 template< typename MT, bool SO, bool DF >
 struct DeclSymTrait< UniUpperMatrix<MT,SO,DF> >
 {
-   using Type = IdentityMatrix< ElementType_<MT>, SO >;
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3291,7 +3291,7 @@ struct DeclSymTrait< UniUpperMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclHermTrait< UniUpperMatrix<MT,SO,DF> >
 {
-   using Type = IdentityMatrix< ElementType_<MT>, SO >;
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3310,7 +3310,7 @@ struct DeclHermTrait< UniUpperMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclLowTrait< UniUpperMatrix<MT,SO,DF> >
 {
-   using Type = IdentityMatrix< ElementType_<MT>, SO >;
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3348,7 +3348,7 @@ struct DeclUppTrait< UniUpperMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclDiagTrait< UniUpperMatrix<MT,SO,DF> >
 {
-   using Type = IdentityMatrix< ElementType_<MT>, SO >;
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

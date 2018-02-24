@@ -110,10 +110,10 @@ class DVecScalarDivExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<VT>;     //!< Result type of the dense vector expression.
-   using RN = ReturnType_<VT>;     //!< Return type of the dense vector expression.
-   using ET = ElementType_<VT>;    //!< Element type of the dense vector expression.
-   using CT = CompositeType_<VT>;  //!< Composite type of the dense vector expression.
+   using RT = ResultType_t<VT>;     //!< Result type of the dense vector expression.
+   using RN = ReturnType_t<VT>;     //!< Return type of the dense vector expression.
+   using ET = ElementType_t<VT>;    //!< Element type of the dense vector expression.
+   using CT = CompositeType_t<VT>;  //!< Composite type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -167,8 +167,8 @@ class DVecScalarDivExpr
    //**Type definitions****************************************************************************
    using This          = DVecScalarDivExpr<VT,ST,TF>;  //!< Type of this DVecScalarDivExpr instance.
    using ResultType    = DivTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -204,7 +204,7 @@ class DVecScalarDivExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense vector expression.
-      using IteratorType = ConstIterator_<VT>;
+      using IteratorType = ConstIterator_t<VT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1083,7 +1083,7 @@ inline decltype(auto) operator/( const DenseVector<VT,TF>& vec, ST scalar )
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
    using ReturnType = typename DVecScalarDivExprHelper<VT,ST,TF>::Type;
-   using ScalarType = RightOperand_<ReturnType>;
+   using ScalarType = RightOperand_t<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
@@ -1185,7 +1185,7 @@ inline decltype(auto) operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 sc
 
    using MultType   = MultTrait_t<ST1,ST2>;
    using ReturnType = typename DVecScalarDivExprHelper<VT,MultType,TF>::Type;
-   using ScalarType = RightOperand_<ReturnType>;
+   using ScalarType = RightOperand_t<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );

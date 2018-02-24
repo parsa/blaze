@@ -105,9 +105,9 @@ class SVecScalarDivExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<VT>;     //!< Result type of the sparse vector expression.
-   using RN = ReturnType_<VT>;     //!< Return type of the sparse vector expression.
-   using CT = CompositeType_<VT>;  //!< Composite type of the sparse vector expression.
+   using RT = ResultType_t<VT>;     //!< Result type of the sparse vector expression.
+   using RN = ReturnType_t<VT>;     //!< Return type of the sparse vector expression.
+   using CT = CompositeType_t<VT>;  //!< Composite type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -161,8 +161,8 @@ class SVecScalarDivExpr
    //**Type definitions****************************************************************************
    using This          = SVecScalarDivExpr<VT,ST,TF>;  //!< Type of this SVecScalarDivExpr instance.
    using ResultType    = DivTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -193,7 +193,7 @@ class SVecScalarDivExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      using IteratorType = ConstIterator_< RemoveReference_t<LeftOperand> >;
+      using IteratorType = ConstIterator_t< RemoveReference_t<LeftOperand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = Element;                    //!< Type of the underlying pointers.
@@ -843,7 +843,7 @@ inline decltype(auto) operator/( const SparseVector<VT,TF>& vec, ST scalar )
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
    using ReturnType = typename SVecScalarDivExprHelper<VT,ST,TF>::Type;
-   using ScalarType = RightOperand_<ReturnType>;
+   using ScalarType = RightOperand_t<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
@@ -945,7 +945,7 @@ inline decltype(auto) operator/( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 sc
 
    using MultType   = MultTrait_t<ST1,ST2>;
    using ReturnType = typename SVecScalarDivExprHelper<VT,MultType,TF>::Type;
-   using ScalarType = RightOperand_<ReturnType>;
+   using ScalarType = RightOperand_t<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );

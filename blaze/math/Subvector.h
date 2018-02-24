@@ -209,7 +209,7 @@ template< typename SVT >    // Type of the subvector
 inline void Rand< Subvector<VT,AF,TF,false,CSAs...> >::randomize( SVT&& subvector ) const
 {
    using SubvectorType = RemoveReference_t<SVT>;
-   using ElementType   = ElementType_<SubvectorType>;
+   using ElementType   = ElementType_t<SubvectorType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );
@@ -248,7 +248,7 @@ template< typename SVT >    // Type of the subvector
 inline void Rand< Subvector<VT,AF,TF,false,CSAs...> >::randomize( SVT&& subvector, size_t nonzeros ) const
 {
    using SubvectorType = RemoveReference_t<SVT>;
-   using ElementType   = ElementType_<SubvectorType>;
+   using ElementType   = ElementType_t<SubvectorType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );
@@ -291,7 +291,7 @@ inline void Rand< Subvector<VT,AF,TF,false,CSAs...> >::randomize( SVT&& subvecto
                                                                   const Arg& min, const Arg& max ) const
 {
    using SubvectorType = RemoveReference_t<SVT>;
-   using ElementType   = ElementType_<SubvectorType>;
+   using ElementType   = ElementType_t<SubvectorType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );
@@ -334,7 +334,7 @@ inline void Rand< Subvector<VT,AF,TF,false,CSAs...> >::randomize( SVT&& subvecto
                                                                   const Arg& min, const Arg& max ) const
 {
    using SubvectorType = RemoveReference_t<SVT>;
-   using ElementType   = ElementType_<SubvectorType>;
+   using ElementType   = ElementType_t<SubvectorType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBVECTOR_TYPE( SubvectorType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( SubvectorType );

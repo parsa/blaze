@@ -546,7 +546,7 @@ class CustomVector
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -558,8 +558,8 @@ class CustomVector
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -571,8 +571,8 @@ class CustomVector
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -584,8 +584,8 @@ class CustomVector
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -597,8 +597,8 @@ class CustomVector
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1259,7 +1259,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( cons
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -1295,7 +1295,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -1330,7 +1330,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -1361,9 +1361,9 @@ template< typename VT >  // Type of the right-hand side vector
 inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1406,9 +1406,9 @@ inline CustomVector<Type,AF,PF,TF>&
    CustomVector<Type,AF,PF,TF>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1452,9 +1452,9 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator%=( con
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2127,7 +2127,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
       size_t i( 0UL );
-      ConstIterator_<VT> it( (~rhs).begin() );
+      ConstIterator_t<VT> it( (~rhs).begin() );
 
       for( ; i<i4way; i+=SIMDSIZE*4UL ) {
          store( i             , it.load() ); it += SIMDSIZE;
@@ -2166,7 +2166,7 @@ inline void CustomVector<Type,AF,PF,TF>::assign( const SparseVector<VT,TF>& rhs 
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2237,7 +2237,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) + it.load() ); it += SIMDSIZE;
@@ -2275,7 +2275,7 @@ inline void CustomVector<Type,AF,PF,TF>::addAssign( const SparseVector<VT,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2346,7 +2346,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) - it.load() ); it += SIMDSIZE;
@@ -2384,7 +2384,7 @@ inline void CustomVector<Type,AF,PF,TF>::subAssign( const SparseVector<VT,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2455,7 +2455,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) * it.load() ); it += SIMDSIZE;
@@ -2497,7 +2497,7 @@ inline void CustomVector<Type,AF,PF,TF>::multAssign( const SparseVector<VT,TF>& 
 
    reset();
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2568,7 +2568,7 @@ inline EnableIf_<typename CustomVector<Type,AF,PF,TF>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) / it.load() ); it += SIMDSIZE;
@@ -2758,7 +2758,7 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -2768,8 +2768,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -2779,8 +2779,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -2790,8 +2790,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -2801,8 +2801,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -3470,7 +3470,7 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -3508,7 +3508,7 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -3545,7 +3545,7 @@ inline CustomVector<Type,AF,padded,TF>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -3578,9 +3578,9 @@ inline CustomVector<Type,AF,padded,TF>&
    CustomVector<Type,AF,padded,TF>::operator*=( const Vector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -3624,9 +3624,9 @@ inline CustomVector<Type,AF,padded,TF>&
    CustomVector<Type,AF,padded,TF>::operator/=( const DenseVector<VT,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -3672,9 +3672,9 @@ inline CustomVector<Type,AF,padded,TF>&
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -4339,7 +4339,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
       size_t i( 0UL );
-      ConstIterator_<VT> it( (~rhs).begin() );
+      ConstIterator_t<VT> it( (~rhs).begin() );
 
       for( ; i<i4way; i+=SIMDSIZE*4UL ) {
          store( i             , it.load() ); it += SIMDSIZE;
@@ -4379,7 +4379,7 @@ inline void CustomVector<Type,AF,padded,TF>::assign( const SparseVector<VT,TF>& 
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 /*! \endcond */
@@ -4454,7 +4454,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) + it.load() ); it += SIMDSIZE;
@@ -4493,7 +4493,7 @@ inline void CustomVector<Type,AF,padded,TF>::addAssign( const SparseVector<VT,TF
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 /*! \endcond */
@@ -4568,7 +4568,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) - it.load() ); it += SIMDSIZE;
@@ -4607,7 +4607,7 @@ inline void CustomVector<Type,AF,padded,TF>::subAssign( const SparseVector<VT,TF
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 /*! \endcond */
@@ -4682,7 +4682,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) * it.load() ); it += SIMDSIZE;
@@ -4725,7 +4725,7 @@ inline void CustomVector<Type,AF,padded,TF>::multAssign( const SparseVector<VT,T
 
    reset();
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 /*! \endcond */
@@ -4798,7 +4798,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
-   ConstIterator_<VT> it( (~rhs).begin() );
+   ConstIterator_t<VT> it( (~rhs).begin() );
 
    for( ; i<i4way; i+=SIMDSIZE*4UL ) {
       store( i             , load(i             ) / it.load() ); it += SIMDSIZE;

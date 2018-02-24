@@ -102,7 +102,7 @@ struct DVecNormHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the dense vector expression.
-   using CT = RemoveReference_t< CompositeType_<VT> >;
+   using CT = RemoveReference_t< CompositeType_t<VT> >;
    //**********************************************************************************************
 
    //**SIMD support detection**********************************************************************
@@ -114,7 +114,7 @@ struct DVecNormHelper
 
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      enum : bool { value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_<VT> >() };
+      enum : bool { value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<VT> >() };
    };
    //**********************************************************************************************
 
@@ -124,7 +124,7 @@ struct DVecNormHelper
                          If_< And< HasSIMDEnabled<Abs>, HasSIMDEnabled<Power> >
                             , UseSIMDEnabledFlag
                             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
-                         HasSIMDAdd< ElementType_<CT>, ElementType_<CT> >::value };
+                         HasSIMDAdd< ElementType_t<CT>, ElementType_t<CT> >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -161,8 +161,8 @@ template< typename VT      // Type of the dense vector
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root, FalseType )
 {
-   using CT = CompositeType_<VT>;
-   using ET = ElementType_<VT>;
+   using CT = CompositeType_t<VT>;
+   using ET = ElementType_t<VT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
    if( (~dv).size() == 0UL ) return RT();
@@ -213,8 +213,8 @@ template< typename VT      // Type of the dense vector
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root, TrueType )
 {
-   using CT = CompositeType_<VT>;
-   using ET = ElementType_<VT>;
+   using CT = CompositeType_t<VT>;
+   using ET = ElementType_t<VT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };

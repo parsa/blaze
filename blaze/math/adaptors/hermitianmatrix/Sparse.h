@@ -111,9 +111,9 @@ class HermitianMatrix<MT,SO,false>
 {
  private:
    //**Type definitions****************************************************************************
-   using OT = OppositeType_<MT>;   //!< Opposite type of the sparse matrix.
-   using TT = TransposeType_<MT>;  //!< Transpose type of the sparse matrix.
-   using ET = ElementType_<MT>;    //!< Element type of the sparse matrix.
+   using OT = OppositeType_t<MT>;   //!< Opposite type of the sparse matrix.
+   using TT = TransposeType_t<MT>;  //!< Transpose type of the sparse matrix.
+   using ET = ElementType_t<MT>;    //!< Element type of the sparse matrix.
    //**********************************************************************************************
 
  public:
@@ -124,11 +124,11 @@ class HermitianMatrix<MT,SO,false>
    using OppositeType   = HermitianMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = HermitianMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                             //!< Type of the matrix elements.
-   using ReturnType     = ReturnType_<MT>;                //!< Return type for expression template evaluations.
+   using ReturnType     = ReturnType_t<MT>;               //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                    //!< Data type for composite expression templates.
    using Reference      = HermitianProxy<MT>;             //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<MT>;            //!< Reference to a constant matrix value.
-   using ConstIterator  = ConstIterator_<MT>;             //!< Iterator over constant elements.
+   using ConstReference = ConstReference_t<MT>;           //!< Reference to a constant matrix value.
+   using ConstIterator  = ConstIterator_t<MT>;            //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -159,7 +159,7 @@ class HermitianMatrix<MT,SO,false>
    {
     public:
       //**Type definitions*************************************************************************
-      using IteratorType = Iterator_<MT>;  //!< Type of the underlying sparse matrix iterators.
+      using IteratorType = Iterator_t<MT>;  //!< Type of the underlying sparse matrix iterators.
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = HermitianElement<MT>;       //!< Type of the underlying elements.
@@ -361,7 +361,7 @@ class HermitianMatrix<MT,SO,false>
    inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix& >
+   inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix& >
       operator=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
@@ -371,7 +371,7 @@ class HermitianMatrix<MT,SO,false>
    inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix& >
+   inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix& >
       operator+=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
@@ -381,7 +381,7 @@ class HermitianMatrix<MT,SO,false>
    inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix& >
+   inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix& >
       operator-=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2, bool SO2 >
@@ -391,7 +391,7 @@ class HermitianMatrix<MT,SO,false>
    inline EnableIf_< IsComputation<MT2>, HermitianMatrix& > operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix& >
+   inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix& >
       operator%=( const Matrix<MT2,!SO>& rhs );
 
    template< typename ST >
@@ -716,7 +716,7 @@ template< typename MT   // Type of the adapted sparse matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2 >    // Storage order of the foreign matrix
 inline HermitianMatrix<MT,SO,false>::HermitianMatrix( const Matrix<MT2,SO2>& m )
-   : matrix_( construct( m, typename IsBuiltin< ElementType_<MT2> >::Type() ) )  // The adapted sparse matrix
+   : matrix_( construct( m, typename IsBuiltin< ElementType_t<MT2> >::Type() ) )  // The adapted sparse matrix
 {
    if( !IsHermitian<MT2>::value && !isHermitian( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of Hermitian matrix" );
@@ -1203,7 +1203,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,false>& >
+inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix<MT,SO,false>& >
    HermitianMatrix<MT,SO,false>::operator=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator=( trans( ~rhs ) );
@@ -1275,7 +1275,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >
       matrix_ += ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -1310,7 +1310,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,false>& >
+inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix<MT,SO,false>& >
    HermitianMatrix<MT,SO,false>::operator+=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator+=( trans( ~rhs ) );
@@ -1382,7 +1382,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >
       matrix_ -= ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -1417,7 +1417,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,false>& >
+inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix<MT,SO,false>& >
    HermitianMatrix<MT,SO,false>::operator-=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator-=( trans( ~rhs ) );
@@ -1491,7 +1491,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >
       matrix_ %= ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isHermitian( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to Hermitian matrix" );
@@ -1526,7 +1526,7 @@ inline EnableIf_< IsComputation<MT2>, HermitianMatrix<MT,SO,false>& >
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsBuiltin< ElementType_<MT2> >, HermitianMatrix<MT,SO,false>& >
+inline EnableIf_< IsBuiltin< ElementType_t<MT2> >, HermitianMatrix<MT,SO,false>& >
    HermitianMatrix<MT,SO,false>::operator%=( const Matrix<MT2,!SO>& rhs )
 {
    return this->operator%=( trans( ~rhs ) );
@@ -1749,7 +1749,7 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void HermitianMatrix<MT,SO,false>::reset( size_t i )
 {
-   for( Iterator_<MT> it=matrix_.begin(i); it!=matrix_.end(i); ++it )
+   for( Iterator_t<MT> it=matrix_.begin(i); it!=matrix_.end(i); ++it )
    {
       const size_t j( it->index() );
 
@@ -1757,12 +1757,12 @@ inline void HermitianMatrix<MT,SO,false>::reset( size_t i )
          continue;
 
       if( SO ) {
-         const Iterator_<MT> pos( matrix_.find( i, j ) );
+         const Iterator_t<MT> pos( matrix_.find( i, j ) );
          BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
          matrix_.erase( j, pos );
       }
       else {
-         const Iterator_<MT> pos( matrix_.find( j, i ) );
+         const Iterator_t<MT> pos( matrix_.find( j, i ) );
          BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
          matrix_.erase( j, pos );
       }
@@ -2177,7 +2177,7 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename HermitianMatrix<MT,SO,false>::Iterator
    HermitianMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   const Iterator_<MT> base( pos.base() );
+   const Iterator_t<MT> base( pos.base() );
 
    if( base == matrix_.end( i ) )
       return pos;
@@ -2223,7 +2223,7 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename HermitianMatrix<MT,SO,false>::Iterator
    HermitianMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
 {
-   for( Iterator_<MT> it=first.base(); it!=last.base(); ++it )
+   for( Iterator_t<MT> it=first.base(); it!=last.base(); ++it )
    {
       const size_t j( it->index() );
 

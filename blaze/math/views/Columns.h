@@ -2143,7 +2143,7 @@ template< InversionFlag IF  // Inversion algorithm
         , size_t... CCAs >  // Compile time column arguments
 inline DisableIf_< HasMutableDataAccess<MT> > invert( Columns<MT,SO,true,SF,CCAs...>& c )
 {
-   using RT = ResultType_< Columns<MT,SO,true,SF,CCAs...> >;
+   using RT = ResultType_t< Columns<MT,SO,true,SF,CCAs...> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( RT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
@@ -3416,7 +3416,7 @@ struct IsAligned< Columns<MT,SO,true,SF,CCAs...> >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CSAs >
 struct SubmatrixTrait< Columns<MT,SO,DF,SF,CCAs...>, CSAs... >
 {
-   using Type = SubmatrixTrait_t< ResultType_< Columns<MT,SO,DF,SF,CCAs...> >, CSAs... >;
+   using Type = SubmatrixTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs...> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3435,7 +3435,7 @@ struct SubmatrixTrait< Columns<MT,SO,DF,SF,CCAs...>, CSAs... >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CRAs >
 struct RowTrait< Columns<MT,SO,DF,SF,CCAs...>, CRAs... >
 {
-   using Type = RowTrait_t< ResultType_< Columns<MT,SO,DF,SF,CCAs...> >, CRAs... >;
+   using Type = RowTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs...> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3454,7 +3454,7 @@ struct RowTrait< Columns<MT,SO,DF,SF,CCAs...>, CRAs... >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CRAs >
 struct RowsTrait< Columns<MT,SO,DF,SF,CCAs...>, CRAs... >
 {
-   using Type = RowsTrait_t< ResultType_< Columns<MT,SO,DF,SF,CCAs...> >, CRAs... >;
+   using Type = RowsTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs...> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3473,7 +3473,7 @@ struct RowsTrait< Columns<MT,SO,DF,SF,CCAs...>, CRAs... >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs1, size_t... CCAs2 >
 struct ColumnTrait< Columns<MT,SO,DF,SF,CCAs1...>, CCAs2... >
 {
-   using Type = ColumnTrait_t< ResultType_< Columns<MT,SO,DF,SF,CCAs1...> >, CCAs2... >;
+   using Type = ColumnTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs1...> >, CCAs2... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3492,7 +3492,7 @@ struct ColumnTrait< Columns<MT,SO,DF,SF,CCAs1...>, CCAs2... >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs1, size_t... CCAs2 >
 struct ColumnsTrait< Columns<MT,SO,DF,SF,CCAs1...>, CCAs2... >
 {
-   using Type = ColumnsTrait_t< ResultType_< Columns<MT,SO,DF,SF,CCAs1...> >, CCAs2... >;
+   using Type = ColumnsTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs1...> >, CCAs2... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3511,7 +3511,7 @@ struct ColumnsTrait< Columns<MT,SO,DF,SF,CCAs1...>, CCAs2... >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, ptrdiff_t... CBAs >
 struct BandTrait< Columns<MT,SO,DF,SF,CCAs...>, CBAs... >
 {
-   using Type = BandTrait_t< ResultType_< Columns<MT,SO,DF,SF,CCAs...> >, CBAs... >;
+   using Type = BandTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs...> >, CBAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

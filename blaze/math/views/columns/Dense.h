@@ -141,33 +141,33 @@ class Columns<MT,true,true,SF,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,true,true,SF,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Columns instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the column elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
-   using CompositeType = const Columns&;              //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the column elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
+   using CompositeType = const Columns&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant column value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant column value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -287,7 +287,7 @@ class Columns<MT,true,true,SF,CCAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -297,8 +297,8 @@ class Columns<MT,true,true,SF,CCAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -309,8 +309,8 @@ class Columns<MT,true,true,SF,CCAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -321,8 +321,8 @@ class Columns<MT,true,true,SF,CCAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -988,13 +988,13 @@ inline Columns<MT,true,true,SF,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<MT>::value ) {
@@ -1012,7 +1012,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
    }
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
+      const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -1054,9 +1054,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1118,9 +1118,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1178,9 +1178,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1242,9 +1242,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1302,9 +1302,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -1367,9 +1367,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,t
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -2175,7 +2175,7 @@ inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE Vect
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2191,7 +2191,7 @@ inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE Vect
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2300,7 +2300,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const SparseMatrix<MT2,tru
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(element->index(),index) = element->value();
    }
 }
@@ -2335,7 +2335,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::assign( const SparseMatrix<MT2,fal
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(i,idx(element->index())) = element->value();
    }
 }
@@ -2434,7 +2434,7 @@ inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE Vect
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2541,7 +2541,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const SparseMatrix<MT2,
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(element->index(),index) += element->value();
    }
 }
@@ -2576,7 +2576,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::addAssign( const SparseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(i,idx(element->index())) += element->value();
    }
 }
@@ -2676,7 +2676,7 @@ inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE Vect
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2783,7 +2783,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const SparseMatrix<MT2,
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(element->index(),index) -= element->value();
    }
 }
@@ -2818,7 +2818,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::subAssign( const SparseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(i,idx(element->index())) -= element->value();
    }
 }
@@ -2904,7 +2904,7 @@ inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE Vect
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_<MT2> right( (~rhs).begin(j) );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3016,7 +3016,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT
       const size_t index( idx(j) );
       size_t i( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(i,index) );
          matrix_(i,index) *= element->value();
@@ -3064,7 +3064,7 @@ inline void Columns<MT,true,true,SF,CCAs...>::schurAssign( const SparseMatrix<MT
    {
       size_t j( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(i,idx(j)) );
          matrix_(i,idx(j)) *= element->value();
@@ -3117,26 +3117,26 @@ class Columns<MT,false,true,false,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,false,true,false,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;     //!< Base type of this Columns instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
-   using CompositeType = const Columns&;              //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
+   using CompositeType = const Columns&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant column value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant column value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**ColumnsIterator class definition************************************************************
@@ -3468,10 +3468,10 @@ class Columns<MT,false,true,false,CCAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = ColumnsIterator< const MT, ConstIterator_<MT> >;
+   using ConstIterator = ColumnsIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, ColumnsIterator< MT, Iterator_<MT> > >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, ColumnsIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4192,13 +4192,13 @@ inline Columns<MT,false,true,false,CCAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<MT>::value ) {
@@ -4216,7 +4216,7 @@ inline Columns<MT,false,true,false,CCAs...>&
    }
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
+      const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -4257,9 +4257,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4320,9 +4320,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4379,9 +4379,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4442,9 +4442,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4501,9 +4501,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -4565,9 +4565,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,f
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -5220,7 +5220,7 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const SparseMatrix<MT2
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(element->index(),index) = element->value();
    }
 }
@@ -5254,7 +5254,7 @@ inline void Columns<MT,false,true,false,CCAs...>::assign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(i,idx(element->index())) = element->value();
    }
 }
@@ -5394,7 +5394,7 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const SparseMatrix<
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(element->index(),index) += element->value();
    }
 }
@@ -5428,7 +5428,7 @@ inline void Columns<MT,false,true,false,CCAs...>::addAssign( const SparseMatrix<
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(i,idx(element->index())) += element->value();
    }
 }
@@ -5569,7 +5569,7 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const SparseMatrix<
 
    for( size_t j=0UL; j<columns(); ++j ) {
       const size_t index( idx(j) );
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(element->index(),index) -= element->value();
    }
 }
@@ -5603,7 +5603,7 @@ inline void Columns<MT,false,true,false,CCAs...>::subAssign( const SparseMatrix<
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(i,idx(element->index())) -= element->value();
    }
 }
@@ -5742,7 +5742,7 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatri
       const size_t index( idx(j) );
       size_t i( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(i,index) );
          matrix_(i,index) *= element->value();
@@ -5789,7 +5789,7 @@ inline void Columns<MT,false,true,false,CCAs...>::schurAssign( const SparseMatri
    {
       size_t j( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(i,idx(j)) );
          matrix_(i,idx(j)) *= element->value();
@@ -5842,33 +5842,33 @@ class Columns<MT,false,true,true,CCAs...>
    //! Type of this Columns instance.
    using This = Columns<MT,false,true,true,CCAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;      //!< Base type of this Columns instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the column elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the column elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
-   using CompositeType = const Columns&;              //!< Data type for composite expression templates.
+   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
+   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the column elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
+   using CompositeType = const Columns&;               //!< Data type for composite expression templates.
 
    //! Reference to a constant column value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant column value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant column value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

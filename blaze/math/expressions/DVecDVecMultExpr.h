@@ -98,14 +98,14 @@ class DVecDVecMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side dense vector expression.
-   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
-   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side dense vector expression.
-   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
-   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side dense vector expression.
-   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side dense vector expression.
-   using ET1 = ElementType_<VT1>;    //!< Element type of the left-hand side dense vector expression.
-   using ET2 = ElementType_<VT2>;    //!< Element type of the right-hand side dense vector expression.
+   using RT1 = ResultType_t<VT1>;     //!< Result type of the left-hand side dense vector expression.
+   using RT2 = ResultType_t<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using RN1 = ReturnType_t<VT1>;     //!< Return type of the left-hand side dense vector expression.
+   using RN2 = ReturnType_t<VT2>;     //!< Return type of the right-hand side dense vector expression.
+   using CT1 = CompositeType_t<VT1>;  //!< Composite type of the left-hand side dense vector expression.
+   using CT2 = CompositeType_t<VT2>;  //!< Composite type of the right-hand side dense vector expression.
+   using ET1 = ElementType_t<VT1>;    //!< Element type of the left-hand side dense vector expression.
+   using ET2 = ElementType_t<VT2>;    //!< Element type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -159,8 +159,8 @@ class DVecDVecMultExpr
    //**Type definitions****************************************************************************
    using This          = DVecDVecMultExpr<VT1,VT2,TF>;  //!< Type of this DVecDVecMultExpr instance.
    using ResultType    = MultTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -196,10 +196,10 @@ class DVecDVecMultExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense vector expression.
-      using LeftIteratorType = ConstIterator_<VT1>;
+      using LeftIteratorType = ConstIterator_t<VT1>;
 
       //! ConstIterator type of the right-hand side dense vector expression.
-      using RightIteratorType = ConstIterator_<VT2>;
+      using RightIteratorType = ConstIterator_t<VT2>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************

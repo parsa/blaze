@@ -232,7 +232,7 @@ template< typename SMT >    // Type of the submatrix
 inline void Rand< Submatrix<MT,AF,SO,false,CSAs...> >::randomize( SMT&& submatrix ) const
 {
    using SubmatrixType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_<SubmatrixType>;
+   using ElementType   = ElementType_t<SubmatrixType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBMATRIX_TYPE( SubmatrixType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SubmatrixType );
@@ -272,7 +272,7 @@ template< typename SMT >    // Type of the submatrix
 inline void Rand< Submatrix<MT,AF,SO,false,CSAs...> >::randomize( SMT&& submatrix, size_t nonzeros ) const
 {
    using SubmatrixType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_<SubmatrixType>;
+   using ElementType   = ElementType_t<SubmatrixType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBMATRIX_TYPE( SubmatrixType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SubmatrixType );
@@ -316,7 +316,7 @@ inline void Rand< Submatrix<MT,AF,SO,false,CSAs...> >::randomize( SMT&& submatri
                                                                   const Arg& min, const Arg& max ) const
 {
    using SubmatrixType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_<SubmatrixType>;
+   using ElementType   = ElementType_t<SubmatrixType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBMATRIX_TYPE( SubmatrixType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SubmatrixType );
@@ -360,7 +360,7 @@ inline void Rand< Submatrix<MT,AF,SO,false,CSAs...> >::randomize( SMT&& submatri
                                                                   const Arg& min, const Arg& max ) const
 {
    using SubmatrixType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_<SubmatrixType>;
+   using ElementType   = ElementType_t<SubmatrixType>;
 
    BLAZE_CONSTRAINT_MUST_BE_SUBMATRIX_TYPE( SubmatrixType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( SubmatrixType );

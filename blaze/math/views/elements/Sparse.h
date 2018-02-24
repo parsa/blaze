@@ -117,16 +117,16 @@ class Elements<VT,TF,false,CEAs...>
    using BaseType      = SparseVector<This,TF>;        //!< Base type of this Elements instance.
    using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<VT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;             //!< Type of the elements.
-   using ReturnType    = ReturnType_<VT>;              //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;            //!< Type of the elements.
+   using ReturnType    = ReturnType_t<VT>;             //!< Return type for expression template evaluations
    using CompositeType = const Elements&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant element value.
-   using ConstReference = ConstReference_<VT>;
+   using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant element value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
+   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
    //**********************************************************************************************
 
    //**ElementsElement class definition************************************************************
@@ -426,10 +426,10 @@ class Elements<VT,TF,false,CEAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = ElementsIterator< const This, ConstIterator_<VT> >;
+   using ConstIterator = ElementsIterator< const This, ConstIterator_t<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator< This, Iterator_<VT> > >;
+   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator< This, Iterator_t<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -979,14 +979,14 @@ inline Elements<VT,TF,false,CEAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1000,7 +1000,7 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       assign( left, tmp );
    }
    else {
@@ -1036,14 +1036,14 @@ inline Elements<VT,TF,false,CEAs...>&
 {
    using blaze::addAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1057,7 +1057,7 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       addAssign( left, tmp );
    }
    else {
@@ -1093,14 +1093,14 @@ inline Elements<VT,TF,false,CEAs...>&
 {
    using blaze::subAssign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1114,7 +1114,7 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       subAssign( left, tmp );
    }
    else {
@@ -1153,9 +1153,9 @@ inline Elements<VT,TF,false,CEAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   using MultType = MultTrait_t< ResultType, ResultType_<VT2> >;
+   using MultType = MultTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1209,10 +1209,10 @@ inline Elements<VT,TF,false,CEAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_<VT2> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType_t<VT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   using DivType = DivTrait_t< ResultType, ResultType_<VT2> >;
+   using DivType = DivTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1266,10 +1266,10 @@ inline Elements<VT,TF,false,CEAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -1707,7 +1707,7 @@ template< typename VT       // Type of the sparse vector
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::find( size_t index )
 {
-   const Iterator_<VT> pos( vector_.find( idx(index) ) );
+   const Iterator_t<VT> pos( vector_.find( idx(index) ) );
 
    if( pos != vector_.end() )
       return Iterator( this, index, pos );
@@ -1738,7 +1738,7 @@ template< typename VT       // Type of the sparse vector
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::find( size_t index ) const
 {
-   const ConstIterator_<VT> pos( vector_.find( idx(index) ) );
+   const ConstIterator_t<VT> pos( vector_.find( idx(index) ) );
 
    if( pos != vector_.end() )
       return ConstIterator( this, index, pos );
@@ -1769,7 +1769,7 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::lowerBound( size_t index )
 {
    for( ; index<size(); ++index ) {
-      const Iterator_<VT> pos( vector_.find( idx(index) ) );
+      const Iterator_t<VT> pos( vector_.find( idx(index) ) );
       if( pos != vector_.end() )
          return Iterator( this, index, pos );
    }
@@ -1799,7 +1799,7 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::lowerBound( size_t index ) const
 {
    for( ; index<size(); ++index ) {
-      const ConstIterator_<VT> pos( vector_.find( idx(index) ) );
+      const ConstIterator_t<VT> pos( vector_.find( idx(index) ) );
       if( pos != vector_.end() )
          return ConstIterator( this, index, pos );
    }
@@ -1829,7 +1829,7 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::upperBound( size_t index )
 {
    while( (++index) < size() ) {
-      const Iterator_<VT> pos( vector_.find( idx(index) ) );
+      const Iterator_t<VT> pos( vector_.find( idx(index) ) );
       if( pos != vector_.end() )
          return Iterator( this, index, pos );
    }
@@ -1859,7 +1859,7 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::upperBound( size_t index ) const
 {
    while( (++index) < size() ) {
-      const ConstIterator_<VT> pos( vector_.find( idx(index) ) );
+      const ConstIterator_t<VT> pos( vector_.find( idx(index) ) );
       if( pos != vector_.end() )
          return ConstIterator( this, index, pos );
    }
@@ -1977,7 +1977,7 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const DenseVector<VT2,TF>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using RT = If_< IsComputation<VT2>, ElementType_<VT>, const ElementType_<VT2>& >;
+   using RT = If_< IsComputation<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
 
    reserve( (~rhs).size() );
 
@@ -2012,11 +2012,11 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const SparseVector<VT2,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using RT = If_< IsComputation<VT2>, ElementType_<VT>, const ElementType_<VT2>& >;
+   using RT = If_< IsComputation<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
 
    size_t i( 0UL );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       for( ; i<element->index(); ++i )
          vector_.erase( idx(i) );
       RT value( element->value() );
@@ -2051,7 +2051,7 @@ template< typename VT       // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side vector
 inline void Elements<VT,TF,false,CEAs...>::addAssign( const Vector<VT2,TF>& rhs )
 {
-   using AddType = AddTrait_t< ResultType, ResultType_<VT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2083,7 +2083,7 @@ template< typename VT       // Type of the sparse vector
 template< typename VT2 >    // Type of the right-hand side vector
 inline void Elements<VT,TF,false,CEAs...>::subAssign( const Vector<VT2,TF>& rhs )
 {
-   using SubType = SubTrait_t< ResultType, ResultType_<VT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );

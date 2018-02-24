@@ -136,8 +136,8 @@ template< typename T1  // Type of the left-hand side dense vector
         , bool TF2 >   // Transpose flag of the right-hand side dense vector
 inline bool operator==( const DenseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs )
 {
-   using CT1 = CompositeType_<T1>;
-   using CT2 = CompositeType_<T2>;
+   using CT1 = CompositeType_t<T1>;
+   using CT2 = CompositeType_t<T2>;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -169,9 +169,9 @@ template< typename T1  // Type of the left-hand side dense vector
         , bool TF2 >   // Transpose flag of the right-hand side sparse vector
 inline bool operator==( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
 {
-   using CT1 = CompositeType_<T1>;
-   using CT2 = CompositeType_<T2>;
-   using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
+   using CT1 = CompositeType_t<T1>;
+   using CT2 = CompositeType_t<T2>;
+   using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -235,7 +235,7 @@ template< typename T1  // Type of the left-hand side dense vector
         , bool TF >    // Transpose flag
 inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar )
 {
-   using CT1 = CompositeType_<T1>;
+   using CT1 = CompositeType_t<T1>;
 
    // Evaluation of the dense vector operand
    CT1 a( ~vec );
@@ -515,16 +515,16 @@ template< typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv );
+const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
 inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
 
 template< typename VT, bool TF >
-const ElementType_<VT> min( const DenseVector<VT,TF>& dv );
+const ElementType_t<VT> min( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-const ElementType_<VT> max( const DenseVector<VT,TF>& dv );
+const ElementType_t<VT> max( const DenseVector<VT,TF>& dv );
 //@}
 //*************************************************************************************************
 
@@ -553,7 +553,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isnan( const DenseVector<VT,TF>& dv )
 {
-   CompositeType_<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( isnan( a[i] ) ) return true;
@@ -583,7 +583,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isDivisor( const DenseVector<VT,TF>& dv )
 {
-   CompositeType_<VT> a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
 
    for( size_t i=0UL; i<a.size(); ++i ) {
       if( !isDivisor( a[i] ) ) return false;
@@ -623,8 +623,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
-   using CT = CompositeType_<VT>;
-   using ConstReference = ConstReference_< RemoveReference_t<CT> >;
+   using CT = CompositeType_t<VT>;
+   using ConstReference = ConstReference_t< RemoveReference_t<CT> >;
 
    if( IsUniform<VT>::value || (~dv).size() < 2UL )
       return true;
@@ -658,9 +658,9 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-const ElementType_<VT> sqrLength( const DenseVector<VT,TF>& dv )
+const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv )
 {
-   using ElementType = ElementType_<VT>;
+   using ElementType = ElementType_t<VT>;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
 
@@ -732,12 +732,12 @@ inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength(
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-const ElementType_<VT> min( const DenseVector<VT,TF>& dv )
+const ElementType_t<VT> min( const DenseVector<VT,TF>& dv )
 {
    using blaze::min;
 
-   using ET = ElementType_<VT>;
-   using CT = CompositeType_<VT>;
+   using ET = ElementType_t<VT>;
+   using CT = CompositeType_t<VT>;
 
    CT a( ~dv );  // Evaluation of the dense vector operand
 
@@ -765,12 +765,12 @@ const ElementType_<VT> min( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-const ElementType_<VT> max( const DenseVector<VT,TF>& dv )
+const ElementType_t<VT> max( const DenseVector<VT,TF>& dv )
 {
    using blaze::max;
 
-   using ET = ElementType_<VT>;
-   using CT = CompositeType_<VT>;
+   using ET = ElementType_t<VT>;
+   using CT = CompositeType_t<VT>;
 
    CT a( ~dv );  // Evaluation of the dense vector operand
 

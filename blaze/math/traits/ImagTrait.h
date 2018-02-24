@@ -81,7 +81,7 @@ struct ImagTrait
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    struct MatrixOrVector {
-      using RT   = typename ImagTrait< ElementType_<T> >::Type;
+      using RT   = typename ImagTrait< ElementType_t<T> >::Type;
       using Type = typename T::template Rebind<RT>::Other;
    };
    /*! \endcond */

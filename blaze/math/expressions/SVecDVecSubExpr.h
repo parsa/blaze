@@ -90,14 +90,14 @@ class SVecDVecSubExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side sparse vector expression.
-   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
-   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side sparse vector expression.
-   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
-   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
-   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side dense vector expression.
-   using TT1 = TransposeType_<VT1>;  //!< Transpose type of the left-hand side sparse vector expression.
-   using TT2 = TransposeType_<VT2>;  //!< Transpose type of the right-hand side dense vector expression.
+   using RT1 = ResultType_t<VT1>;     //!< Result type of the left-hand side sparse vector expression.
+   using RT2 = ResultType_t<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using RN1 = ReturnType_t<VT1>;     //!< Return type of the left-hand side sparse vector expression.
+   using RN2 = ReturnType_t<VT2>;     //!< Return type of the right-hand side dense vector expression.
+   using CT1 = CompositeType_t<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
+   using CT2 = CompositeType_t<VT2>;  //!< Composite type of the right-hand side dense vector expression.
+   using TT1 = TransposeType_t<VT1>;  //!< Transpose type of the left-hand side sparse vector expression.
+   using TT2 = TransposeType_t<VT2>;  //!< Transpose type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -131,8 +131,8 @@ class SVecDVecSubExpr
    //**Type definitions****************************************************************************
    using This          = SVecDVecSubExpr<VT1,VT2,TF>;  //!< Type of this SVecDVecSubExpr instance.
    using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;

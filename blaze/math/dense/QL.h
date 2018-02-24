@@ -91,8 +91,8 @@ void ql( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 // reconstruction of the \c Q matrix from the QL decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_<IsBuiltin< ElementType_<MT1> > >
-   ql_backend( MT1& A, const ElementType_<MT1>* tau )
+inline EnableIf_<IsBuiltin< ElementType_t<MT1> > >
+   ql_backend( MT1& A, const ElementType_t<MT1>* tau )
 {
    orgql( A, tau );
 }
@@ -113,8 +113,8 @@ inline EnableIf_<IsBuiltin< ElementType_<MT1> > >
 // reconstruction of the \c Q matrix from the QL decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_<IsComplex< ElementType_<MT1> > >
-   ql_backend( MT1& A, const ElementType_<MT1>* tau )
+inline EnableIf_<IsComplex< ElementType_t<MT1> > >
+   ql_backend( MT1& A, const ElementType_t<MT1>* tau )
 {
    ungql( A, tau );
 }
@@ -179,19 +179,19 @@ template< typename MT1  // Type of matrix A
 void ql( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3,SO3>& L )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
 
-   using ET1 = ElementType_<MT1>;
+   using ET1 = ElementType_t<MT1>;
 
    const size_t m( (~A).rows() );
    const size_t n( (~A).columns() );

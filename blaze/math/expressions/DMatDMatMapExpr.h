@@ -110,14 +110,14 @@ class DMatDMatMapExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side dense matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side dense matrix expression.
-   using ET1 = ElementType_<MT1>;    //!< Element type of the left-hand side dense matrix expression.
-   using ET2 = ElementType_<MT2>;    //!< Element type of the right-hand side dense matrix expression.
-   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side dense matrix expression.
-   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side dense matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side dense matrix expression.
+   using ET1 = ElementType_t<MT1>;    //!< Element type of the left-hand side dense matrix expression.
+   using ET2 = ElementType_t<MT2>;    //!< Element type of the right-hand side dense matrix expression.
+   using RN1 = ReturnType_t<MT1>;     //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_t<MT2>;     //!< Return type of the right-hand side dense matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
 
    //! Definition of the HasSIMDEnabled type trait.
    BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
@@ -173,9 +173,9 @@ class DMatDMatMapExpr
    //**Type definitions****************************************************************************
    using This          = DMatDMatMapExpr<MT1,MT2,OP,SO>;  //!< Type of this DMatDMatMapExpr instance.
    using ResultType    = BinaryMapTrait_t<RT1,RT2,OP>;    //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;       //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;      //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;        //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;      //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;     //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;       //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );
@@ -220,10 +220,10 @@ class DMatDMatMapExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense matrix expression.
-      using LeftIteratorType = ConstIterator_<MT1>;
+      using LeftIteratorType = ConstIterator_t<MT1>;
 
       //! ConstIterator type of the right-hand side dense matrix expression.
-      using RightIteratorType = ConstIterator_<MT2>;
+      using RightIteratorType = ConstIterator_t<MT2>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************

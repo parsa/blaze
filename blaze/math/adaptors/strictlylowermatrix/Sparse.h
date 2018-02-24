@@ -104,9 +104,9 @@ class StrictlyLowerMatrix<MT,SO,false>
 {
  private:
    //**Type definitions****************************************************************************
-   using OT = OppositeType_<MT>;   //!< Opposite type of the sparse matrix.
-   using TT = TransposeType_<MT>;  //!< Transpose type of the sparse matrix.
-   using ET = ElementType_<MT>;    //!< Element type of the sparse matrix.
+   using OT = OppositeType_t<MT>;   //!< Opposite type of the sparse matrix.
+   using TT = TransposeType_t<MT>;  //!< Transpose type of the sparse matrix.
+   using ET = ElementType_t<MT>;    //!< Element type of the sparse matrix.
    //**********************************************************************************************
 
  public:
@@ -117,12 +117,12 @@ class StrictlyLowerMatrix<MT,SO,false>
    using OppositeType   = StrictlyLowerMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = StrictlyUpperMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                                 //!< Type of the matrix elements.
-   using ReturnType     = ReturnType_<MT>;                    //!< Return type for expression template evaluations.
+   using ReturnType     = ReturnType_t<MT>;                   //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                        //!< Data type for composite expression templates.
    using Reference      = StrictlyLowerProxy<MT>;             //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<MT>;                //!< Reference to a constant matrix value.
-   using Iterator       = Iterator_<MT>;                      //!< Iterator over non-constant elements.
-   using ConstIterator  = ConstIterator_<MT>;                 //!< Iterator over constant elements.
+   using ConstReference = ConstReference_t<MT>;               //!< Reference to a constant matrix value.
+   using Iterator       = Iterator_t<MT>;                     //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_t<MT>;                //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -1086,7 +1086,7 @@ inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
       matrix_ += ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1174,7 +1174,7 @@ inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
       matrix_ -= ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );

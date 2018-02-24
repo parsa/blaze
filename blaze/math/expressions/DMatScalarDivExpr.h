@@ -116,10 +116,10 @@ class DMatScalarDivExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;     //!< Result type of the dense matrix expression.
-   using RN = ReturnType_<MT>;     //!< Return type of the dense matrix expression.
-   using ET = ElementType_<MT>;    //!< Element type of the dense matrix expression.
-   using CT = CompositeType_<MT>;  //!< Composite type of the dense matrix expression.
+   using RT = ResultType_t<MT>;     //!< Result type of the dense matrix expression.
+   using RN = ReturnType_t<MT>;     //!< Return type of the dense matrix expression.
+   using ET = ElementType_t<MT>;    //!< Element type of the dense matrix expression.
+   using CT = CompositeType_t<MT>;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -173,9 +173,9 @@ class DMatScalarDivExpr
    //**Type definitions****************************************************************************
    using This          = DMatScalarDivExpr<MT,ST,SO>;  //!< Type of this DMatScalarDivExpr instance.
    using ResultType    = DivTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -211,7 +211,7 @@ class DMatScalarDivExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      using IteratorType = ConstIterator_<MT>;
+      using IteratorType = ConstIterator_t<MT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1074,7 +1074,7 @@ inline decltype(auto) operator/( const DenseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
    using ReturnType = typename DMatScalarDivExprHelper<MT,ST,SO>::Type;
-   using ScalarType = RightOperand_<ReturnType>;
+   using ScalarType = RightOperand_t<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
@@ -1176,7 +1176,7 @@ inline decltype(auto) operator/( const DMatScalarDivExpr<MT,ST1,SO>& mat, ST2 sc
 
    using MultType   = MultTrait_t<ST1,ST2>;
    using ReturnType = typename DMatScalarDivExprHelper<MT,MultType,SO>::Type;
-   using ScalarType = RightOperand_<ReturnType>;
+   using ScalarType = RightOperand_t<ReturnType>;
 
    if( IsMultExpr<ReturnType>::value ) {
       return ReturnType( mat.leftOperand(), ScalarType(1)/( mat.rightOperand() * scalar ) );

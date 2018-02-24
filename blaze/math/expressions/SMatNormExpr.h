@@ -103,11 +103,11 @@ template< typename MT      // Type of the sparse matrix
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Power power, Root root )
 {
-   using CT = CompositeType_<MT>;
-   using ET = ElementType_<MT>;
+   using CT = CompositeType_t<MT>;
+   using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   using ConstIterator = ConstIterator_< RemoveReference_t<CT> >;
+   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
 
    if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ) return RT();
 

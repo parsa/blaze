@@ -105,14 +105,14 @@ class DVecDVecOuterExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side dense vector expression.
-   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
-   using ET1 = ElementType_<RT1>;    //!< Element type of the left-hand side dense vector expression.
-   using ET2 = ElementType_<RT2>;    //!< Element type of the right-hand side dense vector expression.
-   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side dense vector expression.
-   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
-   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side dense vector expression.
-   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side dense vector expression.
+   using RT1 = ResultType_t<VT1>;     //!< Result type of the left-hand side dense vector expression.
+   using RT2 = ResultType_t<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using ET1 = ElementType_t<RT1>;    //!< Element type of the left-hand side dense vector expression.
+   using ET2 = ElementType_t<RT2>;    //!< Element type of the right-hand side dense vector expression.
+   using RN1 = ReturnType_t<VT1>;     //!< Return type of the left-hand side dense vector expression.
+   using RN2 = ReturnType_t<VT2>;     //!< Return type of the right-hand side dense vector expression.
+   using CT1 = CompositeType_t<VT1>;  //!< Composite type of the left-hand side dense vector expression.
+   using CT2 = CompositeType_t<VT2>;  //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -179,10 +179,10 @@ class DVecDVecOuterExpr
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+                            IsSIMDCombinable< ElementType_t<T1>
+                                            , ElementType_t<T2>
+                                            , ElementType_t<T3> >::value &&
+                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -201,12 +201,12 @@ class DVecDVecOuterExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecDVecOuterExpr<VT1,VT2>;  //!< Type of this DVecDVecOuterExpr instance.
-   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
+   using This          = DVecDVecOuterExpr<VT1,VT2>;   //!< Type of this DVecDVecOuterExpr instance.
+   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< Resulting SIMD element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -248,10 +248,10 @@ class DVecDVecOuterExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense matrix expression.
-      using LeftIteratorType = ConstIterator_<VT1>;
+      using LeftIteratorType = ConstIterator_t<VT1>;
 
       //! ConstIterator type of the right-hand side dense matrix expression.
-      using RightIteratorType = ConstIterator_<VT2>;
+      using RightIteratorType = ConstIterator_t<VT2>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************

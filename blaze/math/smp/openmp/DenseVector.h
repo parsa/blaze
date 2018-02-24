@@ -105,11 +105,11 @@ void openmpAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs, O
 
    BLAZE_INTERNAL_ASSERT( isParallelSectionActive(), "Invalid call outside a parallel section" );
 
-   using ET1 = ElementType_<VT1>;
-   using ET2 = ElementType_<VT2>;
+   using ET1 = ElementType_t<VT1>;
+   using ET2 = ElementType_t<VT2>;
 
    constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
-   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_<VT1> >::size );
+   constexpr size_t SIMDSIZE( SIMDTrait< ElementType_t<VT1> >::size );
 
    const bool lhsAligned( (~lhs).isAligned() );
    const bool rhsAligned( (~rhs).isAligned() );
@@ -278,8 +278,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -370,8 +370,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -462,8 +462,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -554,8 +554,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -646,8 +646,8 @@ inline EnableIf_< And< IsDenseVector<VT1>, IsSMPAssignable<VT1>, IsSMPAssignable
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT1> );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<VT2> );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 

@@ -128,7 +128,7 @@ class UniUpperProxy
  public:
    //**Type definitions****************************************************************************
    //! Type of the represented matrix element.
-   using RepresentedType = ElementType_<MT>;
+   using RepresentedType = ElementType_t<MT>;
 
    //! Value type of the represented complex element.
    using ValueType = typename If_< IsComplex<RepresentedType>

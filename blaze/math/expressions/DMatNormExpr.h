@@ -101,7 +101,7 @@ struct DMatNormHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the dense matrix expression.
-   using CT = RemoveReference_t< CompositeType_<MT> >;
+   using CT = RemoveReference_t< CompositeType_t<MT> >;
    //**********************************************************************************************
 
    //**SIMD support detection**********************************************************************
@@ -113,7 +113,7 @@ struct DMatNormHelper
 
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      enum : bool { value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_<MT> >() };
+      enum : bool { value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<MT> >() };
    };
    //**********************************************************************************************
 
@@ -123,7 +123,7 @@ struct DMatNormHelper
                          If_< And< HasSIMDEnabled<Abs>, HasSIMDEnabled<Power> >
                             , UseSIMDEnabledFlag
                             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
-                         HasSIMDAdd< ElementType_<CT>, ElementType_<CT> >::value };
+                         HasSIMDAdd< ElementType_t<CT>, ElementType_t<CT> >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -159,8 +159,8 @@ template< typename MT      // Type of the dense matrix
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Power power, Root root, FalseType )
 {
-   using CT = CompositeType_<MT>;
-   using ET = ElementType_<MT>;
+   using CT = CompositeType_t<MT>;
+   using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
    if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
@@ -230,8 +230,8 @@ template< typename MT      // Type of the dense matrix
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Power power, Root root, FalseType )
 {
-   using CT = CompositeType_<MT>;
-   using ET = ElementType_<MT>;
+   using CT = CompositeType_t<MT>;
+   using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
    if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
@@ -301,8 +301,8 @@ template< typename MT      // Type of the dense matrix
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Power power, Root root, TrueType )
 {
-   using CT = CompositeType_<MT>;
-   using ET = ElementType_<MT>;
+   using CT = CompositeType_t<MT>;
+   using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };
@@ -373,8 +373,8 @@ template< typename MT      // Type of the dense matrix
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Power power, Root root, TrueType )
 {
-   using CT = CompositeType_<MT>;
-   using ET = ElementType_<MT>;
+   using CT = CompositeType_t<MT>;
+   using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };

@@ -125,12 +125,12 @@ class DMatDVecMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using MRT = ResultType_<MT>;     //!< Result type of the left-hand side dense matrix expression.
-   using VRT = ResultType_<VT>;     //!< Result type of the right-hand side dense vector expression.
-   using MET = ElementType_<MRT>;   //!< Element type of the left-hand side dense matrix expression.
-   using VET = ElementType_<VRT>;   //!< Element type of the right-hand side dense vector expression.
-   using MCT = CompositeType_<MT>;  //!< Composite type of the left-hand side dense matrix expression.
-   using VCT = CompositeType_<VT>;  //!< Composite type of the right-hand side dense vector expression.
+   using MRT = ResultType_t<MT>;     //!< Result type of the left-hand side dense matrix expression.
+   using VRT = ResultType_t<VT>;     //!< Result type of the right-hand side dense vector expression.
+   using MET = ElementType_t<MRT>;   //!< Element type of the left-hand side dense matrix expression.
+   using VET = ElementType_t<VRT>;   //!< Element type of the right-hand side dense vector expression.
+   using MCT = CompositeType_t<MT>;  //!< Composite type of the left-hand side dense matrix expression.
+   using VCT = CompositeType_t<VT>;  //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -170,11 +170,11 @@ class DMatDVecMultExpr
                             IsContiguous<T3>::value && HasConstDataAccess<T3>::value &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible< ElementType_<T1> >::value &&
-                            IsBLASCompatible< ElementType_<T2> >::value &&
-                            IsBLASCompatible< ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value };
+                            IsBLASCompatible< ElementType_t<T1> >::value &&
+                            IsBLASCompatible< ElementType_t<T2> >::value &&
+                            IsBLASCompatible< ElementType_t<T3> >::value &&
+                            IsSame< ElementType_t<T1>, ElementType_t<T2> >::value &&
+                            IsSame< ElementType_t<T1>, ElementType_t<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -190,24 +190,24 @@ class DMatDVecMultExpr
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+                            IsSIMDCombinable< ElementType_t<T1>
+                                            , ElementType_t<T2>
+                                            , ElementType_t<T3> >::value &&
+                            HasSIMDAdd< ElementType_t<T2>, ElementType_t<T3> >::value &&
+                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDVecMultExpr<MT,VT>;     //!< Type of this DMatDVecMultExpr instance.
-   using ResultType    = MultTrait_t<MRT,VRT>;        //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using This          = DMatDVecMultExpr<MT,VT>;      //!< Type of this DMatDVecMultExpr instance.
+   using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    using LeftOperand = If_< IsExpression<MT>, const MT, const MT& >;
@@ -1029,7 +1029,7 @@ class DMatDVecMultExpr
    static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2> >
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ET = ElementType_<VT1>;
+      using ET = ElementType_t<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          assign( y, x );
@@ -1710,10 +1710,10 @@ class DMatDVecMultExpr
    static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2> >
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ET = ElementType_<VT1>;
+      using ET = ElementType_t<VT1>;
 
       if( IsTriangular<MT1>::value ) {
-         ResultType_<VT1> tmp( serial( x ) );
+         ResultType_t<VT1> tmp( serial( x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
@@ -2366,10 +2366,10 @@ class DMatDVecMultExpr
    static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2> >
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ET = ElementType_<VT1>;
+      using ET = ElementType_t<VT1>;
 
       if( IsTriangular<MT1>::value ) {
-         ResultType_<VT1> tmp( serial( x ) );
+         ResultType_t<VT1> tmp( serial( x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
@@ -2731,13 +2731,13 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
  private:
    //**Type definitions****************************************************************************
    using MVM = DMatDVecMultExpr<MT,VT>;  //!< Type of the dense matrix-dense vector multiplication expression.
-   using RES = ResultType_<MVM>;         //!< Result type of the dense matrix-dense vector multiplication expression.
-   using MRT = ResultType_<MT>;          //!< Result type of the left-hand side dense matrix expression.
-   using VRT = ResultType_<VT>;          //!< Result type of the right-hand side dense vector expression.
-   using MET = ElementType_<MRT>;        //!< Element type of the left-hand side dense matrix expression.
-   using VET = ElementType_<VRT>;        //!< Element type of the right-hand side dense vector expression.
-   using MCT = CompositeType_<MT>;       //!< Composite type of the left-hand side dense matrix expression.
-   using VCT = CompositeType_<VT>;       //!< Composite type of the right-hand side dense vector expression.
+   using RES = ResultType_t<MVM>;        //!< Result type of the dense matrix-dense vector multiplication expression.
+   using MRT = ResultType_t<MT>;         //!< Result type of the left-hand side dense matrix expression.
+   using VRT = ResultType_t<VT>;         //!< Result type of the right-hand side dense vector expression.
+   using MET = ElementType_t<MRT>;       //!< Element type of the left-hand side dense matrix expression.
+   using VET = ElementType_t<VRT>;       //!< Element type of the right-hand side dense vector expression.
+   using MCT = CompositeType_t<MT>;      //!< Composite type of the left-hand side dense matrix expression.
+   using VCT = CompositeType_t<VT>;      //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -2774,12 +2774,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
                             IsContiguous<T3>::value && HasConstDataAccess<T3>::value &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible< ElementType_<T1> >::value &&
-                            IsBLASCompatible< ElementType_<T2> >::value &&
-                            IsBLASCompatible< ElementType_<T3> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            !( IsBuiltin< ElementType_<T1> >::value && IsComplex<T4>::value ) };
+                            IsBLASCompatible< ElementType_t<T1> >::value &&
+                            IsBLASCompatible< ElementType_t<T2> >::value &&
+                            IsBLASCompatible< ElementType_t<T3> >::value &&
+                            IsSame< ElementType_t<T1>, ElementType_t<T2> >::value &&
+                            IsSame< ElementType_t<T1>, ElementType_t<T3> >::value &&
+                            !( IsBuiltin< ElementType_t<T1> >::value && IsComplex<T4>::value ) };
    };
    //**********************************************************************************************
 
@@ -2793,12 +2793,12 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3>
+                            IsSIMDCombinable< ElementType_t<T1>
+                                            , ElementType_t<T2>
+                                            , ElementType_t<T3>
                                             , T4 >::value &&
-                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+                            HasSIMDAdd< ElementType_t<T2>, ElementType_t<T3> >::value &&
+                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
    };
    //**********************************************************************************************
 
@@ -2806,8 +2806,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    //**Type definitions****************************************************************************
    using This          = DVecScalarMultExpr<MVM,ST,false>;  //!< Type of this DVecScalarMultExpr instance.
    using ResultType    = MultTrait_t<RES,ST>;               //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;        //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;          //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.
    using SIMDType      = SIMDTrait_t<ElementType>;          //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;                 //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
@@ -2952,7 +2952,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      LeftOperand_<MVM> A( vector_.leftOperand() );
+      LeftOperand_t<MVM> A( vector_.leftOperand() );
       return ( !BLAZE_BLAS_MODE ||
                !BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION ||
                !BLAZE_BLAS_IS_PARALLEL ||
@@ -2987,8 +2987,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      LeftOperand_<MVM>  left ( rhs.vector_.leftOperand()  );
-      RightOperand_<MVM> right( rhs.vector_.rightOperand() );
+      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
 
       if( left.rows() == 0UL ) {
          return;
@@ -3633,7 +3633,7 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      using ET = ElementType_<VT1>;
+      using ET = ElementType_t<VT1>;
 
       if( IsTriangular<MT1>::value ) {
          assign( y, scalar * x );
@@ -3693,8 +3693,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      LeftOperand_<MVM>  left ( rhs.vector_.leftOperand()  );
-      RightOperand_<MVM> right( rhs.vector_.rightOperand() );
+      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
 
       if( left.rows() == 0UL || left.columns() == 0UL ) {
          return;
@@ -4313,10 +4313,10 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      using ET = ElementType_<VT1>;
+      using ET = ElementType_t<VT1>;
 
       if( IsTriangular<MT1>::value ) {
-         ResultType_<VT1> tmp( serial( scalar * x ) );
+         ResultType_t<VT1> tmp( serial( scalar * x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          addAssign( y, tmp );
       }
@@ -4350,8 +4350,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      LeftOperand_<MVM>  left ( rhs.vector_.leftOperand()  );
-      RightOperand_<MVM> right( rhs.vector_.rightOperand() );
+      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
 
       if( left.rows() == 0UL || left.columns() == 0UL ) {
          return;
@@ -4970,10 +4970,10 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
    static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
-      using ET = ElementType_<VT1>;
+      using ET = ElementType_t<VT1>;
 
       if( IsTriangular<MT1>::value ) {
-         ResultType_<VT1> tmp( serial( scalar * x ) );
+         ResultType_t<VT1> tmp( serial( scalar * x ) );
          trmv( tmp, A, ( IsLower<MT1>::value )?( CblasLower ):( CblasUpper ) );
          subAssign( y, tmp );
       }
@@ -5074,8 +5074,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      LeftOperand_<MVM>  left ( rhs.vector_.leftOperand()  );
-      RightOperand_<MVM> right( rhs.vector_.rightOperand() );
+      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
 
       if( left.rows() == 0UL ) {
          return;
@@ -5150,8 +5150,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      LeftOperand_<MVM>  left ( rhs.vector_.leftOperand()  );
-      RightOperand_<MVM> right( rhs.vector_.rightOperand() );
+      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
 
       if( left.rows() == 0UL || left.columns() == 0UL ) {
          return;
@@ -5195,8 +5195,8 @@ class DVecScalarMultExpr< DMatDVecMultExpr<MT,VT>, ST, false >
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      LeftOperand_<MVM>  left ( rhs.vector_.leftOperand()  );
-      RightOperand_<MVM> right( rhs.vector_.rightOperand() );
+      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
 
       if( left.rows() == 0UL || left.columns() == 0UL ) {
          return;

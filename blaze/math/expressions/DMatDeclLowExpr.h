@@ -106,7 +106,7 @@ class DMatDeclLowExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;  //!< Result type of the dense matrix expression.
+   using RT = ResultType_t<MT>;  //!< Result type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -160,12 +160,12 @@ class DMatDeclLowExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDeclLowExpr<MT,SO>;      //!< Type of this DMatDeclLowExpr instance.
-   using ResultType    = DeclLowTrait_t<RT>;          //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
+   using This          = DMatDeclLowExpr<MT,SO>;       //!< Type of this DMatDeclLowExpr instance.
+   using ResultType    = DeclLowTrait_t<RT>;           //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclLowExpr& >;
@@ -965,13 +965,13 @@ inline const DMatDeclLowExpr<MT,SO> decllow_backend( const DenseMatrix<MT,SO>& d
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename = EnableIf_< And< Not< IsLower<MT> >, IsUniUpper<MT> > > >
-inline const IdentityMatrix<ElementType_<MT>,SO> decllow_backend( const DenseMatrix<MT,SO>& dm )
+inline const IdentityMatrix<ElementType_t<MT>,SO> decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
 
-   return IdentityMatrix<ElementType_<MT>,SO>( (~dm).rows() );
+   return IdentityMatrix<ElementType_t<MT>,SO>( (~dm).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************

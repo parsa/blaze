@@ -104,12 +104,12 @@ class DMatTSMatSchurExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side dense matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
-   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side dense matrix expression.
-   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side sparse matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
+   using RN1 = ReturnType_t<MT1>;     //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_t<MT2>;     //!< Return type of the right-hand side sparse matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -148,9 +148,9 @@ class DMatTSMatSchurExpr
    //**Type definitions****************************************************************************
    using This          = DMatTSMatSchurExpr<MT1,MT2>;  //!< Type of this DMatTSMatSchurExpr instance.
    using ResultType    = SchurTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -176,7 +176,7 @@ class DMatTSMatSchurExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse matrix expression.
-      using RightIterator = ConstIterator_< RemoveReference_t<RightOperand> >;
+      using RightIterator = ConstIterator_t< RemoveReference_t<RightOperand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = Element;                    //!< Type of the underlying pointers.
@@ -526,7 +526,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -568,7 +568,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -628,7 +628,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -676,7 +676,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -723,7 +723,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -769,7 +769,7 @@ class DMatTSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT2> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -946,7 +946,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, false >
+inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
    dmattsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -956,7 +956,7 @@ inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, false >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1055,7 +1055,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, true >
+inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >
    tdmattsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1065,7 +1065,7 @@ inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, true >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************

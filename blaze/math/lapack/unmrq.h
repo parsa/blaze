@@ -69,7 +69,7 @@ namespace blaze {
 //@{
 template< typename MT1, bool SO, typename MT2 >
 inline void unmrq( DenseMatrix<MT1,SO>& C, const DenseMatrix<MT2,SO>& A,
-                   char side, char trans, const ElementType_<MT2>* tau );
+                   char side, char trans, const ElementType_t<MT2>* tau );
 //@}
 //*************************************************************************************************
 
@@ -141,21 +141,21 @@ inline void unmrq( DenseMatrix<MT1,SO>& C, const DenseMatrix<MT2,SO>& A,
 */
 template< typename MT1, bool SO, typename MT2 >
 inline void unmrq( DenseMatrix<MT1,SO>& C, const DenseMatrix<MT2,SO>& A,
-                   char side, char trans, const ElementType_<MT2>* tau )
+                   char side, char trans, const ElementType_t<MT2>* tau )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT2> );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
 
    if( (~A).rows() < (~A).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size of Q matrix" );

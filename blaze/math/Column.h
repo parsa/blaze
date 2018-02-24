@@ -209,7 +209,7 @@ template< typename CT >     // Type of the column
 inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column ) const
 {
    using ColumnType  = RemoveReference_t<CT>;
-   using ElementType = ElementType_<ColumnType>;
+   using ElementType = ElementType_t<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ColumnType );
@@ -248,7 +248,7 @@ template< typename CT >     // Type of the column
 inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column, size_t nonzeros ) const
 {
    using ColumnType  = RemoveReference_t<CT>;
-   using ElementType = ElementType_<ColumnType>;
+   using ElementType = ElementType_t<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ColumnType );
@@ -290,7 +290,7 @@ template< typename CT       // Type of the column
 inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column, const Arg& min, const Arg& max ) const
 {
    using ColumnType  = RemoveReference_t<CT>;
-   using ElementType = ElementType_<ColumnType>;
+   using ElementType = ElementType_t<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ColumnType );
@@ -333,7 +333,7 @@ inline void Rand< Column<MT,SO,false,SF,CCAs...> >::randomize( CT&& column, size
                                                                const Arg& min, const Arg& max ) const
 {
    using ColumnType  = RemoveReference_t<CT>;
-   using ElementType = ElementType_<ColumnType>;
+   using ElementType = ElementType_t<ColumnType>;
 
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_TYPE( ColumnType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ColumnType );

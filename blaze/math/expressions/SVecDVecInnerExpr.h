@@ -100,14 +100,14 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using Lhs           = CompositeType_<VT1>;     // Composite type of the left-hand side sparse vector expression
-   using Rhs           = CompositeType_<VT2>;     // Composite type of the right-hand side dense vector expression
+   using Lhs           = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
+   using Rhs           = CompositeType_t<VT2>;    // Composite type of the right-hand side dense vector expression
    using X1            = RemoveReference_t<Lhs>;  // Auxiliary type for the left-hand side composite type
    using X2            = RemoveReference_t<Rhs>;  // Auxiliary type for the right-hand side composite type
-   using ET1           = ElementType_<X1>;        // Element type of the left-hand side sparse vector expression
-   using ET2           = ElementType_<X2>;        // Element type of the right-hand side dense vector expression
+   using ET1           = ElementType_t<X1>;       // Element type of the left-hand side sparse vector expression
+   using ET2           = ElementType_t<X2>;       // Element type of the right-hand side dense vector expression
    using MultType      = MultTrait_t<ET1,ET2>;    // Multiplication result type
-   using ConstIterator = ConstIterator_<X1>;      // Iterator type of the left-hand sparse vector expression
+   using ConstIterator = ConstIterator_t<X1>;     // Iterator type of the left-hand sparse vector expression
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2 );

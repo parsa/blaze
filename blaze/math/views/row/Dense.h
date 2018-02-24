@@ -140,32 +140,32 @@ class Row<MT,true,true,SF,CRAs...>
    //! Type of this Row instance.
    using This = Row<MT,true,true,SF,CRAs...>;
 
-   using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the row elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Row&;                  //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,true>;       //!< Base type of this Row instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Row instance.
+   using ResultType    = RowTrait_t<MT,CRAs...>;       //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the row elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Row&;                   //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant row value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant row value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -253,7 +253,7 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -263,8 +263,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -274,8 +274,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -285,8 +285,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -296,8 +296,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -872,14 +872,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,true,true,SF,CRAs...>&
    Row<MT,true,true,SF,CRAs...>::operator=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), 0UL ) ) {
@@ -889,7 +889,7 @@ inline Row<MT,true,true,SF,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -927,14 +927,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,true,true,SF,CRAs...>&
    Row<MT,true,true,SF,CRAs...>::operator+=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row(), 0UL ) ) {
@@ -944,7 +944,7 @@ inline Row<MT,true,true,SF,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -980,14 +980,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,true,true,SF,CRAs...>&
    Row<MT,true,true,SF,CRAs...>::operator-=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row(), 0UL ) ) {
@@ -997,7 +997,7 @@ inline Row<MT,true,true,SF,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -1032,14 +1032,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,true,true,SF,CRAs...>&
    Row<MT,true,true,SF,CRAs...>::operator*=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row(), 0UL ) ) {
@@ -1049,7 +1049,7 @@ inline Row<MT,true,true,SF,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -1083,14 +1083,14 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline Row<MT,true,true,SF,CRAs...>&
    Row<MT,true,true,SF,CRAs...>::operator/=( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, row(), 0UL ) ) {
@@ -1100,7 +1100,7 @@ inline Row<MT,true,true,SF,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
    else {
@@ -1137,10 +1137,10 @@ inline Row<MT,true,true,SF,CRAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( CrossType );
@@ -1747,7 +1747,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
    {
@@ -1798,7 +1798,7 @@ inline void Row<MT,true,true,SF,CRAs...>::assign( const SparseVector<VT,true>& r
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row(),element->index()) = element->value();
 }
 /*! \endcond */
@@ -1870,7 +1870,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -1909,7 +1909,7 @@ inline void Row<MT,true,true,SF,CRAs...>::addAssign( const SparseVector<VT,true>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row(),element->index()) += element->value();
 }
 /*! \endcond */
@@ -1981,7 +1981,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2020,7 +2020,7 @@ inline void Row<MT,true,true,SF,CRAs...>::subAssign( const SparseVector<VT,true>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row(),element->index()) -= element->value();
 }
 /*! \endcond */
@@ -2092,7 +2092,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2135,7 +2135,7 @@ inline void Row<MT,true,true,SF,CRAs...>::multAssign( const SparseVector<VT,true
 
    size_t j( 0UL );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; j<index; ++j )
          reset( matrix_(row(),j) );
@@ -2214,7 +2214,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    size_t j( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2270,25 +2270,25 @@ class Row<MT,false,true,false,CRAs...>
    //! Type of this Row instance.
    using This = Row<MT,false,true,false,CRAs...>;
 
-   using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Row instance.
+   using BaseType      = DenseVector<This,true>;       //!< Base type of this Row instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Row instance.
    using ResultType    = RowTrait_t<MT,CRAs...>;       //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
-   using ReturnType    = ElementType_<MT>;            //!< Return type for expression template evaluations
-   using CompositeType = const Row&;                  //!< Data type for composite expression templates.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
+   using ReturnType    = ElementType_t<MT>;            //!< Return type for expression template evaluations
+   using CompositeType = const Row&;                   //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant row value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant row value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**RowIterator class definition****************************************************************
@@ -2620,10 +2620,10 @@ class Row<MT,false,true,false,CRAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = RowIterator< const MT, ConstIterator_<MT> >;
+   using ConstIterator = RowIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, RowIterator< MT, Iterator_<MT> > >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, RowIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3224,7 +3224,7 @@ inline Row<MT,false,true,false,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), 0UL ) ) {
@@ -3271,14 +3271,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,false,true,false,CRAs...>&
    Row<MT,false,true,false,CRAs...>::operator+=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row(), 0UL ) ) {
@@ -3288,7 +3288,7 @@ inline Row<MT,false,true,false,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -3323,14 +3323,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,false,true,false,CRAs...>&
    Row<MT,false,true,false,CRAs...>::operator-=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row(), 0UL ) ) {
@@ -3340,7 +3340,7 @@ inline Row<MT,false,true,false,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -3374,14 +3374,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,false,true,false,CRAs...>&
    Row<MT,false,true,false,CRAs...>::operator*=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row(), 0UL ) ) {
@@ -3391,7 +3391,7 @@ inline Row<MT,false,true,false,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -3424,14 +3424,14 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline Row<MT,false,true,false,CRAs...>&
    Row<MT,false,true,false,CRAs...>::operator/=( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, row(), 0UL ) ) {
@@ -3441,7 +3441,7 @@ inline Row<MT,false,true,false,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
    else {
@@ -3477,10 +3477,10 @@ inline Row<MT,false,true,false,CRAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( CrossType );
@@ -3900,7 +3900,7 @@ inline void Row<MT,false,true,false,CRAs...>::assign( const SparseVector<VT,true
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row(),element->index()) = element->value();
 }
 /*! \endcond */
@@ -3957,7 +3957,7 @@ inline void Row<MT,false,true,false,CRAs...>::addAssign( const SparseVector<VT,t
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row(),element->index()) += element->value();
 }
 /*! \endcond */
@@ -4014,7 +4014,7 @@ inline void Row<MT,false,true,false,CRAs...>::subAssign( const SparseVector<VT,t
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(row(),element->index()) -= element->value();
 }
 /*! \endcond */
@@ -4075,7 +4075,7 @@ inline void Row<MT,false,true,false,CRAs...>::multAssign( const SparseVector<VT,
 
    size_t j( 0UL );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; j<index; ++j )
          reset( matrix_(row(),j) );
@@ -4159,32 +4159,32 @@ class Row<MT,false,true,true,CRAs...>
    //! Type of this Row instance.
    using This = Row<MT,false,true,true,CRAs...>;
 
-   using BaseType      = DenseVector<This,true>;      //!< Base type of this Row instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Row instance.
-   using ResultType    = RowTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< SIMD type of the row elements.
-   using ReturnType    = ElementType_<MT>;            //!< Return type for expression template evaluations
-   using CompositeType = const Row&;                  //!< Data type for composite expression templates.
+   using BaseType      = DenseVector<This,true>;       //!< Base type of this Row instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Row instance.
+   using ResultType    = RowTrait_t<MT,CRAs...>;       //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the row elements.
+   using ReturnType    = ElementType_t<MT>;            //!< Return type for expression template evaluations
+   using CompositeType = const Row&;                   //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant row value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant row value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4272,7 +4272,7 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4282,8 +4282,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4293,8 +4293,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4304,8 +4304,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4315,8 +4315,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_<VT> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_t<VT> >::value };
    };
    //**********************************************************************************************
 
@@ -4871,14 +4871,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,false,true,true,CRAs...>&
    Row<MT,false,true,true,CRAs...>::operator=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), 0UL ) ) {
@@ -4888,7 +4888,7 @@ inline Row<MT,false,true,true,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -4925,14 +4925,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,false,true,true,CRAs...>&
    Row<MT,false,true,true,CRAs...>::operator+=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, row(), 0UL ) ) {
@@ -4942,7 +4942,7 @@ inline Row<MT,false,true,true,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -4977,14 +4977,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,false,true,true,CRAs...>&
    Row<MT,false,true,true,CRAs...>::operator-=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, row(), 0UL ) ) {
@@ -4994,7 +4994,7 @@ inline Row<MT,false,true,true,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -5028,14 +5028,14 @@ template< typename VT >     // Type of the right-hand side vector
 inline Row<MT,false,true,true,CRAs...>&
    Row<MT,false,true,true,CRAs...>::operator*=( const Vector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, row(), 0UL ) ) {
@@ -5045,7 +5045,7 @@ inline Row<MT,false,true,true,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -5078,14 +5078,14 @@ template< typename VT >     // Type of the right-hand side dense vector
 inline Row<MT,false,true,true,CRAs...>&
    Row<MT,false,true,true,CRAs...>::operator/=( const DenseVector<VT,true>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, row(), 0UL ) ) {
@@ -5095,7 +5095,7 @@ inline Row<MT,false,true,true,CRAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
    else {
@@ -5131,10 +5131,10 @@ inline Row<MT,false,true,true,CRAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( CrossType );
@@ -5718,7 +5718,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
    {
@@ -5768,7 +5768,7 @@ inline void Row<MT,false,true,true,CRAs...>::assign( const SparseVector<VT,true>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),row()) = element->value();
 }
 /*! \endcond */
@@ -5838,7 +5838,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5876,7 +5876,7 @@ inline void Row<MT,false,true,true,CRAs...>::addAssign( const SparseVector<VT,tr
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),row()) += element->value();
 }
 /*! \endcond */
@@ -5946,7 +5946,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5984,7 +5984,7 @@ inline void Row<MT,false,true,true,CRAs...>::subAssign( const SparseVector<VT,tr
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       matrix_(element->index(),row()) -= element->value();
 }
 /*! \endcond */
@@ -6054,7 +6054,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6096,7 +6096,7 @@ inline void Row<MT,false,true,true,CRAs...>::multAssign( const SparseVector<VT,t
 
    size_t i( 0UL );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( matrix_(i,row()) );
@@ -6173,7 +6173,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;

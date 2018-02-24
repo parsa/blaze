@@ -62,7 +62,7 @@ namespace blaze {
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi8<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE ValueType_t<T> sum( const SIMDi8<T>& a ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
    return (~a)[ 0] + (~a)[ 1] + (~a)[ 2] + (~a)[ 3] + (~a)[ 4] + (~a)[ 5] + (~a)[ 6] + (~a)[ 7] +
@@ -96,7 +96,7 @@ BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi8<T>& a ) noexcept
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE const ValueType_<T> sum( const SIMDci8<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const ValueType_t<T> sum( const SIMDci8<T>& a ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
    return complex<int8_t>( (~a)[ 0] + (~a)[ 1] + (~a)[ 2] + (~a)[ 3] + (~a)[ 4] + (~a)[ 5] + (~a)[ 6] + (~a)[ 7] +
@@ -131,7 +131,7 @@ BLAZE_ALWAYS_INLINE const ValueType_<T> sum( const SIMDci8<T>& a ) noexcept
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi16<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE ValueType_t<T> sum( const SIMDi16<T>& a ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
    const __m256i low ( _mm512_castsi512_si256( (~a).value ) );
@@ -172,7 +172,7 @@ BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi16<T>& a ) noexcept
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE const ValueType_<T> sum( const SIMDci16<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const ValueType_t<T> sum( const SIMDci16<T>& a ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
    return complex<int16_t>( (~a)[0] + (~a)[1] + (~a)[ 2] + (~a)[ 3] + (~a)[ 4] + (~a)[ 5] + (~a)[ 6] + (~a)[ 7] +
@@ -204,7 +204,7 @@ BLAZE_ALWAYS_INLINE const ValueType_<T> sum( const SIMDci16<T>& a ) noexcept
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi32<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE ValueType_t<T> sum( const SIMDi32<T>& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE
    const __m256i low ( _mm512_castsi512_si256( (~a).value ) );
@@ -244,7 +244,7 @@ BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi32<T>& a ) noexcept
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE const ValueType_<T> sum( const SIMDci32<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const ValueType_t<T> sum( const SIMDci32<T>& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return complex<int32_t>( (~a)[0] + (~a)[1] + (~a)[2] + (~a)[3] + (~a)[4] + (~a)[5] + (~a)[6] + (~a)[7] );
@@ -275,7 +275,7 @@ BLAZE_ALWAYS_INLINE const ValueType_<T> sum( const SIMDci32<T>& a ) noexcept
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi64<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE ValueType_t<T> sum( const SIMDi64<T>& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return (~a)[0] + (~a)[1] + (~a)[2] + (~a)[3] + (~a)[4] + (~a)[5] + (~a)[6] + (~a)[7];
@@ -298,7 +298,7 @@ BLAZE_ALWAYS_INLINE ValueType_<T> sum( const SIMDi64<T>& a ) noexcept
 // \return The sum of all vector elements.
 */
 template< typename T >  // Type of the SIMD element
-BLAZE_ALWAYS_INLINE const ValueType_<T> sum( const SIMDci64<T>& a ) noexcept
+BLAZE_ALWAYS_INLINE const ValueType_t<T> sum( const SIMDci64<T>& a ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return complex<int64_t>( (~a)[0] + (~a)[1] + (~a)[2] + (~a)[3] );

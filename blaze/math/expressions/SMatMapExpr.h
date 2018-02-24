@@ -107,9 +107,9 @@ class SMatMapExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;    //!< Result type of the sparse matrix expression.
-   using OT = OppositeType_<MT>;  //!< Opposite type of the sparse matrix expression.
-   using RN = ReturnType_<MT>;    //!< Return type of the sparse matrix expression.
+   using RT = ResultType_t<MT>;    //!< Result type of the sparse matrix expression.
+   using OT = OppositeType_t<MT>;  //!< Opposite type of the sparse matrix expression.
+   using RN = ReturnType_t<MT>;    //!< Return type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -148,11 +148,11 @@ class SMatMapExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatMapExpr<MT,OP,SO>;       //!< Type of this SMatMapExpr instance.
-   using ResultType    = UnaryMapTrait_t<RT,OP>;      //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using This          = SMatMapExpr<MT,OP,SO>;        //!< Type of this SMatMapExpr instance.
+   using ResultType    = UnaryMapTrait_t<RT,OP>;       //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
@@ -178,7 +178,7 @@ class SMatMapExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse matrix expression.
-      using IteratorType = ConstIterator_< RemoveReference_t<Operand> >;
+      using IteratorType = ConstIterator_t< RemoveReference_t<Operand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = Element;                    //!< Type of the underlying pointers.
@@ -569,7 +569,7 @@ class SMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using Iterator = Iterator_<MT2>;
+      using Iterator = Iterator_t<MT2>;
 
       assign( ~lhs, rhs.sm_ );
 
@@ -610,7 +610,7 @@ class SMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using Iterator = Iterator_<MT2>;
+      using Iterator = Iterator_t<MT2>;
 
       assign( ~lhs, rhs.sm_ );
 
@@ -2570,7 +2570,7 @@ struct IsHermitian< SMatMapExpr<MT,Real,SO> >
 
 template< typename MT, bool SO >
 struct IsHermitian< SMatMapExpr<MT,Imag,SO> >
-   : public IsBuiltin< ElementType_<MT> >
+   : public IsBuiltin< ElementType_t<MT> >
 {};
 
 template< typename MT, bool SO >

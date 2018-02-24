@@ -98,8 +98,8 @@ class SVecMapExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<VT>;  //!< Result type of the sparse vector expression.
-   using RN = ReturnType_<VT>;  //!< Return type of the sparse vector expression.
+   using RT = ResultType_t<VT>;  //!< Result type of the sparse vector expression.
+   using RN = ReturnType_t<VT>;  //!< Return type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -138,10 +138,10 @@ class SVecMapExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecMapExpr<VT,OP,TF>;       //!< Type of this SVecMapExpr instance.
-   using ResultType    = UnaryMapTrait_t<RT,OP>;      //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using This          = SVecMapExpr<VT,OP,TF>;        //!< Type of this SVecMapExpr instance.
+   using ResultType    = UnaryMapTrait_t<RT,OP>;       //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
@@ -167,7 +167,7 @@ class SVecMapExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      using IteratorType = ConstIterator_< RemoveReference_t<Operand> >;
+      using IteratorType = ConstIterator_t< RemoveReference_t<Operand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = Element;                    //!< Type of the underlying pointers.
@@ -523,7 +523,7 @@ class SVecMapExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using Iterator = Iterator_<VT2>;
+      using Iterator = Iterator_t<VT2>;
 
       assign( ~lhs, rhs.sv_ );
 

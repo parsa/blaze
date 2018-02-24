@@ -1142,7 +1142,7 @@ inline CompressedVector<Type,TF>&
       swap( tmp );
    }
    else {
-      CompositeType_<VT> tmp( ~rhs );
+      CompositeType_t<VT> tmp( ~rhs );
       multAssign( *this, tmp );
    }
 
@@ -1206,7 +1206,7 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator/=( const D
       swap( tmp );
    }
    else {
-      CompositeType_<VT> tmp( ~rhs );
+      CompositeType_t<VT> tmp( ~rhs );
       divAssign( *this, tmp );
    }
 
@@ -1233,7 +1233,7 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator%=( const V
 {
    using blaze::assign;
 
-   using CrossType = CrossTrait_t< This, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< This, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2122,7 +2122,7 @@ inline void CompressedVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
    //
    // results in much less requirements on the ConstIterator type provided from the right-hand
    // sparse vector type
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       append( element->index(), element->value() );
 }
 //*************************************************************************************************
@@ -2144,11 +2144,11 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 {
-   using AddType = AddTrait_t< This, ResultType_<VT> >;
+   using AddType = AddTrait_t< This, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( AddType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
-   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<AddType> );
+   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_t<AddType> );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2199,11 +2199,11 @@ template< typename Type  // Data type of the vector
 template< typename VT >  // Type of the right-hand side dense vector
 inline void CompressedVector<Type,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 {
-   using SubType = SubTrait_t< This, ResultType_<VT> >;
+   using SubType = SubTrait_t< This, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( SubType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
-   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_<SubType> );
+   BLAZE_CONSTRAINT_MUST_BE_REFERENCE_TYPE( CompositeType_t<SubType> );
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 

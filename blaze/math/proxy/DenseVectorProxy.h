@@ -78,17 +78,17 @@ class DenseVectorProxy
 {
  public:
    //**Type definitions****************************************************************************
-   using ResultType     = ResultType_<VT>;      //!< Result type for expression template evaluations.
-   using TransposeType  = TransposeType_<VT>;   //!< Transpose type for expression template evaluations.
-   using ElementType    = ElementType_<VT>;     //!< Type of the vector elements.
-   using ReturnType     = ReturnType_<VT>;      //!< Return type for expression template evaluations
-   using CompositeType  = CompositeType_<VT>;   //!< Data type for composite expression templates.
-   using Reference      = Reference_<VT>;       //!< Reference to a non-constant vector value.
-   using ConstReference = ConstReference_<VT>;  //!< Reference to a constant vector value.
-   using Pointer        = Pointer_<VT>;         //!< Pointer to a non-constant vector value.
-   using ConstPointer   = ConstPointer_<VT>;    //!< Pointer to a constant vector value.
-   using Iterator       = Iterator_<VT>;        //!< Iterator over non-constant elements.
-   using ConstIterator  = ConstIterator_<VT>;   //!< Iterator over constant elements.
+   using ResultType     = ResultType_t<VT>;      //!< Result type for expression template evaluations.
+   using TransposeType  = TransposeType_t<VT>;   //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_t<VT>;     //!< Type of the vector elements.
+   using ReturnType     = ReturnType_t<VT>;      //!< Return type for expression template evaluations
+   using CompositeType  = CompositeType_t<VT>;   //!< Data type for composite expression templates.
+   using Reference      = Reference_t<VT>;       //!< Reference to a non-constant vector value.
+   using ConstReference = ConstReference_t<VT>;  //!< Reference to a constant vector value.
+   using Pointer        = Pointer_t<VT>;         //!< Pointer to a non-constant vector value.
+   using ConstPointer   = ConstPointer_t<VT>;    //!< Pointer to a constant vector value.
+   using Iterator       = Iterator_t<VT>;        //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_t<VT>;   //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

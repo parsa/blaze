@@ -110,10 +110,10 @@ class DMatMapExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;    //!< Result type of the dense matrix expression.
-   using OT = OppositeType_<MT>;  //!< Opposite type of the dense matrix expression.
-   using ET = ElementType_<MT>;   //!< Element type of the dense matrix expression.
-   using RN = ReturnType_<MT>;    //!< Return type of the dense matrix expression.
+   using RT = ResultType_t<MT>;    //!< Result type of the dense matrix expression.
+   using OT = OppositeType_t<MT>;  //!< Opposite type of the dense matrix expression.
+   using ET = ElementType_t<MT>;   //!< Element type of the dense matrix expression.
+   using RN = ReturnType_t<MT>;    //!< Return type of the dense matrix expression.
 
    //! Definition of the HasSIMDEnabled type trait.
    BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
@@ -167,11 +167,11 @@ class DMatMapExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatMapExpr<MT,OP,SO>;       //!< Type of this DMatMapExpr instance.
-   using ResultType    = UnaryMapTrait_t<RT,OP>;      //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using This          = DMatMapExpr<MT,OP,SO>;        //!< Type of this DMatMapExpr instance.
+   using ResultType    = UnaryMapTrait_t<RT,OP>;       //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
@@ -207,7 +207,7 @@ class DMatMapExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      using IteratorType = ConstIterator_<MT>;
+      using IteratorType = ConstIterator_t<MT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -2711,7 +2711,7 @@ struct IsHermitian< DMatMapExpr<MT,Real,SO> >
 
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Imag,SO> >
-   : public IsBuiltin< ElementType_<MT> >
+   : public IsBuiltin< ElementType_t<MT> >
 {};
 
 template< typename MT, bool SO >

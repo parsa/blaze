@@ -113,10 +113,10 @@ class TSMatTSMatMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -163,9 +163,9 @@ class TSMatTSMatMultExpr
    //**Type definitions****************************************************************************
    using This          = TSMatTSMatMultExpr<MT1,MT2>;  //!< Type of this TSMatTSMatMultExpr instance.
    using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
    using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
@@ -422,8 +422,8 @@ class TSMatTSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_<MT4>;
-      using RightIterator = ConstIterator_<MT5>;
+      using LeftIterator  = ConstIterator_t<MT4>;
+      using RightIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<C.columns(); ++j ) {
          const RightIterator rend( B.end(j) );
@@ -431,7 +431,7 @@ class TSMatTSMatMultExpr
             const LeftIterator lend( A.end( relem->index() ) );
             for( LeftIterator lelem=A.begin( relem->index() ); lelem!=lend; ++lelem )
             {
-               if( IsResizable< ElementType_<MT3> >::value &&
+               if( IsResizable< ElementType_t<MT3> >::value &&
                    isDefault( C(lelem->index(),j) ) ) {
                   C(lelem->index(),j) = lelem->value() * relem->value();
                }
@@ -500,8 +500,8 @@ class TSMatTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_< RemoveReference_t<CT2> >;
+      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
+      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
@@ -690,8 +690,8 @@ class TSMatTSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_<MT4>;
-      using RightIterator = ConstIterator_<MT5>;
+      using LeftIterator  = ConstIterator_t<MT4>;
+      using RightIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<C.columns(); ++j ) {
          const RightIterator rend( B.end(j) );
@@ -798,8 +798,8 @@ class TSMatTSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_<MT4>;
-      using RightIterator = ConstIterator_<MT5>;
+      using LeftIterator  = ConstIterator_t<MT4>;
+      using RightIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<C.columns(); ++j ) {
          const RightIterator rend( B.end(j) );

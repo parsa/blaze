@@ -85,7 +85,7 @@ namespace blaze {
    template< typename MT, bool SO, bool DF, bool NF >
    struct DeclIdTrait< SymmetricMatrix<MT,SO,DF,NF> >
    {
-      using Type = IdentityMatrix< ElementType_<MT>, SO >;
+      using Type = IdentityMatrix< ElementType_t<MT>, SO >;
    };
    \endcode
 
@@ -123,7 +123,7 @@ struct DeclIdTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = IdentityMatrix< ElementType_<MT>, StorageOrder<MT>::value >; };
+   struct Result { using Type = IdentityMatrix< ElementType_t<MT>, StorageOrder<MT>::value >; };
    /*! \endcond */
    //**********************************************************************************************
 

@@ -127,26 +127,26 @@ class Rows<MT,true,false,SF,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,true,false,SF,CRAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;    //!< Base type of this Rows instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;     //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Rows&;                 //!< Data type for composite expression templates.
+   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
+   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Rows&;                  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -761,13 +761,13 @@ inline Rows<MT,true,false,SF,CRAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = CompositeType_<MT2>;
+   using Right = CompositeType_t<MT2>;
    Right right( ~rhs );
 
    if( IsRestricted<MT>::value ) {
@@ -781,7 +781,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
+      const ResultType_t<MT2> tmp( right );
       left.reset();
       smpAssign( left, tmp );
    }
@@ -825,9 +825,9 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -885,9 +885,9 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -945,9 +945,9 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -2045,7 +2045,7 @@ inline void Rows<MT,true,false,SF,CRAs...>::assign( const SparseMatrix<MT2,false
       const size_t index( idx(i) );
       size_t remaining( matrix_.capacity( index ) );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
       {
          if( remaining == 0UL ) {
             matrix_.reserve( index, extendCapacity( i ) );
@@ -2088,7 +2088,7 @@ inline void Rows<MT,true,false,SF,CRAs...>::assign( const SparseMatrix<MT2,true>
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
-   using RhsIterator = ConstIterator_<MT2>;
+   using RhsIterator = ConstIterator_t<MT2>;
 
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( rows(), 0UL );
@@ -2134,7 +2134,7 @@ inline void Rows<MT,true,false,SF,CRAs...>::addAssign( const Matrix<MT2,SO>& rhs
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -2171,7 +2171,7 @@ inline void Rows<MT,true,false,SF,CRAs...>::subAssign( const Matrix<MT2,SO>& rhs
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -2208,7 +2208,7 @@ inline void Rows<MT,true,false,SF,CRAs...>::schurAssign( const Matrix<MT2,SO>& r
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
@@ -2261,20 +2261,20 @@ class Rows<MT,false,false,false,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,false,false,false,CRAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;    //!< Base type of this Rows instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;     //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Rows&;                 //!< Data type for composite expression templates.
+   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
+   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Rows&;                  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**RowsElement class definition****************************************************************
@@ -2587,10 +2587,10 @@ class Rows<MT,false,false,false,CRAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = RowsIterator< const MT, ConstIterator_<MT> >;
+   using ConstIterator = RowsIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, RowsIterator< MT, Iterator_<MT> > >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, RowsIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3184,13 +3184,13 @@ inline Rows<MT,false,false,false,CRAs...>&
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = CompositeType_<MT2>;
+   using Right = CompositeType_t<MT2>;
    Right right( ~rhs );
 
    if( IsRestricted<MT>::value ) {
@@ -3204,8 +3204,8 @@ inline Rows<MT,false,false,false,CRAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
-      if( IsSparseMatrix< ResultType_<MT2> >::value )
+      const ResultType_t<MT2> tmp( right );
+      if( IsSparseMatrix< ResultType_t<MT2> >::value )
          left.reset();
       smpAssign( left, tmp );
    }
@@ -3249,9 +3249,9 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -3311,9 +3311,9 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -3373,9 +3373,9 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -4045,7 +4045,7 @@ inline typename Rows<MT,false,false,false,CRAs...>::Iterator
    Rows<MT,false,false,false,CRAs...>::find( size_t i, size_t j )
 {
    const size_t index( idx(i) );
-   const Iterator_<MT> pos( matrix_.find( index, j ) );
+   const Iterator_t<MT> pos( matrix_.find( index, j ) );
 
    if( pos != matrix_.end( j ) )
       return Iterator( matrix_, index, j, pos );
@@ -4077,7 +4077,7 @@ inline typename Rows<MT,false,false,false,CRAs...>::ConstIterator
    Rows<MT,false,false,false,CRAs...>::find( size_t i, size_t j ) const
 {
    const size_t index( idx(i) );
-   const ConstIterator_<MT> pos( matrix_.find( index, j ) );
+   const ConstIterator_t<MT> pos( matrix_.find( index, j ) );
 
    if( pos != matrix_.end( j ) )
       return ConstIterator( matrix_, index, j, pos );
@@ -4111,7 +4111,7 @@ inline typename Rows<MT,false,false,false,CRAs...>::Iterator
 
    for( ; j<columns(); ++j )
    {
-      const Iterator_<MT> pos( matrix_.find( index, j ) );
+      const Iterator_t<MT> pos( matrix_.find( index, j ) );
 
       if( pos != matrix_.end( j ) )
          return Iterator( matrix_, index, j, pos );
@@ -4146,7 +4146,7 @@ inline typename Rows<MT,false,false,false,CRAs...>::ConstIterator
 
    for( ; j<columns(); ++j )
    {
-      const ConstIterator_<MT> pos( matrix_.find( index, j ) );
+      const ConstIterator_t<MT> pos( matrix_.find( index, j ) );
 
       if( pos != matrix_.end( j ) )
          return ConstIterator( matrix_, index, j, pos );
@@ -4441,7 +4441,7 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const DenseMatrix<MT2,SO
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using RT = If_< IsComputation<MT2>, ElementType_<MT>, const ElementType_<MT2>& >;
+   using RT = If_< IsComputation<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -4479,7 +4479,7 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const SparseMatrix<MT2,f
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using RT = If_< IsComputation<MT2>, ElementType_<MT>, const ElementType_<MT2>& >;
+   using RT = If_< IsComputation<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -4487,7 +4487,7 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const SparseMatrix<MT2,f
 
    for( size_t i=0UL; i<rows(); ++i ) {
       const size_t index( idx(i) );
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          RT value( element->value() );
          if( !isDefault<strict>( value ) )
             matrix_.set( index, element->index(), std::move( value ) );
@@ -4521,14 +4521,14 @@ inline void Rows<MT,false,false,false,CRAs...>::assign( const SparseMatrix<MT2,t
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   using RT = If_< IsComputation<MT2>, ElementType_<MT>, const ElementType_<MT2>& >;
+   using RT = If_< IsComputation<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
    for( size_t j=0UL; j<columns(); ++j ) {
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          RT value( element->value() );
          if( !isDefault<strict>( value ) )
             matrix_.set( idx( element->index() ), j, std::move( value ) );
@@ -4561,7 +4561,7 @@ inline void Rows<MT,false,false,false,CRAs...>::addAssign( const Matrix<MT2,SO>&
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
@@ -4597,7 +4597,7 @@ inline void Rows<MT,false,false,false,CRAs...>::subAssign( const Matrix<MT2,SO>&
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
@@ -4633,7 +4633,7 @@ inline void Rows<MT,false,false,false,CRAs...>::schurAssign( const Matrix<MT2,SO
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE ( SchurType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
@@ -4686,26 +4686,26 @@ class Rows<MT,false,false,true,CRAs...>
    //! Type of this Rows instance.
    using This = Rows<MT,false,false,true,CRAs...>;
 
-   using BaseType      = SparseMatrix<This,false>;    //!< Base type of this Rows instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;     //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the row elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const Rows&;                 //!< Data type for composite expression templates.
+   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
+   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
+   using CompositeType = const Rows&;                  //!< Data type for composite expression templates.
 
    //! Reference to a constant row value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

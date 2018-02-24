@@ -208,7 +208,7 @@ template< typename BT >        // Type of the band
 inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band ) const
 {
    using BandType    = RemoveReference_t<BT>;
-   using ElementType = ElementType_<BandType>;
+   using ElementType = ElementType_t<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );
@@ -247,7 +247,7 @@ template< typename BT >        // Type of the band
 inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, size_t nonzeros ) const
 {
    using BandType    = RemoveReference_t<BT>;
-   using ElementType = ElementType_<BandType>;
+   using ElementType = ElementType_t<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );
@@ -289,7 +289,7 @@ template< typename BT          // Type of the band
 inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, const Arg& min, const Arg& max ) const
 {
    using BandType    = RemoveReference_t<BT>;
-   using ElementType = ElementType_<BandType>;
+   using ElementType = ElementType_t<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );
@@ -332,7 +332,7 @@ inline void Rand< Band<MT,TF,false,MF,CBAs...> >::randomize( BT&& band, size_t n
                                                              const Arg& min, const Arg& max ) const
 {
    using BandType    = RemoveReference_t<BT>;
-   using ElementType = ElementType_<BandType>;
+   using ElementType = ElementType_t<BandType>;
 
    BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE( BandType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( BandType );

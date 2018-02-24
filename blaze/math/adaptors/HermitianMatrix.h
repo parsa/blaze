@@ -298,7 +298,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO >         // Storage order of the dense matrix
 inline void invert( HermitianMatrix<MT,SO,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    if( IF == asUniLower || IF == asUniUpper ) {
       BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
@@ -498,7 +498,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using ET = ElementType_< HermitianMatrix<MT,SO,DF> >;
+   using ET = ElementType_t< HermitianMatrix<MT,SO,DF> >;
 
    return ( IsBuiltin<ET>::value ||
             column < row ||
@@ -542,7 +542,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using ET = ElementType_< HermitianMatrix<MT,SO,DF> >;
+   using ET = ElementType_t< HermitianMatrix<MT,SO,DF> >;
 
    return ( IsBuiltin<ET>::value ||
             row < column ||
@@ -1100,7 +1100,7 @@ struct IsSquare< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
-   : public IsBuiltin< ElementType_<MT> >
+   : public IsBuiltin< ElementType_t<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1857,7 +1857,7 @@ struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Real >
 template< typename MT, bool SO, bool DF >
 struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Imag >
 {
-   using Type = If_< IsBuiltin< ElementType_<MT> >
+   using Type = If_< IsBuiltin< ElementType_t<MT> >
                    , HermitianMatrix< UnaryMapTrait_t<MT,Imag> >
                    , UnaryMapTrait_t<MT,Imag> >;
 };

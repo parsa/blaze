@@ -77,7 +77,7 @@ BLAZE_ALWAYS_INLINE complex<double> dotc( int n, const complex<double>* x, int i
                                           const complex<double>* y, int incY );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
+BLAZE_ALWAYS_INLINE ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
 
 #endif
 //@}
@@ -225,7 +225,7 @@ BLAZE_ALWAYS_INLINE complex<double> dotc( int n, const complex<double>* x, int i
 // to call the function with vectors of any other element type results in a compile time error.
 */
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y )
+ElementType_t<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT2 );
@@ -233,8 +233,8 @@ ElementType_<VT1> dotc( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2
    BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS( VT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS( VT2 );
 
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT1> );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
 
    const int n( numeric_cast<int>( (~x).size() ) );
 

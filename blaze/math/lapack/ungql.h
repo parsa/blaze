@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK functions to reconstruct Q from a QL decomposition (ungql) */
 //@{
 template< typename MT, bool SO >
-inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
+inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 
@@ -117,15 +117,15 @@ inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau );
 // linker error.
 */
 template< typename MT, bool SO >
-inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_<MT>* tau )
+inline void ungql( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT> );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );

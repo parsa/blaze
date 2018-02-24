@@ -203,7 +203,7 @@ template< typename ET >     // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements ) const
 {
    using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_<ElementsType>;
+   using ElementType  = ElementType_t<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
@@ -241,7 +241,7 @@ template< typename ET >     // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, size_t nonzeros ) const
 {
    using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_<ElementsType>;
+   using ElementType  = ElementType_t<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
@@ -283,7 +283,7 @@ inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements,
                                                               const Arg& min, const Arg& max ) const
 {
    using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_<ElementsType>;
+   using ElementType  = ElementType_t<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );
@@ -325,7 +325,7 @@ inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, siz
                                                               const Arg& min, const Arg& max ) const
 {
    using ElementsType = RemoveReference_t<ET>;
-   using ElementType  = ElementType_<ElementsType>;
+   using ElementType  = ElementType_t<ElementsType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE( ElementsType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ElementsType );

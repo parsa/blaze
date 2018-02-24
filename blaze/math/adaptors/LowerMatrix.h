@@ -301,7 +301,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO >         // Storage order of the dense matrix
 inline void invert( LowerMatrix<MT,SO,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    if( IF == asUniUpper ) {
       BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
@@ -345,7 +345,7 @@ template< typename MT1, bool SO1, typename MT2, typename MT3, typename MT4, bool
 inline void lu( const LowerMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
                 DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT2 );
@@ -357,8 +357,8 @@ inline void lu( const LowerMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
 
-   using ET3 = ElementType_<MT3>;
-   using ET4 = ElementType_<MT4>;
+   using ET3 = ElementType_t<MT3>;
+   using ET4 = ElementType_t<MT4>;
 
    const size_t n( (~A).rows() );
 

@@ -152,24 +152,24 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;             //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using ReturnType    = ReturnType_t<MT>;              //!< Return type for expression template evaluations
    using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -582,10 +582,10 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = SubmatrixIterator< ConstIterator_<MT> >;
+   using ConstIterator = SubmatrixIterator< ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_<MT> > >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -703,7 +703,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -713,8 +713,8 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -725,8 +725,8 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -737,8 +737,8 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -1415,13 +1415,13 @@ template< typename MT2      // Type of the right-hand side matrix
 inline Submatrix<MT,unaligned,false,true,CSAs...>&
    Submatrix<MT,unaligned,false,true,CSAs...>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -1431,7 +1431,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
+      const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix<MT2>::value )
          reset();
       smpAssign( left, tmp );
@@ -1473,9 +1473,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1530,9 +1530,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1582,9 +1582,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1639,9 +1639,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1691,9 +1691,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -1749,9 +1749,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -2635,7 +2635,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEM
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (~rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2651,7 +2651,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEM
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (~rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2733,7 +2733,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatr
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -2763,7 +2763,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatr
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -2852,7 +2852,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEM
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2933,7 +2933,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseM
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -2963,7 +2963,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseM
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -3052,7 +3052,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEM
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3133,7 +3133,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseM
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -3163,7 +3163,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseM
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -3238,7 +3238,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEM
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (~rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3324,7 +3324,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const Spars
    {
       size_t j( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -3368,7 +3368,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const Spars
    {
       size_t i( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -3424,24 +3424,24 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;             //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using ReturnType    = ReturnType_t<MT>;              //!< Return type for expression template evaluations
    using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -3856,10 +3856,10 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = SubmatrixIterator< ConstIterator_<MT> >;
+   using ConstIterator = SubmatrixIterator< ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_<MT> > >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3977,7 +3977,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -3987,8 +3987,8 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -3999,8 +3999,8 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -4011,8 +4011,8 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -4668,13 +4668,13 @@ template< typename MT2      // Type of the right-hand side matrix
 inline Submatrix<MT,unaligned,true,true,CSAs...>&
    Submatrix<MT,unaligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -4684,7 +4684,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
+      const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix<MT2>::value )
          reset();
       smpAssign( left, tmp );
@@ -4726,9 +4726,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4783,9 +4783,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -4835,9 +4835,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4892,9 +4892,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -4944,9 +4944,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -5002,9 +5002,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -5865,7 +5865,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMP
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5881,7 +5881,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMP
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5963,7 +5963,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatri
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -5993,7 +5993,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatri
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -6082,7 +6082,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMP
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6163,7 +6163,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMa
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -6193,7 +6193,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMa
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -6282,7 +6282,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMP
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6363,7 +6363,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMa
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -6393,7 +6393,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMa
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -6469,7 +6469,7 @@ inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMP
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_<MT2> right( (~rhs).begin(j) );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -6555,7 +6555,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const Sparse
    {
       size_t i( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -6599,7 +6599,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const Sparse
    {
       size_t j( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -6655,30 +6655,30 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    using BaseType      = DenseMatrix<This,false>;       //!< Base type of this Submatrix instance.
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;             //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using ReturnType    = ReturnType_t<MT>;              //!< Return type for expression template evaluations
    using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -6796,7 +6796,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -6806,8 +6806,8 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -6818,8 +6818,8 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -6830,8 +6830,8 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -7506,13 +7506,13 @@ template< typename MT2      // Type of the right-hand side matrix
 inline Submatrix<MT,aligned,false,true,CSAs...>&
    Submatrix<MT,aligned,false,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -7522,7 +7522,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
+      const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix<MT2>::value )
          reset();
       smpAssign( left, tmp );
@@ -7564,9 +7564,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -7621,9 +7621,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -7673,9 +7673,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -7730,9 +7730,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -7782,9 +7782,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -7840,9 +7840,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -8718,7 +8718,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPL
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (~rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -8734,7 +8734,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPL
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_<MT2> right( (~rhs).begin(i) );
+         ConstIterator_t<MT2> right( (~rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -8816,7 +8816,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -8846,7 +8846,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -8935,7 +8935,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPL
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -9016,7 +9016,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMat
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -9046,7 +9046,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMat
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -9135,7 +9135,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPL
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_<MT2> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -9216,7 +9216,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMat
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -9246,7 +9246,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMat
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -9321,7 +9321,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPL
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (~rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -9407,7 +9407,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const SparseM
    {
       size_t j( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -9451,7 +9451,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const SparseM
    {
       size_t i( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+element->index(),column()+j) *= element->value();
@@ -9507,30 +9507,30 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    using BaseType      = DenseMatrix<This,true>;        //!< Base type of this Submatrix instance.
    using ViewedType    = MT;                            //!< The type viewed by this Submatrix instance.
    using ResultType    = SubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;              //!< Type of the submatrix elements.
+   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;             //!< Type of the submatrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the submatrix elements.
-   using ReturnType    = ReturnType_<MT>;               //!< Return type for expression template evaluations
+   using ReturnType    = ReturnType_t<MT>;              //!< Return type for expression template evaluations
    using CompositeType = const Submatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant submatrix value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_<MT> >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -9648,7 +9648,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -9658,8 +9658,8 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -9670,8 +9670,8 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<MT2> >::value &&
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
                             !IsDiagonal<MT2>::value };
    };
    //**********************************************************************************************
@@ -9682,8 +9682,8 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<MT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
    };
    //**********************************************************************************************
 
@@ -10338,13 +10338,13 @@ template< typename MT2      // Type of the right-hand side matrix
 inline Submatrix<MT,aligned,true,true,CSAs...>&
    Submatrix<MT,aligned,true,true,CSAs...>::operator=( const Matrix<MT2,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<MT2>, const MT2& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -10354,7 +10354,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<MT2> tmp( right );
+      const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix<MT2>::value )
          reset();
       smpAssign( left, tmp );
@@ -10396,9 +10396,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -10453,9 +10453,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<MT2> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -10505,9 +10505,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -10562,9 +10562,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<MT2> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -10614,9 +10614,9 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -10672,9 +10672,9 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   using SchurType = SchurTrait_t< ResultType, ResultType_<MT2> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
@@ -11526,7 +11526,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLA
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -11542,7 +11542,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLA
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT2> right( (~rhs).begin(j) );
+         ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -11624,7 +11624,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) = element->value();
 }
 /*! \endcond */
@@ -11654,7 +11654,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) = element->value();
 }
 /*! \endcond */
@@ -11743,7 +11743,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLA
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -11824,7 +11824,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatr
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) += element->value();
 }
 /*! \endcond */
@@ -11854,7 +11854,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatr
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) += element->value();
 }
 /*! \endcond */
@@ -11943,7 +11943,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLA
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT2> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -12024,7 +12024,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatr
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<columns(); ++j )
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          matrix_(row()+element->index(),column()+j) -= element->value();
 }
 /*! \endcond */
@@ -12054,7 +12054,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatr
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<rows(); ++i )
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          matrix_(row()+i,column()+element->index()) -= element->value();
 }
 /*! \endcond */
@@ -12130,7 +12130,7 @@ inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLA
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_<MT2> right( (~rhs).begin(j) );
+      ConstIterator_t<MT2> right( (~rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -12216,7 +12216,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const SparseMa
    {
       size_t i( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          for( ; i<element->index(); ++i )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();
@@ -12260,7 +12260,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const SparseMa
    {
       size_t j( 0UL );
 
-      for( ConstIterator_<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          for( ; j<element->index(); ++j )
             reset( matrix_(row()+i,column()+j) );
          matrix_(row()+i,column()+j) *= element->value();

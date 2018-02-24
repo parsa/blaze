@@ -111,12 +111,12 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector s
         , bool TF >    // Transpose flag of the vector s
-inline DisableIf_< IsComplex< ElementType_<MT> > >
+inline DisableIf_< IsComplex< ElementType_t<MT> > >
    gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 {
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
@@ -164,12 +164,12 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector s
         , bool TF >    // Transpose flag of the vector s
-inline EnableIf_< IsComplex< ElementType_<MT> > >
+inline EnableIf_< IsComplex< ElementType_t<MT> > >
    gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 {
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT>;
+   using CT = ElementType_t<MT>;
    using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
@@ -269,11 +269,11 @@ inline void gesdd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -314,7 +314,7 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename VT     // Type of the vector s
         , bool TF >       // Transpose flag of the vector s
-inline DisableIf_< IsComplex< ElementType_<MT1> > >
+inline DisableIf_< IsComplex< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobz )
 {
@@ -323,7 +323,7 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
@@ -379,7 +379,7 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename VT     // Type of the vector s
         , bool TF >       // Transpose flag of the vector s
-inline EnableIf_< IsComplex< ElementType_<MT1> > >
+inline EnableIf_< IsComplex< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobz )
 {
@@ -388,7 +388,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~U).rows() == (~A).rows(), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
@@ -526,16 +526,16 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -588,7 +588,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT2 >  // Type of the matrix V
-inline DisableIf_< IsComplex< ElementType_<MT1> > >
+inline DisableIf_< IsComplex< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobz )
 {
@@ -597,7 +597,7 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).rows() == (~A).columns(), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
@@ -653,7 +653,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT2 >  // Type of the matrix V
-inline EnableIf_< IsComplex< ElementType_<MT1> > >
+inline EnableIf_< IsComplex< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobz )
 {
@@ -662,7 +662,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( jobz == 'N' || (~V).rows() == (~A).columns(), "Invalid matrix dimensions detected" );
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
@@ -791,16 +791,16 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
@@ -855,7 +855,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT3 >  // Type of the matrix V
-inline DisableIf_< IsComplex< ElementType_<MT1> > >
+inline DisableIf_< IsComplex< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz )
 {
@@ -868,7 +868,7 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( jobz != 'S' || (~V).rows() == min( (~A).rows(), (~A).columns() ), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using ET = ElementType_<MT1>;
+   using ET = ElementType_t<MT1>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
    int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
@@ -925,7 +925,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT3 >  // Type of the matrix V
-inline EnableIf_< IsComplex< ElementType_<MT1> > >
+inline EnableIf_< IsComplex< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz )
 {
@@ -938,7 +938,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( jobz != 'S' || (~V).rows() == min( (~A).rows(), (~A).columns() ), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
@@ -1087,21 +1087,21 @@ inline void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );

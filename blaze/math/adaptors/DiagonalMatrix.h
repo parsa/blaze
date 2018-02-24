@@ -304,7 +304,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO >         // Storage order of the dense matrix
 inline void invert( DiagonalMatrix<MT,SO,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    if( IF == asUniLower || IF == asUniUpper ) {
       BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
@@ -342,7 +342,7 @@ template< typename MT1, bool SO1, typename MT2, typename MT3, typename MT4, bool
 inline void lu( const DiagonalMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
                 DenseMatrix<MT3,SO1>& U, Matrix<MT4,SO2>& P )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT2 );
@@ -354,8 +354,8 @@ inline void lu( const DiagonalMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE( MT3 );
 
-   using ET3 = ElementType_<MT3>;
-   using ET4 = ElementType_<MT4>;
+   using ET3 = ElementType_t<MT3>;
+   using ET4 = ElementType_t<MT4>;
 
    const size_t n( (~A).rows() );
 
@@ -1228,7 +1228,7 @@ struct IsSymmetric< DiagonalMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsHermitian< DiagonalMatrix<MT,SO,DF> >
-   : public IsBuiltin< ElementType_<MT> >
+   : public IsBuiltin< ElementType_t<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1530,7 +1530,7 @@ struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_<MT2> >
+   using Type = If_< IsBuiltin< ElementType_t<MT2> >
                    , SymmetricMatrix< AddTrait_t<MT1,MT2> >
                    , AddTrait_t<MT1,MT2> >;
 };
@@ -1538,7 +1538,7 @@ struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_<MT1> >
+   using Type = If_< IsBuiltin< ElementType_t<MT1> >
                    , SymmetricMatrix< AddTrait_t<MT1,MT2> >
                    , AddTrait_t<MT1,MT2> >;
 };
@@ -1721,7 +1721,7 @@ struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_<MT2> >
+   using Type = If_< IsBuiltin< ElementType_t<MT2> >
                    , SymmetricMatrix< SubTrait_t<MT1,MT2> >
                    , SubTrait_t<MT1,MT2> >;
 };
@@ -1729,7 +1729,7 @@ struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_<MT1> >
+   using Type = If_< IsBuiltin< ElementType_t<MT1> >
                    , SymmetricMatrix< SubTrait_t<MT1,MT2> >
                    , SubTrait_t<MT1,MT2> >;
 };

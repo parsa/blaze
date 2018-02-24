@@ -110,12 +110,12 @@ class TDMatSVecMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using MRT = ResultType_<MT>;     //!< Result type of the left-hand side dense matrix expression.
-   using VRT = ResultType_<VT>;     //!< Result type of the right-hand side sparse vector expression.
-   using MET = ElementType_<MRT>;   //!< Element type of the left-hand side dense matrix expression.
-   using VET = ElementType_<VRT>;   //!< Element type of the right-hand side sparse vector expression.
-   using MCT = CompositeType_<MT>;  //!< Composite type of the left-hand side dense matrix expression.
-   using VCT = CompositeType_<VT>;  //!< Composite type of the right-hand side sparse vector expression.
+   using MRT = ResultType_t<MT>;     //!< Result type of the left-hand side dense matrix expression.
+   using VRT = ResultType_t<VT>;     //!< Result type of the right-hand side sparse vector expression.
+   using MET = ElementType_t<MRT>;   //!< Element type of the left-hand side dense matrix expression.
+   using VET = ElementType_t<VRT>;   //!< Element type of the right-hand side sparse vector expression.
+   using MCT = CompositeType_t<MT>;  //!< Composite type of the left-hand side dense matrix expression.
+   using VCT = CompositeType_t<VT>;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -152,11 +152,11 @@ class TDMatSVecMultExpr
       enum : bool { value = useOptimizedKernels &&
                             !IsDiagonal<T2>::value &&
                             T1::simdEnabled && T2::simdEnabled &&
-                            IsSIMDCombinable< ElementType_<T1>
-                                            , ElementType_<T2>
-                                            , ElementType_<T3> >::value &&
-                            HasSIMDAdd< ElementType_<T2>, ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T2>, ElementType_<T3> >::value };
+                            IsSIMDCombinable< ElementType_t<T1>
+                                            , ElementType_t<T2>
+                                            , ElementType_t<T3> >::value &&
+                            HasSIMDAdd< ElementType_t<T2>, ElementType_t<T3> >::value &&
+                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -171,7 +171,7 @@ class TDMatSVecMultExpr
    struct UseOptimizedKernel {
       enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value &&
                             !IsDiagonal<T2>::value &&
-                            !IsResizable< ElementType_<T1> >::value &&
+                            !IsResizable< ElementType_t<T1> >::value &&
                             !IsResizable<VET>::value };
    };
    /*! \endcond */
@@ -192,13 +192,13 @@ class TDMatSVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TDMatSVecMultExpr<MT,VT>;    //!< Type of this TDMatSVecMultExpr instance.
-   using ResultType    = MultTrait_t<MRT,VRT>;        //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;    //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using This          = TDMatSVecMultExpr<MT,VT>;     //!< Type of this TDMatSVecMultExpr instance.
+   using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    using LeftOperand = If_< IsExpression<MT>, const MT, const MT& >;
@@ -210,7 +210,7 @@ class TDMatSVecMultExpr
    using LT = IfTrue_< evaluateMatrix, const MRT, MCT >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   using RT = IfTrue_< evaluateVector, const VRT, CompositeType_<VT> >;
+   using RT = IfTrue_< evaluateVector, const VRT, CompositeType_t<VT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -434,7 +434,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseDefaultKernel<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -512,7 +512,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseOptimizedKernel<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -626,7 +626,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseVectorizedKernel<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -858,7 +858,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseDefaultKernel<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -914,7 +914,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseOptimizedKernel<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -996,7 +996,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseVectorizedKernel<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1146,7 +1146,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseDefaultKernel<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1202,7 +1202,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseOptimizedKernel<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1284,7 +1284,7 @@ class TDMatSVecMultExpr
    static inline EnableIf_< UseVectorizedKernel<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<RT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 

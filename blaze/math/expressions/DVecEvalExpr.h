@@ -81,10 +81,10 @@ class DVecEvalExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecEvalExpr<VT,TF>;  //!< Type of this DVecEvalExpr instance.
-   using ResultType    = ResultType_<VT>;      //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<VT>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;     //!< Resulting element type.
-   using ReturnType    = ReturnType_<VT>;      //!< Return type for expression template evaluations.
+   using ResultType    = ResultType_t<VT>;     //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<VT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;

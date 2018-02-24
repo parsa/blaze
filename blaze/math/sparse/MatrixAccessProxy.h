@@ -99,7 +99,7 @@ namespace blaze {
 */
 template< typename MT >  // Type of the sparse matrix
 class MatrixAccessProxy
-   : public Proxy< MatrixAccessProxy<MT>, ElementType_<MT> >
+   : public Proxy< MatrixAccessProxy<MT>, ElementType_t<MT> >
 {
  private:
    //**Enumerations********************************************************************************
@@ -109,8 +109,8 @@ class MatrixAccessProxy
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_<MT>;  //!< Type of the represented sparse matrix element.
-   using RawReference    = RepresentedType&;  //!< Raw reference to the represented element.
+   using RepresentedType = ElementType_t<MT>;  //!< Type of the represented sparse matrix element.
+   using RawReference    = RepresentedType&;   //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -210,7 +210,7 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( MT& sm, size_t i, size_t j )
    , i_ ( i  )  // Row-index of the accessed sparse matrix element
    , j_ ( j  )  // Column-index of the accessed sparse matrix element
 {
-   const Iterator_<MT> element( sm_.find( i_, j_ ) );
+   const Iterator_t<MT> element( sm_.find( i_, j_ ) );
    const size_t index( rmm ? i_ : j_ );
    if( element == sm_.end(index) )
       sm_.insert( i_, j_, RepresentedType() );
@@ -248,7 +248,7 @@ inline MatrixAccessProxy<MT>::MatrixAccessProxy( const MatrixAccessProxy& map )
 template< typename MT >  // Type of the sparse matrix
 inline MatrixAccessProxy<MT>::~MatrixAccessProxy()
 {
-   const Iterator_<MT> element( sm_.find( i_, j_ ) );
+   const Iterator_t<MT> element( sm_.find( i_, j_ ) );
    const size_t index( rmm ? i_ : j_ );
    if( element != sm_.end( index ) && isDefault<strict>( element->value() ) )
       sm_.erase( index, element );
@@ -429,7 +429,7 @@ inline const MatrixAccessProxy<MT>& MatrixAccessProxy<MT>::operator%=( const T& 
 template< typename MT >  // Type of the sparse matrix
 inline typename MatrixAccessProxy<MT>::RawReference MatrixAccessProxy<MT>::get() const noexcept
 {
-   const Iterator_<MT> element( sm_.find( i_, j_ ) );
+   const Iterator_t<MT> element( sm_.find( i_, j_ ) );
    BLAZE_INTERNAL_ASSERT( element != sm_.end( rmm ? i_ : j_ ), "Missing matrix element detected" );
    return element->value();
 }

@@ -87,18 +87,18 @@ class DMatInvExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;     //!< Result type of the dense matrix expression.
-   using CT = CompositeType_<MT>;  //!< Composite type of the dense matrix expression.
+   using RT = ResultType_t<MT>;     //!< Result type of the dense matrix expression.
+   using CT = CompositeType_t<MT>;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatInvExpr<MT,SO>;  //!< Type of this DMatInvExpr instance.
-   using ResultType    = ResultType_<MT>;     //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<MT>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<MT>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;    //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;     //!< Return type for expression template evaluations.
+   using This          = DMatInvExpr<MT,SO>;   //!< Type of this DMatInvExpr instance.
+   using ResultType    = ResultType_t<MT>;     //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<MT>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<MT>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;     //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;

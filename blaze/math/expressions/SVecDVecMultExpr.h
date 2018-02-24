@@ -94,12 +94,12 @@ class SVecDVecMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side sparse vector expression.
-   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
-   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side sparse vector expression.
-   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
-   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
-   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side dense vector expression.
+   using RT1 = ResultType_t<VT1>;     //!< Result type of the left-hand side sparse vector expression.
+   using RT2 = ResultType_t<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using RN1 = ReturnType_t<VT1>;     //!< Return type of the left-hand side sparse vector expression.
+   using RN2 = ReturnType_t<VT2>;     //!< Return type of the right-hand side dense vector expression.
+   using CT1 = CompositeType_t<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
+   using CT2 = CompositeType_t<VT2>;  //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -138,8 +138,8 @@ class SVecDVecMultExpr
    //**Type definitions****************************************************************************
    using This          = SVecDVecMultExpr<VT1,VT2,TF>;  //!< Type of this SVecDVecMultExpr instance.
    using ResultType    = MultTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -170,7 +170,7 @@ class SVecDVecMultExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      using IteratorType = ConstIterator_< RemoveReference_t<LeftOperand> >;
+      using IteratorType = ConstIterator_t< RemoveReference_t<LeftOperand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = ElementType;                //!< Type of the underlying pointers.
@@ -476,7 +476,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -513,7 +513,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -554,7 +554,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -595,7 +595,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -636,7 +636,7 @@ class SVecDVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<CT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
 
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand

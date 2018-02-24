@@ -105,10 +105,10 @@ template< typename VT      // Type of the sparse vector
         , typename Root >  // Type of the root operation
 decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Abs abs, Power power, Root root )
 {
-   using CT = CompositeType_<VT>;
-   using ET = ElementType_<VT>;
+   using CT = CompositeType_t<VT>;
+   using ET = ElementType_t<VT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
-   using Iterator = ConstIterator_< RemoveReference_t<CT> >;
+   using Iterator = ConstIterator_t< RemoveReference_t<CT> >;
 
    if( (~sv).size() == 0UL ) return RT();
 

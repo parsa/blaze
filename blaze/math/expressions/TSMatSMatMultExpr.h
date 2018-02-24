@@ -109,10 +109,10 @@ class TSMatSMatMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -159,13 +159,13 @@ class TSMatSMatMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatSMatMultExpr<MT1,MT2>;  //!< Type of this TSMatSMatMultExpr instance.
-   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using This          = TSMatSMatMultExpr<MT1,MT2>;   //!< Type of this TSMatSMatMultExpr instance.
+   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
    using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
@@ -420,8 +420,8 @@ class TSMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_<MT4>;
-      using RightIterator = ConstIterator_<MT5>;
+      using LeftIterator  = ConstIterator_t<MT4>;
+      using RightIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<A.columns(); ++j ) {
          const LeftIterator lend( A.end(j) );
@@ -429,7 +429,7 @@ class TSMatSMatMultExpr
             const RightIterator rend( B.end(j) );
             for( RightIterator relem=B.begin(j); relem!=rend; ++relem )
             {
-               if( IsResizable< ElementType_<MT3> >::value &&
+               if( IsResizable< ElementType_t<MT3> >::value &&
                    isDefault( C(lelem->index(),relem->index()) ) ) {
                   C(lelem->index(),relem->index()) = lelem->value() * relem->value();
                }
@@ -467,9 +467,9 @@ class TSMatSMatMultExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType_<MT1> );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( OppositeType_t<MT1> );
 
-      const OppositeType_<MT1> tmp( serial( rhs.lhs_ ) );
+      const OppositeType_t<MT1> tmp( serial( rhs.lhs_ ) );
       assign( ~lhs, tmp * rhs.rhs_ );
    }
    /*! \endcond */
@@ -497,9 +497,9 @@ class TSMatSMatMultExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_<MT2> );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( OppositeType_t<MT2> );
 
-      const OppositeType_<MT2> tmp( serial( rhs.rhs_ ) );
+      const OppositeType_t<MT2> tmp( serial( rhs.rhs_ ) );
       assign( ~lhs, rhs.lhs_ * tmp );
    }
    /*! \endcond */
@@ -622,8 +622,8 @@ class TSMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_<MT4>;
-      using RightIterator = ConstIterator_<MT5>;
+      using LeftIterator  = ConstIterator_t<MT4>;
+      using RightIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<A.columns(); ++j ) {
          const LeftIterator lend( A.end(j) );
@@ -758,8 +758,8 @@ class TSMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_<MT4>;
-      using RightIterator = ConstIterator_<MT5>;
+      using LeftIterator  = ConstIterator_t<MT4>;
+      using RightIterator = ConstIterator_t<MT5>;
 
       for( size_t j=0UL; j<A.columns(); ++j ) {
          const LeftIterator lend( A.end(j) );

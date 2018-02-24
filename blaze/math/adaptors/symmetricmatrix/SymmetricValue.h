@@ -138,7 +138,7 @@ class SymmetricValue
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_<MT>;  //!< Type of the represented matrix element.
+   using RepresentedType = ElementType_t<MT>;  //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
    using ValueType = typename If_< IsComplex<RepresentedType>

@@ -99,9 +99,9 @@ class SVecScalarMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<VT>;     //!< Result type of the sparse vector expression.
-   using RN = ReturnType_<VT>;     //!< Return type of the sparse vector expression.
-   using CT = CompositeType_<VT>;  //!< Composite type of the sparse vector expression.
+   using RT = ResultType_t<VT>;     //!< Result type of the sparse vector expression.
+   using RN = ReturnType_t<VT>;     //!< Return type of the sparse vector expression.
+   using CT = CompositeType_t<VT>;  //!< Composite type of the sparse vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -155,8 +155,8 @@ class SVecScalarMultExpr
    //**Type definitions****************************************************************************
    using This          = SVecScalarMultExpr<VT,ST,TF>;  //!< Type of this SVecScalarMultExpr instance.
    using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -187,7 +187,7 @@ class SVecScalarMultExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      using IteratorType = ConstIterator_< RemoveReference_t<LeftOperand> >;
+      using IteratorType = ConstIterator_t< RemoveReference_t<LeftOperand> >;
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = Element;                    //!< Type of the underlying pointers.
@@ -909,7 +909,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) normalize( const SparseVector<VT,TF>& vec )
 {
-   using ElementType = ElementType_<VT>;
+   using ElementType = ElementType_t<VT>;
 
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType );
 

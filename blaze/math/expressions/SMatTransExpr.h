@@ -98,8 +98,8 @@ class SMatTransExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;     //!< Result type of the sparse matrix expression.
-   using CT = CompositeType_<MT>;  //!< Composite type of the sparse matrix expression.
+   using RT = ResultType_t<MT>;     //!< Result type of the sparse matrix expression.
+   using CT = CompositeType_t<MT>;  //!< Composite type of the sparse matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -153,12 +153,12 @@ class SMatTransExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SMatTransExpr<MT,SO>;       //!< Type of this SMatTransExpr instance.
-   using ResultType    = TransposeType_<MT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;  //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = ResultType_<MT>;            //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;           //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;            //!< Return type for expression template evaluations.
+   using This          = SMatTransExpr<MT,SO>;        //!< Type of this SMatTransExpr instance.
+   using ResultType    = TransposeType_t<MT>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;  //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = ResultType_t<MT>;            //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;           //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;            //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = IfTrue_< useAssign, const ResultType, const SMatTransExpr& >;

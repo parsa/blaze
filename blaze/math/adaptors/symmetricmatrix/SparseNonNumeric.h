@@ -111,9 +111,9 @@ class SymmetricMatrix<MT,SO,false,false>
 {
  private:
    //**Type definitions****************************************************************************
-   using OT = OppositeType_<MT>;   //!< Opposite type of the sparse matrix.
-   using TT = TransposeType_<MT>;  //!< Transpose type of the sparse matrix.
-   using ET = ElementType_<MT>;    //!< Element type of the sparse matrix.
+   using OT = OppositeType_t<MT>;   //!< Opposite type of the sparse matrix.
+   using TT = TransposeType_t<MT>;  //!< Transpose type of the sparse matrix.
+   using ET = ElementType_t<MT>;    //!< Element type of the sparse matrix.
 
    //! Rebound matrix type for shared values.
    using MatrixType = typename MT::template Rebind< SharedValue<ET> >::Other;
@@ -127,10 +127,10 @@ class SymmetricMatrix<MT,SO,false,false>
    using OppositeType   = SymmetricMatrix<OT,!SO,false,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = SymmetricMatrix<TT,!SO,false,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                                   //!< Type of the matrix elements.
-   using ReturnType     = ReturnType_<MT>;                      //!< Return type for expression template evaluations.
+   using ReturnType     = ReturnType_t<MT>;                     //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                          //!< Data type for composite expression templates.
    using Reference      = NonNumericProxy<MatrixType>;          //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<MT>;                  //!< Reference to a constant matrix value.
+   using ConstReference = ConstReference_t<MT>;                 //!< Reference to a constant matrix value.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -449,12 +449,12 @@ class SymmetricMatrix<MT,SO,false,false>
 
    //**Type definitions****************************************************************************
    //! Iterator over non-constant elements.
-   using Iterator = SharedIterator< SharedElement< Iterator_<MatrixType> >
-                                  , Iterator_<MatrixType> >;
+   using Iterator = SharedIterator< SharedElement< Iterator_t<MatrixType> >
+                                  , Iterator_t<MatrixType> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = SharedIterator< const SharedElement< ConstIterator_<MatrixType> >
-                                       , ConstIterator_<MatrixType> >;
+   using ConstIterator = SharedIterator< const SharedElement< ConstIterator_t<MatrixType> >
+                                       , ConstIterator_t<MatrixType> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -818,7 +818,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>
 {
    using blaze::resize;
 
-   using RT  = RemoveAdaptor_t< ResultType_<MT2> >;
+   using RT  = RemoveAdaptor_t< ResultType_t<MT2> >;
    using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
 
    Tmp tmp( ~m );
@@ -855,7 +855,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
 {
    using blaze::resize;
 
-   using RT  = RemoveAdaptor_t< ResultType_<MT2> >;
+   using RT  = RemoveAdaptor_t< ResultType_t<MT2> >;
    using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
 
    Tmp tmp( ~m );
@@ -1278,7 +1278,7 @@ inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
    }
 
-   const ResultType_<MT2> tmp( ~rhs );
+   const ResultType_t<MT2> tmp( ~rhs );
 
    if( !IsSymmetric<MT2>::value && !isSymmetric( tmp ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1344,7 +1344,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 {
    using blaze::resize;
 
-   using Tmp = AddTrait_t< MT, ResultType_<MT2> >;
+   using Tmp = AddTrait_t< MT, ResultType_t<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1416,7 +1416,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 {
    using blaze::resize;
 
-   using Tmp = SubTrait_t< MT, ResultType_<MT2> >;
+   using Tmp = SubTrait_t< MT, ResultType_t<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1488,7 +1488,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 {
    using blaze::resize;
 
-   using Tmp = SchurTrait_t< MT, ResultType_<MT2> >;
+   using Tmp = SchurTrait_t< MT, ResultType_t<MT2> >;
 
    if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1554,8 +1554,8 @@ inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,false,false> >&
    SymmetricMatrix<MT,SO,false,false>::operator*=( ST rhs )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
+      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
          *element->value() *= rhs;
    }
 
@@ -1582,8 +1582,8 @@ inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,false,false> >&
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
+      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
          *element->value() /= rhs;
    }
 
@@ -1768,7 +1768,7 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void SymmetricMatrix<MT,SO,false,false>::reset( size_t i )
 {
-   for( Iterator_<MatrixType> it=matrix_.begin(i); it!=matrix_.end(i); ++it )
+   for( Iterator_t<MatrixType> it=matrix_.begin(i); it!=matrix_.end(i); ++it )
    {
       const size_t j( it->index() );
 
@@ -1776,12 +1776,12 @@ inline void SymmetricMatrix<MT,SO,false,false>::reset( size_t i )
          continue;
 
       if( SO ) {
-         const Iterator_<MatrixType> pos( matrix_.find( i, j ) );
+         const Iterator_t<MatrixType> pos( matrix_.find( i, j ) );
          BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
          matrix_.erase( j, pos );
       }
       else {
-         const Iterator_<MatrixType> pos( matrix_.find( j, i ) );
+         const Iterator_t<MatrixType> pos( matrix_.find( j, i ) );
          BLAZE_INTERNAL_ASSERT( pos != matrix_.end( j ), "Missing element detected" );
          matrix_.erase( j, pos );
       }
@@ -2525,8 +2525,8 @@ template< typename MT  // Type of the adapted sparse matrix
 inline SymmetricMatrix<MT,SO,false,false>& SymmetricMatrix<MT,SO,false,false>::ctranspose()
 {
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
+      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
          conjugate( *element->value() );
    }
 
@@ -2561,8 +2561,8 @@ inline SymmetricMatrix<MT,SO,false,false>&
    SymmetricMatrix<MT,SO,false,false>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
+      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
          ( *element->value() ).scale( scalar );
    }
 
@@ -2812,7 +2812,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO>& rhs )
    }
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( Iterator_<MT2> it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
+      for( Iterator_t<MT2> it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
          if( !isDefault( it->value() ) ) {
             SharedValue<ET> shared;
             *shared = std::move( it->value() );
@@ -2863,7 +2863,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( const SparseMatrix<MT2,SO>& rhs
    }
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_<MT2> it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
+      for( ConstIterator_t<MT2> it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
          if( !isDefault( it->value() ) ) {
             const SharedValue<ET> shared( it->value() );
             matrix_.append( i, it->index(), shared, false );

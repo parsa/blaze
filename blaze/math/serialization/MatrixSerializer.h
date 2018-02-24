@@ -268,11 +268,11 @@ class MatrixSerializer
    void deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   DisableIf_< IsNumeric< ElementType_<MT> > >
+   DisableIf_< IsNumeric< ElementType_t<MT> > >
       deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   EnableIf_< IsNumeric< ElementType_<MT> > >
+   EnableIf_< IsNumeric< ElementType_t<MT> > >
       deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT >
@@ -283,11 +283,11 @@ class MatrixSerializer
    void deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   DisableIf_< IsNumeric< ElementType_<MT> > >
+   DisableIf_< IsNumeric< ElementType_t<MT> > >
       deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   EnableIf_< IsNumeric< ElementType_<MT> > >
+   EnableIf_< IsNumeric< ElementType_t<MT> > >
       deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
@@ -392,7 +392,7 @@ template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
 void MatrixSerializer::serializeHeader( Archive& archive, const MT& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    archive << uint8_t ( 1U );
    archive << uint8_t ( MatrixValueMapping<MT>::value );
@@ -457,7 +457,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,SO>& mat )
 {
-   using ConstIterator = ConstIterator_<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    if( IsRowMajorMatrix<MT>::value ) {
       for( size_t i=0UL; i<(~mat).rows(); ++i ) {
@@ -527,7 +527,7 @@ template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
 void MatrixSerializer::deserializeHeader( Archive& archive, const MT& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> rows_ >> columns_ >> number_ ) ) {
       BLAZE_THROW_RUNTIME_ERROR( "Corrupt archive detected" );
@@ -682,7 +682,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,SO>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    ET value{};
 
@@ -716,10 +716,10 @@ void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-EnableIf_< IsNumeric< ElementType_<MT> > >
+EnableIf_< IsNumeric< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
-   DynamicMatrix< ElementType_<MT>, rowMajor > tmp( rows_, columns_ );
+   DynamicMatrix< ElementType_t<MT>, rowMajor > tmp( rows_, columns_ );
    deserializeDenseRowMatrix( archive, tmp );
    (~mat) = tmp;
 
@@ -745,10 +745,10 @@ EnableIf_< IsNumeric< ElementType_<MT> > >
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-DisableIf_< IsNumeric< ElementType_<MT> > >
+DisableIf_< IsNumeric< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    ET value{};
 
@@ -821,7 +821,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,SO>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    ET value{};
 
@@ -855,10 +855,10 @@ void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatr
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-EnableIf_< IsNumeric< ElementType_<MT> > >
+EnableIf_< IsNumeric< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
-   DynamicMatrix< ElementType_<MT>, columnMajor > tmp( rows_, columns_ );
+   DynamicMatrix< ElementType_t<MT>, columnMajor > tmp( rows_, columns_ );
    deserializeDenseColumnMatrix( archive, tmp );
    (~mat) = tmp;
 
@@ -884,10 +884,10 @@ EnableIf_< IsNumeric< ElementType_<MT> > >
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-DisableIf_< IsNumeric< ElementType_<MT> > >
+DisableIf_< IsNumeric< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    ET value{};
 
@@ -930,7 +930,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, DenseMatrix<MT,SO>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );
@@ -968,7 +968,7 @@ template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
 void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatrix<MT,rowMajor>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );
@@ -1010,7 +1010,7 @@ template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
 void MatrixSerializer::deserializeSparseRowMatrix( Archive& archive, SparseMatrix<MT,columnMajor>& mat )
 {
-   CompressedMatrix< ElementType_<MT>, rowMajor > tmp( rows_, columns_, number_ );
+   CompressedMatrix< ElementType_t<MT>, rowMajor > tmp( rows_, columns_, number_ );
    deserializeSparseRowMatrix( archive, tmp );
    (~mat) = tmp;
 
@@ -1038,7 +1038,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, DenseMatrix<MT,SO>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );
@@ -1076,7 +1076,7 @@ template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
 void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMatrix<MT,rowMajor>& mat )
 {
-   CompressedMatrix< ElementType_<MT>, columnMajor > tmp( rows_, columns_, number_ );
+   CompressedMatrix< ElementType_t<MT>, columnMajor > tmp( rows_, columns_, number_ );
    deserializeSparseColumnMatrix( archive, tmp );
    (~mat) = tmp;
 
@@ -1103,7 +1103,7 @@ template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
 void MatrixSerializer::deserializeSparseColumnMatrix( Archive& archive, SparseMatrix<MT,columnMajor>& mat )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    uint64_t number( 0UL );
    size_t   index ( 0UL );

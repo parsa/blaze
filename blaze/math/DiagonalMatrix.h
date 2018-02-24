@@ -324,7 +324,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -378,7 +378,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -448,7 +448,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -510,7 +510,7 @@ inline void Rand< DiagonalMatrix<MT,SO,DF> >::randomize( DiagonalMatrix<MT,SO,DF
 {
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -565,7 +565,7 @@ void makeSymmetric( DiagonalMatrix<MT,SO,DF>& matrix )
    reset( matrix );
 
    for( size_t i=0UL; i<n; ++i ) {
-      matrix(i,i) = rand< ElementType_<MT> >();
+      matrix(i,i) = rand< ElementType_t<MT> >();
    }
 
    BLAZE_INTERNAL_ASSERT( isSymmetric( matrix ), "Non-symmetric matrix detected" );
@@ -589,7 +589,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeSymmetric( DiagonalMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   using Type = ElementType_<MT>;
+   using Type = ElementType_t<MT>;
 
    const size_t n( matrix.rows() );
 
@@ -617,7 +617,7 @@ template< typename MT  // Type of the adapted matrix
         , bool DF >    // Density flag
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix )
 {
-   using Type = UnderlyingBuiltin_t< ElementType_<MT> >;
+   using Type = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
    const size_t n( matrix.rows() );
 
@@ -648,7 +648,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeHermitian( DiagonalMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   using Type = UnderlyingBuiltin_t< ElementType_<MT> >;
+   using Type = UnderlyingBuiltin_t< ElementType_t<MT> >;
 
    const size_t n( matrix.rows() );
 

@@ -100,10 +100,10 @@ class DMatTSMatSubExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;  //!< Result type of the left-hand side dense matrix expression.
-   using RT2 = ResultType_<MT2>;  //!< Result type of the right-hand side sparse matrix expression.
-   using RN1 = ReturnType_<MT1>;  //!< Return type of the left-hand side dense matrix expression.
-   using RN2 = ReturnType_<MT2>;  //!< Return type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_t<MT1>;  //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_t<MT2>;  //!< Result type of the right-hand side sparse matrix expression.
+   using RN1 = ReturnType_t<MT1>;  //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_t<MT2>;  //!< Return type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -135,11 +135,11 @@ class DMatTSMatSubExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatTSMatSubExpr<MT1,MT2>;   //!< Type of this DMatTSMatSubExpr instance.
-   using ResultType    = SubTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using This          = DMatTSMatSubExpr<MT1,MT2>;    //!< Type of this DMatTSMatSubExpr instance.
+   using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;

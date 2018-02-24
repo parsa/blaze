@@ -110,10 +110,10 @@ class DMatScalarMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;     //!< Result type of the dense matrix expression.
-   using RN = ReturnType_<MT>;     //!< Return type of the dense matrix expression.
-   using ET = ElementType_<MT>;    //!< Element type of the dense matrix expression.
-   using CT = CompositeType_<MT>;  //!< Composite type of the dense matrix expression.
+   using RT = ResultType_t<MT>;     //!< Result type of the dense matrix expression.
+   using RN = ReturnType_t<MT>;     //!< Return type of the dense matrix expression.
+   using ET = ElementType_t<MT>;    //!< Element type of the dense matrix expression.
+   using CT = CompositeType_t<MT>;  //!< Composite type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -167,9 +167,9 @@ class DMatScalarMultExpr
    //**Type definitions****************************************************************************
    using This          = DMatScalarMultExpr<MT,ST,SO>;  //!< Type of this DMatScalarMultExpr instance.
    using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -205,7 +205,7 @@ class DMatScalarMultExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense matrix expression.
-      using IteratorType = ConstIterator_<MT>;
+      using IteratorType = ConstIterator_t<MT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************

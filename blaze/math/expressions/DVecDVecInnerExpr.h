@@ -77,19 +77,19 @@ struct DVecDVecInnerExprHelper
 {
    //**Type definitions****************************************************************************
    //! Composite type of the left-hand side dense vector expression.
-   using CT1 = RemoveReference_t< CompositeType_<VT1> >;
+   using CT1 = RemoveReference_t< CompositeType_t<VT1> >;
 
    //! Composite type of the right-hand side dense vector expression.
-   using CT2 = RemoveReference_t< CompositeType_<VT2> >;
+   using CT2 = RemoveReference_t< CompositeType_t<VT2> >;
    //**********************************************************************************************
 
    //**********************************************************************************************
    enum : bool { value = useOptimizedKernels &&
                          CT1::simdEnabled &&
                          CT2::simdEnabled &&
-                         IsSame< ElementType_<CT1>, ElementType_<CT2> >::value &&
-                         HasSIMDAdd< ElementType_<CT1>, ElementType_<CT1> >::value &&
-                         HasSIMDMult< ElementType_<CT1>, ElementType_<CT1> >::value };
+                         IsSame< ElementType_t<CT1>, ElementType_t<CT2> >::value &&
+                         HasSIMDAdd< ElementType_t<CT1>, ElementType_t<CT1> >::value &&
+                         HasSIMDMult< ElementType_t<CT1>, ElementType_t<CT1> >::value };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -121,13 +121,13 @@ struct DVecDVecInnerExprHelper
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
-                 , const MultTrait_t< ElementType_<VT1>, ElementType_<VT2> > >
+                 , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
    dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
-   using Lhs      = CompositeType_<VT1>;
-   using Rhs      = CompositeType_<VT2>;
-   using ET1      = ElementType_<VT1>;
-   using ET2      = ElementType_<VT2>;
+   using Lhs      = CompositeType_t<VT1>;
+   using Rhs      = CompositeType_t<VT2>;
+   using ET1      = ElementType_t<VT1>;
+   using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
@@ -177,13 +177,13 @@ inline DisableIf_< DVecDVecInnerExprHelper<VT1,VT2>
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
 inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
-                , const MultTrait_t< ElementType_<VT1>, ElementType_<VT2> > >
+                , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
    dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
-   using Lhs      = CompositeType_<VT1>;
-   using Rhs      = CompositeType_<VT2>;
-   using ET1      = ElementType_<VT1>;
-   using ET2      = ElementType_<VT2>;
+   using Lhs      = CompositeType_t<VT1>;
+   using Rhs      = CompositeType_t<VT2>;
+   using ET1      = ElementType_t<VT1>;
+   using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );

@@ -137,7 +137,7 @@ template< typename VT  // Type of the left-hand side column vector
         , bool SO >    // Storage order of the right-hand side matrix
 inline VT& operator*=( Vector<VT,false>& lhs, const Matrix<MT,SO>& rhs )
 {
-   ResultType_<VT> tmp( (~rhs) * (~lhs) );
+   ResultType_t<VT> tmp( (~rhs) * (~lhs) );
    (~lhs) = std::move( tmp );
    return (~lhs);
 }
@@ -189,7 +189,7 @@ template< typename VT  // Type of the left-hand side row vector
         , bool SO >    // Storage order of the right-hand side matrix
 inline VT& operator*=( Vector<VT,true>& lhs, const Matrix<MT,SO>& rhs )
 {
-   ResultType_<VT> tmp( (~lhs) * (~rhs) );
+   ResultType_t<VT> tmp( (~lhs) * (~rhs) );
    (~lhs) = std::move( tmp );
    return (~lhs);
 }
@@ -241,7 +241,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline MT1& operator*=( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
 {
-   ResultType_<MT1> tmp( (~lhs) * (~rhs) );
+   ResultType_t<MT1> tmp( (~lhs) * (~rhs) );
    (~lhs) = std::move( tmp );
    return (~lhs);
 }

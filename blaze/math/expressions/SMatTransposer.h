@@ -74,16 +74,16 @@ class SMatTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = SMatTransposer<MT,SO>;  //!< Type of this SMatTransposer instance.
-   using ResultType     = TransposeType_<MT>;     //!< Result type for expression template evaluations.
+   using ResultType     = TransposeType_t<MT>;    //!< Result type for expression template evaluations.
    using OppositeType   = MT;                     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType  = ResultType_<MT>;        //!< Transpose type for expression template evaluations.
-   using ElementType    = ElementType_<MT>;       //!< Resulting element type.
-   using ReturnType     = ReturnType_<MT>;        //!< Return type for expression template evaluations.
+   using TransposeType  = ResultType_t<MT>;       //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_t<MT>;      //!< Resulting element type.
+   using ReturnType     = ReturnType_t<MT>;       //!< Return type for expression template evaluations.
    using CompositeType  = const This&;            //!< Data type for composite expression templates.
-   using Reference      = Reference_<MT>;         //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<MT>;    //!< Reference to a constant matrix value.
-   using Iterator       = Iterator_<MT>;          //!< Iterator over non-constant elements.
-   using ConstIterator  = ConstIterator_<MT>;     //!< Iterator over constant elements.
+   using Reference      = Reference_t<MT>;        //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_t<MT>;   //!< Reference to a constant matrix value.
+   using Iterator       = Iterator_t<MT>;         //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_t<MT>;    //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -546,7 +546,7 @@ inline bool isIntact( const SMatTransposer<MT,SO>& m ) noexcept
 template< typename MT, bool SO, size_t... CSAs >
 struct SubmatrixTrait< SMatTransposer<MT,SO>, CSAs... >
 {
-   using Type = SubmatrixTrait_t< ResultType_< SMatTransposer<MT,SO> >, CSAs... >;
+   using Type = SubmatrixTrait_t< ResultType_t< SMatTransposer<MT,SO> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -565,7 +565,7 @@ struct SubmatrixTrait< SMatTransposer<MT,SO>, CSAs... >
 template< typename MT, bool SO, size_t... CRAs >
 struct RowsTrait< SMatTransposer<MT,SO>, CRAs... >
 {
-   using Type = RowsTrait_t< ResultType_< SMatTransposer<MT,SO> >, CRAs... >;
+   using Type = RowsTrait_t< ResultType_t< SMatTransposer<MT,SO> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -584,7 +584,7 @@ struct RowsTrait< SMatTransposer<MT,SO>, CRAs... >
 template< typename MT, bool SO, size_t... CCAs >
 struct ColumnsTrait< SMatTransposer<MT,SO>, CCAs... >
 {
-   using Type = ColumnsTrait_t< ResultType_< SMatTransposer<MT,SO> >, CCAs... >;
+   using Type = ColumnsTrait_t< ResultType_t< SMatTransposer<MT,SO> >, CCAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

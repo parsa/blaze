@@ -129,23 +129,23 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
    using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;              //!< Type of the subvector elements.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;             //!< Type of the subvector elements.
    using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the subvector elements.
-   using ReturnType    = ReturnType_<VT>;               //!< Return type for expression template evaluations
+   using ReturnType    = ReturnType_t<VT>;              //!< Return type for expression template evaluations
    using CompositeType = const Subvector&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
-   using ConstReference = ConstReference_<VT>;
+   using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant subvector value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
+   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
 
    //! Pointer to a constant subvector value.
-   using ConstPointer = ConstPointer_<VT>;
+   using ConstPointer = ConstPointer_t<VT>;
 
    //! Pointer to a non-constant subvector value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_<VT> >;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_t<VT> >;
    //**********************************************************************************************
 
    //**SubvectorIterator class definition**********************************************************
@@ -560,10 +560,10 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = SubvectorIterator< ConstIterator_<VT> >;
+   using ConstIterator = SubvectorIterator< ConstIterator_t<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, SubvectorIterator< Iterator_<VT> > >;
+   using Iterator = If_< IsConst<VT>, ConstIterator, SubvectorIterator< Iterator_t<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -650,7 +650,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -660,8 +660,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -671,8 +671,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -682,8 +682,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -693,8 +693,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -1261,14 +1261,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,unaligned,TF,true,CSAs...>&
    Subvector<VT,unaligned,TF,true,CSAs...>::operator=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset() ) ) {
@@ -1278,7 +1278,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -1314,14 +1314,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,unaligned,TF,true,CSAs...>&
    Subvector<VT,unaligned,TF,true,CSAs...>::operator+=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset() ) ) {
@@ -1331,7 +1331,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -1365,14 +1365,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,unaligned,TF,true,CSAs...>&
    Subvector<VT,unaligned,TF,true,CSAs...>::operator-=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset() ) ) {
@@ -1382,7 +1382,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -1417,14 +1417,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,unaligned,TF,true,CSAs...>&
    Subvector<VT,unaligned,TF,true,CSAs...>::operator*=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset() ) ) {
@@ -1434,7 +1434,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -1468,14 +1468,14 @@ template< typename VT2 >    // Type of the right-hand side dense vector
 inline Subvector<VT,unaligned,TF,true,CSAs...>&
    Subvector<VT,unaligned,TF,true,CSAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( vector_, right, offset() ) ) {
@@ -1485,7 +1485,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
    else {
@@ -1522,10 +1522,10 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2158,7 +2158,7 @@ inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLA
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    if( useStreaming && isAligned_ &&
        ( size() > ( cacheSize/( sizeof(ElementType) * 3UL ) ) ) &&
@@ -2211,7 +2211,7 @@ inline void Subvector<VT,unaligned,TF,true,CSAs...>::assign( const SparseVector<
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[offset()+element->index()] = element->value();
 }
 /*! \endcond */
@@ -2280,7 +2280,7 @@ inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLA
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2319,7 +2319,7 @@ inline void Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const SparseVect
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[offset()+element->index()] += element->value();
 }
 /*! \endcond */
@@ -2388,7 +2388,7 @@ inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLA
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2427,7 +2427,7 @@ inline void Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const SparseVect
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[offset()+element->index()] -= element->value();
 }
 /*! \endcond */
@@ -2496,7 +2496,7 @@ inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLA
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2539,7 +2539,7 @@ inline void Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const SparseVec
 
    size_t i( 0UL );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( vector_[offset()+i] );
@@ -2617,7 +2617,7 @@ inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLA
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2677,29 +2677,29 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
    using ViewedType    = VT;                            //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<VT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;              //!< Type of the subvector elements.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;             //!< Type of the subvector elements.
    using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the subvector elements.
-   using ReturnType    = ReturnType_<VT>;               //!< Return type for expression template evaluations
+   using ReturnType    = ReturnType_t<VT>;              //!< Return type for expression template evaluations
    using CompositeType = const Subvector&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant subvector value.
-   using ConstReference = ConstReference_<VT>;
+   using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant subvector value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
+   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
 
    //! Pointer to a constant subvector value.
-   using ConstPointer = ConstPointer_<VT>;
+   using ConstPointer = ConstPointer_t<VT>;
 
    //! Pointer to a non-constant subvector value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_<VT> >;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_t<VT> >;
 
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_<VT>;
+   using ConstIterator = ConstIterator_t<VT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, Iterator_<VT> >;
+   using Iterator = If_< IsConst<VT>, ConstIterator, Iterator_t<VT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2786,7 +2786,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2796,8 +2796,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDAdd< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2807,8 +2807,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDSub< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2818,8 +2818,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDMult< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -2829,8 +2829,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_<VT2> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_<VT2> >::value };
+                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
+                            HasSIMDDiv< ElementType, ElementType_t<VT2> >::value };
    };
    //**********************************************************************************************
 
@@ -3386,14 +3386,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,aligned,TF,true,CSAs...>&
    Subvector<VT,aligned,TF,true,CSAs...>::operator=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset() ) ) {
@@ -3403,7 +3403,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -3439,14 +3439,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,aligned,TF,true,CSAs...>&
    Subvector<VT,aligned,TF,true,CSAs...>::operator+=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset() ) ) {
@@ -3456,7 +3456,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -3490,14 +3490,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,aligned,TF,true,CSAs...>&
    Subvector<VT,aligned,TF,true,CSAs...>::operator-=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset() ) ) {
@@ -3507,7 +3507,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -3542,14 +3542,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Subvector<VT,aligned,TF,true,CSAs...>&
    Subvector<VT,aligned,TF,true,CSAs...>::operator*=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset() ) ) {
@@ -3559,7 +3559,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -3593,14 +3593,14 @@ template< typename VT2 >    // Type of the right-hand side dense vector
 inline Subvector<VT,aligned,TF,true,CSAs...>&
    Subvector<VT,aligned,TF,true,CSAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( vector_, right, offset() ) ) {
@@ -3610,7 +3610,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
    else {
@@ -3647,10 +3647,10 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -4274,7 +4274,7 @@ inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    if( useStreaming && size() > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &vector_ ) )
    {
@@ -4325,7 +4325,7 @@ inline void Subvector<VT,aligned,TF,true,CSAs...>::assign( const SparseVector<VT
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[offset()+element->index()] = element->value();
 }
 /*! \endcond */
@@ -4394,7 +4394,7 @@ inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -4433,7 +4433,7 @@ inline void Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const SparseVector
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[offset()+element->index()] += element->value();
 }
 /*! \endcond */
@@ -4502,7 +4502,7 @@ inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -4541,7 +4541,7 @@ inline void Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const SparseVector
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[offset()+element->index()] -= element->value();
 }
 /*! \endcond */
@@ -4610,7 +4610,7 @@ inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -4653,7 +4653,7 @@ inline void Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const SparseVecto
 
    size_t i( 0UL );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( vector_[offset()+i] );
@@ -4731,7 +4731,7 @@ inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT2> right( (~rhs).begin() );
+   ConstIterator_t<VT2> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -4781,7 +4781,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;              //!< Result type of the cross product expression.
    using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
@@ -4793,9 +4793,9 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;            //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_t<CPE>;             //!< Return type for expression template evaluations
    using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 
@@ -4936,7 +4936,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;              //!< Result type of the cross product expression.
    using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
@@ -4948,9 +4948,9 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;            //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_t<CPE>;             //!< Return type for expression template evaluations
    using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 
@@ -5091,7 +5091,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;              //!< Result type of the cross product expression.
    using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
@@ -5103,9 +5103,9 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;            //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_t<CPE>;             //!< Return type for expression template evaluations
    using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 
@@ -5246,7 +5246,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;              //!< Result type of the cross product expression.
    using DataType = SubvectorData<CSAs...>;         //!< The type of the SubvectorData base class.
    //**********************************************************************************************
 
@@ -5258,9 +5258,9 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    using BaseType      = DenseVector<This,TF>;          //!< Base type of this Subvector instance.
    using ViewedType    = CPE;                           //!< The type viewed by this Subvector instance.
    using ResultType    = SubvectorTrait_t<RT,CSAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;             //!< Type of the subvector elements.
-   using ReturnType    = ReturnType_<CPE>;              //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;            //!< Type of the subvector elements.
+   using ReturnType    = ReturnType_t<CPE>;             //!< Return type for expression template evaluations
    using CompositeType = const ResultType;              //!< Data type for composite expression templates.
    //**********************************************************************************************
 

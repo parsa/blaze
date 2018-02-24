@@ -336,7 +336,7 @@ class DynamicVector
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -348,8 +348,8 @@ class DynamicVector
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -361,8 +361,8 @@ class DynamicVector
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -374,8 +374,8 @@ class DynamicVector
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -387,8 +387,8 @@ class DynamicVector
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1141,7 +1141,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator+=( const Vector<
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -1176,7 +1176,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator-=( const Vector<
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -1278,9 +1278,9 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator%=( const Vector<
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< This, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< This, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2015,7 +2015,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedAssig
 
    size_t i=0UL;
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    if( useStreaming && size_ > ( cacheSize/( sizeof(Type) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
@@ -2063,7 +2063,7 @@ inline void DynamicVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2129,7 +2129,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedAddAs
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2165,7 +2165,7 @@ inline void DynamicVector<Type,TF>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2231,7 +2231,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedSubAs
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2267,7 +2267,7 @@ inline void DynamicVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2333,7 +2333,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedMultA
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2373,7 +2373,7 @@ inline void DynamicVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
 
    reset();
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -2437,7 +2437,7 @@ inline EnableIf_<typename DynamicVector<Type,TF>::BLAZE_TEMPLATE VectorizedDivAs
 
    size_t i( 0UL );
    Iterator left( begin() );
-   ConstIterator_<VT> right( (~rhs).begin() );
+   ConstIterator_t<VT> right( (~rhs).begin() );
 
    for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
       left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;

@@ -357,7 +357,7 @@ template< typename Archive  // Type of the archive
         , typename VT >     // Type of the vector
 void VectorSerializer::serializeHeader( Archive& archive, const VT& vec )
 {
-   using ET = ElementType_<VT>;
+   using ET = ElementType_t<VT>;
 
    archive << uint8_t ( 1U );
    archive << uint8_t ( VectorValueMapping<VT>::value );
@@ -411,7 +411,7 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void VectorSerializer::serializeVector( Archive& archive, const SparseVector<VT,TF>& vec )
 {
-   using ConstIterator = ConstIterator_<VT>;
+   using ConstIterator = ConstIterator_t<VT>;
 
    ConstIterator element( (~vec).begin() );
    while( ( element != (~vec).end() ) &&
@@ -475,7 +475,7 @@ template< typename Archive  // Type of the archive
         , typename VT >     // Type of the vector
 void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
 {
-   using ET = ElementType_<VT>;
+   using ET = ElementType_t<VT>;
 
    if( !( archive >> version_ >> type_ >> elementType_ >> elementSize_ >> size_ >> number_ ) ) {
       BLAZE_THROW_RUNTIME_ERROR( "Corrupt archive detected" );
@@ -595,7 +595,7 @@ template< typename Archive  // Type of the archive
 typename DisableIfTrue< VT::simdEnabled >::Type
    VectorSerializer::deserializeDenseVector( Archive& archive, DenseVector<VT,TF>& vec )
 {
-   using ET = ElementType_<VT>;
+   using ET = ElementType_t<VT>;
 
    size_t i( 0UL );
    ET value{};
@@ -657,7 +657,7 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void VectorSerializer::deserializeDenseVector( Archive& archive, SparseVector<VT,TF>& vec )
 {
-   using ET = ElementType_<VT>;
+   using ET = ElementType_t<VT>;
 
    size_t i( 0UL );
    ET value{};
@@ -691,7 +691,7 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void VectorSerializer::deserializeSparseVector( Archive& archive, DenseVector<VT,TF>& vec )
 {
-   using ET = ElementType_<VT>;
+   using ET = ElementType_t<VT>;
 
    size_t i    ( 0UL );
    size_t index( 0UL );
@@ -726,7 +726,7 @@ template< typename Archive  // Type of the archive
         , bool TF >         // Transpose flag
 void VectorSerializer::deserializeSparseVector( Archive& archive, SparseVector<VT,TF>& vec )
 {
-   using ET = ElementType_<VT>;
+   using ET = ElementType_t<VT>;
 
    size_t i    ( 0UL );
    size_t index( 0UL );

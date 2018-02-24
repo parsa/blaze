@@ -209,7 +209,7 @@ template< typename RT >     // Type of the row
 inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row ) const
 {
    using RowType     = RemoveReference_t<RT>;
-   using ElementType = ElementType_<RowType>;
+   using ElementType = ElementType_t<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );
@@ -248,7 +248,7 @@ template< typename RT >     // Type of the row
 inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row, size_t nonzeros ) const
 {
    using RowType     = RemoveReference_t<RT>;
-   using ElementType = ElementType_<RowType>;
+   using ElementType = ElementType_t<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );
@@ -290,7 +290,7 @@ template< typename RT       // Type of the row
 inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row, const Arg& min, const Arg& max ) const
 {
    using RowType     = RemoveReference_t<RT>;
-   using ElementType = ElementType_<RowType>;
+   using ElementType = ElementType_t<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );
@@ -333,7 +333,7 @@ inline void Rand< Row<MT,SO,false,SF,CRAs...> >::randomize( RT&& row, size_t non
                                                             const Arg& min, const Arg& max ) const
 {
    using RowType     = RemoveReference_t<RT>;
-   using ElementType = ElementType_<RowType>;
+   using ElementType = ElementType_t<RowType>;
 
    BLAZE_CONSTRAINT_MUST_BE_ROW_TYPE( RowType );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( RowType );

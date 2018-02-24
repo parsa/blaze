@@ -103,7 +103,7 @@ class DMatDeclDiagExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<MT>;  //!< Result type of the dense matrix expression.
+   using RT = ResultType_t<MT>;  //!< Result type of the dense matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -157,12 +157,12 @@ class DMatDeclDiagExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatDeclDiagExpr<MT,SO>;     //!< Type of this DMatDeclDiagExpr instance.
-   using ResultType    = DeclDiagTrait_t<RT>;         //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
+   using This          = DMatDeclDiagExpr<MT,SO>;      //!< Type of this DMatDeclDiagExpr instance.
+   using ResultType    = DeclDiagTrait_t<RT>;          //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_< RequiresEvaluation<MT>, const ResultType, const DMatDeclDiagExpr& >;

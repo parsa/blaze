@@ -111,9 +111,9 @@ class UniLowerMatrix<MT,SO,false>
 {
  private:
    //**Type definitions****************************************************************************
-   using OT = OppositeType_<MT>;   //!< Opposite type of the sparse matrix.
-   using TT = TransposeType_<MT>;  //!< Transpose type of the sparse matrix.
-   using ET = ElementType_<MT>;    //!< Element type of the sparse matrix.
+   using OT = OppositeType_t<MT>;   //!< Opposite type of the sparse matrix.
+   using TT = TransposeType_t<MT>;  //!< Transpose type of the sparse matrix.
+   using ET = ElementType_t<MT>;    //!< Element type of the sparse matrix.
    //**********************************************************************************************
 
  public:
@@ -124,11 +124,11 @@ class UniLowerMatrix<MT,SO,false>
    using OppositeType   = UniLowerMatrix<OT,!SO,false>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = UniUpperMatrix<TT,!SO,false>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                            //!< Type of the matrix elements.
-   using ReturnType     = ReturnType_<MT>;               //!< Return type for expression template evaluations.
+   using ReturnType     = ReturnType_t<MT>;              //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                   //!< Data type for composite expression templates.
    using Reference      = UniLowerProxy<MT>;             //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<MT>;           //!< Reference to a constant matrix value.
-   using ConstIterator  = ConstIterator_<MT>;            //!< Iterator over constant elements.
+   using ConstReference = ConstReference_t<MT>;          //!< Reference to a constant matrix value.
+   using ConstIterator  = ConstIterator_t<MT>;           //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -159,7 +159,7 @@ class UniLowerMatrix<MT,SO,false>
    {
     public:
       //**Type definitions*************************************************************************
-      using IteratorType = Iterator_<MT>;  //!< Type of the underlying sparse matrix iterators.
+      using IteratorType = Iterator_t<MT>;  //!< Type of the underlying sparse matrix iterators.
 
       using IteratorCategory = std::forward_iterator_tag;  //!< The iterator category.
       using ValueType        = UniLowerElement<MT>;        //!< Type of the underlying elements.
@@ -1246,7 +1246,7 @@ inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
       matrix_ += ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
@@ -1335,7 +1335,7 @@ inline EnableIf_< IsComputation<MT2>, UniLowerMatrix<MT,SO,false>& >
       matrix_ -= ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isStrictlyLower( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
@@ -1380,7 +1380,7 @@ inline UniLowerMatrix<MT,SO,false>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to unilower matrix" );
    }
 
-   If_< IsComputation<MT2>, ResultType_<MT2>, const MT2& > tmp( ~rhs );
+   If_< IsComputation<MT2>, ResultType_t<MT2>, const MT2& > tmp( ~rhs );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       if( !isOne( tmp(i,i) ) ) {

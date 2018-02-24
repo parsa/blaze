@@ -111,14 +111,14 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline DisableIf_< IsComplex< ElementType_<MT> > >
+inline DisableIf_< IsComplex< ElementType_t<MT> > >
    geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<VT>;
-   using BT = ElementType_<MT>;
+   using CT = ElementType_t<VT>;
+   using BT = ElementType_t<MT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -170,13 +170,13 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline EnableIf_< IsComplex< ElementType_<MT> > >
+inline EnableIf_< IsComplex< ElementType_t<MT> > >
    geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT>;
+   using CT = ElementType_t<MT>;
    using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
@@ -267,12 +267,12 @@ inline void geev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
    const size_t N( (~A).rows() );
 
@@ -315,7 +315,7 @@ template< typename MT1  // Type of the matrix A
         , bool SO2      // Storage order of the matrix VL
         , typename VT   // Type of the vector w
         , bool TF >     // Transpose flag of the vector w
-inline DisableIf_< IsComplex< ElementType_<MT1> > >
+inline DisableIf_< IsComplex< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -323,8 +323,8 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<VT>;
-   using BT = ElementType_<MT1>;
+   using CT = ElementType_t<VT>;
+   using BT = ElementType_t<MT1>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -407,7 +407,7 @@ template< typename MT1  // Type of the matrix A
         , bool SO2      // Storage order of the matrix VL
         , typename VT   // Type of the vector w
         , bool TF >     // Transpose flag of the vector w
-inline EnableIf_< IsComplex< ElementType_<MT1> > >
+inline EnableIf_< IsComplex< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -415,7 +415,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~VL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
@@ -525,18 +525,18 @@ inline void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
    const size_t N( (~A).rows() );
 
@@ -580,7 +580,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix VR
         , bool SO2 >    // Storage order of the matrix VR
-inline DisableIf_< IsComplex< ElementType_<MT1> > >
+inline DisableIf_< IsComplex< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -588,8 +588,8 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<VT>;
-   using BT = ElementType_<MT1>;
+   using CT = ElementType_t<VT>;
+   using BT = ElementType_t<MT1>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -672,7 +672,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix VR
         , bool SO2 >    // Storage order of the matrix VR
-inline EnableIf_< IsComplex< ElementType_<MT1> > >
+inline EnableIf_< IsComplex< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -680,7 +680,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
@@ -790,18 +790,18 @@ inline void geev( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT2> );
 
    const size_t N( (~A).rows() );
 
@@ -848,7 +848,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT3  // Type of the matrix VR
         , bool SO3 >    // Storage order of the matrix VR
-inline DisableIf_< IsComplex< ElementType_<MT1> > >
+inline DisableIf_< IsComplex< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                  DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
 {
@@ -859,8 +859,8 @@ inline DisableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<VT>;
-   using BT = ElementType_<MT1>;
+   using CT = ElementType_t<VT>;
+   using BT = ElementType_t<MT1>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
@@ -951,7 +951,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT3  // Type of the matrix VR
         , bool SO3 >    // Storage order of the matrix VR
-inline EnableIf_< IsComplex< ElementType_<MT1> > >
+inline EnableIf_< IsComplex< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                  DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
 {
@@ -962,7 +962,7 @@ inline EnableIf_< IsComplex< ElementType_<MT1> > >
    BLAZE_INTERNAL_ASSERT( (~VR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
    BLAZE_INTERNAL_ASSERT( (~w).size()  == (~A).rows(), "Invalid vector dimension detected" );
 
-   using CT = ElementType_<MT1>;
+   using CT = ElementType_t<MT1>;
    using BT = UnderlyingElement_t<CT>;
 
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
@@ -1085,24 +1085,24 @@ inline void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT2> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<VT> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT3> );
-   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_<MT3> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT3> );
 
    const size_t N( (~A).rows() );
 

@@ -290,7 +290,7 @@ template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
 inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v )
 {
-   CompositeType_<VT> tmp( ~v );
+   CompositeType_t<VT> tmp( ~v );
 
    if( tmp.size() == 0UL ) {
       os << "( )\n";

@@ -1373,7 +1373,7 @@ inline CompressedMatrix<Type,SO>&
       swap( tmp );
    }
    else {
-      CompositeType_<MT> tmp( ~rhs );
+      CompositeType_t<MT> tmp( ~rhs );
       schurAssign( *this, tmp );
    }
 
@@ -2802,7 +2802,7 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   using RhsIterator = ConstIterator_<MT>;
+   using RhsIterator = ConstIterator_t<MT>;
 
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( m_, 0UL );
@@ -4143,7 +4143,7 @@ inline CompressedMatrix<Type,true>&
       swap( tmp );
    }
    else {
-      CompositeType_<MT> tmp( ~rhs );
+      CompositeType_t<MT> tmp( ~rhs );
       schurAssign( *this, tmp );
    }
 
@@ -5579,7 +5579,7 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& r
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   using RhsIterator = ConstIterator_<MT>;
+   using RhsIterator = ConstIterator_t<MT>;
 
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( n_, 0UL );

@@ -102,14 +102,14 @@ class SVecDVecOuterExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<VT1>;     //!< Result type of the left-hand side sparse vector expression.
-   using RT2 = ResultType_<VT2>;     //!< Result type of the right-hand side dense vector expression.
-   using RN1 = ReturnType_<VT1>;     //!< Return type of the left-hand side sparse vector expression.
-   using RN2 = ReturnType_<VT2>;     //!< Return type of the right-hand side dense vector expression.
-   using CT1 = CompositeType_<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
-   using CT2 = CompositeType_<VT2>;  //!< Composite type of the right-hand side dense vector expression.
-   using ET1 = ElementType_<VT1>;    //!< Element type of the left-hand side sparse vector expression.
-   using ET2 = ElementType_<VT2>;    //!< Element type of the right-hand side dense vector expression.
+   using RT1 = ResultType_t<VT1>;     //!< Result type of the left-hand side sparse vector expression.
+   using RT2 = ResultType_t<VT2>;     //!< Result type of the right-hand side dense vector expression.
+   using RN1 = ReturnType_t<VT1>;     //!< Return type of the left-hand side sparse vector expression.
+   using RN2 = ReturnType_t<VT2>;     //!< Return type of the right-hand side dense vector expression.
+   using CT1 = CompositeType_t<VT1>;  //!< Composite type of the left-hand side sparse vector expression.
+   using CT2 = CompositeType_t<VT2>;  //!< Composite type of the right-hand side dense vector expression.
+   using ET1 = ElementType_t<VT1>;    //!< Element type of the left-hand side sparse vector expression.
+   using ET2 = ElementType_t<VT2>;    //!< Element type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -154,9 +154,9 @@ class SVecDVecOuterExpr
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             T1::simdEnabled && T3::simdEnabled &&
-                            IsSame< ElementType_<T1>, ElementType_<T2> >::value &&
-                            IsSame< ElementType_<T1>, ElementType_<T3> >::value &&
-                            HasSIMDMult< ElementType_<T1>, ElementType_<T1> >::value };
+                            IsSame< ElementType_t<T1>, ElementType_t<T2> >::value &&
+                            IsSame< ElementType_t<T1>, ElementType_t<T3> >::value &&
+                            HasSIMDMult< ElementType_t<T1>, ElementType_t<T1> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -175,11 +175,11 @@ class SVecDVecOuterExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecDVecOuterExpr<VT1,VT2>;  //!< Type of this SVecDVecOuterExpr instance.
-   using ResultType    = MultTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using This          = SVecDVecOuterExpr<VT1,VT2>;   //!< Type of this SVecDVecOuterExpr instance.
+   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -211,7 +211,7 @@ class SVecDVecOuterExpr
       using Element = ValueIndexPair<ElementType>;
 
       //! Iterator type of the sparse vector expression.
-      using IteratorType = ConstIterator_< RemoveReference_t<LeftOperand> >;
+      using IteratorType = ConstIterator_t< RemoveReference_t<LeftOperand> >;
 
       //! Element type of the dense vector expression
       using RightElement = ET2;
@@ -595,7 +595,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -630,7 +630,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -684,7 +684,7 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -729,7 +729,7 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns() , "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -798,7 +798,7 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -882,7 +882,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -917,7 +917,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -973,7 +973,7 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -1056,7 +1056,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -1091,7 +1091,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -1147,7 +1147,7 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
@@ -1230,7 +1230,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       const ConstIterator end( x.end() );
 
@@ -1280,7 +1280,7 @@ class SVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
 
@@ -1351,7 +1351,7 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_< RemoveReference_t<LT> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
 
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand

@@ -387,7 +387,7 @@ class StaticMatrix
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
                             IsRowMajorMatrix<MT>::value };
    };
    /*! \endcond */
@@ -400,8 +400,8 @@ class StaticMatrix
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
                             IsRowMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -415,8 +415,8 @@ class StaticMatrix
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
                             IsRowMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -430,8 +430,8 @@ class StaticMatrix
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<MT> >::value &&
                             IsRowMajorMatrix<MT>::value };
    };
    /*! \endcond */
@@ -1450,7 +1450,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator+=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1489,7 +1489,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator-=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -1528,7 +1528,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator%=( const M
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       schurAssign( *this, tmp );
    }
    else {
@@ -2587,7 +2587,7 @@ inline void StaticMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2616,7 +2616,7 @@ inline void StaticMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] = element->value();
 }
 //*************************************************************************************************
@@ -2743,7 +2743,7 @@ inline void StaticMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,SO>& rhs
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2772,7 +2772,7 @@ inline void StaticMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,!SO>& rh
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] += element->value();
 }
 //*************************************************************************************************
@@ -2899,7 +2899,7 @@ inline void StaticMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,SO>& rhs
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2928,7 +2928,7 @@ inline void StaticMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rh
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3034,7 +3034,7 @@ inline void StaticMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,SO>& r
    reset();
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] = tmp.v_[i*NN+element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -3067,7 +3067,7 @@ inline void StaticMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,!SO>& 
    reset();
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] = tmp.v_[element->index()*NN+j] * element->value();
 }
 //*************************************************************************************************
@@ -3263,7 +3263,7 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value };
    };
    //**********************************************************************************************
@@ -3274,8 +3274,8 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -3287,8 +3287,8 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value &&
                             !IsDiagonal<MT>::value };
    };
@@ -3300,8 +3300,8 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<MT> >::value &&
                             IsColumnMajorMatrix<MT>::value };
    };
    //**********************************************************************************************
@@ -4331,7 +4331,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -4371,7 +4371,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -4411,7 +4411,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator%=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       schurAssign( *this, tmp );
    }
    else {
@@ -5483,7 +5483,7 @@ inline void StaticMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,true>& rh
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] = element->value();
 }
 /*! \endcond */
@@ -5513,7 +5513,7 @@ inline void StaticMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,false>& r
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] = element->value();
 }
 /*! \endcond */
@@ -5643,7 +5643,7 @@ inline void StaticMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,true>&
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] += element->value();
 }
 /*! \endcond */
@@ -5673,7 +5673,7 @@ inline void StaticMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,false>
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] += element->value();
 }
 /*! \endcond */
@@ -5803,7 +5803,7 @@ inline void StaticMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,true>&
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] -= element->value();
 }
 /*! \endcond */
@@ -5833,7 +5833,7 @@ inline void StaticMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
 /*! \endcond */
@@ -5942,7 +5942,7 @@ inline void StaticMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,true
    reset();
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] = tmp.v_[element->index()+j*MM] * element->value();
 }
 /*! \endcond */
@@ -5976,7 +5976,7 @@ inline void StaticMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,fals
    reset();
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] = tmp.v_[i+element->index()*MM] * element->value();
 }
 /*! \endcond */

@@ -118,9 +118,9 @@ class DiagonalMatrix<MT,SO,true>
 {
  private:
    //**Type definitions****************************************************************************
-   using OT = OppositeType_<MT>;   //!< Opposite type of the dense matrix.
-   using TT = TransposeType_<MT>;  //!< Transpose type of the dense matrix.
-   using ET = ElementType_<MT>;    //!< Element type of the dense matrix.
+   using OT = OppositeType_t<MT>;   //!< Opposite type of the dense matrix.
+   using TT = TransposeType_t<MT>;  //!< Transpose type of the dense matrix.
+   using ET = ElementType_t<MT>;    //!< Element type of the dense matrix.
    //**********************************************************************************************
 
  public:
@@ -131,14 +131,14 @@ class DiagonalMatrix<MT,SO,true>
    using OppositeType   = DiagonalMatrix<OT,!SO,true>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = DiagonalMatrix<TT,!SO,true>;  //!< Transpose type for expression template evaluations.
    using ElementType    = ET;                           //!< Type of the matrix elements.
-   using SIMDType       = SIMDType_<MT>;                //!< SIMD type of the matrix elements.
-   using ReturnType     = ReturnType_<MT>;              //!< Return type for expression template evaluations.
+   using SIMDType       = SIMDType_t<MT>;               //!< SIMD type of the matrix elements.
+   using ReturnType     = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
    using CompositeType  = const This&;                  //!< Data type for composite expression templates.
    using Reference      = DiagonalProxy<MT>;            //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<MT>;          //!< Reference to a constant matrix value.
-   using Pointer        = Pointer_<MT>;                 //!< Pointer to a non-constant matrix value.
-   using ConstPointer   = ConstPointer_<MT>;            //!< Pointer to a constant matrix value.
-   using ConstIterator  = ConstIterator_<MT>;           //!< Iterator over constant elements.
+   using ConstReference = ConstReference_t<MT>;         //!< Reference to a constant matrix value.
+   using Pointer        = Pointer_t<MT>;                //!< Pointer to a non-constant matrix value.
+   using ConstPointer   = ConstPointer_t<MT>;           //!< Pointer to a constant matrix value.
+   using ConstIterator  = ConstIterator_t<MT>;          //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -170,7 +170,7 @@ class DiagonalMatrix<MT,SO,true>
     public:
       //**Type definitions*************************************************************************
       using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
-      using ValueType        = ElementType_<MT>;                 //!< Type of the underlying elements.
+      using ValueType        = ElementType_t<MT>;                //!< Type of the underlying elements.
       using PointerType      = DiagonalProxy<MT>;                //!< Pointer return type.
       using ReferenceType    = DiagonalProxy<MT>;                //!< Reference return type.
       using DifferenceType   = ptrdiff_t;                        //!< Difference between two iterators.
@@ -1800,7 +1800,7 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >
       matrix_ += ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1881,7 +1881,7 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,true>& >
       matrix_ -= ~rhs;
    }
    else {
-      const ResultType_<MT2> tmp( ~rhs );
+      const ResultType_t<MT2> tmp( ~rhs );
 
       if( !isDiagonal( tmp ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );

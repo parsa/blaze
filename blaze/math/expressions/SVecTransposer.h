@@ -77,15 +77,15 @@ class SVecTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = SVecTransposer<VT,TF>;  //!< Type of this SVecTransposer instance.
-   using ResultType     = TransposeType_<VT>;     //!< Result type for expression template evaluations.
-   using TransposeType  = ResultType_<VT>;        //!< Transpose type for expression template evaluations.
-   using ElementType    = ElementType_<VT>;       //!< Resulting element type.
-   using ReturnType     = ReturnType_<VT>;        //!< Return type for expression template evaluations.
+   using ResultType     = TransposeType_t<VT>;    //!< Result type for expression template evaluations.
+   using TransposeType  = ResultType_t<VT>;       //!< Transpose type for expression template evaluations.
+   using ElementType    = ElementType_t<VT>;      //!< Resulting element type.
+   using ReturnType     = ReturnType_t<VT>;       //!< Return type for expression template evaluations.
    using CompositeType  = const This&;            //!< Data type for composite expression templates.
-   using Reference      = Reference_<VT>;         //!< Reference to a non-constant matrix value.
-   using ConstReference = ConstReference_<VT>;    //!< Reference to a constant matrix value.
-   using Iterator       = Iterator_<VT>;          //!< Iterator over non-constant elements.
-   using ConstIterator  = ConstIterator_<VT>;     //!< Iterator over constant elements.
+   using Reference      = Reference_t<VT>;        //!< Reference to a non-constant matrix value.
+   using ConstReference = ConstReference_t<VT>;   //!< Reference to a constant matrix value.
+   using Iterator       = Iterator_t<VT>;         //!< Iterator over non-constant elements.
+   using ConstIterator  = ConstIterator_t<VT>;    //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -477,7 +477,7 @@ inline bool isIntact( const SVecTransposer<VT,TF>& v ) noexcept
 template< typename VT, bool TF, size_t... CSAs >
 struct SubvectorTrait< SVecTransposer<VT,TF>, CSAs... >
 {
-   using Type = SubvectorTrait_t< ResultType_< SVecTransposer<VT,TF> >, CSAs... >;
+   using Type = SubvectorTrait_t< ResultType_t< SVecTransposer<VT,TF> >, CSAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -496,7 +496,7 @@ struct SubvectorTrait< SVecTransposer<VT,TF>, CSAs... >
 template< typename VT, bool TF, size_t... CEAs >
 struct ElementsTrait< SVecTransposer<VT,TF>, CEAs... >
 {
-   using Type = ElementsTrait_t< ResultType_< SVecTransposer<VT,TF> >, CEAs... >;
+   using Type = ElementsTrait_t< ResultType_t< SVecTransposer<VT,TF> >, CEAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

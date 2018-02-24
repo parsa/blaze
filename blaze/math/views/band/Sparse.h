@@ -114,7 +114,7 @@ class Band<MT,TF,false,false,CBAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT       = ResultType_<MT>;                   //!< Result type of the sparse matrix expression.
+   using RT       = ResultType_t<MT>;                  //!< Result type of the sparse matrix expression.
    using DataType = BandData<CBAs...>;                 //!< The type of the BandData base class.
    using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
@@ -124,21 +124,21 @@ class Band<MT,TF,false,false,CBAs...>
    //! Type of this Band instance.
    using This = Band<MT,TF,false,false,CBAs...>;
 
-   using BaseType      = SparseVector<This,TF>;       //!< Base type of this Band instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Band instance.
-   using ResultType    = BandTrait_t<RT,CBAs...>;     //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the band elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+   using BaseType      = SparseVector<This,TF>;        //!< Base type of this Band instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Band instance.
+   using ResultType    = BandTrait_t<RT,CBAs...>;      //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the band elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
 
    //! Data type for composite expression templates.
    using CompositeType = IfTrue_< RequiresEvaluation<MT>::value, const ResultType, const Band& >;
 
    //! Reference to a constant band value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant band value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**BandElement class definition****************************************************************
@@ -460,10 +460,10 @@ class Band<MT,TF,false,false,CBAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = BandIterator< const MT, ConstIterator_<MT> >;
+   using ConstIterator = BandIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator< MT, Iterator_<MT> > >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1016,7 +1016,7 @@ inline Band<MT,TF,false,false,CBAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   const CompositeType_<VT> tmp( ~rhs );
+   const CompositeType_t<VT> tmp( ~rhs );
 
    if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1060,10 +1060,10 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -1116,10 +1116,10 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -1171,10 +1171,10 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using MultType = MultTrait_t< ResultType, ResultType_<VT> >;
+   using MultType = MultTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( MultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MultType );
@@ -1225,11 +1225,11 @@ inline Band<MT,TF,false,false,CBAs...>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType_<VT> );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using DivType = DivTrait_t< ResultType, ResultType_<VT> >;
+   using DivType = DivTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( DivType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( DivType, TF );
@@ -1279,10 +1279,10 @@ inline Band<MT,TF,false,false,CBAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -1749,7 +1749,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
 {
    const size_t rowIndex   ( row()+index    );
    const size_t columnIndex( column()+index );
-   const Iterator_<MT> pos( matrix_.find( rowIndex, columnIndex ) );
+   const Iterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
    if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
       return Iterator( matrix_, rowIndex, columnIndex, pos );
@@ -1782,7 +1782,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::ConstIterator
 {
    const size_t rowIndex   ( row()+index    );
    const size_t columnIndex( column()+index );
-   const ConstIterator_<MT> pos( matrix_.find( rowIndex, columnIndex ) );
+   const ConstIterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
    if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
       return ConstIterator( matrix_, rowIndex, columnIndex, pos );
@@ -1816,7 +1816,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
    {
       const size_t rowIndex   ( row()+i    );
       const size_t columnIndex( column()+i );
-      const Iterator_<MT> pos( matrix_.find( rowIndex, columnIndex ) );
+      const Iterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
       if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
          return Iterator( matrix_, rowIndex, columnIndex, pos );
@@ -1851,7 +1851,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::ConstIterator
    {
       const size_t rowIndex   ( row()+i    );
       const size_t columnIndex( column()+i );
-      const ConstIterator_<MT> pos( matrix_.find( rowIndex, columnIndex ) );
+      const ConstIterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
       if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
          return ConstIterator( matrix_, rowIndex, columnIndex, pos );
@@ -1886,7 +1886,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
    {
       const size_t rowIndex   ( row()+i    );
       const size_t columnIndex( column()+i );
-      const Iterator_<MT> pos( matrix_.find( rowIndex, columnIndex ) );
+      const Iterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
       if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
          return Iterator( matrix_, rowIndex, columnIndex, pos );
@@ -1921,7 +1921,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::ConstIterator
    {
       const size_t rowIndex   ( row()+i    );
       const size_t columnIndex( column()+i );
-      const ConstIterator_<MT> pos( matrix_.find( rowIndex, columnIndex ) );
+      const ConstIterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
       if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
          return ConstIterator( matrix_, rowIndex, columnIndex, pos );
@@ -2082,7 +2082,7 @@ inline void Band<MT,TF,false,false,CBAs...>::assign( const SparseVector<VT,TF>& 
 
    size_t i( 0UL );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       for( ; i<element->index(); ++i )
          matrix_.erase( row()+i, column()+i );
       matrix_(row()+i,column()+i) = element->value();
@@ -2114,7 +2114,7 @@ template< typename MT          // Type of the sparse matrix
 template< typename VT >        // Type of the right-hand side vector
 inline void Band<MT,TF,false,false,CBAs...>::addAssign( const Vector<VT,TF>& rhs )
 {
-   using AddType = AddTrait_t< ResultType, ResultType_<VT> >;
+   using AddType = AddTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( AddType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
@@ -2146,7 +2146,7 @@ template< typename MT          // Type of the sparse matrix
 template< typename VT >        // Type of the right-hand side vector
 inline void Band<MT,TF,false,false,CBAs...>::subAssign( const Vector<VT,TF>& rhs )
 {
-   using SubType = SubTrait_t< ResultType, ResultType_<VT> >;
+   using SubType = SubTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( SubType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
@@ -2190,10 +2190,10 @@ class Band<MT,TF,false,true,CBAs...>
    using DataType = BandData<CBAs...>;
 
    //! The type of the left-hand side matrix operand.
-   using LeftOperand = RemoveReference_t< LeftOperand_<MT> >;
+   using LeftOperand = RemoveReference_t< LeftOperand_t<MT> >;
 
    //! The type of the right-hand side matrix operand.
-   using RightOperand = RemoveReference_t< RightOperand_<MT> >;
+   using RightOperand = RemoveReference_t< RightOperand_t<MT> >;
    //**********************************************************************************************
 
  public:
@@ -2208,22 +2208,22 @@ class Band<MT,TF,false,true,CBAs...>
    using ViewedType = MT;
 
    //! Result type for expression template evaluations.
-   using ResultType = BandTrait_t<ResultType_<MT>,CBAs...>;
+   using ResultType = BandTrait_t<ResultType_t<MT>,CBAs...>;
 
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Type for the assignment of the left-hand side matrix operand.
    using LT = If_< And< IsSparseMatrix<LeftOperand>, IsColumnMajorMatrix<LeftOperand> >
-                 , ResultType_<LeftOperand>
-                 , CompositeType_<LeftOperand> >;
+                 , ResultType_t<LeftOperand>
+                 , CompositeType_t<LeftOperand> >;
 
    //! Type for the assignment of the right-hand side matrix operand.
    using RT = If_< And< IsSparseMatrix<RightOperand>, IsRowMajorMatrix<RightOperand> >
-                 , ResultType_<RightOperand>
-                 , CompositeType_<RightOperand> >;
+                 , ResultType_t<RightOperand>
+                 , CompositeType_t<RightOperand> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2407,7 +2407,7 @@ class Band<MT,TF,false,true,CBAs...>
       RT B( serial( rhs.operand().rightOperand() ) );
 
       const size_t n( rhs.size() );
-      ElementType_<VT> tmp{};
+      ElementType_t<VT> tmp{};
       size_t nonzeros( 0UL );
 
       for( size_t i=0UL; i<n; ++i ) {

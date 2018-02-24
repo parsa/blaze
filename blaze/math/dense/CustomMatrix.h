@@ -573,7 +573,7 @@ class CustomMatrix
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -585,8 +585,8 @@ class CustomMatrix
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    /*! \endcond */
@@ -599,8 +599,8 @@ class CustomMatrix
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    /*! \endcond */
@@ -613,8 +613,8 @@ class CustomMatrix
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_<MT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<MT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1452,7 +1452,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
       ctranspose();
    }
    else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -1489,7 +1489,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator+=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -1524,7 +1524,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator-=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -1559,7 +1559,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator%=( con
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpSchurAssign( *this, tmp );
    }
    else {
@@ -2412,7 +2412,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_<MT> right( (~rhs).begin(i) );
+         ConstIterator_t<MT> right( (~rhs).begin(i) );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE, right += SIMDSIZE;
@@ -2428,7 +2428,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
       {
          size_t j( 0UL );
          Iterator left( begin(i) );
-         ConstIterator_<MT> right( (~rhs).begin(i) );
+         ConstIterator_t<MT> right( (~rhs).begin(i) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2510,7 +2510,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,SO>& rhs 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2540,7 +2540,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,!SO>& rhs
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] = element->value();
 }
 //*************************************************************************************************
@@ -2641,7 +2641,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_<MT> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2734,7 +2734,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,SO>& r
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2764,7 +2764,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,!SO>& 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] += element->value();
 }
 //*************************************************************************************************
@@ -2865,7 +2865,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
 
       size_t j( jbegin );
       Iterator left( begin(i) + jbegin );
-      ConstIterator_<MT> right( (~rhs).begin(i) + jbegin );
+      ConstIterator_t<MT> right( (~rhs).begin(i) + jbegin );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2958,7 +2958,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,SO>& r
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2988,7 +2988,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,!SO>& 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3065,7 +3065,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_<MT> right( (~rhs).begin(i) );
+      ConstIterator_t<MT> right( (~rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3150,7 +3150,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,SO>&
    reset();
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] = tmp(i,element->index()) * element->value();
 }
 //*************************************************************************************************
@@ -3184,7 +3184,7 @@ inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,!SO>
    reset();
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] = tmp(element->index(),j) * element->value();
 }
 //*************************************************************************************************
@@ -3375,7 +3375,7 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value };
    };
    //**********************************************************************************************
 
@@ -3385,8 +3385,8 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
@@ -3397,8 +3397,8 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_<MT> >::value &&
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
                             !IsDiagonal<MT>::value };
    };
    //**********************************************************************************************
@@ -3409,8 +3409,8 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_<MT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<MT> >::value };
    };
    //**********************************************************************************************
 
@@ -4241,7 +4241,7 @@ inline CustomMatrix<Type,AF,PF,true>&
       ctranspose();
    }
    else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
@@ -4280,7 +4280,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpAddAssign( *this, tmp );
    }
    else {
@@ -4317,7 +4317,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpSubAssign( *this, tmp );
    }
    else {
@@ -4354,7 +4354,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<MT> tmp( ~rhs );
+      const ResultType_t<MT> tmp( ~rhs );
       smpSchurAssign( *this, tmp );
    }
    else {
@@ -5215,7 +5215,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT> right( (~rhs).begin(j) );
+         ConstIterator_t<MT> right( (~rhs).begin(j) );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5231,7 +5231,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
       {
          size_t i( 0UL );
          Iterator left( begin(j) );
-         ConstIterator_<MT> right( (~rhs).begin(j) );
+         ConstIterator_t<MT> right( (~rhs).begin(j) );
 
          for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
             left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5315,7 +5315,7 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,true>& 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] = element->value();
 }
 /*! \endcond */
@@ -5346,7 +5346,7 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,false>&
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] = element->value();
 }
 /*! \endcond */
@@ -5449,7 +5449,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5544,7 +5544,7 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,true
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] += element->value();
 }
 /*! \endcond */
@@ -5575,7 +5575,7 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,fals
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] += element->value();
 }
 /*! \endcond */
@@ -5679,7 +5679,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
 
       size_t i( ibegin );
       Iterator left( begin(j) + ibegin );
-      ConstIterator_<MT> right( (~rhs).begin(j) + ibegin );
+      ConstIterator_t<MT> right( (~rhs).begin(j) + ibegin );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5774,7 +5774,7 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,true
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] -= element->value();
 }
 /*! \endcond */
@@ -5805,7 +5805,7 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,fals
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] -= element->value();
 }
 /*! \endcond */
@@ -5885,7 +5885,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
 
       size_t i( 0UL );
       Iterator left( begin(j) );
-      ConstIterator_<MT> right( (~rhs).begin(j) );
+      ConstIterator_t<MT> right( (~rhs).begin(j) );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -5972,7 +5972,7 @@ inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,tr
    reset();
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] = tmp(element->index(),j) * element->value();
 }
 /*! \endcond */
@@ -6007,7 +6007,7 @@ inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,fa
    reset();
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] = tmp(i,element->index()) * element->value();
 }
 /*! \endcond */

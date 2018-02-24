@@ -661,7 +661,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline auto trace( const Matrix<MT,SO>& m )
 {
-   using ET = ElementType_<MT>;
+   using ET = ElementType_t<MT>;
 
    if( !isSquare( ~m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix for trace computation" );
@@ -711,7 +711,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m )
 {
-   CompositeType_<MT> tmp( ~m );
+   CompositeType_t<MT> tmp( ~m );
 
    for( size_t i=0UL; i<tmp.rows(); ++i ) {
       os << "( ";

@@ -111,14 +111,14 @@ class DMatDMatSchurExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side dense matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side dense matrix expression.
-   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side dense matrix expression.
-   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side dense matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
-   using ET1 = ElementType_<MT1>;    //!< Element type of the left-hand side dense matrix expression.
-   using ET2 = ElementType_<MT2>;    //!< Element type of the right-hand side dense matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side dense matrix expression.
+   using RN1 = ReturnType_t<MT1>;     //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_t<MT2>;     //!< Return type of the right-hand side dense matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
+   using ET1 = ElementType_t<MT1>;    //!< Element type of the left-hand side dense matrix expression.
+   using ET2 = ElementType_t<MT2>;    //!< Element type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -172,9 +172,9 @@ class DMatDMatSchurExpr
    //**Type definitions****************************************************************************
    using This          = DMatDMatSchurExpr<MT1,MT2,SO>;  //!< Type of this DMatDMatSchurExpr instance.
    using ResultType    = SchurTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;      //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;     //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;       //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -210,10 +210,10 @@ class DMatDMatSchurExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense matrix expression.
-      using LeftIteratorType = ConstIterator_<MT1>;
+      using LeftIteratorType = ConstIterator_t<MT1>;
 
       //! ConstIterator type of the right-hand side dense matrix expression.
-      using RightIteratorType = ConstIterator_<MT2>;
+      using RightIteratorType = ConstIterator_t<MT2>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1086,7 +1086,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO       // Storage order
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, SO >
+inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1096,7 +1096,7 @@ inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, SO >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************

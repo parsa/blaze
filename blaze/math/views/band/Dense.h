@@ -118,7 +118,7 @@ class Band<MT,TF,true,false,CBAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT       = ResultType_<MT>;                   //!< Result type of the dense matrix expression.
+   using RT       = ResultType_t<MT>;                  //!< Result type of the dense matrix expression.
    using DataType = BandData<CBAs...>;                 //!< The type of the BandData base class.
    using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
@@ -128,27 +128,27 @@ class Band<MT,TF,true,false,CBAs...>
    //! Type of this Band instance.
    using This = Band<MT,TF,true,false,CBAs...>;
 
-   using BaseType      = DenseVector<This,TF>;        //!< Base type of this Band instance.
-   using ViewedType    = MT;                          //!< The type viewed by this Band instance.
-   using ResultType    = BandTrait_t<RT,CBAs...>;     //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<MT>;            //!< Type of the band elements.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this Band instance.
+   using ViewedType    = MT;                           //!< The type viewed by this Band instance.
+   using ResultType    = BandTrait_t<RT,CBAs...>;      //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the band elements.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
 
    //! Data type for composite expression templates.
    using CompositeType = IfTrue_< RequiresEvaluation<MT>::value, const ResultType, const Band& >;
 
    //! Reference to a constant band value.
-   using ConstReference = ConstReference_<MT>;
+   using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant band value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_<MT> >;
+   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant band value.
-   using ConstPointer = ConstPointer_<MT>;
+   using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant band value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_<MT> >;
+   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**BandIterator class definition***************************************************************
@@ -509,10 +509,10 @@ class Band<MT,TF,true,false,CBAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = BandIterator< const MT, ConstIterator_<MT> >;
+   using ConstIterator = BandIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator< MT, Iterator_<MT> > >;
+   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1128,14 +1128,14 @@ template< typename VT >        // Type of the right-hand side vector
 inline Band<MT,TF,true,false,CBAs...>&
    Band<MT,TF,true,false,CBAs...>::operator=( const Vector<VT,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, band(), row(), column() ) ) {
@@ -1145,7 +1145,7 @@ inline Band<MT,TF,true,false,CBAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -1183,14 +1183,14 @@ template< typename VT >        // Type of the right-hand side vector
 inline Band<MT,TF,true,false,CBAs...>&
    Band<MT,TF,true,false,CBAs...>::operator+=( const Vector<VT,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( matrix_, right, band(), row(), column() ) ) {
@@ -1200,7 +1200,7 @@ inline Band<MT,TF,true,false,CBAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -1236,14 +1236,14 @@ template< typename VT >        // Type of the right-hand side vector
 inline Band<MT,TF,true,false,CBAs...>&
    Band<MT,TF,true,false,CBAs...>::operator-=( const Vector<VT,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !trySubAssign( matrix_, right, band(), row(), column() ) ) {
@@ -1253,7 +1253,7 @@ inline Band<MT,TF,true,false,CBAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -1290,15 +1290,15 @@ inline Band<MT,TF,true,false,CBAs...>&
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( matrix_, right, band(), row(), column() ) ) {
@@ -1308,7 +1308,7 @@ inline Band<MT,TF,true,false,CBAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -1342,14 +1342,14 @@ template< typename VT >        // Type of the right-hand side dense vector
 inline Band<MT,TF,true,false,CBAs...>&
    Band<MT,TF,true,false,CBAs...>::operator/=( const DenseVector<VT,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_<VT>, const VT& >;
+   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( matrix_, right, band(), row(), column() ) ) {
@@ -1359,7 +1359,7 @@ inline Band<MT,TF,true,false,CBAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
-      const ResultType_<VT> tmp( right );
+      const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
    else {
@@ -1396,10 +1396,10 @@ inline Band<MT,TF,true,false,CBAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -1824,7 +1824,7 @@ inline void Band<MT,TF,true,false,CBAs...>::assign( const SparseVector<VT,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) = element->value();
    }
@@ -1886,7 +1886,7 @@ inline void Band<MT,TF,true,false,CBAs...>::addAssign( const SparseVector<VT,TF>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) += element->value();
    }
@@ -1948,7 +1948,7 @@ inline void Band<MT,TF,true,false,CBAs...>::subAssign( const SparseVector<VT,TF>
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       matrix_(row()+index,column()+index) -= element->value();
    }
@@ -2014,7 +2014,7 @@ inline void Band<MT,TF,true,false,CBAs...>::multAssign( const SparseVector<VT,TF
 
    size_t i( 0UL );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( matrix_(row()+i,column()+i) );
@@ -2093,10 +2093,10 @@ class Band<MT,TF,true,true,CBAs...>
    using DataType = BandData<CBAs...>;
 
    //! The type of the left-hand side matrix operand.
-   using LeftOperand = RemoveReference_t< LeftOperand_<MT> >;
+   using LeftOperand = RemoveReference_t< LeftOperand_t<MT> >;
 
    //! The type of the right-hand side matrix operand.
-   using RightOperand = RemoveReference_t< RightOperand_<MT> >;
+   using RightOperand = RemoveReference_t< RightOperand_t<MT> >;
    //**********************************************************************************************
 
  public:
@@ -2111,11 +2111,11 @@ class Band<MT,TF,true,true,CBAs...>
    using ViewedType = MT;
 
    //! Result type for expression template evaluations.
-   using ResultType = BandTrait_t<ResultType_<MT>,CBAs...>;
+   using ResultType = BandTrait_t<ResultType_t<MT>,CBAs...>;
 
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using ReturnType    = ReturnType_<MT>;             //!< Return type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_< Or< RequiresEvaluation<LeftOperand>
@@ -2124,13 +2124,13 @@ class Band<MT,TF,true,true,CBAs...>
 
    //! Type for the assignment of the left-hand side matrix operand.
    using LT = If_< And< IsSparseMatrix<LeftOperand>, IsColumnMajorMatrix<LeftOperand> >
-                 , ResultType_<LeftOperand>
-                 , CompositeType_<LeftOperand> >;
+                 , ResultType_t<LeftOperand>
+                 , CompositeType_t<LeftOperand> >;
 
    //! Type for the assignment of the right-hand side matrix operand.
    using RT = If_< And< IsSparseMatrix<RightOperand>, IsRowMajorMatrix<RightOperand> >
-                 , ResultType_<RightOperand>
-                 , CompositeType_<RightOperand> >;
+                 , ResultType_t<RightOperand>
+                 , CompositeType_t<RightOperand> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

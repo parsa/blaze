@@ -101,7 +101,7 @@ namespace blaze {
 */
 template< typename MT >  // Type of the adapted matrix
 class NonNumericProxy
-   : public Proxy< NonNumericProxy<MT>, ValueType_< ElementType_<MT> > >
+   : public Proxy< NonNumericProxy<MT>, ValueType_t< ElementType_t<MT> > >
 {
  private:
    //**Enumerations********************************************************************************
@@ -111,14 +111,14 @@ class NonNumericProxy
 
    //**Type definitions****************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using ET = ElementType_<MT>;  //!< Element type of the adapted matrix.
+   using ET = ElementType_t<MT>;  //!< Element type of the adapted matrix.
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ValueType_<ET>;  //!< Type of the represented matrix element.
-   using RawReference    = Reference_<ET>;  //!< Raw reference to the represented element.
+   using RepresentedType = ValueType_t<ET>;  //!< Type of the represented matrix element.
+   using RawReference    = Reference_t<ET>;  //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -232,7 +232,7 @@ inline NonNumericProxy<MT>::NonNumericProxy( MT& matrix, size_t i, size_t j )
 
    if( pos == matrix_.end(index) )
    {
-      const ElementType_<MT> element( ( RepresentedType() ) );
+      const ElementType_t<MT> element( ( RepresentedType() ) );
       matrix_.insert( i_, j_, element );
       if( i_ != j_ )
          matrix_.insert( j_, i_, element );

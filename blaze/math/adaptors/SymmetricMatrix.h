@@ -303,7 +303,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO >         // Storage order of the dense matrix
 inline void invert( SymmetricMatrix<MT,SO,true,true>& m )
 {
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    if( IF == asUniLower || IF == asUniUpper ) {
       BLAZE_INTERNAL_ASSERT( isIdentity( m ), "Violation of preconditions detected" );
@@ -548,7 +548,7 @@ struct IsSymmetric< SymmetricMatrix<MT,SO,DF,NF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF >
 struct IsHermitian< SymmetricMatrix<MT,SO,DF,NF> >
-   : public IsBuiltin< ElementType_<MT> >
+   : public IsBuiltin< ElementType_t<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

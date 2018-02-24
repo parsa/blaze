@@ -102,10 +102,10 @@ class TSMatSVecMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using MRT = ResultType_<MT>;     //!< Result type of the left-hand side sparse matrix expression.
-   using VRT = ResultType_<VT>;     //!< Result type of the right-hand side sparse vector expression.
-   using MCT = CompositeType_<MT>;  //!< Composite type of the left-hand side sparse matrix expression.
-   using VCT = CompositeType_<VT>;  //!< Composite type of the right-hand side sparse vector expression.
+   using MRT = ResultType_t<MT>;     //!< Result type of the left-hand side sparse matrix expression.
+   using VRT = ResultType_t<VT>;     //!< Result type of the right-hand side sparse vector expression.
+   using MCT = CompositeType_t<MT>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using VCT = CompositeType_t<VT>;  //!< Composite type of the right-hand side sparse vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -133,11 +133,11 @@ class TSMatSVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatSVecMultExpr<MT,VT>;    //!< Type of this TSMatSVecMultExpr instance.
-   using ResultType    = MultTrait_t<MRT,VRT>;        //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
+   using This          = TSMatSVecMultExpr<MT,VT>;     //!< Type of this TSMatSVecMultExpr instance.
+   using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;
@@ -364,8 +364,8 @@ class TSMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_t<MT1> >;
-      using VectorIterator = ConstIterator_< RemoveReference_t<VT2> >;
+      using MatrixIterator = ConstIterator_t< RemoveReference_t<MT1> >;
+      using VectorIterator = ConstIterator_t< RemoveReference_t<VT2> >;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );
@@ -376,7 +376,7 @@ class TSMatSVecMultExpr
          MatrixIterator       melem( A.begin( velem->index() ) );
 
          for( ; melem!=mend; ++melem ) {
-            if( IsResizable< ElementType_<VT1> >::value &&
+            if( IsResizable< ElementType_t<VT1> >::value &&
                 isDefault( y[melem->index()] ) )
                y[melem->index()] = melem->value() * velem->value();
             else
@@ -406,7 +406,7 @@ class TSMatSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      const DynamicVector<ElementType_<VT1>,false> tmp( serial( rhs ) );
+      const DynamicVector<ElementType_t<VT1>,false> tmp( serial( rhs ) );
       assign( ~lhs, tmp );
    }
    /*! \endcond */
@@ -470,8 +470,8 @@ class TSMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_t<MT1> >;
-      using VectorIterator = ConstIterator_< RemoveReference_t<VT2> >;
+      using MatrixIterator = ConstIterator_t< RemoveReference_t<MT1> >;
+      using VectorIterator = ConstIterator_t< RemoveReference_t<VT2> >;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );
@@ -551,8 +551,8 @@ class TSMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_< RemoveReference_t<MT1> >;
-      using VectorIterator = ConstIterator_< RemoveReference_t<VT2> >;
+      using MatrixIterator = ConstIterator_t< RemoveReference_t<MT1> >;
+      using VectorIterator = ConstIterator_t< RemoveReference_t<VT2> >;
 
       const VectorIterator vend ( x.end() );
       VectorIterator       velem( x.begin() );

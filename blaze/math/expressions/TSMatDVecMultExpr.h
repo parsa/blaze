@@ -105,10 +105,10 @@ class TSMatDVecMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using MRT = ResultType_<MT>;     //!< Result type of the left-hand side sparse matrix expression.
-   using VRT = ResultType_<VT>;     //!< Result type of the right-hand side dense vector expression.
-   using MCT = CompositeType_<MT>;  //!< Composite type of the left-hand side sparse matrix expression.
-   using VCT = CompositeType_<VT>;  //!< Composite type of the right-hand side dense vector expression.
+   using MRT = ResultType_t<MT>;     //!< Result type of the left-hand side sparse matrix expression.
+   using VRT = ResultType_t<VT>;     //!< Result type of the right-hand side dense vector expression.
+   using MCT = CompositeType_t<MT>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using VCT = CompositeType_t<VT>;  //!< Composite type of the right-hand side dense vector expression.
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -136,12 +136,12 @@ class TSMatDVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatDVecMultExpr<MT,VT>;    //!< Type of this TSMatDVecMultExpr instance.
-   using ResultType    = MultTrait_t<MRT,VRT>;        //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
-   using ReturnType    = const ElementType;           //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;            //!< Data type for composite expression templates.
+   using This          = TSMatDVecMultExpr<MT,VT>;     //!< Type of this TSMatDVecMultExpr instance.
+   using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
    using LeftOperand = If_< IsExpression<MT>, const MT, const MT& >;
@@ -363,7 +363,7 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {
@@ -371,7 +371,7 @@ class TSMatDVecMultExpr
          const ConstIterator end( A.end(j) );
 
          for( ; element!=end; ++element ) {
-            if( IsResizable< ElementType_<VT1> >::value &&
+            if( IsResizable< ElementType_t<VT1> >::value &&
                 isDefault( y[element->index()] ) )
                y[element->index()] = element->value() * x[j];
             else
@@ -466,7 +466,7 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {
@@ -539,7 +539,7 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_< RemoveReference_t<MT1> >;
+      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
 
       for( size_t j=0UL; j<A.columns(); ++j )
       {

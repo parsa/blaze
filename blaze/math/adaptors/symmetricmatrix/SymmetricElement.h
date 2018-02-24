@@ -107,8 +107,8 @@ class SymmetricElement
 {
  private:
    //**Type definitions****************************************************************************
-   using ElementType  = ElementType_<MT>;  //!< Type of the represented matrix element.
-   using IteratorType = Iterator_<MT>;     //!< Type of the underlying sparse matrix iterators.
+   using ElementType  = ElementType_t<MT>;  //!< Type of the represented matrix element.
+   using IteratorType = Iterator_t<MT>;     //!< Type of the underlying sparse matrix iterators.
    //**********************************************************************************************
 
  public:

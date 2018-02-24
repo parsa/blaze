@@ -99,12 +99,12 @@ namespace blaze {
 */
 template< typename VT >  // Type of the sparse vector
 class VectorAccessProxy
-   : public Proxy< VectorAccessProxy<VT>, ElementType_<VT> >
+   : public Proxy< VectorAccessProxy<VT>, ElementType_t<VT> >
 {
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_<VT>;  //!< Type of the represented sparse vector element.
-   using RawReference    = RepresentedType&;  //!< Raw reference to the represented element.
+   using RepresentedType = ElementType_t<VT>;  //!< Type of the represented sparse vector element.
+   using RawReference    = RepresentedType&;   //!< Raw reference to the represented element.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -201,7 +201,7 @@ inline VectorAccessProxy<VT>::VectorAccessProxy( VT& sv, size_t i )
    : sv_( sv )  // Reference to the accessed sparse vector
    , i_ ( i  )  // Index of the accessed sparse vector element
 {
-   const Iterator_<VT> element( sv_.find( i_ ) );
+   const Iterator_t<VT> element( sv_.find( i_ ) );
    if( element == sv_.end() )
       sv_.insert( i_, RepresentedType() );
 }
@@ -237,7 +237,7 @@ inline VectorAccessProxy<VT>::VectorAccessProxy( const VectorAccessProxy& vap )
 template< typename VT >  // Type of the sparse vector
 inline VectorAccessProxy<VT>::~VectorAccessProxy()
 {
-   const Iterator_<VT> element( sv_.find( i_ ) );
+   const Iterator_t<VT> element( sv_.find( i_ ) );
    if( element != sv_.end() && isDefault<strict>( element->value() ) )
       sv_.erase( element );
 }
@@ -417,7 +417,7 @@ inline const VectorAccessProxy<VT>& VectorAccessProxy<VT>::operator%=( const T& 
 template< typename VT >  // Type of the sparse vector
 inline typename VectorAccessProxy<VT>::RawReference VectorAccessProxy<VT>::get() const noexcept
 {
-   const Iterator_<VT> element( sv_.find( i_ ) );
+   const Iterator_t<VT> element( sv_.find( i_ ) );
    BLAZE_INTERNAL_ASSERT( element != sv_.end(), "Missing vector element detected" );
    return element->value();
 }

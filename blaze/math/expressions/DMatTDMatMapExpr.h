@@ -108,14 +108,14 @@ class DMatTDMatMapExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side dense matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side dense matrix expression.
-   using ET1 = ElementType_<MT1>;    //!< Element type of the left-hand side dense matrix expression.
-   using ET2 = ElementType_<MT2>;    //!< Element type of the right-hand side dense matrix expression.
-   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side dense matrix expression.
-   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side dense matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side dense matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side dense matrix expression.
+   using ET1 = ElementType_t<MT1>;    //!< Element type of the left-hand side dense matrix expression.
+   using ET2 = ElementType_t<MT2>;    //!< Element type of the right-hand side dense matrix expression.
+   using RN1 = ReturnType_t<MT1>;     //!< Return type of the left-hand side dense matrix expression.
+   using RN2 = ReturnType_t<MT2>;     //!< Return type of the right-hand side dense matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side dense matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side dense matrix expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -156,9 +156,9 @@ class DMatTDMatMapExpr
    //**Type definitions****************************************************************************
    using This          = DMatTDMatMapExpr<MT1,MT2,OP>;  //!< Type of this DMatTDMatMapExpr instance.
    using ResultType    = BinaryMapTrait_t<RT1,RT2,OP>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );

@@ -95,7 +95,7 @@ class DVecTransExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using CT = CompositeType_<VT>;  //!< Composite type of the dense vector expression.
+   using CT = CompositeType_t<VT>;  //!< Composite type of the dense vector expression.
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -150,10 +150,10 @@ class DVecTransExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecTransExpr<VT,TF>;  //!< Type of this DVecTransExpr instance.
-   using ResultType    = TransposeType_<VT>;    //!< Result type for expression template evaluations.
-   using TransposeType = ResultType_<VT>;       //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;      //!< Resulting element type.
-   using ReturnType    = ReturnType_<VT>;       //!< Return type for expression template evaluations.
+   using ResultType    = TransposeType_t<VT>;   //!< Result type for expression template evaluations.
+   using TransposeType = ResultType_t<VT>;      //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;     //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;      //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = IfTrue_< useAssign, const ResultType, const DVecTransExpr& >;

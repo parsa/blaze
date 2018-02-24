@@ -968,8 +968,8 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT1 = RemoveReference_t< LeftOperand_< MatrixType_<MT> > >;
-   using MT2 = RemoveReference_t< RightOperand_< MatrixType_<MT> > >;
+   using MT1 = RemoveReference_t< LeftOperand_t< MatrixType_t<MT> > >;
+   using MT2 = RemoveReference_t< RightOperand_t< MatrixType_t<MT> > >;
 
    const SubmatrixData<CSAs...> sd( args... );
 
@@ -1729,7 +1729,7 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT = RemoveReference_t< LeftOperand_< VectorType_<VT> > >;
+   using MT = RemoveReference_t< LeftOperand_t< VectorType_t<VT> > >;
 
    const SubvectorData<CSAs...> sd( args... );
 
@@ -1773,7 +1773,7 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   using MT = RemoveReference_t< RightOperand_< VectorType_<VT> > >;
+   using MT = RemoveReference_t< RightOperand_t< VectorType_t<VT> > >;
 
    const SubvectorData<CSAs...> sd( args... );
 
@@ -3580,7 +3580,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isSymmetric( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsSymmetric<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -3618,7 +3618,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isHermitian( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsHermitian<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -3666,7 +3666,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -3713,7 +3713,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isUniLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsUniLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -3760,7 +3760,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isStrictlyLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsStrictlyLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -3808,7 +3808,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -3855,7 +3855,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isUniUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsUniUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -3902,7 +3902,7 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool isStrictlyUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
-   using BaseType = BaseType_< Submatrix<MT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
    if( IsStrictlyUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
@@ -4048,7 +4048,7 @@ template< InversionFlag IF  // Inversion algorithm
         , size_t... CSAs >  // Compile time submatrix arguments
 inline DisableIf_< HasMutableDataAccess<MT> > invert( Submatrix<MT,AF,SO,true,CSAs...>& sm )
 {
-   using RT = ResultType_< Submatrix<MT,AF,SO,true,CSAs...> >;
+   using RT = ResultType_t< Submatrix<MT,AF,SO,true,CSAs...> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( RT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
@@ -5228,7 +5228,7 @@ struct IsStrictlyUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs1, size_t... CSAs2 >
 struct SubmatrixTrait< Submatrix<MT,AF,SO,DF,CSAs1...>, CSAs2... >
 {
-   using Type = SubmatrixTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs1...> >, CSAs2... >;
+   using Type = SubmatrixTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs1...> >, CSAs2... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5247,7 +5247,7 @@ struct SubmatrixTrait< Submatrix<MT,AF,SO,DF,CSAs1...>, CSAs2... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CRAs >
 struct RowTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 {
-   using Type = RowTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
+   using Type = RowTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5266,7 +5266,7 @@ struct RowTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CRAs >
 struct RowsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 {
-   using Type = RowsTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
+   using Type = RowsTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs...> >, CRAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5285,7 +5285,7 @@ struct RowsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CRAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CCAs >
 struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 {
-   using Type = ColumnTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
+   using Type = ColumnTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5304,7 +5304,7 @@ struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CCAs >
 struct ColumnsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 {
-   using Type = ColumnsTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
+   using Type = ColumnsTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -5323,7 +5323,7 @@ struct ColumnsTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, ptrdiff_t... CBAs >
 struct BandTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CBAs... >
 {
-   using Type = BandTrait_t< ResultType_< Submatrix<MT,AF,SO,DF,CSAs...> >, CBAs... >;
+   using Type = BandTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs...> >, CBAs... >;
 };
 /*! \endcond */
 //*************************************************************************************************

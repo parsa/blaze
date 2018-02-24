@@ -98,17 +98,17 @@ namespace blaze {
 */
 template< typename MT >  // Type of the adapted matrix
 class StrictlyLowerProxy
-   : public Proxy< StrictlyLowerProxy<MT>, ElementType_<MT> >
+   : public Proxy< StrictlyLowerProxy<MT>, ElementType_t<MT> >
 {
  private:
    //**Type definitions****************************************************************************
    //! Reference type of the underlying matrix type.
-   using ReferenceType = AddConst_t< Reference_<MT> >;
+   using ReferenceType = AddConst_t< Reference_t<MT> >;
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_<MT>;               //!< Type of the represented matrix element.
+   using RepresentedType = ElementType_t<MT>;              //!< Type of the represented matrix element.
    using RawReference    = AddReference_t<ReferenceType>;  //!< Reference-to-non-const to the represented element.
    using ConstReference  = const RepresentedType&;         //!< Reference-to-const to the represented element.
    //**********************************************************************************************

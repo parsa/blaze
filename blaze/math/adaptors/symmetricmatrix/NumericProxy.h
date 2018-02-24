@@ -119,11 +119,11 @@ class NumericProxy
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_<MT>;     //!< Type of the represented matrix element.
-   using Reference       = Reference_<MT>;       //!< Reference to the represented element.
-   using ConstReference  = ConstReference_<MT>;  //!< Reference-to-const to the represented element.
-   using Pointer         = NumericProxy*;        //!< Pointer to the represented element.
-   using ConstPointer    = const NumericProxy*;  //!< Pointer-to-const to the represented element.
+   using RepresentedType = ElementType_t<MT>;     //!< Type of the represented matrix element.
+   using Reference       = Reference_t<MT>;       //!< Reference to the represented element.
+   using ConstReference  = ConstReference_t<MT>;  //!< Reference-to-const to the represented element.
+   using Pointer         = NumericProxy*;         //!< Pointer to the represented element.
+   using ConstPointer    = const NumericProxy*;   //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
    using ValueType = typename If_< IsComplex<RepresentedType>

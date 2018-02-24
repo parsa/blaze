@@ -107,10 +107,10 @@ class DVecScalarMultExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<VT>;     //!< Result type of the dense vector expression.
-   using RN = ReturnType_<VT>;     //!< Return type of the dense vector expression.
-   using ET = ElementType_<VT>;    //!< Element type of the dense vector expression.
-   using CT = CompositeType_<VT>;  //!< Composite type of the dense vector expression.
+   using RT = ResultType_t<VT>;     //!< Result type of the dense vector expression.
+   using RN = ReturnType_t<VT>;     //!< Return type of the dense vector expression.
+   using ET = ElementType_t<VT>;    //!< Element type of the dense vector expression.
+   using CT = CompositeType_t<VT>;  //!< Composite type of the dense vector expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -164,8 +164,8 @@ class DVecScalarMultExpr
    //**Type definitions****************************************************************************
    using This          = DVecScalarMultExpr<VT,ST,TF>;  //!< Type of this DVecScalarMultExpr instance.
    using ResultType    = MultTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;    //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;      //!< Resulting element type.
+   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -201,7 +201,7 @@ class DVecScalarMultExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the dense vector expression.
-      using IteratorType = ConstIterator_<VT>;
+      using IteratorType = ConstIterator_t<VT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -1153,7 +1153,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline decltype(auto) normalize( const DenseVector<VT,TF>& vec )
 {
-   using ElementType = ElementType_<VT>;
+   using ElementType = ElementType_t<VT>;
 
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( ElementType );
 

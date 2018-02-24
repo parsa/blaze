@@ -339,7 +339,7 @@ class HybridVector
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -351,8 +351,8 @@ class HybridVector
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -364,8 +364,8 @@ class HybridVector
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDSub< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -377,8 +377,8 @@ class HybridVector
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDMult< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -390,8 +390,8 @@ class HybridVector
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_<VT> >::value };
+                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
+                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1216,7 +1216,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator+=( const Vecto
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       addAssign( *this, tmp );
    }
    else {
@@ -1253,7 +1253,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator-=( const Vecto
    }
 
    if( (~rhs).canAlias( this ) ) {
-      const ResultType_<VT> tmp( ~rhs );
+      const ResultType_t<VT> tmp( ~rhs );
       subAssign( *this, tmp );
    }
    else {
@@ -1364,9 +1364,9 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator%=( const Vecto
    using blaze::assign;
 
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< This, ResultType_<VT> >;
+   using CrossType = CrossTrait_t< This, ResultType_t<VT> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -2202,7 +2202,7 @@ inline void HybridVector<Type,N,TF>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2292,7 +2292,7 @@ inline void HybridVector<Type,N,TF>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2382,7 +2382,7 @@ inline void HybridVector<Type,N,TF>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2476,7 +2476,7 @@ inline void HybridVector<Type,N,TF>::multAssign( const SparseVector<VT,TF>& rhs 
 
    reset();
 
-   for( ConstIterator_<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************

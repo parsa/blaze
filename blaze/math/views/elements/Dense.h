@@ -112,22 +112,22 @@ class Elements<VT,TF,true,CEAs...>
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<VT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<VT>;             //!< Type of the elements.
-   using ReturnType    = ReturnType_<VT>;              //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;            //!< Type of the elements.
+   using ReturnType    = ReturnType_t<VT>;             //!< Return type for expression template evaluations
    using CompositeType = const Elements&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant element value.
-   using ConstReference = ConstReference_<VT>;
+   using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant element value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_<VT> >;
+   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
 
    //! Pointer to a constant element value.
-   using ConstPointer = ConstPointer_<VT>;
+   using ConstPointer = ConstPointer_t<VT>;
 
    //! Pointer to a non-constant element value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_<VT> >;
+   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_t<VT> >;
    //**********************************************************************************************
 
    //**ElementsIterator class definition***********************************************************
@@ -447,10 +447,10 @@ class Elements<VT,TF,true,CEAs...>
 
    //**Type definitions****************************************************************************
    //! Iterator over constant elements.
-   using ConstIterator = ElementsIterator< const This, ConstIterator_<VT> >;
+   using ConstIterator = ElementsIterator< const This, ConstIterator_t<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator< This, Iterator_<VT> > >;
+   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator< This, Iterator_t<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1041,14 +1041,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,true,CEAs...>&
    Elements<VT,TF,true,CEAs...>::operator=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1062,7 +1062,7 @@ inline Elements<VT,TF,true,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
@@ -1098,14 +1098,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,true,CEAs...>&
    Elements<VT,TF,true,CEAs...>::operator+=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1119,7 +1119,7 @@ inline Elements<VT,TF,true,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
    else {
@@ -1153,14 +1153,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,true,CEAs...>&
    Elements<VT,TF,true,CEAs...>::operator-=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1174,7 +1174,7 @@ inline Elements<VT,TF,true,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
    else {
@@ -1209,14 +1209,14 @@ template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,true,CEAs...>&
    Elements<VT,TF,true,CEAs...>::operator*=( const Vector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1230,7 +1230,7 @@ inline Elements<VT,TF,true,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
    else {
@@ -1264,14 +1264,14 @@ template< typename VT2 >    // Type of the right-hand side dense vector
 inline Elements<VT,TF,true,CEAs...>&
    Elements<VT,TF,true,CEAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
    if( size() != (~rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_<VT2>, const VT2& >;
+   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted<VT>::value ) {
@@ -1285,7 +1285,7 @@ inline Elements<VT,TF,true,CEAs...>&
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
    if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
-      const ResultType_<VT2> tmp( right );
+      const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
    else {
@@ -1322,10 +1322,10 @@ inline Elements<VT,TF,true,CEAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_<VT2>, TF );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_<VT2> );
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_<VT2> >;
+   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT2> >;
 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( CrossType );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
@@ -1664,7 +1664,7 @@ inline void Elements<VT,TF,true,CEAs...>::assign( const SparseVector<VT2,TF>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[idx(element->index())] = element->value();
 }
 /*! \endcond */
@@ -1724,7 +1724,7 @@ inline void Elements<VT,TF,true,CEAs...>::addAssign( const SparseVector<VT2,TF>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[idx(element->index())] += element->value();
 }
 /*! \endcond */
@@ -1784,7 +1784,7 @@ inline void Elements<VT,TF,true,CEAs...>::subAssign( const SparseVector<VT2,TF>&
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       vector_[idx(element->index())] -= element->value();
 }
 /*! \endcond */
@@ -1848,7 +1848,7 @@ inline void Elements<VT,TF,true,CEAs...>::multAssign( const SparseVector<VT2,TF>
 
    size_t i( 0UL );
 
-   for( ConstIterator_<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       const size_t index( element->index() );
       for( ; i<index; ++i )
          reset( vector_[idx(i)] );
@@ -1928,7 +1928,7 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;              //!< Result type of the cross product expression.
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
@@ -1940,9 +1940,9 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
+   using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 
@@ -2083,7 +2083,7 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = DVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;              //!< Result type of the cross product expression.
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
@@ -2095,9 +2095,9 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
+   using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 
@@ -2238,7 +2238,7 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;              //!< Result type of the cross product expression.
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
@@ -2250,9 +2250,9 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
+   using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 
@@ -2393,7 +2393,7 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  private:
    //**Type definitions****************************************************************************
    using CPE      = SVecSVecCrossExpr<VT1,VT2,TF>;  //!< Type of the cross product expression.
-   using RT       = ResultType_<CPE>;               //!< Result type of the cross product expression.
+   using RT       = ResultType_t<CPE>;               //!< Result type of the cross product expression.
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
@@ -2405,9 +2405,9 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
    using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<CPE>;            //!< Type of the elements.
-   using ReturnType    = ReturnType_<CPE>;             //!< Return type for expression template evaluations
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
+   using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
    //**********************************************************************************************
 

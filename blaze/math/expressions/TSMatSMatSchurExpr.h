@@ -106,12 +106,12 @@ class TSMatSMatSchurExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
-   using RT2 = ResultType_<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
-   using RN1 = ReturnType_<MT1>;     //!< Return type of the left-hand side sparse matrix expression.
-   using RN2 = ReturnType_<MT2>;     //!< Return type of the right-hand side sparse matrix expression.
-   using CT1 = CompositeType_<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
-   using CT2 = CompositeType_<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
+   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side sparse matrix expression.
+   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side sparse matrix expression.
+   using RN1 = ReturnType_t<MT1>;     //!< Return type of the left-hand side sparse matrix expression.
+   using RN2 = ReturnType_t<MT2>;     //!< Return type of the right-hand side sparse matrix expression.
+   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side sparse matrix expression.
+   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side sparse matrix expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -147,9 +147,9 @@ class TSMatSMatSchurExpr
    //**Type definitions****************************************************************************
    using This          = TSMatSMatSchurExpr<MT1,MT2>;  //!< Type of this TSMatSMatSchurExpr instance.
    using ResultType    = SchurTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;     //!< Resulting element type.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
@@ -331,7 +331,7 @@ class TSMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       // Evaluation of the left-hand side sparse matrix operand
-      const OppositeType_<RT1> A( serial( rhs.lhs_ ) );
+      const OppositeType_t<RT1> A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );
@@ -376,7 +376,7 @@ class TSMatSMatSchurExpr
       CT1 A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      const OppositeType_<RT2> B( serial( rhs.rhs_ ) );
+      const OppositeType_t<RT2> B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -413,7 +413,7 @@ class TSMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       // Evaluation of the left-hand side sparse matrix operand
-      const OppositeType_<RT1> A( serial( rhs.lhs_ ) );
+      const OppositeType_t<RT1> A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );
@@ -458,7 +458,7 @@ class TSMatSMatSchurExpr
       CT1 A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      const OppositeType_<RT2> B( serial( rhs.rhs_ ) );
+      const OppositeType_t<RT2> B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -551,7 +551,7 @@ class TSMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       // Evaluation of the left-hand side sparse matrix operand
-      const OppositeType_<RT1> A( serial( rhs.lhs_ ) );
+      const OppositeType_t<RT1> A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );
@@ -596,7 +596,7 @@ class TSMatSMatSchurExpr
       CT1 A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      const OppositeType_<RT2> B( serial( rhs.rhs_ ) );
+      const OppositeType_t<RT2> B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -693,7 +693,7 @@ class TSMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       // Evaluation of the left-hand side sparse matrix operand
-      const OppositeType_<RT1> A( serial( rhs.lhs_ ) );
+      const OppositeType_t<RT1> A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );
@@ -738,7 +738,7 @@ class TSMatSMatSchurExpr
       CT1 A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      const OppositeType_<RT2> B( serial( rhs.rhs_ ) );
+      const OppositeType_t<RT2> B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -835,7 +835,7 @@ class TSMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       // Evaluation of the left-hand side sparse matrix operand
-      const OppositeType_<RT1> A( serial( rhs.lhs_ ) );
+      const OppositeType_t<RT1> A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );
@@ -880,7 +880,7 @@ class TSMatSMatSchurExpr
       CT1 A( serial( rhs.lhs_ ) );
 
       // Evaluation of the right-hand side sparse matrix operand
-      const OppositeType_<RT2> B( serial( rhs.rhs_ ) );
+      const OppositeType_t<RT2> B( serial( rhs.rhs_ ) );
 
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
@@ -1091,7 +1091,7 @@ template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
-inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, true >
+inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >
    tsmatsmatschur( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1101,7 +1101,7 @@ inline const IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_t< ElementType_<MT1>, ElementType_<MT2> >, true >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************

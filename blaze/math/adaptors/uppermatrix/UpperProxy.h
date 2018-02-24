@@ -96,7 +96,7 @@ namespace blaze {
 */
 template< typename MT >  // Type of the adapted matrix
 class UpperProxy
-   : public Proxy< UpperProxy<MT>, ElementType_<MT> >
+   : public Proxy< UpperProxy<MT>, ElementType_t<MT> >
 {
  private:
    //**Type definitions****************************************************************************
@@ -106,7 +106,7 @@ class UpperProxy
 
  public:
    //**Type definitions****************************************************************************
-   using RepresentedType = ElementType_<MT>;               //!< Type of the represented matrix element.
+   using RepresentedType = ElementType_t<MT>;              //!< Type of the represented matrix element.
    using RawReference    = AddReference_t<ReferenceType>;  //!< Reference-to-non-const to the represented element.
    using ConstReference  = const RepresentedType&;         //!< Reference-to-const to the represented element.
    //**********************************************************************************************

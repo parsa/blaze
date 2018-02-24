@@ -101,9 +101,9 @@ class DVecMapExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_<VT>;  //!< Result type of the dense vector expression.
-   using ET = ElementType_<VT>;  //!< Element type of the dense vector expression.
-   using RN = ReturnType_<VT>;  //!< Return type of the dense vector expression.
+   using RT = ResultType_t<VT>;  //!< Result type of the dense vector expression.
+   using ET = ElementType_t<VT>;  //!< Element type of the dense vector expression.
+   using RN = ReturnType_t<VT>;  //!< Return type of the dense vector expression.
 
    //! Definition of the HasSIMDEnabled type trait.
    BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
@@ -157,10 +157,10 @@ class DVecMapExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecMapExpr<VT,OP,TF>;       //!< Type of this DVecMapExpr instance.
-   using ResultType    = UnaryMapTrait_t<RT,OP>;      //!< Result type for expression template evaluations.
-   using TransposeType = TransposeType_<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_<ResultType>;    //!< Resulting element type.
+   using This          = DVecMapExpr<VT,OP,TF>;        //!< Type of this DVecMapExpr instance.
+   using ResultType    = UnaryMapTrait_t<RT,OP>;       //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
@@ -196,7 +196,7 @@ class DVecMapExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense vector expression.
-      using IteratorType = ConstIterator_<VT>;
+      using IteratorType = ConstIterator_t<VT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
