@@ -173,7 +173,7 @@ void DenseTest::testRandom()
           << "   Matrix type:\n"
           << "     " << typeid( Type ).name() << "\n"
           << "   Element type:\n"
-          << "     " << typeid( blaze::ElementType_<Type> ).name() << "\n"
+          << "     " << typeid( blaze::ElementType_t<Type> ).name() << "\n"
           << "   Result:\n" << LU << "\n"
           << "   Expected result:\n" << A << "\n";
       throw std::runtime_error( oss.str() );

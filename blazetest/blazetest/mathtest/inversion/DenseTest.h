@@ -152,7 +152,7 @@ void DenseTest::testRandom( size_t N )
    using blaze::byLDLH;
    using blaze::byLLH;
 
-   using ET = blaze::ElementType_<Type>;
+   using ET = blaze::ElementType_t<Type>;
 
 
    //=====================================================================================

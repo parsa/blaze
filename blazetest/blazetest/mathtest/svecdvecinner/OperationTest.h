@@ -85,11 +85,11 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
-   using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
+   using ET1 = blaze::ElementType_t<VT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_t<VT2>;  //!< Element type 2
 
-   using TVT1 = blaze::TransposeType_<VT1>;    //!< Transpose vector type 1
-   using TVT2 = blaze::TransposeType_<VT2>;    //!< Transpose vector type 2
+   using TVT1 = blaze::TransposeType_t<VT1>;   //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_t<VT2>;   //!< Transpose vector type 2
    using RE   = blaze::MultTrait_t<TVT1,VT2>;  //!< Result type
 
    using RT1 = blaze::DynamicVector<ET1,true>;   //!< Reference type 1
@@ -164,8 +164,8 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( RT1  );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( RT2  );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<TVT1> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<TVT2> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_t<TVT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_t<TVT2> );
    /*! \endcond */
    //**********************************************************************************************
 };

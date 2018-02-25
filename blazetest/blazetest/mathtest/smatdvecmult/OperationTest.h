@@ -101,30 +101,30 @@ class OperationTest
 {
  private:
    //**Type definitions****************************************************************************
-   using MET = blaze::ElementType_<MT>;  //!< Element type of the matrix type
-   using VET = blaze::ElementType_<VT>;  //!< Element type of the vector type
+   using MET = blaze::ElementType_t<MT>;  //!< Element type of the matrix type
+   using VET = blaze::ElementType_t<VT>;  //!< Element type of the vector type
 
-   using OMT  = blaze::OppositeType_<MT>;    //!< Matrix type with opposite storage order
-   using TMT  = blaze::TransposeType_<MT>;   //!< Transpose matrix type
-   using TOMT = blaze::TransposeType_<OMT>;  //!< Transpose matrix type with opposite storage order
-   using TVT  = blaze::TransposeType_<VT>;   //!< Transpose vector type
+   using OMT  = blaze::OppositeType_t<MT>;    //!< Matrix type with opposite storage order
+   using TMT  = blaze::TransposeType_t<MT>;   //!< Transpose matrix type
+   using TOMT = blaze::TransposeType_t<OMT>;  //!< Transpose matrix type with opposite storage order
+   using TVT  = blaze::TransposeType_t<VT>;   //!< Transpose vector type
 
    //! Dense result type
    using DRE = blaze::MultTrait_t<MT,VT>;
 
-   using DET  = blaze::ElementType_<DRE>;    //!< Element type of the dense result
-   using TDRE = blaze::TransposeType_<DRE>;  //!< Transpose dense result type
+   using DET  = blaze::ElementType_t<DRE>;    //!< Element type of the dense result
+   using TDRE = blaze::TransposeType_t<DRE>;  //!< Transpose dense result type
 
    //! Sparse result type
    using SRE = blaze::CompressedVector<DET,false>;
 
-   using SET  = blaze::ElementType_<SRE>;    //!< Element type of the sparse result
-   using TSRE = blaze::TransposeType_<SRE>;  //!< Transpose sparse result type
+   using SET  = blaze::ElementType_t<SRE>;    //!< Element type of the sparse result
+   using TSRE = blaze::TransposeType_t<SRE>;  //!< Transpose sparse result type
 
    using MRT  = blaze::DynamicMatrix<MET,false>;  //!< Matrix reference type
    using VRT  = blaze::DynamicVector<VET,false>;  //!< Vector reference type
    using RRE  = blaze::MultTrait_t<MRT,VRT>;      //!< Reference result type
-   using TRRE = blaze::TransposeType_<RRE>;       //!< Transpose reference result type
+   using TRRE = blaze::TransposeType_t<RRE>;      //!< Transpose reference result type
    //**********************************************************************************************
 
  public:
@@ -230,21 +230,21 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TDRE );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE         ( TSRE );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_<OMT>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_<TMT>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_<TOMT>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VET, blaze::ElementType_<TVT>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<DRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<TDRE>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<SRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<SRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<TSRE>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<DRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , blaze::OppositeType_<OMT>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , blaze::TransposeType_<TMT>  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT , blaze::TransposeType_<TVT>  );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_<TDRE> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_<TSRE> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_t<OMT>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_t<TMT>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MET, blaze::ElementType_t<TOMT>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VET, blaze::ElementType_t<TVT>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<TDRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<TSRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , blaze::OppositeType_t<OMT>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MT , blaze::TransposeType_t<TMT>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT , blaze::TransposeType_t<TVT>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_t<TDRE> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_t<TSRE> );
    /*! \endcond */
    //**********************************************************************************************
 };

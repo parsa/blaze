@@ -190,7 +190,7 @@ void ClassTest::runStaticVectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   using ET = blaze::ElementType_<VT>;
+   using ET = blaze::ElementType_t<VT>;
 
    {
       blaze::StaticVector<ET,N> dst;
@@ -222,7 +222,7 @@ void ClassTest::runDynamicVectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   using ET = blaze::ElementType_<VT>;
+   using ET = blaze::ElementType_t<VT>;
 
    {
       blaze::DynamicVector<ET> dst;
@@ -255,7 +255,7 @@ void ClassTest::runDenseSubvectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   using ET = blaze::ElementType_<VT>;
+   using ET = blaze::ElementType_t<VT>;
    using DV = blaze::DynamicVector<ET>;
 
    {
@@ -290,7 +290,7 @@ void ClassTest::runCompressedVectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   using ET = blaze::ElementType_<VT>;
+   using ET = blaze::ElementType_t<VT>;
 
    {
       blaze::CompressedVector<ET> dst;
@@ -323,7 +323,7 @@ void ClassTest::runSparseSubvectorTests( const VT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( VT );
 
-   using ET = blaze::ElementType_<VT>;
+   using ET = blaze::ElementType_t<VT>;
    using SV = blaze::CompressedVector<ET>;
 
    {

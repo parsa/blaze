@@ -99,26 +99,26 @@ class OperationTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
-   using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
+   using ET1 = blaze::ElementType_t<VT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_t<VT2>;  //!< Element type 2
 
-   using TVT1 = blaze::TransposeType_<VT1>;  //!< Transpose vector type 1
-   using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
+   using TVT1 = blaze::TransposeType_t<VT1>;  //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_t<VT2>;  //!< Transpose vector type 2
 
    using SRE  = blaze::DivTrait_t<VT1,VT2>;    //!< Sparse result type
    using TSRE = blaze::DivTrait_t<TVT1,TVT2>;  //!< Transpose sparse result type
-   using SET  = blaze::ElementType_<SRE>;      //!< Element type of the sparse result
+   using SET  = blaze::ElementType_t<SRE>;     //!< Element type of the sparse result
 
    using DRE  = blaze::DynamicVector<SET,TF>;  //!< Dense result type
-   using TDRE = blaze::TransposeType_<DRE>;    //!< Transpose dense result type
-   using DET  = blaze::ElementType_<DRE>;      //!< Element type of the dense result
+   using TDRE = blaze::TransposeType_t<DRE>;   //!< Transpose dense result type
+   using DET  = blaze::ElementType_t<DRE>;     //!< Element type of the dense result
 
    using RT1 = blaze::DynamicVector<ET1,TF>;  //!< Reference type 1
    using RT2 = blaze::DynamicVector<ET2,TF>;  //!< Reference type 2
    using RRE = blaze::DivTrait_t<RT1,RT2>;    //!< Reference result type
 
-   using TRT1 = blaze::TransposeType_<RT1>;    //!< Transpose reference type 1
-   using TRT2 = blaze::TransposeType_<RT2>;    //!< Transpose reference type 2
+   using TRT1 = blaze::TransposeType_t<RT1>;   //!< Transpose reference type 1
+   using TRT2 = blaze::TransposeType_t<RT2>;   //!< Transpose reference type 2
    using TRRE = blaze::DivTrait_t<TRT1,TRT2>;  //!< Reference result type
    //**********************************************************************************************
 
@@ -231,18 +231,18 @@ class OperationTest
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TDRE );
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TSRE );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<TVT1>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<TVT2>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<DRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<TDRE>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<SRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<SRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<TSRE>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<DRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, blaze::TransposeType_<TVT1> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_<TVT2> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, blaze::TransposeType_<TRT1> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, blaze::TransposeType_<TRT2> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_t<TVT1>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_t<TVT2>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<TDRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<TSRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, blaze::TransposeType_t<TVT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_t<TVT2> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, blaze::TransposeType_t<TRT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, blaze::TransposeType_t<TRT2> );
    /*! \endcond */
    //**********************************************************************************************
 };

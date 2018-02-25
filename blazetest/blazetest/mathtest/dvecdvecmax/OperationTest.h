@@ -100,22 +100,22 @@ class OperationTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using ET1 = blaze::ElementType_<VT1>;  //!< Element type 1
-   using ET2 = blaze::ElementType_<VT2>;  //!< Element type 2
+   using ET1 = blaze::ElementType_t<VT1>;  //!< Element type 1
+   using ET2 = blaze::ElementType_t<VT2>;  //!< Element type 2
 
-   using TVT1 = blaze::TransposeType_<VT1>;  //!< Transpose vector type 1
-   using TVT2 = blaze::TransposeType_<VT2>;  //!< Transpose vector type 2
+   using TVT1 = blaze::TransposeType_t<VT1>;  //!< Transpose vector type 1
+   using TVT2 = blaze::TransposeType_t<VT2>;  //!< Transpose vector type 2
 
    using DRE  = blaze::BinaryMapTrait_t<VT1,VT2,blaze::Max>;    //!< Dense result type
    using TDRE = blaze::BinaryMapTrait_t<TVT1,TVT2,blaze::Max>;  //!< Transpose dense result type
-   using DET  = blaze::ElementType_<DRE>;                       //!< Element type of the dense result
+   using DET  = blaze::ElementType_t<DRE>;                      //!< Element type of the dense result
 
    using SRE  = blaze::CompressedVector<DET,TF>;  //!< Sparse result type
-   using TSRE = blaze::TransposeType_<SRE>;       //!< Transpose sparse result type
-   using SET  = blaze::ElementType_<SRE>;         //!< Element type of the sparse result
+   using TSRE = blaze::TransposeType_t<SRE>;      //!< Transpose sparse result type
+   using SET  = blaze::ElementType_t<SRE>;        //!< Element type of the sparse result
 
-   using RT  = blaze::DynamicVector<blaze::ElementType_<DRE>,TF>;  //!< Reference type
-   using TRT = blaze::TransposeType_<RT>;                          //!< Transpose reference type
+   using RT  = blaze::DynamicVector<blaze::ElementType_t<DRE>,TF>;  //!< Reference type
+   using TRT = blaze::TransposeType_t<RT>;                          //!< Transpose reference type
    //**********************************************************************************************
 
  public:
@@ -215,17 +215,17 @@ class OperationTest
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TDRE );
    BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG( TVT1, TSRE );
 
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_<TVT1>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_<TVT2>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<DRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<TDRE>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_<SRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<SRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<TSRE>   );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_<DRE>    );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, blaze::TransposeType_<TVT1> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_<TVT2> );
-   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT , blaze::TransposeType_<TRT>  );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_t<TVT1>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_t<TVT2>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<TDRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<SRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<TSRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<DRE>    );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT1, blaze::TransposeType_t<TVT1> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_t<TVT2> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT , blaze::TransposeType_t<TRT>  );
    /*! \endcond */
    //**********************************************************************************************
 };

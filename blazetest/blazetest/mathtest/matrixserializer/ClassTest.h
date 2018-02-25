@@ -192,7 +192,7 @@ void ClassTest::runStaticMatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   using ET = blaze::ElementType_<MT>;
+   using ET = blaze::ElementType_t<MT>;
 
    {
       blaze::StaticMatrix<ET,M,N,blaze::rowMajor> dst;
@@ -225,7 +225,7 @@ void ClassTest::runDynamicMatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   using ET = blaze::ElementType_<MT>;
+   using ET = blaze::ElementType_t<MT>;
 
    {
       blaze::DynamicMatrix<ET,blaze::rowMajor> dst;
@@ -270,7 +270,7 @@ void ClassTest::runDenseSubmatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   using ET = blaze::ElementType_<MT>;
+   using ET = blaze::ElementType_t<MT>;
    using RM = blaze::DynamicMatrix<ET,blaze::rowMajor>;
    using CM = blaze::DynamicMatrix<ET,blaze::columnMajor>;
 
@@ -307,7 +307,7 @@ void ClassTest::runCompressedMatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   using ET = blaze::ElementType_<MT>;
+   using ET = blaze::ElementType_t<MT>;
 
    {
       blaze::CompressedMatrix<ET,blaze::rowMajor> dst;
@@ -352,7 +352,7 @@ void ClassTest::runSparseSubmatrixTests( const MT& src )
 {
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( MT );
 
-   using ET = blaze::ElementType_<MT>;
+   using ET = blaze::ElementType_t<MT>;
    using RM = blaze::CompressedMatrix<ET,blaze::rowMajor>;
    using CM = blaze::CompressedMatrix<ET,blaze::columnMajor>;
 
