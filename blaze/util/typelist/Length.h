@@ -84,6 +84,24 @@ struct Length< TypeList<Ts...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the Length type trait.
+// \ingroup type_traits
+//
+// The Length_v variable template provides a convenient shortcut to access the nested \a value of
+// the Length class template. For instance, given the type list \a TL the following two statements
+// are identical:
+
+   \code
+   constexpr size_t value1 = Length<TL>::value;
+   constexpr size_t value2 = Length_v<TL>;
+   \endcode
+*/
+template< typename TL >  // Type of the type list
+constexpr size_t Length_v = Length<TL>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -121,6 +121,25 @@ struct ContainsRelated< TypeList<U,Ts...>, T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the ContainsRelated type trait.
+// \ingroup type_traits
+//
+// The ContainsRelated_v variable template provides a convenient shortcut to access the nested
+// \a value of the ContainsRelated class template. For instance, given the type list \a TL and
+// the type \a T the following two statements are identical:
+
+   \code
+   constexpr bool value1 = ContainsRelated<TL,T>::value;
+   constexpr bool value2 = ContainsRelated_v<TL,T>;
+   \endcode
+*/
+template< typename TL   // Type of the type list
+        , typename T >  // The search type
+constexpr bool ContainsRelated_v = ContainsRelated<TL,T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

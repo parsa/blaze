@@ -99,6 +99,25 @@ struct Append< TypeList<Ts1...>, TypeList<Ts2...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Append class template.
+// \ingroup type_traits
+//
+// The Append_t alias declaration provides a convenient shortcut to access the nested \a Type
+// of the Append class template. For instance, given the type list \a TL and the type \a T the
+// following two type definitions are identical:
+
+   \code
+   using Type1 = typename Append<TL,T>::Type;
+   using Type2 = Append_t<TL,T>;
+   \endcode
+*/
+template< typename TL   // Type of the type list
+        , typename T >  // The type to be appended to the type list
+using Append_t = typename Append<TL,T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

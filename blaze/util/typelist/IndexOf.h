@@ -117,6 +117,25 @@ struct IndexOf< TypeList<U,Ts...>, T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IndexOf type trait.
+// \ingroup type_traits
+//
+// The IndexOf_v variable template provides a convenient shortcut to access the nested \a value
+// of the IndexOf class template. For instance, given the type list \a TL and the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr size_t value1 = IndexOf<TL,T>::value;
+   constexpr size_t value2 = IndexOf_v<TL,T>;
+   \endcode
+*/
+template< typename TL   // Type of the type list
+        , typename T >  // The search type
+constexpr size_t IndexOf_v = IndexOf<TL,T>::value;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -119,6 +119,25 @@ struct Erase< TypeList<U,Ts...>, T >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Erase class template.
+// \ingroup type_traits
+//
+// The Erase_t alias declaration provides a convenient shortcut to access the nested \a Type
+// of the Erase class template. For instance, given the type list \a TL and the type \a T the
+// following two type definitions are identical:
+
+   \code
+   using Type1 = typename Erase<TL,T>::Type;
+   using Type2 = Erase_t<TL,T>;
+   \endcode
+*/
+template< typename TL   // Type of the type list
+        , typename T >  // The type to be appended to the type list
+using Erase_t = typename Erase<TL,T>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

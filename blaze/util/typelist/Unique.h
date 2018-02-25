@@ -107,6 +107,24 @@ struct Unique< TypeList<T,Ts...> >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the Unique class template.
+// \ingroup type_traits
+//
+// The Unique_t alias declaration provides a convenient shortcut to access the nested \a Type
+// of the Unique class template. For instance, given the type list \a TL the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename Unique<TL>::Type;
+   using Type2 = Unique_t<TL>;
+   \endcode
+*/
+template< typename TL >  // Type of the type list
+using Unique_t = typename Unique<TL>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

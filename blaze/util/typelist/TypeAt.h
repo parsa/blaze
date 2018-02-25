@@ -121,6 +121,25 @@ struct TypeAt< TypeList<T,Ts...>, Index >
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the TypeAt class template.
+// \ingroup type_traits
+//
+// The TypeAt_t alias declaration provides a convenient shortcut to access the nested \a Type
+// of the TypeAt class template. For instance, given the type list \a TL and the index \a Index
+// the following two type definitions are identical:
+
+   \code
+   using Type1 = typename TypeAt<TL,Index>::Type;
+   using Type2 = TypeAt_t<TL,Index>;
+   \endcode
+*/
+template< typename TL     // Type of the type list
+        , size_t Index >  // Type list access index
+using TypeAt_t = typename TypeAt<TL,Index>::Type;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
