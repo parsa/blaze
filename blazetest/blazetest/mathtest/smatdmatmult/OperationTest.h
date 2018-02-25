@@ -128,7 +128,7 @@ class OperationTest
    using TODRE = blaze::TransposeType_t<ODRE>;  //!< Transpose dense result type with opposite storage order
 
    //! Sparse result type
-   using SRE = MatchAdaptor_< DRE, blaze::CompressedMatrix<DET,false> >;
+   using SRE = MatchAdaptor_t< DRE, blaze::CompressedMatrix<DET,false> >;
 
    using SET   = blaze::ElementType_t<SRE>;     //!< Element type of the sparse result
    using OSRE  = blaze::OppositeType_t<SRE>;    //!< Sparse result type with opposite storage order
@@ -139,7 +139,7 @@ class OperationTest
    using RT2 = blaze::DynamicMatrix<ET2,false>;  //!< Reference type 2
 
    //! Reference result type
-   using RRE = MatchSymmetry_< DRE, blaze::MultTrait_t<RT1,RT2> >;
+   using RRE = MatchSymmetry_t< DRE, blaze::MultTrait_t<RT1,RT2> >;
    //**********************************************************************************************
 
  public:
