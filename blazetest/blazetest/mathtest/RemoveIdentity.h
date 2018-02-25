@@ -100,17 +100,17 @@ struct RemoveIdentity
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the RemoveIdentity class template.
 //
-// The RemoveIdentity_ alias declaration provides a convenient shortcut to access the nested
+// The RemoveIdentity_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RemoveIdentity class template. For instance, given the types \a T1 and \a T2
 // the following two type definitions are identical:
 
    \code
    using Type1 = typename RemoveIdentity<T>::Type;
-   using Type2 = RemoveIdentity_<T>;
+   using Type2 = RemoveIdentity_t<T>;
    \endcode
 */
 template< typename T >  // The given matrix type
-using RemoveIdentity_ = typename RemoveIdentity<T>::Type;
+using RemoveIdentity_t = typename RemoveIdentity<T>::Type;
 //*************************************************************************************************
 
 } // namespace blazetest

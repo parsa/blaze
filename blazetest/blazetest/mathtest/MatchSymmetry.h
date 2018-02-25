@@ -107,18 +107,18 @@ struct MatchSymmetry
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the MatchSymmetry class template.
 //
-// The MatchSymmetry_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The MatchSymmetry_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the MatchSymmetry class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename MatchSymmetry<T1,T2>::Type;
-   using Type2 = MatchSymmetry_<T1,T2>;
+   using Type2 = MatchSymmetry_t<T1,T2>;
    \endcode
 */
 template< typename T1    // The adapted type
         , typename T2 >  // The type to be adapted
-using MatchSymmetry_ = typename MatchSymmetry<T1,T2>::Type;
+using MatchSymmetry_t = typename MatchSymmetry<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blazetest

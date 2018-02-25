@@ -122,18 +122,18 @@ struct MatchAdaptor
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the MatchAdaptor class template.
 //
-// The MatchAdaptor_ alias declaration provides a convenient shortcut to access the nested \a Type
+// The MatchAdaptor_t alias declaration provides a convenient shortcut to access the nested \a Type
 // of the MatchAdaptor class template. For instance, given the types \a T1 and \a T2 the following
 // two type definitions are identical:
 
    \code
    using Type1 = typename MatchAdaptor<T1,T2>::Type;
-   using Type2 = MatchAdaptor_<T1,T2>;
+   using Type2 = MatchAdaptor_t<T1,T2>;
    \endcode
 */
 template< typename T1    // The adapted type
         , typename T2 >  // The type to be adapted
-using MatchAdaptor_ = typename MatchAdaptor<T1,T2>::Type;
+using MatchAdaptor_t = typename MatchAdaptor<T1,T2>::Type;
 //*************************************************************************************************
 
 } // namespace blazetest
