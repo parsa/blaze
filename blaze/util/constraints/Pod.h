@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type is not a POD type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_POD(T) \
-   static_assert( ::blaze::IsPod<T>::value, "Non-POD type detected" )
+   static_assert( ::blaze::IsPod_v<T>, "Non-POD type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type is a POD type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_POD(T) \
-   static_assert( !::blaze::IsPod<T>::value, "POD type detected" )
+   static_assert( !::blaze::IsPod_v<T>, "POD type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

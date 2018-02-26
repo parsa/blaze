@@ -77,9 +77,9 @@ template< typename T, typename TL, bool C > struct HasCyclicDependency;
 // Helper template class for the HasCyclicDependency template class to resolve all lifetime
 // dependencies represented by means of a dependency type list.
 */
-template< typename TL                      // Type list of checked lifetime dependencies
-        , typename D                       // Type list of lifetime dependencies to check
-        , size_t   N = Length<D>::value >  // Length of the dependency type list
+template< typename TL                 // Type list of checked lifetime dependencies
+        , typename D                  // Type list of lifetime dependencies to check
+        , size_t   N = Length_v<D> >  // Length of the dependency type list
 struct HasCyclicDependencyHelper;
 /*! \endcond */
 //*************************************************************************************************
@@ -115,9 +115,9 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,1>
 {
-   using D1 = typename TypeAt<D,0>::Result;
+   using D1 = TypeAt_t<D,0>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -135,11 +135,11 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,2>
 {
-   using D1 = typename TypeAt<D,0>::Result;
-   using D2 = typename TypeAt<D,1>::Result;
+   using D1 = TypeAt_t<D,0>;
+   using D2 = TypeAt_t<D,1>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value ||
-                         HasCyclicDependency<D2,TL,Contains<TL,D2>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -157,13 +157,13 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,3>
 {
-   using D1 = typename TypeAt<D,0>::Result;
-   using D2 = typename TypeAt<D,1>::Result;
-   using D3 = typename TypeAt<D,2>::Result;
+   using D1 = TypeAt_t<D,0>;
+   using D2 = TypeAt_t<D,1>;
+   using D3 = TypeAt_t<D,2>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value ||
-                         HasCyclicDependency<D2,TL,Contains<TL,D2>::value>::value ||
-                         HasCyclicDependency<D3,TL,Contains<TL,D3>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -181,15 +181,15 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,4>
 {
-   using D1 = typename TypeAt<D,0>::Result;
-   using D2 = typename TypeAt<D,1>::Result;
-   using D3 = typename TypeAt<D,2>::Result;
-   using D4 = typename TypeAt<D,3>::Result;
+   using D1 = TypeAt_t<D,0>;
+   using D2 = TypeAt_t<D,1>;
+   using D3 = TypeAt_t<D,2>;
+   using D4 = TypeAt_t<D,3>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value ||
-                         HasCyclicDependency<D2,TL,Contains<TL,D2>::value>::value ||
-                         HasCyclicDependency<D3,TL,Contains<TL,D3>::value>::value ||
-                         HasCyclicDependency<D4,TL,Contains<TL,D4>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -207,17 +207,17 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,5>
 {
-   using D1 = typename TypeAt<D,0>::Result;
-   using D2 = typename TypeAt<D,1>::Result;
-   using D3 = typename TypeAt<D,2>::Result;
-   using D4 = typename TypeAt<D,3>::Result;
-   using D5 = typename TypeAt<D,4>::Result;
+   using D1 = TypeAt_t<D,0>;
+   using D2 = TypeAt_t<D,1>;
+   using D3 = TypeAt_t<D,2>;
+   using D4 = TypeAt_t<D,3>;
+   using D5 = TypeAt_t<D,4>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value ||
-                         HasCyclicDependency<D2,TL,Contains<TL,D2>::value>::value ||
-                         HasCyclicDependency<D3,TL,Contains<TL,D3>::value>::value ||
-                         HasCyclicDependency<D4,TL,Contains<TL,D4>::value>::value ||
-                         HasCyclicDependency<D5,TL,Contains<TL,D5>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -235,19 +235,19 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,6>
 {
-   using D1 = typename TypeAt<D,0>::Result;
-   using D2 = typename TypeAt<D,1>::Result;
-   using D3 = typename TypeAt<D,2>::Result;
-   using D4 = typename TypeAt<D,3>::Result;
-   using D5 = typename TypeAt<D,4>::Result;
-   using D6 = typename TypeAt<D,5>::Result;
+   using D1 = TypeAt_t<D,0>;
+   using D2 = TypeAt_t<D,1>;
+   using D3 = TypeAt_t<D,2>;
+   using D4 = TypeAt_t<D,3>;
+   using D5 = TypeAt_t<D,4>;
+   using D6 = TypeAt_t<D,5>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value ||
-                         HasCyclicDependency<D2,TL,Contains<TL,D2>::value>::value ||
-                         HasCyclicDependency<D3,TL,Contains<TL,D3>::value>::value ||
-                         HasCyclicDependency<D4,TL,Contains<TL,D4>::value>::value ||
-                         HasCyclicDependency<D5,TL,Contains<TL,D5>::value>::value ||
-                         HasCyclicDependency<D6,TL,Contains<TL,D6>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
+                         HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -265,21 +265,21 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,7>
 {
-   using D1 = typename TypeAt<D,0>::Result;
-   using D2 = typename TypeAt<D,1>::Result;
-   using D3 = typename TypeAt<D,2>::Result;
-   using D4 = typename TypeAt<D,3>::Result;
-   using D5 = typename TypeAt<D,4>::Result;
-   using D6 = typename TypeAt<D,5>::Result;
-   using D7 = typename TypeAt<D,6>::Result;
+   using D1 = TypeAt_t<D,0>;
+   using D2 = TypeAt_t<D,1>;
+   using D3 = TypeAt_t<D,2>;
+   using D4 = TypeAt_t<D,3>;
+   using D5 = TypeAt_t<D,4>;
+   using D6 = TypeAt_t<D,5>;
+   using D7 = TypeAt_t<D,6>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value ||
-                         HasCyclicDependency<D2,TL,Contains<TL,D2>::value>::value ||
-                         HasCyclicDependency<D3,TL,Contains<TL,D3>::value>::value ||
-                         HasCyclicDependency<D4,TL,Contains<TL,D4>::value>::value ||
-                         HasCyclicDependency<D5,TL,Contains<TL,D5>::value>::value ||
-                         HasCyclicDependency<D6,TL,Contains<TL,D6>::value>::value ||
-                         HasCyclicDependency<D7,TL,Contains<TL,D7>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
+                         HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value ||
+                         HasCyclicDependency<D7,TL,Contains_v<TL,D7>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -297,23 +297,23 @@ template< typename TL   // Type list of checked lifetime dependencies
         , typename D >  // Type list of lifetime dependencies to check
 struct HasCyclicDependencyHelper<TL,D,8>
 {
-   using D1 = typename TypeAt<D,0>::Result;
-   using D2 = typename TypeAt<D,1>::Result;
-   using D3 = typename TypeAt<D,2>::Result;
-   using D4 = typename TypeAt<D,3>::Result;
-   using D5 = typename TypeAt<D,4>::Result;
-   using D6 = typename TypeAt<D,5>::Result;
-   using D7 = typename TypeAt<D,6>::Result;
-   using D8 = typename TypeAt<D,7>::Result;
+   using D1 = TypeAt_t<D,0>;
+   using D2 = TypeAt_t<D,1>;
+   using D3 = TypeAt_t<D,2>;
+   using D4 = TypeAt_t<D,3>;
+   using D5 = TypeAt_t<D,4>;
+   using D6 = TypeAt_t<D,5>;
+   using D7 = TypeAt_t<D,6>;
+   using D8 = TypeAt_t<D,7>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains<TL,D1>::value>::value ||
-                         HasCyclicDependency<D2,TL,Contains<TL,D2>::value>::value ||
-                         HasCyclicDependency<D3,TL,Contains<TL,D3>::value>::value ||
-                         HasCyclicDependency<D4,TL,Contains<TL,D4>::value>::value ||
-                         HasCyclicDependency<D5,TL,Contains<TL,D5>::value>::value ||
-                         HasCyclicDependency<D6,TL,Contains<TL,D6>::value>::value ||
-                         HasCyclicDependency<D7,TL,Contains<TL,D7>::value>::value ||
-                         HasCyclicDependency<D8,TL,Contains<TL,D8>::value>::value };
+   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
+                         HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value ||
+                         HasCyclicDependency<D7,TL,Contains_v<TL,D7>>::value ||
+                         HasCyclicDependency<D8,TL,Contains_v<TL,D8>>::value };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -336,13 +336,12 @@ struct HasCyclicDependencyHelper<TL,D,8>
 // cyclic lifetime dependency is detected, the \a value member enumeration is set to 1. Otherwise
 // it is set to 0.
 */
-template< typename T                      // The type to be checked for cyclic lifetime dependencies
-        , typename TL                     // Type list of checked lifetime dependencies
-        , bool C=Contains<TL,T>::value >  // Flag to indicate whether T is contained in TL
+template< typename T                 // The type to be checked for cyclic lifetime dependencies
+        , typename TL                // Type list of checked lifetime dependencies
+        , bool C=Contains_v<TL,T> >  // Flag to indicate whether T is contained in TL
 struct HasCyclicDependency
 {
-   using ETL = typename Append<TL,T>::Result;
-   enum : bool { value = HasCyclicDependencyHelper<ETL,typename T::Dependencies>::value };
+   enum : bool { value = HasCyclicDependencyHelper<Append_t<TL,T>,typename T::Dependencies>::value };
 };
 /*! \endcond */
 //*************************************************************************************************

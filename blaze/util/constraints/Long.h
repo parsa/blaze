@@ -60,7 +60,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_LONG_TYPE(T) \
-   static_assert( ::blaze::IsLong<T>::value, "Non-long type detected" )
+   static_assert( ::blaze::IsLong_v<T>, "Non-long type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_LONG_TYPE(T) \
-   static_assert( !::blaze::IsLong<T>::value, "Long type detected" )
+   static_assert( !::blaze::IsLong_v<T>, "Long type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

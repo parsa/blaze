@@ -57,7 +57,7 @@
    class RotationMatrix
    {
       // ...
-      static_assert( std::is_floating_point<T>::value, "Non-floating point type detected" );
+      static_assert( std::is_floating_point_v<T>, "Non-floating point type detected" );
       // ...
    };
    \endcode
@@ -104,7 +104,7 @@
 
    \code
    ~/blaze/blaze/util/constraints/DerivedFrom.h:61:4: static assertion failed: Broken inheritance hierarchy detected
-      static_assert( ::blaze::IsBaseOf<B,D>::value, "Broken inheritance hierarchy detected" )
+      static_assert( ::blaze::IsBaseOf_v<B,D>, "Broken inheritance hierarchy detected" )
       ^
    Test.cpp:11:4: note: in expansion of macro 'BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM'
       BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( C, A );  // Compile time error, C is not derived from A

@@ -77,7 +77,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsNumeric
-   : public BoolConstant< IsBuiltin<T>::value && !IsBoolean<T>::value && !IsVoid<T>::value >
+   : public BoolConstant< IsBuiltin_v<T> && !IsBoolean_v<T> && !IsVoid_v<T> >
 {};
 //*************************************************************************************************
 

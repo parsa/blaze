@@ -59,7 +59,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE(T) \
-   static_assert( ::blaze::IsNumeric<T>::value, "Non-numeric type detected" )
+   static_assert( ::blaze::IsNumeric_v<T>, "Non-numeric type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_NUMERIC_TYPE(T) \
-   static_assert( !::blaze::IsNumeric<T>::value, "Numeric type detected" )
+   static_assert( !::blaze::IsNumeric_v<T>, "Numeric type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

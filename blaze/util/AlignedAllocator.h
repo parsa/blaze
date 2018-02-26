@@ -245,7 +245,7 @@ inline typename AlignedAllocator<Type>::Pointer
 {
    UNUSED_PARAMETER( localityHint );
 
-   const size_t alignment( AlignmentOf<Type>::value );
+   const size_t alignment( AlignmentOf_v<Type> );
 
    if( alignment >= 8UL ) {
       return reinterpret_cast<Type*>( allocate_backend( numObjects*sizeof(Type), alignment ) );
@@ -276,7 +276,7 @@ inline void AlignedAllocator<Type>::deallocate( Pointer ptr, size_t numObjects )
    if( ptr == nullptr )
       return;
 
-   const size_t alignment( AlignmentOf<Type>::value );
+   const size_t alignment( AlignmentOf_v<Type> );
 
    if( alignment >= 8UL ) {
       deallocate_backend( ptr );

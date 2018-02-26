@@ -60,7 +60,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SHORT_TYPE(T) \
-   static_assert( ::blaze::IsShort<T>::value, "Non-short type detected" )
+   static_assert( ::blaze::IsShort_v<T>, "Non-short type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SHORT_TYPE(T) \
-   static_assert( !::blaze::IsShort<T>::value, "Short type detected" )
+   static_assert( !::blaze::IsShort_v<T>, "Short type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

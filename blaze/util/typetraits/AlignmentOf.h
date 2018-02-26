@@ -71,13 +71,13 @@ struct AlignmentOfHelper
    //**********************************************************************************************
    enum : size_t {
 #if BLAZE_AVX512BW_MODE
-      value = ( IsVectorizable<T>::value )?( 64UL ):( defaultAlignment )
+      value = ( IsVectorizable_v<T> )?( 64UL ):( defaultAlignment )
 #elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      value = ( IsVectorizable<T>::value )?( sizeof(T) >= 4UL ? 64UL : 32UL ):( defaultAlignment )
+      value = ( IsVectorizable_v<T> )?( sizeof(T) >= 4UL ? 64UL : 32UL ):( defaultAlignment )
 #elif BLAZE_AVX2_MODE
-      value = ( IsVectorizable<T>::value )?( 32UL ):( defaultAlignment )
+      value = ( IsVectorizable_v<T> )?( 32UL ):( defaultAlignment )
 #elif BLAZE_SSE2_MODE
-      value = ( IsVectorizable<T>::value )?( 16UL ):( defaultAlignment )
+      value = ( IsVectorizable_v<T> )?( 16UL ):( defaultAlignment )
 #else
       value = defaultAlignment
 #endif

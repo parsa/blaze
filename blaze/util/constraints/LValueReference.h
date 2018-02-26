@@ -59,7 +59,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_LVALUE_REFERENCE_TYPE(T) \
-   static_assert( ::blaze::IsLValueReference<T>::value, "Non-lvalue reference type detected" )
+   static_assert( ::blaze::IsLValueReference_v<T>, "Non-lvalue reference type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_LVALUE_REFERENCE_TYPE(T) \
-   static_assert( !::blaze::IsLValueReference<T>::value, "Lvalue reference type detected" )
+   static_assert( !::blaze::IsLValueReference_v<T>, "Lvalue reference type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

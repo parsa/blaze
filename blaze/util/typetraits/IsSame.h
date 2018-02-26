@@ -91,6 +91,24 @@ struct IsStrictlySame<T,T>
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsStrictlySame type trait.
+// \ingroup type_traits
+//
+// The IsStrictlySame_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsStrictlySame class template. For instance, given the types \a T1 and \a T2
+// the following two statements are identical:
+
+   \code
+   constexpr bool value1 = IsStrictlySame<T1,T2>::value;
+   constexpr bool value2 = IsStrictlySame_v<T1,T2>;
+   \endcode
+*/
+template< typename A, typename B >
+constexpr bool IsStrictlySame_v = IsStrictlySame<A,B>::value;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -98,23 +116,6 @@ struct IsStrictlySame<T,T>
 //  CLASS DEFINITION
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsSame type trait.
-// \ingroup type_traits
-*/
-template< typename A, typename B >
-struct IsSameHelper
-{
- public:
-   //**********************************************************************************************
-   enum : bool { value = IsStrictlySame< RemoveCV_t<A>, RemoveCV_t<B> >::value };
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Type relationship analysis.
@@ -138,7 +139,7 @@ struct IsSameHelper
 */
 template< typename A, typename B >
 struct IsSame
-   : public BoolConstant< IsSameHelper<A,B>::value >
+   : public BoolConstant< IsStrictlySame_v< RemoveCV_t<A>, RemoveCV_t<B> > >
 {};
 //*************************************************************************************************
 

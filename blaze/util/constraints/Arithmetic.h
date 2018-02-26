@@ -59,7 +59,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ARITHMETIC_TYPE(T) \
-   static_assert( ::blaze::IsArithmetic<T>::value, "Non-arithmetic type detected" )
+   static_assert( ::blaze::IsArithmetic_v<T>, "Non-arithmetic type detected" )
 //*************************************************************************************************
 
 
@@ -78,7 +78,7 @@ namespace blaze {
 // In case the given data type \a T is an arithmetic data type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ARITHMETIC_TYPE(T) \
-   static_assert( !::blaze::IsArithmetic<T>::value, "Arithmetic type detected" )
+   static_assert( !::blaze::IsArithmetic_v<T>, "Arithmetic type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

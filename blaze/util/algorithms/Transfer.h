@@ -71,7 +71,7 @@ OutputIterator transfer( InputIterator first, InputIterator last, OutputIterator
 {
    using ValueType = typename std::iterator_traits<InputIterator>::value_type;
 
-   if( IsNothrowMoveAssignable<ValueType>::value ) {
+   if( IsNothrowMoveAssignable_v<ValueType> ) {
       return std::move( first, last, dest );
    }
    else {

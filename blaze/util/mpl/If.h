@@ -99,8 +99,8 @@ struct IfTrue<false,T1,T2>
 // two type definitions are identical:
 
    \code
-   using Type1 = typename IfTrue< IsBuiltin<C>::value, T1, T2 >::Type;
-   using Type2 = IfTrue_< IsBuiltin<C>::value, T1, T2 >;
+   using Type1 = typename IfTrue< IsBuiltin_v<C>, T1, T2 >::Type;
+   using Type2 = IfTrue_< IsBuiltin_v<C>, T1, T2 >;
    \endcode
 */
 template< bool Condition  // Compile time selection

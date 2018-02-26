@@ -81,11 +81,11 @@ struct IsVectorizableHelper
 
  public:
    //**********************************************************************************************
-   enum : bool { value = ( bool( BLAZE_SSE_MODE      ) && IsFloat<T2>::value   ) ||
-                         ( bool( BLAZE_SSE2_MODE     ) && IsNumeric<T2>::value ) ||
-                         ( bool( BLAZE_AVX512BW_MODE ) && IsNumeric<T2>::value ) ||
+   enum : bool { value = ( bool( BLAZE_SSE_MODE      ) && IsFloat_v<T2>   ) ||
+                         ( bool( BLAZE_SSE2_MODE     ) && IsNumeric_v<T2> ) ||
+                         ( bool( BLAZE_AVX512BW_MODE ) && IsNumeric_v<T2> ) ||
                          ( bool( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE  )
-                           && IsNumeric<T2>::value && sizeof(T2) >= 4UL ) };
+                           && IsNumeric_v<T2> && sizeof(T2) >= 4UL ) };
    //**********************************************************************************************
 };
 /*! \endcond */

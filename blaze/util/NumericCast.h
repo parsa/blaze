@@ -46,10 +46,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/FalseType.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -68,19 +65,36 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary type trait for the numeric_cast() function template.
+/*!\brief Auxiliary alias declaration for the numeric_cast() function template.
 // \ingroup util
 */
 template< typename To, typename From >
-struct IsCriticalIntIntConversion
-{
- public:
-   //**********************************************************************************************
-   enum : size_t { value = And< IsIntegral<To>
-                              , IsIntegral<From>
-                              , Not< IsSame<To,From> > >::value };
-   //**********************************************************************************************
-};
+using IsCriticalIntIntConversion =
+   BoolConstant< IsIntegral_v<To> && IsIntegral_v<From> && !IsSame_v<To,From> >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the numeric_cast() function template.
+// \ingroup util
+*/
+template< typename To, typename From >
+using IsCriticalFloatIntConversion =
+   BoolConstant< IsIntegral_v<To> && IsFloatingPoint_v<From> >;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the numeric_cast() function template.
+// \ingroup util
+*/
+template< typename To, typename From >
+using IsCriticalFloatFloatConversion =
+   BoolConstant< IsFloatingPoint_v<To> && IsFloatingPoint_v<From> && ( sizeof(To) < sizeof(From) ) >;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -91,52 +105,10 @@ struct IsCriticalIntIntConversion
 // \ingroup util
 */
 template< typename To, typename From >
-struct IsCriticalFloatIntConversion
-{
- public:
-   //**********************************************************************************************
-   enum : size_t { value = And< IsIntegral<To>
-                              , IsFloatingPoint<From> >::value };
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary type trait for the numeric_cast() function template.
-// \ingroup util
-*/
-template< typename To, typename From >
-struct IsCriticalFloatFloatConversion
-{
- public:
-   //**********************************************************************************************
-   enum : size_t { value = And< IsFloatingPoint<To>
-                              , IsFloatingPoint<From>
-                              , Bool< ( sizeof(To) < sizeof(From) ) > >::value };
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary type trait for the numeric_cast() function template.
-// \ingroup util
-*/
-template< typename To, typename From >
-struct IsUncriticalConversion
-{
- public:
-   //**********************************************************************************************
-   enum : size_t { value = !IsCriticalIntIntConversion<To,From>::value   &&
-                           !IsCriticalFloatIntConversion<To,From>::value &&
-                           !IsCriticalFloatFloatConversion<To,From>::value };
-   //**********************************************************************************************
-};
+using IsUncriticalConversion =
+   BoolConstant< !IsCriticalIntIntConversion<To,From>::value &&
+                 !IsCriticalFloatIntConversion<To,From>::value &&
+                 !IsCriticalFloatFloatConversion<To,From>::value >;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -189,11 +161,11 @@ template< typename To, typename From >
 inline EnableIf_< IsCriticalIntIntConversion<To,From>, To >
    numeric_cast_backend( From from )
 {
-   if( ( sizeof(To) < sizeof(From) || ( IsSigned<To>::value && IsUnsigned<From>::value ) ) &&
+   if( ( sizeof(To) < sizeof(From) || ( IsSigned_v<To> && IsUnsigned_v<From> ) ) &&
        ( from > From( std::numeric_limits<To>::max() ) ) )
       BLAZE_THROW_OVERFLOW_ERROR( "Invalid numeric cast (overflow)" );
 
-   if( IsSigned<From>::value &&
+   if( IsSigned_v<From> &&
        ( from < From( std::numeric_limits<To>::min() ) ) )
       BLAZE_THROW_UNDERFLOW_ERROR( "Invalid numeric cast (underflow)" );
 

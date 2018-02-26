@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE(T) \
-   static_assert( blaze::IsVectorizable<T>::value, "Non-vectorizable type detected" )
+   static_assert( blaze::IsVectorizable_v<T>, "Non-vectorizable type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECTORIZABLE_TYPE(T) \
-   static_assert( !blaze::IsVectorizable<T>::value, "Vectorizable type detected" )
+   static_assert( !blaze::IsVectorizable_v<T>, "Vectorizable type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

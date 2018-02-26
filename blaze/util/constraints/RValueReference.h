@@ -59,7 +59,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_RVALUE_REFERENCE_TYPE(T) \
-   static_assert( ::blaze::IsRValueReference<T>::value, "Non-rvalue reference type detected" )
+   static_assert( ::blaze::IsRValueReference_v<T>, "Non-rvalue reference type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_RVALUE_REFERENCE_TYPE(T) \
-   static_assert( !::blaze::IsRValueReference<T>::value, "Rvalue reference type detected" )
+   static_assert( !::blaze::IsRValueReference_v<T>, "Rvalue reference type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

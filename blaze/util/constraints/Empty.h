@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type is not an empty type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_EMPTY(T) \
-   static_assert( ::blaze::IsEmpty<T>::value, "Non-empty type detected" )
+   static_assert( ::blaze::IsEmpty_v<T>, "Non-empty type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type is an empty type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_EMPTY(T) \
-   static_assert( !::blaze::IsEmpty<T>::value, "Empty type detected" )
+   static_assert( !::blaze::IsEmpty_v<T>, "Empty type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

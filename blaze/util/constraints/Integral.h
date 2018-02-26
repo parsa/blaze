@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not an integral data type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE(T) \
-   static_assert( ::blaze::IsIntegral<T>::value, "Non-integral type detected" )
+   static_assert( ::blaze::IsIntegral_v<T>, "Non-integral type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is an integral data type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_INTEGRAL_TYPE(T) \
-   static_assert( !::blaze::IsIntegral<T>::value, "Integral type detected" )
+   static_assert( !::blaze::IsIntegral_v<T>, "Integral type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

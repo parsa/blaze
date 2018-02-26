@@ -66,7 +66,7 @@ namespace blaze {
 
    \code
    template< typename Type >
-   typename EnableIfTrue< IsNumeric<Type>::value >::Type process( Type t ) { ... }
+   typename EnableIfTrue< IsNumeric_v<Type> >::Type process( Type t ) { ... }
    \endcode
 
 // In case the given data type is not a built-in, numeric data type, the access to the nested
@@ -79,11 +79,11 @@ namespace blaze {
 
    \code
    // Explicity specifying the default
-   typename EnableIfTrue< IsNumeric<Type>::value, void >::Type
+   typename EnableIfTrue< IsNumeric_v<Type>, void >::Type
 
    // In case the given data type is a boolean data type, the nested type definition
    // 'Type' is set to float
-   typename EnableIfTrue< IsBoolean<Type>::value, float >::Type
+   typename EnableIfTrue< IsBoolean_v<Type>, float >::Type
    \endcode
 
 // For more information on the EnableIfTrue/EnableIf functionality, see the Boost library
@@ -129,8 +129,8 @@ struct EnableIfTrue<false,T>
 // definitions are identical:
 
    \code
-   using Type1 = typename EnableIfTrue< IsBuiltin<T>::value >::Type;
-   using Type2 = EnableIfTrue_< IsBuiltin<T>::value >;
+   using Type1 = typename EnableIfTrue< IsBuiltin_v<T> >::Type;
+   using Type2 = EnableIfTrue_< IsBuiltin_v<T> >;
    \endcode
 */
 template< bool Condition     // Compile time condition

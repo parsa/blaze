@@ -154,7 +154,7 @@ inline void deallocate_backend( const void* address ) noexcept
 template< typename T >
 EnableIf_< IsBuiltin<T>, T* > allocate( size_t size )
 {
-   const size_t alignment( AlignmentOf<T>::value );
+   const size_t alignment( AlignmentOf_v<T> );
 
    if( alignment >= 8UL ) {
       return reinterpret_cast<T*>( allocate_backend( size*sizeof(T), alignment ) );
@@ -183,7 +183,7 @@ EnableIf_< IsBuiltin<T>, T* > allocate( size_t size )
 template< typename T >
 DisableIf_< IsBuiltin<T>, T* > allocate( size_t size )
 {
-   const size_t alignment ( AlignmentOf<T>::value );
+   const size_t alignment ( AlignmentOf_v<T> );
    const size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
 
    BLAZE_INTERNAL_ASSERT( headersize >= alignment      , "Invalid header size detected" );
@@ -232,7 +232,7 @@ EnableIf_< IsBuiltin<T> > deallocate( T* address ) noexcept
    if( address == nullptr )
       return;
 
-   const size_t alignment( AlignmentOf<T>::value );
+   const size_t alignment( AlignmentOf_v<T> );
 
    if( alignment >= 8UL ) {
       deallocate_backend( address );
@@ -258,7 +258,7 @@ DisableIf_< IsBuiltin<T> > deallocate( T* address )
    if( address == nullptr )
       return;
 
-   const size_t alignment ( AlignmentOf<T>::value );
+   const size_t alignment ( AlignmentOf_v<T> );
    const size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
 
    BLAZE_INTERNAL_ASSERT( headersize >= alignment      , "Invalid header size detected" );

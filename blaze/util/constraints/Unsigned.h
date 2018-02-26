@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_UNSIGNED_TYPE(T) \
-   static_assert( ::blaze::IsUnsigned<T>::value, "Non-unsigned type detected" )
+   static_assert( ::blaze::IsUnsigned_v<T>, "Non-unsigned type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_UNSIGNED_TYPE(T) \
-   static_assert( !::blaze::IsUnsigned<T>::value, "Unsigned type detected" )
+   static_assert( !::blaze::IsUnsigned_v<T>, "Unsigned type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

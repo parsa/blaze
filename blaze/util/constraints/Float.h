@@ -60,7 +60,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_FLOAT_TYPE(T) \
-   static_assert( ::blaze::IsFloat<T>::value, "Non-float type detected" )
+   static_assert( ::blaze::IsFloat_v<T>, "Non-float type detected" )
 //*************************************************************************************************
 
 
@@ -81,7 +81,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_FLOAT_TYPE(T) \
-   static_assert( !::blaze::IsFloat<T>::value, "Float type detected" )
+   static_assert( !::blaze::IsFloat_v<T>, "Float type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

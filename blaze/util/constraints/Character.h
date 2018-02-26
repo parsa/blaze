@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a character data type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_CHARACTER_TYPE(T) \
-   static_assert( ::blaze::IsCharacter<T>::value, "Non-character type detected" )
+   static_assert( ::blaze::IsCharacter_v<T>, "Non-character type detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is a character data type, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CHARACTER_TYPE(T) \
-   static_assert( !::blaze::IsCharacter<T>::value, "Character type detected" )
+   static_assert( !::blaze::IsCharacter_v<T>, "Character type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

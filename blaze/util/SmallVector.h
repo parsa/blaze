@@ -163,7 +163,7 @@ class SmallVector
           Iterator insert( Iterator pos, T&& value );
           Iterator erase( Iterator pos );
           Iterator erase( Iterator first, Iterator last );
-          void     swap( SmallVector& sv ) noexcept( IsNothrowMoveConstructible<T>::value );
+          void     swap( SmallVector& sv ) noexcept( IsNothrowMoveConstructible_v<T> );
    //@}
    //**********************************************************************************************
 
@@ -199,7 +199,7 @@ class SmallVector
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   alignas( AlignmentOf<T>::value ) byte_t v_[NN];  //!< The static storage.
+   alignas( AlignmentOf_v<T> ) byte_t v_[NN];  //!< The static storage.
 
    T* begin_;  //!< Pointer to the beginning of the currently used storage.
    T* end_;    //!< Pointer to the end of the currently used storage.
@@ -903,7 +903,7 @@ void SmallVector<T,N,A>::reserve( size_t n )
       const size_t oldSize( size() );
       T* tmp( allocate( n ) );
 
-      if( IsNothrowMoveConstructible<T>::value ) {
+      if( IsNothrowMoveConstructible_v<T> ) {
          uninitialized_move( begin_, end_, tmp );
       }
       else {
@@ -947,7 +947,7 @@ void SmallVector<T,N,A>::shrinkToFit()
    {
       T* tmp( allocate( oldSize ) );
 
-      if( IsNothrowMoveConstructible<T>::value ) {
+      if( IsNothrowMoveConstructible_v<T> ) {
          uninitialized_move( begin_, end_, tmp );
       }
       else {
@@ -1219,7 +1219,7 @@ typename SmallVector<T,N,A>::Iterator
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::swap( SmallVector& sv ) noexcept( IsNothrowMoveConstructible<T>::value )
+void SmallVector<T,N,A>::swap( SmallVector& sv ) noexcept( IsNothrowMoveConstructible_v<T> )
 {
    using std::swap;
    using blaze::destroy;
@@ -1339,7 +1339,7 @@ inline void clear( SmallVector<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
 inline void swap( SmallVector<T,N,A>& a, SmallVector<T,N,A>& b )
-   noexcept( IsNothrowMoveConstructible<T>::value );
+   noexcept( IsNothrowMoveConstructible_v<T> );
 //@}
 //*************************************************************************************************
 
@@ -1511,7 +1511,7 @@ template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
 inline void swap( SmallVector<T,N,A>& a, SmallVector<T,N,A>& b )
-   noexcept( IsNothrowMoveConstructible<T>::value )
+   noexcept( IsNothrowMoveConstructible_v<T> )
 {
    a.swap( b );
 }
