@@ -41,12 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -59,29 +58,19 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1        // Type of the left-hand side operand
-        , typename T2        // Type of the right-hand side operand
-        , typename = void >  // Restricting condition
-struct HasSIMDAtan2Helper
-{
-   enum : bool { value = false };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if BLAZE_SVML_MODE
-template< typename T >
-struct HasSIMDAtan2Helper< T, T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
-#endif
+/*!\brief Auxiliary alias declaration for the HasSIMDAtan2 type trait.
+// \ingroup math_type_traits
+*/
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+using HasSIMDAtan2Helper =
+   BoolConstant< IsSame_v<T1,T2> &&
+                 ( IsFloat_v<T1> || IsDouble_v<T1> ) &&
+                 bool( BLAZE_SVML_MODE ) &&
+                 ( bool( BLAZE_SSE_MODE     ) ||
+                   bool( BLAZE_AVX_MODE     ) ||
+                   bool( BLAZE_MIC_MODE     ) ||
+                   bool( BLAZE_AVX512F_MODE ) ) >;
 /*! \endcond */
 //*************************************************************************************************
 

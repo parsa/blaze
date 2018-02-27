@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_BAND_TYPE(T) \
-   static_assert( ::blaze::IsBand<T>::value, "Non-band type detected" )
+   static_assert( ::blaze::IsBand_v<T>, "Non-band type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_BAND_TYPE(T) \
-   static_assert( !::blaze::IsBand<T>::value, "Band type detected" )
+   static_assert( !::blaze::IsBand_v<T>, "Band type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

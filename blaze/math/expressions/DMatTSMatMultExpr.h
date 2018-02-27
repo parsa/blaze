@@ -135,12 +135,12 @@ class DMatTSMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation_v<MT1> || RequiresEvaluation_v<MT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
-   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation_v<MT2> || RequiresEvaluation_v<MT2> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -162,7 +162,7 @@ class DMatTSMatMultExpr
        Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = IsSymmetric<T2>::value };
+      enum : bool { value = IsSymmetric_v<T2> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -189,9 +189,9 @@ class DMatTSMatMultExpr
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T2>::value &&
-                            !IsResizable< ElementType_t<T1> >::value &&
-                            !IsResizable<ET2>::value };
+                            !IsDiagonal_v<T2> &&
+                            !IsResizable_v< ElementType_t<T1> > &&
+                            !IsResizable_v<ET2> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -274,28 +274,28 @@ class DMatTSMatMultExpr
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal<MT1>::value ) {
+      if( IsDiagonal_v<MT1> ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal<MT2>::value ) {
+      else if( IsDiagonal_v<MT2> ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
-         const size_t begin( ( IsUpper<MT1>::value )
-                             ?( ( IsLower<MT2>::value )
-                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
-                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
-                             :( ( IsLower<MT2>::value )
-                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+      else if( IsTriangular_v<MT1> || IsTriangular_v<MT2> ) {
+         const size_t begin( ( IsUpper_v<MT1> )
+                             ?( ( IsLower_v<MT2> )
+                                ?( max( ( IsStrictlyUpper_v<MT1> ? i+1UL : i )
+                                      , ( IsStrictlyLower_v<MT2> ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper_v<MT1> ? i+1UL : i ) )
+                             :( ( IsLower_v<MT2> )
+                                ?( IsStrictlyLower_v<MT2> ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower<MT1>::value )
-                           ?( ( IsUpper<MT2>::value )
-                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
-                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
-                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
-                           :( ( IsUpper<MT2>::value )
-                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+         const size_t end( ( IsLower_v<MT1> )
+                           ?( ( IsUpper_v<MT2> )
+                              ?( min( ( IsStrictlyLower_v<MT1> ? i : i+1UL )
+                                    , ( IsStrictlyUpper_v<MT2> ? j : j+1UL ) ) )
+                              :( IsStrictlyLower_v<MT1> ? i : i+1UL ) )
+                           :( ( IsUpper_v<MT2> )
+                              ?( IsStrictlyUpper_v<MT2> ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -410,7 +410,7 @@ class DMatTSMatMultExpr
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return ( rows() * columns() >= SMP_DMATTSMATMULT_THRESHOLD ) && !IsDiagonal<MT1>::value;
+      return ( rows() * columns() >= SMP_DMATTSMATMULT_THRESHOLD ) && !IsDiagonal_v<MT1>;
    }
    //**********************************************************************************************
 
@@ -492,11 +492,11 @@ class DMatTSMatMultExpr
          for( ; (i+4UL) <= M; i+=4UL ) {
             for( size_t j=( SYM || HERM || UPP ? i : 0UL ); j<( LOW ? i+4UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                if( element == end ) {
@@ -524,11 +524,11 @@ class DMatTSMatMultExpr
          for( ; (i+2UL) <= M; i+=2UL ) {
             for( size_t j=( SYM || HERM || UPP ? i : 0UL ); j<( LOW ? i+2UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                if( element == end ) {
@@ -550,11 +550,11 @@ class DMatTSMatMultExpr
          for( ; i<M; ++i ) {
             for( size_t j=( SYM || HERM || UPP ? i : 0UL ); j<( LOW ? i+1UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                if( element == end ) {
@@ -630,11 +630,11 @@ class DMatTSMatMultExpr
          for( ; (i+4UL) <= M; i+=4UL ) {
             for( size_t j=( SYM || HERM || UPP ? i : 0UL ); j<( LOW ? i+4UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -680,11 +680,11 @@ class DMatTSMatMultExpr
          for( ; (i+2UL) <= M; i+=2UL ) {
             for( size_t j=( SYM || HERM || UPP ? i : 0UL ); j<( LOW ? i+2UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -726,11 +726,11 @@ class DMatTSMatMultExpr
          for( ; i<M; ++i ) {
             for( size_t j=( SYM || HERM || UPP ? i : 0UL ); j<( LOW ? i+1UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -919,11 +919,11 @@ class DMatTSMatMultExpr
          for( ; (i+4UL) <= M; i+=4UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+4UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -938,11 +938,11 @@ class DMatTSMatMultExpr
          for( ; (i+2UL) <= M; i+=2UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+2UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -955,11 +955,11 @@ class DMatTSMatMultExpr
          for( ; i<M; ++i ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+1UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element )
@@ -1004,11 +1004,11 @@ class DMatTSMatMultExpr
          for( ; (i+4UL) <= M; i+=4UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+4UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1054,11 +1054,11 @@ class DMatTSMatMultExpr
          for( ; (i+2UL) <= M; i+=2UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+2UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1100,11 +1100,11 @@ class DMatTSMatMultExpr
          for( ; i<M; ++i ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+1UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1251,11 +1251,11 @@ class DMatTSMatMultExpr
          for( ; (i+4UL) <= M; i+=4UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+4UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -1270,11 +1270,11 @@ class DMatTSMatMultExpr
          for( ; (i+2UL) <= M; i+=2UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+2UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element ) {
@@ -1287,11 +1287,11 @@ class DMatTSMatMultExpr
          for( ; i<M; ++i ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+1UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                for( ; element!=end; ++element )
@@ -1336,11 +1336,11 @@ class DMatTSMatMultExpr
          for( ; (i+4UL) <= M; i+=4UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+4UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+4UL,j) : B.upperBound(i+4UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1386,11 +1386,11 @@ class DMatTSMatMultExpr
          for( ; (i+2UL) <= M; i+=2UL ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+2UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i+2UL,j) : B.upperBound(i+2UL,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );
@@ -1432,11 +1432,11 @@ class DMatTSMatMultExpr
          for( ; i<M; ++i ) {
             for( size_t j=( UPP ? i : 0UL ); j<( LOW ? i+1UL : N ); ++j )
             {
-               ConstIterator element( ( IsUpper<MT4>::value )
-                                      ?( IsStrictlyUpper<MT4>::value ? B.upperBound(i,j) : B.lowerBound(i,j) )
+               ConstIterator element( ( IsUpper_v<MT4> )
+                                      ?( IsStrictlyUpper_v<MT4> ? B.upperBound(i,j) : B.lowerBound(i,j) )
                                       :( B.begin(j) ) );
-               const ConstIterator end( ( IsLower<MT4>::value )
-                                        ?( IsStrictlyLower<MT4>::value ? B.lowerBound(i,j) : B.upperBound(i,j) )
+               const ConstIterator end( ( IsLower_v<MT4> )
+                                        ?( IsStrictlyLower_v<MT4> ? B.lowerBound(i,j) : B.upperBound(i,j) )
                                         :( B.end(j) ) );
 
                const size_t nonzeros( end - element );

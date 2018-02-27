@@ -44,10 +44,6 @@
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
 #include <blaze/math/typetraits/Size.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 
 
 namespace blaze {
@@ -66,7 +62,7 @@ namespace blaze {
 // derived from the VecVecSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECVECSUBEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecVecSubExpr<T>::value, "Non-vector/vector subtraction expression type detected" )
+   static_assert( ::blaze::IsVecVecSubExpr_v<T>, "Non-vector/vector subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -86,7 +82,7 @@ namespace blaze {
 // from the VecVecSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECVECSUBEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecVecSubExpr<T>::value, "Vector/vector subtraction expression type detected" )
+   static_assert( !::blaze::IsVecVecSubExpr_v<T>, "Vector/vector subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -106,14 +102,12 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_VECVECSUBEXPR(T1,T2) \
-   static_assert( ::blaze::And< ::blaze::Or< ::blaze::And< ::blaze::IsRowVector<T1> \
-                                                         , ::blaze::IsRowVector<T2> > \
-                                           , ::blaze::And< ::blaze::IsColumnVector<T1> \
-                                                         , ::blaze::IsColumnVector<T2> > > \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > > \
-                              >::value, "Invalid vector/vector subtraction expression detected" )
+   static_assert( ( ( ::blaze::IsRowVector_v<T1> && ::blaze::IsRowVector_v<T2> ) || \
+                    ( ::blaze::IsColumnVector_v<T1> && ::blaze::IsColumnVector_v<T2> ) ) && \
+                  ( ( ::blaze::Size_v<T1,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,0UL> == ::blaze::Size_v<T2,0UL> ) ) \
+                , "Invalid vector/vector subtraction expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

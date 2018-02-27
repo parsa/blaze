@@ -287,7 +287,7 @@ class Rows<MT,true,true,SF,CRAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -297,9 +297,9 @@ class Rows<MT,true,true,SF,CRAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -309,9 +309,9 @@ class Rows<MT,true,true,SF,CRAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -321,8 +321,8 @@ class Rows<MT,true,true,SF,CRAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -458,7 +458,7 @@ inline Rows<MT,true,true,SF,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -872,7 +872,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row selection" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       size_t i( 0UL );
       for( const auto& rowList : list ) {
          const InitializerVector<ElementType> tmp( rowList, columns() );
@@ -931,7 +931,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -992,7 +992,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
    using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( right, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1002,11 +1002,11 @@ inline Rows<MT,true,true,SF,CRAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsSparseMatrix<MT2>::value ) {
+   if( IsSparseMatrix_v<MT2> ) {
       reset();
    }
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1060,7 +1060,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,tru
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAddAssign( row( matrix_, idx(i), unchecked ), row( ~rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1126,7 +1126,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,true
 
    const AddType tmp( *this + (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( tmp, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1184,7 +1184,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,tru
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !trySubAssign( row( matrix_, idx(i), unchecked ), row( ~rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1250,7 +1250,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,true
 
    const SubType tmp( *this - (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( tmp, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1307,7 +1307,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,tru
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryMultAssign( row( matrix_, idx(i), unchecked ), row( ~rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1319,7 +1319,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,tru
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
-      if( IsSparseMatrix<SchurType>::value )
+      if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
@@ -1374,7 +1374,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,true
 
    const SchurType tmp( *this % (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( tmp, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1384,7 +1384,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,true
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsSparseMatrix<SchurType>::value ) {
+   if( IsSparseMatrix_v<SchurType> ) {
       reset();
    }
 
@@ -1638,7 +1638,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
 
    const ResultType tmp( trans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -1684,7 +1684,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
 
    const ResultType tmp( ctrans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -1729,8 +1729,8 @@ inline Rows<MT,true,true,SF,CRAs...>&
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t index ( idx(i) );
-      const size_t jbegin( IsUpper<MT>::value ? ( IsStrictlyUpper<MT>::value ? index+1UL : index ) : 0UL );
-      const size_t jend  ( IsLower<MT>::value ? ( IsStrictlyLower<MT>::value ? index : index+1UL ) : columns() );
+      const size_t jbegin( IsUpper_v<MT> ? ( IsStrictlyUpper_v<MT> ? index+1UL : index ) : 0UL );
+      const size_t jend  ( IsLower_v<MT> ? ( IsStrictlyLower_v<MT> ? index : index+1UL ) : columns() );
 
       for( size_t j=jbegin; j<jend; ++j ) {
          matrix_(index,j) *= scalar;
@@ -2369,7 +2369,7 @@ inline DisableIf_< typename Rows<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vector
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t index( idx(i) );
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(index,i) += (~rhs)(i,i);
       }
       else {
@@ -2416,11 +2416,11 @@ inline EnableIf_< typename Rows<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectori
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT2>::value )
-                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT2> )
+                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT2>::value )
-                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT2> )
+                           ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2612,7 +2612,7 @@ inline DisableIf_< typename Rows<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vector
    {
       const size_t index( idx(i) );
 
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(index,i) -= (~rhs)(i,i);
       }
       else {
@@ -2659,11 +2659,11 @@ inline EnableIf_< typename Rows<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectori
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT2>::value )
-                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT2> )
+                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT2>::value )
-                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT2> )
+                           ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -3677,7 +3677,7 @@ inline Rows<MT,false,true,false,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -4075,7 +4075,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row selection" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       size_t i( 0UL );
       for( const auto& rowList : list ) {
          const InitializerVector<ElementType> tmp( rowList, columns() );
@@ -4133,7 +4133,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4193,7 +4193,7 @@ inline Rows<MT,false,true,false,CRAs...>&
    using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( right, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4203,11 +4203,11 @@ inline Rows<MT,false,true,false,CRAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsSparseMatrix<MT2>::value ) {
+   if( IsSparseMatrix_v<MT2> ) {
       reset();
    }
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4260,7 +4260,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fal
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAddAssign( row( matrix_, idx(i), unchecked ), row( ~rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4325,7 +4325,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fals
 
    const AddType tmp( *this + (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( tmp, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4382,7 +4382,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fal
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !trySubAssign( row( matrix_, idx(i), unchecked ), row( ~rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4447,7 +4447,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fals
 
    const SubType tmp( *this - (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( tmp, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4503,7 +4503,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fal
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryMultAssign( row( matrix_, idx(i), unchecked ), row( ~rhs, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4515,7 +4515,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fal
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
-      if( IsSparseMatrix<SchurType>::value )
+      if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
@@ -4569,7 +4569,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fals
 
    const SchurType tmp( *this % (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( row( matrix_, idx(i), unchecked ), row( tmp, i, unchecked ), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4579,7 +4579,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Rows<MT,fals
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsSparseMatrix<SchurType>::value ) {
+   if( IsSparseMatrix_v<SchurType> ) {
       reset();
    }
 
@@ -4835,7 +4835,7 @@ inline Rows<MT,false,true,false,CRAs...>&
 
    const ResultType tmp( trans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -4880,7 +4880,7 @@ inline Rows<MT,false,true,false,CRAs...>&
 
    const ResultType tmp( ctrans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -4924,8 +4924,8 @@ inline Rows<MT,false,true,false,CRAs...>&
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t index ( idx(i) );
-      const size_t jbegin( IsUpper<MT>::value ? ( IsStrictlyUpper<MT>::value ? index+1UL : index ) : 0UL );
-      const size_t jend  ( IsLower<MT>::value ? ( IsStrictlyLower<MT>::value ? index : index+1UL ) : columns() );
+      const size_t jbegin( IsUpper_v<MT> ? ( IsStrictlyUpper_v<MT> ? index+1UL : index ) : 0UL );
+      const size_t jend  ( IsLower_v<MT> ? ( IsStrictlyLower_v<MT> ? index : index+1UL ) : columns() );
 
       for( size_t j=jbegin; j<jend; ++j ) {
          matrix_(index,j) *= scalar;
@@ -5282,7 +5282,7 @@ inline void Rows<MT,false,true,false,CRAs...>::addAssign( const DenseMatrix<MT2,
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t index( idx(i) );
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(index,i) += (~rhs)(i,i);
       }
       else {
@@ -5457,7 +5457,7 @@ inline void Rows<MT,false,true,false,CRAs...>::subAssign( const DenseMatrix<MT2,
    {
       const size_t index( idx(i) );
 
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(index,i) -= (~rhs)(i,i);
       }
       else {
@@ -6015,7 +6015,7 @@ inline Rows<MT,false,true,true,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );

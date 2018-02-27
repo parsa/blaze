@@ -197,7 +197,7 @@ inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       return;
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_v<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
@@ -331,7 +331,7 @@ inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char 
       return;
    }
 
-   if( IsRowMajorMatrix<MT1>::value ) {
+   if( IsRowMajorMatrix_v<MT1> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

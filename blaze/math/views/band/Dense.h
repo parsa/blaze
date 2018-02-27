@@ -136,7 +136,7 @@ class Band<MT,TF,true,false,CBAs...>
    using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< RequiresEvaluation<MT>::value, const ResultType, const Band& >;
+   using CompositeType = IfTrue_< RequiresEvaluation_v<MT>, const ResultType, const Band& >;
 
    //! Reference to a constant band value.
    using ConstReference = ConstReference_t<MT>;
@@ -207,9 +207,9 @@ class Band<MT,TF,true,false,CBAs...>
          , column_( columnIndex )  // The current column index
          , pos_   (             )  // Iterator to the current dense element
       {
-         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+         if( IsRowMajorMatrix_v<MatrixType> && row_ != matrix_->rows() )
             pos_ = matrix_->begin( row_ ) + column_;
-         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+         else if( IsColumnMajorMatrix_v<MatrixType> && column_ != matrix_->columns() )
             pos_ = matrix_->begin( column_ ) + row_;
       }
       //*******************************************************************************************
@@ -240,9 +240,9 @@ class Band<MT,TF,true,false,CBAs...>
          row_    += inc;
          column_ += inc;
 
-         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+         if( IsRowMajorMatrix_v<MatrixType> && row_ != matrix_->rows() )
             pos_ = matrix_->begin( row_ ) + column_;
-         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+         else if( IsColumnMajorMatrix_v<MatrixType> && column_ != matrix_->columns() )
             pos_ = matrix_->begin( column_ ) + row_;
          else reset( pos_ );
 
@@ -262,9 +262,9 @@ class Band<MT,TF,true,false,CBAs...>
          row_    -= dec;
          column_ -= dec;
 
-         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+         if( IsRowMajorMatrix_v<MatrixType> && row_ != matrix_->rows() )
             pos_ = matrix_->begin( row_ ) + column_;
-         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+         else if( IsColumnMajorMatrix_v<MatrixType> && column_ != matrix_->columns() )
             pos_ = matrix_->begin( column_ ) + row_;
          else reset( pos_ );
 
@@ -283,9 +283,9 @@ class Band<MT,TF,true,false,CBAs...>
          ++row_;
          ++column_;
 
-         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+         if( IsRowMajorMatrix_v<MatrixType> && row_ != matrix_->rows() )
             pos_ = matrix_->begin( row_ ) + column_;
-         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+         else if( IsColumnMajorMatrix_v<MatrixType> && column_ != matrix_->columns() )
             pos_ = matrix_->begin( column_ ) + row_;
          else reset( pos_ );
 
@@ -316,9 +316,9 @@ class Band<MT,TF,true,false,CBAs...>
          --row_;
          --column_;
 
-         if( IsRowMajorMatrix<MatrixType>::value && row_ != matrix_->rows() )
+         if( IsRowMajorMatrix_v<MatrixType> && row_ != matrix_->rows() )
             pos_ = matrix_->begin( row_ ) + column_;
-         else if( IsColumnMajorMatrix<MatrixType>::value && column_ != matrix_->columns() )
+         else if( IsColumnMajorMatrix_v<MatrixType> && column_ != matrix_->columns() )
             pos_ = matrix_->begin( column_ ) + row_;
          else reset( pos_ );
 
@@ -347,7 +347,7 @@ class Band<MT,TF,true,false,CBAs...>
       inline ReferenceType operator[]( size_t index ) const {
          BLAZE_USER_ASSERT( row_   +index < matrix_->rows()   , "Invalid access index detected" );
          BLAZE_USER_ASSERT( column_+index < matrix_->columns(), "Invalid access index detected" );
-         const IteratorType pos( IsRowMajorMatrix<MatrixType>::value
+         const IteratorType pos( IsRowMajorMatrix_v<MatrixType>
                                ? matrix_->begin( row_+index ) + column_ + index
                                : matrix_->begin( column_+index ) + row_ + index );
          return *pos;
@@ -678,7 +678,7 @@ inline Band<MT,TF,true,false,CBAs...>::Band( MT& matrix, RBAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the band
 {
-   if( !Contains< TypeList<RBAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
       if( ( band() > 0L && column() >= matrix.columns() ) ||
           ( band() < 0L && row() >= matrix.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
@@ -814,7 +814,7 @@ template< typename MT          // Type of the dense matrix
 inline typename Band<MT,TF,true,false,CBAs...>::Pointer
    Band<MT,TF,true,false,CBAs...>::data() noexcept
 {
-   if( IsRowMajorMatrix<MT>::value )
+   if( IsRowMajorMatrix_v<MT> )
       return matrix_.data() + row() * matrix_.spacing() + column();
    else
       return matrix_.data() + row() + column() * matrix_.spacing();
@@ -838,7 +838,7 @@ template< typename MT          // Type of the dense matrix
 inline typename Band<MT,TF,true,false,CBAs...>::ConstPointer
    Band<MT,TF,true,false,CBAs...>::data() const noexcept
 {
-   if( IsRowMajorMatrix<MT>::value )
+   if( IsRowMajorMatrix_v<MT> )
       return matrix_.data() + row() * matrix_.spacing() + column();
    else
       return matrix_.data() + row() + column() * matrix_.spacing();
@@ -997,15 +997,15 @@ inline Band<MT,TF,true,false,CBAs...>&
 {
    decltype(auto) left( derestrict( matrix_ ) );
 
-   if( ( IsLower<MT>::value && column() > 0UL ) ||
-       ( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value ) && row() == 0UL ) ||
-       ( IsUpper<MT>::value && row() > 0UL ) ||
-       ( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value ) && column() == 0UL ) )
+   if( ( IsLower_v<MT> && column() > 0UL ) ||
+       ( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> ) && row() == 0UL ) ||
+       ( IsUpper_v<MT> && row() > 0UL ) ||
+       ( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> ) && column() == 0UL ) )
       return *this;
 
    const size_t n( size() );
    for( size_t i=0UL; i<n; ++i ) {
-      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, row()+i, column()+i, rhs ) )
+      if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, row()+i, column()+i, rhs ) )
          left(row()+i,column()+i) = rhs;
    }
 
@@ -1040,7 +1040,7 @@ inline Band<MT,TF,true,false,CBAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to band" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerVector<ElementType,false> tmp( list, size() );
       if( !tryAssign( matrix_, tmp, band(), row(), column() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1091,7 +1091,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression<MT>::value && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1144,12 +1144,12 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       smpAssign( left, right );
    }
@@ -1199,7 +1199,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -1252,7 +1252,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1307,7 +1307,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1358,7 +1358,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1563,10 +1563,10 @@ inline void Band<MT,TF,true,false,CBAs...>::reset()
 {
    using blaze::clear;
 
-   if( ( IsLower<MT>::value && column() > 0UL ) ||
-       ( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value ) && row() == 0UL ) ||
-       ( IsUpper<MT>::value && row() > 0UL ) ||
-       ( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value ) && column() == 0UL ) )
+   if( ( IsLower_v<MT> && column() > 0UL ) ||
+       ( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> ) && row() == 0UL ) ||
+       ( IsUpper_v<MT> && row() > 0UL ) ||
+       ( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> ) && column() == 0UL ) )
       return;
 
    const size_t n( size() );
@@ -1607,10 +1607,10 @@ inline Band<MT,TF,true,false,CBAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   if( ( IsLower<MT>::value         && column() >  0UL ) ||
-       ( IsStrictlyLower<MT>::value && row()    == 0UL ) ||
-       ( IsUpper<MT>::value         && row()    >  0UL ) ||
-       ( IsStrictlyUpper<MT>::value && column() == 0UL ) )
+   if( ( IsLower_v<MT>         && column() >  0UL ) ||
+       ( IsStrictlyLower_v<MT> && row()    == 0UL ) ||
+       ( IsUpper_v<MT>         && row()    >  0UL ) ||
+       ( IsStrictlyUpper_v<MT> && column() == 0UL ) )
       return *this;
 
    const size_t n( size() );
@@ -2153,7 +2153,7 @@ class Band<MT,TF,true,true,CBAs...>
       : DataType( args... )  // Base class initialization
       , matrix_ ( mmm )      // The matrix multiplication containing the band
    {
-      if( !Contains< TypeList<RBAs...>, Unchecked >::value ) {
+      if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
          if( ( band() > 0L && column() >= mmm.columns() ) ||
              ( band() < 0L && row() >= mmm.rows() ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );

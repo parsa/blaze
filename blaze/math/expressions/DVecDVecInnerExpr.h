@@ -87,9 +87,9 @@ struct DVecDVecInnerExprHelper
    enum : bool { value = useOptimizedKernels &&
                          CT1::simdEnabled &&
                          CT2::simdEnabled &&
-                         IsSame< ElementType_t<CT1>, ElementType_t<CT2> >::value &&
-                         HasSIMDAdd< ElementType_t<CT1>, ElementType_t<CT1> >::value &&
-                         HasSIMDMult< ElementType_t<CT1>, ElementType_t<CT1> >::value };
+                         IsSame_v< ElementType_t<CT1>, ElementType_t<CT2> > &&
+                         HasSIMDAdd_v< ElementType_t<CT1>, ElementType_t<CT1> > &&
+                         HasSIMDMult_v< ElementType_t<CT1>, ElementType_t<CT1> > };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -197,7 +197,7 @@ inline EnableIf_< DVecDVecInnerExprHelper<VT1,VT2>
 
    const size_t N( left.size() );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT1>::value || !IsPadded<VT2>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT1> || !IsPadded_v<VT2> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );

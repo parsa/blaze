@@ -43,8 +43,8 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -60,13 +60,15 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the HasSIMDSub type trait.
+// \ingroup math_type_traits
+*/
 template< typename T1        // Type of the left-hand side operand
         , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDSubHelper
-{
-   enum : bool { value = false };
-};
+   : public FalseType
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -74,26 +76,24 @@ struct HasSIMDSubHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-struct HasSIMDSubHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>
-                                               , IsNumeric<T2>, IsIntegral<T2>
-                                               , Bool< sizeof(T1) == sizeof(T2) > > > >
-{
-   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) ) ||
-                         ( bool( BLAZE_AVX2_MODE ) ) ||
-                         ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) <= 2UL ) };
-};
+struct HasSIMDSubHelper< T1, T2, EnableIfTrue_< IsNumeric_v<T1> && IsIntegral_v<T1> &&
+                                                IsNumeric_v<T2> && IsIntegral_v<T2> &&
+                                                sizeof(T1) == sizeof(T2) > >
+   : public BoolConstant< ( bool( BLAZE_SSE2_MODE ) ) ||
+                          ( bool( BLAZE_AVX2_MODE ) ) ||
+                          ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
+                          ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) ||
+                          ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) <= 2UL ) >
+{};
 
 template< typename T >
-struct HasSIMDSubHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T> > > >
-{
-   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) ) ||
-                         ( bool( BLAZE_AVX2_MODE ) ) ||
-                         ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) };
-};
+struct HasSIMDSubHelper< complex<T>, complex<T>, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> > >
+   : public BoolConstant< ( bool( BLAZE_SSE2_MODE ) ) ||
+                          ( bool( BLAZE_AVX2_MODE ) ) ||
+                          ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
+                          ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ||
+                          ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -102,21 +102,19 @@ struct HasSIMDSubHelper< complex<T>, complex<T>, EnableIf_< And< IsNumeric<T>, I
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDSubHelper< float, float >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE_MODE     ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 
 template<>
 struct HasSIMDSubHelper< complex<float>, complex<float> >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE_MODE     ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -125,21 +123,19 @@ struct HasSIMDSubHelper< complex<float>, complex<float> >
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDSubHelper< double, double >
-{
-   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE2_MODE    ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 
 template<>
 struct HasSIMDSubHelper< complex<double>, complex<double> >
-{
-   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE2_MODE    ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 

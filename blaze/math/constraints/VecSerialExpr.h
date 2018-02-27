@@ -59,7 +59,7 @@ namespace blaze {
 // derived from the VecSerialExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECSERIALEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecSerialExpr<T>::value, "Non-vector serial evaluation expression type detected" )
+   static_assert( ::blaze::IsVecSerialExpr_v<T>, "Non-vector serial evaluation expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // from the VecSerialExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECSERIALEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecSerialExpr<T>::value, "Vector serial evaluation expression type detected" )
+   static_assert( !::blaze::IsVecSerialExpr_v<T>, "Vector serial evaluation expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

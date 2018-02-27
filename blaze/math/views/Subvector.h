@@ -1258,7 +1258,7 @@ inline decltype(auto) subvector( Subvector<VT,AF2,TF,DF>& sv, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( I + N > sv.size() ) {
@@ -1300,7 +1300,7 @@ inline decltype(auto) subvector( const Subvector<VT,AF2,TF,DF>& sv, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( I + N > sv.size() ) {
@@ -1342,7 +1342,7 @@ inline decltype(auto) subvector( Subvector<VT,AF2,TF,DF>&& sv, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( I + N > sv.size() ) {
@@ -1385,7 +1385,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( index + size > sv.size() ) {
@@ -1429,7 +1429,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( index + size > sv.size() ) {
@@ -1473,7 +1473,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( index + size > sv.size() ) {
@@ -1618,7 +1618,7 @@ inline decltype(auto) elements( Subvector<VT,AF,TF,DF>& sv, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1659,7 +1659,7 @@ inline decltype(auto) elements( const Subvector<VT,AF,TF,DF>& sv, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1700,7 +1700,7 @@ inline decltype(auto) elements( Subvector<VT,AF,TF,DF>&& sv, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1744,7 +1744,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1791,7 +1791,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1838,7 +1838,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {

@@ -59,7 +59,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsStrictlyTriangular<T>::value, "Non-strictly triangular matrix type detected" )
+   static_assert( ::blaze::IsStrictlyTriangular_v<T>, "Non-strictly triangular matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsStrictlyTriangular<T>::value, "Strictly triangular matrix type detected" )
+   static_assert( !::blaze::IsStrictlyTriangular_v<T>, "Strictly triangular matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

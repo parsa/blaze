@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsMatrix<T>::value, "Non-matrix type detected" )
+   static_assert( ::blaze::IsMatrix_v<T>, "Non-matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsMatrix<T>::value, "Matrix type detected" )
+   static_assert( !::blaze::IsMatrix_v<T>, "Matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -95,7 +95,7 @@ namespace blaze {
 */
 template< bool RF          // Relaxation flag
         , typename Type >  // Type of the given value/object
-BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin<Type>::value )
+BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin_v<Type> )
 {
    return v == Type();
 }
@@ -188,7 +188,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( long double v ) noexcept
 */
 template< bool RF       // Relaxation flag
         , typename T >  // Value type of the complex number
-BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin<T>::value )
+BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin_v<T> )
 {
    return isDefault<RF>( real( v ) ) && isDefault<RF>( imag( v ) );
 }
@@ -234,7 +234,7 @@ BLAZE_ALWAYS_INLINE bool isDefault( const complex<T>& v ) noexcept( IsBuiltin<T>
    \endcode
 */
 template< typename Type >  // Type of the given value/object
-BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin<Type>::value )
+BLAZE_ALWAYS_INLINE bool isDefault( const Type& v ) noexcept( IsBuiltin_v<Type> )
 {
    return isDefault<relaxed>( v );
 }

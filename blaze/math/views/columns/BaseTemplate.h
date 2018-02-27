@@ -59,11 +59,11 @@ namespace blaze {
 /*!\brief Base template of the Columns class template.
 // \ingroup columns
 */
-template< typename MT                               // Type of the matrix
-        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
-        , bool DF = IsDenseMatrix<MT>::value        // Density flag
-        , bool SF = IsSymmetric<MT>::value          // Symmetry flag
-        , size_t... CCAs >                          // Compile time column arguments
+template< typename MT                          // Type of the matrix
+        , bool SO = IsColumnMajorMatrix_v<MT>  // Storage order
+        , bool DF = IsDenseMatrix_v<MT>        // Density flag
+        , bool SF = IsSymmetric_v<MT>          // Symmetry flag
+        , size_t... CCAs >                     // Compile time column arguments
 class Columns
 {};
 /*! \endcond */
@@ -89,9 +89,9 @@ class Columns
 template< typename MT       // Type of the matrix
         , size_t... CCAs >  // Compile time column arguments
 using Columns_ = Columns< MT
-                        , IsColumnMajorMatrix<MT>::value
-                        , IsDenseMatrix<MT>::value
-                        , IsSymmetric<MT>::value
+                        , IsColumnMajorMatrix_v<MT>
+                        , IsDenseMatrix_v<MT>
+                        , IsSymmetric_v<MT>
                         , CCAs... >;
 /*! \endcond */
 //*************************************************************************************************

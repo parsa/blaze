@@ -178,7 +178,7 @@ inline void heev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[3*n-2] );
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_v<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

@@ -58,10 +58,10 @@ namespace blaze {
 /*!\brief Base template of the Elements class template.
 // \ingroup row
 */
-template< typename VT                         // Type of the vector
-        , bool TF = IsRowVector<VT>::value    // Transpose flag
-        , bool DF = IsDenseVector<VT>::value  // Density flag
-        , size_t... CEAs >                    // Compile time element arguments
+template< typename VT                    // Type of the vector
+        , bool TF = IsRowVector_v<VT>    // Transpose flag
+        , bool DF = IsDenseVector_v<VT>  // Density flag
+        , size_t... CEAs >               // Compile time element arguments
 class Elements
 {};
 /*! \endcond */
@@ -87,8 +87,8 @@ class Elements
 template< typename VT       // Type of the vector
         , size_t... CEAs >  // Compile time element arguments
 using Elements_ = Elements< VT
-                          , IsRowVector<VT>::value
-                          , IsDenseVector<VT>::value
+                          , IsRowVector_v<VT>
+                          , IsDenseVector_v<VT>
                           , CEAs... >;
 /*! \endcond */
 //*************************************************************************************************

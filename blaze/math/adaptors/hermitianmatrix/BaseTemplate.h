@@ -605,9 +605,9 @@ namespace blaze {
    C = A * B;  // Is not guaranteed to result in a Hermitian matrix; some runtime overhead
    \endcode
 */
-template< typename MT                           // Type of the adapted matrix
-        , bool SO = StorageOrder<MT>::value     // Storage order of the adapted matrix
-        , bool DF = IsDenseMatrix<MT>::value >  // Density flag
+template< typename MT                      // Type of the adapted matrix
+        , bool SO = StorageOrder_v<MT>     // Storage order of the adapted matrix
+        , bool DF = IsDenseMatrix_v<MT> >  // Density flag
 class HermitianMatrix
 {};
 //*************************************************************************************************

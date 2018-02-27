@@ -703,7 +703,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -713,9 +713,9 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -725,9 +725,9 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -737,8 +737,8 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -887,7 +887,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs..
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1272,19 +1272,19 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    for( size_t i=row(); i<iend; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( max( i+1UL, column() ) )
                               :( max( i, column() ) ) )
                            :( column() ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( min( i, column()+columns() ) )
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
 
       for( size_t j=jbegin; j<jend; ++j ) {
-         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+         if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, i, j, rhs ) )
             left(i,j) = rhs;
       }
    }
@@ -1320,7 +1320,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerMatrix<ElementType> tmp( list, columns() );
       if( !tryAssign( matrix_, tmp, row(), column() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1430,14 +1430,14 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, right );
    }
@@ -1490,7 +1490,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
@@ -1599,7 +1599,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
@@ -1707,10 +1707,10 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
-      if( IsSparseMatrix<SchurType>::value )
+      if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
@@ -1767,7 +1767,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsSparseMatrix<SchurType>::value ) {
+   if( IsSparseMatrix_v<SchurType> ) {
       reset();
    }
 
@@ -1954,13 +1954,13 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::reset()
 
    for( size_t i=row(); i<row()+rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( max( i+1UL, column() ) )
                               :( max( i, column() ) ) )
                            :( column() ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( min( i, column()+columns() ) )
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
@@ -1993,13 +1993,13 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::reset( size_t i )
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( max( i+1UL, column() ) )
                            :( max( i, column() ) ) )
                         :( column() ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( min( i, column()+columns() ) )
                            :( min( i+1UL, column()+columns() ) ) )
                         :( column()+columns() ) );
@@ -2025,7 +2025,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,unaligned,false,true,CSAs...>::hasOverlap() const noexcept
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
 
    if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
       return false;
@@ -2152,13 +2152,13 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    for( size_t i=row(); i<iend; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> )
                               ?( max( i+1UL, column() ) )
                               :( max( i, column() ) ) )
                            :( column() ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> )
                               ?( min( i, column()+columns() ) )
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
@@ -2796,7 +2796,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TE
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+i,column()+i) += (~rhs)(i,i);
       }
       else {
@@ -2839,11 +2839,11 @@ inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEM
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT2>::value )
-                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT2> )
+                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT2>::value )
-                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT2> )
+                           ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2996,7 +2996,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TE
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+i,column()+i) -= (~rhs)(i,i);
       }
       else {
@@ -3039,11 +3039,11 @@ inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEM
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT2>::value )
-                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT2> )
+                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT2>::value )
-                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT2> )
+                           ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -3977,7 +3977,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -3987,9 +3987,9 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -3999,9 +3999,9 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -4011,8 +4011,8 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -4161,7 +4161,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs...
    , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -4516,19 +4516,19 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    for( size_t j=column(); j<jend; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( max( j+1UL, row() ) )
                               :( max( j, row() ) ) )
                            :( row() ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( min( j, row()+rows() ) )
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
 
       for( size_t i=ibegin; i<iend; ++i ) {
-         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+         if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, i, j, rhs ) )
             left(i,j) = rhs;
       }
    }
@@ -4566,7 +4566,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerMatrix<ElementType> tmp( list, columns() );
       if( !tryAssign( matrix_, tmp, row(), column() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4683,14 +4683,14 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, right );
    }
@@ -4743,7 +4743,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
@@ -4852,7 +4852,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
@@ -4960,10 +4960,10 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
-      if( IsSparseMatrix<SchurType>::value )
+      if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
@@ -5020,7 +5020,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsSparseMatrix<SchurType>::value ) {
+   if( IsSparseMatrix_v<SchurType> ) {
       reset();
    }
 
@@ -5195,13 +5195,13 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::reset()
 
    for( size_t j=column(); j<column()+columns(); ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( max( j+1UL, row() ) )
                               :( max( j, row() ) ) )
                            :( row() ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( min( j, row()+rows() ) )
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
@@ -5229,13 +5229,13 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::reset( size_t j )
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( max( j+1UL, row() ) )
                            :( max( j, row() ) ) )
                         :( row() ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( min( j, row()+rows() ) )
                            :( min( j+1UL, row()+rows() ) ) )
                         :( row()+rows() ) );
@@ -5261,7 +5261,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,unaligned,true,true,CSAs...>::hasOverlap() const noexcept
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
 
    if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
       return false;
@@ -5388,13 +5388,13 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    for( size_t j=column(); j<jend; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> )
                               ?( max( j+1UL, row() ) )
                               :( max( j, row() ) ) )
                            :( row() ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> )
                               ?( min( j, row()+rows() ) )
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
@@ -6026,7 +6026,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEM
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+j,column()+j) += (~rhs)(j,j);
       }
       else {
@@ -6069,11 +6069,11 @@ inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMP
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -6226,7 +6226,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEM
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+j,column()+j) -= (~rhs)(j,j);
       }
       else {
@@ -6269,11 +6269,11 @@ inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMP
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -6796,7 +6796,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -6806,9 +6806,9 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -6818,9 +6818,9 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -6830,8 +6830,8 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -6971,7 +6971,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... 
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -7363,19 +7363,19 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    for( size_t i=row(); i<iend; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( max( i+1UL, column() ) )
                               :( max( i, column() ) ) )
                            :( column() ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( min( i, column()+columns() ) )
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
 
       for( size_t j=jbegin; j<jend; ++j ) {
-         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+         if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, i, j, rhs ) )
             left(i,j) = rhs;
       }
    }
@@ -7411,7 +7411,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerMatrix<ElementType> tmp( list, columns() );
       if( !tryAssign( matrix_, tmp, row(), column() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -7521,14 +7521,14 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, right );
    }
@@ -7581,7 +7581,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
@@ -7690,7 +7690,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
@@ -7798,10 +7798,10 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
-      if( IsSparseMatrix<SchurType>::value )
+      if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
@@ -7858,7 +7858,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsSparseMatrix<SchurType>::value ) {
+   if( IsSparseMatrix_v<SchurType> ) {
       reset();
    }
 
@@ -8045,13 +8045,13 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::reset()
 
    for( size_t i=row(); i<row()+rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( max( i+1UL, column() ) )
                               :( max( i, column() ) ) )
                            :( column() ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( min( i, column()+columns() ) )
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
@@ -8084,13 +8084,13 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::reset( size_t i )
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( max( i+1UL, column() ) )
                            :( max( i, column() ) ) )
                         :( column() ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( min( i, column()+columns() ) )
                            :( min( i+1UL, column()+columns() ) ) )
                         :( column()+columns() ) );
@@ -8116,7 +8116,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,aligned,false,true,CSAs...>::hasOverlap() const noexcept
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
 
    if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
       return false;
@@ -8243,13 +8243,13 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    for( size_t i=row(); i<iend; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> )
                               ?( max( i+1UL, column() ) )
                               :( max( i, column() ) ) )
                            :( column() ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> )
                               ?( min( i, column()+columns() ) )
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
@@ -8879,7 +8879,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMP
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+i,column()+i) += (~rhs)(i,i);
       }
       else {
@@ -8922,11 +8922,11 @@ inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPL
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT2>::value )
-                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT2> )
+                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT2>::value )
-                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT2> )
+                           ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -9079,7 +9079,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMP
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+i,column()+i) -= (~rhs)(i,i);
       }
       else {
@@ -9122,11 +9122,11 @@ inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPL
 
    for( size_t i=0UL; i<rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT2>::value )
-                           ?( ( IsStrictlyUpper<MT2>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT2> )
+                           ?( ( IsStrictlyUpper_v<MT2> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT2>::value )
-                           ?( IsStrictlyLower<MT2>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT2> )
+                           ?( IsStrictlyLower_v<MT2> ? i : i+1UL )
                            :( columns() ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -9648,7 +9648,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -9658,9 +9658,9 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -9670,9 +9670,9 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<MT2> >::value &&
-                            !IsDiagonal<MT2>::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+                            !IsDiagonal_v<MT2> };
    };
    //**********************************************************************************************
 
@@ -9682,8 +9682,8 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<MT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<MT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
    };
    //**********************************************************************************************
 
@@ -9823,7 +9823,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... a
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value )
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > )
    {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
@@ -10187,19 +10187,19 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    for( size_t j=column(); j<jend; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( max( j+1UL, row() ) )
                               :( max( j, row() ) ) )
                            :( row() ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( min( j, row()+rows() ) )
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
 
       for( size_t i=ibegin; i<iend; ++i ) {
-         if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, j, rhs ) )
+         if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, i, j, rhs ) )
             left(i,j) = rhs;
       }
    }
@@ -10237,7 +10237,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to submatrix" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerMatrix<ElementType> tmp( list, columns() );
       if( !tryAssign( matrix_, tmp, row(), column() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -10353,14 +10353,14 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          reset();
       smpAssign( left, right );
    }
@@ -10413,7 +10413,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
@@ -10522,7 +10522,7 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
@@ -10630,10 +10630,10 @@ inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric<MT>::value || IsHermitian<MT>::value ) && hasOverlap() ) ||
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
        (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
-      if( IsSparseMatrix<SchurType>::value )
+      if( IsSparseMatrix_v<SchurType> )
          reset();
       smpAssign( left, tmp );
    }
@@ -10690,7 +10690,7 @@ inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsSparseMatrix<SchurType>::value ) {
+   if( IsSparseMatrix_v<SchurType> ) {
       reset();
    }
 
@@ -10865,13 +10865,13 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::reset()
 
    for( size_t j=column(); j<column()+columns(); ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( max( j+1UL, row() ) )
                               :( max( j, row() ) ) )
                            :( row() ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( min( j, row()+rows() ) )
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
@@ -10899,13 +10899,13 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::reset( size_t j )
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( max( j+1UL, row() ) )
                            :( max( j, row() ) ) )
                         :( row() ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( min( j, row()+rows() ) )
                            :( min( j+1UL, row()+rows() ) ) )
                         :( row()+rows() ) );
@@ -10931,7 +10931,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,aligned,true,true,CSAs...>::hasOverlap() const noexcept
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
 
    if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
       return false;
@@ -11058,13 +11058,13 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    for( size_t j=column(); j<jend; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> )
                               ?( max( j+1UL, row() ) )
                               :( max( j, row() ) ) )
                            :( row() ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> )
                               ?( min( j, row()+rows() ) )
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
@@ -11687,7 +11687,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPL
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+j,column()+j) += (~rhs)(j,j);
       }
       else {
@@ -11730,11 +11730,11 @@ inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLA
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -11887,7 +11887,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPL
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      if( IsDiagonal<MT2>::value ) {
+      if( IsDiagonal_v<MT2> ) {
          matrix_(row()+j,column()+j) -= (~rhs)(j,j);
       }
       else {
@@ -11930,11 +11930,11 @@ inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLA
 
    for( size_t j=0UL; j<columns(); ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( rows() ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 

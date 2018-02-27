@@ -119,7 +119,7 @@ class DVecSVecOuterExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -134,8 +134,8 @@ class DVecSVecOuterExpr
        multiplication expression will be evaluated via the \a assign function family. Otherwise
        \a useAssign will be set to \a false and the expression will be evaluated via the
        subscript operator. */
-   enum : bool { useAssign = ( IsComputation<VT1>::value || !IsNumeric<ET1>::value ||
-                               IsComputation<VT2>::value || !IsNumeric<ET2>::value ) };
+   enum : bool { useAssign = ( IsComputation_v<VT1> || !IsNumeric_v<ET1> ||
+                               IsComputation_v<VT2> || !IsNumeric_v<ET2> ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -155,9 +155,9 @@ class DVecSVecOuterExpr
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             T1::simdEnabled && T2::simdEnabled &&
-                            IsSame< ElementType_t<T1>, ElementType_t<T2> >::value &&
-                            IsSame< ElementType_t<T1>, ElementType_t<T3> >::value &&
-                            HasSIMDMult< ElementType_t<T1>, ElementType_t<T1> >::value };
+                            IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
+                            IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
+                            HasSIMDMult_v< ElementType_t<T1>, ElementType_t<T1> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -679,7 +679,7 @@ class DVecSVecOuterExpr
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows() );
 
@@ -968,7 +968,7 @@ class DVecSVecOuterExpr
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows() );
 
@@ -1144,7 +1144,7 @@ class DVecSVecOuterExpr
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows() );
 
@@ -1340,7 +1340,7 @@ class DVecSVecOuterExpr
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
 
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows()    );
       const size_t N( (~A).columns() );

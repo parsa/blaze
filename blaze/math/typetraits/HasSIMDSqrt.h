@@ -55,40 +55,21 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T         // Type of the operand
-        , typename = void >  // Restricting condition
-struct HasSIMDSqrtHelper
-{
-   enum : bool { value = false };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template<>
-struct HasSIMDSqrtHelper< float >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template<>
-struct HasSIMDSqrtHelper< double >
-{
-   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+/*!\brief Auxiliary alias declaration for the HasSIMDSqrt type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >  // Type of the operand
+using HasSIMDSqrtHelper =
+   BoolConstant< ( IsFloat_v<T> &&
+                   ( bool( BLAZE_SSE_MODE     ) ||
+                     bool( BLAZE_AVX_MODE     ) ||
+                     bool( BLAZE_MIC_MODE     ) ||
+                     bool( BLAZE_AVX512F_MODE ) ) ) ||
+                 ( IsDouble_v<T> &&
+                   ( bool( BLAZE_SSE2_MODE    ) ||
+                     bool( BLAZE_AVX_MODE     ) ||
+                     bool( BLAZE_MIC_MODE     ) ||
+                     bool( BLAZE_AVX512F_MODE ) ) ) >;
 /*! \endcond */
 //*************************************************************************************************
 

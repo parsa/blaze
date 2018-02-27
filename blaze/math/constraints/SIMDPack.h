@@ -58,7 +58,7 @@ namespace blaze {
 // In case the given data type \a T is not a SIMD pack, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK(T) \
-   static_assert( ::blaze::IsSIMDPack<T>::value, "Non-SIMD pack detected" )
+   static_assert( ::blaze::IsSIMDPack_v<T>, "Non-SIMD pack detected" )
 //*************************************************************************************************
 
 
@@ -77,7 +77,7 @@ namespace blaze {
 // In case the given data type \a T is a SIMD pack, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_PACK(T) \
-   static_assert( !::blaze::IsSIMDPack<T>::value, "SIMD pack detected" )
+   static_assert( !::blaze::IsSIMDPack_v<T>, "SIMD pack detected" )
 //*************************************************************************************************
 
 } // namespace blaze

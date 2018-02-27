@@ -105,12 +105,12 @@ class TSVecTSMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse vector expression.
-   enum : bool { evaluateVector = IsComputation<VT>::value };
+   enum : bool { evaluateVector = IsComputation_v<VT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation<MT>::value };
+   enum : bool { evaluateMatrix = RequiresEvaluation_v<MT> };
    //**********************************************************************************************
 
    //**********************************************************************************************

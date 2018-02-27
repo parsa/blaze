@@ -253,7 +253,7 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -263,8 +263,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -274,8 +274,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -285,8 +285,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -296,8 +296,8 @@ class Row<MT,true,true,SF,CRAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDDiv_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -429,7 +429,7 @@ inline Row<MT,true,true,SF,CRAs...>::Row( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the row
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( matrix_.rows() <= row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -737,19 +737,19 @@ inline Row<MT,true,true,SF,CRAs...>&
 {
    decltype(auto) left( derestrict( matrix_ ) );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
 
    for( size_t j=jbegin; j<jend; ++j ) {
-      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, row(), j, rhs ) )
+      if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, row(), j, rhs ) )
          left(row(),j) = rhs;
    }
 
@@ -784,7 +784,7 @@ inline Row<MT,true,true,SF,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerVector<ElementType,true> tmp( list, size() );
       if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -835,7 +835,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression<MT>::value && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -888,12 +888,12 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       smpAssign( left, right );
    }
@@ -943,7 +943,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -996,7 +996,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1048,7 +1048,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1099,7 +1099,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1331,13 +1331,13 @@ inline Row<MT,true,true,SF,CRAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsStrictlyUpper_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsStrictlyLower_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
@@ -1738,7 +1738,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
@@ -1861,7 +1861,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
@@ -1972,7 +1972,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
@@ -2083,7 +2083,7 @@ inline EnableIf_< typename Row<MT,true,true,SF,CRAs...>::BLAZE_TEMPLATE Vectoriz
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t columns( size() );
 
@@ -2789,7 +2789,7 @@ inline Row<MT,false,true,false,CRAs...>::Row( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the row
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( matrix_.rows() <= row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -3084,19 +3084,19 @@ inline Row<MT,false,true,false,CRAs...>&
 {
    decltype(auto) left( derestrict( matrix_ ) );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
 
    for( size_t j=jbegin; j<jend; ++j ) {
-      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, row(), j, rhs ) )
+      if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, row(), j, rhs ) )
          left(row(),j) = rhs;
    }
 
@@ -3130,7 +3130,7 @@ inline Row<MT,false,true,false,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerVector<ElementType,true> tmp( list, size() );
       if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3180,7 +3180,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression<MT>::value && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -3233,12 +3233,12 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType tmp( right );
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       smpAssign( left, right );
    }
@@ -3287,7 +3287,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -3339,7 +3339,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -3390,7 +3390,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -3440,7 +3440,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -3637,13 +3637,13 @@ inline void Row<MT,false,true,false,CRAs...>::reset()
 {
    using blaze::clear;
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
@@ -3684,13 +3684,13 @@ inline Row<MT,false,true,false,CRAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsStrictlyUpper_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsStrictlyLower_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
@@ -4272,7 +4272,7 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -4282,8 +4282,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -4293,8 +4293,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -4304,8 +4304,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -4315,8 +4315,8 @@ class Row<MT,false,true,true,CRAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+                            HasSIMDDiv_v< ElementType, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -4448,7 +4448,7 @@ inline Row<MT,false,true,true,CRAs...>::Row( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the row
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( matrix_.rows() <= row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -4739,19 +4739,19 @@ inline Row<MT,false,true,true,CRAs...>&
 {
    decltype(auto) left( derestrict( matrix_ ) );
 
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
 
    for( size_t i=ibegin; i<iend; ++i ) {
-      if( !IsRestricted<MT>::value || IsTriangular<MT>::value || trySet( matrix_, i, row(), rhs ) )
+      if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( matrix_, i, row(), rhs ) )
          left(i,row()) = rhs;
    }
 
@@ -4785,7 +4785,7 @@ inline Row<MT,false,true,true,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to row" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       const InitializerVector<ElementType,true> tmp( list, size() );
       if( !tryAssign( matrix_, tmp, row(), 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -4835,7 +4835,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression<MT>::value && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4887,12 +4887,12 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       smpAssign( left, right );
    }
@@ -4941,7 +4941,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -4993,7 +4993,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -5044,7 +5044,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -5094,7 +5094,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -5317,13 +5317,13 @@ inline Row<MT,false,true,true,CRAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_v<MT> )
+                        ?( ( IsStrictlyLower_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_v<MT> )
+                        ?( ( IsStrictlyUpper_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
@@ -5709,7 +5709,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 
@@ -5829,7 +5829,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 
@@ -5937,7 +5937,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 
@@ -6045,7 +6045,7 @@ inline EnableIf_< typename Row<MT,false,true,true,CRAs...>::BLAZE_TEMPLATE Vecto
 
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
    const size_t rows( size() );
 

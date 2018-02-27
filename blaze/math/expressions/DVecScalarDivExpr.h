@@ -123,7 +123,7 @@ class DVecScalarDivExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = DivExprTrait_t<RN,ST>;
@@ -137,7 +137,7 @@ class DVecScalarDivExpr
        evaluation, \a useAssign will be set to 1 and the division expression will be evaluated
        via the \a assign function family. Otherwise \a useAssign will be set to 0 and the
        expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = IsComputation<VT>::value && RequiresEvaluation<VT>::value };
+   enum : bool { useAssign = IsComputation_v<VT> && RequiresEvaluation_v<VT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -429,9 +429,9 @@ class DVecScalarDivExpr
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT::simdEnabled &&
-                               IsNumeric<ET>::value &&
-                               ( HasSIMDDiv<ET,ST>::value ||
-                                 HasSIMDDiv<UnderlyingElement_t<ET>,ST>::value ) };
+                               IsNumeric_v<ET> &&
+                               ( HasSIMDDiv_v<ET,ST> ||
+                                 HasSIMDDiv_v<UnderlyingElement_t<ET>,ST> ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -552,7 +552,7 @@ class DVecScalarDivExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsExpression<VT>::value && vector_.canAlias( alias );
+      return IsExpression_v<VT> && vector_.canAlias( alias );
    }
    //**********************************************************************************************
 
@@ -1085,7 +1085,7 @@ inline decltype(auto) operator/( const DenseVector<VT,TF>& vec, ST scalar )
    using ReturnType = typename DVecScalarDivExprHelper<VT,ST,TF>::Type;
    using ScalarType = RightOperand_t<ReturnType>;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_v<ReturnType> ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
    }
    else {
@@ -1187,7 +1187,7 @@ inline decltype(auto) operator/( const DVecScalarDivExpr<VT,ST1,TF>& vec, ST2 sc
    using ReturnType = typename DVecScalarDivExprHelper<VT,MultType,TF>::Type;
    using ScalarType = RightOperand_t<ReturnType>;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_v<ReturnType> ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );
    }
    else {

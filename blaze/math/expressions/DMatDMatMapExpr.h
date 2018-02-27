@@ -134,7 +134,7 @@ class DMatDMatMapExpr
        the addition expression will be evaluated via the \a assign function family. Otherwise
        \a useAssign will be set to 0 and the expression will be evaluated via the subscript
        operator. */
-   enum : bool { useAssign = ( RequiresEvaluation<MT1>::value || RequiresEvaluation<MT2>::value ) };
+   enum : bool { useAssign = ( RequiresEvaluation_v<MT1> || RequiresEvaluation_v<MT2> ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -609,8 +609,8 @@ class DMatDMatMapExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression<MT1>::value && lhs_.canAlias( alias ) ) ||
-             ( IsExpression<MT2>::value && rhs_.canAlias( alias ) );
+      return ( IsExpression_v<MT1> && lhs_.canAlias( alias ) ) ||
+             ( IsExpression_v<MT2> && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 

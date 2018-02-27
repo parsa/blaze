@@ -88,7 +88,7 @@ struct Min
    // \return \a true in case SIMD is enabled for the data types \a T1 and \a T2, \a false if not.
    */
    template< typename T1, typename T2 >
-   static constexpr bool simdEnabled() { return HasSIMDMin<T1,T2>::value; }
+   static constexpr bool simdEnabled() { return HasSIMDMin_v<T1,T2>; }
    //**********************************************************************************************
 
    //**********************************************************************************************

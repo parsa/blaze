@@ -124,7 +124,7 @@ class DMatTDMatSchurExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -138,7 +138,7 @@ class DMatTDMatSchurExpr
        return by value, \a useAssign will be set to 1 and the Schur product expression will be
        evaluated via the \a assign function family. Otherwise \a useAssign will be set to 0
        and the expression will be evaluated via the function call operator. */
-   enum : bool { useAssign = RequiresEvaluation<MT1>::value || RequiresEvaluation<MT2>::value || !returnExpr };
+   enum : bool { useAssign = RequiresEvaluation_v<MT1> || RequiresEvaluation_v<MT2> || !returnExpr };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -289,8 +289,8 @@ class DMatTDMatSchurExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression<MT1>::value && ( RequiresEvaluation<MT1>::value ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
-             ( IsExpression<MT2>::value && ( RequiresEvaluation<MT2>::value ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+      return ( IsExpression_v<MT1> && ( RequiresEvaluation_v<MT1> ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsExpression_v<MT2> && ( RequiresEvaluation_v<MT2> ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
    }
    //**********************************************************************************************
 
@@ -401,7 +401,7 @@ class DMatTDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          schurAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -729,7 +729,7 @@ class DMatTDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSchurAssign( ~lhs, rhs.rhs_ );
       }
       else {

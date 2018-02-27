@@ -445,7 +445,7 @@ inline DisableIf_< Or< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_t<MT1
 
    Tmp tmp( A );
 
-   if( IsRowMajorMatrix<MT1>::value )
+   if( IsRowMajorMatrix_v<MT1> )
       geev( tmp, ~V, ~w );
    else
       geev( tmp, ~w, ~V );

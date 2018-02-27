@@ -59,7 +59,7 @@ namespace blaze {
 // from the MatEvalExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATEVALEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatEvalExpr<T>::value, "Non-matrix evaluation expression type detected" )
+   static_assert( ::blaze::IsMatEvalExpr_v<T>, "Non-matrix evaluation expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the MatEvalExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATEVALEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatEvalExpr<T>::value, "Matrix evaluation expression type detected" )
+   static_assert( !::blaze::IsMatEvalExpr_v<T>, "Matrix evaluation expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_LOWER_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsLower<T>::value, "Non-lower triangular matrix type detected" )
+   static_assert( ::blaze::IsLower_v<T>, "Non-lower triangular matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsLower<T>::value, "Lower triangular matrix type detected" )
+   static_assert( !::blaze::IsLower_v<T>, "Lower triangular matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -59,7 +59,7 @@ namespace blaze {
 // base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_EXPRESSION_TYPE(T) \
-   static_assert( ::blaze::IsExpression<T>::value, "Non-expression type detected" )
+   static_assert( ::blaze::IsExpression_v<T>, "Non-expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE(T) \
-   static_assert( !::blaze::IsExpression<T>::value, "Expression type detected" )
+   static_assert( !::blaze::IsExpression_v<T>, "Expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

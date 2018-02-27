@@ -59,7 +59,7 @@ namespace blaze {
 // from the VecMapExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECMAPEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecMapExpr<T>::value, "Non-unary vector map expression type detected" )
+   static_assert( ::blaze::IsVecMapExpr_v<T>, "Non-unary vector map expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the VecMapExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECMAPEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecMapExpr<T>::value, "Unary vector map expression type detected" )
+   static_assert( !::blaze::IsVecMapExpr_v<T>, "Unary vector map expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

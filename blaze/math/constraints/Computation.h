@@ -59,7 +59,7 @@ namespace blaze {
 // the Computation base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COMPUTATION_TYPE(T) \
-   static_assert( ::blaze::IsComputation<T>::value, "Non-computation type detected" )
+   static_assert( ::blaze::IsComputation_v<T>, "Non-computation type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // Computation base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE(T) \
-   static_assert( !::blaze::IsComputation<T>::value, "Computation type detected" )
+   static_assert( !::blaze::IsComputation_v<T>, "Computation type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

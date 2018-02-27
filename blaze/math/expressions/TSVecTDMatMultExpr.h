@@ -111,12 +111,12 @@ class TSVecTDMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse vector expression.
-   enum : bool { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
+   enum : bool { evaluateVector = IsComputation_v<VT> || RequiresEvaluation_v<VT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation<MT>::value };
+   enum : bool { evaluateMatrix = RequiresEvaluation_v<MT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -209,20 +209,20 @@ class TSVecTDMatMultExpr
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.columns(), "Invalid vector access index" );
 
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          return vec_[index] * mat_(index,index);
       }
-      else if( IsLower<MT>::value )
+      else if( IsLower_v<MT> )
       {
-         const size_t begin( IsStrictlyLower<MT>::value ? index+1UL : index );
+         const size_t begin( IsStrictlyLower_v<MT> ? index+1UL : index );
          const size_t n    ( mat_.rows() - begin );
          return subvector( vec_, begin, n, unchecked ) *
                 subvector( column( mat_, index, unchecked ), begin, n, unchecked );
       }
-      else if( IsUpper<MT>::value )
+      else if( IsUpper_v<MT> )
       {
-         const size_t n( IsStrictlyUpper<MT>::value ? index : index+1UL );
+         const size_t n( IsStrictlyUpper_v<MT> ? index : index+1UL );
          return subvector( vec_, 0UL, n, unchecked ) *
                 subvector( column( mat_, index, unchecked ), 0UL, n, unchecked );
       }

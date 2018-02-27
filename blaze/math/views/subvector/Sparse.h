@@ -595,7 +595,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>::Subvector( VT& vector, RSAs... args )
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the subvector
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( offset() + size() > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
@@ -1010,7 +1010,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> || right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       reset();
       assign( left, tmp );

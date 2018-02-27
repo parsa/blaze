@@ -43,8 +43,8 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -61,13 +61,15 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the HasSIMDDiv type trait.
+// \ingroup math_type_traits
+*/
 template< typename T1        // Type of the left-hand side operand
         , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDDivHelper
-{
-   enum : bool { value = false };
-};
+   : public FalseType
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -75,22 +77,21 @@ struct HasSIMDDivHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-struct HasSIMDDivHelper< T1, T2, EnableIf_< And< IsNumeric<T1>, IsIntegral<T1>, IsSigned<T1>
-                                               , IsNumeric<T2>, IsIntegral<T2>, IsSigned<T2>
-                                               , Bool< sizeof(T1) == sizeof(T2) > > > >
-{
-   enum : bool { value = ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) <= 2UL ) ||
-                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) };
-};
+struct HasSIMDDivHelper< T1, T2, EnableIfTrue_< IsNumeric_v<T1> && IsIntegral_v<T1> &&
+                                                IsSigned_v<T1> && IsNumeric_v<T2> &&
+                                                IsIntegral_v<T2> && IsSigned_v<T2> &&
+                                                sizeof(T1) == sizeof(T2) > >
+   : public BoolConstant< ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
+                          ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) <= 2UL ) ||
+                          ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) >
+{};
 
 template< typename T >
-struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
-{
-   enum : bool { value = ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
-                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) };
-};
+struct HasSIMDDivHelper< complex<T>, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && IsSigned_v<T> > >
+   : public BoolConstant< ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
+                          ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
+                          ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -99,12 +100,11 @@ struct HasSIMDDivHelper< complex<T>, T, EnableIf_< And< IsNumeric<T>, IsIntegral
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDDivHelper< float, float >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE_MODE     ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -113,12 +113,11 @@ struct HasSIMDDivHelper< float, float >
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDDivHelper< double, double >
-{
-   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE2_MODE    ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -59,7 +59,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_CUSTOM_TYPE(T) \
-   static_assert( ::blaze::IsCustom<T>::value, "Non-custom type detected" )
+   static_assert( ::blaze::IsCustom_v<T>, "Non-custom type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CUSTOM_TYPE(T) \
-   static_assert( !::blaze::IsCustom<T>::value, "Custom type dected" )
+   static_assert( !::blaze::IsCustom_v<T>, "Custom type dected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -606,7 +606,7 @@ inline Elements<VT,TF,false,CEAs...>::Elements( VT& vector, REAs... args )
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the elements
 {
-   if( !Contains< TypeList<REAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<REAs...>, Unchecked > ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( vector_.size() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -882,7 +882,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    const InitializerVector<ElementType,TF> tmp( list, size() );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), tmp[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -932,7 +932,7 @@ inline Elements<VT,TF,false,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), rhs[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -989,7 +989,7 @@ inline Elements<VT,TF,false,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -999,7 +999,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value || right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> || right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       assign( left, tmp );
    }
@@ -1046,7 +1046,7 @@ inline Elements<VT,TF,false,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !tryAdd( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1056,7 +1056,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       addAssign( left, tmp );
    }
@@ -1103,7 +1103,7 @@ inline Elements<VT,TF,false,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySub( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1113,7 +1113,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       subAssign( left, tmp );
    }
@@ -1166,7 +1166,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    const MultType tmp( *this * (~rhs) );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), tmp[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1224,7 +1224,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    const DivType tmp( *this / (~rhs) );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), tmp[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1281,7 +1281,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    const CrossType tmp( *this % (~rhs) );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), tmp[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );

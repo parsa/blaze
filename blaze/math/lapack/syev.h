@@ -176,7 +176,7 @@ inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
    int lwork( 10*n + 2 );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_v<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

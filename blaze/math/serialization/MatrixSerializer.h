@@ -188,7 +188,7 @@ class MatrixSerializer
    template< typename T >
    struct MatrixValueMapping
    {
-      enum { value = MatrixValueMappingHelper< IsDenseMatrix<T>::value, IsRowMajorMatrix<T>::value >::value };
+      enum { value = MatrixValueMappingHelper< IsDenseMatrix_v<T>, IsRowMajorMatrix_v<T> >::value };
       BLAZE_CONSTRAINT_MUST_BE_MATRIX_TYPE( T );
    };
    /*! \endcond */
@@ -400,7 +400,7 @@ void MatrixSerializer::serializeHeader( Archive& archive, const MT& mat )
    archive << uint8_t ( sizeof( ET ) );
    archive << uint64_t( mat.rows() );
    archive << uint64_t( mat.columns() );
-   archive << uint64_t( ( IsDenseMatrix<MT>::value ) ? ( mat.rows()*mat.columns() ) : ( mat.nonZeros() ) );
+   archive << uint64_t( ( IsDenseMatrix_v<MT> ) ? ( mat.rows()*mat.columns() ) : ( mat.nonZeros() ) );
 
    if( !archive ) {
       BLAZE_THROW_RUNTIME_ERROR( "File header could not be serialized" );
@@ -422,7 +422,7 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::serializeMatrix( Archive& archive, const DenseMatrix<MT,SO>& mat )
 {
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_v<MT> ) {
       for( size_t i=0UL; i<(~mat).rows(); ++i ) {
          for( size_t j=0UL; j<(~mat).columns(); ++j ) {
             archive << (~mat)(i,j);
@@ -459,7 +459,7 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,
 {
    using ConstIterator = ConstIterator_t<MT>;
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_v<MT> ) {
       for( size_t i=0UL; i<(~mat).rows(); ++i ) {
          archive << uint64_t( (~mat).nonZeros( i ) );
          for( ConstIterator element=(~mat).begin(i); element!=(~mat).end(i); ++element ) {
@@ -544,7 +544,7 @@ void MatrixSerializer::deserializeHeader( Archive& archive, const MT& mat )
    else if( elementSize_ != sizeof( ET ) ) {
       BLAZE_THROW_RUNTIME_ERROR( "Invalid element size detected" );
    }
-   else if( !IsResizable<MT>::value && ( rows_ != mat.rows() || columns_ != mat.columns() ) ) {
+   else if( !IsResizable_v<MT> && ( rows_ != mat.rows() || columns_ != mat.columns() ) ) {
       BLAZE_THROW_RUNTIME_ERROR( "Invalid matrix size detected" );
    }
    else if( number_ > rows_*columns_ ) {

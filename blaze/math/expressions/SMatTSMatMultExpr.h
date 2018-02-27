@@ -122,8 +122,8 @@ class SMatTSMatMultExpr
        the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = ( IsRowMajorMatrix<T1>::value    && IsSymmetric<T3>::value ) ||
-                            ( IsColumnMajorMatrix<T1>::value && IsSymmetric<T2>::value ) };
+      enum : bool { value = ( IsRowMajorMatrix_v<T1>    && IsSymmetric_v<T3> ) ||
+                            ( IsColumnMajorMatrix_v<T1> && IsSymmetric_v<T2> ) };
    };
    /*! \endcond */
    //**********************************************************************************************

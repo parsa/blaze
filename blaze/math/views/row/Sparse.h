@@ -334,7 +334,7 @@ inline Row<MT,true,false,SF,CRAs...>::Row( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the row
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( matrix_.rows() <= row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -726,7 +726,7 @@ inline Row<MT,true,false,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -784,7 +784,7 @@ inline Row<MT,true,false,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -2598,7 +2598,7 @@ inline Row<MT,false,false,false,CRAs...>::Row( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the row
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( matrix_.rows() <= row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -3353,13 +3353,13 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CRAs >  // Compile time row arguments
 inline void Row<MT,false,false,false,CRAs...>::reset()
 {
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( row()+1UL )
                            :( row() ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( row() )
                            :( row()+1UL ) )
                         :( size() ) );
@@ -4285,7 +4285,7 @@ inline Row<MT,false,false,true,CRAs...>::Row( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the row
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( matrix_.rows() <= row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -4664,7 +4664,7 @@ inline Row<MT,false,false,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -4721,7 +4721,7 @@ inline Row<MT,false,false,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );

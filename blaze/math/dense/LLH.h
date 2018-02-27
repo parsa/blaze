@@ -141,7 +141,7 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
 
    const size_t n( (~A).rows() );
 
-   if( ( !IsResizable<MT2>::value && ( (~L).rows() != n || (~L).columns() != n ) ) ) {
+   if( ( !IsResizable_v<MT2> && ( (~L).rows() != n || (~L).columns() != n ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Dimensions of fixed size matrix do not match" );
    }
 
@@ -150,7 +150,7 @@ void llh( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& L )
    resize( ~L, n, n, false );
    reset( l );
 
-   if( IsRowMajorMatrix<MT2>::value ) {
+   if( IsRowMajorMatrix_v<MT2> ) {
       for( size_t i=0UL; i<n; ++i ) {
          for( size_t j=0UL; j<=i; ++j ) {
             l(i,j) = (~A)(i,j);

@@ -59,7 +59,7 @@ namespace blaze {
 // from the MatMapExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATMAPEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatMapExpr<T>::value, "Non-unary matrix map expression type detected" )
+   static_assert( ::blaze::IsMatMapExpr_v<T>, "Non-unary matrix map expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the MatMapExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATMAPEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatMapExpr<T>::value, "Unary matrix map expression type detected" )
+   static_assert( !::blaze::IsMatMapExpr_v<T>, "Unary matrix map expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

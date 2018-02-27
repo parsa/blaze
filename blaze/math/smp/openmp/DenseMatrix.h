@@ -111,7 +111,7 @@ void openmpAssign( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs, O
    using ET1 = ElementType_t<MT1>;
    using ET2 = ElementType_t<MT2>;
 
-   constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable_v<ET1,ET2> );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_t<MT1> >::size );
 
    const bool lhsAligned( (~lhs).isAligned() );

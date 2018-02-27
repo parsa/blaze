@@ -336,13 +336,13 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST 
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       if( !tryMult( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
       }
    }
 
-   if( !IsResizable< ElementType_t<MT> >::value && isZero( scalar ) )
+   if( !IsResizable_v< ElementType_t<MT> > && isZero( scalar ) )
    {
       reset( ~mat );
    }
@@ -413,7 +413,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST 
 
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       if( !tryDiv( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
       }
@@ -429,7 +429,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST 
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
 
-   if( IsInvertible<ScalarType>::value ) {
+   if( IsInvertible_v<ScalarType> ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );
       const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
       for( size_t i=0UL; i<iend; ++i ) {
@@ -628,13 +628,13 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsSymmetric<MT>::value )
+   if( IsSymmetric_v<MT> )
       return true;
 
    if( !isSquare( ~sm ) )
       return false;
 
-   if( IsUniform<MT>::value || (~sm).rows() < 2UL )
+   if( IsUniform_v<MT> || (~sm).rows() < 2UL )
       return true;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -722,13 +722,13 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsHermitian<MT>::value )
+   if( IsHermitian_v<MT> )
       return true;
 
-   if( !IsNumeric<ET>::value || !isSquare( ~sm ) )
+   if( !IsNumeric_v<ET> || !isSquare( ~sm ) )
       return false;
 
-   if( IsBuiltin<ET>::value && IsUniform<MT>::value )
+   if( IsBuiltin_v<ET> && IsUniform_v<MT> )
       return true;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -795,8 +795,8 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
 
    using ConstIterator = ConstIterator_t<MT>;
 
-   const size_t ibegin( ( IsStrictlyLower<MT>::value )?( 1UL ):( 0UL ) );
-   const size_t iend  ( ( IsStrictlyUpper<MT>::value )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
+   const size_t ibegin( ( IsStrictlyLower_v<MT> )?( 1UL ):( 0UL ) );
+   const size_t iend  ( ( IsStrictlyUpper_v<MT> )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
 
    for( size_t i=ibegin; i<iend; ++i ) {
       for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
@@ -831,8 +831,8 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
 
    using ConstIterator = ConstIterator_t<MT>;
 
-   const size_t jbegin( ( IsStrictlyUpper<MT>::value )?( 1UL ):( 0UL ) );
-   const size_t jend  ( ( IsStrictlyLower<MT>::value )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
+   const size_t jbegin( ( IsStrictlyUpper_v<MT> )?( 1UL ):( 0UL ) );
+   const size_t jend  ( ( IsStrictlyLower_v<MT> )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
 
    for( size_t j=jbegin; j<jend; ++j ) {
       for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
@@ -989,10 +989,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniform( const SparseMatrix<MT,SO>& sm )
 {
-   if( IsUniTriangular<MT>::value )
+   if( IsUniTriangular_v<MT> )
       return false;
 
-   if( IsUniform<MT>::value ||
+   if( IsUniform_v<MT> ||
        (~sm).rows() == 0UL || (~sm).columns() == 0UL ||
        ( (~sm).rows() == 1UL && (~sm).columns() == 1UL ) )
       return true;
@@ -1058,7 +1058,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsLower<MT>::value )
+   if( IsLower_v<MT> )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1149,7 +1149,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsUniLower<MT>::value )
+   if( IsUniLower_v<MT> )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1256,10 +1256,10 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsStrictlyLower<MT>::value )
+   if( IsStrictlyLower_v<MT> )
       return true;
 
-   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~sm ) )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -1345,7 +1345,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsUpper<MT>::value )
+   if( IsUpper_v<MT> )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1436,7 +1436,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsUniUpper<MT>::value )
+   if( IsUniUpper_v<MT> )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1543,10 +1543,10 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsStrictlyUpper<MT>::value )
+   if( IsStrictlyUpper_v<MT> )
       return true;
 
-   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~sm ) )
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~sm ) )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
@@ -1632,7 +1632,7 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsDiagonal<MT>::value )
+   if( IsDiagonal_v<MT> )
       return true;
 
    if( !isSquare( ~sm ) )
@@ -1717,7 +1717,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
-   if( IsIdentity<MT>::value )
+   if( IsIdentity_v<MT> )
       return true;
 
    if( !isSquare( ~sm ) )

@@ -126,7 +126,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+   constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -162,8 +162,8 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
-      const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
+      const size_t ibegin( IsLower_v<MT2> ? kk : 0UL );
+      const size_t iend  ( IsUpper_v<MT2> ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
       A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock, unchecked ) );
@@ -175,8 +175,8 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( ( IsLower<MT3>::value && kk+kblock <= jj ) ||
-             ( IsUpper<MT3>::value && jj+jblock <= kk ) ) {
+         if( ( IsLower_v<MT3> && kk+kblock <= jj ) ||
+             ( IsUpper_v<MT3> && jj+jblock <= kk ) ) {
             jj += jblock;
             continue;
          }
@@ -185,7 +185,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -453,7 +453,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
    {
       const size_t ksize( K - kk );
 
-      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
+      const size_t ibegin( IsLower_v<MT2> ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
       A2 = serial( submatrix( A, ibegin, kk, isize, ksize, unchecked ) );
@@ -465,7 +465,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( IsUpper<MT3>::value && jj+jblock <= kk ) {
+         if( IsUpper_v<MT3> && jj+jblock <= kk ) {
             jj += jblock;
             continue;
          }
@@ -474,7 +474,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -626,7 +626,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+   constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -662,8 +662,8 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
-      const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
+      const size_t jbegin( IsUpper_v<MT3> ? kk : 0UL );
+      const size_t jend  ( IsLower_v<MT3> ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
       B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize, unchecked ) );
@@ -675,8 +675,8 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( ( IsLower<MT2>::value && ii+iblock <= kk ) ||
-             ( IsUpper<MT2>::value && kk+kblock <= ii ) ) {
+         if( ( IsLower_v<MT2> && ii+iblock <= kk ) ||
+             ( IsUpper_v<MT2> && kk+kblock <= ii ) ) {
             ii += iblock;
             continue;
          }
@@ -685,7 +685,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint<ET3>::value )
+         if( IsFloatingPoint_v<ET3> )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -937,7 +937,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
    {
       const size_t ksize( K - kk );
 
-      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
+      const size_t jbegin( IsUpper_v<MT3> ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
       B2 = serial( submatrix( B, kk, jbegin, ksize, jsize, unchecked ) );
@@ -949,7 +949,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( IsLower<MT2>::value && ii+iblock <= kk ) {
+         if( IsLower_v<MT2> && ii+iblock <= kk ) {
             ii += iblock;
             continue;
          }
@@ -958,7 +958,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -1154,7 +1154,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+   constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -1192,8 +1192,8 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
-      const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
+      const size_t ibegin( IsLower_v<MT2> ? kk : 0UL );
+      const size_t iend  ( IsUpper_v<MT2> ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
       A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock, unchecked ) );
@@ -1205,8 +1205,8 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( ( IsLower<MT3>::value && kk+kblock <= jj ) ||
-             ( IsUpper<MT3>::value && jj+jblock <= kk ) ) {
+         if( ( IsLower_v<MT3> && kk+kblock <= jj ) ||
+             ( IsUpper_v<MT3> && jj+jblock <= kk ) ) {
             jj += jblock;
             continue;
          }
@@ -1215,7 +1215,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -1493,7 +1493,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    {
       const size_t ksize( K - kk );
 
-      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
+      const size_t ibegin( IsLower_v<MT2> ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
       A2 = serial( submatrix( A, ibegin, kk, isize, ksize, unchecked ) );
@@ -1505,7 +1505,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( IsUpper<MT3>::value && jj+jblock <= kk ) {
+         if( IsUpper_v<MT3> && jj+jblock <= kk ) {
             jj += jblock;
             continue;
          }
@@ -1514,7 +1514,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -1680,7 +1680,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+   constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -1718,8 +1718,8 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
-      const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
+      const size_t jbegin( IsUpper_v<MT3> ? kk : 0UL );
+      const size_t jend  ( IsLower_v<MT3> ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
       B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize, unchecked ) );
@@ -1731,8 +1731,8 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( ( IsLower<MT2>::value && ii+iblock <= kk ) ||
-             ( IsUpper<MT2>::value && kk+kblock <= ii ) ) {
+         if( ( IsLower_v<MT2> && ii+iblock <= kk ) ||
+             ( IsUpper_v<MT2> && kk+kblock <= ii ) ) {
             ii += iblock;
             continue;
          }
@@ -1741,7 +1741,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint<ET3>::value )
+         if( IsFloatingPoint_v<ET3> )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -1999,7 +1999,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    {
       const size_t ksize( K - kk );
 
-      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
+      const size_t jbegin( IsUpper_v<MT3> ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
       B2 = serial( submatrix( B, kk, jbegin, ksize, jsize, unchecked ) );
@@ -2011,7 +2011,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( IsLower<MT2>::value && ii+iblock <= kk ) {
+         if( IsLower_v<MT2> && ii+iblock <= kk ) {
             ii += iblock;
             continue;
          }
@@ -2020,7 +2020,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -2224,7 +2224,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+   constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t JBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -2262,8 +2262,8 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
-      const size_t iend  ( IsUpper<MT2>::value ? kk+kblock : M );
+      const size_t ibegin( IsLower_v<MT2> ? kk : 0UL );
+      const size_t iend  ( IsUpper_v<MT2> ? kk+kblock : M );
       const size_t isize ( iend - ibegin );
 
       A2 = serial( submatrix< remainder ? unaligned : aligned >( A, ibegin, kk, isize, kblock, unchecked ) );
@@ -2275,8 +2275,8 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( ( IsLower<MT3>::value && kk+kblock <= jj ) ||
-             ( IsUpper<MT3>::value && jj+jblock <= kk ) ) {
+         if( ( IsLower_v<MT3> && kk+kblock <= jj ) ||
+             ( IsUpper_v<MT3> && jj+jblock <= kk ) ) {
             jj += jblock;
             continue;
          }
@@ -2285,7 +2285,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -2559,7 +2559,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    {
       const size_t ksize( K - kk );
 
-      const size_t ibegin( IsLower<MT2>::value ? kk : 0UL );
+      const size_t ibegin( IsLower_v<MT2> ? kk : 0UL );
       const size_t isize ( M - ibegin );
 
       A2 = serial( submatrix( A, ibegin, kk, isize, ksize, unchecked ) );
@@ -2571,7 +2571,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
       {
          jblock = ( ( jj+JBLOCK <= N )?( JBLOCK ):( N - jj ) );
 
-         if( IsUpper<MT3>::value && jj+jblock <= kk ) {
+         if( IsUpper_v<MT3> && jj+jblock <= kk ) {
             jj += jblock;
             continue;
          }
@@ -2580,7 +2580,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
 
          size_t i( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (i+5UL) <= isize; i+=5UL )
             {
@@ -2742,7 +2742,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
    enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
 
-   constexpr bool remainder( !IsPadded<MT2>::value || !IsPadded<MT3>::value );
+   constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
    constexpr size_t KBLOCK( MMM_OUTER_BLOCK_SIZE * ( 16UL/sizeof(ET1) ) );
    constexpr size_t IBLOCK( MMM_INNER_BLOCK_SIZE );
@@ -2780,8 +2780,8 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
          kblock = ( ( kk+KBLOCK <= K )?( KBLOCK ):( K - kk ) );
       }
 
-      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
-      const size_t jend  ( IsLower<MT3>::value ? kk+kblock : N );
+      const size_t jbegin( IsUpper_v<MT3> ? kk : 0UL );
+      const size_t jend  ( IsLower_v<MT3> ? kk+kblock : N );
       const size_t jsize ( jend - jbegin );
 
       B2 = serial( submatrix< remainder ? unaligned : aligned >( B, kk, jbegin, kblock, jsize, unchecked ) );
@@ -2793,8 +2793,8 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( ( IsLower<MT2>::value && ii+iblock <= kk ) ||
-             ( IsUpper<MT2>::value && kk+kblock <= ii ) ) {
+         if( ( IsLower_v<MT2> && ii+iblock <= kk ) ||
+             ( IsUpper_v<MT2> && kk+kblock <= ii ) ) {
             ii += iblock;
             continue;
          }
@@ -2803,7 +2803,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint<ET3>::value )
+         if( IsFloatingPoint_v<ET3> )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {
@@ -3065,7 +3065,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    {
       const size_t ksize( K - kk );
 
-      const size_t jbegin( IsUpper<MT3>::value ? kk : 0UL );
+      const size_t jbegin( IsUpper_v<MT3> ? kk : 0UL );
       const size_t jsize ( N - jbegin );
 
       B2 = serial( submatrix( B, kk, jbegin, ksize, jsize, unchecked ) );
@@ -3077,7 +3077,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
       {
          iblock = ( ( ii+IBLOCK <= M )?( IBLOCK ):( M - ii ) );
 
-         if( IsLower<MT2>::value && ii+iblock <= kk ) {
+         if( IsLower_v<MT2> && ii+iblock <= kk ) {
             ii += iblock;
             continue;
          }
@@ -3086,7 +3086,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
 
          size_t j( 0UL );
 
-         if( IsFloatingPoint<ET1>::value )
+         if( IsFloatingPoint_v<ET1> )
          {
             for( ; (j+5UL) <= jsize; j+=5UL )
             {

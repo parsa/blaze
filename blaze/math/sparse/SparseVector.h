@@ -207,13 +207,13 @@ template< typename VT    // Type of the left-hand side sparse vector
         , typename ST >  // Data type of the right-hand side scalar
 inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar )
 {
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
    }
 
-   if( !IsResizable< ElementType_t<VT> >::value && isZero( scalar ) )
+   if( !IsResizable_v< ElementType_t<VT> > && isZero( scalar ) )
    {
       reset( ~vec );
    }
@@ -279,7 +279,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST 
 {
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
@@ -295,7 +295,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST 
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
 
-   if( IsInvertible<ScalarType>::value ) {
+   if( IsInvertible_v<ScalarType> ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );
       for( auto element=left.begin(); element!=left.end(); ++element ) {
          element->value() *= tmp;
@@ -443,7 +443,7 @@ bool isUniform( const SparseVector<VT,TF>& sv )
    using ConstReference = ConstReference_t< RemoveReference_t<CT> >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
 
-   if( IsUniform<VT>::value || (~sv).size() < 2UL )
+   if( IsUniform_v<VT> || (~sv).size() < 2UL )
       return true;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand

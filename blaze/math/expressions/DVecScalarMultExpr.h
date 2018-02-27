@@ -120,7 +120,7 @@ class DVecScalarMultExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN,ST>;
@@ -134,7 +134,7 @@ class DVecScalarMultExpr
        evaluation, \a useAssign will be set to 1 and the multiplication expression will be
        evaluated via the \a assign function family. Otherwise \a useAssign will be set to 0
        and the expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = IsComputation<VT>::value && RequiresEvaluation<VT>::value };
+   enum : bool { useAssign = IsComputation_v<VT> && RequiresEvaluation_v<VT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -426,9 +426,9 @@ class DVecScalarMultExpr
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT::simdEnabled &&
-                               IsNumeric<ET>::value &&
-                               ( HasSIMDMult<ET,ST>::value ||
-                                 HasSIMDMult<UnderlyingElement_t<ET>,ST>::value ) };
+                               IsNumeric_v<ET> &&
+                               ( HasSIMDMult_v<ET,ST> ||
+                                 HasSIMDMult_v<UnderlyingElement_t<ET>,ST> ) };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT::smpAssignable };
@@ -549,7 +549,7 @@ class DVecScalarMultExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return IsExpression<VT>::value && vector_.canAlias( alias );
+      return IsExpression_v<VT> && vector_.canAlias( alias );
    }
    //**********************************************************************************************
 

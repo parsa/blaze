@@ -73,11 +73,11 @@ BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept;
 
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool less( const T1& a, const T2& b )
-   noexcept( IsBuiltin< CommonType_t<T1,T2> >::value );
+   noexcept( IsBuiltin_v< CommonType_t<T1,T2> > );
 
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool greater( const T1& a, const T2& b )
-   noexcept( IsBuiltin< CommonType_t<T1,T2> >::value );
+   noexcept( IsBuiltin_v< CommonType_t<T1,T2> > );
 //@}
 //*************************************************************************************************
 
@@ -97,7 +97,7 @@ inline constexpr int sign( T a ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( T );
 
-   return ( IsSigned<T>::value || IsFloatingPoint<T>::value )
+   return ( IsSigned_v<T> || IsFloatingPoint_v<T> )
           ?( T(0) < a ) - ( a < T(0) )
           :( T(0) < a );
 }
@@ -173,7 +173,7 @@ BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept
 */
 template< typename T >
 BLAZE_ALWAYS_INLINE constexpr bool less_backend( const T& a, const T& b )
-   noexcept( IsBuiltin<T>::value )
+   noexcept( IsBuiltin_v<T> )
 {
    return a < b;
 }
@@ -261,7 +261,7 @@ BLAZE_ALWAYS_INLINE constexpr bool less_backend( long double a, long double b ) 
 */
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool less( const T1& a, const T2& b )
-   noexcept( IsBuiltin< CommonType_t<T1,T2> >::value )
+   noexcept( IsBuiltin_v< CommonType_t<T1,T2> > )
 {
    return less_backend< CommonType_t<T1,T2> >( a, b );
 }
@@ -281,7 +281,7 @@ BLAZE_ALWAYS_INLINE constexpr bool less( const T1& a, const T2& b )
 */
 template< typename T >
 BLAZE_ALWAYS_INLINE constexpr bool greater_backend( const T& a, const T& b )
-   noexcept( IsBuiltin<T>::value )
+   noexcept( IsBuiltin_v<T> )
 {
    return a > b;
 }
@@ -369,7 +369,7 @@ BLAZE_ALWAYS_INLINE constexpr bool greater_backend( long double a, long double b
 */
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool greater( const T1& a, const T2& b )
-   noexcept( IsBuiltin< CommonType_t<T1,T2> >::value )
+   noexcept( IsBuiltin_v< CommonType_t<T1,T2> > )
 {
    return greater_backend< CommonType_t<T1,T2> >( a, b );
 }

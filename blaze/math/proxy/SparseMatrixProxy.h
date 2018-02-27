@@ -73,7 +73,7 @@ namespace blaze {
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the sparse matrix
 class SparseMatrixProxy
-   : public SparseMatrix< PT, IsColumnMajorMatrix<MT>::value >
+   : public SparseMatrix< PT, IsColumnMajorMatrix_v<MT> >
 {
  public:
    //**Type definitions****************************************************************************

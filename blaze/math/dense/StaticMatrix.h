@@ -268,7 +268,7 @@ class StaticMatrix
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -387,8 +387,8 @@ class StaticMatrix
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -400,10 +400,10 @@ class StaticMatrix
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -415,10 +415,10 @@ class StaticMatrix
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -430,9 +430,9 @@ class StaticMatrix
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -570,9 +570,9 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -594,7 +594,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -638,7 +638,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( initializer_list< initializer_list<Type> > list )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -690,7 +690,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -700,13 +700,13 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other*
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = array[i*n+j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i ) {
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -748,7 +748,7 @@ template< typename Other  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[Rows][Cols] )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t i=0UL; i<M; ++i ) {
@@ -778,7 +778,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<M*NN; ++i )
       v_[i] = m.v_[i];
@@ -802,7 +802,7 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
@@ -838,14 +838,14 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
 
    for( size_t i=0UL; i<M; ++i ) {
-      for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : N ); j<NN; ++j ) {
+      for( size_t j=( IsSparseMatrix_v<MT> ? 0UL : N ); j<NN; ++j ) {
          v_[i*NN+j] = Type();
       }
    }
@@ -1402,18 +1402,18 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose( typename IsSquare<This>::Type() );
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose( typename IsSquare<This>::Type() );
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       assign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_v<MT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -2159,7 +2159,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool StaticMatrix<Type,M,N,SO>::isIntact() const noexcept
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=N; j<NN; ++j ) {
             if( v_[i*NN+j] != Type() )
@@ -2546,7 +2546,7 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAs
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
@@ -2646,17 +2646,17 @@ inline DisableIf_<typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedA
 
    for( size_t i=0UL; i<M; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[i*NN+i] += (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                               :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2694,15 +2694,15 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAd
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<M; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( N ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2802,17 +2802,17 @@ inline DisableIf_<typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedS
 
    for( size_t i=0UL; i<M; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[i*NN+i] -= (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                               :( N ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2850,15 +2850,15 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSu
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<M; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( N ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2989,7 +2989,7 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSc
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<M; ++i )
    {
@@ -3145,7 +3145,7 @@ class StaticMatrix<Type,M,N,true>
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -3263,8 +3263,8 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3274,10 +3274,10 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3287,10 +3287,10 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3300,9 +3300,9 @@ class StaticMatrix<Type,M,N,true>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3429,9 +3429,9 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix()
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -3454,7 +3454,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3499,7 +3499,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< initializer_list<Type> > list )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -3521,7 +3521,7 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< initializer_
 
    BLAZE_INTERNAL_ASSERT( i == M, "Invalid number of elements detected" );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( ; i<MM; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
             v_[i+j*MM] = Type();
@@ -3569,7 +3569,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -3579,13 +3579,13 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Othe
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = array[i+j*m];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j ) {
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3628,7 +3628,7 @@ template< typename Other  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[Rows][Cols] )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t j=0UL; j<N; ++j ) {
@@ -3659,7 +3659,7 @@ template< typename Type  // Data type of the matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    for( size_t i=0UL; i<MM*N; ++i )
       v_[i] = m.v_[i];
@@ -3684,7 +3684,7 @@ template< typename Other  // Data type of the foreign matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,SO>& m )
    : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
@@ -3721,14 +3721,14 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
 
    for( size_t j=0UL; j<N; ++j ) {
-      for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : M ); i<MM; ++i ) {
+      for( size_t i=( IsSparseMatrix_v<MT> ? 0UL : M ); i<MM; ++i ) {
          v_[i+j*MM] = Type();
       }
    }
@@ -4282,18 +4282,18 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static matrix" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose( typename IsSquare<This>::Type() );
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose( typename IsSquare<This>::Type() );
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
       StaticMatrix tmp( ~rhs );
       assign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_v<MT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -5049,7 +5049,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline bool StaticMatrix<Type,M,N,true>::isIntact() const noexcept
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=M; i<MM; ++i ) {
             if( v_[i+j*MM] != Type() )
@@ -5441,7 +5441,7 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -5544,17 +5544,17 @@ inline DisableIf_<typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorize
 
    for( size_t j=0UL; j<N; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[j+j*MM] += (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                               :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5593,15 +5593,15 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<N; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( M ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5704,17 +5704,17 @@ inline DisableIf_<typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorize
 
    for( size_t j=0UL; j<N; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[j+j*MM] -= (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                               :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5753,15 +5753,15 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<N; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( M ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5896,7 +5896,7 @@ inline EnableIf_<typename StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<N; ++j )
    {

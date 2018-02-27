@@ -59,7 +59,7 @@ namespace blaze {
 // the Operation base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_OPERATION_TYPE(T) \
-   static_assert( ::blaze::IsOperation<T>::value, "Non-operation type detected" )
+   static_assert( ::blaze::IsOperation_v<T>, "Non-operation type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // Operation base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_OPERATION_TYPE(T) \
-   static_assert( !::blaze::IsOperation<T>::value, "Operation type detected" )
+   static_assert( !::blaze::IsOperation_v<T>, "Operation type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

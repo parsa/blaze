@@ -59,7 +59,7 @@ namespace blaze {
 // DeclUppExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DECLUPPEXPR_TYPE(T) \
-   static_assert( ::blaze::IsDeclUppExpr<T>::value, "Non-declupp expression type detected" )
+   static_assert( ::blaze::IsDeclUppExpr_v<T>, "Non-declupp expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // DeclUppExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DECLUPPEXPR_TYPE(T) \
-   static_assert( !::blaze::IsDeclUppExpr<T>::value, "Declupp expression type detected" )
+   static_assert( !::blaze::IsDeclUppExpr_v<T>, "Declupp expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

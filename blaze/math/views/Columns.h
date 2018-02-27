@@ -988,7 +988,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1031,7 +1031,7 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, RCAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1074,7 +1074,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1118,7 +1118,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, const T* indices
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1168,7 +1168,7 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, const T* i
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1218,7 +1218,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, const T* indice
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1583,7 +1583,7 @@ inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs... ar
    const ColumnData<CCAs1...> cd( args... );
    decltype(auto) indices( columns.idces() );
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( indices.size() <= cd.column() ) {
@@ -1624,7 +1624,7 @@ inline decltype(auto) column( const Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs
    const ColumnData<CCAs1...> cd( args... );
    decltype(auto) indices( columns.idces() );
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( indices.size() <= cd.column() ) {
@@ -1665,7 +1665,7 @@ inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>&& columns, RCAs... a
    const ColumnData<CCAs1...> cd( args... );
    decltype(auto) indices( columns.idces() );
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( indices.size() <= cd.column() ) {

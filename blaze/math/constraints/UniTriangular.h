@@ -59,7 +59,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_UNITRIANGULAR_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsUniTriangular<T>::value, "Non-unitriangular matrix type detected" )
+   static_assert( ::blaze::IsUniTriangular_v<T>, "Non-unitriangular matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsUniTriangular<T>::value, "Unitriangular matrix type detected" )
+   static_assert( !::blaze::IsUniTriangular_v<T>, "Unitriangular matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

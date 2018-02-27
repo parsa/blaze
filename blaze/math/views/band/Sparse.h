@@ -132,7 +132,7 @@ class Band<MT,TF,false,false,CBAs...>
    using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< RequiresEvaluation<MT>::value, const ResultType, const Band& >;
+   using CompositeType = IfTrue_< RequiresEvaluation_v<MT>, const ResultType, const Band& >;
 
    //! Reference to a constant band value.
    using ConstReference = ConstReference_t<MT>;
@@ -309,7 +309,7 @@ class Band<MT,TF,false,false,CBAs...>
       {
          for( ; row_ < matrix_->rows() && column_ < matrix_->columns(); ++row_, ++column_ ) {
             pos_ = matrix_->find( row_, column_ );
-            if( pos_ != matrix_->end( IsRowMajorMatrix<MatrixType>::value ? row_ : column_ ) )
+            if( pos_ != matrix_->end( IsRowMajorMatrix_v<MatrixType> ? row_ : column_ ) )
                break;
          }
       }
@@ -358,7 +358,7 @@ class Band<MT,TF,false,false,CBAs...>
 
          for( ; row_ < matrix_->rows() && column_ < matrix_->columns(); ++row_, ++column_ ) {
             pos_ = matrix_->find( row_, column_ );
-            if( pos_ != matrix_->end( IsRowMajorMatrix<MatrixType>::value ? row_ : column_ ) )
+            if( pos_ != matrix_->end( IsRowMajorMatrix_v<MatrixType> ? row_ : column_ ) )
                break;
          }
 
@@ -434,7 +434,7 @@ class Band<MT,TF,false,false,CBAs...>
          size_t column( rhs.column_ );
 
          for( ; row<row_; ++row, ++column ) {
-            const auto end( matrix_->end( IsRowMajorMatrix<MatrixType>::value ? row : column ) );
+            const auto end( matrix_->end( IsRowMajorMatrix_v<MatrixType> ? row : column ) );
             if( matrix_->find( row, column ) != end )
                ++counter;
          }
@@ -637,7 +637,7 @@ inline Band<MT,TF,false,false,CBAs...>::Band( MT& matrix, RBAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the band
 {
-   if( !Contains< TypeList<RBAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
       if( ( band() > 0L && column() >= matrix.columns() ) ||
           ( band() < 0L && row() >= matrix.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );
@@ -1419,10 +1419,10 @@ inline void Band<MT,TF,false,false,CBAs...>::reset()
 {
    using blaze::clear;
 
-   if( ( IsLower<MT>::value && column() > 0UL ) ||
-       ( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value ) && row() == 0UL ) ||
-       ( IsUpper<MT>::value && row() > 0UL ) ||
-       ( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value ) && column() == 0UL ) )
+   if( ( IsLower_v<MT> && column() > 0UL ) ||
+       ( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> ) && row() == 0UL ) ||
+       ( IsUpper_v<MT> && row() > 0UL ) ||
+       ( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> ) && column() == 0UL ) )
       return;
 
    const size_t n( size() );
@@ -1603,7 +1603,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
    if( rowIndex == matrix_.rows() || columnIndex == matrix_.columns() )
       return pos;
 
-   matrix_.erase( ( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ), pos.pos_ );
+   matrix_.erase( ( IsRowMajorMatrix_v<MT> ? rowIndex : columnIndex ), pos.pos_ );
    return Iterator( matrix_, rowIndex+1UL, columnIndex+1UL );
 }
 /*! \endcond */
@@ -1627,7 +1627,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
    Band<MT,TF,false,false,CBAs...>::erase( Iterator first, Iterator last )
 {
    for( ; first!=last; ++first ) {
-      const size_t index( IsRowMajorMatrix<MT>::value ? first.row_ : first.column_ );
+      const size_t index( IsRowMajorMatrix_v<MT> ? first.row_ : first.column_ );
       matrix_.erase( index, first.pos_ );
    }
    return last;
@@ -1668,7 +1668,7 @@ inline void Band<MT,TF,false,false,CBAs...>::erase( Pred predicate )
 {
    for( Iterator element=begin(); element!=end(); ++element ) {
       if( predicate( element->value() ) ) {
-         const size_t index( IsRowMajorMatrix<MT>::value ? element.row_ : element.column_ );
+         const size_t index( IsRowMajorMatrix_v<MT> ? element.row_ : element.column_ );
          matrix_.erase( index, element.pos_ );
       }
    }
@@ -1710,7 +1710,7 @@ inline void Band<MT,TF,false,false,CBAs...>::erase( Iterator first, Iterator las
 {
    for( ; first!=last; ++first ) {
       if( predicate( first->value() ) ) {
-         const size_t index( IsRowMajorMatrix<MT>::value ? first.row_ : first.column_ );
+         const size_t index( IsRowMajorMatrix_v<MT> ? first.row_ : first.column_ );
          matrix_.erase( index, first.pos_ );
       }
    }
@@ -1751,7 +1751,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
    const size_t columnIndex( column()+index );
    const Iterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
-   if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
+   if( pos != matrix_.end( IsRowMajorMatrix_v<MT> ? rowIndex : columnIndex ) )
       return Iterator( matrix_, rowIndex, columnIndex, pos );
    else
       return end();
@@ -1784,7 +1784,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::ConstIterator
    const size_t columnIndex( column()+index );
    const ConstIterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
-   if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
+   if( pos != matrix_.end( IsRowMajorMatrix_v<MT> ? rowIndex : columnIndex ) )
       return ConstIterator( matrix_, rowIndex, columnIndex, pos );
    else
       return end();
@@ -1818,7 +1818,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
       const size_t columnIndex( column()+i );
       const Iterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
-      if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
+      if( pos != matrix_.end( IsRowMajorMatrix_v<MT> ? rowIndex : columnIndex ) )
          return Iterator( matrix_, rowIndex, columnIndex, pos );
    }
 
@@ -1853,7 +1853,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::ConstIterator
       const size_t columnIndex( column()+i );
       const ConstIterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
-      if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
+      if( pos != matrix_.end( IsRowMajorMatrix_v<MT> ? rowIndex : columnIndex ) )
          return ConstIterator( matrix_, rowIndex, columnIndex, pos );
    }
 
@@ -1888,7 +1888,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
       const size_t columnIndex( column()+i );
       const Iterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
-      if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
+      if( pos != matrix_.end( IsRowMajorMatrix_v<MT> ? rowIndex : columnIndex ) )
          return Iterator( matrix_, rowIndex, columnIndex, pos );
    }
 
@@ -1923,7 +1923,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::ConstIterator
       const size_t columnIndex( column()+i );
       const ConstIterator_t<MT> pos( matrix_.find( rowIndex, columnIndex ) );
 
-      if( pos != matrix_.end( IsRowMajorMatrix<MT>::value ? rowIndex : columnIndex ) )
+      if( pos != matrix_.end( IsRowMajorMatrix_v<MT> ? rowIndex : columnIndex ) )
          return ConstIterator( matrix_, rowIndex, columnIndex, pos );
    }
 
@@ -1963,10 +1963,10 @@ inline Band<MT,TF,false,false,CBAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   if( ( IsLower<MT>::value         && column() >  0UL ) ||
-       ( IsStrictlyLower<MT>::value && row()    == 0UL ) ||
-       ( IsUpper<MT>::value         && row()    >  0UL ) ||
-       ( IsStrictlyUpper<MT>::value && column() == 0UL ) )
+   if( ( IsLower_v<MT>         && column() >  0UL ) ||
+       ( IsStrictlyLower_v<MT> && row()    == 0UL ) ||
+       ( IsUpper_v<MT>         && row()    >  0UL ) ||
+       ( IsStrictlyUpper_v<MT> && column() == 0UL ) )
       return *this;
 
    for( Iterator element=begin(); element!=end(); ++element )
@@ -2243,7 +2243,7 @@ class Band<MT,TF,false,true,CBAs...>
       : DataType( args... )  // Base class initialization
       , matrix_ ( mmm )      // The matrix multiplication containing the band
    {
-      if( !Contains< TypeList<RBAs...>, Unchecked >::value ) {
+      if( !Contains_v< TypeList<RBAs...>, Unchecked > ) {
          if( ( band() > 0L && column() >= mmm.columns() ) ||
              ( band() < 0L && row() >= mmm.rows() ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid band access index" );

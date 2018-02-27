@@ -486,7 +486,7 @@ class UniUpperMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
-   BLAZE_STATIC_ASSERT( ( Size<MT,0UL>::value == Size<MT,1UL>::value ) );
+   BLAZE_STATIC_ASSERT( ( Size_v<MT,0UL> == Size_v<MT,1UL> ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -699,11 +699,11 @@ template< typename MT2  // Type of the foreign matrix
 inline UniUpperMatrix<MT,SO,false>::UniUpperMatrix( const Matrix<MT2,SO2>& m )
    : matrix_( ~m )  // The adapted sparse matrix
 {
-   if( !IsUniUpper<MT2>::value && !isUniUpper( matrix_ ) ) {
+   if( !IsUniUpper_v<MT2> && !isUniUpper( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of uniupper matrix" );
    }
 
-   if( !IsUniUpper<MT2>::value )
+   if( !IsUniUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1111,13 +1111,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
    UniUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsStrictlyTriangular<MT2>::value || ( !IsUniUpper<MT2>::value && !isUniUpper( ~rhs ) ) ) {
+   if( IsStrictlyTriangular_v<MT2> || ( !IsUniUpper_v<MT2> && !isUniUpper( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
    matrix_ = declupp( ~rhs );
 
-   if( !IsUniUpper<MT2>::value )
+   if( !IsUniUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1149,11 +1149,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
    UniUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsStrictlyTriangular<MT2>::value || ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+   if( IsStrictlyTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   if( IsUniUpper<MT2>::value ) {
+   if( IsUniUpper_v<MT2> ) {
       matrix_ = ~rhs;
    }
    else {
@@ -1166,7 +1166,7 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
       matrix_ = std::move( tmp );
    }
 
-   if( !IsUniUpper<MT2>::value )
+   if( !IsUniUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1198,14 +1198,14 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
    UniUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) ) {
+   if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
+       ( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
    matrix_ += declupp( ~rhs );
 
-   if( !IsStrictlyUpper<MT2>::value )
+   if( !IsStrictlyUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1237,12 +1237,12 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
    UniUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+   if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
+       ( IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   if( IsStrictlyUpper<MT2>::value ) {
+   if( IsStrictlyUpper_v<MT2> ) {
       matrix_ += ~rhs;
    }
    else {
@@ -1255,7 +1255,7 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
       matrix_ += declupp( tmp );
    }
 
-   if( !IsStrictlyUpper<MT2>::value )
+   if( !IsStrictlyUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1287,14 +1287,14 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
    UniUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsStrictlyUpper<MT2>::value && !isStrictlyUpper( ~rhs ) ) ) {
+   if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
+       ( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
    matrix_ -= declupp( ~rhs );
 
-   if( !IsStrictlyUpper<MT2>::value )
+   if( !IsStrictlyUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1326,12 +1326,12 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
    UniUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( IsLower<MT2>::value || IsUniTriangular<MT2>::value ||
-       ( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) ) {
+   if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
+       ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   if( IsStrictlyUpper<MT2>::value ) {
+   if( IsStrictlyUpper_v<MT2> ) {
       matrix_ -= ~rhs;
    }
    else {
@@ -1344,7 +1344,7 @@ inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,false>& >
       matrix_ -= declupp( tmp );
    }
 
-   if( !IsStrictlyUpper<MT2>::value )
+   if( !IsStrictlyUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1376,7 +1376,7 @@ template< typename MT2  // Type of the right-hand side matrix
 inline UniUpperMatrix<MT,SO,false>&
    UniUpperMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
@@ -1390,7 +1390,7 @@ inline UniUpperMatrix<MT,SO,false>&
 
    matrix_ %= tmp;
 
-   if( !IsUniUpper<MT2>::value )
+   if( !IsUniUpper_v<MT2> )
       resetLower();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square uniupper matrix detected" );
@@ -1585,7 +1585,7 @@ inline void UniUpperMatrix<MT,SO,false>::clear()
 {
    using blaze::clear;
 
-   if( IsResizable<MT>::value ) {
+   if( IsResizable_v<MT> ) {
       clear( matrix_ );
    }
    else {
@@ -1776,7 +1776,7 @@ inline constexpr size_t UniUpperMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
-   return maxNonZeros( Size<MT,0UL>::value );
+   return maxNonZeros( Size_v<MT,0UL> );
 }
 /*! \endcond */
 //*************************************************************************************************

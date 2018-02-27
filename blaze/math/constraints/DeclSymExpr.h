@@ -59,7 +59,7 @@ namespace blaze {
 // DeclSymExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DECLSYMEXPR_TYPE(T) \
-   static_assert( ::blaze::IsDeclSymExpr<T>::value, "Non-declsym expression type detected" )
+   static_assert( ::blaze::IsDeclSymExpr_v<T>, "Non-declsym expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // DeclSymExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DECLSYMEXPR_TYPE(T) \
-   static_assert( !::blaze::IsDeclSymExpr<T>::value, "Declsym expression type detected" )
+   static_assert( !::blaze::IsDeclSymExpr_v<T>, "Declsym expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -124,7 +124,7 @@ class SMatScalarDivExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = DivExprTrait_t<RN,ST>;
@@ -138,7 +138,7 @@ class SMatScalarDivExpr
        be set to 1 and the division expression will be evaluated via the \a assign function
        family. Otherwise Otherwise \a useAssign will be set to 0 and the expression will be
        evaluated via the function call operator. */
-   enum : bool { useAssign = RequiresEvaluation<MT>::value };
+   enum : bool { useAssign = RequiresEvaluation_v<MT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -910,7 +910,7 @@ inline decltype(auto) operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
    using ReturnType = typename SMatScalarDivExprHelper<MT,ST,SO>::Type;
    using ScalarType = RightOperand_t<ReturnType>;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_v<ReturnType> ) {
       return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
    }
    else {
@@ -1012,7 +1012,7 @@ inline decltype(auto) operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 sc
    using ReturnType = typename SMatScalarDivExprHelper<MT,MultType,SO>::Type;
    using ScalarType = RightOperand_t<ReturnType>;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_v<ReturnType> ) {
       return ReturnType( mat.leftOperand(), ScalarType(1)/( mat.rightOperand() * scalar ) );
    }
    else {

@@ -59,7 +59,7 @@ namespace blaze {
 // DeclLowExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DECLLOWEXPR_TYPE(T) \
-   static_assert( ::blaze::IsDeclLowExpr<T>::value, "Non-decllow expression type detected" )
+   static_assert( ::blaze::IsDeclLowExpr_v<T>, "Non-decllow expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // DeclLowExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DECLLOWEXPR_TYPE(T) \
-   static_assert( !::blaze::IsDeclLowExpr<T>::value, "Decllow expression type detected" )
+   static_assert( !::blaze::IsDeclLowExpr_v<T>, "Decllow expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

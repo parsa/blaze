@@ -59,7 +59,7 @@ namespace blaze {
 // requirements of the available instruction set a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ALIGNED_TYPE(T) \
-   static_assert( ::blaze::IsAligned<T>::value, "Non-aligned type detected" )
+   static_assert( ::blaze::IsAligned_v<T>, "Non-aligned type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // requirements of the available instruction set a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ALIGNED_TYPE(T) \
-   static_assert( !::blaze::IsAligned<T>::value, "Aligned type detected" )
+   static_assert( !::blaze::IsAligned_v<T>, "Aligned type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

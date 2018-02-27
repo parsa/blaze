@@ -59,11 +59,11 @@ namespace blaze {
 /*!\brief Base template of the Submatrix class template.
 // \ingroup submatrix
 */
-template< typename MT                               // Type of the matrix
-        , AlignmentFlag AF = unaligned              // Alignment flag
-        , bool SO = IsColumnMajorMatrix<MT>::value  // Storage order
-        , bool DF = IsDenseMatrix<MT>::value        // Density flag
-        , size_t... CSAs >                          // Compile time submatrix arguments
+template< typename MT                          // Type of the matrix
+        , AlignmentFlag AF = unaligned         // Alignment flag
+        , bool SO = IsColumnMajorMatrix_v<MT>  // Storage order
+        , bool DF = IsDenseMatrix_v<MT>        // Density flag
+        , size_t... CSAs >                     // Compile time submatrix arguments
 class Submatrix
 {};
 /*! \endcond */
@@ -91,8 +91,8 @@ template< typename MT                   // Type of the matrix
         , size_t... CSAs >              // Compile time submatrix arguments
 using Submatrix_ = Submatrix< MT
                             , AF
-                            , IsColumnMajorMatrix<MT>::value
-                            , IsDenseMatrix<MT>::value
+                            , IsColumnMajorMatrix_v<MT>
+                            , IsDenseMatrix_v<MT>
                             , CSAs... >;
 /*! \endcond */
 //*************************************************************************************************

@@ -363,18 +363,18 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   if( IsFloatingPoint<ST>::value && low >= upp ) {
+   if( IsFloatingPoint_v<ST> && low >= upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid value range provided" );
    }
 
-   if( !IsFloatingPoint<ST>::value && low > upp ) {
+   if( !IsFloatingPoint_v<ST> && low > upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
    const size_t N( (~A).rows() );
-   const size_t num( IsFloatingPoint<ST>::value ? N : size_t( upp - low ) + 1UL );
+   const size_t num( IsFloatingPoint_v<ST> ? N : size_t( upp - low ) + 1UL );
 
-   if( !IsFloatingPoint<ST>::value && num > N ) {
+   if( !IsFloatingPoint_v<ST> && num > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
@@ -384,11 +384,11 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST
       return 0;
    }
 
-   const char range( IsFloatingPoint<ST>::value ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint<ST>::value ? low : ST() );
-   const ST   vu   ( IsFloatingPoint<ST>::value ? upp : ST() );
-   const int  il   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( upp ) );
+   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
+   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
 
    return syevx_backend( ~A, ~w, uplo, range, vl, vu, il, iu );
 }
@@ -716,34 +716,34 @@ inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   if( IsFloatingPoint<ST>::value && low >= upp ) {
+   if( IsFloatingPoint_v<ST> && low >= upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid value range provided" );
    }
 
-   if( !IsFloatingPoint<ST>::value && low > upp ) {
+   if( !IsFloatingPoint_v<ST> && low > upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
    const size_t N( (~A).rows() );
-   const size_t num( IsFloatingPoint<ST>::value ? N : size_t( upp - low ) + 1UL );
+   const size_t num( IsFloatingPoint_v<ST> ? N : size_t( upp - low ) + 1UL );
 
-   if( !IsFloatingPoint<ST>::value && num > N ) {
+   if( !IsFloatingPoint_v<ST> && num > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
    resize( ~w, num, false );
-   resize( ~Z, ( IsRowMajorMatrix<MT2>::value ? num : N ),
-           ( IsRowMajorMatrix<MT2>::value ? N : num ), false );
+   resize( ~Z, ( IsRowMajorMatrix_v<MT2> ? num : N ),
+           ( IsRowMajorMatrix_v<MT2> ? N : num ), false );
 
    if( N == 0UL ) {
       return 0;
    }
 
-   const char range( IsFloatingPoint<ST>::value ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint<ST>::value ? low : ST() );
-   const ST   vu   ( IsFloatingPoint<ST>::value ? upp : ST() );
-   const int  il   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( upp ) );
+   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
+   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
 
    return syevx_backend( ~A, ~w, ~Z, uplo, range, vl, vu, il, iu );
 }

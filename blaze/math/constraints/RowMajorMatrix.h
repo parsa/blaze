@@ -59,7 +59,7 @@ namespace blaze {
 // type whose storage order is set to \a false) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsRowMajorMatrix<T>::value, "Non-row-major matrix type detected" )
+   static_assert( ::blaze::IsRowMajorMatrix_v<T>, "Non-row-major matrix type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // type whose storage order is set to \a false) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE(T) \
-   static_assert( !::blaze::IsRowMajorMatrix<T>::value, "Row-major matrix type detected" )
+   static_assert( !::blaze::IsRowMajorMatrix_v<T>, "Row-major matrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

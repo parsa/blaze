@@ -59,7 +59,7 @@ namespace blaze {
 // the Transformation base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_TRANSFORMATION_TYPE(T) \
-   static_assert( ::blaze::IsTransformation<T>::value, "Non-transformation type detected" )
+   static_assert( ::blaze::IsTransformation_v<T>, "Non-transformation type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // Transformation base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE(T) \
-   static_assert( !::blaze::IsTransformation<T>::value, "Transformation type detected" )
+   static_assert( !::blaze::IsTransformation_v<T>, "Transformation type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

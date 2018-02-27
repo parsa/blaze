@@ -86,7 +86,7 @@ struct Pow4
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return HasSIMDMult<T,T>::value; }
+   static constexpr bool simdEnabled() { return HasSIMDMult_v<T,T>; }
    //**********************************************************************************************
 
    //**********************************************************************************************

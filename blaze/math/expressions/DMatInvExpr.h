@@ -191,14 +191,14 @@ class DMatInvExpr
    // \return The proper inversion flag for the matrix type \a MT.
    */
    static constexpr InversionFlag getInversionFlag() noexcept {
-      return ( IsDiagonal<MT>::value  ? asDiagonal
-             : IsUniUpper<MT>::value  ? asUniUpper
-             : IsUpper<MT>::value     ? asUpper
-             : IsUniLower<MT>::value  ? asUniLower
-             : IsLower<MT>::value     ? asLower
-             : IsHermitian<MT>::value ? asHermitian
-             : IsSymmetric<MT>::value ? asSymmetric
-             :                          asGeneral );
+      return ( IsDiagonal_v<MT>  ? asDiagonal
+             : IsUniUpper_v<MT>  ? asUniUpper
+             : IsUpper_v<MT>     ? asUpper
+             : IsUniLower_v<MT>  ? asUniLower
+             : IsLower_v<MT>     ? asLower
+             : IsHermitian_v<MT> ? asHermitian
+             : IsSymmetric_v<MT> ? asSymmetric
+             :                     asGeneral );
    }
    /*! \endcond */
    //**********************************************************************************************

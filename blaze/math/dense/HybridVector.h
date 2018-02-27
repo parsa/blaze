@@ -225,7 +225,7 @@ class HybridVector
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -339,7 +339,7 @@ class HybridVector
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -351,8 +351,8 @@ class HybridVector
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -364,8 +364,8 @@ class HybridVector
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -377,8 +377,8 @@ class HybridVector
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -390,8 +390,8 @@ class HybridVector
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDDiv_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -519,9 +519,9 @@ inline HybridVector<Type,N,TF>::HybridVector()
    : v_   ()       // The statically allocated vector elements
    , size_( 0UL )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -548,13 +548,13 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -582,7 +582,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
@@ -591,7 +591,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = init;
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -626,7 +626,7 @@ inline HybridVector<Type,N,TF>::HybridVector( initializer_list<Type> list )
    : v_   ()               // The statically allocated vector elements
    , size_( list.size() )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( size_ > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
@@ -670,7 +670,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
@@ -679,7 +679,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -717,12 +717,12 @@ inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[Dim] )
    , size_( Dim )  // The current size/dimension of the vector
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=Dim; i<NN; ++i )
          v_[i] = Type();
    }
@@ -746,12 +746,12 @@ inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
    : v_   ()           // The statically allocated vector elements
    , size_( v.size_ )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<size_; ++i )
       v_[i] = v.v_[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=size_; i<NN; ++i )
          v_[i] = Type();
    }
@@ -781,14 +781,14 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~v).size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
    }
 
-   for( size_t i=( IsSparseVector<VT>::value ? 0UL : size_ );
-               i<( IsNumeric<Type>::value    ? NN  : size_ ); ++i ) {
+   for( size_t i=( IsSparseVector_v<VT> ? 0UL : size_ );
+               i<( IsNumeric_v<Type>    ? NN  : size_ ); ++i ) {
       v_[i] = Type();
    }
 
@@ -1181,7 +1181,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Vector
    }
    else {
       resize( (~rhs).size(), false );
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -1291,7 +1291,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator*=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
+   if( IsSparseVector_v<VT> || (~rhs).canAlias( this ) ) {
       const HybridVector tmp( *this * (~rhs) );
       assign( *this, tmp );
    }
@@ -1543,7 +1543,7 @@ inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
    }
 
-   if( IsNumeric<Type>::value && n < size_ ) {
+   if( IsNumeric_v<Type> && n < size_ ) {
       for( size_t i=n; i<size_; ++i )
          v_[i] = Type();
    }
@@ -1828,7 +1828,7 @@ inline bool HybridVector<Type,N,TF>::isIntact() const noexcept
    if( size_ > N )
       return false;
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_v<Type> ) {
       for( size_t i=size_; i<NN; ++i ) {
          if( v_[i] != Type() )
             return false;
@@ -2166,7 +2166,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssi
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2256,7 +2256,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2346,7 +2346,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2436,7 +2436,7 @@ inline EnableIf_<typename HybridVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMult
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == size_, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );

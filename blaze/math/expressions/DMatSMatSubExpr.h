@@ -112,7 +112,7 @@ class DMatSMatSubExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = SubExprTrait_t<RN1,RN2>;
@@ -257,7 +257,7 @@ class DMatSMatSubExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression<MT1>::value && lhs_.canAlias( alias ) ) ||
+      return ( IsExpression_v<MT1> && lhs_.canAlias( alias ) ) ||
              ( rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
@@ -301,7 +301,7 @@ class DMatSMatSubExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          subAssign( ~lhs, rhs.rhs_ );
       }
       else {
@@ -477,7 +477,7 @@ class DMatSMatSubExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( !IsOperation<MT1>::value && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSubAssign( ~lhs, rhs.rhs_ );
       }
       else {

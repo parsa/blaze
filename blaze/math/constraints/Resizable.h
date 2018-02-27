@@ -59,7 +59,7 @@ namespace blaze {
 // function that could be used to change the size, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE(T) \
-   static_assert( ::blaze::IsResizable<T>::value, "Non-resizable type detected" )
+   static_assert( ::blaze::IsResizable_v<T>, "Non-resizable type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // be used to change the size, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_RESIZABLE_TYPE(T) \
-   static_assert( !::blaze::IsResizable<T>::value, "Resizable type detected" )
+   static_assert( !::blaze::IsResizable_v<T>, "Resizable type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

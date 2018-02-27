@@ -118,7 +118,7 @@ class TSMatTSMatSubExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = SubExprTrait_t<RN1,RN2>;
@@ -134,7 +134,7 @@ class TSMatTSMatSubExpr
    template< typename T1, typename T2, typename T3 >
    struct UseSymmetricKernel {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( T1 );
-      enum : bool { value = IsSymmetric<T2>::value && IsSymmetric<T3>::value };
+      enum : bool { value = IsSymmetric_v<T2> && IsSymmetric_v<T3> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -344,7 +344,7 @@ class TSMatTSMatSubExpr
 
       assign( ~lhs, rhs.lhs_ );
 
-      if( !IsResizable< ElementType_t<MT> >::value ) {
+      if( !IsResizable_v< ElementType_t<MT> > ) {
          subAssign( ~lhs, rhs.rhs_ );
       }
       else

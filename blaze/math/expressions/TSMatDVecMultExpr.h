@@ -113,12 +113,12 @@ class TSMatDVecMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation<MT>::value };
+   enum : bool { evaluateMatrix = RequiresEvaluation_v<MT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum : bool { evaluateVector = IsComputation<VT>::value || RequiresEvaluation<VT>::value };
+   enum : bool { evaluateVector = IsComputation_v<VT> || RequiresEvaluation_v<VT> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -188,19 +188,19 @@ class TSMatDVecMultExpr
    inline ReturnType operator[]( size_t index ) const {
       BLAZE_INTERNAL_ASSERT( index < mat_.rows(), "Invalid vector access index" );
 
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          return mat_(index,index) * vec_[index];
       }
-      else if( IsLower<MT>::value )
+      else if( IsLower_v<MT> )
       {
-         const size_t n( IsStrictlyLower<MT>::value ? index : index+1UL );
+         const size_t n( IsStrictlyLower_v<MT> ? index : index+1UL );
          return subvector( row( mat_, index, unchecked ), 0UL, n, unchecked ) *
                 subvector( vec_, 0UL, n, unchecked );
       }
-      else if( IsUpper<MT>::value )
+      else if( IsUpper_v<MT> )
       {
-         const size_t begin( IsStrictlyUpper<MT>::value ? index+1UL : index );
+         const size_t begin( IsStrictlyUpper_v<MT> ? index+1UL : index );
          const size_t n    ( mat_.columns() - begin );
          return subvector( row( mat_, index, unchecked ), begin, n, unchecked ) *
                 subvector( vec_, begin, n, unchecked );
@@ -371,7 +371,7 @@ class TSMatDVecMultExpr
          const ConstIterator end( A.end(j) );
 
          for( ; element!=end; ++element ) {
-            if( IsResizable< ElementType_t<VT1> >::value &&
+            if( IsResizable_v< ElementType_t<VT1> > &&
                 isDefault( y[element->index()] ) )
                y[element->index()] = element->value() * x[j];
             else

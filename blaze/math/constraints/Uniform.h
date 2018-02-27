@@ -59,7 +59,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_UNIFORM_TYPE(T) \
-   static_assert( ::blaze::IsUniform<T>::value, "Non-uniform type detected" )
+   static_assert( ::blaze::IsUniform_v<T>, "Non-uniform type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE(T) \
-   static_assert( !::blaze::IsUniform<T>::value, "Uniform type detected" )
+   static_assert( !::blaze::IsUniform_v<T>, "Uniform type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

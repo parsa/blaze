@@ -123,7 +123,7 @@ struct DMatNormHelper
                          If_< And< HasSIMDEnabled<Abs>, HasSIMDEnabled<Power> >
                             , UseSIMDEnabledFlag
                             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
-                         HasSIMDAdd< ElementType_t<CT>, ElementType_t<CT> >::value };
+                         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -314,7 +314,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -386,7 +386,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );

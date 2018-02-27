@@ -62,9 +62,8 @@ namespace blaze {
 template< typename T         // Type of the operand
         , typename = void >  // Restricting condition
 struct HasSIMDConjHelper
-{
-   enum : bool { value = IsNumeric<T>::value };
-};
+   : public BoolConstant< IsNumeric_v<T> >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -73,13 +72,12 @@ struct HasSIMDConjHelper
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
 struct HasSIMDConjHelper< complex<T> >
-{
-   enum : bool { value = IsNumeric<T>::value && IsSigned<T>::value &&
-                         ( ( !bool( BLAZE_AVX512F_MODE  ) && HasSIMDMult<T,T>::value && ( IsFloatingPoint<T>::value || sizeof(T) <= 4UL ) ) ||
-                           (  bool( BLAZE_AVX512F_MODE  ) && IsFloatingPoint<T>::value ) ||
-                           (  bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
-                           (  bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) };
-};
+   : public BoolConstant< IsNumeric_v<T> && IsSigned_v<T> &&
+                          ( ( !bool( BLAZE_AVX512F_MODE  ) && HasSIMDMult_v<T,T> && ( IsFloatingPoint_v<T> || sizeof(T) <= 4UL ) ) ||
+                            (  bool( BLAZE_AVX512F_MODE  ) && IsFloatingPoint_v<T> ) ||
+                            (  bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
+                            (  bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 

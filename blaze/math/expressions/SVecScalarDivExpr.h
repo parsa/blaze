@@ -117,7 +117,7 @@ class SVecScalarDivExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = DivExprTrait_t<RN,ST>;
@@ -131,7 +131,7 @@ class SVecScalarDivExpr
        multiplication expression will be evaluated via the \a assign function family. Otherwise
        \a useAssign will be set to 0 and the expression will be evaluated via the subscript
        operator. */
-   enum : bool { useAssign = RequiresEvaluation<VT>::value };
+   enum : bool { useAssign = RequiresEvaluation_v<VT> };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -845,7 +845,7 @@ inline decltype(auto) operator/( const SparseVector<VT,TF>& vec, ST scalar )
    using ReturnType = typename SVecScalarDivExprHelper<VT,ST,TF>::Type;
    using ScalarType = RightOperand_t<ReturnType>;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_v<ReturnType> ) {
       return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
    }
    else {
@@ -947,7 +947,7 @@ inline decltype(auto) operator/( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 sc
    using ReturnType = typename SVecScalarDivExprHelper<VT,MultType,TF>::Type;
    using ScalarType = RightOperand_t<ReturnType>;
 
-   if( IsMultExpr<ReturnType>::value ) {
+   if( IsMultExpr_v<ReturnType> ) {
       return ReturnType( vec.leftOperand(), ScalarType(1)/( vec.rightOperand() * scalar ) );
    }
    else {

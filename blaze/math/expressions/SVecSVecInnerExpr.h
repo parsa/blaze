@@ -123,7 +123,7 @@ inline decltype(auto)
 
    MultType sp{};
 
-   if( IsOpposedView<VT1>::value && IsOpposedView<VT2>::value )
+   if( IsOpposedView_v<VT1> && IsOpposedView_v<VT2> )
    {
       if( left.size() == 0UL ) return sp;
 
@@ -132,7 +132,7 @@ inline decltype(auto)
          sp += left[i] * right[i];
       }
    }
-   else if( IsOpposedView<VT1>::value )
+   else if( IsOpposedView_v<VT1> )
    {
       const RightIterator rend( right.end() );
       RightIterator r( right.begin() );
@@ -145,7 +145,7 @@ inline decltype(auto)
          sp += left[r->index()] * r->value();
       }
    }
-   else if( IsOpposedView<VT2>::value )
+   else if( IsOpposedView_v<VT2> )
    {
       const LeftIterator lend( left.end()  );
       LeftIterator l( left.begin()  );

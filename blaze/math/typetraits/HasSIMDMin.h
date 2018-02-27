@@ -43,8 +43,8 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -67,9 +67,8 @@ template< typename T1        // Type of the left-hand side operand
         , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDMinHelper
-{
-   enum : bool { value = false };
-};
+   : public FalseType
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -77,13 +76,12 @@ struct HasSIMDMinHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-struct HasSIMDMinHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1Byte<T> > > >
-{
-   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) && IsUnsigned<T>::value ) ||
-                         ( bool( BLAZE_SSE4_MODE ) && IsSigned<T>::value   ) ||
-                         bool( BLAZE_AVX2_MODE     ) ||
-                         bool( BLAZE_AVX512BW_MODE ) };
-};
+struct HasSIMDMinHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && Has1Byte_v<T> > >
+   : public BoolConstant< ( bool( BLAZE_SSE2_MODE ) && IsUnsigned_v<T> ) ||
+                          ( bool( BLAZE_SSE4_MODE ) && IsSigned_v<T>   ) ||
+                          bool( BLAZE_AVX2_MODE     ) ||
+                          bool( BLAZE_AVX512BW_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -91,13 +89,12 @@ struct HasSIMDMinHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-struct HasSIMDMinHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2Bytes<T> > > >
-{
-   enum : bool { value = ( bool( BLAZE_SSE2_MODE ) && IsSigned<T>::value ) ||
-                         ( bool( BLAZE_SSE4_MODE ) && IsUnsigned<T>::value   ) ||
-                         bool( BLAZE_AVX2_MODE     ) ||
-                         bool( BLAZE_AVX512BW_MODE ) };
-};
+struct HasSIMDMinHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && Has2Bytes_v<T> > >
+   : public BoolConstant< ( bool( BLAZE_SSE2_MODE ) && IsSigned_v<T>   ) ||
+                          ( bool( BLAZE_SSE4_MODE ) && IsUnsigned_v<T> ) ||
+                          bool( BLAZE_AVX2_MODE     ) ||
+                          bool( BLAZE_AVX512BW_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -105,13 +102,12 @@ struct HasSIMDMinHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-struct HasSIMDMinHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<T> > > >
-{
-   enum : bool { value = bool( BLAZE_SSE4_MODE    ) ||
-                         bool( BLAZE_AVX2_MODE    ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+struct HasSIMDMinHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && Has4Bytes_v<T> > >
+   : public BoolConstant< bool( BLAZE_SSE4_MODE    ) ||
+                          bool( BLAZE_AVX2_MODE    ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -120,12 +116,11 @@ struct HasSIMDMinHelper< T, T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDMinHelper< float, float >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE_MODE     ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -134,12 +129,11 @@ struct HasSIMDMinHelper< float, float >
 /*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDMinHelper< double, double >
-{
-   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+   : public BoolConstant< bool( BLAZE_SSE2_MODE    ) ||
+                          bool( BLAZE_AVX_MODE     ) ||
+                          bool( BLAZE_MIC_MODE     ) ||
+                          bool( BLAZE_AVX512F_MODE ) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 

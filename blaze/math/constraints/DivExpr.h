@@ -59,7 +59,7 @@ namespace blaze {
 // DivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DIVEXPR_TYPE(T) \
-   static_assert( ::blaze::IsDivExpr<T>::value, "Non-division expression type detected" )
+   static_assert( ::blaze::IsDivExpr_v<T>, "Non-division expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // DivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DIVEXPR_TYPE(T) \
-   static_assert( !::blaze::IsDivExpr<T>::value, "Division expression type detected" )
+   static_assert( !::blaze::IsDivExpr_v<T>, "Division expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

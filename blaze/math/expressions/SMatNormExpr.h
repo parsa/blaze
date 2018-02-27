@@ -113,7 +113,7 @@ inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Powe
 
    CT tmp( ~sm );
 
-   const size_t N( IsRowMajorMatrix<MT>::value ? tmp.rows(): tmp.columns() );
+   const size_t N( IsRowMajorMatrix_v<MT> ? tmp.rows(): tmp.columns() );
 
    ET norm{};
 
@@ -121,7 +121,7 @@ inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Powe
    {
       const ConstIterator end( tmp.end(i) );
       for( ConstIterator element=tmp.begin(i); element!=end; ++element ) {
-         if( IsResizable<ET>::value && isDefault( norm ) )
+         if( IsResizable_v<ET> && isDefault( norm ) )
             norm = power( abs( element->value() ) );
          else
             norm += power( abs( element->value() ) );

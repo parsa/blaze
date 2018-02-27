@@ -390,7 +390,7 @@ template< typename VT    // Type of the left-hand side dense vector
         , typename ST >  // Data type of the right-hand side scalar
 inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST scalar )
 {
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
@@ -452,7 +452,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST s
 {
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted vector" );
       }
@@ -626,7 +626,7 @@ bool isUniform( const DenseVector<VT,TF>& dv )
    using CT = CompositeType_t<VT>;
    using ConstReference = ConstReference_t< RemoveReference_t<CT> >;
 
-   if( IsUniform<VT>::value || (~dv).size() < 2UL )
+   if( IsUniform_v<VT> || (~dv).size() < 2UL )
       return true;
 
    CT a( ~dv );  // Evaluation of the dense vector operand

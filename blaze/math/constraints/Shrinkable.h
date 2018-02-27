@@ -59,7 +59,7 @@ namespace blaze {
 // function that could be used to reduce the capacity, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_SHRINKABLE_TYPE(T) \
-   static_assert( ::blaze::IsShrinkable<T>::value, "Non-shrinkable type detected" )
+   static_assert( ::blaze::IsShrinkable_v<T>, "Non-shrinkable type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // can be used to reduce the capacity, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_SHRINKABLE_TYPE(T) \
-   static_assert( !::blaze::IsShrinkable<T>::value, "Shrinkable type detected" )
+   static_assert( !::blaze::IsShrinkable_v<T>, "Shrinkable type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -120,7 +120,7 @@ class TSMatTSMatSchurExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -135,8 +135,8 @@ class TSMatTSMatSchurExpr
        is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct UseSymmetricKernel {
-      enum : bool { value = IsRowMajorMatrix<T1>::value &&
-                            IsSymmetric<T2>::value && IsSymmetric<T3>::value };
+      enum : bool { value = IsRowMajorMatrix_v<T1> &&
+                            IsSymmetric_v<T2> && IsSymmetric_v<T3> };
    };
    /*! \endcond */
    //**********************************************************************************************

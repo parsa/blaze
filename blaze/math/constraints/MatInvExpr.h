@@ -59,7 +59,7 @@ namespace blaze {
 // from the MatInvExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATINVEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatInvExpr<T>::value, "Non-matrix inversion expression detected" )
+   static_assert( ::blaze::IsMatInvExpr_v<T>, "Non-matrix inversion expression detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the MatInvExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATINVEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatInvExpr<T>::value, "Matrix inversion expression detected" )
+   static_assert( !::blaze::IsMatInvExpr_v<T>, "Matrix inversion expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

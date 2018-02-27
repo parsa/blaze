@@ -59,7 +59,7 @@ namespace blaze {
 // dense or sparse matrix), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ROWS_TYPE(T) \
-   static_assert( ::blaze::IsRows<T>::value, "Non-rows type detected" )
+   static_assert( ::blaze::IsRows_v<T>, "Non-rows type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // dense or sparse matrix), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ROWS_TYPE(T) \
-   static_assert( !::blaze::IsRows<T>::value, "Rows type detected" )
+   static_assert( !::blaze::IsRows_v<T>, "Rows type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

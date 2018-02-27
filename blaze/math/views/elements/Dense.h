@@ -606,7 +606,7 @@ inline Elements<VT,TF,true,CEAs...>::Elements( VT& vector, REAs... args )
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the elements
 {
-   if( !Contains< TypeList<REAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<REAs...>, Unchecked > ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( vector_.size() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -909,7 +909,7 @@ inline Elements<VT,TF,true,CEAs...>&
 
    for( size_t i=0UL; i<size(); ++i ) {
       const size_t index( idx(i) );
-      if( !IsRestricted<VT>::value || trySet( vector_, index, rhs ) )
+      if( !IsRestricted_v<VT> || trySet( vector_, index, rhs ) )
          left[index] = rhs;
    }
 
@@ -947,7 +947,7 @@ inline Elements<VT,TF,true,CEAs...>&
 
    const InitializerVector<ElementType,TF> tmp( list, size() );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), tmp[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -996,7 +996,7 @@ inline Elements<VT,TF,true,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), rhs[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1051,7 +1051,7 @@ inline Elements<VT,TF,true,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1061,12 +1061,12 @@ inline Elements<VT,TF,true,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT2>::value )
+      if( IsSparseVector_v<VT2> )
          reset();
       smpAssign( left, right );
    }
@@ -1108,7 +1108,7 @@ inline Elements<VT,TF,true,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !tryAdd( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1118,7 +1118,7 @@ inline Elements<VT,TF,true,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -1163,7 +1163,7 @@ inline Elements<VT,TF,true,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySub( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1173,7 +1173,7 @@ inline Elements<VT,TF,true,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1219,7 +1219,7 @@ inline Elements<VT,TF,true,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !tryMult( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1229,7 +1229,7 @@ inline Elements<VT,TF,true,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1274,7 +1274,7 @@ inline Elements<VT,TF,true,CEAs...>&
    using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !tryDiv( vector_, idx(i), right[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1284,7 +1284,7 @@ inline Elements<VT,TF,true,CEAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1337,7 +1337,7 @@ inline Elements<VT,TF,true,CEAs...>&
 
    const CrossType tmp( *this % (~rhs) );
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       for( size_t i=0UL; i<size(); ++i ) {
          if( !trySet( vector_, idx(i), tmp[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1966,7 +1966,7 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The dense vector/dense vector cross product expression
    {
-      if( !Contains< TypeList<REAs...>, Unchecked >::value ) {
+      if( !Contains_v< TypeList<REAs...>, Unchecked > ) {
          for( size_t i=0UL; i<size(); ++i ) {
             if( vector_.size() <= idx(i) ) {
                BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -2121,7 +2121,7 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The dense vector/sparse vector cross product expression
    {
-      if( !Contains< TypeList<REAs...>, Unchecked >::value ) {
+      if( !Contains_v< TypeList<REAs...>, Unchecked > ) {
          for( size_t i=0UL; i<size(); ++i ) {
             if( vector_.size() <= idx(i) ) {
                BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -2276,7 +2276,7 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The sparse vector/dense vector cross product expression
    {
-      if( !Contains< TypeList<REAs...>, Unchecked >::value ) {
+      if( !Contains_v< TypeList<REAs...>, Unchecked > ) {
          for( size_t i=0UL; i<size(); ++i ) {
             if( vector_.size() <= idx(i) ) {
                BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
@@ -2431,7 +2431,7 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The sparse vector/sparse vector cross product expression
    {
-      if( !Contains< TypeList<REAs...>, Unchecked >::value ) {
+      if( !Contains_v< TypeList<REAs...>, Unchecked > ) {
          for( size_t i=0UL; i<size(); ++i ) {
             if( vector_.size() <= idx(i) ) {
                BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );

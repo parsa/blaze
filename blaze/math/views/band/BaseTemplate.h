@@ -59,11 +59,11 @@ namespace blaze {
 /*!\brief Base template of the Band class template.
 // \ingroup band
 */
-template< typename MT                            // Type of the matrix
-        , bool TF = defaultTransposeFlag         // Transpose flag
-        , bool DF = IsDenseMatrix<MT>::value     // Density flag
-        , bool MF = IsMatMatMultExpr<MT>::value  // Multiplication flag
-        , ptrdiff_t... CBAs >                    // Compile time band arguments
+template< typename MT                       // Type of the matrix
+        , bool TF = defaultTransposeFlag    // Transpose flag
+        , bool DF = IsDenseMatrix_v<MT>     // Density flag
+        , bool MF = IsMatMatMultExpr_v<MT>  // Multiplication flag
+        , ptrdiff_t... CBAs >               // Compile time band arguments
 class Band
 {};
 /*! \endcond */
@@ -90,8 +90,8 @@ template< typename MT          // Type of the matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 using Band_ = Band< MT
                   , defaultTransposeFlag
-                  , IsDenseMatrix<MT>::value
-                  , IsMatMatMultExpr<MT>::value
+                  , IsDenseMatrix_v<MT>
+                  , IsMatMatMultExpr_v<MT>
                   , CBAs... >;
 /*! \endcond */
 //*************************************************************************************************

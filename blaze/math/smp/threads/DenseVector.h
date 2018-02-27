@@ -109,7 +109,7 @@ void threadAssign( DenseVector<VT1,TF1>& lhs, const DenseVector<VT2,TF2>& rhs, O
    using ET1 = ElementType_t<VT1>;
    using ET2 = ElementType_t<VT2>;
 
-   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable<ET1,ET2>::value );
+   constexpr bool simdEnabled( VT1::simdEnabled && VT2::simdEnabled && IsSIMDCombinable_v<ET1,ET2> );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_t<VT1> >::size );
 
    const bool lhsAligned( (~lhs).isAligned() );

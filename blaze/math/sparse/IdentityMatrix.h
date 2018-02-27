@@ -370,7 +370,7 @@ class IdentityMatrix
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable_v<Type> };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -525,7 +525,7 @@ template< typename MT    // Type of the foreign identity matrix
 inline IdentityMatrix<Type,SO>::IdentityMatrix( const Matrix<MT,SO2>& m )
    : n_( (~m).rows() )  // The current number of rows and columns of the identity matrix
 {
-   if( !IsIdentity<MT>::value && !isIdentity( ~m ) ) {
+   if( !IsIdentity_v<MT> && !isIdentity( ~m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of identity matrix" );
    }
 }
@@ -710,7 +710,7 @@ template< typename MT    // Type of the right-hand side identity matrix
 inline IdentityMatrix<Type,SO>&
    IdentityMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   if( !IsIdentity<MT>::value && !isIdentity( ~rhs ) ) {
+   if( !IsIdentity_v<MT> && !isIdentity( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of identity matrix" );
    }
 

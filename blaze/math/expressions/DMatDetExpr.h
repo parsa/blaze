@@ -391,11 +391,11 @@ inline ElementType_t<MT> det( const DenseMatrix<MT,SO>& dm )
 
    const size_t N( (~dm).rows() );
 
-   if( IsStrictlyTriangular<MT>::value || N == 0UL ) {
+   if( IsStrictlyTriangular_v<MT> || N == 0UL ) {
       return ET(0);
    }
 
-   if( IsUniTriangular<MT>::value ) {
+   if( IsUniTriangular_v<MT> ) {
       return ET(1);
    }
 
@@ -403,7 +403,7 @@ inline ElementType_t<MT> det( const DenseMatrix<MT,SO>& dm )
       return (~dm)(0,0);
    }
 
-   if( IsTriangular<MT>::value ) {
+   if( IsTriangular_v<MT> ) {
       ET determinant( (~dm)(0,0) );
 
       for( size_t i=1UL; i<N; ++i ) {

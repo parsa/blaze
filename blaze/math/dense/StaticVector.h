@@ -231,7 +231,7 @@ class StaticVector
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
@@ -344,7 +344,7 @@ class StaticVector
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -356,8 +356,8 @@ class StaticVector
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -369,8 +369,8 @@ class StaticVector
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -382,8 +382,8 @@ class StaticVector
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -395,8 +395,8 @@ class StaticVector
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDDiv_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -522,9 +522,9 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector()
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<NN; ++i )
          v_[i] = Type();
    }
@@ -545,7 +545,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
@@ -581,7 +581,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( initializer_list<Type> list )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
@@ -623,7 +623,7 @@ template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
@@ -632,7 +632,7 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    for( size_t i=0UL; i<n; ++i )
       v_[i] = array[i];
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=n; i<NN; ++i )
          v_[i] = Type();
    }
@@ -666,7 +666,7 @@ template< typename Other  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    BLAZE_STATIC_ASSERT( Dim == N );
 
    for( size_t i=0UL; i<N; ++i )
@@ -693,7 +693,7 @@ template< typename Type  // Data type of the vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<NN; ++i )
       v_[i] = v.v_[i];
@@ -715,7 +715,7 @@ template< typename Other >  // Data type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v )
    : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
@@ -747,13 +747,13 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~v).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
    }
 
-   for( size_t i=( IsSparseVector<VT>::value ? 0UL : N ); i<NN; ++i ) {
+   for( size_t i=( IsSparseVector_v<VT> ? 0UL : N ); i<NN; ++i ) {
       v_[i] = Type();
    }
 
@@ -1153,7 +1153,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Vector
       swap( tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -1263,7 +1263,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator*=( const Vecto
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
+   if( IsSparseVector_v<VT> || (~rhs).canAlias( this ) ) {
       const StaticVector tmp( *this * (~rhs) );
       assign( *this, tmp );
    }
@@ -1701,7 +1701,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool StaticVector<Type,N,TF>::isIntact() const noexcept
 {
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=N; i<NN; ++i ) {
          if( v_[i] != Type() )
             return false;
@@ -2039,7 +2039,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAssi
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2129,7 +2129,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedAddA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2219,7 +2219,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedSubA
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -2309,7 +2309,7 @@ inline EnableIf_<typename StaticVector<Type,N,TF>::BLAZE_TEMPLATE VectorizedMult
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );

@@ -269,7 +269,7 @@ class HybridMatrix
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -390,8 +390,8 @@ class HybridMatrix
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -403,10 +403,10 @@ class HybridMatrix
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -418,10 +418,10 @@ class HybridMatrix
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -433,9 +433,9 @@ class HybridMatrix
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<MT> >::value &&
-                            IsRowMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<MT> > &&
+                            IsRowMajorMatrix_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -568,9 +568,9 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -602,7 +602,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -612,7 +612,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<M*NN; ++i )
          v_[i] = Type();
    }
@@ -645,7 +645,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -659,13 +659,13 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& 
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = init;
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -709,7 +709,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_li
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -726,7 +726,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_li
       ++i;
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( ; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -774,7 +774,7 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -788,13 +788,13 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other*
       for( size_t j=0UL; j<n; ++j )
          v_[i*NN+j] = array[i*n+j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t j=n; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=m; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -840,19 +840,19 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[Rows][Cols]
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<Rows; ++i ) {
       for( size_t j=0UL; j<Cols; ++j )
          v_[i*NN+j] = array[i][j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t j=Cols; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=Rows; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -880,19 +880,19 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const HybridMatrix& m )
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j )
          v_[i*NN+j] = m.v_[i*NN+j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t j=n_; j<NN; ++j )
             v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=m_; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -922,21 +922,21 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || NN == N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~m).rows() > M || (~m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
    }
 
    for( size_t i=0UL; i<m_; ++i ) {
-      for( size_t j=( IsSparseMatrix<MT>::value ? 0UL : n_ );
-                  j<( IsNumeric<Type>::value    ? NN  : n_ );
+      for( size_t j=( IsSparseMatrix_v<MT> ? 0UL : n_ );
+                  j<( IsNumeric_v<Type>    ? NN  : n_ );
                   ++j ) {
          v_[i*NN+j] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=m_; i<M; ++i )
          for( size_t j=0UL; j<NN; ++j )
             v_[i*NN+j] = Type();
@@ -1488,20 +1488,20 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
    }
    else {
       resize( (~rhs).rows(), (~rhs).columns() );
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_v<MT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -1901,13 +1901,13 @@ void HybridMatrix<Type,M,N,SO>::resize( size_t m, size_t n, bool preserve )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
    }
 
-   if( IsVectorizable<Type>::value && n < n_ ) {
+   if( IsVectorizable_v<Type> && n < n_ ) {
       for( size_t i=0UL; i<m; ++i )
          for( size_t j=n; j<n_; ++j )
             v_[i*NN+j] = Type();
    }
 
-   if( IsVectorizable<Type>::value && m < m_ ) {
+   if( IsVectorizable_v<Type> && m < m_ ) {
       for( size_t i=m; i<m_; ++i )
          for( size_t j=0UL; j<n_; ++j )
             v_[i*NN+j] = Type();
@@ -2013,7 +2013,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && m_ < n_ ) {
+   if( IsVectorizable_v<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -2021,7 +2021,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && m_ > n_ ) {
+   if( IsVectorizable_v<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -2069,7 +2069,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
       conjugate( v_[i*NN+i] );
    }
 
-   if( IsVectorizable<Type>::value && m_ < n_ ) {
+   if( IsVectorizable_v<Type> && m_ < n_ ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=m_; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -2077,7 +2077,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::ctranspose()
       }
    }
 
-   if( IsVectorizable<Type>::value && m_ > n_ ) {
+   if( IsVectorizable_v<Type> && m_ > n_ ) {
       for( size_t i=n_; i<m_; ++i ) {
          for( size_t j=0UL; j<n_; ++j ) {
             v_[i*NN+j] = Type();
@@ -2327,7 +2327,7 @@ inline bool HybridMatrix<Type,M,N,SO>::isIntact() const noexcept
    if( m_ > M || n_ > N )
       return false;
 
-   if( IsVectorizable<Type>::value )
+   if( IsVectorizable_v<Type> )
    {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<NN; ++j ) {
@@ -2722,7 +2722,7 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAs
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
@@ -2822,17 +2822,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedA
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[i*NN+i] += (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                               :( n_ ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2870,15 +2870,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAd
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2978,17 +2978,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedS
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[i*NN+i] -= (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                               :( n_ ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -3026,15 +3026,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSu
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -3165,7 +3165,7 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSc
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -3321,7 +3321,7 @@ class HybridMatrix<Type,M,N,true>
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
@@ -3441,8 +3441,8 @@ class HybridMatrix<Type,M,N,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3452,10 +3452,10 @@ class HybridMatrix<Type,M,N,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3465,10 +3465,10 @@ class HybridMatrix<Type,M,N,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> &&
+                            !IsDiagonal_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3478,9 +3478,9 @@ class HybridMatrix<Type,M,N,true>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<MT> >::value &&
-                            IsColumnMajorMatrix<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<MT> > &&
+                            IsColumnMajorMatrix_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3604,9 +3604,9 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -3639,7 +3639,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3649,7 +3649,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t i=0UL; i<MM*N; ++i )
          v_[i] = Type();
    }
@@ -3683,7 +3683,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3697,13 +3697,13 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = init;
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3748,7 +3748,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_
    , m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3766,7 +3766,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_
          v_[i+j*MM] = element;
          ++j;
       }
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( ; j<N; ++j ) {
             v_[i+j*MM] = Type();
          }
@@ -3776,7 +3776,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_
 
    BLAZE_INTERNAL_ASSERT( i == m_, "Invalid number of elements detected" );
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( ; i<MM; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
             v_[i+j*MM] = Type();
@@ -3827,7 +3827,7 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -3841,13 +3841,13 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Othe
       for( size_t i=0UL; i<m; ++i )
          v_[i+j*MM] = array[i+j*m];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t i=m; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t j=n; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3894,19 +3894,19 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[Rows][Col
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    for( size_t j=0UL; j<Cols; ++j ) {
       for( size_t i=0UL; i<Rows; ++i )
          v_[i+j*MM] = array[i][j];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t i=Rows; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t j=Cols; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3935,19 +3935,19 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const HybridMatrix& m )
    , m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i )
          v_[i+j*MM] = m.v_[i+j*MM];
 
-      if( IsNumeric<Type>::value ) {
+      if( IsNumeric_v<Type> ) {
          for( size_t i=m_; i<MM; ++i )
             v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t j=n_; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -3978,21 +3978,21 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
 {
    using blaze::assign;
 
-   BLAZE_STATIC_ASSERT( IsVectorizable<Type>::value || MM == M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( (~m).rows() > M || (~m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
    }
 
    for( size_t j=0UL; j<n_; ++j ) {
-      for( size_t i=( IsSparseMatrix<MT>::value ? 0UL : m_ );
-                  i<( IsNumeric<Type>::value    ? MM  : m_ );
+      for( size_t i=( IsSparseMatrix_v<MT> ? 0UL : m_ );
+                  i<( IsNumeric_v<Type>    ? MM  : m_ );
                   ++i ) {
          v_[i+j*MM] = Type();
       }
    }
 
-   if( IsNumeric<Type>::value ) {
+   if( IsNumeric_v<Type> ) {
       for( size_t j=n_; j<N; ++j )
          for( size_t i=0UL; i<MM; ++i )
             v_[i+j*MM] = Type();
@@ -4541,20 +4541,20 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
       HybridMatrix tmp( ~rhs );
       resize( tmp.rows(), tmp.columns() );
       assign( *this, tmp );
    }
    else {
       resize( (~rhs).rows(), (~rhs).columns() );
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_v<MT> )
          reset();
       assign( *this, ~rhs );
    }
@@ -4956,13 +4956,13 @@ void HybridMatrix<Type,M,N,true>::resize( size_t m, size_t n, bool preserve )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
    }
 
-   if( IsVectorizable<Type>::value && m < m_ ) {
+   if( IsVectorizable_v<Type> && m < m_ ) {
       for( size_t j=0UL; j<n; ++j )
          for( size_t i=m; i<m_; ++i )
             v_[i+j*MM] = Type();
    }
 
-   if( IsVectorizable<Type>::value && n < n_ ) {
+   if( IsVectorizable_v<Type> && n < n_ ) {
       for( size_t j=n; j<n_; ++j )
          for( size_t i=0UL; i<m_; ++i )
             v_[i+j*MM] = Type();
@@ -5071,7 +5071,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && n_ < m_ ) {
+   if( IsVectorizable_v<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
             v_[i+j*MM] = Type();
@@ -5079,7 +5079,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::transpose()
       }
    }
 
-   if( IsVectorizable<Type>::value && n_ > m_ ) {
+   if( IsVectorizable_v<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
             v_[i+j*MM] = Type();
@@ -5128,7 +5128,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
       conjugate( v_[j+j*MM] );
    }
 
-   if( IsVectorizable<Type>::value && n_ < m_ ) {
+   if( IsVectorizable_v<Type> && n_ < m_ ) {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=n_; i<m_; ++i ) {
             v_[i+j*MM] = Type();
@@ -5136,7 +5136,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::ctranspose()
       }
    }
 
-   if( IsVectorizable<Type>::value && n_ > m_ ) {
+   if( IsVectorizable_v<Type> && n_ > m_ ) {
       for( size_t j=m_; j<n_; ++j ) {
          for( size_t i=0UL; i<m_; ++i ) {
             v_[i+j*MM] = Type();
@@ -5397,7 +5397,7 @@ inline bool HybridMatrix<Type,M,N,true>::isIntact() const noexcept
    if( m_ > M || n_ > N )
       return false;
 
-   if( IsVectorizable<Type>::value )
+   if( IsVectorizable_v<Type> )
    {
       for( size_t j=0UL; j<n_; ++j ) {
          for( size_t i=m_; i<MM; ++i ) {
@@ -5797,7 +5797,7 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -5900,17 +5900,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorize
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[j+j*MM] += (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                               :( m_ ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5949,15 +5949,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -6060,17 +6060,17 @@ inline DisableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorize
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[j+j*MM] -= (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                               :( m_ ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -6109,15 +6109,15 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -6252,7 +6252,7 @@ inline EnableIf_<typename HybridMatrix<Type,M,N,true>::BLAZE_TEMPLATE Vectorized
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == m_ && (~rhs).columns() == n_, "Invalid matrix size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded<MT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {

@@ -333,7 +333,7 @@ inline Column<MT,true,false,SF,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains< TypeList<RCAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -725,7 +725,7 @@ inline Column<MT,true,false,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -783,7 +783,7 @@ inline Column<MT,true,false,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -2602,7 +2602,7 @@ inline Column<MT,false,false,false,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains< TypeList<RCAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -3357,13 +3357,13 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CCAs >  // Compile time column arguments
 inline void Column<MT,false,false,false,CCAs...>::reset()
 {
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( column()+1UL )
                            :( column() ) )
                         :( 0UL ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( column() )
                            :( column()+1UL ) )
                         :( size() ) );
@@ -4290,7 +4290,7 @@ inline Column<MT,false,false,true,CCAs...>::Column( MT& matrix, RCAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the column
 {
-   if( !Contains< TypeList<RCAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
       if( matrix_.columns() <= column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -4669,7 +4669,7 @@ inline Column<MT,false,false,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -4726,7 +4726,7 @@ inline Column<MT,false,false,true,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<VT> tmp( right);
       left.reset();
       left.reserve( tmp.nonZeros() );

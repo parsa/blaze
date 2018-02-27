@@ -59,7 +59,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE(T) \
-   static_assert( ::blaze::IsContiguous<T>::value, "Non-contiguous type detected" )
+   static_assert( ::blaze::IsContiguous_v<T>, "Non-contiguous type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_CONTIGUOUS_TYPE(T) \
-   static_assert( !::blaze::IsContiguous<T>::value, "Contiguous type detected" )
+   static_assert( !::blaze::IsContiguous_v<T>, "Contiguous type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -77,7 +77,7 @@ namespace blaze {
 template< typename PT    // Type of the proxy
         , typename MT >  // Type of the dense matrix
 class DenseMatrixProxy
-   : public DenseMatrix< PT, IsColumnMajorMatrix<MT>::value >
+   : public DenseMatrix< PT, IsColumnMajorMatrix_v<MT> >
 {
  public:
    //**Type definitions****************************************************************************

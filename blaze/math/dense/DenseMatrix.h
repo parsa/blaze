@@ -594,7 +594,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST s
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       if( !tryMult( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
       }
@@ -658,7 +658,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST s
 
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       if( !tryDiv( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted matrix" );
       }
@@ -842,16 +842,16 @@ bool isSymmetric( const DenseMatrix<MT,SO>& dm )
 {
    using CT = CompositeType_t<MT>;
 
-   if( IsSymmetric<MT>::value )
+   if( IsSymmetric_v<MT> )
       return true;
 
    if( !isSquare( ~dm ) )
       return false;
 
-   if( IsUniform<MT>::value || (~dm).rows() < 2UL )
+   if( IsUniform_v<MT> || (~dm).rows() < 2UL )
       return true;
 
-   if( IsTriangular<MT>::value )
+   if( IsTriangular_v<MT> )
       return isDiagonal( ~dm );
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
@@ -921,13 +921,13 @@ bool isHermitian( const DenseMatrix<MT,SO>& dm )
    using ET = ElementType_t<MT>;
    using CT = CompositeType_t<MT>;
 
-   if( IsHermitian<MT>::value )
+   if( IsHermitian_v<MT> )
       return true;
 
-   if( !IsNumeric<ET>::value || !isSquare( ~dm ) )
+   if( !IsNumeric_v<ET> || !isSquare( ~dm ) )
       return false;
 
-   if( IsBuiltin<ET>::value && IsUniform<MT>::value )
+   if( IsBuiltin_v<ET> && IsUniform_v<MT> )
       return true;
 
    CT A( ~dm );  // Evaluation of the dense matrix operand
@@ -976,11 +976,11 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
 
-   const size_t ibegin( ( IsStrictlyLower<MT>::value )?( 1UL ):( 0UL ) );
-   const size_t iend  ( ( IsStrictlyUpper<MT>::value )?( (~dm).rows()-1UL ):( (~dm).rows() ) );
+   const size_t ibegin( ( IsStrictlyLower_v<MT> )?( 1UL ):( 0UL ) );
+   const size_t iend  ( ( IsStrictlyUpper_v<MT> )?( (~dm).rows()-1UL ):( (~dm).rows() ) );
 
    for( size_t i=ibegin; i<iend; ++i ) {
-      if( !IsUpper<MT>::value ) {
+      if( !IsUpper_v<MT> ) {
          for( size_t j=0UL; j<i; ++j ) {
             if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
@@ -988,7 +988,7 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, TrueType )
       }
       if( !isDefault<RF>( (~dm)(i,i) ) )
          return false;
-      if( !IsLower<MT>::value ) {
+      if( !IsLower_v<MT> ) {
          for( size_t j=i+1UL; j<(~dm).columns(); ++j ) {
             if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
@@ -1020,11 +1020,11 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
 
-   const size_t jbegin( ( IsStrictlyUpper<MT>::value )?( 1UL ):( 0UL ) );
-   const size_t jend  ( ( IsStrictlyLower<MT>::value )?( (~dm).columns()-1UL ):( (~dm).columns() ) );
+   const size_t jbegin( ( IsStrictlyUpper_v<MT> )?( 1UL ):( 0UL ) );
+   const size_t jend  ( ( IsStrictlyLower_v<MT> )?( (~dm).columns()-1UL ):( (~dm).columns() ) );
 
    for( size_t j=jbegin; j<jend; ++j ) {
-      if( !IsLower<MT>::value ) {
+      if( !IsLower_v<MT> ) {
          for( size_t i=0UL; i<j; ++i ) {
             if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
@@ -1032,7 +1032,7 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, TrueType )
       }
       if( !isDefault<RF>( (~dm)(j,j) ) )
          return false;
-      if( !IsUpper<MT>::value ) {
+      if( !IsUpper_v<MT> ) {
          for( size_t i=j+1UL; i<(~dm).rows(); ++i ) {
             if( !isDefault<RF>( (~dm)(i,j) ) )
                return false;
@@ -1150,10 +1150,10 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniform( const DenseMatrix<MT,SO>& dm )
 {
-   if( IsUniTriangular<MT>::value )
+   if( IsUniTriangular_v<MT> )
       return false;
 
-   if( IsUniform<MT>::value ||
+   if( IsUniform_v<MT> ||
        (~dm).rows() == 0UL || (~dm).columns() == 0UL ||
        ( (~dm).rows() == 1UL && (~dm).columns() == 1UL ) )
       return true;
@@ -1218,7 +1218,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsLower<MT>::value )
+   if( IsLower_v<MT> )
       return true;
 
    if( !isSquare( ~dm ) )
@@ -1303,7 +1303,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsUniLower<MT>::value )
+   if( IsUniLower_v<MT> )
       return true;
 
    if( !isSquare( ~dm ) )
@@ -1390,10 +1390,10 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsStrictlyLower<MT>::value )
+   if( IsStrictlyLower_v<MT> )
       return true;
 
-   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~dm ) )
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~dm ) )
       return false;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
@@ -1473,7 +1473,7 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsUpper<MT>::value )
+   if( IsUpper_v<MT> )
       return true;
 
    if( !isSquare( ~dm ) )
@@ -1558,7 +1558,7 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsUniUpper<MT>::value )
+   if( IsUniUpper_v<MT> )
       return true;
 
    if( !isSquare( ~dm ) )
@@ -1645,10 +1645,10 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsStrictlyUpper<MT>::value )
+   if( IsStrictlyUpper_v<MT> )
       return true;
 
-   if( IsUniLower<MT>::value || IsUniUpper<MT>::value || !isSquare( ~dm ) )
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~dm ) )
       return false;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
@@ -1729,7 +1729,7 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsDiagonal<MT>::value )
+   if( IsDiagonal_v<MT> )
       return true;
 
    if( !isSquare( ~dm ) )
@@ -1742,13 +1742,13 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         if( !IsUpper<MT>::value ) {
+         if( !IsUpper_v<MT> ) {
             for( size_t j=0UL; j<i; ++j ) {
                if( !isDefault<RF>( A(i,j) ) )
                   return false;
             }
          }
-         if( !IsLower<MT>::value ) {
+         if( !IsLower_v<MT> ) {
             for( size_t j=i+1UL; j<A.columns(); ++j ) {
                if( !isDefault<RF>( A(i,j) ) )
                   return false;
@@ -1758,13 +1758,13 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         if( !IsLower<MT>::value ) {
+         if( !IsLower_v<MT> ) {
             for( size_t i=0UL; i<j; ++i ) {
                if( !isDefault<RF>( A(i,j) ) )
                   return false;
             }
          }
-         if( !IsUpper<MT>::value ) {
+         if( !IsUpper_v<MT> ) {
             for( size_t i=j+1UL; i<A.rows(); ++i ) {
                if( !isDefault<RF>( A(i,j) ) )
                   return false;
@@ -1831,7 +1831,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    using CT  = CompositeType_t<MT>;
    using Tmp = If_< IsExpression<RN>, const RT, CT >;
 
-   if( IsIdentity<MT>::value )
+   if( IsIdentity_v<MT> )
       return true;
 
    if( !isSquare( ~dm ) )
@@ -1844,16 +1844,16 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         if( !IsUpper<MT>::value ) {
+         if( !IsUpper_v<MT> ) {
             for( size_t j=0UL; j<i; ++j ) {
                if( !isZero<RF>( A(i,j) ) )
                   return false;
             }
          }
-         if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne<RF>( A(i,i) ) ) {
+         if( !IsUniLower_v<MT> && !IsUniUpper_v<MT> && !isOne<RF>( A(i,i) ) ) {
             return false;
          }
-         if( !IsLower<MT>::value ) {
+         if( !IsLower_v<MT> ) {
             for( size_t j=i+1UL; j<A.columns(); ++j ) {
                if( !isZero<RF>( A(i,j) ) )
                   return false;
@@ -1863,16 +1863,16 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         if( !IsLower<MT>::value ) {
+         if( !IsLower_v<MT> ) {
             for( size_t i=0UL; i<j; ++i ) {
                if( !isZero<RF>( A(i,j) ) )
                   return false;
             }
          }
-         if( !IsUniLower<MT>::value && !IsUniUpper<MT>::value && !isOne<RF>( A(j,j) ) ) {
+         if( !IsUniLower_v<MT> && !IsUniUpper_v<MT> && !isOne<RF>( A(j,j) ) ) {
             return false;
          }
-         if( !IsUpper<MT>::value ) {
+         if( !IsUpper_v<MT> ) {
             for( size_t i=j+1UL; i<A.rows(); ++i ) {
                if( !isZero<RF>( A(i,j) ) )
                   return false;

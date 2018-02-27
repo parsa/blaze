@@ -126,12 +126,12 @@ struct IsSIMDPackHelper
 // \a FalseType. Examples:
 
    \code
-   blaze::IsSIMDPack< SIMDint32 >::value        // Evaluates to 1
-   blaze::IsSIMDPack< const SIMDdouble >::Type  // Results in TrueType
-   blaze::IsSIMDPack< volatile SIMDint >        // Is derived from TrueType
-   blaze::IsSIMDPack< int >::value                 // Evaluates to 0
-   blaze::IsSIMDPack< const double >::Type         // Results in FalseType
-   blaze::IsSIMDPack< volatile complex<double> >   // Is derived from FalseType
+   blaze::IsSIMDPack< SIMDint32 >::value          // Evaluates to 1
+   blaze::IsSIMDPack< const SIMDdouble >::Type    // Results in TrueType
+   blaze::IsSIMDPack< volatile SIMDint >          // Is derived from TrueType
+   blaze::IsSIMDPack< int >::value                // Evaluates to 0
+   blaze::IsSIMDPack< const double >::Type        // Results in FalseType
+   blaze::IsSIMDPack< volatile complex<double> >  // Is derived from FalseType
    \endcode
 */
 template< typename T >

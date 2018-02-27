@@ -184,7 +184,7 @@ inline void heevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char
    int liwork( 3 + 5*n );
    const std::unique_ptr<int[]> iwork( new int[liwork] );
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_v<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

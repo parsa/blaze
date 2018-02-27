@@ -124,7 +124,7 @@ struct DVecNormHelper
                          If_< And< HasSIMDEnabled<Abs>, HasSIMDEnabled<Power> >
                             , UseSIMDEnabledFlag
                             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
-                         HasSIMDAdd< ElementType_t<CT>, ElementType_t<CT> >::value };
+                         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -225,7 +225,7 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
 
    const size_t N( tmp.size() );
 
-   constexpr bool remainder( !usePadding || !IsPadded<VT>::value );
+   constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );

@@ -59,7 +59,7 @@ namespace blaze {
 // or matrix, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_INITIALIZER_TYPE(T) \
-   static_assert( ::blaze::IsInitialiizer<T>::value, "Non-initializer type detected" )
+   static_assert( ::blaze::IsInitialiizer_v<T>, "Non-initializer type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // matrix, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_INITIALIZER_TYPE(T) \
-   static_assert( !::blaze::IsInitializer<T>::value, "Initializer type dected" )
+   static_assert( !::blaze::IsInitializer_v<T>, "Initializer type dected" )
 //*************************************************************************************************
 
 } // namespace blaze

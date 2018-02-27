@@ -41,9 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
@@ -59,28 +57,17 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T         // Type of the operand
-        , typename = void >  // Restricting condition
-struct HasSIMDTanhHelper
-{
-   enum : bool { value = false };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if BLAZE_SVML_MODE
-template< typename T >
-struct HasSIMDTanhHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
-{
-   enum : bool { value = bool( BLAZE_SSE_MODE     ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
-#endif
+/*!\brief Auxiliary alias declaration for the HasSIMDTanh type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >  // Type of the operand
+using HasSIMDTanhHelper =
+   BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
+                 bool( BLAZE_SVML_MODE ) &&
+                 ( bool( BLAZE_SSE_MODE     ) ||
+                   bool( BLAZE_AVX_MODE     ) ||
+                   bool( BLAZE_MIC_MODE     ) ||
+                   bool( BLAZE_AVX512F_MODE ) ) >;
 /*! \endcond */
 //*************************************************************************************************
 

@@ -59,7 +59,7 @@ namespace blaze {
 // derived from the MatScalarDivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATSCALARDIVEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatScalarDivExpr<T>::value, "Non-matrix/scalar division expression type detected" )
+   static_assert( ::blaze::IsMatScalarDivExpr_v<T>, "Non-matrix/scalar division expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // from the MatScalarDivExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATSCALARDIVEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatScalarDivExpr<T>::value, "Matrix/scalar division expression type detected" )
+   static_assert( !::blaze::IsMatScalarDivExpr_v<T>, "Matrix/scalar division expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

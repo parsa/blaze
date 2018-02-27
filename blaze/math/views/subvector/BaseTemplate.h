@@ -59,11 +59,11 @@ namespace blaze {
 /*!\brief Base template of the Subvector class template.
 // \ingroup subvector
 */
-template< typename VT                         // Type of the vector
-        , AlignmentFlag AF = unaligned        // Alignment flag
-        , bool TF = IsRowVector<VT>::value    // Transpose flag
-        , bool DF = IsDenseVector<VT>::value  // Density flag
-        , size_t... CSAs >                    // Compile time subvector arguments
+template< typename VT                    // Type of the vector
+        , AlignmentFlag AF = unaligned   // Alignment flag
+        , bool TF = IsRowVector_v<VT>    // Transpose flag
+        , bool DF = IsDenseVector_v<VT>  // Density flag
+        , size_t... CSAs >               // Compile time subvector arguments
 class Subvector
 {};
 /*! \endcond */
@@ -91,8 +91,8 @@ template< typename VT                   // Type of the vector
         , size_t... CSAs >              // Compile time subvector arguments
 using Subvector_ = Subvector< VT
                             , AF
-                            , IsRowVector<VT>::value
-                            , IsDenseVector<VT>::value
+                            , IsRowVector_v<VT>
+                            , IsDenseVector_v<VT>
                             , CSAs... >;
 /*! \endcond */
 //*************************************************************************************************

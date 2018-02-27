@@ -182,11 +182,11 @@ inline void ormrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
       return;
    }
 
-   if( IsRowMajorMatrix<MT1>::value ) {
+   if( IsRowMajorMatrix_v<MT1> ) {
       ( side  == 'L' )?( side  = 'R' ):( side  = 'L' );
    }
 
-   if( Xor< IsRowMajorMatrix<MT1>, IsRowMajorMatrix<MT2> >::value ) {
+   if( IsRowMajorMatrix_v<MT1> ^ IsRowMajorMatrix_v<MT2> ) {
       ( trans == 'N' )?( trans = 'T' ):( trans = 'N' );
    }
 

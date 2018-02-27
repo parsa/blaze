@@ -332,7 +332,7 @@ class DiagonalMatrix<MT,SO,false>
    BLAZE_CONSTRAINT_MUST_NOT_BE_UPPER_MATRIX_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( OT, !SO );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( TT, !SO );
-   BLAZE_STATIC_ASSERT( ( Size<MT,0UL>::value == Size<MT,1UL>::value ) );
+   BLAZE_STATIC_ASSERT( ( Size_v<MT,0UL> == Size_v<MT,1UL> ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -521,11 +521,11 @@ template< typename MT2  // Type of the foreign matrix
 inline DiagonalMatrix<MT,SO,false>::DiagonalMatrix( const Matrix<MT2,SO2>& m )
    : matrix_( ~m )  // The adapted sparse matrix
 {
-   if( !IsDiagonal<MT2>::value && !isDiagonal( matrix_ ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( matrix_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of diagonal matrix" );
    }
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -933,13 +933,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    matrix_ = decldiag( ~rhs );
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -971,11 +971,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   if( IsDiagonal<MT2>::value ) {
+   if( IsDiagonal_v<MT2> ) {
       matrix_ = ~rhs;
    }
    else {
@@ -988,7 +988,7 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
       matrix_ = std::move( tmp );
    }
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -1020,13 +1020,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    matrix_ += decldiag( ~rhs );
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -1058,11 +1058,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   if( IsDiagonal<MT2>::value ) {
+   if( IsDiagonal_v<MT2> ) {
       matrix_ += ~rhs;
    }
    else {
@@ -1075,7 +1075,7 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
       matrix_ += decldiag( tmp );
    }
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -1107,13 +1107,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DisableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsDiagonal<MT2>::value && !isDiagonal( ~rhs ) ) {
+   if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    matrix_ -= decldiag( ~rhs );
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -1145,11 +1145,11 @@ template< typename MT2  // Type of the right-hand side matrix
 inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
    DiagonalMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
-   if( IsDiagonal<MT2>::value ) {
+   if( IsDiagonal_v<MT2> ) {
       matrix_ -= ~rhs;
    }
    else {
@@ -1162,7 +1162,7 @@ inline EnableIf_< IsComputation<MT2>, DiagonalMatrix<MT,SO,false>& >
       matrix_ -= decldiag( tmp );
    }
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
@@ -1192,13 +1192,13 @@ template< typename MT2  // Type of the right-hand side matrix
 inline DiagonalMatrix<MT,SO,false>&
    DiagonalMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
-   if( !IsSquare<MT2>::value && !isSquare( ~rhs ) ) {
+   if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
    }
 
    matrix_ %= ~rhs;
 
-   if( !IsDiagonal<MT2>::value )
+   if( !IsDiagonal_v<MT2> )
       resetNonDiagonal();
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );

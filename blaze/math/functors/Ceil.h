@@ -87,7 +87,7 @@ struct Ceil
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return HasSIMDCeil<T>::value; }
+   static constexpr bool simdEnabled() { return HasSIMDCeil_v<T>; }
    //**********************************************************************************************
 
    //**********************************************************************************************

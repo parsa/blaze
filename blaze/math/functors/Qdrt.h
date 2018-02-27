@@ -86,7 +86,7 @@ struct Qdrt
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return HasSIMDSqrt<T>::value; }
+   static constexpr bool simdEnabled() { return HasSIMDSqrt_v<T>; }
    //**********************************************************************************************
 
    //**********************************************************************************************

@@ -907,7 +907,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept
 {
-   return ( IsSquare<MT>::value || (~matrix).rows() == (~matrix).columns() );
+   return ( IsSquare_v<MT> || (~matrix).rows() == (~matrix).columns() );
 }
 //*************************************************************************************************
 
@@ -948,7 +948,7 @@ template< typename MT1  // Type of the left-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b ) noexcept
 {
-   return ( IsSame<MT1,MT2>::value &&
+   return ( IsSame_v<MT1,MT2> &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
 //*************************************************************************************************

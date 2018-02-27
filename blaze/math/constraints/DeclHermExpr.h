@@ -59,7 +59,7 @@ namespace blaze {
 // DeclHermExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DECLHERMEXPR_TYPE(T) \
-   static_assert( ::blaze::IsDeclHermExpr<T>::value, "Non-declherm expression type detected" )
+   static_assert( ::blaze::IsDeclHermExpr_v<T>, "Non-declherm expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // DeclHermExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DECLHERMEXPR_TYPE(T) \
-   static_assert( !::blaze::IsDeclHermExpr<T>::value, "Declherm expression type detected" )
+   static_assert( !::blaze::IsDeclHermExpr_v<T>, "Declherm expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

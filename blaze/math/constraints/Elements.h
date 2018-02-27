@@ -59,7 +59,7 @@ namespace blaze {
 // of a dense or sparse vector), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ELEMENTS_TYPE(T) \
-   static_assert( ::blaze::IsElements<T>::value, "Non-elements type detected" )
+   static_assert( ::blaze::IsElements_v<T>, "Non-elements type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // a dense or sparse vector), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ELEMENTS_TYPE(T) \
-   static_assert( !::blaze::IsElements<T>::value, "Elements type detected" )
+   static_assert( !::blaze::IsElements_v<T>, "Elements type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -57,34 +57,20 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T         // Type of the operand
-        , typename = void >  // Restricting condition
-struct HasSIMDRoundHelper
-{
-   enum : bool { value = false };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct HasSIMDRoundHelper< T, EnableIf_< IsFloat<T> > >
-{
-   enum : bool { value = bool( BLAZE_SSE4_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
-
-template< typename T >
-struct HasSIMDRoundHelper< T, EnableIf_< IsDouble<T> > >
-{
-   enum : bool { value = bool( BLAZE_SSE4_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+/*!\brief Auxiliary alias declaration for the HasSIMDRound type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >  // Type of the operand
+using HasSIMDRoundHelper =
+   BoolConstant< ( IsFloat_v<T> &&
+                   ( bool( BLAZE_SSE4_MODE    ) ||
+                     bool( BLAZE_AVX_MODE     ) ||
+                     bool( BLAZE_MIC_MODE     ) ||
+                     bool( BLAZE_AVX512F_MODE ) ) ) ||
+                 ( IsDouble_v<T> &&
+                   ( bool( BLAZE_SSE4_MODE    ) ||
+                     bool( BLAZE_AVX_MODE     ) ||
+                     bool( BLAZE_AVX512F_MODE ) ) ) >;
 /*! \endcond */
 //*************************************************************************************************
 

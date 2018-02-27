@@ -472,7 +472,7 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, RRAs... args )
 
    UNUSED_PARAMETER( args... );
 
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( (~matrix).rows() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
@@ -505,7 +505,7 @@ inline decltype(auto) row( const VecTVecMultExpr<MT>& matrix, size_t index, RRAs
 
    UNUSED_PARAMETER( args... );
 
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       if( (~matrix).rows() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }

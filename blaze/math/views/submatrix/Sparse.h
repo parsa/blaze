@@ -627,7 +627,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>::Submatrix( MT& matrix, RSAs... args
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -1085,7 +1085,7 @@ inline Submatrix<MT,AF,false,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -1410,13 +1410,13 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::reset()
 {
    for( size_t i=row(); i<row()+rows(); ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( max( i+1UL, column() ) )
                               :( max( i, column() ) ) )
                            :( column() ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( min( i, column()+columns() ) )
                               :( min( i+1UL, column()+columns() ) ) )
                            :( column()+columns() ) );
@@ -1449,13 +1449,13 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::reset( size_t i )
 
    const size_t index( row() + i );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( max( i+1UL, column() ) )
                            :( max( i, column() ) ) )
                         :( column() ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( min( i, column()+columns() ) )
                            :( min( i+1UL, column()+columns() ) ) )
                         :( column()+columns() ) );
@@ -1586,7 +1586,7 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,AF,false,false,CSAs...>::hasOverlap() const noexcept
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
 
    if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
       return false;
@@ -2325,7 +2325,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const DenseMatrix<MT2,
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+         if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( (~rhs)(i,j) );
             if( !isDefault<strict>( value ) )
                set( i, j, value );
@@ -2366,7 +2366,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       for( ConstIterator_t<MT2> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+         if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
                set( i, element->index(), value );
@@ -2422,7 +2422,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
    // Appending the elements to the rows of the sparse submatrix
    for( size_t j=0UL; j<columns(); ++j ) {
       for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+         if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
                set( element->index(), j, value );
@@ -3075,7 +3075,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>::Submatrix( MT& matrix, RSAs... args 
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the submatrix
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
@@ -3503,7 +3503,7 @@ inline Submatrix<MT,AF,true,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -3818,13 +3818,13 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::reset()
 {
    for( size_t j=column(); j<column()+columns(); ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                               ?( max( j+1UL, row() ) )
                               :( max( j, row() ) ) )
                            :( row() ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                               ?( min( j, row()+rows() ) )
                               :( min( j+1UL, row()+rows() ) ) )
                            :( row()+rows() ) );
@@ -3852,13 +3852,13 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::reset( size_t j )
 
    const size_t index( column() + j );
 
-   const size_t ibegin( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t ibegin( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( max( j+1UL, row() ) )
                            :( max( j, row() ) ) )
                         :( row() ) );
-   const size_t iend  ( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t iend  ( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( min( j, row()+rows() ) )
                            :( min( j+1UL, row()+rows() ) ) )
                         :( row()+rows() ) );
@@ -3983,7 +3983,7 @@ template< typename MT       // Type of the sparse matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline bool Submatrix<MT,AF,true,false,CSAs...>::hasOverlap() const noexcept
 {
-   BLAZE_INTERNAL_ASSERT( IsSymmetric<MT>::value || IsHermitian<MT>::value, "Invalid matrix detected" );
+   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
 
    if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
       return false;
@@ -4714,7 +4714,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const DenseMatrix<MT2,S
 
    for( size_t j=0UL; j<columns(); ++j ) {
       for( size_t i=0UL; i<rows(); ++i ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+         if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( (~rhs)(i,j) );
             if( !isDefault<strict>( value ) )
                set( i, j, value );
@@ -4755,7 +4755,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
       for( ConstIterator_t<MT2> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+         if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
                set( element->index(), j, value );
@@ -4810,7 +4810,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
    // Appending the elements to the columns of the sparse matrix
    for( size_t i=0UL; i<rows(); ++i ) {
       for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
-         if( IsSymmetric<MT>::value || IsHermitian<MT>::value ) {
+         if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
                set( i, element->index(), value );

@@ -59,7 +59,7 @@ namespace blaze {
 // the Declaration base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DECLARATION_TYPE(T) \
-   static_assert( ::blaze::IsDeclaration<T>::value, "Non-declaration type detected" )
+   static_assert( ::blaze::IsDeclaration_v<T>, "Non-declaration type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // Declaration base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DECLARATION_TYPE(T) \
-   static_assert( !::blaze::IsDeclaration<T>::value, "Declaration type detected" )
+   static_assert( !::blaze::IsDeclaration_v<T>, "Declaration type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

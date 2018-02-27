@@ -288,9 +288,9 @@ BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& 
    const int m  ( ( side == CblasLeft  )?( numeric_cast<int>( (~b).size() ) ):( 1 ) );
    const int n  ( ( side == CblasRight )?( numeric_cast<int>( (~b).size() ) ):( 1 ) );
    const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( ( IsRowMajorMatrix<MT>::value )?( n ):( m ) );
+   const int ldb( ( IsRowMajorMatrix_v<MT> )?( n ):( m ) );
 
-   trsm( ( IsRowMajorMatrix<MT>::value )?( CblasRowMajor ):( CblasColMajor ),
+   trsm( ( IsRowMajorMatrix_v<MT> )?( CblasRowMajor ):( CblasColMajor ),
          side,
          uplo,
          CblasNoTrans,
@@ -347,7 +347,7 @@ BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO
    const int lda( numeric_cast<int>( (~A).spacing() ) );
    const int ldb( numeric_cast<int>( (~B).spacing() ) );
 
-   trsm( ( IsRowMajorMatrix<MT2>::value )?( CblasRowMajor ):( CblasColMajor ),
+   trsm( ( IsRowMajorMatrix_v<MT2> )?( CblasRowMajor ):( CblasColMajor ),
          side,
          ( SO1 == SO2 )?( uplo ):( ( uplo == CblasLower )?( CblasUpper ):( CblasLower ) ),
          ( SO1 == SO2 )?( CblasNoTrans ):( CblasTrans ),

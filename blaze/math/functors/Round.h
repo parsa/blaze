@@ -87,7 +87,7 @@ struct Round
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
    template< typename T >
-   static constexpr bool simdEnabled() { return HasSIMDRound<T>::value; }
+   static constexpr bool simdEnabled() { return HasSIMDRound_v<T>; }
    //**********************************************************************************************
 
    //**********************************************************************************************

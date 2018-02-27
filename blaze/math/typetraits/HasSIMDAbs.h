@@ -41,15 +41,11 @@
 //*************************************************************************************************
 
 #include <blaze/system/Vectorization.h>
-#include <blaze/util/Complex.h>
-#include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
-#include <blaze/util/typetraits/IsUnsigned.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
 
@@ -64,36 +60,22 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T         // Type of the operand
-        , typename = void >  // Restricting condition
-struct HasSIMDAbsHelper
-{
-   enum : bool { value = false };
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct HasSIMDAbsHelper< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, IsSigned<T> > > >
-{
-   enum : bool { value = ( bool( BLAZE_SSSE3_MODE    ) && sizeof(T) <= 4UL ) ||
-                         ( bool( BLAZE_AVX2_MODE     ) && sizeof(T) <= 4UL ) ||
-                         ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
-                         ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
-                         ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) };
-};
-
-template< typename T >
-struct HasSIMDAbsHelper< T, EnableIf_< Or< IsFloat<T>, IsDouble<T> > > >
-{
-   enum : bool { value = bool( BLAZE_SSE2_MODE    ) ||
-                         bool( BLAZE_AVX_MODE     ) ||
-                         bool( BLAZE_MIC_MODE     ) ||
-                         bool( BLAZE_AVX512F_MODE ) };
-};
+/*!\brief Auxiliary alias declaration for the HasSIMDAbs type trait.
+// \ingroup math_type_traits
+*/
+template< typename T >  // Type of the operand
+using HasSIMDAbsHelper =
+   BoolConstant< ( ( IsNumeric_v<T> && IsIntegral_v<T> && IsSigned_v<T> ) &&
+                   ( ( bool( BLAZE_SSSE3_MODE    ) && sizeof(T) <= 4UL ) ||
+                     ( bool( BLAZE_AVX2_MODE     ) && sizeof(T) <= 4UL ) ||
+                     ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
+                     ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
+                     ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) ) ||
+                 ( ( IsFloat_v<T> || IsDouble_v<T> ) &&
+                   ( bool( BLAZE_SSE2_MODE    ) ||
+                     bool( BLAZE_AVX_MODE     ) ||
+                     bool( BLAZE_MIC_MODE     ) ||
+                     bool( BLAZE_AVX512F_MODE ) ) ) >;
 /*! \endcond */
 //*************************************************************************************************
 

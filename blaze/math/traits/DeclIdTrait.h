@@ -123,7 +123,7 @@ struct DeclIdTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = IdentityMatrix< ElementType_t<MT>, StorageOrder<MT>::value >; };
+   struct Result { using Type = IdentityMatrix< ElementType_t<MT>, StorageOrder_v<MT> >; };
    /*! \endcond */
    //**********************************************************************************************
 

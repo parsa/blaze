@@ -446,13 +446,13 @@ class CustomVector
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable_v<Type> };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -546,7 +546,7 @@ class CustomVector
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -558,8 +558,8 @@ class CustomVector
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -571,8 +571,8 @@ class CustomVector
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -584,8 +584,8 @@ class CustomVector
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -597,8 +597,8 @@ class CustomVector
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDDiv_v< Type, ElementType_t<VT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -1263,7 +1263,7 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator=( cons
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       smpAssign( *this, ~rhs );
    }
@@ -1372,9 +1372,9 @@ inline CustomVector<Type,AF,PF,TF>& CustomVector<Type,AF,PF,TF>::operator*=( con
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
+   if( IsSparseVector_v<VT> || (~rhs).canAlias( this ) ) {
       const MultType tmp( *this * (~rhs) );
-      if( IsSparseVector<MultType>::value )
+      if( IsSparseVector_v<MultType> )
          reset();
       smpAssign( *this, tmp );
    }
@@ -2661,13 +2661,13 @@ class CustomVector<Type,AF,padded,TF>
        in can be optimized via SIMD operations. In case the element type of the vector is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable_v<Type> };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2758,7 +2758,7 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -2768,8 +2768,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -2779,8 +2779,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -2790,8 +2790,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -2801,8 +2801,8 @@ class CustomVector<Type,AF,padded,TF>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<VT> >::value &&
-                            HasSIMDDiv< Type, ElementType_t<VT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<VT> > &&
+                            HasSIMDDiv_v< Type, ElementType_t<VT> > };
    };
    //**********************************************************************************************
 
@@ -2957,11 +2957,11 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( IsVectorizable<Type>::value && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
+   if( IsVectorizable_v<Type> && capacity_ < nextMultiple<size_t>( size_, SIMDSIZE ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded vector" );
    }
 
-   if( IsVectorizable<Type>::value ) {
+   if( IsVectorizable_v<Type> ) {
       for( size_t i=size_; i<capacity_; ++i )
          v_[i] = Type();
    }
@@ -3474,7 +3474,7 @@ inline CustomVector<Type,AF,padded,TF>&
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseVector<VT>::value )
+      if( IsSparseVector_v<VT> )
          reset();
       smpAssign( *this, ~rhs );
    }
@@ -3589,9 +3589,9 @@ inline CustomVector<Type,AF,padded,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   if( IsSparseVector<VT>::value || (~rhs).canAlias( this ) ) {
+   if( IsSparseVector_v<VT> || (~rhs).canAlias( this ) ) {
       const MultType tmp( *this * (~rhs) );
-      if( IsSparseVector<MultType>::value )
+      if( IsSparseVector_v<MultType> )
          reset();
       smpAssign( *this, tmp );
    }
@@ -4316,7 +4316,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -4444,7 +4444,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -4558,7 +4558,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -4672,7 +4672,7 @@ inline EnableIf_<typename CustomVector<Type,AF,padded,TF>::BLAZE_TEMPLATE Vector
 
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   constexpr bool remainder( !IsPadded<VT>::value );
+   constexpr bool remainder( !IsPadded_v<VT> );
 
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );

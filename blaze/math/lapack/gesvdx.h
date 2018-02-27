@@ -473,20 +473,20 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST u
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   if( IsFloatingPoint<ST>::value && low >= upp ) {
+   if( IsFloatingPoint_v<ST> && low >= upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid value range provided" );
    }
 
-   if( !IsFloatingPoint<ST>::value && low > upp ) {
+   if( !IsFloatingPoint_v<ST> && low > upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
    const size_t mindim( min( M, N ) );
-   const size_t expected( IsFloatingPoint<ST>::value ? mindim : size_t( upp - low ) + 1UL );
+   const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
-   if( !IsFloatingPoint<ST>::value && expected > mindim ) {
+   if( !IsFloatingPoint_v<ST> && expected > mindim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
@@ -496,15 +496,15 @@ inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST u
       return 0;
    }
 
-   const char range( IsFloatingPoint<ST>::value ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint<ST>::value ? low : ST() );
-   const ST   vu   ( IsFloatingPoint<ST>::value ? upp : ST() );
-   const int  il   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( upp ) );
+   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
+   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
 
    const size_t actual( gesvdx_backend( ~A, ~s, range, vl, vu, il, iu ) );
 
-   if( IsResizable<VT>::value ) {
+   if( IsResizable_v<VT> ) {
       resize( ~s, actual, true );
    }
 
@@ -967,20 +967,20 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   if( IsFloatingPoint<ST>::value && low >= upp ) {
+   if( IsFloatingPoint_v<ST> && low >= upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid value range provided" );
    }
 
-   if( !IsFloatingPoint<ST>::value && low > upp ) {
+   if( !IsFloatingPoint_v<ST> && low > upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
    const size_t mindim( min( M, N ) );
-   const size_t expected( IsFloatingPoint<ST>::value ? mindim : size_t( upp - low ) + 1UL );
+   const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
-   if( !IsFloatingPoint<ST>::value && expected > mindim ) {
+   if( !IsFloatingPoint_v<ST> && expected > mindim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
@@ -991,19 +991,19 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
       return 0;
    }
 
-   const char range( IsFloatingPoint<ST>::value ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint<ST>::value ? low : ST() );
-   const ST   vu   ( IsFloatingPoint<ST>::value ? upp : ST() );
-   const int  il   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( upp ) );
+   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
+   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
 
    const size_t actual( gesvdx_backend( ~A, ~U, ~s, range, vl, vu, il, iu ) );
 
-   if( IsResizable<VT>::value ) {
+   if( IsResizable_v<VT> ) {
       resize( ~s, actual, true );
    }
 
-   if( IsResizable<MT2>::value ) {
+   if( IsResizable_v<MT2> ) {
       resize( ~U, M, actual, true );
    }
 
@@ -1466,20 +1466,20 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   if( IsFloatingPoint<ST>::value && low >= upp ) {
+   if( IsFloatingPoint_v<ST> && low >= upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid value range provided" );
    }
 
-   if( !IsFloatingPoint<ST>::value && low > upp ) {
+   if( !IsFloatingPoint_v<ST> && low > upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
    const size_t mindim( min( M, N ) );
-   const size_t expected( IsFloatingPoint<ST>::value ? mindim : size_t( upp - low ) + 1UL );
+   const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
-   if( !IsFloatingPoint<ST>::value && expected > mindim ) {
+   if( !IsFloatingPoint_v<ST> && expected > mindim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
@@ -1490,19 +1490,19 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
       return 0;
    }
 
-   const char range( IsFloatingPoint<ST>::value ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint<ST>::value ? low : ST() );
-   const ST   vu   ( IsFloatingPoint<ST>::value ? upp : ST() );
-   const int  il   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( upp ) );
+   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
+   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
 
    const size_t actual( gesvdx_backend( ~A, ~s, ~V, range, vl, vu, il, iu ) );
 
-   if( IsResizable<VT>::value ) {
+   if( IsResizable_v<VT> ) {
       resize( ~s, actual, true );
    }
 
-   if( IsResizable<MT2>::value ) {
+   if( IsResizable_v<MT2> ) {
       resize( ~V, actual, N, true );
    }
 
@@ -2030,20 +2030,20 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ST );
 
-   if( IsFloatingPoint<ST>::value && low >= upp ) {
+   if( IsFloatingPoint_v<ST> && low >= upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid value range provided" );
    }
 
-   if( !IsFloatingPoint<ST>::value && low > upp ) {
+   if( !IsFloatingPoint_v<ST> && low > upp ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
    const size_t M( (~A).rows() );
    const size_t N( (~A).columns() );
    const size_t mindim( min( M, N ) );
-   const size_t expected( IsFloatingPoint<ST>::value ? mindim : size_t( upp - low ) + 1UL );
+   const size_t expected( IsFloatingPoint_v<ST> ? mindim : size_t( upp - low ) + 1UL );
 
-   if( !IsFloatingPoint<ST>::value && expected > mindim ) {
+   if( !IsFloatingPoint_v<ST> && expected > mindim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid index range provided" );
    }
 
@@ -2055,23 +2055,23 @@ inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
       return 0;
    }
 
-   const char range( IsFloatingPoint<ST>::value ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint<ST>::value ? low : ST() );
-   const ST   vu   ( IsFloatingPoint<ST>::value ? upp : ST() );
-   const int  il   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint<ST>::value ? 0 : numeric_cast<int>( upp ) );
+   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
+   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
 
    const size_t actual( gesvdx_backend( ~A, ~U, ~s, ~V, range, vl, vu, il, iu ) );
 
-   if( IsResizable<VT>::value ) {
+   if( IsResizable_v<VT> ) {
       resize( ~s, actual, true );
    }
 
-   if( IsResizable<MT2>::value ) {
+   if( IsResizable_v<MT2> ) {
       resize( ~U, M, actual, true );
    }
 
-   if( IsResizable<MT3>::value ) {
+   if( IsResizable_v<MT3> ) {
       resize( ~V, actual, N, true );
    }
 

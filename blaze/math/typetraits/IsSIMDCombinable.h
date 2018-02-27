@@ -76,7 +76,7 @@ struct IsSIMDCombinableHelper
 template< typename T >
 struct IsSIMDCombinableHelper<T,T>
 {
-   enum : bool { value = IsNumeric<T>::value };
+   enum : bool { value = IsNumeric_v<T> };
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -88,8 +88,8 @@ struct IsSIMDCombinableHelper<T,T>
 template< typename T1, typename T2 >
 struct IsSIMDCombinableHelper<T1,T2>
 {
-   enum : bool { value = IsNumeric<T1>::value && IsIntegral<T1>::value &&
-                         IsNumeric<T2>::value && IsIntegral<T2>::value &&
+   enum : bool { value = IsNumeric_v<T1> && IsIntegral_v<T1> &&
+                         IsNumeric_v<T2> && IsIntegral_v<T2> &&
                          sizeof(T1) == sizeof(T2) };
 };
 /*! \endcond */

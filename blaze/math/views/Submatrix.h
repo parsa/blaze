@@ -976,23 +976,23 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
    BLAZE_DECLTYPE_AUTO( left , (~matrix).leftOperand()  );
    BLAZE_DECLTYPE_AUTO( right, (~matrix).rightOperand() );
 
-   const size_t begin( max( ( IsUpper<MT1>::value )
-                            ?( ( !AF && IsStrictlyUpper<MT1>::value )
+   const size_t begin( max( ( IsUpper_v<MT1> )
+                            ?( ( !AF && IsStrictlyUpper_v<MT1> )
                                ?( sd.row() + 1UL )
                                :( sd.row() ) )
                             :( 0UL )
-                          , ( IsLower<MT2>::value )
-                            ?( ( !AF && IsStrictlyLower<MT2>::value )
+                          , ( IsLower_v<MT2> )
+                            ?( ( !AF && IsStrictlyLower_v<MT2> )
                                ?( sd.column() + 1UL )
                                :( sd.column() ) )
                             :( 0UL ) ) );
-   const size_t end( min( ( IsLower<MT1>::value )
-                          ?( ( IsStrictlyLower<MT1>::value && sd.rows() > 0UL )
+   const size_t end( min( ( IsLower_v<MT1> )
+                          ?( ( IsStrictlyLower_v<MT1> && sd.rows() > 0UL )
                              ?( sd.row() + sd.rows() - 1UL )
                              :( sd.row() + sd.rows() ) )
                           :( left.columns() )
-                        , ( IsUpper<MT2>::value )
-                          ?( ( IsStrictlyUpper<MT2>::value && sd.columns() > 0UL )
+                        , ( IsUpper_v<MT2> )
+                          ?( ( IsStrictlyUpper_v<MT2> && sd.columns() > 0UL )
                              ?( sd.column() + sd.columns() - 1UL )
                              :( sd.column() + sd.columns() ) )
                           :( left.columns() ) ) );
@@ -1450,7 +1450,7 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
@@ -1495,7 +1495,7 @@ inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
@@ -1540,7 +1540,7 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>&& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
@@ -1587,7 +1587,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
@@ -1635,7 +1635,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
@@ -1683,7 +1683,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RSAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
@@ -1736,16 +1736,16 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
    BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
    BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
 
-   const size_t column( ( IsUpper<MT>::value )
-                        ?( ( !AF && IsStrictlyUpper<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
+   const size_t column( ( IsUpper_v<MT> )
+                        ?( ( !AF && IsStrictlyUpper_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )
                         :( 0UL ) );
-   const size_t n( ( IsLower<MT>::value )
-                   ?( ( IsUpper<MT>::value )?( sd.size() )
-                                            :( ( IsStrictlyLower<MT>::value && sd.size() > 0UL )
-                                               ?( sd.offset() + sd.size() - 1UL )
-                                               :( sd.offset() + sd.size() ) ) )
-                   :( ( IsUpper<MT>::value )?( left.columns() - column )
-                                            :( left.columns() ) ) );
+   const size_t n( ( IsLower_v<MT> )
+                   ?( ( IsUpper_v<MT> )?( sd.size() )
+                                       :( ( IsStrictlyLower_v<MT> && sd.size() > 0UL )
+                                          ?( sd.offset() + sd.size() - 1UL )
+                                          :( sd.offset() + sd.size() ) ) )
+                   :( ( IsUpper_v<MT> )?( left.columns() - column )
+                                       :( left.columns() ) ) );
 
    return submatrix<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
 }
@@ -1780,16 +1780,16 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
    BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
    BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
 
-   const size_t row( ( IsLower<MT>::value )
-                     ?( ( !AF && IsStrictlyLower<MT>::value )?( sd.offset() + 1UL ):( sd.offset() ) )
+   const size_t row( ( IsLower_v<MT> )
+                     ?( ( !AF && IsStrictlyLower_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )
                      :( 0UL ) );
-   const size_t m( ( IsUpper<MT>::value )
-                   ?( ( IsLower<MT>::value )?( sd.size() )
-                                            :( ( IsStrictlyUpper<MT>::value && sd.size() > 0UL )
-                                               ?( sd.offset() + sd.size() - 1UL )
-                                               :( sd.offset() + sd.size() ) ) )
-                   :( ( IsLower<MT>::value )?( right.rows() - row )
-                                            :( right.rows() ) ) );
+   const size_t m( ( IsUpper_v<MT> )
+                   ?( ( IsLower_v<MT> )?( sd.size() )
+                                       :( ( IsStrictlyUpper_v<MT> && sd.size() > 0UL )
+                                          ?( sd.offset() + sd.size() - 1UL )
+                                          :( sd.offset() + sd.size() ) ) )
+                   :( ( IsLower_v<MT> )?( right.rows() - row )
+                                       :( right.rows() ) ) );
 
    return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, sd.offset(), m, sd.size() );
 }
@@ -1932,7 +1932,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t index, RRA
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( index >= M ) ) {
@@ -1976,7 +1976,7 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t inde
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( index >= M ) ) {
@@ -2020,7 +2020,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF,I,J,M,N>&& sm, size_t index, RR
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( index >= M ) ) {
@@ -2061,7 +2061,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 
    const RowData<CRAs...> rd( args... );
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( rd.row() >= sm.rows() ) ) {
@@ -2105,7 +2105,7 @@ inline decltype(auto) row( const Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 
    const RowData<CRAs...> rd( args... );
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( rd.row() >= sm.rows() ) ) {
@@ -2149,7 +2149,7 @@ inline decltype(auto) row( Submatrix<MT,AF,SO,DF>&& sm, RRAs... args )
 
    const RowData<CRAs...> rd( args... );
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( rd.row() >= sm.rows() ) ) {
@@ -2300,7 +2300,7 @@ inline decltype(auto) rows( Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
@@ -2342,7 +2342,7 @@ inline decltype(auto) rows( const Submatrix<MT,AF,SO,DF>& sm, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
@@ -2384,7 +2384,7 @@ inline decltype(auto) rows( Submatrix<MT,AF,SO,DF>&& sm, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
@@ -2428,7 +2428,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -2476,7 +2476,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -2524,7 +2524,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -2680,7 +2680,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t index, 
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( index >= N ) ) {
@@ -2724,7 +2724,7 @@ inline decltype(auto) column( const Submatrix<MT,AF,SO,DF,I,J,M,N>& sm, size_t i
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( index >= N ) ) {
@@ -2768,7 +2768,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF,I,J,M,N>&& sm, size_t index,
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( index >= N ) ) {
@@ -2809,7 +2809,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
 
    const ColumnData<CCAs...> cd( args... );
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( cd.column() >= sm.columns() ) ) {
@@ -2853,7 +2853,7 @@ inline decltype(auto) column( const Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
 
    const ColumnData<CCAs...> cd( args... );
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( cd.column() >= sm.columns() ) ) {
@@ -2897,7 +2897,7 @@ inline decltype(auto) column( Submatrix<MT,AF,SO,DF>&& sm, RCAs... args )
 
    const ColumnData<CCAs...> cd( args... );
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       if( ( cd.column() >= sm.columns() ) ) {
@@ -3048,7 +3048,7 @@ inline decltype(auto) columns( Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
@@ -3090,7 +3090,7 @@ inline decltype(auto) columns( const Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
@@ -3132,7 +3132,7 @@ inline decltype(auto) columns( Submatrix<MT,AF,SO,DF>&& sm, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
@@ -3176,7 +3176,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
@@ -3224,7 +3224,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
@@ -3272,7 +3272,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RCAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
@@ -3582,7 +3582,7 @@ inline bool isSymmetric( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsSymmetric<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsSymmetric_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isSymmetric( static_cast<const BaseType&>( sm ) );
 }
@@ -3620,7 +3620,7 @@ inline bool isHermitian( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsHermitian<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsHermitian_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isHermitian( static_cast<const BaseType&>( sm ) );
 }
@@ -3668,7 +3668,7 @@ inline bool isLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsLower_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isLower( static_cast<const BaseType&>( sm ) );
 }
@@ -3715,7 +3715,7 @@ inline bool isUniLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsUniLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsUniLower_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUniLower( static_cast<const BaseType&>( sm ) );
 }
@@ -3762,7 +3762,7 @@ inline bool isStrictlyLower( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsStrictlyLower<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsStrictlyLower_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isStrictlyLower( static_cast<const BaseType&>( sm ) );
 }
@@ -3810,7 +3810,7 @@ inline bool isUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsUpper_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -3857,7 +3857,7 @@ inline bool isUniUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsUniUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsUniUpper_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isUniUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -3904,7 +3904,7 @@ inline bool isStrictlyUpper( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< Submatrix<MT,AF,SO,DF,CSAs...> >;
 
-   if( IsStrictlyUpper<MT>::value && sm.row() == sm.column() && sm.rows() == sm.columns() )
+   if( IsStrictlyUpper_v<MT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
       return true;
    else return isStrictlyUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -5079,7 +5079,7 @@ struct IsContiguous< Submatrix<MT,AF,SO,true,CSAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsSymmetric< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsSymmetric<MT>::value && I == J && M == N ) >
+   : public BoolConstant< ( IsSymmetric_v<MT> && I == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5097,7 +5097,7 @@ struct IsSymmetric< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsHermitian< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsHermitian<MT>::value && I == J && M == N ) >
+   : public BoolConstant< ( IsHermitian_v<MT> && I == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5115,8 +5115,8 @@ struct IsHermitian< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsLower<MT>::value && I == J && M == N ) ||
-                          ( IsStrictlyLower<MT>::value && I == J+1UL && M == N ) >
+   : public BoolConstant< ( IsLower_v<MT> && I == J && M == N ) ||
+                          ( IsStrictlyLower_v<MT> && I == J+1UL && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5134,7 +5134,7 @@ struct IsLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsUniLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsUniLower<MT>::value && I == J && M == N ) >
+   : public BoolConstant< ( IsUniLower_v<MT> && I == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5152,8 +5152,8 @@ struct IsUniLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsStrictlyLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsLower<MT>::value && I < J && M == N ) ||
-                          ( IsStrictlyLower<MT>::value && I == J && M == N ) >
+   : public BoolConstant< ( IsLower_v<MT> && I < J && M == N ) ||
+                          ( IsStrictlyLower_v<MT> && I == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5171,8 +5171,8 @@ struct IsStrictlyLower< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsUpper<MT>::value && I == J && M == N ) ||
-                          ( IsStrictlyUpper<MT>::value && I+1UL == J && M == N ) >
+   : public BoolConstant< ( IsUpper_v<MT> && I == J && M == N ) ||
+                          ( IsStrictlyUpper_v<MT> && I+1UL == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5190,7 +5190,7 @@ struct IsUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsUniUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsUniUpper<MT>::value && I == J && M == N ) >
+   : public BoolConstant< ( IsUniUpper_v<MT> && I == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5208,8 +5208,8 @@ struct IsUniUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct IsStrictlyUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
-   : public BoolConstant< ( IsUpper<MT>::value && I > J && M == N ) ||
-                          ( IsStrictlyUpper<MT>::value && I == J && M == N ) >
+   : public BoolConstant< ( IsUpper_v<MT> && I > J && M == N ) ||
+                          ( IsStrictlyUpper_v<MT> && I == J && M == N ) >
 {};
 /*! \endcond */
 //*************************************************************************************************

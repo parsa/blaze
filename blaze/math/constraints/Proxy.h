@@ -59,7 +59,7 @@ namespace blaze {
 // template), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_PROXY_TYPE(T) \
-   static_assert( ::blaze::IsProxy<T>::value, "Non-proxy type detected" )
+   static_assert( ::blaze::IsProxy_v<T>, "Non-proxy type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // template), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_PROXY_TYPE(T) \
-   static_assert( !::blaze::IsProxy<T>::value, "Proxy type detected" )
+   static_assert( !::blaze::IsProxy_v<T>, "Proxy type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -474,7 +474,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 
    UNUSED_PARAMETER( args... );
 
-   if( !Contains< TypeList<RCAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
       if( (~matrix).columns() <= I ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
@@ -508,7 +508,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index, R
 
    UNUSED_PARAMETER( args... );
 
-   if( !Contains< TypeList<RCAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
       if( (~matrix).columns() <= index ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }

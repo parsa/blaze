@@ -466,13 +466,13 @@ class CustomMatrix
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable_v<Type> };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -573,7 +573,7 @@ class CustomMatrix
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -585,9 +585,9 @@ class CustomMatrix
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+                            !IsDiagonal_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -599,9 +599,9 @@ class CustomMatrix
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
+                            !IsDiagonal_v<MT> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -613,8 +613,8 @@ class CustomMatrix
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<MT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<MT> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -823,11 +823,11 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( PF && IsVectorizable<Type>::value && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
+   if( PF && IsVectorizable_v<Type> && ( nn_ < nextMultiple<size_t>( n_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
-   if( PF && IsVectorizable<Type>::value ) {
+   if( PF && IsVectorizable_v<Type> ) {
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j )
             v_[i*nn_+j] = Type();
@@ -1445,18 +1445,18 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_v<MT> )
          reset();
       smpAssign( *this, ~rhs );
    }
@@ -2400,7 +2400,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
@@ -2570,17 +2570,17 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorize
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[i*nn_+i] += (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                               :( n_ ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2624,15 +2624,15 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2689,16 +2689,16 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,!SO>& r
       const size_t iend( min( m_, ii+block ) );
       for( size_t jj=0UL; jj<n_; jj+=block )
       {
-         if( IsLower<MT>::value && ii < jj ) break;
-         if( IsUpper<MT>::value && ii > jj ) continue;
+         if( IsLower_v<MT> && ii < jj ) break;
+         if( IsUpper_v<MT> && ii > jj ) continue;
 
          for( size_t i=ii; i<iend; ++i )
          {
-            const size_t jbegin( ( IsUpper<MT>::value )
-                                 ?( max( ( IsStrictlyUpper<MT>::value ? i+1UL : i ), jj ) )
+            const size_t jbegin( ( IsUpper_v<MT> )
+                                 ?( max( ( IsStrictlyUpper_v<MT> ? i+1UL : i ), jj ) )
                                  :( jj ) );
-            const size_t jend  ( ( IsLower<MT>::value )
-                                 ?( min( ( IsStrictlyLower<MT>::value ? i : i+1UL ), n_, jj+block ) )
+            const size_t jend  ( ( IsLower_v<MT> )
+                                 ?( min( ( IsStrictlyLower_v<MT> ? i : i+1UL ), n_, jj+block ) )
                                  :( min( n_, jj+block ) ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2794,17 +2794,17 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorize
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[i*nn_+i] -= (~rhs)(i,i);
       }
       else
       {
-         const size_t jbegin( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? i+1UL : i )
+         const size_t jbegin( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? i+1UL : i )
                               :( 0UL ) );
-         const size_t jend  ( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+         const size_t jend  ( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                               :( n_ ) );
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2848,15 +2848,15 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
-      const size_t jbegin( ( IsUpper<MT>::value )
-                           ?( ( IsStrictlyUpper<MT>::value ? i+1UL : i ) & size_t(-SIMDSIZE) )
+      const size_t jbegin( ( IsUpper_v<MT> )
+                           ?( ( IsStrictlyUpper_v<MT> ? i+1UL : i ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t jend  ( ( IsLower<MT>::value )
-                           ?( IsStrictlyLower<MT>::value ? i : i+1UL )
+      const size_t jend  ( ( IsLower_v<MT> )
+                           ?( IsStrictlyLower_v<MT> ? i : i+1UL )
                            :( n_ ) );
       BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -2913,16 +2913,16 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,!SO>& r
       const size_t iend( min( m_, ii+block ) );
       for( size_t jj=0UL; jj<n_; jj+=block )
       {
-         if( IsLower<MT>::value && ii < jj ) break;
-         if( IsUpper<MT>::value && ii > jj ) continue;
+         if( IsLower_v<MT> && ii < jj ) break;
+         if( IsUpper_v<MT> && ii > jj ) continue;
 
          for( size_t i=ii; i<iend; ++i )
          {
-            const size_t jbegin( ( IsUpper<MT>::value )
-                                 ?( max( ( IsStrictlyUpper<MT>::value ? i+1UL : i ), jj ) )
+            const size_t jbegin( ( IsUpper_v<MT> )
+                                 ?( max( ( IsStrictlyUpper_v<MT> ? i+1UL : i ), jj ) )
                                  :( jj ) );
-            const size_t jend  ( ( IsLower<MT>::value )
-                                 ?( min( ( IsStrictlyLower<MT>::value ? i : i+1UL ), n_, jj+block ) )
+            const size_t jend  ( ( IsLower_v<MT> )
+                                 ?( min( ( IsStrictlyLower_v<MT> ? i : i+1UL ), n_, jj+block ) )
                                  :( min( n_, jj+block ) ) );
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
@@ -3056,7 +3056,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,SO>::BLAZE_TEMPLATE Vectorized
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    for( size_t i=0UL; i<m_; ++i )
    {
@@ -3269,13 +3269,13 @@ class CustomMatrix<Type,AF,PF,true>
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable<Type>::value };
+   enum : bool { simdEnabled = IsVectorizable_v<Type> };
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = !IsSMPAssignable<Type>::value };
+   enum : bool { smpAssignable = !IsSMPAssignable_v<Type> };
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3375,7 +3375,7 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > };
    };
    //**********************************************************************************************
 
@@ -3385,9 +3385,9 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDAdd< Type, ElementType_t<MT> >::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+                            !IsDiagonal_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3397,9 +3397,9 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDSub< Type, ElementType_t<MT> >::value &&
-                            !IsDiagonal<MT>::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
+                            !IsDiagonal_v<MT> };
    };
    //**********************************************************************************************
 
@@ -3409,8 +3409,8 @@ class CustomMatrix<Type,AF,PF,true>
    struct VectorizedSchurAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable< Type, ElementType_t<MT> >::value &&
-                            HasSIMDMult< Type, ElementType_t<MT> >::value };
+                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+                            HasSIMDMult_v< Type, ElementType_t<MT> > };
    };
    //**********************************************************************************************
 
@@ -3612,11 +3612,11 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid alignment detected" );
    }
 
-   if( PF && IsVectorizable<Type>::value && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
+   if( PF && IsVectorizable_v<Type> && ( mm_ < nextMultiple<size_t>( m_, SIMDSIZE ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Insufficient capacity for padded matrix" );
    }
 
-   if( PF && IsVectorizable<Type>::value ) {
+   if( PF && IsVectorizable_v<Type> ) {
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=m_; i<mm_; ++i ) {
             v_[i+j*mm_] = Type();
@@ -4234,18 +4234,18 @@ inline CustomMatrix<Type,AF,PF,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsSame<MT,TT>::value && (~rhs).isAliased( this ) ) {
+   if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();
    }
-   else if( IsSame<MT,CT>::value && (~rhs).isAliased( this ) ) {
+   else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
       ctranspose();
    }
-   else if( !IsSame<MT,IT>::value && (~rhs).canAlias( this ) ) {
+   else if( !IsSame_v<MT,IT> && (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
    }
    else {
-      if( IsSparseMatrix<MT>::value )
+      if( IsSparseMatrix_v<MT> )
          reset();
       smpAssign( *this, ~rhs );
    }
@@ -5203,7 +5203,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    const size_t ipos( ( remainder )?( m_ & size_t(-SIMDSIZE) ):( m_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( m_ - ( m_ % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
@@ -5377,17 +5377,17 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectori
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[j+j*mm_] += (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                               :( m_ ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5432,15 +5432,15 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5498,16 +5498,16 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,false
       const size_t jend( min( n_, jj+block ) );
       for( size_t ii=0UL; ii<m_; ii+=block )
       {
-         if( IsLower<MT>::value && ii < jj ) continue;
-         if( IsUpper<MT>::value && ii > jj ) break;
+         if( IsLower_v<MT> && ii < jj ) continue;
+         if( IsUpper_v<MT> && ii > jj ) break;
 
          for( size_t j=jj; j<jend; ++j )
          {
-            const size_t ibegin( ( IsLower<MT>::value )
-                                 ?( max( ( IsStrictlyLower<MT>::value ? j+1UL : j ), ii ) )
+            const size_t ibegin( ( IsLower_v<MT> )
+                                 ?( max( ( IsStrictlyLower_v<MT> ? j+1UL : j ), ii ) )
                                  :( ii ) );
-            const size_t iend  ( ( IsUpper<MT>::value )
-                                 ?( min( ( IsStrictlyUpper<MT>::value ? j : j+1UL ), m_, ii+block ) )
+            const size_t iend  ( ( IsUpper_v<MT> )
+                                 ?( min( ( IsStrictlyUpper_v<MT> ? j : j+1UL ), m_, ii+block ) )
                                  :( min( m_, ii+block ) ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5606,17 +5606,17 @@ inline DisableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectori
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      if( IsDiagonal<MT>::value )
+      if( IsDiagonal_v<MT> )
       {
          v_[j+j*mm_] -= (~rhs)(j,j);
       }
       else
       {
-         const size_t ibegin( ( IsLower<MT>::value )
-                              ?( IsStrictlyLower<MT>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT> )
+                              ?( IsStrictlyLower_v<MT> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend  ( ( IsUpper<MT>::value )
-                              ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+         const size_t iend  ( ( IsUpper_v<MT> )
+                              ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                               :( m_ ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5662,15 +5662,15 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {
-      const size_t ibegin( ( IsLower<MT>::value )
-                           ?( ( IsStrictlyLower<MT>::value ? j+1UL : j ) & size_t(-SIMDSIZE) )
+      const size_t ibegin( ( IsLower_v<MT> )
+                           ?( ( IsStrictlyLower_v<MT> ? j+1UL : j ) & size_t(-SIMDSIZE) )
                            :( 0UL ) );
-      const size_t iend  ( ( IsUpper<MT>::value )
-                           ?( IsStrictlyUpper<MT>::value ? j : j+1UL )
+      const size_t iend  ( ( IsUpper_v<MT> )
+                           ?( IsStrictlyUpper_v<MT> ? j : j+1UL )
                            :( m_ ) );
       BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5728,16 +5728,16 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,false
       const size_t jend( min( n_, jj+block ) );
       for( size_t ii=0UL; ii<m_; ii+=block )
       {
-         if( IsLower<MT>::value && ii < jj ) continue;
-         if( IsUpper<MT>::value && ii > jj ) break;
+         if( IsLower_v<MT> && ii < jj ) continue;
+         if( IsUpper_v<MT> && ii > jj ) break;
 
          for( size_t j=jj; j<jend; ++j )
          {
-            const size_t ibegin( ( IsLower<MT>::value )
-                                 ?( max( ( IsStrictlyLower<MT>::value ? j+1UL : j ), ii ) )
+            const size_t ibegin( ( IsLower_v<MT> )
+                                 ?( max( ( IsStrictlyLower_v<MT> ? j+1UL : j ), ii ) )
                                  :( ii ) );
-            const size_t iend  ( ( IsUpper<MT>::value )
-                                 ?( min( ( IsStrictlyUpper<MT>::value ? j : j+1UL ), m_, ii+block ) )
+            const size_t iend  ( ( IsUpper_v<MT> )
+                                 ?( min( ( IsStrictlyUpper_v<MT> ? j : j+1UL ), m_, ii+block ) )
                                  :( min( m_, ii+block ) ) );
             BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -5876,7 +5876,7 @@ inline EnableIf_<typename CustomMatrix<Type,AF,PF,true>::BLAZE_TEMPLATE Vectoriz
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
-   constexpr bool remainder( !PF || !IsPadded<MT>::value );
+   constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
    for( size_t j=0UL; j<n_; ++j )
    {

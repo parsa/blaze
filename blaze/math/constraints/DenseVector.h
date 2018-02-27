@@ -59,7 +59,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE(T) \
-   static_assert( ::blaze::IsDenseVector<T>::value, "Non-dense vector type detected" )
+   static_assert( ::blaze::IsDenseVector_v<T>, "Non-dense vector type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DENSE_VECTOR_TYPE(T) \
-   static_assert( !::blaze::IsDenseVector<T>::value, "Dense vector type detected" )
+   static_assert( !::blaze::IsDenseVector_v<T>, "Dense vector type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

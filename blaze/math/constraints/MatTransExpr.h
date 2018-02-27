@@ -59,7 +59,7 @@ namespace blaze {
 // from the MatTransExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATTRANSEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatTransExpr<T>::value, "Non-matrix transposition expression type detected" )
+   static_assert( ::blaze::IsMatTransExpr_v<T>, "Non-matrix transposition expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the MatTransExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATTRANSEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatTransExpr<T>::value, "Matrix transposition expression type detected" )
+   static_assert( !::blaze::IsMatTransExpr_v<T>, "Matrix transposition expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

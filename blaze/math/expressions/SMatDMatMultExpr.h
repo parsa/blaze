@@ -136,12 +136,12 @@ class SMatDMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation_v<MT1> || RequiresEvaluation_v<MT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation_v<MT2> || RequiresEvaluation_v<MT2> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -175,14 +175,14 @@ class SMatDMatMultExpr
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T3>::value &&
+                            !IsDiagonal_v<T3> &&
                             T1::simdEnabled && T3::simdEnabled &&
-                            IsRowMajorMatrix<T1>::value &&
-                            IsSIMDCombinable< ElementType_t<T1>
-                                            , ElementType_t<T2>
-                                            , ElementType_t<T3> >::value &&
-                            HasSIMDAdd< ElementType_t<T2>, ElementType_t<T3> >::value &&
-                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
+                            IsRowMajorMatrix_v<T1> &&
+                            IsSIMDCombinable_v< ElementType_t<T1>
+                                              , ElementType_t<T2>
+                                              , ElementType_t<T3> > &&
+                            HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
+                            HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -197,9 +197,9 @@ class SMatDMatMultExpr
    struct UseOptimizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             !UseVectorizedKernel<T1,T2,T3>::value &&
-                            !IsDiagonal<T3>::value &&
-                            !IsResizable< ElementType_t<T1> >::value &&
-                            !IsResizable<ET1>::value };
+                            !IsDiagonal_v<T3> &&
+                            !IsResizable_v< ElementType_t<T1> > &&
+                            !IsResizable_v<ET1> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -264,10 +264,10 @@ class SMatDMatMultExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = !IsDiagonal<MT2>::value &&
+   enum : bool { simdEnabled = !IsDiagonal_v<MT2> &&
                                MT2::simdEnabled &&
-                               HasSIMDAdd<ET1,ET2>::value &&
-                               HasSIMDMult<ET1,ET2>::value };
+                               HasSIMDAdd_v<ET1,ET2> &&
+                               HasSIMDMult_v<ET1,ET2> };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
@@ -304,28 +304,28 @@ class SMatDMatMultExpr
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal<MT1>::value ) {
+      if( IsDiagonal_v<MT1> ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal<MT2>::value ) {
+      else if( IsDiagonal_v<MT2> ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
-         const size_t begin( ( IsUpper<MT1>::value )
-                             ?( ( IsLower<MT2>::value )
-                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
-                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
-                             :( ( IsLower<MT2>::value )
-                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+      else if( IsTriangular_v<MT1> || IsTriangular_v<MT2> ) {
+         const size_t begin( ( IsUpper_v<MT1> )
+                             ?( ( IsLower_v<MT2> )
+                                ?( max( ( IsStrictlyUpper_v<MT1> ? i+1UL : i )
+                                      , ( IsStrictlyLower_v<MT2> ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper_v<MT1> ? i+1UL : i ) )
+                             :( ( IsLower_v<MT2> )
+                                ?( IsStrictlyLower_v<MT2> ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower<MT1>::value )
-                           ?( ( IsUpper<MT2>::value )
-                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
-                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
-                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
-                           :( ( IsUpper<MT2>::value )
-                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+         const size_t end( ( IsLower_v<MT1> )
+                           ?( ( IsUpper_v<MT2> )
+                              ?( min( ( IsStrictlyLower_v<MT1> ? i : i+1UL )
+                                    , ( IsStrictlyUpper_v<MT2> ? j : j+1UL ) ) )
+                              :( IsStrictlyLower_v<MT1> ? i : i+1UL ) )
+                           :( ( IsUpper_v<MT2> )
+                              ?( IsStrictlyUpper_v<MT2> ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -440,7 +440,7 @@ class SMatDMatMultExpr
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return ( rows() * columns() >= SMP_SMATDMATMULT_THRESHOLD ) && !IsDiagonal<MT2>::value;
+      return ( rows() * columns() >= SMP_SMATDMATMULT_THRESHOLD ) && !IsDiagonal_v<MT2>;
    }
    //**********************************************************************************************
 
@@ -509,7 +509,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
       reset( C );
 
@@ -526,24 +526,24 @@ class SMatDMatMultExpr
             {
                const size_t i1( element->index() );
 
-               if( IsDiagonal<MT5>::value )
+               if( IsDiagonal_v<MT5> )
                {
                   C(i,i1) = element->value() * B(i1,i1);
                }
                else
                {
-                  const size_t jbegin( ( IsUpper<MT5>::value )
+                  const size_t jbegin( ( IsUpper_v<MT5> )
                                        ?( ( UPP )
-                                          ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                          :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                          ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                          :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                        :( jj ) );
-                  const size_t jend( ( IsLower<MT5>::value )
+                  const size_t jend( ( IsLower_v<MT5> )
                                      ?( ( SYM || HERM || LOW )
-                                        ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
-                                        :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) ) )
+                                        ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) )
+                                        :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) ) )
                                      :( SYM || HERM || LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-                  if( ( SYM || HERM || LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+                  if( ( SYM || HERM || LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                      continue;
 
                   BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -592,7 +592,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
       reset( C );
 
@@ -626,18 +626,18 @@ class SMatDMatMultExpr
 
                BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                       :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                       ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                       :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                     :( UPP ? max(i,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( SYM || HERM || LOW )
-                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) )
-                                     :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) ) )
+                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i4 : i4+1UL ) ) )
+                                     :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i4 : i4+1UL ) ) ) )
                                   :( SYM || HERM || LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-               if( ( SYM || HERM || LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+               if( ( SYM || HERM || LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                   continue;
 
                BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -662,18 +662,18 @@ class SMatDMatMultExpr
                const size_t i1( element->index() );
                const ET1    v1( element->value() );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                       :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                       ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                       :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                     :( UPP ? max(i,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( SYM || HERM || LOW )
-                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
-                                     :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) ) )
+                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) )
+                                     :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) ) )
                                   :( SYM || HERM || LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-               if( ( SYM || HERM || LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+               if( ( SYM || HERM || LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                   continue;
 
                BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -728,7 +728,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
       reset( C );
 
@@ -763,13 +763,13 @@ class SMatDMatMultExpr
             const SIMDType xmm3( set( v3 ) );
             const SIMDType xmm4( set( v4 ) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( ( IsStrictlyUpper<MT5>::value )
+            const size_t jbegin( ( IsUpper_v<MT5> )
+                                 ?( ( IsStrictlyUpper_v<MT5> )
                                     ?( ( UPP ? max(i,i1+1UL) : i1+1UL ) & size_t(-SIMDSIZE) )
                                     :( ( UPP ? max(i,i1) : i1 ) & size_t(-SIMDSIZE) ) )
                                  :( UPP ? ( i & size_t(-SIMDSIZE) ) : 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( ( IsStrictlyLower<MT5>::value )
+            const size_t jend( ( IsLower_v<MT5> )
+                               ?( ( IsStrictlyLower_v<MT5> )
                                   ?( SYM || HERM || LOW ? min(i+1UL,i4) : i4 )
                                   :( SYM || HERM || LOW ? min(i,i4)+1UL : i4+1UL ) )
                                :( SYM || HERM || LOW ? i+1UL : B.columns() ) );
@@ -795,13 +795,13 @@ class SMatDMatMultExpr
 
             const SIMDType xmm1( set( v1 ) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( ( IsStrictlyUpper<MT5>::value )
+            const size_t jbegin( ( IsUpper_v<MT5> )
+                                 ?( ( IsStrictlyUpper_v<MT5> )
                                     ?( ( UPP ? max(i,i1+1UL) : i1+1UL ) & size_t(-SIMDSIZE) )
                                     :( ( UPP ? max(i,i1) : i1 ) & size_t(-SIMDSIZE) ) )
                                  :( UPP ? ( i & size_t(-SIMDSIZE) ) : 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( ( IsStrictlyLower<MT5>::value )
+            const size_t jend( ( IsLower_v<MT5> )
+                               ?( ( IsStrictlyLower_v<MT5> )
                                   ?( SYM || HERM || LOW ? min(i+1UL,i1) : i1 )
                                   :( SYM || HERM || LOW ? min(i,i1)+1UL : i1+1UL ) )
                                :( SYM || HERM || LOW ? i+1UL : B.columns() ) );
@@ -930,7 +930,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -945,24 +945,24 @@ class SMatDMatMultExpr
             {
                const size_t i1( element->index() );
 
-               if( IsDiagonal<MT5>::value )
+               if( IsDiagonal_v<MT5> )
                {
                   C(i,i1) += element->value() * B(i1,i1);
                }
                else
                {
-                  const size_t jbegin( ( IsUpper<MT5>::value )
+                  const size_t jbegin( ( IsUpper_v<MT5> )
                                        ?( ( UPP )
-                                          ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                          :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                          ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                          :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                        :( jj ) );
-                  const size_t jend( ( IsLower<MT5>::value )
+                  const size_t jend( ( IsLower_v<MT5> )
                                      ?( ( LOW )
-                                        ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
-                                        :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) ) )
+                                        ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) )
+                                        :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) ) )
                                      :( LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-                  if( ( LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+                  if( ( LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                      continue;
 
                   BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -1010,7 +1010,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1042,18 +1042,18 @@ class SMatDMatMultExpr
 
                BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                       :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                       ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                       :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                     :( UPP ? max(i,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) )
-                                     :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) ) )
+                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i4 : i4+1UL ) ) )
+                                     :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i4 : i4+1UL ) ) ) )
                                   :( LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-               if( ( LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+               if( ( LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                   continue;
 
                BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -1078,18 +1078,18 @@ class SMatDMatMultExpr
                const size_t i1( element->index() );
                const ET1    v1( element->value() );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                       :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                       ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                       :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                     :( UPP ? max(i,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
-                                     :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) ) )
+                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) )
+                                     :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) ) )
                                   :( LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-               if( ( LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+               if( ( LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                   continue;
 
                BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -1136,7 +1136,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
@@ -1169,13 +1169,13 @@ class SMatDMatMultExpr
             const SIMDType xmm3( set( v3 ) );
             const SIMDType xmm4( set( v4 ) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( ( IsStrictlyUpper<MT5>::value )
+            const size_t jbegin( ( IsUpper_v<MT5> )
+                                 ?( ( IsStrictlyUpper_v<MT5> )
                                     ?( ( UPP ? max(i,i1+1UL) : i1+1UL ) & size_t(-SIMDSIZE) )
                                     :( ( UPP ? max(i,i1) : i1 ) & size_t(-SIMDSIZE) ) )
                                  :( UPP ? ( i & size_t(-SIMDSIZE) ) : 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( ( IsStrictlyLower<MT5>::value )
+            const size_t jend( ( IsLower_v<MT5> )
+                               ?( ( IsStrictlyLower_v<MT5> )
                                   ?( LOW ? min(i+1UL,i4) : i4 )
                                   :( LOW ? min(i,i4)+1UL : i4+1UL ) )
                                :( LOW ? i+1UL : B.columns() ) );
@@ -1201,13 +1201,13 @@ class SMatDMatMultExpr
 
             const SIMDType xmm1( set( v1 ) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( ( IsStrictlyUpper<MT5>::value )
+            const size_t jbegin( ( IsUpper_v<MT5> )
+                                 ?( ( IsStrictlyUpper_v<MT5> )
                                     ?( ( UPP ? max(i,i1+1UL) : i1+1UL ) & size_t(-SIMDSIZE) )
                                     :( ( UPP ? max(i,i1) : i1 ) & size_t(-SIMDSIZE) ) )
                                  :( UPP ? ( i & size_t(-SIMDSIZE) ) : 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( ( IsStrictlyLower<MT5>::value )
+            const size_t jend( ( IsLower_v<MT5> )
+                               ?( ( IsStrictlyLower_v<MT5> )
                                   ?( LOW ? min(i+1UL,i1) : i1 )
                                   :( LOW ? min(i,i1)+1UL : i1+1UL ) )
                                :( LOW ? i+1UL : B.columns() ) );
@@ -1293,7 +1293,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( Or< IsRowMajorMatrix<MT3>, IsDiagonal<MT5> >::value ? B.columns() : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1308,24 +1308,24 @@ class SMatDMatMultExpr
             {
                const size_t i1( element->index() );
 
-               if( IsDiagonal<MT5>::value )
+               if( IsDiagonal_v<MT5> )
                {
                   C(i,i1) -= element->value() * B(i1,i1);
                }
                else
                {
-                  const size_t jbegin( ( IsUpper<MT5>::value )
+                  const size_t jbegin( ( IsUpper_v<MT5> )
                                        ?( ( UPP )
-                                          ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                          :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                          ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                          :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                        :( jj ) );
-                  const size_t jend( ( IsLower<MT5>::value )
+                  const size_t jend( ( IsLower_v<MT5> )
                                      ?( ( LOW )
-                                        ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
-                                        :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) ) )
+                                        ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) )
+                                        :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) ) )
                                      :( LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-                  if( ( LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+                  if( ( LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                      continue;
 
                   BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -1373,7 +1373,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( IsRowMajorMatrix<MT3>::value ? B.columns() : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1405,18 +1405,18 @@ class SMatDMatMultExpr
 
                BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                       :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                       ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                       :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                     :( UPP ? max(i,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) )
-                                     :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i4 : i4+1UL ) ) ) )
+                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i4 : i4+1UL ) ) )
+                                     :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i4 : i4+1UL ) ) ) )
                                   :( LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-               if( ( LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+               if( ( LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                   continue;
 
                BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -1441,18 +1441,18 @@ class SMatDMatMultExpr
                const size_t i1( element->index() );
                const ET1    v1( element->value() );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i, jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) )
-                                       :( max( jj, ( IsStrictlyUpper<MT5>::value ? i1+1UL : i1 ) ) ) )
+                                       ?( max( i, jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) )
+                                       :( max( jj, ( IsStrictlyUpper_v<MT5> ? i1+1UL : i1 ) ) ) )
                                     :( UPP ? max(i,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) )
-                                     :( min( jtmp, ( IsStrictlyLower<MT5>::value ? i1 : i1+1UL ) ) ) )
+                                     ?( min( i+1UL, jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) )
+                                     :( min( jtmp, ( IsStrictlyLower_v<MT5> ? i1 : i1+1UL ) ) ) )
                                   :( LOW ? min(i+1UL,jtmp) : jtmp ) );
 
-               if( ( LOW || UPP || IsTriangular<MT5>::value ) && ( jbegin >= jend ) )
+               if( ( LOW || UPP || IsTriangular_v<MT5> ) && ( jbegin >= jend ) )
                   continue;
 
                BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
@@ -1499,7 +1499,7 @@ class SMatDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT5>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
@@ -1532,13 +1532,13 @@ class SMatDMatMultExpr
             const SIMDType xmm3( set( v3 ) );
             const SIMDType xmm4( set( v4 ) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( ( IsStrictlyUpper<MT5>::value )
+            const size_t jbegin( ( IsUpper_v<MT5> )
+                                 ?( ( IsStrictlyUpper_v<MT5> )
                                     ?( ( UPP ? max(i,i1+1UL) : i1+1UL ) & size_t(-SIMDSIZE) )
                                     :( ( UPP ? max(i,i1) : i1 ) & size_t(-SIMDSIZE) ) )
                                  :( UPP ? ( i & size_t(-SIMDSIZE) ) : 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( ( IsStrictlyLower<MT5>::value )
+            const size_t jend( ( IsLower_v<MT5> )
+                               ?( ( IsStrictlyLower_v<MT5> )
                                   ?( LOW ? min(i+1UL,i4) : i4 )
                                   :( LOW ? min(i,i4)+1UL : i4+1UL ) )
                                :( LOW ? i+1UL : B.columns() ) );
@@ -1564,13 +1564,13 @@ class SMatDMatMultExpr
 
             const SIMDType xmm1( set( v1 ) );
 
-            const size_t jbegin( ( IsUpper<MT5>::value )
-                                 ?( ( IsStrictlyUpper<MT5>::value )
+            const size_t jbegin( ( IsUpper_v<MT5> )
+                                 ?( ( IsStrictlyUpper_v<MT5> )
                                     ?( ( UPP ? max(i,i1+1UL) : i1+1UL ) & size_t(-SIMDSIZE) )
                                     :( ( UPP ? max(i,i1) : i1 ) & size_t(-SIMDSIZE) ) )
                                  :( UPP ? ( i & size_t(-SIMDSIZE) ) : 0UL ) );
-            const size_t jend( ( IsLower<MT5>::value )
-                               ?( ( IsStrictlyLower<MT5>::value )
+            const size_t jend( ( IsLower_v<MT5> )
+                               ?( ( IsStrictlyLower_v<MT5> )
                                   ?( LOW ? min(i+1UL,i1) : i1 )
                                   :( LOW ? min(i,i1)+1UL : i1+1UL ) )
                                :( LOW ? i+1UL : B.columns() ) );

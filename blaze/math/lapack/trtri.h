@@ -139,7 +139,7 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag )
       return;
    }
 
-   if( IsRowMajorMatrix<MT>::value ) {
+   if( IsRowMajorMatrix_v<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 

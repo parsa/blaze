@@ -345,7 +345,7 @@ inline Rows<MT,true,false,SF,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -654,7 +654,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    const InitializerMatrix<ElementType> tmp( list, columns() );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), i, 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -707,7 +707,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( rhs, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -770,7 +770,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
    using Right = CompositeType_t<MT2>;
    Right right( ~rhs );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( right, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -780,7 +780,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
       left.reset();
       smpAssign( left, tmp );
@@ -837,7 +837,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    const AddType tmp( *this + (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -897,7 +897,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    const SubType tmp( *this - (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -957,7 +957,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    const SchurType tmp( *this % (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -1790,7 +1790,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    const ResultType tmp( trans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -1837,7 +1837,7 @@ inline Rows<MT,true,false,SF,CRAs...>&
 
    const ResultType tmp( ctrans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -2782,7 +2782,7 @@ inline Rows<MT,false,false,false,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
@@ -3080,7 +3080,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    const InitializerMatrix<ElementType> tmp( list, columns() );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), i, 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3131,7 +3131,7 @@ inline Rows<MT,false,false,false,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( rhs, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3193,7 +3193,7 @@ inline Rows<MT,false,false,false,CRAs...>&
    using Right = CompositeType_t<MT2>;
    Right right( ~rhs );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( right, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3203,14 +3203,14 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
-      if( IsSparseMatrix< ResultType_t<MT2> >::value )
+      if( IsSparseMatrix_v< ResultType_t<MT2> > )
          left.reset();
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseMatrix<MT2>::value )
+      if( IsSparseMatrix_v<MT2> )
          left.reset();
       smpAssign( left, right );
    }
@@ -3261,7 +3261,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    const AddType tmp( *this + (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3271,7 +3271,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsSparseMatrix<AddType>::value ) {
+   if( IsSparseMatrix_v<AddType> ) {
       left.reset();
    }
 
@@ -3323,7 +3323,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    const SubType tmp( *this - (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3333,7 +3333,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsSparseMatrix<SubType>::value ) {
+   if( IsSparseMatrix_v<SubType> ) {
       left.reset();
    }
 
@@ -3385,7 +3385,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    const SchurType tmp( *this % (~rhs) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted matrix" );
@@ -3395,7 +3395,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
 
-   if( IsSparseMatrix<SchurType>::value ) {
+   if( IsSparseMatrix_v<SchurType> ) {
       left.reset();
    }
 
@@ -3594,13 +3594,13 @@ inline void Rows<MT,false,false,false,CRAs...>::reset( size_t i )
 {
    const size_t index( idx(i) );
 
-   const size_t jbegin( ( IsUpper<MT>::value )
-                        ?( ( IsUniUpper<MT>::value || IsStrictlyUpper<MT>::value )
+   const size_t jbegin( ( IsUpper_v<MT> )
+                        ?( ( IsUniUpper_v<MT> || IsStrictlyUpper_v<MT> )
                            ?( index+1UL )
                            :( index ) )
                         :( 0UL ) );
-   const size_t jend  ( ( IsLower<MT>::value )
-                        ?( ( IsUniLower<MT>::value || IsStrictlyLower<MT>::value )
+   const size_t jend  ( ( IsLower_v<MT> )
+                        ?( ( IsUniLower_v<MT> || IsStrictlyLower_v<MT> )
                            ?( index )
                            :( index+1UL ) )
                         :( columns() ) );
@@ -4243,7 +4243,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    const ResultType tmp( trans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -4289,7 +4289,7 @@ inline Rows<MT,false,false,false,CRAs...>&
 
    const ResultType tmp( ctrans( *this ) );
 
-   if( IsRestricted<MT>::value ) {
+   if( IsRestricted_v<MT> ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( !tryAssign( matrix_, row( tmp, i, unchecked ), idx(i), 0UL ) ) {
             BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
@@ -4874,7 +4874,7 @@ inline Rows<MT,false,false,true,CRAs...>::Rows( MT& matrix, RRAs... args )
    : DataType( args... )  // Base class initialization
    , matrix_ ( matrix  )  // The matrix containing the rows
 {
-   if( !Contains< TypeList<RRAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          if( matrix_.rows() <= idx(i) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );

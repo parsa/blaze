@@ -61,8 +61,8 @@ namespace blaze {
 // compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG(T,TF) \
-   static_assert( ::blaze::IsVector<T>::value && \
-                  ::blaze::TransposeFlag<T>::value == TF, "Invalid transpose flag detected" )
+   static_assert( ::blaze::IsVector_v<T> && \
+                  ::blaze::TransposeFlag_v<T> == TF, "Invalid transpose flag detected" )
 //*************************************************************************************************
 
 
@@ -82,9 +82,9 @@ namespace blaze {
 // the transpose flags of both vector types don't match, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG(T1,T2) \
-   static_assert( ::blaze::IsVector<T1>::value && \
-                  ::blaze::IsVector<T2>::value && \
-                  ::blaze::TransposeFlag<T1>::value == ::blaze::TransposeFlag<T2>::value, "Invalid transpose flag detected" )
+   static_assert( ::blaze::IsVector_v<T1> && \
+                  ::blaze::IsVector_v<T2> && \
+                  ::blaze::TransposeFlag_v<T1> == ::blaze::TransposeFlag_v<T2>, "Invalid transpose flag detected" )
 //*************************************************************************************************
 
 
@@ -104,9 +104,9 @@ namespace blaze {
 // the transpose flags of both vector types does match, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG(T1,T2) \
-   static_assert( ::blaze::IsVector<T1>::value && \
-                  ::blaze::IsVector<T2>::value && \
-                  ::blaze::TransposeFlag<T1>::value != ::blaze::TransposeFlag<T2>::value, "Invalid transpose flag detected" )
+   static_assert( ::blaze::IsVector_v<T1> && \
+                  ::blaze::IsVector_v<T2> && \
+                  ::blaze::TransposeFlag_v<T1> != ::blaze::TransposeFlag_v<T2>, "Invalid transpose flag detected" )
 //*************************************************************************************************
 
 } // namespace blaze

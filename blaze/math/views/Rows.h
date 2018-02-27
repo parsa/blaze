@@ -987,7 +987,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1030,7 +1030,7 @@ inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1073,7 +1073,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1116,7 +1116,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, const T* indices, size
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1166,7 +1166,7 @@ inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, const T* indices
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1216,7 +1216,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, const T* indices, siz
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1399,7 +1399,7 @@ inline decltype(auto) row( Rows<MT,SO,DF,SF,CRAs2...>& rows, RRAs... args )
    const RowData<CRAs1...> rd( args... );
    decltype(auto) indices( rows.idces() );
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( indices.size() <= rd.row() ) {
@@ -1440,7 +1440,7 @@ inline decltype(auto) row( const Rows<MT,SO,DF,SF,CRAs2...>& rows, RRAs... args 
    const RowData<CRAs1...> rd( args... );
    decltype(auto) indices( rows.idces() );
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( indices.size() <= rd.row() ) {
@@ -1481,7 +1481,7 @@ inline decltype(auto) row( Rows<MT,SO,DF,SF,CRAs2...>&& rows, RRAs... args )
    const RowData<CRAs1...> rd( args... );
    decltype(auto) indices( rows.idces() );
 
-   constexpr bool isChecked( !Contains< TypeList<RRAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
       if( indices.size() <= rd.row() ) {

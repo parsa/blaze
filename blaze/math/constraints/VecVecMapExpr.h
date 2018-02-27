@@ -59,7 +59,7 @@ namespace blaze {
 // from the VecVecMapExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_VECVECMAPEXPR_TYPE(T) \
-   static_assert( ::blaze::IsVecVecMapExpr<T>::value, "Non-binary vector map expression type detected" )
+   static_assert( ::blaze::IsVecVecMapExpr_v<T>, "Non-binary vector map expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // the VecVecMapExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_VECVECMAPEXPR_TYPE(T) \
-   static_assert( !::blaze::IsVecVecMapExpr<T>::value, "Binary vector map expression type detected" )
+   static_assert( !::blaze::IsVecVecMapExpr_v<T>, "Binary vector map expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

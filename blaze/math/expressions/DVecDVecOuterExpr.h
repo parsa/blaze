@@ -117,12 +117,12 @@ class DVecDVecOuterExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense vector expression.
-   enum : bool { evaluateLeft = IsComputation<VT1>::value || RequiresEvaluation<VT1>::value };
+   enum : bool { evaluateLeft = IsComputation_v<VT1> || RequiresEvaluation_v<VT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum : bool { evaluateRight = IsComputation<VT2>::value || RequiresEvaluation<VT2>::value };
+   enum : bool { evaluateRight = IsComputation_v<VT2> || RequiresEvaluation_v<VT2> };
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -132,7 +132,7 @@ class DVecDVecOuterExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -179,10 +179,10 @@ class DVecDVecOuterExpr
    struct UseVectorizedKernel {
       enum : bool { value = useOptimizedKernels &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_t<T1>
-                                            , ElementType_t<T2>
-                                            , ElementType_t<T3> >::value &&
-                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
+                            IsSIMDCombinable_v< ElementType_t<T1>
+                                              , ElementType_t<T2>
+                                              , ElementType_t<T3> > &&
+                            HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -476,7 +476,7 @@ class DVecDVecOuterExpr
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = VT1::simdEnabled && VT2::simdEnabled &&
-                               HasSIMDMult<ET1,ET2>::value };
+                               HasSIMDMult_v<ET1,ET2> };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = VT1::smpAssignable && !evaluateRight };
@@ -757,7 +757,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
@@ -876,7 +876,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
@@ -1033,7 +1033,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
@@ -1153,7 +1153,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
@@ -1278,7 +1278,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
@@ -1398,7 +1398,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
@@ -1523,7 +1523,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );
@@ -1643,7 +1643,7 @@ class DVecDVecOuterExpr
    static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
-      constexpr bool remainder( !IsPadded<MT>::value || !IsPadded<VT3>::value );
+      constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
       const size_t M( (~A).rows() );
       const size_t N( (~A).columns() );

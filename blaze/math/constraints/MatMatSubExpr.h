@@ -43,10 +43,6 @@
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Equal.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 
 
 namespace blaze {
@@ -65,7 +61,7 @@ namespace blaze {
 // derived from the MatMatSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_MATMATSUBEXPR_TYPE(T) \
-   static_assert( ::blaze::IsMatMatSubExpr<T>::value, "Non-matrix/matrix subtraction expression type detected" )
+   static_assert( ::blaze::IsMatMatSubExpr_v<T>, "Non-matrix/matrix subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -85,7 +81,7 @@ namespace blaze {
 // from the MatMatSubExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATSUBEXPR_TYPE(T) \
-   static_assert( !::blaze::IsMatMatSubExpr<T>::value, "Matrix/matrix subtraction expression type detected" )
+   static_assert( !::blaze::IsMatMatSubExpr_v<T>, "Matrix/matrix subtraction expression type detected" )
 //*************************************************************************************************
 
 
@@ -105,15 +101,15 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATSUBEXPR(T1,T2) \
-   static_assert( ::blaze::And< ::blaze::IsMatrix<T1> \
-                              , ::blaze::IsMatrix<T2> \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T2,0UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T1,0UL>, ::blaze::Size<T2,0UL> > > \
-                              , ::blaze::Or< ::blaze::Equal< ::blaze::Size<T1,1UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T2,1UL>, ::blaze::PtrdiffT<-1L> > \
-                                           , ::blaze::Equal< ::blaze::Size<T1,1UL>, ::blaze::Size<T2,1UL> > > \
-                              >::value, "Invalid matrix/matrix subtraction expression detected" )
+   static_assert( ::blaze::IsMatrix_v<T1> && \
+                  ::blaze::IsMatrix_v<T2> && \
+                  ( ( ::blaze::Size_v<T1,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,0UL> == ::blaze::Size_v<T2,0UL> ) ) && \
+                  ( ( ::blaze::Size_v<T1,1UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,1UL> ) ) \
+                , "Invalid matrix/matrix subtraction expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -160,12 +160,12 @@ class TDMatTDMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation_v<MT1> || RequiresEvaluation_v<MT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation_v<MT2> || RequiresEvaluation_v<MT2> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -188,8 +188,8 @@ class TDMatTDMatMultExpr
        chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = IsRowMajorMatrix<T1>::value &&
-                            ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+      enum : bool { value = IsRowMajorMatrix_v<T1> &&
+                            ( IsSymmetric_v<T2> || IsSymmetric_v<T3> ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -217,16 +217,16 @@ class TDMatTDMatMultExpr
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
                             !SYM && !HERM && !LOW && !UPP &&
-                            IsContiguous<T1>::value && HasMutableDataAccess<T1>::value &&
-                            IsContiguous<T2>::value && HasConstDataAccess<T2>::value &&
-                            IsContiguous<T3>::value && HasConstDataAccess<T3>::value &&
-                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                            IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
+                            IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
+                            IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
+                            !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible< ElementType_t<T1> >::value &&
-                            IsBLASCompatible< ElementType_t<T2> >::value &&
-                            IsBLASCompatible< ElementType_t<T3> >::value &&
-                            IsSame< ElementType_t<T1>, ElementType_t<T2> >::value &&
-                            IsSame< ElementType_t<T1>, ElementType_t<T3> >::value };
+                            IsBLASCompatible_v< ElementType_t<T1> > &&
+                            IsBLASCompatible_v< ElementType_t<T2> > &&
+                            IsBLASCompatible_v< ElementType_t<T3> > &&
+                            IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
+                            IsSame_v< ElementType_t<T1>, ElementType_t<T3> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -239,13 +239,13 @@ class TDMatTDMatMultExpr
    template< typename T1, typename T2, typename T3 >
    struct UseVectorizedDefaultKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                            !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_t<T1>
-                                            , ElementType_t<T2>
-                                            , ElementType_t<T3> >::value &&
-                            HasSIMDAdd< ElementType_t<T2>, ElementType_t<T3> >::value &&
-                            HasSIMDMult< ElementType_t<T2>, ElementType_t<T3> >::value };
+                            IsSIMDCombinable_v< ElementType_t<T1>
+                                              , ElementType_t<T2>
+                                              , ElementType_t<T3> > &&
+                            HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
+                            HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -297,10 +297,10 @@ class TDMatTDMatMultExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = !IsDiagonal<MT1>::value &&
+   enum : bool { simdEnabled = !IsDiagonal_v<MT1> &&
                                MT1::simdEnabled && MT2::simdEnabled &&
-                               HasSIMDAdd<ET1,ET2>::value &&
-                               HasSIMDMult<ET1,ET2>::value };
+                               HasSIMDAdd_v<ET1,ET2> &&
+                               HasSIMDMult_v<ET1,ET2> };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
@@ -337,28 +337,28 @@ class TDMatTDMatMultExpr
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal<MT1>::value ) {
+      if( IsDiagonal_v<MT1> ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal<MT2>::value ) {
+      else if( IsDiagonal_v<MT2> ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
-         const size_t begin( ( IsUpper<MT1>::value )
-                             ?( ( IsLower<MT2>::value )
-                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
-                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
-                             :( ( IsLower<MT2>::value )
-                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+      else if( IsTriangular_v<MT1> || IsTriangular_v<MT2> ) {
+         const size_t begin( ( IsUpper_v<MT1> )
+                             ?( ( IsLower_v<MT2> )
+                                ?( max( ( IsStrictlyUpper_v<MT1> ? i+1UL : i )
+                                      , ( IsStrictlyLower_v<MT2> ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper_v<MT1> ? i+1UL : i ) )
+                             :( ( IsLower_v<MT2> )
+                                ?( IsStrictlyLower_v<MT2> ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower<MT1>::value )
-                           ?( ( IsUpper<MT2>::value )
-                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
-                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
-                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
-                           :( ( IsUpper<MT2>::value )
-                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+         const size_t end( ( IsLower_v<MT1> )
+                           ?( ( IsUpper_v<MT2> )
+                              ?( min( ( IsStrictlyLower_v<MT1> ? i : i+1UL )
+                                    , ( IsStrictlyUpper_v<MT2> ? j : j+1UL ) ) )
+                              :( IsStrictlyLower_v<MT1> ? i : i+1UL ) )
+                           :( ( IsUpper_v<MT2> )
+                              ?( IsStrictlyUpper_v<MT2> ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -478,7 +478,7 @@ class TDMatTDMatMultExpr
                !BLAZE_BLAS_IS_PARALLEL ||
                ( rows() * columns() < TDMATTDMATMULT_THRESHOLD ) ) &&
              ( rows() * columns() >= SMP_TDMATTDMATMULT_THRESHOLD ) &&
-             !IsDiagonal<MT1>::value && !IsDiagonal<MT2>::value;
+             !IsDiagonal_v<MT1> && !IsDiagonal_v<MT2>;
    }
    //**********************************************************************************************
 
@@ -550,7 +550,7 @@ class TDMatTDMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( ( IsDiagonal<MT4>::value ) ||
+      if( ( IsDiagonal_v<MT4> ) ||
           ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAssignKernel( C, A, B );
@@ -588,15 +588,15 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t kbegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t kbegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t kend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t kend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
-         if( IsStrictlyTriangular<MT5>::value && kbegin == kend ) {
+         if( IsStrictlyTriangular_v<MT5> && kbegin == kend ) {
             for( size_t i=0UL; i<M; ++i ) {
                reset( C(i,j) );
             }
@@ -604,47 +604,47 @@ class TDMatTDMatMultExpr
          }
 
          {
-            const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value )
+            const size_t ibegin( ( IsLower_v<MT4> )
+                                 ?( ( IsStrictlyLower_v<MT4> )
                                     ?( LOW ? max(j,kbegin+1UL) : kbegin+1UL )
                                     :( LOW ? max(j,kbegin) : kbegin ) )
                                  :( LOW ? j : 0UL ) );
-            const size_t iend( ( IsUpper<MT4>::value )
-                               ?( ( IsStrictlyUpper<MT4>::value )
+            const size_t iend( ( IsUpper_v<MT4> )
+                               ?( ( IsStrictlyUpper_v<MT4> )
                                   ?( UPP ? min(j+1UL,kbegin) : kbegin )
                                   :( UPP ? min(j,kbegin)+1UL : kbegin+1UL ) )
                                :( UPP ? j+1UL : M ) );
 
-            if( ( IsLower<MT4>::value && IsLower<MT5>::value ) || LOW ) {
+            if( ( IsLower_v<MT4> && IsLower_v<MT5> ) || LOW ) {
                for( size_t i=0UL; i<ibegin; ++i ) {
                   reset( C(i,j) );
                }
             }
-            else if( IsStrictlyLower<MT4>::value ) {
+            else if( IsStrictlyLower_v<MT4> ) {
                reset( C(0UL,j) );
             }
             for( size_t i=ibegin; i<iend; ++i ) {
                C(i,j) = A(i,kbegin) * B(kbegin,j);
             }
-            if( ( IsUpper<MT4>::value && IsUpper<MT5>::value ) || UPP ) {
+            if( ( IsUpper_v<MT4> && IsUpper_v<MT5> ) || UPP ) {
                for( size_t i=iend; i<M; ++i ) {
                   reset( C(i,j) );
                }
             }
-            else if( IsStrictlyUpper<MT4>::value ) {
+            else if( IsStrictlyUpper_v<MT4> ) {
                reset( C(M-1UL,j) );
             }
          }
 
          for( size_t k=kbegin+1UL; k<kend; ++k )
          {
-            const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value )
+            const size_t ibegin( ( IsLower_v<MT4> )
+                                 ?( ( IsStrictlyLower_v<MT4> )
                                     ?( SYM || HERM || LOW ? max( j, k+1UL ) : k+1UL )
                                     :( SYM || HERM || LOW ? max( j, k ) : k ) )
                                  :( SYM || HERM || LOW ? j : 0UL ) );
-            const size_t iend( ( IsUpper<MT4>::value )
-                               ?( ( IsStrictlyUpper<MT4>::value )
+            const size_t iend( ( IsUpper_v<MT4> )
+                               ?( ( IsStrictlyUpper_v<MT4> )
                                   ?( UPP ? min(j+1UL,k-1UL) : k-1UL )
                                   :( UPP ? min(j+1UL,k) : k ) )
                                :( UPP ? j+1UL : M ) );
@@ -655,7 +655,7 @@ class TDMatTDMatMultExpr
             for( size_t i=ibegin; i<iend; ++i ) {
                C(i,j) += A(i,k) * B(k,j);
             }
-            if( IsUpper<MT4>::value ) {
+            if( IsUpper_v<MT4> ) {
                C(iend,j) = A(iend,k) * B(k,j);
             }
          }
@@ -699,15 +699,15 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT4>::value )
-                              ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT4> )
+                              ?( IsStrictlyLower_v<MT4> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT4>::value )
-                            ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT4> )
+                            ?( IsStrictlyUpper_v<MT4> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         if( IsLower<MT4>::value ) {
+         if( IsLower_v<MT4> ) {
             for( size_t i=0UL; i<ibegin; ++i ) {
                reset( C(i,j) );
             }
@@ -715,7 +715,7 @@ class TDMatTDMatMultExpr
          for( size_t i=ibegin; i<iend; ++i ) {
             C(i,j) = A(i,j) * B(j,j);
          }
-         if( IsUpper<MT4>::value ) {
+         if( IsUpper_v<MT4> ) {
             for( size_t i=iend; i<M; ++i ) {
                reset( C(i,j) );
             }
@@ -752,15 +752,15 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         if( IsLower<MT4>::value ) {
+         if( IsLower_v<MT4> ) {
             for( size_t i=0UL; i<ibegin; ++i ) {
                reset( C(i,j) );
             }
@@ -768,7 +768,7 @@ class TDMatTDMatMultExpr
          for( size_t i=ibegin; i<iend; ++i ) {
             C(i,j) = A(i,i) * B(i,j);
          }
-         if( IsUpper<MT4>::value ) {
+         if( IsUpper_v<MT4> ) {
             for( size_t i=iend; i<M; ++i ) {
                reset( C(i,j) );
             }
@@ -862,11 +862,11 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
+      if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
          assign( ~C, fwd( A * tmp ) );
       }
-      else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
+      else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
          assign( ~C, fwd( tmp * B ) );
       }
@@ -903,7 +903,7 @@ class TDMatTDMatMultExpr
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -921,21 +921,21 @@ class TDMatTDMatMultExpr
       {
          size_t i( 0UL );
 
-         if( IsIntegral<ElementType>::value )
+         if( IsIntegral_v<ElementType> )
          {
             for( ; !SYM && !HERM && !LOW && !UPP && (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
                for( size_t j=0UL; j<N; ++j )
                {
-                  const size_t kbegin( ( IsLower<MT5>::value )
-                                       ?( ( IsUpper<MT4>::value )
-                                          ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                          :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                       :( IsUpper<MT4>::value ? i : 0UL ) );
-                  const size_t kend( ( IsUpper<MT5>::value )
-                                     ?( ( IsLower<MT4>::value )
-                                        ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
-                                        :( IsStrictlyUpper<MT5>::value ? j : j+1UL ) )
-                                     :( IsLower<MT4>::value ? min( i+SIMDSIZE*8UL, K ) : K ) );
+                  const size_t kbegin( ( IsLower_v<MT5> )
+                                       ?( ( IsUpper_v<MT4> )
+                                          ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                          :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                       :( IsUpper_v<MT4> ? i : 0UL ) );
+                  const size_t kend( ( IsUpper_v<MT5> )
+                                     ?( ( IsLower_v<MT4> )
+                                        ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper_v<MT5> ? j : j+1UL ) ) )
+                                        :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
+                                     :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
                   SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -969,16 +969,16 @@ class TDMatTDMatMultExpr
 
             for( ; (j+2UL) <= N; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*5UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10;
 
@@ -1016,12 +1016,12 @@ class TDMatTDMatMultExpr
 
             if( j < N )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5;
 
@@ -1049,16 +1049,16 @@ class TDMatTDMatMultExpr
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*4UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -1091,12 +1091,12 @@ class TDMatTDMatMultExpr
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4;
 
@@ -1122,16 +1122,16 @@ class TDMatTDMatMultExpr
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*3UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
 
@@ -1159,12 +1159,12 @@ class TDMatTDMatMultExpr
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3;
 
@@ -1188,16 +1188,16 @@ class TDMatTDMatMultExpr
 
             for( ; (j+4UL) <= jend; j+=4UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -1230,16 +1230,16 @@ class TDMatTDMatMultExpr
 
             for( ; (j+3UL) <= jend; j+=3UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
 
@@ -1267,16 +1267,16 @@ class TDMatTDMatMultExpr
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
                size_t k( kbegin );
@@ -1319,12 +1319,12 @@ class TDMatTDMatMultExpr
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4;
                size_t k( kbegin );
@@ -1356,13 +1356,13 @@ class TDMatTDMatMultExpr
 
             for( ; (j+4UL) <= jend; j+=4UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                   :( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -1397,13 +1397,13 @@ class TDMatTDMatMultExpr
 
             for( ; (j+3UL) <= jend; j+=3UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                   :( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
@@ -1434,13 +1434,13 @@ class TDMatTDMatMultExpr
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                   :( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4;
@@ -1467,11 +1467,11 @@ class TDMatTDMatMultExpr
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
 
                SIMDType xmm1, xmm2;
                size_t k( kbegin );
@@ -1495,13 +1495,13 @@ class TDMatTDMatMultExpr
 
             for( ; (j+2UL) <= N; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                   :( K ) );
 
                ElementType value1{};
@@ -1518,11 +1518,11 @@ class TDMatTDMatMultExpr
 
             if( j < N )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
 
                ElementType value{};
 
@@ -1671,13 +1671,13 @@ class TDMatTDMatMultExpr
    {
       using ET = ElementType_t<MT3>;
 
-      if( IsTriangular<MT4>::value ) {
+      if( IsTriangular_v<MT4> ) {
          assign( C, B );
-         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
+         trmm( C, A, CblasLeft, ( IsLower_v<MT4> )?( CblasLower ):( CblasUpper ), ET(1) );
       }
-      else if( IsTriangular<MT5>::value ) {
+      else if( IsTriangular_v<MT5> ) {
          assign( C, A );
-         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
+         trmm( C, B, CblasRight, ( IsLower_v<MT5> )?( CblasLower ):( CblasUpper ), ET(1) );
       }
       else {
          gemm( C, A, B, ET(1), ET(0) );
@@ -1755,9 +1755,9 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          assign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          assign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          assign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -1823,7 +1823,7 @@ class TDMatTDMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( ( IsDiagonal<MT4>::value ) ||
+      if( ( IsDiagonal_v<MT4> ) ||
           ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAddAssignKernel( C, A, B );
@@ -1861,23 +1861,23 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t kbegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t kbegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t kend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t kend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
          for( size_t k=kbegin; k<kend; ++k )
          {
-            const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value )
+            const size_t ibegin( ( IsLower_v<MT4> )
+                                 ?( ( IsStrictlyLower_v<MT4> )
                                     ?( LOW ? max(j,k+1UL) : k+1UL )
                                     :( LOW ? max(j,k) : k ) )
                                  :( LOW ? j : 0UL ) );
-            const size_t iend( ( IsUpper<MT4>::value )
-                               ?( ( IsStrictlyUpper<MT4>::value )
+            const size_t iend( ( IsUpper_v<MT4> )
+                               ?( ( IsStrictlyUpper_v<MT4> )
                                   ?( UPP ? min(j+1UL,k) : k )
                                   :( UPP ? min(j,k)+1UL : k+1UL ) )
                                :( UPP ? j+1UL : M ) );
@@ -1928,11 +1928,11 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT4>::value )
-                              ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT4> )
+                              ?( IsStrictlyLower_v<MT4> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT4>::value )
-                            ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT4> )
+                            ?( IsStrictlyUpper_v<MT4> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -1978,11 +1978,11 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -2083,11 +2083,11 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
+      if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
          addAssign( ~C, fwd( A * tmp ) );
       }
-      else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
+      else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
          addAssign( ~C, fwd( tmp * B ) );
       }
@@ -2124,7 +2124,7 @@ class TDMatTDMatMultExpr
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -2137,21 +2137,21 @@ class TDMatTDMatMultExpr
 
       size_t i( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_v<ElementType> )
       {
          for( ; !LOW && !UPP && (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j : j+1UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*8UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper_v<MT5> ? j : j+1UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
                SIMDType xmm1( (~C).load(i             ,j) );
                SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -2192,16 +2192,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*5UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
             SIMDType xmm1 ( (~C).load(i             ,j    ) );
             SIMDType xmm2 ( (~C).load(i+SIMDSIZE    ,j    ) );
@@ -2248,12 +2248,12 @@ class TDMatTDMatMultExpr
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i             ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -2284,16 +2284,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*4UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i             ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
@@ -2333,12 +2333,12 @@ class TDMatTDMatMultExpr
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i             ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -2366,16 +2366,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*3UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i             ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
@@ -2408,12 +2408,12 @@ class TDMatTDMatMultExpr
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i             ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -2439,16 +2439,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i         ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
@@ -2488,16 +2488,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i         ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
@@ -2530,16 +2530,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i         ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
@@ -2586,12 +2586,12 @@ class TDMatTDMatMultExpr
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i         ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j) );
@@ -2625,13 +2625,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                :( K ) );
 
             SIMDType xmm1( (~C).load(i,j    ) );
@@ -2670,13 +2670,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                :( K ) );
 
             SIMDType xmm1( (~C).load(i,j    ) );
@@ -2710,13 +2710,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             SIMDType xmm1( (~C).load(i,j    ) );
@@ -2745,11 +2745,11 @@ class TDMatTDMatMultExpr
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             SIMDType xmm1( (~C).load(i,j) );
             SIMDType xmm2;
@@ -2775,13 +2775,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             ElementType value1( (~C)(i,j    ) );
@@ -2798,11 +2798,11 @@ class TDMatTDMatMultExpr
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             ElementType value( (~C)(i,j) );
 
@@ -2921,14 +2921,14 @@ class TDMatTDMatMultExpr
    {
       using ET = ElementType_t<MT3>;
 
-      if( IsTriangular<MT4>::value ) {
+      if( IsTriangular_v<MT4> ) {
          ResultType_t<MT3> tmp( serial( B ) );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
+         trmm( tmp, A, CblasLeft, ( IsLower_v<MT4> )?( CblasLower ):( CblasUpper ), ET(1) );
          addAssign( C, tmp );
       }
-      else if( IsTriangular<MT5>::value ) {
+      else if( IsTriangular_v<MT5> ) {
          ResultType_t<MT3> tmp( serial( A ) );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
+         trmm( tmp, B, CblasRight, ( IsLower_v<MT5> )?( CblasLower ):( CblasUpper ), ET(1) );
          addAssign( C, tmp );
       }
       else {
@@ -2967,9 +2967,9 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          addAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -3039,7 +3039,7 @@ class TDMatTDMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( ( IsDiagonal<MT4>::value ) ||
+      if( ( IsDiagonal_v<MT4> ) ||
           ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallSubAssignKernel( C, A, B );
@@ -3077,23 +3077,23 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t kbegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t kbegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t kend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t kend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
          for( size_t k=kbegin; k<kend; ++k )
          {
-            const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value )
+            const size_t ibegin( ( IsLower_v<MT4> )
+                                 ?( ( IsStrictlyLower_v<MT4> )
                                     ?( LOW ? max(j,k+1UL) : k+1UL )
                                     :( LOW ? max(j,k) : k ) )
                                  :( LOW ? j : 0UL ) );
-            const size_t iend( ( IsUpper<MT4>::value )
-                               ?( ( IsStrictlyUpper<MT4>::value )
+            const size_t iend( ( IsUpper_v<MT4> )
+                               ?( ( IsStrictlyUpper_v<MT4> )
                                   ?( UPP ? min(j+1UL,k) : k )
                                   :( UPP ? min(j,k)+1UL : k+1UL ) )
                                :( UPP ? j+1UL : M ) );
@@ -3144,11 +3144,11 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT4>::value )
-                              ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT4> )
+                              ?( IsStrictlyLower_v<MT4> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT4>::value )
-                            ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT4> )
+                            ?( IsStrictlyUpper_v<MT4> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -3194,11 +3194,11 @@ class TDMatTDMatMultExpr
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -3299,11 +3299,11 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
+      if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
          subAssign( ~C, fwd( A * tmp ) );
       }
-      else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
+      else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
          subAssign( ~C, fwd( tmp * B ) );
       }
@@ -3340,7 +3340,7 @@ class TDMatTDMatMultExpr
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3353,21 +3353,21 @@ class TDMatTDMatMultExpr
 
       size_t i( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_v<ElementType> )
       {
          for( ; !LOW && !UPP && (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j : j+1UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*8UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper_v<MT5> ? j : j+1UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
                SIMDType xmm1( (~C).load(i             ,j) );
                SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -3408,16 +3408,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*5UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
             SIMDType xmm1 ( (~C).load(i             ,j    ) );
             SIMDType xmm2 ( (~C).load(i+SIMDSIZE    ,j    ) );
@@ -3464,12 +3464,12 @@ class TDMatTDMatMultExpr
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i             ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -3500,16 +3500,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*4UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i             ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
@@ -3549,12 +3549,12 @@ class TDMatTDMatMultExpr
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i             ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -3582,16 +3582,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*3UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i             ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
@@ -3624,12 +3624,12 @@ class TDMatTDMatMultExpr
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i             ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
@@ -3655,16 +3655,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i         ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
@@ -3704,16 +3704,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i         ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
@@ -3746,16 +3746,16 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1( (~C).load(i         ,j    ) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
@@ -3802,12 +3802,12 @@ class TDMatTDMatMultExpr
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
             SIMDType xmm1( (~C).load(i         ,j) );
             SIMDType xmm2( (~C).load(i+SIMDSIZE,j) );
@@ -3841,13 +3841,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                :( K ) );
 
             SIMDType xmm1( (~C).load(i,j    ) );
@@ -3886,13 +3886,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                :( K ) );
 
             SIMDType xmm1( (~C).load(i,j    ) );
@@ -3926,13 +3926,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             SIMDType xmm1( (~C).load(i,j    ) );
@@ -3961,11 +3961,11 @@ class TDMatTDMatMultExpr
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             SIMDType xmm1( (~C).load(i,j) );
             SIMDType xmm2;
@@ -3991,13 +3991,13 @@ class TDMatTDMatMultExpr
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             ElementType value1( (~C)(i,j    ) );
@@ -4014,11 +4014,11 @@ class TDMatTDMatMultExpr
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             ElementType value( (~C)(i,j) );
 
@@ -4137,14 +4137,14 @@ class TDMatTDMatMultExpr
    {
       using ET = ElementType_t<MT3>;
 
-      if( IsTriangular<MT4>::value ) {
+      if( IsTriangular_v<MT4> ) {
          ResultType_t<MT3> tmp( serial( B ) );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(1) );
+         trmm( tmp, A, CblasLeft, ( IsLower_v<MT4> )?( CblasLower ):( CblasUpper ), ET(1) );
          subAssign( C, tmp );
       }
-      else if( IsTriangular<MT5>::value ) {
+      else if( IsTriangular_v<MT5> ) {
          ResultType_t<MT3> tmp( serial( A ) );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(1) );
+         trmm( tmp, B, CblasRight, ( IsLower_v<MT5> )?( CblasLower ):( CblasUpper ), ET(1) );
          subAssign( C, tmp );
       }
       else {
@@ -4184,9 +4184,9 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          subAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -4358,9 +4358,9 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          smpAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -4442,9 +4442,9 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          smpAddAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -4530,9 +4530,9 @@ class TDMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          smpSubAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -4645,12 +4645,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation_v<MT1> || RequiresEvaluation_v<MT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation_v<MT2> || RequiresEvaluation_v<MT2> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -4672,8 +4672,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
        chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = IsRowMajorMatrix<T1>::value &&
-                            ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+      enum : bool { value = IsRowMajorMatrix_v<T1> &&
+                            ( IsSymmetric_v<T2> || IsSymmetric_v<T3> ) };
    };
    //**********************************************************************************************
 
@@ -4697,17 +4697,17 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    struct UseBlasKernel {
       enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
                             !SYM && !HERM && !LOW && !UPP &&
-                            IsContiguous<T1>::value && HasMutableDataAccess<T1>::value &&
-                            IsContiguous<T2>::value && HasConstDataAccess<T2>::value &&
-                            IsContiguous<T3>::value && HasConstDataAccess<T3>::value &&
-                            !IsDiagonal<T2>::value && !IsDiagonal<T3>::value &&
+                            IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
+                            IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
+                            IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
+                            !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible< ElementType_t<T1> >::value &&
-                            IsBLASCompatible< ElementType_t<T2> >::value &&
-                            IsBLASCompatible< ElementType_t<T3> >::value &&
-                            IsSame< ElementType_t<T1>, ElementType_t<T2> >::value &&
-                            IsSame< ElementType_t<T1>, ElementType_t<T3> >::value &&
-                            !( IsBuiltin< ElementType_t<T1> >::value && IsComplex<T4>::value ) };
+                            IsBLASCompatible_v< ElementType_t<T1> > &&
+                            IsBLASCompatible_v< ElementType_t<T2> > &&
+                            IsBLASCompatible_v< ElementType_t<T3> > &&
+                            IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
+                            IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
+                            !( IsBuiltin_v< ElementType_t<T1> > && IsComplex_v<T4> ) };
    };
    //**********************************************************************************************
 
@@ -4718,14 +4718,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    template< typename T1, typename T2, typename T3, typename T4 >
    struct UseVectorizedDefaultKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T2>::value &&
+                            !IsDiagonal_v<T2> &&
                             T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable< ElementType_t<T1>
-                                            , ElementType_t<T2>
-                                            , ElementType_t<T3>
-                                            , T4 >::value &&
-                            HasSIMDAdd< ElementType_t<T2>, ElementType_t<T2> >::value &&
-                            HasSIMDMult< ElementType_t<T3>, ElementType_t<T3> >::value };
+                            IsSIMDCombinable_v< ElementType_t<T1>
+                                              , ElementType_t<T2>
+                                              , ElementType_t<T3>
+                                              , T4 > &&
+                            HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T2> > &&
+                            HasSIMDMult_v< ElementType_t<T3>, ElementType_t<T3> > };
    };
    //**********************************************************************************************
 
@@ -4772,11 +4772,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = !IsDiagonal<MT1>::value &&
+   enum : bool { simdEnabled = !IsDiagonal_v<MT1> &&
                                MT1::simdEnabled && MT2::simdEnabled &&
-                               IsSIMDCombinable<ET1,ET2,ST>::value &&
-                               HasSIMDAdd<ET1,ET2>::value &&
-                               HasSIMDMult<ET1,ET2>::value };
+                               IsSIMDCombinable_v<ET1,ET2,ST> &&
+                               HasSIMDAdd_v<ET1,ET2> &&
+                               HasSIMDMult_v<ET1,ET2> };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
@@ -4991,7 +4991,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename ST2 >  // Type of the scalar value
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( ( IsDiagonal<MT4>::value ) ||
+      if( ( IsDiagonal_v<MT4> ) ||
           ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAssignKernel( C, A, B, scalar );
@@ -5029,15 +5029,15 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t kbegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t kbegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t kend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t kend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( K ) );
          BLAZE_INTERNAL_ASSERT( kbegin <= kend, "Invalid loop indices detected" );
 
-         if( IsStrictlyTriangular<MT5>::value && kbegin == kend ) {
+         if( IsStrictlyTriangular_v<MT5> && kbegin == kend ) {
             for( size_t i=0UL; i<M; ++i ) {
                reset( C(i,j) );
             }
@@ -5045,47 +5045,47 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          }
 
          {
-            const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value )
+            const size_t ibegin( ( IsLower_v<MT4> )
+                                 ?( ( IsStrictlyLower_v<MT4> )
                                     ?( LOW ? max(j,kbegin+1UL) : kbegin+1UL )
                                     :( LOW ? max(j,kbegin) : kbegin ) )
                                  :( LOW ? j : 0UL ) );
-            const size_t iend( ( IsUpper<MT4>::value )
-                               ?( ( IsStrictlyUpper<MT4>::value )
+            const size_t iend( ( IsUpper_v<MT4> )
+                               ?( ( IsStrictlyUpper_v<MT4> )
                                   ?( UPP ? min(j+1UL,kbegin) : kbegin )
                                   :( UPP ? min(j,kbegin)+1UL : kbegin+1UL ) )
                                :( UPP ? j+1UL : M ) );
 
-            if( ( IsLower<MT4>::value && IsLower<MT5>::value ) || LOW ) {
+            if( ( IsLower_v<MT4> && IsLower_v<MT5> ) || LOW ) {
                for( size_t i=0UL; i<ibegin; ++i ) {
                   reset( C(i,j) );
                }
             }
-            else if( IsStrictlyLower<MT4>::value ) {
+            else if( IsStrictlyLower_v<MT4> ) {
                reset( C(0UL,j) );
             }
             for( size_t i=ibegin; i<iend; ++i ) {
                C(i,j) = A(i,kbegin) * B(kbegin,j);
             }
-            if( ( IsUpper<MT4>::value && IsUpper<MT5>::value ) || UPP ) {
+            if( ( IsUpper_v<MT4> && IsUpper_v<MT5> ) || UPP ) {
                for( size_t i=iend; i<M; ++i ) {
                   reset( C(i,j) );
                }
             }
-            else if( IsStrictlyUpper<MT4>::value ) {
+            else if( IsStrictlyUpper_v<MT4> ) {
                reset( C(M-1UL,j) );
             }
          }
 
          for( size_t k=kbegin+1UL; k<kend; ++k )
          {
-            const size_t ibegin( ( IsLower<MT4>::value )
-                                 ?( ( IsStrictlyLower<MT4>::value )
+            const size_t ibegin( ( IsLower_v<MT4> )
+                                 ?( ( IsStrictlyLower_v<MT4> )
                                     ?( SYM || HERM || LOW ? max( j, k+1UL ) : k+1UL )
                                     :( SYM || HERM || LOW ? max( j, k ) : k ) )
                                  :( SYM || HERM || LOW ? j : 0UL ) );
-            const size_t iend( ( IsUpper<MT4>::value )
-                               ?( ( IsStrictlyUpper<MT4>::value )
+            const size_t iend( ( IsUpper_v<MT4> )
+                               ?( ( IsStrictlyUpper_v<MT4> )
                                   ?( UPP ? min(j+1UL,k-1UL) : k-1UL )
                                   :( UPP ? min(j+1UL,k) : k ) )
                                :( UPP ? j+1UL : M ) );
@@ -5096,17 +5096,17 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
             for( size_t i=ibegin; i<iend; ++i ) {
                C(i,j) += A(i,k) * B(k,j);
             }
-            if( IsUpper<MT4>::value ) {
+            if( IsUpper_v<MT4> ) {
                C(iend,j) = A(iend,k) * B(k,j);
             }
          }
 
          {
-            const size_t ibegin( ( IsLower<MT4>::value && IsLower<MT5>::value )
-                                 ?( IsStrictlyLower<MT4>::value || IsStrictlyLower<MT5>::value ? j+1UL : j )
+            const size_t ibegin( ( IsLower_v<MT4> && IsLower_v<MT5> )
+                                 ?( IsStrictlyLower_v<MT4> || IsStrictlyLower_v<MT5> ? j+1UL : j )
                                  :( ( SYM || HERM || LOW )?( j ):( 0UL ) ) );
-            const size_t iend( ( IsUpper<MT4>::value && IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT4>::value || IsStrictlyUpper<MT5>::value ? j : j+1UL )
+            const size_t iend( ( IsUpper_v<MT4> && IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT4> || IsStrictlyUpper_v<MT5> ? j : j+1UL )
                                :( UPP ? j+1UL : M ) );
 
             if( ( SYM || HERM || LOW || UPP ) && ( ibegin > iend ) ) continue;
@@ -5156,15 +5156,15 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT4>::value )
-                              ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT4> )
+                              ?( IsStrictlyLower_v<MT4> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT4>::value )
-                            ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT4> )
+                            ?( IsStrictlyUpper_v<MT4> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         if( IsLower<MT4>::value ) {
+         if( IsLower_v<MT4> ) {
             for( size_t i=0UL; i<ibegin; ++i ) {
                reset( C(i,j) );
             }
@@ -5172,7 +5172,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          for( size_t i=ibegin; i<iend; ++i ) {
             C(i,j) = A(i,j) * B(j,j) * scalar;
          }
-         if( IsUpper<MT4>::value ) {
+         if( IsUpper_v<MT4> ) {
             for( size_t i=iend; i<M; ++i ) {
                reset( C(i,j) );
             }
@@ -5209,15 +5209,15 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
-         if( IsLower<MT4>::value ) {
+         if( IsLower_v<MT4> ) {
             for( size_t i=0UL; i<ibegin; ++i ) {
                reset( C(i,j) );
             }
@@ -5225,7 +5225,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          for( size_t i=ibegin; i<iend; ++i ) {
             C(i,j) = A(i,i) * B(i,j) * scalar;
          }
-         if( IsUpper<MT4>::value ) {
+         if( IsUpper_v<MT4> ) {
             for( size_t i=iend; i<M; ++i ) {
                reset( C(i,j) );
             }
@@ -5319,11 +5319,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
+      if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
          assign( ~C, fwd( A * tmp ) * scalar );
       }
-      else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
+      else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
          assign( ~C, fwd( tmp * B ) * scalar );
       }
@@ -5360,7 +5360,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -5380,21 +5380,21 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       {
          size_t i( 0UL );
 
-         if( IsIntegral<ElementType>::value )
+         if( IsIntegral_v<ElementType> )
          {
             for( ; !SYM && !HERM && !LOW && !UPP && (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
                for( size_t j=0UL; j<N; ++j )
                {
-                  const size_t kbegin( ( IsLower<MT5>::value )
-                                       ?( ( IsUpper<MT4>::value )
-                                          ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                          :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                       :( IsUpper<MT4>::value ? i : 0UL ) );
-                  const size_t kend( ( IsUpper<MT5>::value )
-                                     ?( ( IsLower<MT4>::value )
-                                        ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
-                                        :( IsStrictlyUpper<MT5>::value ? j : j+1UL ) )
-                                     :( IsLower<MT4>::value ? min( i+SIMDSIZE*8UL, K ) : K ) );
+                  const size_t kbegin( ( IsLower_v<MT5> )
+                                       ?( ( IsUpper_v<MT4> )
+                                          ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                          :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                       :( IsUpper_v<MT4> ? i : 0UL ) );
+                  const size_t kend( ( IsUpper_v<MT5> )
+                                     ?( ( IsLower_v<MT4> )
+                                        ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper_v<MT5> ? j : j+1UL ) ) )
+                                        :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
+                                     :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
                   SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -5428,16 +5428,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+2UL) <= N; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*5UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10;
 
@@ -5475,12 +5475,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             if( j < N )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5;
 
@@ -5508,16 +5508,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*4UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -5550,12 +5550,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4;
 
@@ -5581,16 +5581,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*3UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
 
@@ -5618,12 +5618,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3;
 
@@ -5647,16 +5647,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+4UL) <= jend; j+=4UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -5689,16 +5689,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+3UL) <= jend; j+=3UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
 
@@ -5726,16 +5726,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
                size_t k( kbegin );
@@ -5778,12 +5778,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4;
                size_t k( kbegin );
@@ -5815,13 +5815,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+4UL) <= jend; j+=4UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                   :( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -5856,13 +5856,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+3UL) <= jend; j+=3UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                   :( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
@@ -5893,13 +5893,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+2UL) <= jend; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                   :( K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4;
@@ -5926,11 +5926,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             if( j < jend )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
 
                SIMDType xmm1, xmm2;
                size_t k( kbegin );
@@ -5954,13 +5954,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             for( ; (j+2UL) <= N; j+=2UL )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                   :( K ) );
 
                ElementType value1{};
@@ -5977,11 +5977,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
             if( j < N )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
 
                ElementType value{};
 
@@ -6130,13 +6130,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    {
       using ET = ElementType_t<MT3>;
 
-      if( IsTriangular<MT4>::value ) {
+      if( IsTriangular_v<MT4> ) {
          assign( C, B );
-         trmm( C, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
+         trmm( C, A, CblasLeft, ( IsLower_v<MT4> )?( CblasLower ):( CblasUpper ), ET(scalar) );
       }
-      else if( IsTriangular<MT5>::value ) {
+      else if( IsTriangular_v<MT5> ) {
          assign( C, A );
-         trmm( C, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
+         trmm( C, B, CblasRight, ( IsLower_v<MT5> )?( CblasLower ):( CblasUpper ), ET(scalar) );
       }
       else {
          gemm( C, A, B, ET(scalar), ET(0) );
@@ -6213,9 +6213,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          assign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          assign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
          assign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
@@ -6282,7 +6282,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename ST2 >  // Type of the scalar value
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( ( IsDiagonal<MT4>::value ) ||
+      if( ( IsDiagonal_v<MT4> ) ||
           ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAddAssignKernel( C, A, B, scalar );
@@ -6345,11 +6345,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT4>::value )
-                              ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT4> )
+                              ?( IsStrictlyLower_v<MT4> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT4>::value )
-                            ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT4> )
+                            ?( IsStrictlyUpper_v<MT4> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -6395,11 +6395,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -6500,11 +6500,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
+      if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
          addAssign( ~C, fwd( A * tmp ) * scalar );
       }
-      else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
+      else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
          addAssign( ~C, fwd( tmp * B ) * scalar );
       }
@@ -6541,7 +6541,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -6556,21 +6556,21 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       size_t i( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_v<ElementType> )
       {
          for( ; !LOW && !UPP && (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j : j+1UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*8UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper_v<MT5> ? j : j+1UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -6604,16 +6604,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*5UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10;
 
@@ -6651,12 +6651,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5;
 
@@ -6683,16 +6683,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*4UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -6725,12 +6725,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4;
 
@@ -6755,16 +6755,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*3UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
 
@@ -6792,12 +6792,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3;
 
@@ -6821,16 +6821,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -6863,16 +6863,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -6900,16 +6900,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
@@ -6952,12 +6952,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
@@ -6989,13 +6989,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                :( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -7030,13 +7030,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                :( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
@@ -7067,13 +7067,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4;
@@ -7100,11 +7100,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             SIMDType xmm1, xmm2;
             size_t k( kbegin );
@@ -7129,13 +7129,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             ElementType value1{};
@@ -7152,11 +7152,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             ElementType value{};
 
@@ -7276,14 +7276,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    {
       using ET = ElementType_t<MT3>;
 
-      if( IsTriangular<MT4>::value ) {
+      if( IsTriangular_v<MT4> ) {
          ResultType_t<MT3> tmp( serial( B ) );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
+         trmm( tmp, A, CblasLeft, ( IsLower_v<MT4> )?( CblasLower ):( CblasUpper ), ET(scalar) );
          addAssign( C, tmp );
       }
-      else if( IsTriangular<MT5>::value ) {
+      else if( IsTriangular_v<MT5> ) {
          ResultType_t<MT3> tmp( serial( A ) );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
+         trmm( tmp, B, CblasRight, ( IsLower_v<MT5> )?( CblasLower ):( CblasUpper ), ET(scalar) );
          addAssign( C, tmp );
       }
       else {
@@ -7324,9 +7324,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          addAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          addAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
          addAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
@@ -7397,7 +7397,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename ST2 >  // Type of the scalar value
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      if( ( IsDiagonal<MT4>::value ) ||
+      if( ( IsDiagonal_v<MT4> ) ||
           ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallSubAssignKernel( C, A, B, scalar );
@@ -7460,11 +7460,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT4>::value )
-                              ?( IsStrictlyLower<MT4>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT4> )
+                              ?( IsStrictlyLower_v<MT4> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT4>::value )
-                            ?( IsStrictlyUpper<MT4>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT4> )
+                            ?( IsStrictlyUpper_v<MT4> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -7510,11 +7510,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       for( size_t j=0UL; j<N; ++j )
       {
-         const size_t ibegin( ( IsLower<MT5>::value )
-                              ?( IsStrictlyLower<MT5>::value ? j+1UL : j )
+         const size_t ibegin( ( IsLower_v<MT5> )
+                              ?( IsStrictlyLower_v<MT5> ? j+1UL : j )
                               :( 0UL ) );
-         const size_t iend( ( IsUpper<MT5>::value )
-                            ?( IsStrictlyUpper<MT5>::value ? j : j+1UL )
+         const size_t iend( ( IsUpper_v<MT5> )
+                            ?( IsStrictlyUpper_v<MT5> ? j : j+1UL )
                             :( M ) );
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
@@ -7615,11 +7615,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const ForwardFunctor fwd;
 
-      if( IsResizable<MT4>::value && !IsResizable<MT5>::value ) {
+      if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
          subAssign( ~C, fwd( A * tmp ) * scalar );
       }
-      else if( !IsResizable<MT4>::value && IsResizable<MT5>::value ) {
+      else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
          subAssign( ~C, fwd( tmp * B ) * scalar );
       }
@@ -7656,7 +7656,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
-      constexpr bool remainder( !IsPadded<MT3>::value || !IsPadded<MT4>::value );
+      constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -7671,21 +7671,21 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       size_t i( 0UL );
 
-      if( IsIntegral<ElementType>::value )
+      if( IsIntegral_v<ElementType> )
       {
          for( ; !LOW && !UPP && (i+SIMDSIZE*7UL) < ipos; i+=SIMDSIZE*8UL ) {
             for( size_t j=0UL; j<N; ++j )
             {
-               const size_t kbegin( ( IsLower<MT5>::value )
-                                    ?( ( IsUpper<MT4>::value )
-                                       ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                       :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                    :( IsUpper<MT4>::value ? i : 0UL ) );
-               const size_t kend( ( IsUpper<MT5>::value )
-                                  ?( ( IsLower<MT4>::value )
-                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper<MT5>::value ? j : j+1UL ) ) )
-                                     :( IsStrictlyUpper<MT5>::value ? j : j+1UL ) )
-                                  :( IsLower<MT4>::value ? min( i+SIMDSIZE*8UL, K ) : K ) );
+               const size_t kbegin( ( IsLower_v<MT5> )
+                                    ?( ( IsUpper_v<MT4> )
+                                       ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                       :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                    :( IsUpper_v<MT4> ? i : 0UL ) );
+               const size_t kend( ( IsUpper_v<MT5> )
+                                  ?( ( IsLower_v<MT4> )
+                                     ?( min( i+SIMDSIZE*8UL, K, ( IsStrictlyUpper_v<MT5> ? j : j+1UL ) ) )
+                                     :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
+                                  :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
                SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -7719,16 +7719,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*5UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*5UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8, xmm9, xmm10;
 
@@ -7766,12 +7766,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5;
 
@@ -7798,16 +7798,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*4UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*4UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -7840,12 +7840,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4;
 
@@ -7870,16 +7870,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= N; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*3UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*3UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
 
@@ -7907,12 +7907,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < N )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3;
 
@@ -7936,16 +7936,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
 
@@ -7978,16 +7978,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
 
@@ -8015,16 +8015,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( ( IsLower<MT4>::value )
-                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) ) )
-                                  :( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL ) )
-                               :( IsLower<MT4>::value ? min( i+SIMDSIZE*2UL, K ) : K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( ( IsLower_v<MT4> )
+                                  ?( min( i+SIMDSIZE*2UL, K, ( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) ) )
+                                  :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
+                               :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
@@ -8067,12 +8067,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsLower<MT4>::value )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
@@ -8104,13 +8104,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+4UL) <= jend; j+=4UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+3UL : j+4UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                :( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
@@ -8145,13 +8145,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+3UL) <= jend; j+=3UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+2UL : j+3UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                :( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6;
@@ -8182,13 +8182,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             SIMDType xmm1, xmm2, xmm3, xmm4;
@@ -8215,11 +8215,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             SIMDType xmm1, xmm2;
             size_t k( kbegin );
@@ -8244,13 +8244,13 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          for( ; (j+2UL) <= jend; j+=2UL )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
-            const size_t kend( ( IsUpper<MT5>::value )
-                               ?( IsStrictlyUpper<MT5>::value ? j+1UL : j+2UL )
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
+            const size_t kend( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
             ElementType value1{};
@@ -8267,11 +8267,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
          if( j < jend )
          {
-            const size_t kbegin( ( IsLower<MT5>::value )
-                                 ?( ( IsUpper<MT4>::value )
-                                    ?( max( i, ( IsStrictlyLower<MT5>::value ? j+1UL : j ) ) )
-                                    :( IsStrictlyLower<MT5>::value ? j+1UL : j ) )
-                                 :( IsUpper<MT4>::value ? i : 0UL ) );
+            const size_t kbegin( ( IsLower_v<MT5> )
+                                 ?( ( IsUpper_v<MT4> )
+                                    ?( max( i, ( IsStrictlyLower_v<MT5> ? j+1UL : j ) ) )
+                                    :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
+                                 :( IsUpper_v<MT4> ? i : 0UL ) );
 
             ElementType value{};
 
@@ -8391,14 +8391,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    {
       using ET = ElementType_t<MT3>;
 
-      if( IsTriangular<MT4>::value ) {
+      if( IsTriangular_v<MT4> ) {
          ResultType_t<MT3> tmp( serial( B ) );
-         trmm( tmp, A, CblasLeft, ( IsLower<MT4>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
+         trmm( tmp, A, CblasLeft, ( IsLower_v<MT4> )?( CblasLower ):( CblasUpper ), ET(scalar) );
          subAssign( C, tmp );
       }
-      else if( IsTriangular<MT5>::value ) {
+      else if( IsTriangular_v<MT5> ) {
          ResultType_t<MT3> tmp( serial( A ) );
-         trmm( tmp, B, CblasRight, ( IsLower<MT5>::value )?( CblasLower ):( CblasUpper ), ET(scalar) );
+         trmm( tmp, B, CblasRight, ( IsLower_v<MT5> )?( CblasLower ):( CblasUpper ), ET(scalar) );
          subAssign( C, tmp );
       }
       else {
@@ -8438,9 +8438,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          subAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          subAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
          subAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
@@ -8614,9 +8614,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
          smpAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
@@ -8700,9 +8700,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpAddAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpAddAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
          smpAddAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );
@@ -8790,9 +8790,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       LeftOperand_t<MMM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.matrix_.rightOperand() );
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpSubAssign( ~lhs, fwd( trans( left ) * trans( right ) ) * rhs.scalar_ );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpSubAssign( ~lhs, fwd( trans( left ) * right ) * rhs.scalar_ );
       else
          smpSubAssign( ~lhs, fwd( left * trans( right ) ) * rhs.scalar_ );

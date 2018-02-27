@@ -183,7 +183,7 @@ class VectorSerializer
    template< typename T >
    struct VectorValueMapping
    {
-      enum { value = VectorValueMappingHelper< IsDenseVector<T>::value >::value };
+      enum { value = VectorValueMappingHelper< IsDenseVector_v<T> >::value };
       BLAZE_CONSTRAINT_MUST_BE_VECTOR_TYPE( T );
    };
    /*! \endcond */
@@ -364,7 +364,7 @@ void VectorSerializer::serializeHeader( Archive& archive, const VT& vec )
    archive << uint8_t ( TypeValueMapping<ET>::value );
    archive << uint8_t ( sizeof( ET ) );
    archive << uint64_t( vec.size() );
-   archive << uint64_t( IsDenseVector<VT>::value ? vec.size() : vec.nonZeros() );
+   archive << uint64_t( IsDenseVector_v<VT> ? vec.size() : vec.nonZeros() );
 
    if( !archive ) {
       BLAZE_THROW_RUNTIME_ERROR( "File header could not be serialized" );
@@ -492,7 +492,7 @@ void VectorSerializer::deserializeHeader( Archive& archive, const VT& vec )
    else if( elementSize_ != sizeof( ET ) ) {
       BLAZE_THROW_RUNTIME_ERROR( "Invalid element size detected" );
    }
-   else if( !IsResizable<VT>::value && size_ != vec.size() ) {
+   else if( !IsResizable_v<VT> && size_ != vec.size() ) {
       BLAZE_THROW_RUNTIME_ERROR( "Invalid vector size detected" );
    }
    else if( number_ > size_ ) {

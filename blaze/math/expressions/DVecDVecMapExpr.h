@@ -126,7 +126,7 @@ class DVecDVecMapExpr
        the addition expression will be evaluated via the \a assign function family. Otherwise
        \a useAssign will be set to 0 and the expression will be evaluated via the subscript
        operator. */
-   enum : bool { useAssign = ( RequiresEvaluation<VT1>::value || RequiresEvaluation<VT2>::value ) };
+   enum : bool { useAssign = ( RequiresEvaluation_v<VT1> || RequiresEvaluation_v<VT2> ) };
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
@@ -579,8 +579,8 @@ class DVecDVecMapExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression<VT1>::value && lhs_.canAlias( alias ) ) ||
-             ( IsExpression<VT2>::value && rhs_.canAlias( alias ) );
+      return ( IsExpression_v<VT1> && lhs_.canAlias( alias ) ) ||
+             ( IsExpression_v<VT2> && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 

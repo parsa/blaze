@@ -500,7 +500,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    using ET = ElementType_t< HermitianMatrix<MT,SO,DF> >;
 
-   return ( IsBuiltin<ET>::value ||
+   return ( IsBuiltin_v<ET> ||
             column < row ||
             (~rhs).size() <= column - row ||
             isReal( (~rhs)[column-row] ) );
@@ -544,7 +544,7 @@ inline bool tryAssign( const HermitianMatrix<MT,SO,DF>& lhs,
 
    using ET = ElementType_t< HermitianMatrix<MT,SO,DF> >;
 
-   return ( IsBuiltin<ET>::value ||
+   return ( IsBuiltin_v<ET> ||
             row < column ||
             (~rhs).size() <= row - column ||
             isReal( (~rhs)[row-column] ) );

@@ -136,12 +136,12 @@ class TSMatTDMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side sparse matrix expression.
-   enum : bool { evaluateLeft = IsComputation<MT1>::value || RequiresEvaluation<MT1>::value };
+   enum : bool { evaluateLeft = IsComputation_v<MT1> || RequiresEvaluation_v<MT1> };
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateRight = IsComputation<MT2>::value || RequiresEvaluation<MT2>::value };
+   enum : bool { evaluateRight = IsComputation_v<MT2> || RequiresEvaluation_v<MT2> };
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -163,7 +163,7 @@ class TSMatTDMatMultExpr
        \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    struct CanExploitSymmetry {
-      enum : bool { value = ( IsSymmetric<T2>::value || IsSymmetric<T3>::value ) };
+      enum : bool { value = ( IsSymmetric_v<T2> || IsSymmetric_v<T3> ) };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -191,9 +191,9 @@ class TSMatTDMatMultExpr
    template< typename T1, typename T2, typename T3 >
    struct UseOptimizedKernel {
       enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal<T3>::value &&
-                            !IsResizable< ElementType_t<T1> >::value &&
-                            !IsResizable<ET1>::value };
+                            !IsDiagonal_v<T3> &&
+                            !IsResizable_v< ElementType_t<T1> > &&
+                            !IsResizable_v<ET1> };
    };
    /*! \endcond */
    //**********************************************************************************************
@@ -288,28 +288,28 @@ class TSMatTDMatMultExpr
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
 
-      if( IsDiagonal<MT1>::value ) {
+      if( IsDiagonal_v<MT1> ) {
          return lhs_(i,i) * rhs_(i,j);
       }
-      else if( IsDiagonal<MT2>::value ) {
+      else if( IsDiagonal_v<MT2> ) {
          return lhs_(i,j) * rhs_(j,j);
       }
-      else if( IsTriangular<MT1>::value || IsTriangular<MT2>::value ) {
-         const size_t begin( ( IsUpper<MT1>::value )
-                             ?( ( IsLower<MT2>::value )
-                                ?( max( ( IsStrictlyUpper<MT1>::value ? i+1UL : i )
-                                      , ( IsStrictlyLower<MT2>::value ? j+1UL : j ) ) )
-                                :( IsStrictlyUpper<MT1>::value ? i+1UL : i ) )
-                             :( ( IsLower<MT2>::value )
-                                ?( IsStrictlyLower<MT2>::value ? j+1UL : j )
+      else if( IsTriangular_v<MT1> || IsTriangular_v<MT2> ) {
+         const size_t begin( ( IsUpper_v<MT1> )
+                             ?( ( IsLower_v<MT2> )
+                                ?( max( ( IsStrictlyUpper_v<MT1> ? i+1UL : i )
+                                      , ( IsStrictlyLower_v<MT2> ? j+1UL : j ) ) )
+                                :( IsStrictlyUpper_v<MT1> ? i+1UL : i ) )
+                             :( ( IsLower_v<MT2> )
+                                ?( IsStrictlyLower_v<MT2> ? j+1UL : j )
                                 :( 0UL ) ) );
-         const size_t end( ( IsLower<MT1>::value )
-                           ?( ( IsUpper<MT2>::value )
-                              ?( min( ( IsStrictlyLower<MT1>::value ? i : i+1UL )
-                                    , ( IsStrictlyUpper<MT2>::value ? j : j+1UL ) ) )
-                              :( IsStrictlyLower<MT1>::value ? i : i+1UL ) )
-                           :( ( IsUpper<MT2>::value )
-                              ?( IsStrictlyUpper<MT2>::value ? j : j+1UL )
+         const size_t end( ( IsLower_v<MT1> )
+                           ?( ( IsUpper_v<MT2> )
+                              ?( min( ( IsStrictlyLower_v<MT1> ? i : i+1UL )
+                                    , ( IsStrictlyUpper_v<MT2> ? j : j+1UL ) ) )
+                              :( IsStrictlyLower_v<MT1> ? i : i+1UL ) )
+                           :( ( IsUpper_v<MT2> )
+                              ?( IsStrictlyUpper_v<MT2> ? j : j+1UL )
                               :( lhs_.columns() ) ) );
 
          if( begin >= end ) return ElementType();
@@ -424,7 +424,7 @@ class TSMatTDMatMultExpr
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return ( rows() * columns() >= SMP_TSMATTDMATMULT_THRESHOLD ) && !IsDiagonal<MT2>::value;
+      return ( rows() * columns() >= SMP_TSMATTDMATMULT_THRESHOLD ) && !IsDiagonal_v<MT2>;
    }
    //**********************************************************************************************
 
@@ -490,8 +490,8 @@ class TSMatTDMatMultExpr
    {
       const size_t size( C.rows() * C.columns() );
 
-      if( ( IsRowMajorMatrix<MT3>::value    && size < TSMATTDMATMULT_THRESHOLD ) ||
-          ( IsColumnMajorMatrix<MT3>::value && size < 625UL ) )
+      if( ( IsRowMajorMatrix_v<MT3>    && size < TSMATTDMATMULT_THRESHOLD ) ||
+          ( IsColumnMajorMatrix_v<MT3> && size < 625UL ) )
          selectSmallAssignKernel( C, A, B );
       else
          selectLargeAssignKernel( C, A, B );
@@ -523,7 +523,7 @@ class TSMatTDMatMultExpr
 
       reset( C );
 
-      if( IsDiagonal<MT5>::value )
+      if( IsDiagonal_v<MT5> )
       {
          for( size_t i=0UL; i<A.columns(); ++i )
          {
@@ -552,15 +552,15 @@ class TSMatTDMatMultExpr
                {
                   const size_t i1( element->index() );
 
-                  const size_t jbegin( ( IsUpper<MT5>::value )
+                  const size_t jbegin( ( IsUpper_v<MT5> )
                                        ?( ( SYM || HERM || UPP )
-                                          ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                          :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                          ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                          :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                        :( SYM || HERM || UPP ? max(i1,jj) : jj ) );
-                  const size_t jend( ( IsLower<MT5>::value )
+                  const size_t jend( ( IsLower_v<MT5> )
                                      ?( ( LOW )
-                                        ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                        :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                        ?( min( i1+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                        :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                      :( LOW ? min(i1+1UL,jpos) : jpos ) );
 
                   if( jbegin >= jend )
@@ -636,7 +636,7 @@ class TSMatTDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> ? 128UL : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -674,15 +674,15 @@ class TSMatTDMatMultExpr
 
                BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( SYM || HERM || UPP )
-                                       ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                       :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                       ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                       :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                     :( SYM || HERM || UPP ? max(i1,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i4+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                     :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                     ?( min( i4+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                     :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                   :( LOW ? min(i4+1UL,jpos) : jpos ) );
 
                if( jbegin >= jend )
@@ -700,15 +700,15 @@ class TSMatTDMatMultExpr
             {
                const size_t i1( element->index() );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( SYM || HERM || UPP )
-                                       ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                       :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                       ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                       :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                     :( SYM || HERM || UPP ? max(i1,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                     :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                     ?( min( i1+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                     :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                   :( LOW ? min(i1+1UL,jpos) : jpos ) );
 
                if( jbegin >= jend )
@@ -857,9 +857,9 @@ class TSMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          assign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          assign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          assign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -923,8 +923,8 @@ class TSMatTDMatMultExpr
    {
       const size_t size( C.rows() * C.columns() );
 
-      if( ( IsRowMajorMatrix<MT3>::value    && size < TSMATTDMATMULT_THRESHOLD ) ||
-          ( IsColumnMajorMatrix<MT3>::value && size < 625UL ) )
+      if( ( IsRowMajorMatrix_v<MT3>    && size < TSMATTDMATMULT_THRESHOLD ) ||
+          ( IsColumnMajorMatrix_v<MT3> && size < 625UL ) )
          selectSmallAddAssignKernel( C, A, B );
       else
          selectLargeAddAssignKernel( C, A, B );
@@ -954,7 +954,7 @@ class TSMatTDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      if( IsDiagonal<MT5>::value )
+      if( IsDiagonal_v<MT5> )
       {
          for( size_t i=0UL; i<A.columns(); ++i )
          {
@@ -983,15 +983,15 @@ class TSMatTDMatMultExpr
                {
                   const size_t i1( element->index() );
 
-                  const size_t jbegin( ( IsUpper<MT5>::value )
+                  const size_t jbegin( ( IsUpper_v<MT5> )
                                        ?( ( UPP )
-                                          ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                          :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                          ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                          :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                        :( UPP ? max(i1,jj) : jj ) );
-                  const size_t jend( ( IsLower<MT5>::value )
+                  const size_t jend( ( IsLower_v<MT5> )
                                      ?( ( LOW )
-                                        ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                        :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                        ?( min( i1+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                        :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                      :( LOW ? min(i1+1UL,jpos) : jpos ) );
 
                   if( jbegin >= jend )
@@ -1056,7 +1056,7 @@ class TSMatTDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> ? 128UL : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1088,15 +1088,15 @@ class TSMatTDMatMultExpr
 
                BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                       :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                       ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                       :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                     :( UPP ? max(i1,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i4+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                     :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                     ?( min( i4+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                     :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                   :( LOW ? min(i4+1UL,jpos) : jpos ) );
 
                if( jbegin >= jend )
@@ -1114,15 +1114,15 @@ class TSMatTDMatMultExpr
             {
                const size_t i1( element->index() );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                       :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                       ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                       :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                     :( UPP ? max(i1,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                     :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                     ?( min( i1+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                     :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                   :( LOW ? min(i1+1UL,jpos) : jpos ) );
 
                if( jbegin >= jend )
@@ -1223,9 +1223,9 @@ class TSMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          addAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          addAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -1293,8 +1293,8 @@ class TSMatTDMatMultExpr
    {
       const size_t size( C.rows() * C.columns() );
 
-      if( ( IsRowMajorMatrix<MT3>::value    && size < TSMATTDMATMULT_THRESHOLD ) ||
-          ( IsColumnMajorMatrix<MT3>::value && size < 625UL ) )
+      if( ( IsRowMajorMatrix_v<MT3>    && size < TSMATTDMATMULT_THRESHOLD ) ||
+          ( IsColumnMajorMatrix_v<MT3> && size < 625UL ) )
          selectSmallSubAssignKernel( C, A, B );
       else
          selectLargeSubAssignKernel( C, A, B );
@@ -1324,7 +1324,7 @@ class TSMatTDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      if( IsDiagonal<MT5>::value )
+      if( IsDiagonal_v<MT5> )
       {
          for( size_t i=0UL; i<A.columns(); ++i )
          {
@@ -1353,15 +1353,15 @@ class TSMatTDMatMultExpr
                {
                   const size_t i1( element->index() );
 
-                  const size_t jbegin( ( IsUpper<MT5>::value )
+                  const size_t jbegin( ( IsUpper_v<MT5> )
                                        ?( ( UPP )
-                                          ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                          :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                          ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                          :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                        :( UPP ? max(i1,jj) : jj ) );
-                  const size_t jend( ( IsLower<MT5>::value )
+                  const size_t jend( ( IsLower_v<MT5> )
                                      ?( ( LOW )
-                                        ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                        :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                        ?( min( i1+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                        :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                      :( LOW ? min(i1+1UL,jpos) : jpos ) );
 
                   if( jbegin >= jend )
@@ -1426,7 +1426,7 @@ class TSMatTDMatMultExpr
    {
       using ConstIterator = ConstIterator_t<MT4>;
 
-      const size_t block( IsRowMajorMatrix<MT3>::value ? 128UL : 64UL );
+      const size_t block( IsRowMajorMatrix_v<MT3> ? 128UL : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
       {
@@ -1458,15 +1458,15 @@ class TSMatTDMatMultExpr
 
                BLAZE_INTERNAL_ASSERT( i1 < i2 && i2 < i3 && i3 < i4, "Invalid sparse matrix index detected" );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                       :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                       ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                       :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                     :( UPP ? max(i1,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i4+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                     :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                     ?( min( i4+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                     :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                   :( LOW ? min(i4+1UL,jpos) : jpos ) );
 
                if( jbegin >= jend )
@@ -1484,15 +1484,15 @@ class TSMatTDMatMultExpr
             {
                const size_t i1( element->index() );
 
-               const size_t jbegin( ( IsUpper<MT5>::value )
+               const size_t jbegin( ( IsUpper_v<MT5> )
                                     ?( ( UPP )
-                                       ?( max( i1, IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) )
-                                       :( max( IsStrictlyUpper<MT5>::value ? i+1UL : i, jj ) ) )
+                                       ?( max( i1, IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) )
+                                       :( max( IsStrictlyUpper_v<MT5> ? i+1UL : i, jj ) ) )
                                     :( UPP ? max(i1,jj) : jj ) );
-               const size_t jend( ( IsLower<MT5>::value )
+               const size_t jend( ( IsLower_v<MT5> )
                                   ?( ( LOW )
-                                     ?( min( i1+1UL, IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) )
-                                     :( min( IsStrictlyLower<MT5>::value ? i : i+1UL, jpos ) ) )
+                                     ?( min( i1+1UL, IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) )
+                                     :( min( IsStrictlyLower_v<MT5> ? i : i+1UL, jpos ) ) )
                                   :( LOW ? min(i1+1UL,jpos) : jpos ) );
 
                if( jbegin >= jend )
@@ -1593,9 +1593,9 @@ class TSMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          subAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          subAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -1764,9 +1764,9 @@ class TSMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          smpAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -1844,9 +1844,9 @@ class TSMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpAddAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          smpAddAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );
@@ -1928,9 +1928,9 @@ class TSMatTDMatMultExpr
 
       const ForwardFunctor fwd;
 
-      if( IsSymmetric<MT1>::value && IsSymmetric<MT2>::value )
+      if( IsSymmetric_v<MT1> && IsSymmetric_v<MT2> )
          smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * trans( rhs.rhs_ ) ) );
-      else if( IsSymmetric<MT1>::value )
+      else if( IsSymmetric_v<MT1> )
          smpSubAssign( ~lhs, fwd( trans( rhs.lhs_ ) * rhs.rhs_ ) );
       else
          smpSubAssign( ~lhs, fwd( rhs.lhs_ * trans( rhs.rhs_ ) ) );

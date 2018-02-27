@@ -650,7 +650,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -660,8 +660,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -671,8 +671,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -682,8 +682,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -693,8 +693,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDDiv_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -833,7 +833,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... a
    , vector_   ( vector  )  // The vector containing the subvector
    , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value ) {
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( offset() + size() > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
@@ -1137,7 +1137,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( vector_ ) );
 
    for( size_t i=offset(); i<iend; ++i ) {
-      if( !IsRestricted<VT>::value || trySet( vector_, i, rhs ) )
+      if( !IsRestricted_v<VT> || trySet( vector_, i, rhs ) )
          left[i] = rhs;
    }
 
@@ -1173,7 +1173,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
    }
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       const InitializerVector<ElementType,TF> tmp( list, size() );
       if( !tryAssign( vector_, tmp, offset() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1277,12 +1277,12 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT2>::value )
+      if( IsSparseVector_v<VT2> )
          reset();
       smpAssign( left, right );
    }
@@ -1330,7 +1330,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -1381,7 +1381,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1433,7 +1433,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1484,7 +1484,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -2786,7 +2786,7 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -2796,8 +2796,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedAddAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDAdd< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDAdd_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -2807,8 +2807,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedSubAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDSub< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDSub_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -2818,8 +2818,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedMultAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDMult< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDMult_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -2829,8 +2829,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    struct VectorizedDivAssign {
       enum : bool { value = useOptimizedKernels &&
                             simdEnabled && VT2::simdEnabled &&
-                            IsSIMDCombinable< ElementType, ElementType_t<VT2> >::value &&
-                            HasSIMDDiv< ElementType, ElementType_t<VT2> >::value };
+                            IsSIMDCombinable_v< ElementType, ElementType_t<VT2> > &&
+                            HasSIMDDiv_v< ElementType, ElementType_t<VT2> > };
    };
    //**********************************************************************************************
 
@@ -2961,7 +2961,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... arg
    : DataType( args... )  // Base class initialization
    , vector_ ( vector  )  // The vector containing the subvector
 {
-   if( !Contains< TypeList<RSAs...>, Unchecked >::value )
+   if( !Contains_v< TypeList<RSAs...>, Unchecked > )
    {
       if( offset() + size() > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
@@ -3265,7 +3265,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
    decltype(auto) left( derestrict( vector_ ) );
 
    for( size_t i=offset(); i<iend; ++i ) {
-      if( !IsRestricted<VT>::value || trySet( vector_, i, rhs ) )
+      if( !IsRestricted_v<VT> || trySet( vector_, i, rhs ) )
          left[i] = rhs;
    }
 
@@ -3298,7 +3298,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to subvector" );
    }
 
-   if( IsRestricted<VT>::value ) {
+   if( IsRestricted_v<VT> ) {
       const InitializerVector<ElementType,TF> tmp( list, size() );
       if( !tryAssign( vector_, tmp, offset() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -3402,12 +3402,12 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseVector<VT2>::value )
+      if( IsSparseVector_v<VT2> )
          reset();
       smpAssign( left, right );
    }
@@ -3455,7 +3455,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -3506,7 +3506,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -3558,7 +3558,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -3609,7 +3609,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference<Right>::value && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -4819,7 +4819,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The dense vector/dense vector cross product expression
    {
-      if( Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }
@@ -4974,7 +4974,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The dense vector/sparse vector cross product expression
    {
-      if( Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }
@@ -5129,7 +5129,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The sparse vector/dense vector cross product expression
    {
-      if( Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }
@@ -5284,7 +5284,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
       : DataType( args... )  // Base class initialization
       , vector_ ( vector  )  // The sparse vector/sparse vector cross product expression
    {
-      if( Contains< TypeList<RSAs...>, Unchecked >::value ) {
+      if( Contains_v< TypeList<RSAs...>, Unchecked > ) {
          if( offset() + size() > vector.size() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
          }

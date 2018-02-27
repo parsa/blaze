@@ -59,7 +59,7 @@ namespace blaze {
 // type whose transposition flag is set to blaze::columnVector) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE(T) \
-   static_assert( ::blaze::IsColumnVector<T>::value, "Non-column vector type detected" )
+   static_assert( ::blaze::IsColumnVector_v<T>, "Non-column vector type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // whose transposition flag is set to blaze::columnVector) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE(T) \
-   static_assert( !::blaze::IsColumnVector<T>::value, "Column vector type detected" )
+   static_assert( !::blaze::IsColumnVector_v<T>, "Column vector type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

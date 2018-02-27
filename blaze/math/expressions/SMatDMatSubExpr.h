@@ -111,7 +111,7 @@ class SMatDMatSubExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary<RN1>::value && !IsTemporary<RN2>::value };
+   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = SubExprTrait_t<RN1,RN2>;
@@ -257,7 +257,7 @@ class SMatDMatSubExpr
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
       return ( lhs_.canAlias( alias ) ) ||
-             ( IsExpression<MT2>::value && rhs_.canAlias( alias ) );
+             ( IsExpression_v<MT2> && rhs_.canAlias( alias ) );
    }
    //**********************************************************************************************
 

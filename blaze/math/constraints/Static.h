@@ -59,7 +59,7 @@ namespace blaze {
 // dimensions fixed at compile time, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE(T) \
-   static_assert( ::blaze::IsStatic<T>::value, "Non-static type detected" )
+   static_assert( ::blaze::IsStatic_v<T>, "Non-static type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // fixed at compile time, a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_STATIC_TYPE(T) \
-   static_assert( !::blaze::IsStatic<T>::value, "Static type dected" )
+   static_assert( !::blaze::IsStatic_v<T>, "Static type dected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -59,7 +59,7 @@ namespace blaze {
 // UpperMatrix, or SymmetricMatrix) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ADAPTOR_TYPE(T) \
-   static_assert( ::blaze::IsAdaptor<T>::value, "Non-adaptor type detected" )
+   static_assert( ::blaze::IsAdaptor_v<T>, "Non-adaptor type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // or SymmetricMatrix) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE(T) \
-   static_assert( !::blaze::IsAdaptor<T>::value, "Adaptor type detected" )
+   static_assert( !::blaze::IsAdaptor_v<T>, "Adaptor type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

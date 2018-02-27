@@ -936,7 +936,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -977,7 +977,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF>& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1018,7 +1018,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>&& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       static constexpr size_t indices[] = { I, Is... };
@@ -1062,7 +1062,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1112,7 +1112,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
@@ -1162,7 +1162,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr bool isChecked( !Contains< TypeList<REAs...>, Unchecked >::value );
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {

@@ -59,11 +59,11 @@ namespace blaze {
 /*!\brief Base template of the Row class template.
 // \ingroup row
 */
-template< typename MT                            // Type of the matrix
-        , bool SO = IsRowMajorMatrix<MT>::value  // Storage order
-        , bool DF = IsDenseMatrix<MT>::value     // Density flag
-        , bool SF = IsSymmetric<MT>::value       // Symmetry flag
-        , size_t... CRAs >                       // Compile time row arguments
+template< typename MT                       // Type of the matrix
+        , bool SO = IsRowMajorMatrix_v<MT>  // Storage order
+        , bool DF = IsDenseMatrix_v<MT>     // Density flag
+        , bool SF = IsSymmetric_v<MT>       // Symmetry flag
+        , size_t... CRAs >                  // Compile time row arguments
 class Row
 {};
 /*! \endcond */
@@ -89,9 +89,9 @@ class Row
 template< typename MT       // Type of the matrix
         , size_t... CRAs >  // Compile time row arguments
 using Row_ = Row< MT
-                , IsRowMajorMatrix<MT>::value
-                , IsDenseMatrix<MT>::value
-                , IsSymmetric<MT>::value
+                , IsRowMajorMatrix_v<MT>
+                , IsDenseMatrix_v<MT>
+                , IsSymmetric_v<MT>
                 , CRAs... >;
 /*! \endcond */
 //*************************************************************************************************

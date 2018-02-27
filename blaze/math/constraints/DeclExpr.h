@@ -59,7 +59,7 @@ namespace blaze {
 // the DeclExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DECLEXPR_TYPE(T) \
-   static_assert( ::blaze::IsDeclExpr<T>::value, "Non-declaration expression type detected" )
+   static_assert( ::blaze::IsDeclExpr_v<T>, "Non-declaration expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // DeclExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DECLEXPR_TYPE(T) \
-   static_assert( !::blaze::IsDeclExpr<T>::value, "Declaration expression type detected" )
+   static_assert( !::blaze::IsDeclExpr_v<T>, "Declaration expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

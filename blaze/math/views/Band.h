@@ -1898,9 +1898,9 @@ inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t I >
 struct Size< Band<MT,TF,DF,MF,I>, 0UL >
-   : public IfTrue_< ( Size<MT,0UL>::value >= 0L && Size<MT,1UL>::value >= 0L )
-                   , Minimum< PtrdiffT< Size<MT,0UL>::value - ( I >= 0L ? 0L : -I ) >
-                            , PtrdiffT< Size<MT,1UL>::value - ( I >= 0L ? I : 0L ) > >
+   : public IfTrue_< ( Size_v<MT,0UL> >= 0L && Size_v<MT,1UL> >= 0L )
+                   , Minimum< PtrdiffT< Size_v<MT,0UL> - ( I >= 0L ? 0L : -I ) >
+                            , PtrdiffT< Size_v<MT,1UL> - ( I >= 0L ? I : 0L ) > >
                    , PtrdiffT<-1L> >
 {};
 /*! \endcond */

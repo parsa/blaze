@@ -59,7 +59,7 @@ namespace blaze {
 // DeclDiagExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DECLDIAGEXPR_TYPE(T) \
-   static_assert( ::blaze::IsDeclDiagExpr<T>::value, "Non-decldiag expression type detected" )
+   static_assert( ::blaze::IsDeclDiagExpr_v<T>, "Non-decldiag expression type detected" )
 //*************************************************************************************************
 
 
@@ -79,7 +79,7 @@ namespace blaze {
 // DeclDiagExpr base class), a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_DECLDIAGEXPR_TYPE(T) \
-   static_assert( !::blaze::IsDeclDiagExpr<T>::value, "Decldiag expression type detected" )
+   static_assert( !::blaze::IsDeclDiagExpr_v<T>, "Decldiag expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -73,7 +73,7 @@ namespace blaze {
 template< typename PT    // Type of the proxy
         , typename VT >  // Type of the sparse vector
 class SparseVectorProxy
-   : public SparseVector< PT, IsRowVector<VT>::value >
+   : public SparseVector< PT, IsRowVector_v<VT> >
 {
  public:
    //**Type definitions****************************************************************************

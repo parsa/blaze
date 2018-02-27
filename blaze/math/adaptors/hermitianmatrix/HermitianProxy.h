@@ -286,7 +286,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator=( const HermitianProxy& 
 {
    using ET = ElementType_t<MT>;
 
-   if( IsComplex<ET>::value && diagonal_ && !isReal( hp.value1_ ) ) {
+   if( IsComplex_v<ET> && diagonal_ && !isReal( hp.value1_ ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -315,7 +315,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator=( const T& value )
 {
    using ET = ElementType_t<MT>;
 
-   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
+   if( IsComplex_v<ET> && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -344,7 +344,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator+=( const T& value )
 {
    using ET = ElementType_t<MT>;
 
-   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
+   if( IsComplex_v<ET> && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -373,7 +373,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator-=( const T& value )
 {
    using ET = ElementType_t<MT>;
 
-   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
+   if( IsComplex_v<ET> && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -402,7 +402,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator*=( const T& value )
 {
    using ET = ElementType_t<MT>;
 
-   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
+   if( IsComplex_v<ET> && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -431,7 +431,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator/=( const T& value )
 {
    using ET = ElementType_t<MT>;
 
-   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
+   if( IsComplex_v<ET> && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 
@@ -460,7 +460,7 @@ inline HermitianProxy<MT>& HermitianProxy<MT>::operator%=( const T& value )
 {
    using ET = ElementType_t<MT>;
 
-   if( IsComplex<ET>::value && diagonal_ && !isReal( value ) ) {
+   if( IsComplex_v<ET> && diagonal_ && !isReal( value ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix element" );
    }
 

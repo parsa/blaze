@@ -99,7 +99,7 @@ BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 {
    UNUSED_PARAMETER( v );
 
-   return IsBuiltin<Type>::value;
+   return IsBuiltin_v<Type>;
 }
 //*************************************************************************************************
 
@@ -114,9 +114,9 @@ BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 */
 template< bool RF          // Relaxation flag
         , typename Type >  // Type of the given value
-BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin<Type>::value )
+BLAZE_ALWAYS_INLINE bool isReal( const complex<Type>& v ) noexcept( IsBuiltin_v<Type> )
 {
-   return IsBuiltin<Type>::value && isZero<RF>( v.imag() );
+   return IsBuiltin_v<Type> && isZero<RF>( v.imag() );
 }
 /*! \endcond */
 //*************************************************************************************************
