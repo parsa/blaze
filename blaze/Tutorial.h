@@ -7331,13 +7331,18 @@
 // <hr>
 //
 // Views represents parts of a vector or matrix, such as a subvector, a submatrix, or a specific
-// row, column, or band of a matrix. As such, views act as a reference to a specific part of a
-// vector or matrix. This reference is valid and can be used in every way as any other vector
+// row, column, or band of a matrix. As such, views act as a reference to specific elements of
+// a vector or matrix. This reference is valid and can be used in every way as any other vector
 // or matrix can be used as long as the referenced vector or matrix is not resized or entirely
 // destroyed. Views also act as alias to the elements of the vector or matrix: Changes made to the
 // elements (e.g. modifying values, inserting or erasing elements) via the view are immediately
 // visible in the vector or matrix and changes made via the vector or matrix are immediately
 // visible in the view.
+//
+// It is also possible to create nested views (compound views), such as for instance bands of
+// submatrices or row selections on column selections. A compound view also acts as reference
+// to specific elements of the underlying vector or matrix and is valid as long as the underlying,
+// referenced vector or matrix is not resized or entirely destroyed.
 //
 // The \b Blaze library provides the following views on vectors and matrices:
 //
@@ -7361,20 +7366,12 @@
    using blaze::StaticVector;
 
    // Setup of the 3x5 row-major matrix
-   //
-   //  ( 1  0 -2  3  0 )
-   //  ( 0  2  5 -1 -1 )
-   //  ( 1  0  0  2  1 )
-   //
    DynamicMatrix<int> A{ { 1,  0, -2,  3,  0 },
                          { 0,  2,  5, -1, -1 },
                          { 1,  0,  0,  2,  1 } };
 
    // Setup of the 2-dimensional row vector
-   //
-   //  ( 18 19 )
-   //
-   StaticVector<int,rowVector> vec{ 18, 19 };
+   StaticVector<int,2UL,rowVector> vec{ 18, 19 };
 
    // Assigning to the elements (1,2) and (1,3) via a subvector of a row
    //
@@ -7383,6 +7380,18 @@
    //  ( 1  0  0  2  1 )
    //
    subvector( row( A, 1UL ), 2UL, 2UL ) = vec;
+
+   // Switching rows 0 and 2 of A
+   //
+   //  ( 1  0  0  2  1 )
+   //  ( 0  2 18 19 -1 )
+   //  ( 1  0 -2  3  0 )
+   //
+   rows<0,2>( A ) = rows<2,0>( A );
+
+   // Warning: It is the programmer's responsibility to ensure the view does not outlive
+   //          the viewed vector or matrix (dangling reference)!
+   auto row1 = row<1UL>( DynamicMatrix<int>{ { 1, 2, 3 }, { 4, 5, 6 } } );
    \endcode
 
 // \n Previous: \ref adaptors_triangular_matrices &nbsp; &nbsp; Next: \ref views_subvectors
@@ -7471,6 +7480,14 @@
 
    // Setting x to a subvector of the result of the addition between y and the 1st row of A
    x = subvector( y + row( A, 1UL ), 2UL, 5UL );
+   \endcode
+
+// \warning It is the programmer's responsibility to ensure the subvector does not outlive the
+// viewed vector:
+
+   \code
+   // Creating a subvector on a temporary vector; results in a dangling reference!
+   auto sv = subvector<1UL,3UL>( DynamicVector<int>{ 1, 2, 3, 4, 5 } );
    \endcode
 
 // \n \section views_subvectors_element_access Element Access
@@ -7848,7 +7865,14 @@
 // In this example both vectors have the same size, which results in a correct vector assignment,
 // but the final value of the element at index 1 is unspecified.
 //
-//
+// \warning It is the programmer's responsibility to ensure the element selection does not outlive
+// the viewed vector:
+
+   \code
+   // Creating an element selection on a temporary vector; results in a dangling reference!
+   auto e = elements<1UL,3UL>( DynamicVector<int>{ 1, 2, 3, 4, 5 } );
+   \endcode
+
 // \n \section views_element_selections_element_access Element Access
 //
 // The elements of an element selection can be directly accessed via the subscript operator:
@@ -8108,6 +8132,14 @@
 
    // Assigning part of the result of a matrix addition to the first submatrix
    sm = submatrix( B + C, 0UL, 0UL, 8UL, 4UL );
+   \endcode
+
+// \warning It is the programmer's responsibility to ensure the submatrix does not outlive the
+// viewed matrix:
+
+   \code
+   // Creating a submatrix on a temporary matrix; results in a dangling reference!
+   auto sm = submatrix<1UL,0UL,2UL,3UL>( DynamicMatrix<int>{ { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } } );
    \endcode
 
 // \n \section views_submatrices_element_access Element Access
@@ -8508,6 +8540,14 @@
    y = row( C * D, 2UL );
    \endcode
 
+// \warning It is the programmer's responsibility to ensure the row does not outlive the viewed
+// matrix:
+
+   \code
+   // Creating a row on a temporary matrix; results in a dangling reference!
+   auto row1 = row<1UL>( DynamicMatrix<int>{ { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } } );
+   \endcode
+
 // \n \section views_rows_element_access Element Access
 // <hr>
 //
@@ -8826,6 +8866,14 @@
    B = rows( rs + C, { 2UL, 3UL, 0UL, 1UL } );
    \endcode
 
+// \warning It is the programmer's responsibility to ensure the row selection does not outlive the
+// viewed matrix:
+
+   \code
+   // Creating a row selection on a temporary matrix; results in a dangling reference!
+   auto rs = rows<2UL,0UL>( DynamicMatrix<int>{ { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } } );
+   \endcode
+
 // \n \section views_row_selections_element_access Element Access
 //
 // The elements of a row selection can be directly accessed via the function call operator:
@@ -9123,6 +9171,14 @@
 
    // Setting y to the 2nd column of the result of the sparse matrix multiplication
    y = column( C * D, 2UL );
+   \endcode
+
+// \warning It is the programmer's responsibility to ensure the column does not outlive the
+// viewed matrix:
+
+   \code
+   // Creating a column on a temporary matrix; results in a dangling reference!
+   auto col1 = column<1UL>( DynamicMatrix<int>{ { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } } );
    \endcode
 
 // \n \section views_columns_element_access Element Access
@@ -9441,6 +9497,14 @@
 
    // Rotating the result of the addition between columns 1, 3, 5, and 7 of A and C
    B = columns( cs + C, { 2UL, 3UL, 0UL, 1UL } );
+   \endcode
+
+// \warning It is the programmer's responsibility to ensure the column selection does not outlive
+// the viewed matrix:
+
+   \code
+   // Creating a column selection on a temporary matrix; results in a dangling reference!
+   auto cs = columns<2UL,0UL>( DynamicMatrix<int>{ { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } } );
    \endcode
 
 // \n \section views_column_selections_element_access Element Access
@@ -9762,6 +9826,14 @@
 
    // Setting y to the 2nd upper band of the result of the sparse matrix multiplication
    y = band( C * D, 2L );
+   \endcode
+
+// \warning It is the programmer's responsibility to ensure the band does not outlive the viewed
+// matrix:
+
+   \code
+   // Creating a band on a temporary matrix; results in a dangling reference!
+   auto band1 = band<1L>( DynamicMatrix<int>{ { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } } );
    \endcode
 
 // \n \section views_bands_element_access Element Access
