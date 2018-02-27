@@ -42,8 +42,6 @@
 
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/Or.h>
-#include <blaze/util/typetraits/All.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsUnsigned.h>
 
@@ -68,7 +66,8 @@ namespace blaze {
 // is determined by the data types of the given arguments.
 */
 template< typename T1, typename T2
-        , typename = EnableIf_< Or< All<IsSigned,T1,T2>, All<IsUnsigned,T1,T2> > > >
+        , typename = EnableIfTrue_< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
+                                    ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
 BLAZE_ALWAYS_INLINE constexpr auto
    max( const T1& a, const T2& b ) noexcept
 {
