@@ -37,7 +37,9 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
-**11.02.2018**: Today we proudly present the next release of the **Blaze** library! In **Blaze** 3.3 we have focused on views. First of all, we have upgraded all existing views. Subvectors, submatrices, rows and columns have been introduced in the **Blaze** 1.x releases when we were still limited by C++03. Now we have completely reworked them with C++14 and have made them more flexible and more powerful than ever before. Most remarkable, it is now possible to configure views at compile time:
+**5.3.2018**: With the latest push we have introduced the C++14 feature variable templates to all type traits of the **Blaze** library. Thus it is not necessary anymore to explicitly access the nested ```value```, but it is possible to use the suffix ```_v``` instead. However, unfortunately several older compilers, which were still supported by **Blaze** 3.3, don't support variable templates. In order to being able to move forward and in order to benefit from variable templates, from today on **Blaze** will no longer provide support for compilers without support for variable templates.
+
+**11.2.2018**: Today we proudly present the next release of the **Blaze** library! In **Blaze** 3.3 we have focused on views. First of all, we have upgraded all existing views. Subvectors, submatrices, rows and columns have been introduced in the **Blaze** 1.x releases when we were still limited by C++03. Now we have completely reworked them with C++14 and have made them more flexible and more powerful than ever before. Most remarkable, it is now possible to configure views at compile time:
 
 ```
 #!c++
