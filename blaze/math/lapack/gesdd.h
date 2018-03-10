@@ -111,7 +111,7 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector s
         , bool TF >    // Transpose flag of the vector s
-inline DisableIf_< IsComplex< ElementType_t<MT> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT> > >
    gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 {
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -164,7 +164,7 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector s
         , bool TF >    // Transpose flag of the vector s
-inline EnableIf_< IsComplex< ElementType_t<MT> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT> > >
    gesdd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s )
 {
    BLAZE_INTERNAL_ASSERT( (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -314,7 +314,7 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename VT     // Type of the vector s
         , bool TF >       // Transpose flag of the vector s
-inline DisableIf_< IsComplex< ElementType_t<MT1> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobz )
 {
@@ -379,7 +379,7 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename VT     // Type of the vector s
         , bool TF >       // Transpose flag of the vector s
-inline EnableIf_< IsComplex< ElementType_t<MT1> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, char jobz )
 {
@@ -588,7 +588,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT2 >  // Type of the matrix V
-inline DisableIf_< IsComplex< ElementType_t<MT1> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobz )
 {
@@ -653,7 +653,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT2 >  // Type of the matrix V
-inline EnableIf_< IsComplex< ElementType_t<MT1> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
                   DenseMatrix<MT2,SO>& V, char jobz )
 {
@@ -855,7 +855,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT3 >  // Type of the matrix V
-inline DisableIf_< IsComplex< ElementType_t<MT1> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz )
 {
@@ -925,7 +925,7 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT3 >  // Type of the matrix V
-inline EnableIf_< IsComplex< ElementType_t<MT1> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    gesdd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz )
 {

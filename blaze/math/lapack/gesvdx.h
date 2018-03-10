@@ -134,7 +134,7 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_t<MT> >, size_t >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
    gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -224,7 +224,7 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_t<MT> >, size_t >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
    gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -542,7 +542,7 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_t<MT1> >, size_t >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -662,7 +662,7 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_t<MT1> >, size_t >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -1041,7 +1041,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_t<MT1> >, size_t >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -1161,7 +1161,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_t<MT1> >, size_t >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
                    char range, ST vl, ST vu, int il, int iu )
 {
@@ -1542,7 +1542,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_< IsComplex< ElementType_t<MT1> >, size_t >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
 {
@@ -1682,7 +1682,7 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_< IsComplex< ElementType_t<MT1> >, size_t >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
    gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
                    DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
 {

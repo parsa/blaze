@@ -111,7 +111,7 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline DisableIf_< IsComplex< ElementType_t<MT> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT> > >
    geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
@@ -170,7 +170,7 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline EnableIf_< IsComplex< ElementType_t<MT> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT> > >
    geev_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
@@ -315,7 +315,7 @@ template< typename MT1  // Type of the matrix A
         , bool SO2      // Storage order of the matrix VL
         , typename VT   // Type of the vector w
         , bool TF >     // Transpose flag of the vector w
-inline DisableIf_< IsComplex< ElementType_t<MT1> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -407,7 +407,7 @@ template< typename MT1  // Type of the matrix A
         , bool SO2      // Storage order of the matrix VL
         , typename VT   // Type of the vector w
         , bool TF >     // Transpose flag of the vector w
-inline EnableIf_< IsComplex< ElementType_t<MT1> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -580,7 +580,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix VR
         , bool SO2 >    // Storage order of the matrix VR
-inline DisableIf_< IsComplex< ElementType_t<MT1> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -672,7 +672,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix VR
         , bool SO2 >    // Storage order of the matrix VR
-inline EnableIf_< IsComplex< ElementType_t<MT1> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ) , "Invalid non-square matrix detected" );
@@ -848,7 +848,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT3  // Type of the matrix VR
         , bool SO3 >    // Storage order of the matrix VR
-inline DisableIf_< IsComplex< ElementType_t<MT1> > >
+inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                  DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
 {
@@ -951,7 +951,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT3  // Type of the matrix VR
         , bool SO3 >    // Storage order of the matrix VR
-inline EnableIf_< IsComplex< ElementType_t<MT1> > >
+inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    geev_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
                  DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR )
 {
