@@ -139,6 +139,25 @@ using EnableIfTrue_ = typename EnableIfTrue<Condition,T>::Type;
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary type for the EnableIfTrue class template.
+// \ingroup util
+//
+// The EnableIf_t alias declaration provides a convenient shortcut to access the nested \a Type
+// of the EnableIfTrue class template. For instance, given the type \a T the following two type
+// definitions are identical:
+
+   \code
+   using Type1 = typename EnableIfTrue< IsBuiltin_v<T> >::Type;
+   using Type2 = EnableIf_t< IsBuiltin_v<T> >;
+   \endcode
+*/
+template< bool Condition     // Compile time condition
+        , typename T=void >  // The type to be instantiated
+using EnableIf_t = typename EnableIfTrue<Condition,T>::Type;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

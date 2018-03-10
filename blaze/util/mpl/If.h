@@ -110,6 +110,26 @@ using IfTrue_ = typename IfTrue<Condition,T1,T2>::Type;
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Auxiliary alias declaration for the IfTrue class template.
+// \ingroup util
+//
+// The If_t alias declaration provides a convenient shortcut to access the nested \a Type of the
+// IfTrue class template. For instance, given the types \a C, \a T1, and \a T2 the following two
+// type definitions are identical:
+
+   \code
+   using Type1 = typename IfTrue< IsBuiltin_v<C>, T1, T2 >::Type;
+   using Type2 = If_t< IsBuiltin_v<C>, T1, T2 >;
+   \endcode
+*/
+template< bool Condition  // Compile time selection
+        , typename T1     // Type to be selected if Condition=true
+        , typename T2 >   // Type to be selected if Condition=false
+using If_t = typename IfTrue<Condition,T1,T2>::Type;
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
