@@ -47,7 +47,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/HasSize.h>
@@ -75,8 +74,8 @@ namespace blaze {
 // in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
-                                   , If_< IsSigned<T>, SIMDint8, SIMDuint8 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,1UL>
+                                    , If_t< IsSigned_v<T>, SIMDint8, SIMDuint8 > >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -106,8 +105,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 // alignment in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
-                                   , If_< IsSigned<T>, SIMDcint8, SIMDcuint8 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,1UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 > >
    loada( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -120,7 +119,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
-   return If_< IsSigned<T>, SIMDcint8, SIMDcuint8 >( *address );
+   return If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 >( *address );
 #endif
 }
 //*************************************************************************************************
@@ -146,8 +145,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 // in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
-                                   , If_< IsSigned<T>, SIMDint16, SIMDuint16 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,2UL>
+                                    , If_t< IsSigned_v<T>, SIMDint16, SIMDuint16 > >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -177,8 +176,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 // alignment in case of AVX, and 64-byte alignment in case of AVX-512).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
-                                   , If_< IsSigned<T>, SIMDcint16, SIMDcuint16 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,2UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 > >
    loada( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -191,7 +190,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
-   return If_< IsSigned<T>, SIMDcint16, SIMDcuint16 >( *address );
+   return If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 >( *address );
 #endif
 }
 //*************************************************************************************************
@@ -217,8 +216,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 // in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
-                                   , If_< IsSigned<T>, SIMDint32, SIMDuint32 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,4UL>
+                                    , If_t< IsSigned_v<T>, SIMDint32, SIMDuint32 > >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -248,8 +247,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 // alignment in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
-                                   , If_< IsSigned<T>, SIMDcint32, SIMDcuint32 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,4UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 > >
    loada( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -262,7 +261,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
-   return If_< IsSigned<T>, SIMDcint32, SIMDcuint32 >( *address );
+   return If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 >( *address );
 #endif
 }
 //*************************************************************************************************
@@ -288,8 +287,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 // in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
-                                   , If_< IsSigned<T>, SIMDint64, SIMDuint64 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
+                                    , If_t< IsSigned_v<T>, SIMDint64, SIMDuint64 > >
    loada( const T* address ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -319,8 +318,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 // alignment in case of AVX, and 64-byte alignment in case of AVX-512/MIC).
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
-                                   , If_< IsSigned<T>, SIMDcint64, SIMDcuint64 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 > >
    loada( const complex<T>* address ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -333,7 +332,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 #elif BLAZE_SSE2_MODE
    return _mm_load_si128( reinterpret_cast<const __m128i*>( address ) );
 #else
-   return If_< IsSigned<T>, SIMDcint64, SIMDcuint64 >( *address );
+   return If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 >( *address );
 #endif
 }
 //*************************************************************************************************

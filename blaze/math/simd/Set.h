@@ -46,7 +46,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -71,8 +70,8 @@ namespace blaze {
 // \return The set vector of 1-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
-                                   , If_< IsSigned<T>, SIMDint8, SIMDuint8 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,1UL>
+                                    , If_t< IsSigned_v<T>, SIMDint8, SIMDuint8 > >
    set( T value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
@@ -96,8 +95,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 // \return The set vector of 1-byte integral complex values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
-                                   , If_< IsSigned<T>, SIMDcint8, SIMDcuint8 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,1UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 > >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
@@ -142,8 +141,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,1UL> >
 // \return The set vector of 2-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
-                                   , If_< IsSigned<T>, SIMDint16, SIMDuint16 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,2UL>
+                                    , If_t< IsSigned_v<T>, SIMDint16, SIMDuint16 > >
    set( T value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
@@ -167,8 +166,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 // \return The set vector of 2-byte integral complex values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
-                                   , If_< IsSigned<T>, SIMDcint16, SIMDcuint16 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,2UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 > >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
@@ -207,8 +206,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,2UL> >
 // \return The set vector of 4-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
-                                   , If_< IsSigned<T>, SIMDint32, SIMDuint32 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,4UL>
+                                    , If_t< IsSigned_v<T>, SIMDint32, SIMDuint32 > >
    set( T value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -232,8 +231,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 // \return The set vector of 4-byte integral complex values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
-                                   , If_< IsSigned<T>, SIMDcint32, SIMDcuint32 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,4UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 > >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512F_MODE
@@ -274,8 +273,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,4UL> >
 // \return The set vector of 8-byte integral values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
-                                   , If_< IsSigned<T>, SIMDint64, SIMDuint64 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
+                                    , If_t< IsSigned_v<T>, SIMDint64, SIMDuint64 > >
    set( T value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
@@ -299,8 +298,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
 // \return The set vector of 8-byte integral complex values.
 */
 template< typename T >  // Type of the integral value
-BLAZE_ALWAYS_INLINE const EnableIf_< And< IsIntegral<T>, HasSize<T,8UL> >
-                                   , If_< IsSigned<T>, SIMDcint64, SIMDcuint64 > >
+BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
+                                    , If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 > >
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512F_MODE

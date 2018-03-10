@@ -47,7 +47,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -71,7 +70,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,1UL> >
    stream( T1* address, const SIMDi8<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -99,7 +98,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,1UL> >
    stream( complex<T1>* address, const SIMDci8<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
@@ -136,7 +135,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,2UL> >
    stream( T1* address, const SIMDi16<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -164,7 +163,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,2UL> >
    stream( complex<T1>* address, const SIMDci16<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
@@ -201,7 +200,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,4UL> >
    stream( T1* address, const SIMDi32<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -231,7 +230,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,4UL> >
    stream( complex<T1>* address, const SIMDci32<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
@@ -270,7 +269,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,8UL> >
    stream( T1* address, const SIMDi64<T2>& value ) noexcept
 {
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
@@ -300,7 +299,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,8UL> >
    stream( complex<T1>* address, const SIMDci64<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );

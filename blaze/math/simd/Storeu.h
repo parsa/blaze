@@ -45,7 +45,6 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/typetraits/HasSize.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -72,7 +71,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,1UL> >
    storeu( T1* address, const SIMDi8<T2>& value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
@@ -101,7 +100,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,1UL> >
    storeu( complex<T1>* address, const SIMDci8<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
@@ -140,7 +139,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,1UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,2UL> >
    storeu( T1* address, const SIMDi16<T2>& value ) noexcept
 {
 #if BLAZE_AVX512BW_MODE
@@ -169,7 +168,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,2UL> >
    storeu( complex<T1>* address, const SIMDci16<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
@@ -208,7 +207,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,2UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,4UL> >
    storeu( T1* address, const SIMDi32<T2>& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE
@@ -240,7 +239,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,4UL> >
    storeu( complex<T1>* address, const SIMDci32<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );
@@ -282,7 +281,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,4UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,8UL> >
    storeu( T1* address, const SIMDi64<T2>& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE
@@ -314,7 +313,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
 */
 template< typename T1    // Type of the integral value
         , typename T2 >  // Type of the SIMD data type
-BLAZE_ALWAYS_INLINE EnableIf_< And< IsIntegral<T1>, HasSize<T1,8UL> > >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,8UL> >
    storeu( complex<T1>* address, const SIMDci64<T2>& value ) noexcept
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<T1> ) == 2UL*sizeof( T1 ) );

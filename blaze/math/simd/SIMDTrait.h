@@ -44,7 +44,6 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -85,9 +84,9 @@ struct SIMDTraitBase
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1Byte<T> > > >
+struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has1Byte_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDint8, SIMDuint8 >;
+   using Type = If_t< IsSigned_v<T>, SIMDint8, SIMDuint8 >;
    enum : size_t { size = Type::size };
 };
 /*! \endcond */
@@ -100,9 +99,9 @@ struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1Byte<T
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has1Byte<T> > > >
+struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has1Byte_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDcint8, SIMDcuint8 >;
+   using Type = If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 >;
    enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -117,9 +116,9 @@ struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, H
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2Bytes<T> > > >
+struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has2Bytes_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDint16, SIMDuint16 >;
+   using Type = If_t< IsSigned_v<T>, SIMDint16, SIMDuint16 >;
    enum : size_t { size = Type::size };
 };
 /*! \endcond */
@@ -132,9 +131,9 @@ struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2Bytes<
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has2Bytes<T> > > >
+struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has2Bytes_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDcint16, SIMDcuint16 >;
+   using Type = If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 >;
    enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -149,9 +148,9 @@ struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, H
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<T> > > >
+struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has4Bytes_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDint32, SIMDuint32 >;
+   using Type = If_t< IsSigned_v<T>, SIMDint32, SIMDuint32 >;
    enum : size_t { size = Type::size };
 };
 /*! \endcond */
@@ -164,9 +163,9 @@ struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has4Bytes<T> > > >
+struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has4Bytes_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDcint32, SIMDcuint32 >;
+   using Type = If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 >;
    enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
@@ -181,9 +180,9 @@ struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, H
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has8Bytes<T> > > >
+struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has8Bytes_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDint64, SIMDuint64 >;
+   using Type = If_t< IsSigned_v<T>, SIMDint64, SIMDuint64 >;
    enum : size_t { size = Type::size };
 };
 /*! \endcond */
@@ -196,9 +195,9 @@ struct SIMDTraitBase< T, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has8Bytes<
 // \ingroup simd
 */
 template< typename T >
-struct SIMDTraitBase< complex<T>, EnableIf_< And< IsNumeric<T>, IsIntegral<T>, Has8Bytes<T> > > >
+struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has8Bytes_v<T> > >
 {
-   using Type = If_< IsSigned<T>, SIMDcint64, SIMDcuint64 >;
+   using Type = If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 >;
    enum : size_t { size = Type::size };
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
