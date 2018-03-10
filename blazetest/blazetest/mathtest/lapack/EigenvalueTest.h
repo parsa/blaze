@@ -154,7 +154,7 @@ void EigenvalueTest::testGeev()
 
    test_ = "General matrix eigenvalue computation";
 
-   using CT = blaze::If_< blaze::IsComplex<Type>, Type, blaze::complex<Type> >;
+   using CT = blaze::If_t< blaze::IsComplex_v<Type>, Type, blaze::complex<Type> >;
 
    const auto comparator = []( const CT& c1, const CT& c2 ) {
       return blaze::equal( c1, c2 );

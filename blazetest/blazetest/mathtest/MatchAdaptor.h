@@ -86,25 +86,25 @@ struct MatchAdaptor
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type =  blaze::If_< blaze::IsLower<T1>
-                           , blaze::If_< blaze::IsUpper<T1>
-                                       , blaze::DiagonalMatrix<Tmp>
-                                       , blaze::If_< blaze::IsStrictlyLower<T1>
-                                                   , blaze::StrictlyLowerMatrix<Tmp>
-                                                   , blaze::If_< blaze::IsUniLower<T1>
-                                                               , blaze::UniLowerMatrix<Tmp>
-                                                               , blaze::LowerMatrix<Tmp> > > >
-                           , blaze::If_< blaze::IsUpper<T1>
-                                       , blaze::If_< blaze::IsStrictlyUpper<T1>
-                                                   , blaze::StrictlyUpperMatrix<Tmp>
-                                                   , blaze::If_< blaze::IsUniUpper<T1>
-                                                               , blaze::UniUpperMatrix<Tmp>
-                                                               , blaze::UpperMatrix<Tmp> > >
-                                       , blaze::If_< blaze::IsSymmetric<T1>
-                                                   , blaze::SymmetricMatrix<Tmp>
-                                                   , blaze::If_< blaze::IsHermitian<T1>
-                                                               , blaze::HermitianMatrix<Tmp>
-                                                               , T2 > > > >;
+   using Type =  blaze::If_t< blaze::IsLower_v<T1>
+                            , blaze::If_t< blaze::IsUpper_v<T1>
+                                         , blaze::DiagonalMatrix<Tmp>
+                                         , blaze::If_t< blaze::IsStrictlyLower_v<T1>
+                                                      , blaze::StrictlyLowerMatrix<Tmp>
+                                                      , blaze::If_t< blaze::IsUniLower_v<T1>
+                                                                   , blaze::UniLowerMatrix<Tmp>
+                                                                   , blaze::LowerMatrix<Tmp> > > >
+                            , blaze::If_t< blaze::IsUpper_v<T1>
+                                         , blaze::If_t< blaze::IsStrictlyUpper_v<T1>
+                                                      , blaze::StrictlyUpperMatrix<Tmp>
+                                                      , blaze::If_t< blaze::IsUniUpper_v<T1>
+                                                                   , blaze::UniUpperMatrix<Tmp>
+                                                                   , blaze::UpperMatrix<Tmp> > >
+                                         , blaze::If_t< blaze::IsSymmetric_v<T1>
+                                                      , blaze::SymmetricMatrix<Tmp>
+                                                      , blaze::If_t< blaze::IsHermitian_v<T1>
+                                                                   , blaze::HermitianMatrix<Tmp>
+                                                                   , T2 > > > >;
    /*! \endcond */
    //**********************************************************************************************
 

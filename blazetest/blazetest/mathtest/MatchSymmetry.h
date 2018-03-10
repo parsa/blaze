@@ -83,13 +83,13 @@ struct MatchSymmetry
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = blaze::If_< blaze::IsDiagonal<T1>
-                          , blaze::DiagonalMatrix<Tmp>
-                          , blaze::If_< blaze::IsSymmetric<T1>
-                                      , blaze::SymmetricMatrix<Tmp>
-                                      , blaze::If_< blaze::IsHermitian<T1>
-                                                  , blaze::HermitianMatrix<Tmp>
-                                                  , T2 > > >;
+   using Type = blaze::If_t< blaze::IsDiagonal_v<T1>
+                           , blaze::DiagonalMatrix<Tmp>
+                           , blaze::If_t< blaze::IsSymmetric_v<T1>
+                                        , blaze::SymmetricMatrix<Tmp>
+                                        , blaze::If_t< blaze::IsHermitian_v<T1>
+                                                     , blaze::HermitianMatrix<Tmp>
+                                                     , T2 > > >;
    /*! \endcond */
    //**********************************************************************************************
 

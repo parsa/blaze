@@ -81,9 +81,9 @@ struct RemoveIdentity
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = blaze::If_< blaze::IsIdentity<T>
-                          , blaze::DiagonalMatrix< blaze::CompressedMatrix<ET,SO> >
-                          , T >;
+   using Type = blaze::If_t< blaze::IsIdentity_v<T>
+                           , blaze::DiagonalMatrix< blaze::CompressedMatrix<ET,SO> >
+                           , T >;
    /*! \endcond */
    //**********************************************************************************************
 
