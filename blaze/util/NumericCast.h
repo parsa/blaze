@@ -59,56 +59,56 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  AUXILIARY CLASS DEFINITIONS
+//  AUXILIARY VARIABLE TEMPLATE DEFINITIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the numeric_cast() function template.
+/*!\brief Auxiliary variable template for the numeric_cast() function template.
 // \ingroup util
 */
 template< typename To, typename From >
-using IsCriticalIntIntConversion =
-   BoolConstant< IsIntegral_v<To> && IsIntegral_v<From> && !IsSame_v<To,From> >;
+constexpr bool IsCriticalIntIntConversion_v =
+   ( IsIntegral_v<To> && IsIntegral_v<From> && !IsSame_v<To,From> );
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the numeric_cast() function template.
+/*!\brief Auxiliary variable template for the numeric_cast() function template.
 // \ingroup util
 */
 template< typename To, typename From >
-using IsCriticalFloatIntConversion =
-   BoolConstant< IsIntegral_v<To> && IsFloatingPoint_v<From> >;
+constexpr bool IsCriticalFloatIntConversion_v =
+   ( IsIntegral_v<To> && IsFloatingPoint_v<From> );
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the numeric_cast() function template.
+/*!\brief Auxiliary variable template for the numeric_cast() function template.
 // \ingroup util
 */
 template< typename To, typename From >
-using IsCriticalFloatFloatConversion =
-   BoolConstant< IsFloatingPoint_v<To> && IsFloatingPoint_v<From> && ( sizeof(To) < sizeof(From) ) >;
+constexpr bool IsCriticalFloatFloatConversion_v =
+   ( IsFloatingPoint_v<To> && IsFloatingPoint_v<From> && ( sizeof(To) < sizeof(From) ) );
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary type trait for the numeric_cast() function template.
+/*!\brief Auxiliary variable template for the numeric_cast() function template.
 // \ingroup util
 */
 template< typename To, typename From >
-using IsUncriticalConversion =
-   BoolConstant< !IsCriticalIntIntConversion<To,From>::value &&
-                 !IsCriticalFloatIntConversion<To,From>::value &&
-                 !IsCriticalFloatFloatConversion<To,From>::value >;
+constexpr bool IsUncriticalConversion_v =
+   ( !IsCriticalIntIntConversion_v<To,From> &&
+     !IsCriticalFloatIntConversion_v<To,From> &&
+     !IsCriticalFloatFloatConversion_v<To,From> );
 /*! \endcond */
 //*************************************************************************************************
 
@@ -138,7 +138,7 @@ template< typename To, typename From > inline To numeric_cast( From from );
 // \return The converted value.
 */
 template< typename To, typename From >
-inline EnableIf_< IsUncriticalConversion<To,From>, To >
+inline EnableIf_t< IsUncriticalConversion_v<To,From>, To >
    numeric_cast_backend( From from ) noexcept
 {
    return from;
@@ -158,7 +158,7 @@ inline EnableIf_< IsUncriticalConversion<To,From>, To >
 // \exception std::underflow_error Invalid numeric cast (underflow).
 */
 template< typename To, typename From >
-inline EnableIf_< IsCriticalIntIntConversion<To,From>, To >
+inline EnableIf_t< IsCriticalIntIntConversion_v<To,From>, To >
    numeric_cast_backend( From from )
 {
    if( ( sizeof(To) < sizeof(From) || ( IsSigned_v<To> && IsUnsigned_v<From> ) ) &&
@@ -188,7 +188,7 @@ inline EnableIf_< IsCriticalIntIntConversion<To,From>, To >
 // \exception std::underflow_error Invalid numeric cast (underflow).
 */
 template< typename To, typename From >
-inline EnableIf_< IsCriticalFloatIntConversion<To,From>, To >
+inline EnableIf_t< IsCriticalFloatIntConversion_v<To,From>, To >
    numeric_cast_backend( From from )
 {
    using std::trunc;
@@ -218,7 +218,7 @@ inline EnableIf_< IsCriticalFloatIntConversion<To,From>, To >
 // \exception std::underflow_error Invalid numeric cast (underflow).
 */
 template< typename To, typename From >
-inline EnableIf_< IsCriticalFloatFloatConversion<To,From>, To >
+inline EnableIf_t< IsCriticalFloatFloatConversion_v<To,From>, To >
    numeric_cast_backend( From from )
 {
    if( from > From( std::numeric_limits<To>::max() ) )

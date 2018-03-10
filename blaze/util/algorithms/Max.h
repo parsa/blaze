@@ -66,8 +66,8 @@ namespace blaze {
 // is determined by the data types of the given arguments.
 */
 template< typename T1, typename T2
-        , typename = EnableIfTrue_< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
-                                    ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
+        , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
+                                 ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
 BLAZE_ALWAYS_INLINE constexpr auto
    max( const T1& a, const T2& b ) noexcept
 {

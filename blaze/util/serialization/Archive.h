@@ -168,22 +168,22 @@ class Archive
    /*!\name Serialization functions */
    //@{
    template< typename T >
-   EnableIf_< IsNumeric<T>, Archive& > operator<<( const T& value );
+   EnableIf_t< IsNumeric_v<T>, Archive& > operator<<( const T& value );
 
    template< typename T >
-   DisableIf_< IsNumeric<T>, Archive& > operator<<( const T& value );
+   DisableIf_t< IsNumeric_v<T>, Archive& > operator<<( const T& value );
 
    template< typename T >
-   EnableIf_< IsNumeric<T>, Archive& > operator>>( T& value );
+   EnableIf_t< IsNumeric_v<T>, Archive& > operator>>( T& value );
 
    template< typename T >
-   DisableIf_< IsNumeric<T>, Archive& > operator>>( T& value );
+   DisableIf_t< IsNumeric_v<T>, Archive& > operator>>( T& value );
 
    template< typename Type >
-   inline EnableIf_< IsNumeric<Type>, Archive& > write( const Type* array, size_t count );
+   inline EnableIf_t< IsNumeric_v<Type>, Archive& > write( const Type* array, size_t count );
 
    template< typename Type >
-   inline EnableIf_< IsNumeric<Type>, Archive& > read ( Type* array, size_t count );
+   inline EnableIf_t< IsNumeric_v<Type>, Archive& > read ( Type* array, size_t count );
    //@}
    //**********************************************************************************************
 
@@ -318,7 +318,7 @@ inline bool Archive<Stream>::operator!() const
 */
 template< typename Stream >  // Type of the bound stream
 template< typename T >       // Type of the value to be serialized
-EnableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator<<( const T& value )
+EnableIf_t< IsNumeric_v<T>, Archive<Stream>& > Archive<Stream>::operator<<( const T& value )
 {
    using CharType = typename Stream::char_type;
    stream_.write( reinterpret_cast<const CharType*>( &value ), sizeof( T ) );
@@ -335,7 +335,7 @@ EnableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator<<( const T
 */
 template< typename Stream >  // Type of the bound stream
 template< typename T >       // Type of the object to be serialized
-DisableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator<<( const T& value )
+DisableIf_t< IsNumeric_v<T>, Archive<Stream>& > Archive<Stream>::operator<<( const T& value )
 {
    serialize( *this, value );
    return *this;
@@ -351,7 +351,7 @@ DisableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator<<( const 
 */
 template< typename Stream >  // Type of the bound stream
 template< typename T >       // Type of the value to be deserialized
-EnableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator>>( T& value )
+EnableIf_t< IsNumeric_v<T>, Archive<Stream>& > Archive<Stream>::operator>>( T& value )
 {
    using CharType = typename Stream::char_type;
    stream_.read( reinterpret_cast<CharType*>( &value ), sizeof( T ) );
@@ -368,7 +368,7 @@ EnableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator>>( T& valu
 */
 template< typename Stream >  // Type of the bound stream
 template< typename T >       // Type of the value to be deserialized
-DisableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator>>( T& value )
+DisableIf_t< IsNumeric_v<T>, Archive<Stream>& > Archive<Stream>::operator>>( T& value )
 {
    deserialize( *this, value );
    return *this;
@@ -387,7 +387,7 @@ DisableIf_< IsNumeric<T>, Archive<Stream>& > Archive<Stream>::operator>>( T& val
 */
 template< typename Stream >  // Type of the bound stream
 template< typename Type >    // Type of the array elements
-inline EnableIf_< IsNumeric<Type>, Archive<Stream>& >
+inline EnableIf_t< IsNumeric_v<Type>, Archive<Stream>& >
    Archive<Stream>::write( const Type* array, size_t count )
 {
    using CharType = typename Stream::char_type;
@@ -410,7 +410,7 @@ inline EnableIf_< IsNumeric<Type>, Archive<Stream>& >
 */
 template< typename Stream >  // Type of the bound stream
 template< typename Type >    // Type of the array elements
-inline EnableIf_< IsNumeric<Type>, Archive<Stream>& >
+inline EnableIf_t< IsNumeric_v<Type>, Archive<Stream>& >
    Archive<Stream>::read( Type* array, size_t count )
 {
    using CharType = typename Stream::char_type;

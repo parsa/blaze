@@ -114,9 +114,9 @@ template< typename U      // Type of the head of the type list
         , typename... Ts  // Types of the tail of the type list
         , typename T >    // The search type
 struct ContainsRelated< TypeList<U,Ts...>, T >
-   : public If_< IsConvertible<T,U>
-               , TrueType
-               , ContainsRelated< TypeList<Ts...>, T > >
+   : public If_t< IsConvertible_v<T,U>
+                , TrueType
+                , ContainsRelated< TypeList<Ts...>, T > >
 {};
 /*! \endcond */
 //*************************************************************************************************

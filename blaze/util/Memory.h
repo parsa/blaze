@@ -152,7 +152,7 @@ inline void deallocate_backend( const void* address ) noexcept
    \endcode
 */
 template< typename T >
-EnableIf_< IsBuiltin<T>, T* > allocate( size_t size )
+EnableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
 {
    const size_t alignment( AlignmentOf_v<T> );
 
@@ -181,7 +181,7 @@ EnableIf_< IsBuiltin<T>, T* > allocate( size_t size )
 // constructed are destroyed in reverse order and the allocated memory is deallocated again.
 */
 template< typename T >
-DisableIf_< IsBuiltin<T>, T* > allocate( size_t size )
+DisableIf_t< IsBuiltin_v<T>, T* > allocate( size_t size )
 {
    const size_t alignment ( AlignmentOf_v<T> );
    const size_t headersize( ( sizeof(size_t) < alignment ) ? ( alignment ) : ( sizeof( size_t ) ) );
@@ -227,7 +227,7 @@ DisableIf_< IsBuiltin<T>, T* > allocate( size_t size )
 // function.
 */
 template< typename T >
-EnableIf_< IsBuiltin<T> > deallocate( T* address ) noexcept
+EnableIf_t< IsBuiltin_v<T> > deallocate( T* address ) noexcept
 {
    if( address == nullptr )
       return;
@@ -253,7 +253,7 @@ EnableIf_< IsBuiltin<T> > deallocate( T* address ) noexcept
 // function.
 */
 template< typename T >
-DisableIf_< IsBuiltin<T> > deallocate( T* address )
+DisableIf_t< IsBuiltin_v<T> > deallocate( T* address )
 {
    if( address == nullptr )
       return;
