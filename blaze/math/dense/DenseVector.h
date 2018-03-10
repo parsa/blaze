@@ -87,10 +87,10 @@ template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator==( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar );
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_< IsNumeric<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec );
+inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec );
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator!=( const DenseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
@@ -102,22 +102,22 @@ template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator!=( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar );
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar );
 
 template< typename T1, typename T2, bool TF >
-inline EnableIf_< IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec );
+inline EnableIf_t< IsNumeric_v<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST scalar );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>&& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( DenseVector<VT,TF>&& vec, ST scalar );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST scalar );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>&& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( DenseVector<VT,TF>&& vec, ST scalar );
 //@}
 //*************************************************************************************************
 
@@ -233,7 +233,7 @@ inline bool operator==( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF
 template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar )
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar )
 {
    using CT1 = CompositeType_t<T1>;
 
@@ -264,7 +264,7 @@ inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseVector<T1,TF>& ve
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsNumeric<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec )
+inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec )
 {
    return ( vec == scalar );
 }
@@ -343,7 +343,7 @@ inline bool operator!=( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF
 template< typename T1  // Type of the left-hand side dense vector
         , typename T2  // Type of the right-hand side scalar
         , bool TF >    // Transpose flag
-inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
 {
    return !( vec == scalar );
 }
@@ -365,7 +365,7 @@ inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseVector<T1,TF>& ve
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side vector
         , bool TF >    // Transpose flag
-inline EnableIf_< IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
+inline EnableIf_t< IsNumeric_v<T1>, bool > operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
 {
    return !( vec == scalar );
 }
@@ -388,7 +388,7 @@ inline EnableIf_< IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseVector
 template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST scalar )
 {
    if( IsRestricted_v<VT> ) {
       if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -423,7 +423,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>& vec, ST s
 template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>&& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( DenseVector<VT,TF>&& vec, ST scalar )
 {
    return operator*=( ~vec, scalar );
 }
@@ -448,7 +448,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator*=( DenseVector<VT,TF>&& vec, ST 
 template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
@@ -487,7 +487,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, ST s
 template< typename VT    // Type of the left-hand side dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( DenseVector<VT,TF>&& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( DenseVector<VT,TF>&& vec, ST scalar )
 {
    return operator/=( ~vec, scalar );
 }

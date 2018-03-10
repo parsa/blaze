@@ -455,40 +455,40 @@ class DynamicMatrix
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT >
-   inline DisableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,SO>& rhs );
+   inline DisableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,SO>& rhs );
+   inline EnableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT > inline void assign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT >
-   inline DisableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,SO>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,SO>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT > inline void addAssign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT >
-   inline DisableIf_<VectorizedSubAssign<MT> > subAssign( const DenseMatrix<MT,SO>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<MT>::value > subAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedSubAssign<MT> > subAssign( const DenseMatrix<MT,SO>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<MT>::value > subAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT > inline void subAssign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT >
-   inline DisableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO>& rhs );
+   inline DisableIf_t< VectorizedSchurAssign<MT>::value > schurAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedSchurAssign<MT> > schurAssign( const DenseMatrix<MT,SO>& rhs );
+   inline EnableIf_t< VectorizedSchurAssign<MT>::value > schurAssign( const DenseMatrix<MT,SO>& rhs );
 
    template< typename MT > inline void schurAssign( const DenseMatrix<MT,!SO>&  rhs );
    template< typename MT > inline void schurAssign( const SparseMatrix<MT,SO>&  rhs );
@@ -2340,7 +2340,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
    DynamicMatrix<Type,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2376,7 +2376,7 @@ inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssi
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
    DynamicMatrix<Type,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2538,7 +2538,7 @@ inline void DynamicMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
    DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2589,7 +2589,7 @@ inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddA
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
    DynamicMatrix<Type,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2752,7 +2752,7 @@ inline void DynamicMatrix<Type,SO>::addAssign( const SparseMatrix<MT,!SO>& rhs )
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
    DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2803,7 +2803,7 @@ inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubA
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
    DynamicMatrix<Type,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2966,7 +2966,7 @@ inline void DynamicMatrix<Type,SO>::subAssign( const SparseMatrix<MT,!SO>& rhs )
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
    DynamicMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -3002,7 +3002,7 @@ inline DisableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSchu
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT >  // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
    DynamicMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -3411,40 +3411,40 @@ class DynamicMatrix<Type,true>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT >
-   inline DisableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,true>& rhs );
+   inline DisableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedAssign<MT> > assign( const DenseMatrix<MT,true>& rhs );
+   inline EnableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT > inline void assign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT >
-   inline DisableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,true>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedAddAssign<MT> > addAssign( const DenseMatrix<MT,true>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT > inline void addAssign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT >
-   inline DisableIf_<VectorizedSubAssign<MT> > subAssign ( const DenseMatrix<MT,true>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<MT>::value > subAssign ( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedSubAssign<MT> > subAssign ( const DenseMatrix<MT,true>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<MT>::value > subAssign ( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT > inline void subAssign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT >
-   inline DisableIf_<VectorizedSchurAssign<MT> > schurAssign ( const DenseMatrix<MT,true>& rhs );
+   inline DisableIf_t< VectorizedSchurAssign<MT>::value > schurAssign ( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT >
-   inline EnableIf_<VectorizedSchurAssign<MT> > schurAssign ( const DenseMatrix<MT,true>& rhs );
+   inline EnableIf_t< VectorizedSchurAssign<MT>::value > schurAssign ( const DenseMatrix<MT,true>& rhs );
 
    template< typename MT > inline void schurAssign( const DenseMatrix<MT,false>&  rhs );
    template< typename MT > inline void schurAssign( const SparseMatrix<MT,true>&  rhs );
@@ -5314,7 +5314,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
    DynamicMatrix<Type,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5351,7 +5351,7 @@ inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAs
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
    DynamicMatrix<Type,true>::assign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5517,7 +5517,7 @@ inline void DynamicMatrix<Type,true>::assign( const SparseMatrix<MT,false>& rhs 
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
    DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5569,7 +5569,7 @@ inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAd
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
    DynamicMatrix<Type,true>::addAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5736,7 +5736,7 @@ inline void DynamicMatrix<Type,true>::addAssign( const SparseMatrix<MT,false>& r
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
    DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5788,7 +5788,7 @@ inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSu
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
    DynamicMatrix<Type,true>::subAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5955,7 +5955,7 @@ inline void DynamicMatrix<Type,true>::subAssign( const SparseMatrix<MT,false>& r
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+inline DisableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
    DynamicMatrix<Type,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5992,7 +5992,7 @@ inline DisableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSc
 */
 template< typename Type >  // Data type of the matrix
 template< typename MT >    // Type of the right-hand side dense matrix
-inline EnableIf_<typename DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT> >
+inline EnableIf_t< DynamicMatrix<Type,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
    DynamicMatrix<Type,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -6677,13 +6677,13 @@ struct SchurTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct MultTrait< DynamicMatrix<T1,SO>, T2, EnableIf_<IsNumeric<T2> > >
+struct MultTrait< DynamicMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, typename T2, bool SO >
-struct MultTrait< T1, DynamicMatrix<T2,SO>, EnableIf_<IsNumeric<T1> > >
+struct MultTrait< T1, DynamicMatrix<T2,SO>, EnableIf_t< IsNumeric_v<T1> > >
 {
    using Type = DynamicMatrix< MultTrait_t<T1,T2>, SO >;
 };
@@ -6792,7 +6792,7 @@ struct MultTrait< DynamicMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct DivTrait< DynamicMatrix<T1,SO>, T2, EnableIf_<IsNumeric<T2> > >
+struct DivTrait< DynamicMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = DynamicMatrix< DivTrait_t<T1,T2>, SO >;
 };

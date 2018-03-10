@@ -113,13 +113,13 @@ template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator==( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
 
 template< typename T1, typename T2 >
-inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar );
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar );
 
 template< typename T1, typename T2 >
-inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar );
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar );
 
 template< typename T1, typename T2, bool SO >
-inline EnableIf_< IsNumeric<T2>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat );
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat );
 
 template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator!=( const DenseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
@@ -131,22 +131,22 @@ template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
 
 template< typename T1, typename T2, bool SO >
-inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar );
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar );
 
 template< typename T1, typename T2, bool SO >
-inline EnableIf_< IsNumeric<T2>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat );
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST scalar );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, ST scalar );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST scalar );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, ST scalar );
 //@}
 //*************************************************************************************************
 
@@ -397,7 +397,7 @@ inline bool operator==( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
 {
    using CT1 = CompositeType_t<T1>;
 
@@ -431,7 +431,7 @@ inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,false>&
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
 {
    using CT1 = CompositeType_t<T1>;
 
@@ -466,7 +466,7 @@ inline EnableIf_< IsNumeric<T2>, bool > operator==( const DenseMatrix<T1,true>& 
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsNumeric<T1>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
+inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
 {
    return ( mat == scalar );
 }
@@ -545,7 +545,7 @@ inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO
 template< typename T1  // Type of the left-hand side dense matrix
         , typename T2  // Type of the right-hand side scalar
         , bool SO >    // Storage order
-inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
+inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
 {
    return !( mat == scalar );
 }
@@ -567,7 +567,7 @@ inline EnableIf_< IsNumeric<T2>, bool > operator!=( const DenseMatrix<T1,SO>& ma
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order
-inline EnableIf_< IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
+inline EnableIf_t< IsNumeric_v<T1>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
 {
    return !( mat == scalar );
 }
@@ -590,7 +590,7 @@ inline EnableIf_< IsNumeric<T1>, bool > operator!=( T1 scalar, const DenseMatrix
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -627,7 +627,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST s
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, ST scalar )
 {
    return operator*=( ~mat, scalar );
 }
@@ -652,7 +652,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, ST 
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -693,7 +693,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST s
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
 {
    return operator/=( ~mat, scalar );
 }
@@ -1216,7 +1216,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsLower_v<MT> )
       return true;
@@ -1301,7 +1301,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsUniLower_v<MT> )
       return true;
@@ -1388,7 +1388,7 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsStrictlyLower_v<MT> )
       return true;
@@ -1471,7 +1471,7 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsUpper_v<MT> )
       return true;
@@ -1556,7 +1556,7 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsUniUpper_v<MT> )
       return true;
@@ -1643,7 +1643,7 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsStrictlyUpper_v<MT> )
       return true;
@@ -1727,7 +1727,7 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsDiagonal_v<MT> )
       return true;
@@ -1829,7 +1829,7 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
 
    if( IsIdentity_v<MT> )
       return true;

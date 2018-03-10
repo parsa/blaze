@@ -56,8 +56,6 @@
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 
@@ -105,7 +103,7 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline EnableIf_< And< IsSymmetric<MT>, IsFloatingPoint< ElementType_t<MT> > > >
+inline EnableIf_t< IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > >
    eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
@@ -146,7 +144,7 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline EnableIf_< And< IsHermitian<MT>, IsComplex< ElementType_t<MT> > > >
+inline EnableIf_t< IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > >
    eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
@@ -187,8 +185,8 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline DisableIf_< Or< And< IsSymmetric<MT>, IsFloatingPoint< ElementType_t<MT> > >
-                     , And< IsHermitian<MT>, IsComplex< ElementType_t<MT> > > > >
+inline DisableIf_t< ( IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > ) ||
+                    ( IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > ) >
    eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
@@ -338,7 +336,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
-inline EnableIf_< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_t<MT1> > > >
+inline EnableIf_t< IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > >
    eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
@@ -385,7 +383,7 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
-inline EnableIf_< And< IsHermitian<MT1>, IsComplex< ElementType_t<MT1> > > >
+inline EnableIf_t< IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > >
    eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
@@ -432,8 +430,8 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
-inline DisableIf_< Or< And< IsSymmetric<MT1>, IsFloatingPoint< ElementType_t<MT1> > >
-                     , And< IsHermitian<MT1>, IsComplex< ElementType_t<MT1> > > > >
+inline DisableIf_t< ( IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > ) ||
+                    ( IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > ) >
    eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;

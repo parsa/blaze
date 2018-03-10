@@ -91,7 +91,7 @@ void ql( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& Q, DenseMatrix<MT3
 // reconstruction of the \c Q matrix from the QL decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_<IsBuiltin< ElementType_t<MT1> > >
+inline EnableIf_t<IsBuiltin_v< ElementType_t<MT1> > >
    ql_backend( MT1& A, const ElementType_t<MT1>* tau )
 {
    orgql( A, tau );
@@ -113,7 +113,7 @@ inline EnableIf_<IsBuiltin< ElementType_t<MT1> > >
 // reconstruction of the \c Q matrix from the QL decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_<IsComplex< ElementType_t<MT1> > >
+inline EnableIf_t<IsComplex_v< ElementType_t<MT1> > >
    ql_backend( MT1& A, const ElementType_t<MT1>* tau )
 {
    ungql( A, tau );
