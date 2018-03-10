@@ -42,7 +42,6 @@
 
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -117,9 +116,9 @@ struct ElementsTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , ElementsTrait< Decay_t<VT>, CEAs... >
-                            , Failure >::Type;
+   using Type = typename If_t< IsConst_v<VT> || IsVolatile_v<VT> || IsReference_v<VT>
+                             , ElementsTrait< Decay_t<VT>, CEAs... >
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

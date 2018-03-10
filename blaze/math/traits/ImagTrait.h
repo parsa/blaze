@@ -46,7 +46,6 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -113,22 +112,22 @@ struct ImagTrait
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Tmp = If_< Or< IsMatrix<T>, IsVector<T> >
-                  , MatrixOrVector
-                  , If_< IsBuiltin<T>
-                       , Builtin
-                       , If_< IsComplex<T>
-                            , Complex
-                            , Failure > > >;
+   using Tmp = If_t< IsMatrix_v<T> || IsVector_v<T>
+                   , MatrixOrVector
+                   , If_t< IsBuiltin_v<T>
+                         , Builtin
+                         , If_t< IsComplex_v<T>
+                               , Complex
+                               , Failure > > >;
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T> >
-                            , ImagTrait< Decay_t<T> >
-                            , Tmp >::Type;
+   using Type = typename If_t< IsConst_v<T> || IsVolatile_v<T> || IsReference_v<T>
+                             , ImagTrait< Decay_t<T> >
+                             , Tmp >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

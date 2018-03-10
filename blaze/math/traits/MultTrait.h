@@ -48,10 +48,7 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -134,12 +131,12 @@ struct MultTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , MultTrait< Decay_t<T1>, Decay_t<T2> >
-                            , If_< HasMult<T1,T2>
-                                 , MultType
-                                 , Failure > >::Type;
+   using Type = typename If_t< IsConst_v<T1> || IsVolatile_v<T1> || IsReference_v<T1> ||
+                               IsConst_v<T2> || IsVolatile_v<T2> || IsReference_v<T2>
+                             , MultTrait< Decay_t<T1>, Decay_t<T2> >
+                             , If_t< HasMult_v<T1,T2>
+                                   , MultType
+                                   , Failure > >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -152,7 +149,7 @@ struct MultTrait
 // \ingroup math_traits
 */
 template< typename T >
-struct MultTrait< T, T, EnableIf_< IsBuiltin<T> > >
+struct MultTrait< T, T, EnableIf_t< IsBuiltin_v<T> > >
 {
  public:
    //**********************************************************************************************
@@ -169,7 +166,7 @@ struct MultTrait< T, T, EnableIf_< IsBuiltin<T> > >
 // \ingroup math_traits
 */
 template< typename T1, typename T2 >
-struct MultTrait< complex<T1>, T2, EnableIf_< IsBuiltin<T2> > >
+struct MultTrait< complex<T1>, T2, EnableIf_t< IsBuiltin_v<T2> > >
 {
  public:
    //**********************************************************************************************
@@ -186,7 +183,7 @@ struct MultTrait< complex<T1>, T2, EnableIf_< IsBuiltin<T2> > >
 // \ingroup math_traits
 */
 template< typename T1, typename T2 >
-struct MultTrait< T1, complex<T2>, EnableIf_< IsBuiltin<T1> > >
+struct MultTrait< T1, complex<T2>, EnableIf_t< IsBuiltin_v<T1> > >
 {
  public:
    //**********************************************************************************************
@@ -222,8 +219,8 @@ struct MultTrait< complex<T1>, complex<T2> >
 */
 template< typename T1, typename T2 >
 struct MultTrait< T1, T2
-                , EnableIf_< And< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> >
-                                , Not< Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > > >
+                , EnableIf_t<  ( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
+                              !( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
 {
  public:
    //**********************************************************************************************
@@ -242,8 +239,8 @@ struct MultTrait< T1, T2
 */
 template< typename T1, typename T2 >
 struct MultTrait< T1, T2
-                , EnableIf_< And< Not< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> > >
-                                , Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > >
+                , EnableIf_t< !( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
+                               ( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
 {
  public:
    //**********************************************************************************************
@@ -262,8 +259,8 @@ struct MultTrait< T1, T2
 */
 template< typename T1, typename T2 >
 struct MultTrait< T1, T2
-                , EnableIf_< And< Or< IsCustom<T1>, IsInitializer<T1>, IsView<T1> >
-                                , Or< IsCustom<T2>, IsInitializer<T2>, IsView<T2> > > > >
+                , EnableIf_t< ( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
+                              ( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
 {
  public:
    //**********************************************************************************************

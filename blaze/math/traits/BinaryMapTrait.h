@@ -45,7 +45,6 @@
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -109,11 +108,11 @@ struct BinaryMapTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>, IsAdaptor<T1>
-                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2>, IsAdaptor<T2> >
-                            , BinaryMapTrait< RemoveAdaptor_t< Decay_t<T1> >
-                                            , RemoveAdaptor_t< Decay_t<T2> >, OP >
-                            , MappedType >::Type;
+   using Type = typename If_t< IsConst_v<T1> || IsVolatile_v<T1> || IsReference_v<T1> || IsAdaptor_v<T1> ||
+                               IsConst_v<T2> || IsVolatile_v<T2> || IsReference_v<T2> || IsAdaptor_v<T2>
+                             , BinaryMapTrait< RemoveAdaptor_t< Decay_t<T1> >
+                                             , RemoveAdaptor_t< Decay_t<T2> >, OP >
+                             , MappedType >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -92,11 +92,11 @@ struct ColumnsExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< IsMatrix< RemoveReference_t<MT> >
-                            , IfTrue_< ( sizeof...( CRAs ) > 0UL )
-                                     , CompileTime
-                                     , Runtime >
-                            , Failure >::Type;
+   using Type = typename If_t< IsMatrix_v< RemoveReference_t<MT> >
+                             , If_t< ( sizeof...( CRAs ) > 0UL )
+                                   , CompileTime
+                                   , Runtime >
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -42,7 +42,6 @@
 
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -118,9 +117,9 @@ struct RowsTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , RowsTrait< Decay_t<MT>, CRAs... >
-                            , Failure >::Type;
+   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
+                             , RowsTrait< Decay_t<MT>, CRAs... >
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

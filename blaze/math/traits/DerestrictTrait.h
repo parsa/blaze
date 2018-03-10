@@ -44,7 +44,6 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -87,9 +86,9 @@ struct DerestrictTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsVector< RemoveReference_t<T> >, IsMatrix< RemoveReference_t<T> > >
-                            , Result
-                            , Failure >::Type;
+   using Type = typename If_t< IsVector_v< RemoveReference_t<T> > || IsMatrix_v< RemoveReference_t<T> >
+                             , Result
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

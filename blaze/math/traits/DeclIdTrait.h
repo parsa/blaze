@@ -46,7 +46,6 @@
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -130,11 +129,11 @@ struct DeclIdTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<MT>, IsVolatile<MT>, IsReference<MT> >
-                            , DeclIdTrait< Decay_t<MT> >
-                            , If_< IsMatrix<MT>
-                                 , Result
-                                 , Failure > >::Type;
+   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
+                             , DeclIdTrait< Decay_t<MT> >
+                             , If_t< IsMatrix_v<MT>
+                                   , Result
+                                   , Failure > >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

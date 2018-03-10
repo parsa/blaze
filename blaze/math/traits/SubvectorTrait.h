@@ -42,7 +42,6 @@
 
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -118,9 +117,9 @@ struct SubvectorTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<VT>, IsVolatile<VT>, IsReference<VT> >
-                            , SubvectorTrait< Decay_t<VT>, CSAs... >
-                            , Failure >::Type;
+   using Type = typename If_t< IsConst_v<VT> || IsVolatile_v<VT> || IsReference_v<VT>
+                             , SubvectorTrait< Decay_t<VT>, CSAs... >
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -44,9 +44,7 @@
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -95,11 +93,11 @@ struct InvExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsDenseMatrix<Tmp>
-                                , IsFloatingPoint<Tmp>
-                                , And< IsComplex<Tmp>, IsFloatingPoint< UnderlyingElement_t<Tmp> > > >
-                            , Result
-                            , Failure >::Type;
+   using Type = typename If_t< IsDenseMatrix_v<Tmp> ||
+                               IsFloatingPoint_v<Tmp> ||
+                               ( IsComplex_v<Tmp> && IsFloatingPoint_v< UnderlyingElement_t<Tmp> > )
+                             , Result
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

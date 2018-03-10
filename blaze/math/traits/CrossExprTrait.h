@@ -44,9 +44,7 @@
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -88,12 +86,12 @@ struct CrossExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< And< IsColumnVector< RemoveReference_t<T1> >
-                                     , IsColumnVector< RemoveReference_t<T2> > >
-                                , And< IsRowVector< RemoveReference_t<T1> >
-                                     , IsRowVector< RemoveReference_t<T2> > > >
-                            , Result
-                            , Failure >::Type;
+   using Type = typename If_t< ( IsColumnVector_v< RemoveReference_t<T1> > &&
+                                 IsColumnVector_v< RemoveReference_t<T2> > ) ||
+                               ( IsRowVector_v< RemoveReference_t<T1> > &&
+                                 IsRowVector_v< RemoveReference_t<T2> > )
+                             , Result
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

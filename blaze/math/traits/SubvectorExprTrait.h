@@ -95,11 +95,11 @@ struct SubvectorExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< IsVector< RemoveReference_t<VT> >
-                            , IfTrue_< ( sizeof...( CSAs ) > 0UL )
-                                     , CompileTime
-                                     , Runtime >
-                            , Failure >::Type;
+   using Type = typename If_t< IsVector_v< RemoveReference_t<VT> >
+                             , If_t< ( sizeof...( CSAs ) > 0UL )
+                                   , CompileTime
+                                   , Runtime >
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

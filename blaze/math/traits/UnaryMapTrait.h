@@ -45,7 +45,6 @@
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -107,9 +106,9 @@ struct UnaryMapTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T>, IsVolatile<T>, IsReference<T>, IsAdaptor<T> >
-                            , UnaryMapTrait< RemoveAdaptor_t< Decay_t<T> >, OP >
-                            , MappedType >::Type;
+   using Type = typename If_t< IsConst_v<T> || IsVolatile_v<T> || IsReference_v<T> || IsAdaptor_v<T>
+                             , UnaryMapTrait< RemoveAdaptor_t< Decay_t<T> >, OP >
+                             , MappedType >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -85,9 +85,9 @@ struct DivExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< HasDiv< RemoveReference_t<T1>, RemoveReference_t<T2> >
-                            , Result
-                            , Failure >::Type;
+   using Type = typename If_t< HasDiv_v< RemoveReference_t<T1>, RemoveReference_t<T2> >
+                             , Result
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

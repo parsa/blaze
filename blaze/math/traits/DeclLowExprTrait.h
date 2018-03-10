@@ -84,9 +84,9 @@ struct DeclLowExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< IsMatrix< RemoveReference_t<T> >
-                            , Result
-                            , Failure >::Type;
+   using Type = typename If_t< IsMatrix_v< RemoveReference_t<T> >
+                             , Result
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

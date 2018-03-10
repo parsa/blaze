@@ -44,7 +44,6 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -86,9 +85,9 @@ struct SchurExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< And< IsMatrix< RemoveReference_t<T1> >, IsMatrix< RemoveReference_t<T2> > >
-                            , Result
-                            , Failure >::Type;
+   using Type = typename If_t< IsMatrix_v< RemoveReference_t<T1> > && IsMatrix_v< RemoveReference_t<T2> >
+                             , Result
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

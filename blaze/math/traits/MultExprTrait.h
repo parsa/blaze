@@ -85,9 +85,9 @@ struct MultExprTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< HasMult< RemoveReference_t<T1>, RemoveReference_t<T2> >
-                            , Result
-                            , Failure >::Type;
+   using Type = typename If_t< HasMult_v< RemoveReference_t<T1>, RemoveReference_t<T2> >
+                             , Result
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
