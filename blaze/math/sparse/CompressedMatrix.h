@@ -257,7 +257,7 @@ class CompressedMatrix
       }
 
       template< typename Other >
-      inline EnableIf_< IsSparseElement<Other>, Element& >
+      inline EnableIf_t< IsSparseElement_v<Other>, Element& >
          operator=( const Other& rhs )
       {
          this->value_ = rhs.value();
@@ -265,8 +265,8 @@ class CompressedMatrix
       }
 
       template< typename Other >
-      inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
-                           , IsRValueReference<Other&&> >, Element& >
+      inline EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
+                         IsRValueReference_v<Other&&>, Element& >
          operator=( Other&& rhs )
       {
          this->value_ = std::move( rhs.value() );
@@ -274,7 +274,7 @@ class CompressedMatrix
       }
 
       template< typename Other >
-      inline EnableIf_< Not< IsSparseElement<Other> >, Element& >
+      inline EnableIf_t< !IsSparseElement_v<Other>, Element& >
          operator=( const Other& v )
       {
          this->value_ = v;
@@ -282,8 +282,8 @@ class CompressedMatrix
       }
 
       template< typename Other >
-      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
-                           , IsRValueReference<Other&&> >, Element& >
+      inline EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
+                         IsRValueReference_v<Other&&>, Element& >
          operator=( Other&& v )
       {
          this->value_ = std::move( v );
@@ -3020,7 +3020,7 @@ class CompressedMatrix<Type,true>
       }
 
       template< typename Other >
-      inline EnableIf_< IsSparseElement<Other>, Element& >
+      inline EnableIf_t< IsSparseElement_v<Other>, Element& >
          operator=( const Other& rhs )
       {
          this->value_ = rhs.value();
@@ -3028,8 +3028,8 @@ class CompressedMatrix<Type,true>
       }
 
       template< typename Other >
-      inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
-                           , IsRValueReference<Other&&> >, Element& >
+      inline EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
+                         IsRValueReference_v<Other&&>, Element& >
          operator=( Other&& rhs )
       {
          this->value_ = std::move( rhs.value() );
@@ -3037,7 +3037,7 @@ class CompressedMatrix<Type,true>
       }
 
       template< typename Other >
-      inline EnableIf_< Not< IsSparseElement<Other> >, Element& >
+      inline EnableIf_t< !IsSparseElement_v<Other>, Element& >
          operator=( const Other& v )
       {
          this->value_ = v;
@@ -3045,8 +3045,8 @@ class CompressedMatrix<Type,true>
       }
 
       template< typename Other >
-      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
-                           , IsRValueReference<Other&&> >, Element& >
+      inline EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
+                         IsRValueReference_v<Other&&>, Element& >
          operator=( Other&& v )
       {
          this->value_ = std::move( v );
@@ -6274,13 +6274,13 @@ struct SchurTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct MultTrait< CompressedMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
+struct MultTrait< CompressedMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, typename T2, bool SO >
-struct MultTrait< T1, CompressedMatrix<T2,SO>, EnableIf_< IsNumeric<T1> > >
+struct MultTrait< T1, CompressedMatrix<T2,SO>, EnableIf_t< IsNumeric_v<T1> > >
 {
    using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
@@ -6413,7 +6413,7 @@ struct MultTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct DivTrait< CompressedMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
+struct DivTrait< CompressedMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = CompressedMatrix< DivTrait_t<T1,T2>, SO >;
 };

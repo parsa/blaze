@@ -116,16 +116,16 @@ template< typename T1, bool SO1, typename T2, bool SO2 >
 inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,SO2>& rhs );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST scalar );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>&& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( SparseMatrix<MT,SO>&& mat, ST scalar );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST scalar );
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>&& mat, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( SparseMatrix<MT,SO>&& mat, ST scalar );
 //@}
 //*************************************************************************************************
 
@@ -332,7 +332,7 @@ inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,S
 template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -382,7 +382,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>& mat, ST 
 template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
 {
    return operator*=( ~mat, scalar );
 }
@@ -407,7 +407,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator*=( SparseMatrix<MT,SO>&& mat, ST
 template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -419,13 +419,12 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST 
       }
    }
 
-   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_t<MT> >
-                             , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
-                         , If_< And< IsComplex< UnderlyingNumeric_t<MT> >
-                                   , IsBuiltin<ST> >
-                              , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
-                              , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
-                         , ST >;
+   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<MT> > ||
+                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+                          , If_t< IsComplex_v< UnderlyingNumeric_t<MT> > && IsBuiltin_v<ST>
+                                , DivTrait_t< UnderlyingBuiltin_t<MT>, ST >
+                                , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
+                          , ST >;
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
 
@@ -474,7 +473,7 @@ inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>& mat, ST 
 template< typename MT    // Type of the left-hand side sparse matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, MT& > operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
 {
    return operator/=( ~mat, scalar );
 }
@@ -625,7 +624,7 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsSymmetric_v<MT> )
@@ -719,7 +718,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    using ET  = ElementType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsHermitian_v<MT> )
@@ -1055,7 +1054,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsLower_v<MT> )
@@ -1146,7 +1145,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsUniLower_v<MT> )
@@ -1253,7 +1252,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsStrictlyLower_v<MT> )
@@ -1342,7 +1341,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsUpper_v<MT> )
@@ -1433,7 +1432,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsUniUpper_v<MT> )
@@ -1540,7 +1539,7 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsStrictlyUpper_v<MT> )
@@ -1629,7 +1628,7 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsDiagonal_v<MT> )
@@ -1714,7 +1713,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    using RT  = ResultType_t<MT>;
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
-   using Tmp = If_< IsExpression<RN>, const RT, CT >;
+   using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsIdentity_v<MT> )

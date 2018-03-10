@@ -83,9 +83,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -235,7 +233,7 @@ class CompressedVector
       }
 
       template< typename Other >
-      inline EnableIf_< IsSparseElement<Other>, Element& >
+      inline EnableIf_t< IsSparseElement_v<Other>, Element& >
          operator=( const Other& rhs )
       {
          this->value_ = rhs.value();
@@ -243,8 +241,8 @@ class CompressedVector
       }
 
       template< typename Other >
-      inline EnableIf_< And< IsSparseElement< RemoveReference_t<Other> >
-                           , IsRValueReference<Other&&> >, Element& >
+      inline EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
+                         IsRValueReference_v<Other&&>, Element& >
          operator=( Other&& rhs )
       {
          this->value_ = std::move( rhs.value() );
@@ -252,7 +250,7 @@ class CompressedVector
       }
 
       template< typename Other >
-      inline EnableIf_< Not< IsSparseElement<Other> >, Element& >
+      inline EnableIf_t< !IsSparseElement_v<Other>, Element& >
          operator=( const Other& v )
       {
          this->value_ = v;
@@ -260,8 +258,8 @@ class CompressedVector
       }
 
       template< typename Other >
-      inline EnableIf_< And< Not< IsSparseElement< RemoveReference_t<Other> > >
-                           , IsRValueReference<Other&&> >, Element& >
+      inline EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
+                         IsRValueReference_v<Other&&>, Element& >
          operator=( Other&& v )
       {
          this->value_ = std::move( v );
@@ -405,7 +403,7 @@ class CompressedVector
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -2612,13 +2610,13 @@ struct SubTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool TF, typename T2 >
-struct MultTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
+struct MultTrait< CompressedVector<T1,TF>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
 };
 
 template< typename T1, typename T2, bool TF >
-struct MultTrait< T1, CompressedVector<T2,TF>, EnableIf_< IsNumeric<T1> > >
+struct MultTrait< T1, CompressedVector<T2,TF>, EnableIf_t< IsNumeric_v<T1> > >
 {
    using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
 };
@@ -2799,7 +2797,7 @@ struct MultTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool TF, typename T2 >
-struct DivTrait< CompressedVector<T1,TF>, T2, EnableIf_< IsNumeric<T2> > >
+struct DivTrait< CompressedVector<T1,TF>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = CompressedVector< DivTrait_t<T1,T2>, TF >;
 };

@@ -1297,7 +1297,7 @@ inline void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexc
 template< typename T   // Data type of the left-hand side identity matrix
         , bool SO      // Storage order of the left-hand side identity matrix
         , typename VT  // Type of the right-hand side dense vector
-        , typename = EnableIf_< IsSame< T, ElementType_t<VT> > > >
+        , typename = EnableIf_t< IsSame_v< T, ElementType_t<VT> > > >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO>& mat, const DenseVector<VT,false>& vec )
 {
@@ -1344,7 +1344,7 @@ inline decltype(auto)
 template< typename VT  // Type of the left-hand side dense vector
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO      // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_< IsSame< ElementType_t<VT>, T > > >
+        , typename = EnableIf_t< IsSame_v< ElementType_t<VT>, T > > >
 inline decltype(auto)
    operator*( const DenseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
 {
@@ -1391,7 +1391,7 @@ inline decltype(auto)
 template< typename T   // Data type of the left-hand side identity matrix
         , bool SO      // Storage order of the left-hand side identity matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , typename = EnableIf_< IsSame< T, ElementType_t<VT> > > >
+        , typename = EnableIf_t< IsSame_v< T, ElementType_t<VT> > > >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO>& mat, const SparseVector<VT,false>& vec )
 {
@@ -1438,7 +1438,7 @@ inline decltype(auto)
 template< typename VT  // Type of the left-hand side sparse vector
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO      // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_< IsSame< ElementType_t<VT>, T > > >
+        , typename = EnableIf_t< IsSame_v< ElementType_t<VT>, T > > >
 inline decltype(auto)
    operator*( const SparseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
 {
@@ -1483,7 +1483,7 @@ template< typename T   // Data type of the left-hand side identity matrix
         , bool SO1     // Storage order of the left-hand side identity matrix
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO2     // Storage order of the right-hand side dense matrix
-        , typename = EnableIf_< IsSame< T, ElementType_t<MT> > > >
+        , typename = EnableIf_t< IsSame_v< T, ElementType_t<MT> > > >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO1>& lhs, const DenseMatrix<MT,SO2>& rhs )
 {
@@ -1528,7 +1528,7 @@ template< typename MT  // Type of the left-hand side dense matrix
         , bool SO1     // Storage order of the left-hand side dense matrix
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO2     // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_< IsSame< ElementType_t<MT>, T > > >
+        , typename = EnableIf_t< IsSame_v< ElementType_t<MT>, T > > >
 inline decltype(auto)
    operator*( const DenseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
 {
@@ -1573,7 +1573,7 @@ template< typename T   // Data type of the left-hand side identity matrix
         , bool SO1     // Storage order of the left-hand side identity matrix
         , typename MT  // Type of the right-hand side sparse matrix
         , bool SO2     // Storage order of the right-hand side sparse matrix
-        , typename = EnableIf_< IsSame< T, ElementType_t<MT> > > >
+        , typename = EnableIf_t< IsSame_v< T, ElementType_t<MT> > > >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO1>& lhs, const SparseMatrix<MT,SO2>& rhs )
 {
@@ -1618,7 +1618,7 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO1     // Storage order of the left-hand side sparse matrix
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO2     // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_< IsSame< ElementType_t<MT>, T > > >
+        , typename = EnableIf_t< IsSame_v< ElementType_t<MT>, T > > >
 inline decltype(auto)
    operator*( const SparseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
 {
@@ -2219,13 +2219,13 @@ struct SchurTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct MultTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
+struct MultTrait< IdentityMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
 
 template< typename T1, typename T2, bool SO >
-struct MultTrait< T1, IdentityMatrix<T2,SO>, EnableIf_< IsNumeric<T1> > >
+struct MultTrait< T1, IdentityMatrix<T2,SO>, EnableIf_t< IsNumeric_v<T1> > >
 {
    using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
 };
@@ -2370,7 +2370,7 @@ struct MultTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, bool SO, typename T2 >
-struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_< IsNumeric<T2> > >
+struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = CompressedMatrix< DivTrait_t<T1,T2>, SO >;
 };

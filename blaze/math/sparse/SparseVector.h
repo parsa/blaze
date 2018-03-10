@@ -91,16 +91,16 @@ template< typename T1, bool TF1, typename T2, bool TF2 >
 inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>&& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( SparseVector<VT,TF>&& vec, ST scalar );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST scalar );
 
 template< typename VT, bool TF, typename ST >
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>&& vec, ST scalar );
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( SparseVector<VT,TF>&& vec, ST scalar );
 //@}
 //*************************************************************************************************
 
@@ -205,7 +205,7 @@ inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,T
 template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar )
 {
    if( IsRestricted_v<VT> ) {
       if( !tryMult( ~vec, 0UL, (~vec).size(), scalar ) ) {
@@ -250,7 +250,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST 
 template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>&& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( SparseVector<VT,TF>&& vec, ST scalar )
 {
    return operator*=( ~vec, scalar );
 }
@@ -275,7 +275,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator*=( SparseVector<VT,TF>&& vec, ST
 template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
@@ -285,13 +285,12 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST 
       }
    }
 
-   using ScalarType = If_< Or< IsFloatingPoint< UnderlyingBuiltin_t<VT> >
-                             , IsFloatingPoint< UnderlyingBuiltin_t<ST> > >
-                         , If_< And< IsComplex< UnderlyingNumeric_t<VT> >
-                                   , IsBuiltin<ST> >
-                              , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
-                              , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
-                         , ST >;
+   using ScalarType = If_t< IsFloatingPoint_v< UnderlyingBuiltin_t<VT> > ||
+                            IsFloatingPoint_v< UnderlyingBuiltin_t<ST> >
+                          , If_t< IsComplex_v< UnderlyingNumeric_t<VT> > && IsBuiltin_v<ST>
+                                , DivTrait_t< UnderlyingBuiltin_t<VT>, ST >
+                                , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
+                          , ST >;
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
 
@@ -332,7 +331,7 @@ inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, ST 
 template< typename VT    // Type of the left-hand side sparse vector
         , bool TF        // Transpose flag
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, VT& > operator/=( SparseVector<VT,TF>&& vec, ST scalar )
+inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( SparseVector<VT,TF>&& vec, ST scalar )
 {
    return operator/=( ~vec, scalar );
 }
