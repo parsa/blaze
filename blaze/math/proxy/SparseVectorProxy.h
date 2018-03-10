@@ -135,7 +135,7 @@ class SparseVectorProxy
    inline Iterator erase( Iterator pos ) const;
    inline Iterator erase( Iterator first, Iterator last ) const;
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
