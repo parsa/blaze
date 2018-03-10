@@ -104,10 +104,7 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -140,8 +137,8 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = SubmatrixData<CSAs...>;               //!< The type of the SubmatrixData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -163,13 +160,13 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
    using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -585,7 +582,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    using ConstIterator = SubmatrixIterator< ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, SubmatrixIterator< Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -640,27 +637,27 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    inline Submatrix& operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO2>& rhs );
    //@}
    //**********************************************************************************************
@@ -776,40 +773,40 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>&  rhs );
@@ -1421,7 +1418,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -1468,7 +1465,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,unaligned,false,true,CSAs...>& >
    Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -1525,7 +1523,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,unaligned,false,true,CSAs...>& >
    Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -1577,7 +1576,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,unaligned,false,true,CSAs...>& >
    Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -1634,7 +1634,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,unaligned,false,true,CSAs...>& >
    Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -1686,7 +1687,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,unaligned,false,true,CSAs...>& >
    Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -1744,7 +1746,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,false,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,unaligned,false,true,CSAs...>& >
    Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -2578,7 +2581,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2616,7 +2619,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TE
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2785,7 +2788,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatr
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2829,7 +2832,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TE
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2985,7 +2988,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -3029,7 +3032,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TE
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -3185,7 +3188,7 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -3223,7 +3226,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TE
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -3412,8 +3415,8 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = SubmatrixData<CSAs...>;               //!< The type of the SubmatrixData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -3435,13 +3438,13 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
    using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixIterator class definition**********************************************************
@@ -3859,7 +3862,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    using ConstIterator = SubmatrixIterator< ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, SubmatrixIterator< Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3914,27 +3917,27 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
    //@}
    //**********************************************************************************************
@@ -4050,40 +4053,40 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>&  rhs );
@@ -4674,7 +4677,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -4721,7 +4724,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,unaligned,true,true,CSAs...>& >
    Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4778,7 +4782,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,unaligned,true,true,CSAs...>& >
    Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4830,7 +4835,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,unaligned,true,true,CSAs...>& >
    Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4887,7 +4893,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,unaligned,true,true,CSAs...>& >
    Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4939,7 +4946,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,unaligned,true,true,CSAs...>& >
    Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -4997,7 +5005,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,unaligned,true,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,unaligned,true,true,CSAs...>& >
    Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -5808,7 +5817,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5846,7 +5855,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6015,7 +6024,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatri
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -6059,7 +6068,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6215,7 +6224,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMa
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -6259,7 +6268,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6415,7 +6424,7 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMa
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -6454,7 +6463,7 @@ inline DisableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -6643,8 +6652,8 @@ class Submatrix<MT,aligned,false,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = SubmatrixData<CSAs...>;               //!< The type of the SubmatrixData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -6666,19 +6675,19 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
    using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -6733,27 +6742,27 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
    //@}
    //**********************************************************************************************
@@ -6869,40 +6878,40 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>&  rhs );
@@ -7512,7 +7521,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -7559,7 +7568,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,aligned,false,true,CSAs...>& >
    Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7616,7 +7626,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,aligned,false,true,CSAs...>& >
    Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7668,7 +7679,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,aligned,false,true,CSAs...>& >
    Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7725,7 +7737,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,aligned,false,true,CSAs...>& >
    Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7777,7 +7790,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,aligned,false,true,CSAs...>& >
    Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -7835,7 +7849,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,false,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,aligned,false,true,CSAs...>& >
    Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -8661,7 +8676,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -8699,7 +8714,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMP
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -8868,7 +8883,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -8912,7 +8927,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMP
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -9068,7 +9083,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMat
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -9112,7 +9127,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMP
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -9268,7 +9283,7 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMat
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -9306,7 +9321,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMP
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -9495,8 +9510,8 @@ class Submatrix<MT,aligned,true,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = SubmatrixData<CSAs...>;               //!< The type of the SubmatrixData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -9518,19 +9533,19 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant submatrix value.
    using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant submatrix value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -9585,27 +9600,27 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    inline Submatrix& operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2, bool SO >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Submatrix& >
       operator%=( const Matrix<MT2,SO>& rhs );
    //@}
    //**********************************************************************************************
@@ -9721,40 +9736,40 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>&  rhs );
@@ -10344,7 +10359,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), column() ) ) {
@@ -10391,7 +10406,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,aligned,true,true,CSAs...>& >
    Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10448,7 +10464,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,aligned,true,true,CSAs...>& >
    Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10500,7 +10517,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,aligned,true,true,CSAs...>& >
    Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10557,7 +10575,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,aligned,true,true,CSAs...>& >
    Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10609,7 +10628,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                  , Submatrix<MT,aligned,true,true,CSAs...>& >
    Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -10667,7 +10687,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Submatrix<MT,aligned,true,true,CSAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>
+                 , Submatrix<MT,aligned,true,true,CSAs...>& >
    Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
@@ -11469,7 +11490,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -11507,7 +11528,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPL
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -11676,7 +11697,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -11720,7 +11741,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPL
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -11876,7 +11897,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatr
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -11920,7 +11941,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPL
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -12076,7 +12097,7 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatr
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -12115,7 +12136,7 @@ inline DisableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPL
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );

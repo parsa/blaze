@@ -87,6 +87,8 @@
 #include <blaze/math/views/columns/Dense.h>
 #include <blaze/math/views/columns/Sparse.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/SmallVector.h>
 #include <blaze/util/TypeList.h>
@@ -539,7 +541,7 @@ inline decltype(auto) columns( MT&& matrix, const SmallVector<T,N>& indices, RCA
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -566,7 +568,7 @@ inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -593,7 +595,7 @@ inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -620,7 +622,7 @@ inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -646,7 +648,7 @@ inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -672,7 +674,7 @@ inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -698,7 +700,7 @@ inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -724,7 +726,7 @@ inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args 
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -750,7 +752,7 @@ inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -778,7 +780,7 @@ inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -804,7 +806,7 @@ inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -830,7 +832,7 @@ inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -856,7 +858,7 @@ inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIfTrue_< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
 inline decltype(auto) columns( const MatTransExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -2141,7 +2143,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO           // Storage order
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
-inline DisableIf_< HasMutableDataAccess<MT> > invert( Columns<MT,SO,true,SF,CCAs...>& c )
+inline DisableIf_t< HasMutableDataAccess_v<MT> > invert( Columns<MT,SO,true,SF,CCAs...>& c )
 {
    using RT = ResultType_t< Columns<MT,SO,true,SF,CCAs...> >;
 

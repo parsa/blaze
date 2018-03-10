@@ -75,10 +75,8 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Minimum.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -1236,7 +1234,7 @@ template< typename MT1          // Type of the matrix of the left-hand side band
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the matrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline DisableIf_< Or< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
+inline DisableIf_t< IsSubmatrix_v<MT1> || IsSubmatrix_v<MT2>, bool >
    isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
                    const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
@@ -1266,7 +1264,7 @@ template< typename MT1          // Type of the submatrix of the left-hand side b
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the matrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline EnableIf_< And< IsSubmatrix<MT1>, Not< IsSubmatrix<MT2> > >, bool >
+inline EnableIf_t< IsSubmatrix_v<MT1> && !IsSubmatrix_v<MT2>, bool >
    isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
                    const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
@@ -1299,7 +1297,7 @@ template< typename MT1          // Type of the matrix of the left-hand side band
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the submatrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline EnableIf_< And< Not< IsSubmatrix<MT1> >, IsSubmatrix<MT2> >, bool >
+inline EnableIf_t< !IsSubmatrix_v<MT1> && IsSubmatrix_v<MT2>, bool >
    isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
                    const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
@@ -1332,7 +1330,7 @@ template< typename MT1          // Type of the submatrix of the left-hand side b
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the submatrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline EnableIf_< And< IsSubmatrix<MT1>, IsSubmatrix<MT2> >, bool >
+inline EnableIf_t< IsSubmatrix_v<MT1> && IsSubmatrix_v<MT2>, bool >
    isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
                    const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
 {
@@ -1898,10 +1896,10 @@ inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t I >
 struct Size< Band<MT,TF,DF,MF,I>, 0UL >
-   : public IfTrue_< ( Size_v<MT,0UL> >= 0L && Size_v<MT,1UL> >= 0L )
-                   , Minimum< PtrdiffT< Size_v<MT,0UL> - ( I >= 0L ? 0L : -I ) >
-                            , PtrdiffT< Size_v<MT,1UL> - ( I >= 0L ? I : 0L ) > >
-                   , PtrdiffT<-1L> >
+   : public If_t< ( Size_v<MT,0UL> >= 0L && Size_v<MT,1UL> >= 0L )
+                , Minimum< PtrdiffT< Size_v<MT,0UL> - ( I >= 0L ? 0L : -I ) >
+                         , PtrdiffT< Size_v<MT,1UL> - ( I >= 0L ? I : 0L ) > >
+                , PtrdiffT<-1L> >
 {};
 /*! \endcond */
 //*************************************************************************************************

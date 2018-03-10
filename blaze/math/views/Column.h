@@ -73,8 +73,7 @@
 #include <blaze/math/views/column/Sparse.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Or.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -1548,7 +1547,7 @@ struct HasMutableDataAccess< Column<MT,SO,true,SF,CCAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct IsAligned< Column<MT,SO,true,SF,CCAs...> >
-   : public And< IsAligned<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >
+   : public BoolConstant< IsAligned_v<MT> && ( IsColumnMajorMatrix_v<MT> || IsSymmetric_v<MT> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1584,7 +1583,7 @@ struct IsContiguous< Column<MT,true,true,SF,CCAs...> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct IsPadded< Column<MT,SO,true,SF,CCAs...> >
-   : public And< IsPadded<MT>, Or< IsColumnMajorMatrix<MT>, IsSymmetric<MT> > >
+   : BoolConstant< IsPadded_v<MT> && ( IsColumnMajorMatrix_v<MT> || IsSymmetric_v<MT> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -95,10 +95,7 @@
 #include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -132,8 +129,8 @@ class Columns<MT,true,true,SF,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnsData<CCAs...>;              //!< The type of the ColumnsData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -155,19 +152,19 @@ class Columns<MT,true,true,SF,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant column value.
    using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant column value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -224,27 +221,27 @@ class Columns<MT,true,true,SF,CCAs...>
    inline Columns& operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator%=( const Matrix<MT2,SO2>& rhs );
    //@}
    //**********************************************************************************************
@@ -360,10 +357,10 @@ class Columns<MT,true,true,SF,CCAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAssign<MT2> > assign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,false>& rhs );
 
@@ -371,30 +368,30 @@ class Columns<MT,true,true,SF,CCAs...>
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedAddAssign<MT2> > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSubAssign<MT2> > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< VectorizedSchurAssign<MT2> > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>&  rhs );
@@ -994,7 +991,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<MT> ) {
@@ -1046,7 +1043,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,true,true,SF,CCAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
    Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -1110,7 +1107,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,true,true,SF,CCAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
    Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -1170,7 +1167,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,true,true,SF,CCAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
    Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -1234,7 +1231,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,true,true,SF,CCAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
    Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -1294,7 +1291,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,true,true,SF,CCAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
    Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -1359,7 +1356,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,true,true,SF,CCAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
    Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2110,7 +2107,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline DisableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2153,7 +2150,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2> >
+inline EnableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2359,7 +2356,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline DisableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2408,7 +2405,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2> >
+inline EnableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2600,7 +2597,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline DisableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2650,7 +2647,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2> >
+inline EnableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2842,7 +2839,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline DisableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -2886,7 +2883,7 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_< typename Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2> >
+inline EnableIf_t< Columns<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
    Columns<MT,true,true,SF,CCAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -3108,8 +3105,8 @@ class Columns<MT,false,true,false,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnsData<CCAs...>;              //!< The type of the ColumnsData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -3130,13 +3127,13 @@ class Columns<MT,false,true,false,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant column value.
    using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant column value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
    //**********************************************************************************************
 
    //**ColumnsIterator class definition************************************************************
@@ -3471,7 +3468,7 @@ class Columns<MT,false,true,false,CCAs...>
    using ConstIterator = ColumnsIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, ColumnsIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, ColumnsIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -3528,27 +3525,27 @@ class Columns<MT,false,true,false,CCAs...>
    inline Columns& operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns& >
+   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
       operator%=( const Matrix<MT2,SO2>& rhs );
    //@}
    //**********************************************************************************************
@@ -4198,7 +4195,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<MT2>, const MT2& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<MT> ) {
@@ -4249,7 +4246,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,false,true,false,CCAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
    Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -4312,7 +4309,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,false,true,false,CCAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
    Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -4371,7 +4368,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,false,true,false,CCAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
    Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -4434,7 +4431,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,false,true,false,CCAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
    Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -4493,7 +4490,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,false,true,false,CCAs...>& >
+inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
    Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -4557,7 +4554,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_< And< IsRestricted<MT>, RequiresEvaluation<MT2> >, Columns<MT,false,true,false,CCAs...>& >
+inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
    Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
@@ -5833,8 +5830,8 @@ class Columns<MT,false,true,true,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnsData<CCAs...>;              //!< The type of the ColumnsData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -5856,19 +5853,19 @@ class Columns<MT,false,true,true,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Pointer to a constant column value.
    using ConstPointer = ConstPointer_t<MT>;
 
    //! Pointer to a non-constant column value.
-   using Pointer = If_< Or< IsConst<MT>, Not< HasMutableDataAccess<MT> > >, ConstPointer, Pointer_t<MT> >;
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

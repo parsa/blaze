@@ -120,8 +120,8 @@ class Row<MT,true,false,SF,CRAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<CRAs...>;                  //!< The type of the RowData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = RowData<CRAs...>;                     //!< The type of the RowData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -141,13 +141,13 @@ class Row<MT,true,false,SF,CRAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -234,7 +234,7 @@ class Row<MT,true,false,SF,CRAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -717,7 +717,7 @@ inline Row<MT,true,false,SF,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), 0UL ) ) {
@@ -775,7 +775,7 @@ inline Row<MT,true,false,SF,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), 0UL ) ) {
@@ -2091,8 +2091,8 @@ class Row<MT,false,false,false,CRAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<CRAs...>;                  //!< The type of the RowData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = RowData<CRAs...>;                     //!< The type of the RowData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2112,7 +2112,7 @@ class Row<MT,false,false,false,CRAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**RowElement class definition*****************************************************************
@@ -2428,7 +2428,7 @@ class Row<MT,false,false,false,CRAs...>
    using ConstIterator = RowIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, RowIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, RowIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2512,7 +2512,7 @@ class Row<MT,false,false,false,CRAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -4071,8 +4071,8 @@ class Row<MT,false,false,true,CRAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = RowData<CRAs...>;                  //!< The type of the RowData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = RowData<CRAs...>;                     //!< The type of the RowData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -4092,13 +4092,13 @@ class Row<MT,false,false,true,CRAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant row value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4185,7 +4185,7 @@ class Row<MT,false,false,true,CRAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -4655,7 +4655,7 @@ inline Row<MT,false,false,true,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), 0UL ) ) {
@@ -4712,7 +4712,7 @@ inline Row<MT,false,false,true,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, row(), 0UL ) ) {

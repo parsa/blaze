@@ -70,7 +70,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -100,8 +99,8 @@ class Elements<VT,TF,true,CEAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ElementsData<CEAs...>;             //!< The type of the ElementsData base class.
-   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
+   using DataType = ElementsData<CEAs...>;                //!< The type of the ElementsData base class.
+   using Operand  = If_t< IsExpression_v<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -121,13 +120,13 @@ class Elements<VT,TF,true,CEAs...>
    using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant element value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
+   using Reference = If_t< IsConst_v<VT>, ConstReference, Reference_t<VT> >;
 
    //! Pointer to a constant element value.
    using ConstPointer = ConstPointer_t<VT>;
 
    //! Pointer to a non-constant element value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_t<VT> >;
+   using Pointer = If_t< IsConst_v<VT> || !HasMutableDataAccess_v<VT>, ConstPointer, Pointer_t<VT> >;
    //**********************************************************************************************
 
    //**ElementsIterator class definition***********************************************************
@@ -450,7 +449,7 @@ class Elements<VT,TF,true,CEAs...>
    using ConstIterator = ElementsIterator< const This, ConstIterator_t<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator< This, Iterator_t<VT> > >;
+   using Iterator = If_t< IsConst_v<VT>, ConstIterator, ElementsIterator< This, Iterator_t<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -1048,7 +1047,7 @@ inline Elements<VT,TF,true,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {
@@ -1105,7 +1104,7 @@ inline Elements<VT,TF,true,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {
@@ -1160,7 +1159,7 @@ inline Elements<VT,TF,true,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {
@@ -1216,7 +1215,7 @@ inline Elements<VT,TF,true,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {
@@ -1271,7 +1270,7 @@ inline Elements<VT,TF,true,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {

@@ -105,8 +105,8 @@ class Elements<VT,TF,false,CEAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ElementsData<CEAs...>;             //!< The type of the ElementsData base class.
-   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
+   using DataType = ElementsData<CEAs...>;                //!< The type of the ElementsData base class.
+   using Operand  = If_t< IsExpression_v<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -126,7 +126,7 @@ class Elements<VT,TF,false,CEAs...>
    using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant element value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
+   using Reference = If_t< IsConst_v<VT>, ConstReference, Reference_t<VT> >;
    //**********************************************************************************************
 
    //**ElementsElement class definition************************************************************
@@ -429,7 +429,7 @@ class Elements<VT,TF,false,CEAs...>
    using ConstIterator = ElementsIterator< const This, ConstIterator_t<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, ElementsIterator< This, Iterator_t<VT> > >;
+   using Iterator = If_t< IsConst_v<VT>, ConstIterator, ElementsIterator< This, Iterator_t<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -515,7 +515,7 @@ class Elements<VT,TF,false,CEAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -986,7 +986,7 @@ inline Elements<VT,TF,false,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {
@@ -1043,7 +1043,7 @@ inline Elements<VT,TF,false,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {
@@ -1100,7 +1100,7 @@ inline Elements<VT,TF,false,CEAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( IsRestricted_v<VT> ) {
@@ -1977,7 +1977,7 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const DenseVector<VT2,TF>& rh
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using RT = If_< IsComputation<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
+   using RT = If_t< IsComputation_v<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
 
    reserve( (~rhs).size() );
 
@@ -2012,7 +2012,7 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const SparseVector<VT2,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using RT = If_< IsComputation<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
+   using RT = If_t< IsComputation_v<VT2>, ElementType_t<VT>, const ElementType_t<VT2>& >;
 
    size_t i( 0UL );
 

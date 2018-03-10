@@ -4046,7 +4046,7 @@ template< InversionFlag IF  // Inversion algorithm
         , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time submatrix arguments
-inline DisableIf_< HasMutableDataAccess<MT> > invert( Submatrix<MT,AF,SO,true,CSAs...>& sm )
+inline DisableIf_t< HasMutableDataAccess_v<MT> > invert( Submatrix<MT,AF,SO,true,CSAs...>& sm )
 {
    using RT = ResultType_t< Submatrix<MT,AF,SO,true,CSAs...> >;
 

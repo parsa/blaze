@@ -107,8 +107,8 @@ class Subvector<VT,AF,TF,false,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<CSAs...>;            //!< The type of the SubvectorData base class.
-   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
+   using DataType = SubvectorData<CSAs...>;               //!< The type of the SubvectorData base class.
+   using Operand  = If_t< IsExpression_v<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -128,7 +128,7 @@ class Subvector<VT,AF,TF,false,CSAs...>
    using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant subvector value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
+   using Reference = If_t< IsConst_v<VT>, ConstReference, Reference_t<VT> >;
    //**********************************************************************************************
 
    //**SubvectorElement class definition***********************************************************
@@ -417,7 +417,7 @@ class Subvector<VT,AF,TF,false,CSAs...>
    using ConstIterator = SubvectorIterator< const VT, ConstIterator_t<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, SubvectorIterator< VT, Iterator_t<VT> > >;
+   using Iterator = If_t< IsConst_v<VT>, ConstIterator, SubvectorIterator< VT, Iterator_t<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -500,7 +500,7 @@ class Subvector<VT,AF,TF,false,CSAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -1001,7 +1001,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset() ) ) {

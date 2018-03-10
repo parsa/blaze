@@ -118,8 +118,8 @@ class Columns<MT,true,false,SF,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnsData<CCAs...>;              //!< The type of the ColumnsData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -140,13 +140,13 @@ class Columns<MT,true,false,SF,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2244,8 +2244,8 @@ class Columns<MT,false,false,false,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnsData<CCAs...>;              //!< The type of the ColumnsData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the sparse matrix expression.
+   using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the sparse matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2266,7 +2266,7 @@ class Columns<MT,false,false,false,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**ColumnsElement class definition*************************************************************
@@ -2582,7 +2582,7 @@ class Columns<MT,false,false,false,CCAs...>
    using ConstIterator = ColumnsIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, ColumnsIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, ColumnsIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4433,7 +4433,7 @@ inline void Columns<MT,false,false,false,CCAs...>::assign( const DenseMatrix<MT2
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using RT = If_< IsComputation<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
+   using RT = If_t< IsComputation_v<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -4473,7 +4473,7 @@ inline void Columns<MT,false,false,false,CCAs...>::assign( const SparseMatrix<MT
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   using RT = If_< IsComputation<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
+   using RT = If_t< IsComputation_v<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -4512,7 +4512,7 @@ inline void Columns<MT,false,false,false,CCAs...>::assign( const SparseMatrix<MT
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
 
-   using RT = If_< IsComputation<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
+   using RT = If_t< IsComputation_v<MT2>, ElementType_t<MT>, const ElementType_t<MT2>& >;
 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -4669,8 +4669,8 @@ class Columns<MT,false,false,true,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnsData<CCAs...>;              //!< The type of the ColumnsData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = ColumnsData<CCAs...>;                 //!< The type of the ColumnsData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -4691,13 +4691,13 @@ class Columns<MT,false,false,true,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

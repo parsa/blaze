@@ -84,8 +84,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -117,8 +115,8 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<CSAs...>;            //!< The type of the SubvectorData base class.
-   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
+   using DataType = SubvectorData<CSAs...>;               //!< The type of the SubvectorData base class.
+   using Operand  = If_t< IsExpression_v<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -139,13 +137,13 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant subvector value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
+   using Reference = If_t< IsConst_v<VT>, ConstReference, Reference_t<VT> >;
 
    //! Pointer to a constant subvector value.
    using ConstPointer = ConstPointer_t<VT>;
 
    //! Pointer to a non-constant subvector value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_t<VT> >;
+   using Pointer = If_t< IsConst_v<VT> || !HasMutableDataAccess_v<VT>, ConstPointer, Pointer_t<VT> >;
    //**********************************************************************************************
 
    //**SubvectorIterator class definition**********************************************************
@@ -563,7 +561,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    using ConstIterator = SubvectorIterator< ConstIterator_t<VT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, SubvectorIterator< Iterator_t<VT> > >;
+   using Iterator = If_t< IsConst_v<VT>, ConstIterator, SubvectorIterator< Iterator_t<VT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -732,42 +730,42 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedAssign<VT2> > assign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedAssign<VT2>::value > assign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedAssign<VT2> > assign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedAssign<VT2>::value > assign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void assign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedAddAssign<VT2> > addAssign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<VT2>::value > addAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedAddAssign<VT2> > addAssign ( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<VT2>::value > addAssign ( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void addAssign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedSubAssign<VT2> > subAssign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<VT2>::value > subAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedSubAssign<VT2> > subAssign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<VT2>::value > subAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void subAssign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedMultAssign<VT2> > multAssign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedMultAssign<VT2>::value > multAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedMultAssign<VT2> > multAssign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedMultAssign<VT2>::value > multAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void multAssign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedDivAssign<VT2>::value > divAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedDivAssign<VT2>::value > divAssign( const DenseVector <VT2,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1268,7 +1266,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset() ) ) {
@@ -1321,7 +1319,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset() ) ) {
@@ -1372,7 +1370,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset() ) ) {
@@ -1424,7 +1422,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset() ) ) {
@@ -1475,7 +1473,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( vector_, right, offset() ) ) {
@@ -2112,7 +2110,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+inline DisableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2146,7 +2144,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+inline EnableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2234,7 +2232,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+inline DisableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2268,7 +2266,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+inline EnableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2342,7 +2340,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+inline DisableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2376,7 +2374,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+inline EnableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2450,7 +2448,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+inline DisableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2484,7 +2482,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+inline EnableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2571,7 +2569,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+inline DisableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -2605,7 +2603,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+inline EnableIf_t< Subvector<VT,unaligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2>::value >
    Subvector<VT,unaligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -2665,8 +2663,8 @@ class Subvector<VT,aligned,TF,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubvectorData<CSAs...>;            //!< The type of the SubvectorData base class.
-   using Operand  = If_< IsExpression<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
+   using DataType = SubvectorData<CSAs...>;               //!< The type of the SubvectorData base class.
+   using Operand  = If_t< IsExpression_v<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
  public:
@@ -2687,19 +2685,19 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    using ConstReference = ConstReference_t<VT>;
 
    //! Reference to a non-constant subvector value.
-   using Reference = If_< IsConst<VT>, ConstReference, Reference_t<VT> >;
+   using Reference = If_t< IsConst_v<VT>, ConstReference, Reference_t<VT> >;
 
    //! Pointer to a constant subvector value.
    using ConstPointer = ConstPointer_t<VT>;
 
    //! Pointer to a non-constant subvector value.
-   using Pointer = If_< Or< IsConst<VT>, Not< HasMutableDataAccess<VT> > >, ConstPointer, Pointer_t<VT> >;
+   using Pointer = If_t< IsConst_v<VT> || !HasMutableDataAccess_v<VT>, ConstPointer, Pointer_t<VT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<VT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<VT>, ConstIterator, Iterator_t<VT> >;
+   using Iterator = If_t< IsConst_v<VT>, ConstIterator, Iterator_t<VT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2868,42 +2866,42 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedAssign<VT2> > assign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedAssign<VT2>::value > assign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedAssign<VT2> > assign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedAssign<VT2>::value > assign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void assign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedAddAssign<VT2> > addAssign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedAddAssign<VT2>::value > addAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedAddAssign<VT2> > addAssign ( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedAddAssign<VT2>::value > addAssign ( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void addAssign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedSubAssign<VT2> > subAssign ( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedSubAssign<VT2>::value > subAssign ( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedSubAssign<VT2> > subAssign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedSubAssign<VT2>::value > subAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void subAssign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedMultAssign<VT2> > multAssign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedMultAssign<VT2>::value > multAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedMultAssign<VT2> > multAssign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedMultAssign<VT2>::value > multAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 > inline void multAssign( const SparseVector<VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline DisableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
+   inline DisableIf_t< VectorizedDivAssign<VT2>::value > divAssign( const DenseVector <VT2,TF>& rhs );
 
    template< typename VT2 >
-   inline EnableIf_< VectorizedDivAssign<VT2> > divAssign( const DenseVector <VT2,TF>& rhs );
+   inline EnableIf_t< VectorizedDivAssign<VT2>::value > divAssign( const DenseVector <VT2,TF>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -3393,7 +3391,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAssign( vector_, right, offset() ) ) {
@@ -3446,7 +3444,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryAddAssign( vector_, right, offset() ) ) {
@@ -3497,7 +3495,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !trySubAssign( vector_, right, offset() ) ) {
@@ -3549,7 +3547,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryMultAssign( vector_, right, offset() ) ) {
@@ -3600,7 +3598,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<VT>, CompositeType_t<VT2>, const VT2& >;
+   using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
    Right right( ~rhs );
 
    if( !tryDivAssign( vector_, right, offset() ) ) {
@@ -4228,7 +4226,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >   // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+inline DisableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -4262,7 +4260,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2> >
+inline EnableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -4348,7 +4346,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+inline DisableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -4382,7 +4380,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2> >
+inline EnableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -4456,7 +4454,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+inline DisableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -4490,7 +4488,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2> >
+inline EnableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -4564,7 +4562,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+inline DisableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -4598,7 +4596,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2> >
+inline EnableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -4685,7 +4683,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline DisableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+inline DisableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
@@ -4719,7 +4717,7 @@ template< typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time subvector arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
-inline EnableIf_< typename Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2> >
+inline EnableIf_t< Subvector<VT,aligned,TF,true,CSAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT2>::value >
    Subvector<VT,aligned,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );

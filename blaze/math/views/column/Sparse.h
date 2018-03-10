@@ -119,8 +119,8 @@ class Column<MT,true,false,SF,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = ColumnData<CCAs...>;                  //!< The type of the ColumnData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -140,13 +140,13 @@ class Column<MT,true,false,SF,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -233,7 +233,7 @@ class Column<MT,true,false,SF,CCAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -716,7 +716,7 @@ inline Column<MT,true,false,SF,CCAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
@@ -774,7 +774,7 @@ inline Column<MT,true,false,SF,CCAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
@@ -2090,8 +2090,8 @@ class Column<MT,false,false,false,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = ColumnData<CCAs...>;                  //!< The type of the ColumnData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2111,7 +2111,7 @@ class Column<MT,false,false,false,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**ColumnElement class definition**************************************************************
@@ -2427,7 +2427,7 @@ class Column<MT,false,false,false,CCAs...>
    using ConstIterator = ColumnIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, ColumnIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, ColumnIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2511,7 +2511,7 @@ class Column<MT,false,false,false,CCAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -4076,8 +4076,8 @@ class Column<MT,false,false,true,CCAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = ColumnData<CCAs...>;               //!< The type of the ColumnData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using DataType = ColumnData<CCAs...>;                  //!< The type of the ColumnData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -4097,13 +4097,13 @@ class Column<MT,false,false,true,CCAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant column value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
    //! Iterator over constant elements.
    using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4190,7 +4190,7 @@ class Column<MT,false,false,true,CCAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -4660,7 +4660,7 @@ inline Column<MT,false,false,true,CCAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {
@@ -4717,7 +4717,7 @@ inline Column<MT,false,false,true,CCAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using Right = If_< IsRestricted<MT>, CompositeType_t<VT>, const VT& >;
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
    if( !tryAssign( matrix_, right, 0UL, column() ) ) {

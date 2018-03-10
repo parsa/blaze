@@ -120,8 +120,8 @@ class Submatrix<MT,AF,false,false,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = SubmatrixData<CSAs...>;               //!< The type of the SubmatrixData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -142,7 +142,7 @@ class Submatrix<MT,AF,false,false,CSAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -431,7 +431,7 @@ class Submatrix<MT,AF,false,false,CSAs...>
    using ConstIterator = SubmatrixIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2568,8 +2568,8 @@ class Submatrix<MT,AF,true,false,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = SubmatrixData<CSAs...>;            //!< The type of the SubmatrixData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
+   using DataType = SubmatrixData<CSAs...>;               //!< The type of the SubmatrixData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
  public:
@@ -2590,7 +2590,7 @@ class Submatrix<MT,AF,true,false,CSAs...>
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant submatrix value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**SubmatrixElement class definition***********************************************************
@@ -2879,7 +2879,7 @@ class Submatrix<MT,AF,true,false,CSAs...>
    using ConstIterator = SubmatrixIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, SubmatrixIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

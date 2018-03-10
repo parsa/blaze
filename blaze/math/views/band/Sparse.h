@@ -114,9 +114,9 @@ class Band<MT,TF,false,false,CBAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using RT       = ResultType_t<MT>;                  //!< Result type of the sparse matrix expression.
-   using DataType = BandData<CBAs...>;                 //!< The type of the BandData base class.
-   using Operand  = If_< IsExpression<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
+   using RT       = ResultType_t<MT>;                     //!< Result type of the sparse matrix expression.
+   using DataType = BandData<CBAs...>;                    //!< The type of the BandData base class.
+   using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
  public:
@@ -132,13 +132,13 @@ class Band<MT,TF,false,false,CBAs...>
    using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< RequiresEvaluation_v<MT>, const ResultType, const Band& >;
+   using CompositeType = If_t< RequiresEvaluation_v<MT>, const ResultType, const Band& >;
 
    //! Reference to a constant band value.
    using ConstReference = ConstReference_t<MT>;
 
    //! Reference to a non-constant band value.
-   using Reference = If_< IsConst<MT>, ConstReference, Reference_t<MT> >;
+   using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
    //**********************************************************************************************
 
    //**BandElement class definition****************************************************************
@@ -463,7 +463,7 @@ class Band<MT,TF,false,false,CBAs...>
    using ConstIterator = BandIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_< IsConst<MT>, ConstIterator, BandIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, BandIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -548,7 +548,7 @@ class Band<MT,TF,false,false,CBAs...>
    inline Iterator erase( Iterator pos );
    inline Iterator erase( Iterator first, Iterator last );
 
-   template< typename Pred, typename = DisableIf_< IsIntegral<Pred> > >
+   template< typename Pred, typename = DisableIf_t< IsIntegral_v<Pred> > >
    inline void erase( Pred predicate );
 
    template< typename Pred >
@@ -2216,14 +2216,14 @@ class Band<MT,TF,false,true,CBAs...>
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Type for the assignment of the left-hand side matrix operand.
-   using LT = If_< And< IsSparseMatrix<LeftOperand>, IsColumnMajorMatrix<LeftOperand> >
-                 , ResultType_t<LeftOperand>
-                 , CompositeType_t<LeftOperand> >;
+   using LT = If_t< IsSparseMatrix_v<LeftOperand> && IsColumnMajorMatrix_v<LeftOperand>
+                  , ResultType_t<LeftOperand>
+                  , CompositeType_t<LeftOperand> >;
 
    //! Type for the assignment of the right-hand side matrix operand.
-   using RT = If_< And< IsSparseMatrix<RightOperand>, IsRowMajorMatrix<RightOperand> >
-                 , ResultType_t<RightOperand>
-                 , CompositeType_t<RightOperand> >;
+   using RT = If_t< IsSparseMatrix_v<RightOperand> && IsRowMajorMatrix_v<RightOperand>
+                  , ResultType_t<RightOperand>
+                  , CompositeType_t<RightOperand> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
