@@ -144,9 +144,9 @@ class HermitianValue
    using RepresentedType = ElementType_t<MT>;  //!< Type of the represented matrix element.
 
    //! Value type of the represented complex element.
-   using ValueType = typename If_< IsComplex<RepresentedType>
-                                 , ComplexType<RepresentedType>
-                                 , BuiltinType<RepresentedType> >::Type;
+   using ValueType = typename If_t< IsComplex_v<RepresentedType>
+                                  , ComplexType<RepresentedType>
+                                  , BuiltinType<RepresentedType> >::Type;
 
    using value_type = ValueType;  //!< Value type of the represented complex element.
    //**********************************************************************************************

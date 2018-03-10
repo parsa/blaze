@@ -1372,17 +1372,17 @@ struct AddTrait< IdentityMatrix<T,SO1>, HermitianMatrix<MT,SO2,DF> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
 struct AddTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
-   using Type = If_< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
-                   , SymmetricMatrix< AddTrait_t<MT1,MT2> >
-                   , AddTrait_t<MT1,MT2> >;
+   using Type = If_t< IsSymmetric_v< HermitianMatrix<MT1,SO1,DF1> >
+                    , SymmetricMatrix< AddTrait_t<MT1,MT2> >
+                    , AddTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
-                   , SymmetricMatrix< AddTrait_t<MT1,MT2> >
-                   , AddTrait_t<MT1,MT2> >;
+   using Type = If_t< IsSymmetric_v< HermitianMatrix<MT2,SO2,DF2> >
+                    , SymmetricMatrix< AddTrait_t<MT1,MT2> >
+                    , AddTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1479,17 +1479,17 @@ struct SubTrait< IdentityMatrix<T,SO1>, HermitianMatrix<MT,SO2,DF> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
-                   , SymmetricMatrix< SubTrait_t<MT1,MT2> >
-                   , SubTrait_t<MT1,MT2> >;
+   using Type = If_t< IsSymmetric_v< HermitianMatrix<MT1,SO1,DF1> >
+                    , SymmetricMatrix< SubTrait_t<MT1,MT2> >
+                    , SubTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
-                   , SymmetricMatrix< SubTrait_t<MT1,MT2> >
-                   , SubTrait_t<MT1,MT2> >;
+   using Type = If_t< IsSymmetric_v< HermitianMatrix<MT2,SO2,DF2> >
+                    , SymmetricMatrix< SubTrait_t<MT1,MT2> >
+                    , SubTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1586,17 +1586,17 @@ struct SchurTrait< IdentityMatrix<T,SO1>, HermitianMatrix<MT,SO2,DF> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
 struct SchurTrait< HermitianMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
 {
-   using Type = If_< IsSymmetric< HermitianMatrix<MT1,SO1,DF1> >
-                   , SymmetricMatrix< SchurTrait_t<MT1,MT2> >
-                   , SchurTrait_t<MT1,MT2> >;
+   using Type = If_t< IsSymmetric_v< HermitianMatrix<MT1,SO1,DF1> >
+                    , SymmetricMatrix< SchurTrait_t<MT1,MT2> >
+                    , SchurTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsSymmetric< HermitianMatrix<MT2,SO2,DF2> >
-                   , SymmetricMatrix< SchurTrait_t<MT1,MT2> >
-                   , SchurTrait_t<MT1,MT2> >;
+   using Type = If_t< IsSymmetric_v< HermitianMatrix<MT2,SO2,DF2> >
+                    , SymmetricMatrix< SchurTrait_t<MT1,MT2> >
+                    , SchurTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1619,13 +1619,13 @@ struct SchurTrait< HermitianMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct MultTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = HermitianMatrix< MultTrait_t<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, HermitianMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
+struct MultTrait< T, HermitianMatrix<MT,SO,DF>, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = HermitianMatrix< MultTrait_t<T,MT> >;
 };
@@ -1794,7 +1794,7 @@ struct MultTrait< HermitianMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = HermitianMatrix< DivTrait_t<MT,T> >;
 };
@@ -1857,9 +1857,9 @@ struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Real >
 template< typename MT, bool SO, bool DF >
 struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Imag >
 {
-   using Type = If_< IsBuiltin< ElementType_t<MT> >
-                   , HermitianMatrix< UnaryMapTrait_t<MT,Imag> >
-                   , UnaryMapTrait_t<MT,Imag> >;
+   using Type = If_t< IsBuiltin_v< ElementType_t<MT> >
+                    , HermitianMatrix< UnaryMapTrait_t<MT,Imag> >
+                    , UnaryMapTrait_t<MT,Imag> >;
 };
 
 template< typename MT, bool SO, bool DF >

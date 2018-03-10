@@ -160,9 +160,9 @@ class SymmetricMatrix<MT,SO,true,false>
     public:
       //**Type definitions*************************************************************************
       //! Return type for the access to the value of a dense matrix element.
-      using Reference = If_< IsConst<MatrixType>
-                           , ConstReference_t<MatrixType>
-                           , Reference_t<MatrixType> >;
+      using Reference = If_t< IsConst_v<MatrixType>
+                            , ConstReference_t<MatrixType>
+                            , Reference_t<MatrixType> >;
 
       using IteratorCategory = std::random_access_iterator_tag;  //!< The iterator category.
       using ValueType        = RemoveReference_t<Reference>;     //!< Type of the underlying elements.
@@ -513,46 +513,46 @@ class SymmetricMatrix<MT,SO,true,false>
    inline SymmetricMatrix& operator=( SymmetricMatrix&& rhs ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_< IsComputation<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsComputation<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
    inline SymmetricMatrix& operator=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< IsComputation<MT2>, SymmetricMatrix& > operator+=( const Matrix<MT2,SO>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsComputation<MT2>, SymmetricMatrix& > operator+=( const Matrix<MT2,SO>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator+=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
    inline SymmetricMatrix& operator+=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< IsComputation<MT2>, SymmetricMatrix& > operator-=( const Matrix<MT2,SO>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsComputation<MT2>, SymmetricMatrix& > operator-=( const Matrix<MT2,SO>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator-=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
    inline SymmetricMatrix& operator-=( const Matrix<MT2,!SO>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_< IsComputation<MT2>, SymmetricMatrix& > operator%=( const Matrix<MT2,SO>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsComputation<MT2>, SymmetricMatrix& > operator%=( const Matrix<MT2,SO>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator%=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
    inline SymmetricMatrix& operator%=( const Matrix<MT2,!SO>& rhs );
 
    template< typename ST >
-   inline EnableIf_< IsNumeric<ST>, SymmetricMatrix >& operator*=( ST rhs );
+   inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix >& operator*=( ST rhs );
 
    template< typename ST >
-   inline EnableIf_< IsNumeric<ST>, SymmetricMatrix >& operator/=( ST rhs );
+   inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix >& operator/=( ST rhs );
    //@}
    //**********************************************************************************************
 
@@ -851,7 +851,7 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,SO>&
    using blaze::resize;
 
    using RT  = RemoveAdaptor_t<ResultType_t<MT2> >;
-   using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
+   using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
    if( IsSymmetric_v<MT2> ) {
       resize( matrix_, (~m).rows(), (~m).columns() );
@@ -894,7 +894,7 @@ inline SymmetricMatrix<MT,SO,true,false>::SymmetricMatrix( const Matrix<MT2,!SO>
    using blaze::resize;
 
    using RT  = RemoveAdaptor_t< ResultType_t<MT2> >;
-   using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
+   using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
    if( IsSymmetric_v<MT2> ) {
       resize( matrix_, (~m).rows(), (~m).columns() );
@@ -1338,7 +1338,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
@@ -1384,12 +1384,12 @@ inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
 
-   using Tmp = If_< IsSymmetric<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
+   using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1459,7 +1459,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
    if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
@@ -1493,10 +1493,10 @@ inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator+=( const Matrix<MT2,SO>& rhs )
 {
-   using Tmp = If_< IsSymmetric<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
+   using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1563,7 +1563,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
    if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
@@ -1597,10 +1597,10 @@ inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator-=( const Matrix<MT2,SO>& rhs )
 {
-   using Tmp = If_< IsSymmetric<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
+   using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1668,7 +1668,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,SO>& rhs )
 {
    if( !IsSymmetric_v<MT2> && !isSymmetric( ~rhs ) ) {
@@ -1703,10 +1703,10 @@ inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,true,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,true,false>& >
    SymmetricMatrix<MT,SO,true,false>::operator%=( const Matrix<MT2,SO>& rhs )
 {
-   using Tmp = If_< IsSymmetric<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
+   using Tmp = If_t< IsSymmetric_v<MT2>, CompositeType_t<MT2>, ResultType_t<MT2> >;
 
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to symmetric matrix" );
@@ -1768,7 +1768,7 @@ inline SymmetricMatrix<MT,SO,true,false>&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,true,false> >&
+inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix<MT,SO,true,false> >&
    SymmetricMatrix<MT,SO,true,false>::operator*=( ST rhs )
 {
    if( SO ) {
@@ -1799,7 +1799,7 @@ inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,true,false> >&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,true,false> >&
+inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix<MT,SO,true,false> >&
    SymmetricMatrix<MT,SO,true,false>::operator/=( ST rhs )
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );

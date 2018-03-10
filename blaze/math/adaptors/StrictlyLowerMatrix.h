@@ -1801,13 +1801,13 @@ struct SchurTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< StrictlyLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct MultTrait< StrictlyLowerMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = StrictlyLowerMatrix< MultTrait_t<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, StrictlyLowerMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
+struct MultTrait< T, StrictlyLowerMatrix<MT,SO,DF>, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = StrictlyLowerMatrix< MultTrait_t<T,MT> >;
 };
@@ -2012,7 +2012,7 @@ struct MultTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< StrictlyLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct DivTrait< StrictlyLowerMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = StrictlyLowerMatrix< DivTrait_t<MT,T> >;
 };

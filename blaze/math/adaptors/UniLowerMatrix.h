@@ -2785,13 +2785,13 @@ struct SchurTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct MultTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = LowerMatrix< MultTrait_t<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, UniLowerMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
+struct MultTrait< T, UniLowerMatrix<MT,SO,DF>, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = LowerMatrix< MultTrait_t<T,MT> >;
 };
@@ -2984,7 +2984,7 @@ struct MultTrait< UniLowerMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct DivTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = LowerMatrix< DivTrait_t<MT,T> >;
 };

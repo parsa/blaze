@@ -127,9 +127,9 @@ class HermitianProxy
    using ConstPointer    = const HermitianProxy*;  //!< Pointer-to-const to the represented element.
 
    //! Value type of the represented complex element.
-   using ValueType = typename If_< IsComplex<RepresentedType>
-                                 , ComplexType<RepresentedType>
-                                 , BuiltinType<RepresentedType> >::Type;
+   using ValueType = typename If_t< IsComplex_v<RepresentedType>
+                                  , ComplexType<RepresentedType>
+                                  , BuiltinType<RepresentedType> >::Type;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

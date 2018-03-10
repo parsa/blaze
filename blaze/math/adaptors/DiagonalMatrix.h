@@ -1530,17 +1530,17 @@ struct AddTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_t<MT2> >
-                   , SymmetricMatrix< AddTrait_t<MT1,MT2> >
-                   , AddTrait_t<MT1,MT2> >;
+   using Type = If_t< IsBuiltin_v< ElementType_t<MT2> >
+                    , SymmetricMatrix< AddTrait_t<MT1,MT2> >
+                    , AddTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct AddTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_t<MT1> >
-                   , SymmetricMatrix< AddTrait_t<MT1,MT2> >
-                   , AddTrait_t<MT1,MT2> >;
+   using Type = If_t< IsBuiltin_v< ElementType_t<MT1> >
+                    ,  SymmetricMatrix< AddTrait_t<MT1,MT2> >
+                    , AddTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -1721,17 +1721,17 @@ struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, DiagonalMatrix<MT2,SO2,DF2> >
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< DiagonalMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_t<MT2> >
-                   , SymmetricMatrix< SubTrait_t<MT1,MT2> >
-                   , SubTrait_t<MT1,MT2> >;
+   using Type = If_t< IsBuiltin_v< ElementType_t<MT2> >
+                    , SymmetricMatrix< SubTrait_t<MT1,MT2> >
+                    , SubTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
 struct SubTrait< HermitianMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 {
-   using Type = If_< IsBuiltin< ElementType_t<MT1> >
-                   , SymmetricMatrix< SubTrait_t<MT1,MT2> >
-                   , SubTrait_t<MT1,MT2> >;
+   using Type = If_t< IsBuiltin_v< ElementType_t<MT1> >
+                    , SymmetricMatrix< SubTrait_t<MT1,MT2> >
+                    , SubTrait_t<MT1,MT2> >;
 };
 
 template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
@@ -2001,13 +2001,13 @@ struct SchurTrait< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct MultTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = DiagonalMatrix< MultTrait_t<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, DiagonalMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
+struct MultTrait< T, DiagonalMatrix<MT,SO,DF>, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = DiagonalMatrix< MultTrait_t<T,MT> >;
 };
@@ -2260,7 +2260,7 @@ struct MultTrait< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct DivTrait< DiagonalMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = DiagonalMatrix< DivTrait_t<MT,T> >;
 };

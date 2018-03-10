@@ -694,37 +694,37 @@ class StrictlyLowerMatrix<MT,SO,true>
    inline StrictlyLowerMatrix& operator=( StrictlyLowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, StrictlyLowerMatrix& >
+   inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
       operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix& >
+   inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
       operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, StrictlyLowerMatrix& >
+   inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix& >
+   inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
       operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, StrictlyLowerMatrix& >
+   inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix& >
+   inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
       operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline StrictlyLowerMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
 
    template< typename ST >
-   inline EnableIf_< IsNumeric<ST>, StrictlyLowerMatrix >& operator*=( ST rhs );
+   inline EnableIf_t< IsNumeric_v<ST>, StrictlyLowerMatrix >& operator*=( ST rhs );
 
    template< typename ST >
-   inline EnableIf_< IsNumeric<ST>, StrictlyLowerMatrix >& operator/=( ST rhs );
+   inline EnableIf_t< IsNumeric_v<ST>, StrictlyLowerMatrix >& operator/=( ST rhs );
    //@}
    //**********************************************************************************************
 
@@ -1691,7 +1691,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
+inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
    StrictlyLowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular_v<MT2> ||
@@ -1727,7 +1727,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
+inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
    StrictlyLowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
@@ -1773,7 +1773,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
+inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
    StrictlyLowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular_v<MT2> ||
@@ -1809,7 +1809,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
+inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
    StrictlyLowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
@@ -1855,7 +1855,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
+inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
    StrictlyLowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular_v<MT2> ||
@@ -1891,7 +1891,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
+inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,true>& >
    StrictlyLowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
@@ -1964,7 +1964,7 @@ inline StrictlyLowerMatrix<MT,SO,true>&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, StrictlyLowerMatrix<MT,SO,true> >&
+inline EnableIf_t< IsNumeric_v<ST>, StrictlyLowerMatrix<MT,SO,true> >&
    StrictlyLowerMatrix<MT,SO,true>::operator*=( ST rhs )
 {
    matrix_ *= rhs;
@@ -1984,7 +1984,7 @@ inline EnableIf_< IsNumeric<ST>, StrictlyLowerMatrix<MT,SO,true> >&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, StrictlyLowerMatrix<MT,SO,true> >&
+inline EnableIf_t< IsNumeric_v<ST>, StrictlyLowerMatrix<MT,SO,true> >&
    StrictlyLowerMatrix<MT,SO,true>::operator/=( ST rhs )
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );

@@ -193,22 +193,22 @@ class UpperMatrix<MT,SO,false>
    inline UpperMatrix& operator=( UpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline UpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
@@ -935,7 +935,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
@@ -973,7 +973,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
@@ -1022,7 +1022,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
@@ -1060,7 +1060,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
@@ -1109,7 +1109,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
@@ -1147,7 +1147,7 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, UpperMatrix<MT,SO,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
    UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {

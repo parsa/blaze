@@ -505,10 +505,10 @@ class SymmetricMatrix<MT,SO,false,false>
    inline SymmetricMatrix& operator=( SymmetricMatrix&& rhs ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_< IsComputation<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
-   inline EnableIf_< IsComputation<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& > operator=( const Matrix<MT2,SO>& rhs );
 
    template< typename MT2 >
    inline SymmetricMatrix& operator=( const Matrix<MT2,!SO>& rhs );
@@ -532,10 +532,10 @@ class SymmetricMatrix<MT,SO,false,false>
    inline SymmetricMatrix& operator%=( const Matrix<MT2,!SO>& rhs );
 
    template< typename ST >
-   inline EnableIf_< IsNumeric<ST>, SymmetricMatrix >& operator*=( ST rhs );
+   inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix >& operator*=( ST rhs );
 
    template< typename ST >
-   inline EnableIf_< IsNumeric<ST>, SymmetricMatrix >& operator/=( ST rhs );
+   inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix >& operator/=( ST rhs );
    //@}
    //**********************************************************************************************
 
@@ -819,7 +819,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,SO>
    using blaze::resize;
 
    using RT  = RemoveAdaptor_t< ResultType_t<MT2> >;
-   using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
+   using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
    Tmp tmp( ~m );
 
@@ -856,7 +856,7 @@ inline SymmetricMatrix<MT,SO,false,false>::SymmetricMatrix( const Matrix<MT2,!SO
    using blaze::resize;
 
    using RT  = RemoveAdaptor_t< ResultType_t<MT2> >;
-   using Tmp = If_< IsComputation<MT2>, RT, const MT2& >;
+   using Tmp = If_t< IsComputation_v<MT2>, RT, const MT2& >;
 
    Tmp tmp( ~m );
 
@@ -1224,7 +1224,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
+inline DisableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,false,false>& >
    SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
@@ -1269,7 +1269,7 @@ inline DisableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
 template< typename MT     // Type of the adapted sparse matrix
         , bool SO >       // Storage order of the adapted sparse matrix
 template< typename MT2 >  // Type of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, SymmetricMatrix<MT,SO,false,false>& >
+inline EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix<MT,SO,false,false>& >
    SymmetricMatrix<MT,SO,false,false>::operator=( const Matrix<MT2,SO>& rhs )
 {
    using blaze::resize;
@@ -1550,7 +1550,7 @@ inline SymmetricMatrix<MT,SO,false,false>&
 template< typename MT    // Type of the adapted sparse matrix
         , bool SO >      // Storage order of the adapted sparse matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,false,false> >&
+inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix<MT,SO,false,false> >&
    SymmetricMatrix<MT,SO,false,false>::operator*=( ST rhs )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
@@ -1576,7 +1576,7 @@ inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,false,false> >&
 template< typename MT    // Type of the adapted sparse matrix
         , bool SO >      // Storage order of the adapted sparse matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_< IsNumeric<ST>, SymmetricMatrix<MT,SO,false,false> >&
+inline EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix<MT,SO,false,false> >&
    SymmetricMatrix<MT,SO,false,false>::operator/=( ST rhs )
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );

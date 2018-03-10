@@ -1882,13 +1882,13 @@ struct SchurTrait< UpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct MultTrait< UpperMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct MultTrait< UpperMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = UpperMatrix< MultTrait_t<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF >
-struct MultTrait< T, UpperMatrix<MT,SO,DF>, EnableIf_< IsNumeric<T> > >
+struct MultTrait< T, UpperMatrix<MT,SO,DF>, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = UpperMatrix< MultTrait_t<T,MT> >;
 };
@@ -2105,7 +2105,7 @@ struct MultTrait< UpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< UpperMatrix<MT,SO,DF>, T, EnableIf_< IsNumeric<T> > >
+struct DivTrait< UpperMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = UpperMatrix< DivTrait_t<MT,T> >;
 };

@@ -698,22 +698,22 @@ class UniUpperMatrix<MT,SO,true>
    inline UniUpperMatrix& operator=( UniUpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, UniUpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, UniUpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, UniUpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, UniUpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, UniUpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, UniUpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, UniUpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, UniUpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_< IsComputation<MT2>, UniUpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline DisableIf_t< IsComputation_v<MT2>, UniUpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_< IsComputation<MT2>, UniUpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline EnableIf_t< IsComputation_v<MT2>, UniUpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
    inline UniUpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
@@ -1686,7 +1686,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
+inline DisableIf_t< IsComputation_v<MT2>, UniUpperMatrix<MT,SO,true>& >
    UniUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsStrictlyTriangular_v<MT2> || ( !IsUniUpper_v<MT2> && !isUniUpper( ~rhs ) ) ) {
@@ -1721,7 +1721,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
+inline EnableIf_t< IsComputation_v<MT2>, UniUpperMatrix<MT,SO,true>& >
    UniUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsStrictlyTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
@@ -1767,7 +1767,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
+inline DisableIf_t< IsComputation_v<MT2>, UniUpperMatrix<MT,SO,true>& >
    UniUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
@@ -1803,7 +1803,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
+inline EnableIf_t< IsComputation_v<MT2>, UniUpperMatrix<MT,SO,true>& >
    UniUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
@@ -1850,7 +1850,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
+inline DisableIf_t< IsComputation_v<MT2>, UniUpperMatrix<MT,SO,true>& >
    UniUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
@@ -1886,7 +1886,7 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_< IsComputation<MT2>, UniUpperMatrix<MT,SO,true>& >
+inline EnableIf_t< IsComputation_v<MT2>, UniUpperMatrix<MT,SO,true>& >
    UniUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
 {
    if( IsLower_v<MT2> || IsUniTriangular_v<MT2> ||
@@ -1940,7 +1940,7 @@ inline UniUpperMatrix<MT,SO,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to uniupper matrix" );
    }
 
-   If_< IsComputation<MT2>, ResultType_t<MT2>, const MT2& > tmp( ~rhs );
+   If_t< IsComputation_v<MT2>, ResultType_t<MT2>, const MT2& > tmp( ~rhs );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i ) {
       if( !isOne( tmp(i,i) ) ) {

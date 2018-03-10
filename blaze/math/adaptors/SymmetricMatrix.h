@@ -1001,13 +1001,13 @@ struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
+struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = SymmetricMatrix< MultTrait_t<MT,T> >;
 };
 
 template< typename T, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, EnableIf_< IsNumeric<T> > >
+struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = SymmetricMatrix< MultTrait_t<T,MT> >;
 };
@@ -1164,7 +1164,7 @@ struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_< IsNumeric<T> > >
+struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_t< IsNumeric_v<T> > >
 {
    using Type = SymmetricMatrix< DivTrait_t<MT,T> >;
 };
