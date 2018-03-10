@@ -89,11 +89,11 @@
    \endcode
 
 // The macro results in the definition of a new class with the specified name \a TYPE_TRAIT_NAME
-// within the current namespace. This may cause name collisions with any other entity called
-// \a TYPE_TRAIT_NAME in the same namespace. Therefore it is advisable to create the type trait
-// as locally as possible to minimize the probability of name collisions. Note however that the
-// macro cannot be used within function scope since a template declaration cannot appear at
-// block scope.
+// and an associated variable template called TYPE_TRAIT_NAME_v within the current namespace.
+// This may cause name collisions with any other entity called \a TYPE_TRAIT_NAME in the same
+// namespace. Therefore it is advisable to create the type trait as locally as possible to
+// minimize the probability of name collisions. Note however that the macro cannot be used
+// within function scope since a template declaration cannot appear at block scope.
 */
 #define BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( TYPE_TRAIT_NAME, MEMBER_NAME )  \
                                                                                              \
@@ -111,7 +111,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
    struct Fallback { int MEMBER_NAME; };                                                     \
                                                                                              \
    struct Derived                                                                            \
-      : blaze::If< blaze::IsBuiltin<TYPE1230>, Base, TYPE1230 >::Type                        \
+      : blaze::If< blaze::IsBuiltin_v<TYPE1230>, Base, TYPE1230 >::Type                        \
       , Fallback                                                                             \
    {};                                                                                       \
                                                                                              \
@@ -128,7 +128,10 @@ class TYPE_TRAIT_NAME##HELPER                                                   
 template< typename TYPE1230 >                                                                \
 struct TYPE_TRAIT_NAME                                                                       \
    : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<TYPE1230>::value >                  \
-{}
+{};                                                                                          \
+                                                                                             \
+template< typename TYPE1230 >                                                                \
+static constexpr bool TYPE_TRAIT_NAME##_v = TYPE_TRAIT_NAME<TYPE1230>::value
 //*************************************************************************************************
 
 
@@ -169,11 +172,11 @@ struct TYPE_TRAIT_NAME                                                          
    \endcode
 
 // The macro results in the definition of a new class with the specified name \a TYPE_TRAIT_NAME
-// within the current namespace. This may cause name collisions with any other entity called
-// \a TYPE_TRAIT_NAME in the same namespace. Therefore it is advisable to create the type trait
-// as locally as possible to minimize the probability of name collisions. Note however that the
-// macro cannot be used within function scope since a template declaration cannot appear at
-// block scope.
+// and an associated variable template called TYPE_TRAIT_NAME_v within the current namespace.
+// This may cause name collisions with any other entity called \a TYPE_TRAIT_NAME in the same
+// namespace. Therefore it is advisable to create the type trait as locally as possible to
+// minimize the probability of name collisions. Note however that the macro cannot be used
+// within function scope since a template declaration cannot appear at block scope.
 //
 // Please note that due to an error in the Intel compilers prior to version 14.0 the type trait
 // generated from this macro does NOT work properly, i.e. will not correctly determine whether
@@ -193,7 +196,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
    struct Fallback { struct MEMBER_NAME { }; };                                            \
                                                                                            \
    struct Derived                                                                          \
-      : blaze::If< blaze::IsBuiltin<TYPE1231>, Base, TYPE1231 >::Type                      \
+      : blaze::If< blaze::IsBuiltin_v<TYPE1231>, Base, TYPE1231 >::Type                      \
       , Fallback                                                                           \
    {};                                                                                     \
                                                                                            \
@@ -210,7 +213,10 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
 template< typename TYPE1231 >                                                              \
 struct TYPE_TRAIT_NAME                                                                     \
    : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<TYPE1231>::value >                \
-{}
+{};                                                                                        \
+                                                                                           \
+template< typename TYPE1231 >                                                              \
+static constexpr bool TYPE_TRAIT_NAME##_v = TYPE_TRAIT_NAME<TYPE1231>::value
 //*************************************************************************************************
 
 
@@ -251,11 +257,11 @@ struct TYPE_TRAIT_NAME                                                          
    \endcode
 
 // The macro results in the definition of a new class with the specified name \a TYPE_TRAIT_NAME
-// within the current namespace. This may cause name collisions with any other entity called
-// \a TYPE_TRAIT_NAME in the same namespace. Therefore it is advisable to create the type trait
-// as locally as possible to minimize the probability of name collisions. Note however that the
-// macro cannot be used within function scope since a template declaration cannot appear at
-// block scope.
+// and an associated variable template called TYPE_TRAIT_NAME_v within the current namespace.
+// This may cause name collisions with any other entity called \a TYPE_TRAIT_NAME in the same
+// namespace. Therefore it is advisable to create the type trait as locally as possible to
+// minimize the probability of name collisions. Note however that the macro cannot be used
+// within function scope since a template declaration cannot appear at block scope.
 //
 // Please note that due to an error in the Intel compilers prior to version 14.0 the type trait
 // generated from this macro does NOT work properly, i.e. will not correctly determine whether
@@ -278,7 +284,10 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
 template< typename Type1232 >                                                               \
 struct TYPE_TRAIT_NAME                                                                      \
    : public blaze::BoolConstant< TYPE_TRAIT_NAME##HELPER<Type1232>::value >                 \
-{}
+{};                                                                                         \
+                                                                                            \
+template< typename Type1232 >                                                               \
+static constexpr bool TYPE_TRAIT_NAME##_v = TYPE_TRAIT_NAME<Type1232>::value
 //*************************************************************************************************
 
 #endif
