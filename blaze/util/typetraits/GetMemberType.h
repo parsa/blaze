@@ -82,11 +82,11 @@ namespace blaze {
    \endcode
 
 // The macro results in the definition of a new class with the specified name \a TYPE_TRAIT_NAME
-// within the current namespace. This may cause name collisions with any other entity called
-// \a TYPE_TRAIT_NAME in the same namespace. Therefore it is advisable to create the type trait
-// as locally as possible to minimize the probability of name collisions. Note however that the
-// macro cannot be used within function scope since a template declaration cannot appear at
-// block scope.
+// and an associated alias template called TYPE_TRAIT_NAME_t within the current namespace. This
+// may cause name collisions with any other entity called \a TYPE_TRAIT_NAME in the same namespace.
+// Therefore it is advisable to create the type trait as locally as possible to minimize the
+// probability of name collisions. Note however that the macro cannot be used within function
+// scope since a template declaration cannot appear at block scope.
 //
 // Please note that due to an error in the Intel compilers prior to version 14.0 the type trait
 // generated from this macro does NOT work properly, i.e. will not correctly determine whether
@@ -104,11 +104,14 @@ struct TYPE_TRAIT_NAME                                                          
    BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( LOCAL_TYPE_TRAIT, MEMBER_NAME );                    \
                                                                                                 \
  public:                                                                                        \
-   using Type = typename blaze::If< LOCAL_TYPE_TRAIT<Type1233>                                  \
+   using Type = typename blaze::If< LOCAL_TYPE_TRAIT_v<Type1233>                                \
                                   , SUCCESS                                                     \
                                   , FAILURE                                                     \
                                   >::Type::Type;                                                \
-};
+};                                                                                              \
+                                                                                                \
+template< typename Type1233 >                                                                   \
+using TYPE_TRAIT_NAME##_t = typename TYPE_TRAIT_NAME<Type1233>::Type
 //*************************************************************************************************
 
 } // namespace blaze
