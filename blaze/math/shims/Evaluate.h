@@ -42,7 +42,6 @@
 
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
@@ -68,7 +67,7 @@ namespace blaze {
 // default behavior is not changed.
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_< Or< IsBuiltin<T>, IsComplex<T> >, T >
+BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsBuiltin_v<T> || IsComplex_v<T>, T >
    evaluate( const T& a ) noexcept
 {
    return a;

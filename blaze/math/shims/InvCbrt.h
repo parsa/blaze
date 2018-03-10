@@ -65,7 +65,7 @@ namespace blaze {
 // \note The given value must be in the range \f$[0..\infty)\f$. The validity of the value is
 // only checked by an user assert.
 */
-template< typename T, typename = EnableIf_< IsBuiltin<T> > >
+template< typename T, typename = EnableIf_t< IsBuiltin_v<T> > >
 inline auto invcbrt( T a ) noexcept -> decltype( inv( cbrt( a ) ) )
 {
    BLAZE_USER_ASSERT( abs( a ) != T(0), "Invalid built-in value detected" );

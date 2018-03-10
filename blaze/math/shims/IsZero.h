@@ -101,7 +101,7 @@ namespace blaze {
 */
 template< bool RF          // Relaxation flag
         , typename Type >  // Type of the given value/object
-BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) noexcept
+BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<Type>, bool > isZero( const Type& v ) noexcept
 {
    return isDefault<RF>( v );
 }
@@ -118,7 +118,7 @@ BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) n
 */
 template< bool RF          // Relaxation flag
         , typename Type >  // Type of the given value/object
-BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<Type>, bool > isZero( const Type& v ) noexcept
+BLAZE_ALWAYS_INLINE DisableIf_t< IsNumeric_v<Type>, bool > isZero( const Type& v ) noexcept
 {
    UNUSED_PARAMETER( v );
 

@@ -66,7 +66,7 @@ namespace blaze {
 // \note The given value must be in the range \f$[0..\infty)\f$. The validity of the value is
 // only checked by an user assert.
 */
-template< typename T, typename = EnableIf_< IsBuiltin<T> > >
+template< typename T, typename = EnableIf_t< IsBuiltin_v<T> > >
 inline auto invsqrt( T a ) noexcept -> decltype( inv( sqrt( a ) ) )
 {
    BLAZE_USER_ASSERT( a > T(0), "Invalid built-in value detected" );
@@ -86,7 +86,7 @@ inline auto invsqrt( T a ) noexcept -> decltype( inv( sqrt( a ) ) )
 // \note The given complex number must not be zero. The validity of the value is only checked by
 // an user assert.
 */
-template< typename T, typename = EnableIf_< IsBuiltin<T> > >
+template< typename T, typename = EnableIf_t< IsBuiltin_v<T> > >
 inline auto invsqrt( const complex<T>& a ) noexcept -> decltype( inv( sqrt( a ) ) )
 {
    BLAZE_USER_ASSERT( abs( a ) != T(0), "Invalid complex value detected" );

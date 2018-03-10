@@ -76,7 +76,7 @@ namespace blaze {
    complex<double> c2( 0.0, 0.0 );  // isDivisor( c2 ) returns false
    \endcode
 */
-template< typename Type, typename = EnableIf_< IsNumeric<Type> > >
+template< typename Type, typename = EnableIf_t< IsNumeric_v<Type> > >
 BLAZE_ALWAYS_INLINE bool isDivisor( const Type& v )
 {
    return v != Type(0);

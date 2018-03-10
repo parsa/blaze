@@ -79,7 +79,7 @@ namespace blaze {
 //       https://en.wikipedia.org/wiki/Complex_conjugate
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE constexpr EnableIf_< IsBuiltin<T>, T > conj( T a ) noexcept
+BLAZE_ALWAYS_INLINE constexpr EnableIf_t< IsBuiltin_v<T>, T > conj( T a ) noexcept
 {
    return a;
 }
@@ -142,7 +142,7 @@ BLAZE_ALWAYS_INLINE void conjugate( T& a ) noexcept( IsNumeric_v<T> )
 // \return void
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<T> > cswap_backend( T& a, T& b )
+BLAZE_ALWAYS_INLINE DisableIf_t< IsNumeric_v<T> > cswap_backend( T& a, T& b )
 {
    using std::swap;
 
@@ -164,7 +164,7 @@ BLAZE_ALWAYS_INLINE DisableIf_< IsNumeric<T> > cswap_backend( T& a, T& b )
 // \return void
 */
 template< typename T >
-BLAZE_ALWAYS_INLINE EnableIf_< IsNumeric<T> > cswap_backend( T& a, T& b ) noexcept
+BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<T> > cswap_backend( T& a, T& b ) noexcept
 {
    const T tmp( a );
    a = conj( b );
