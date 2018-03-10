@@ -815,7 +815,7 @@ inline const Vector<Type> operator*( const Vector<Type>& x, const Matrix<Type,fa
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline const ::blaze::EnableIf_< ::blaze::IsNumeric<Type>, Matrix<Type,SO> >
+inline const ::blaze::EnableIf_t< ::blaze::IsNumeric_v<Type>, Matrix<Type,SO> >
    operator*( const Matrix<Type,SO>& mat, Type scalar )
 {
    Matrix<Type,SO> res( mat.rows(), mat.columns() );
@@ -852,7 +852,7 @@ inline const ::blaze::EnableIf_< ::blaze::IsNumeric<Type>, Matrix<Type,SO> >
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline const ::blaze::EnableIf_< ::blaze::IsNumeric<Type>, Matrix<Type,SO> >
+inline const ::blaze::EnableIf_t< ::blaze::IsNumeric_v<Type>, Matrix<Type,SO> >
    operator*( Type scalar, const Matrix<Type,SO>& mat )
 {
    Matrix<Type,SO> res( mat.rows(), mat.columns() );
