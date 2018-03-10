@@ -143,16 +143,16 @@ class TDVecSMatMultExpr
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense vector expression.
-   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
+   using LeftOperand = If_t< IsExpression_v<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   using RightOperand = If_< IsExpression<MT>, const MT, const MT& >;
+   using RightOperand = If_t< IsExpression_v<MT>, const MT, const MT& >;
 
    //! Composite type of the left-hand side dense vector expression.
-   using LT = IfTrue_< evaluateVector, const VRT, VCT >;
+   using LT = If_t< evaluateVector, const VRT, VCT >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   using RT = IfTrue_< evaluateMatrix, const MRT, MCT >;
+   using RT = If_t< evaluateMatrix, const MRT, MCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -629,7 +629,7 @@ class TDVecSMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -667,7 +667,7 @@ class TDVecSMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( SparseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -698,7 +698,7 @@ class TDVecSMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAddAssign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -740,7 +740,7 @@ class TDVecSMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpSubAssign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -782,7 +782,7 @@ class TDVecSMatMultExpr
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpMultAssign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -817,7 +817,7 @@ class TDVecSMatMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpDivAssign( DenseVector<VT2,true>& lhs, const TDVecSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -875,7 +875,7 @@ class TDVecSMatMultExpr
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_< IsSymmetric<MT> > >
+        , typename = DisableIf_t< IsSymmetric_v<MT> > >
 inline const TDVecSMatMultExpr<VT,MT>
    tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {
@@ -905,7 +905,7 @@ inline const TDVecSMatMultExpr<VT,MT>
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , typename = EnableIf_< IsSymmetric<MT> > >
+        , typename = EnableIf_t< IsSymmetric_v<MT> > >
 inline decltype(auto)
    tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {

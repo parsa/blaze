@@ -98,7 +98,7 @@ class SMatEvalExpr
    using CompositeType = const ResultType;
 
    //! Composite data type of the sparse matrix expression.
-   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
+   using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

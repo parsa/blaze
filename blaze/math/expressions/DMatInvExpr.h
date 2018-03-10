@@ -104,7 +104,7 @@ class DMatInvExpr
    using CompositeType = const ResultType;
 
    //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
+   using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -251,7 +251,7 @@ class DMatInvExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO == SO2, ResultType, OppositeType >;
+      using TmpType = If_t< SO == SO2, ResultType, OppositeType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );

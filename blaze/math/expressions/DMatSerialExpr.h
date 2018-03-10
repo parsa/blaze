@@ -99,7 +99,7 @@ class DMatSerialExpr
    using CompositeType = const ResultType;
 
    //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
+   using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

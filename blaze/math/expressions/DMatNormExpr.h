@@ -120,9 +120,9 @@ struct DMatNormHelper
    //**********************************************************************************************
    enum : bool { value = useOptimizedKernels &&
                          CT::simdEnabled &&
-                         If_< And< HasSIMDEnabled<Abs>, HasSIMDEnabled<Power> >
-                            , UseSIMDEnabledFlag
-                            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
+                         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
+                             , UseSIMDEnabledFlag
+                             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
                          HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > };
    //**********************************************************************************************
 };

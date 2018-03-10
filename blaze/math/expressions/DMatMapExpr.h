@@ -75,9 +75,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
@@ -177,10 +175,10 @@ class DMatMapExpr
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const DMatMapExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const DMatMapExpr& >;
 
    //! Composite data type of the dense matrix expression.
-   using Operand = If_< IsExpression<MT>, const MT, const MT& >;
+   using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
 
    //! Data type of the custom unary operation.
    using Operation = OP;
@@ -432,7 +430,7 @@ class DMatMapExpr
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT::simdEnabled &&
-                               If_< HasSIMDEnabled<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value };
+                               If_t< HasSIMDEnabled_v<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT::smpAssignable };
@@ -633,8 +631,8 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order or the target dense matrix
-   friend inline EnableIf_< And< UseAssign<MT2>
-                               , IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > >
+   friend inline EnableIf_t< UseAssign<MT2>::value && IsSame_v< UnderlyingNumeric_t<MT>
+                           , UnderlyingNumeric_t<MT2> > >
       assign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -665,8 +663,8 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order or the target dense matrix
-   friend inline EnableIf_< And< UseAssign<MT2>
-                               , Not< IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > > >
+   friend inline EnableIf_t< UseAssign<MT2>::value && !IsSame_v< UnderlyingNumeric_t<MT>
+                           , UnderlyingNumeric_t<MT2> > >
       assign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -700,12 +698,12 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order or the target sparse matrix
-   friend inline EnableIf_< UseAssign<MT2> >
+   friend inline EnableIf_t< UseAssign<MT2>::value >
       assign( SparseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO == SO2, RT, OT >;
+      using TmpType = If_t< SO == SO2, RT, OT >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OT );
@@ -739,7 +737,7 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT2> >
+   friend inline EnableIf_t< UseAssign<MT2>::value >
       addAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -777,7 +775,7 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT2> >
+   friend inline EnableIf_t< UseAssign<MT2>::value >
       subAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -815,7 +813,7 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT2> >
+   friend inline EnableIf_t< UseAssign<MT2>::value >
       schurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -862,8 +860,8 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order or the target dense matrix
-   friend inline EnableIf_< And< UseSMPAssign<MT2>
-                               , IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > >
+   friend inline EnableIf_t< UseSMPAssign<MT2>::value && IsSame_v< UnderlyingNumeric_t<MT>
+                           , UnderlyingNumeric_t<MT2> > >
       smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -894,8 +892,8 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order or the target dense matrix
-   friend inline EnableIf_< And< UseSMPAssign<MT2>
-                               , Not< IsSame< UnderlyingNumeric<MT>, UnderlyingNumeric<MT2> > > > >
+   friend inline EnableIf_t< UseSMPAssign<MT2>::value && !IsSame_v< UnderlyingNumeric_t<MT>
+                           , UnderlyingNumeric_t<MT2> > >
       smpAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -929,12 +927,12 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order or the target sparse matrix
-   friend inline EnableIf_< UseSMPAssign<MT2> >
+   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
       smpAssign( SparseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO == SO2, RT, OT >;
+      using TmpType = If_t< SO == SO2, RT, OT >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OT );
@@ -968,7 +966,7 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT2> >
+   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
       smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1006,7 +1004,7 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT2> >
+   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
       smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1044,7 +1042,7 @@ class DMatMapExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT2> >
+   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
       smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const DMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1604,7 +1602,7 @@ inline decltype(auto) clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const 
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
         , typename ST  // Type of the scalar exponent
-        , typename = EnableIf_< IsNumeric<ST> > >
+        , typename = EnableIf_t< IsNumeric_v<ST> > >
 inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;

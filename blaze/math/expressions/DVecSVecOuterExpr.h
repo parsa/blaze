@@ -183,22 +183,22 @@ class DVecSVecOuterExpr
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
+   using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const DVecSVecOuterExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const DVecSVecOuterExpr& >;
 
    //! Composite type of the left-hand side dense vector expression.
-   using LeftOperand = If_< IsExpression<VT1>, const VT1, const VT1& >;
+   using LeftOperand = If_t< IsExpression_v<VT1>, const VT1, const VT1& >;
 
    //! Composite type of the right-hand side sparse vector expression.
-   using RightOperand = If_< IsExpression<VT2>, const VT2, const VT2& >;
+   using RightOperand = If_t< IsExpression_v<VT2>, const VT2, const VT2& >;
 
    //! Type for the assignment of the left-hand side dense vector operand.
-   using LT = If_< IsComputation<VT1>, const RT1, CT1 >;
+   using LT = If_t< IsComputation_v<VT1>, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   using RT = If_< IsComputation<VT2>, const RT2, CT2 >;
+   using RT = If_t< IsComputation_v<VT2>, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -557,7 +557,7 @@ class DVecSVecOuterExpr
    // data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       assign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -640,7 +640,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -674,7 +674,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -722,7 +722,7 @@ class DVecSVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       assign( SparseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -842,7 +842,7 @@ class DVecSVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       addAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -927,7 +927,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -963,7 +963,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1018,7 +1018,7 @@ class DVecSVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       subAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1103,7 +1103,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1139,7 +1139,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1194,7 +1194,7 @@ class DVecSVecOuterExpr
    // element types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       schurAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1285,7 +1285,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseDefaultKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
       selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1335,7 +1335,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedKernel<MT,VT3,VT4> >
+   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
       selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;

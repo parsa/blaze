@@ -320,7 +320,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector )
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE DisableIf_< IsResizable<VT> >
+BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<VT> >
    resize_backend( Vector<VT,TF>& vector, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
@@ -347,7 +347,7 @@ BLAZE_ALWAYS_INLINE DisableIf_< IsResizable<VT> >
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE EnableIf_< IsResizable<VT> >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<VT> >
    resize_backend( Vector<VT,TF>& vector, size_t n, bool preserve )
 {
    (~vector).resize( n, preserve );
@@ -403,7 +403,7 @@ BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve 
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE DisableIf_< IsShrinkable<VT> >
+BLAZE_ALWAYS_INLINE DisableIf_t< IsShrinkable_v<VT> >
    shrinkToFit_backend( Vector<VT,TF>& vector )
 {
    UNUSED_PARAMETER( vector );
@@ -422,7 +422,7 @@ BLAZE_ALWAYS_INLINE DisableIf_< IsShrinkable<VT> >
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE EnableIf_< IsShrinkable<VT> >
+BLAZE_ALWAYS_INLINE EnableIf_t< IsShrinkable_v<VT> >
    shrinkToFit_backend( Vector<VT,TF>& vector )
 {
    (~vector).shrinkToFit();

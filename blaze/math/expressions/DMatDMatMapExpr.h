@@ -76,7 +76,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Template.h>
@@ -181,22 +181,22 @@ class DMatDMatMapExpr
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const DMatDMatMapExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const DMatDMatMapExpr& >;
 
    //! Composite type of the left-hand side dense matrix expression.
-   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
+   using LeftOperand = If_t< IsExpression_v<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side dense matrix expression.
-   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
+   using RightOperand = If_t< IsExpression_v<MT2>, const MT2, const MT2& >;
 
    //! Data type of the custom unary operation.
    using Operation = OP;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   using LT = If_< RequiresEvaluation<MT1>, const RT1, CT1 >;
+   using LT = If_t< RequiresEvaluation_v<MT1>, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   using RT = If_< RequiresEvaluation<MT2>, const RT2, CT2 >;
+   using RT = If_t< RequiresEvaluation_v<MT2>, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -455,7 +455,7 @@ class DMatDMatMapExpr
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    enum : bool { simdEnabled = MT1::simdEnabled && MT2::simdEnabled &&
-                               If_< HasSIMDEnabled<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value };
+                               If_t< HasSIMDEnabled_v<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value };
 
    //! Compilation switch for the expression template assignment strategy.
    enum : bool { smpAssignable = MT1::smpAssignable && MT2::smpAssignable };
@@ -669,7 +669,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -708,12 +708,12 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       assign( SparseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO == SO2, ResultType, OppositeType >;
+      using TmpType = If_t< SO == SO2, ResultType, OppositeType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -747,7 +747,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       addAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -790,7 +790,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       subAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -833,7 +833,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseAssign<MT> >
+   friend inline EnableIf_t< UseAssign<MT>::value >
       schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -884,7 +884,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_t< UseSMPAssign<MT>::value >
       smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -923,12 +923,12 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO2 >   // Storage order of the target sparse matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_t< UseSMPAssign<MT>::value >
       smpAssign( SparseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO == SO2, ResultType, OppositeType >;
+      using TmpType = If_t< SO == SO2, ResultType, OppositeType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -963,7 +963,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_t< UseSMPAssign<MT>::value >
       smpAddAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1007,7 +1007,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_t< UseSMPAssign<MT>::value >
       smpSubAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1051,7 +1051,7 @@ class DMatDMatMapExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_< UseSMPAssign<MT> >
+   friend inline EnableIf_t< UseSMPAssign<MT>::value >
       smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1340,7 +1340,7 @@ struct Size< DMatDMatMapExpr<MT1,MT2,OP,SO>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename OP, bool SO >
 struct IsAligned< DMatDMatMapExpr<MT1,MT2,OP,SO> >
-   : public And< IsAligned<MT1>, IsAligned<MT2> >
+   : public BoolConstant< IsAligned_v<MT1> && IsAligned_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1358,7 +1358,7 @@ struct IsAligned< DMatDMatMapExpr<MT1,MT2,OP,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename OP, bool SO >
 struct IsPadded< DMatDMatMapExpr<MT1,MT2,OP,SO> >
-   : public And< IsPadded<MT1>, IsPadded<MT2> >
+   : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1376,12 +1376,12 @@ struct IsPadded< DMatDMatMapExpr<MT1,MT2,OP,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsSymmetric< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsSymmetric<MT1>, IsSymmetric<MT2> >
+   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsSymmetric< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsSymmetric<MT1>, IsSymmetric<MT2> >
+   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1399,12 +1399,12 @@ struct IsSymmetric< DMatDMatMapExpr<MT1,MT2,Max,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsHermitian< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsHermitian<MT1>, IsHermitian<MT2> >
+   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsHermitian< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsHermitian<MT1>, IsHermitian<MT2> >
+   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1422,12 +1422,12 @@ struct IsHermitian< DMatDMatMapExpr<MT1,MT2,Max,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsLower< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsLower<MT1>, IsLower<MT2> >
+   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsLower< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsLower<MT1>, IsLower<MT2> >
+   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1445,12 +1445,12 @@ struct IsLower< DMatDMatMapExpr<MT1,MT2,Max,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsUniLower< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsUniLower<MT1>, IsUniLower<MT2> >
+   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsUniLower< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsUniLower<MT1>, IsUniLower<MT2> >
+   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1468,12 +1468,12 @@ struct IsUniLower< DMatDMatMapExpr<MT1,MT2,Max,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsStrictlyLower< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >
+   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsStrictlyLower< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >
+   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1491,12 +1491,12 @@ struct IsStrictlyLower< DMatDMatMapExpr<MT1,MT2,Max,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsUpper< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsUpper<MT1>, IsUpper<MT2> >
+   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsUpper< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsUpper<MT1>, IsUpper<MT2> >
+   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1514,12 +1514,12 @@ struct IsUpper< DMatDMatMapExpr<MT1,MT2,Max,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsUniUpper< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsUniUpper<MT1>, IsUniUpper<MT2> >
+   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsUniUpper< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsUniUpper<MT1>, IsUniUpper<MT2> >
+   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1537,12 +1537,12 @@ struct IsUniUpper< DMatDMatMapExpr<MT1,MT2,Max,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SO >
 struct IsStrictlyUpper< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >
+   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
 {};
 
 template< typename MT1, typename MT2, bool SO >
 struct IsStrictlyUpper< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public And< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >
+   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

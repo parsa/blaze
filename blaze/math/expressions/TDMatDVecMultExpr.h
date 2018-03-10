@@ -91,7 +91,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -211,16 +211,16 @@ class TDMatDVecMultExpr
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
-   using LeftOperand = If_< IsExpression<MT>, const MT, const MT& >;
+   using LeftOperand = If_t< IsExpression_v<MT>, const MT, const MT& >;
 
    //! Composite type of the right-hand side dense vector expression.
-   using RightOperand = If_< IsExpression<VT>, const VT, const VT& >;
+   using RightOperand = If_t< IsExpression_v<VT>, const VT, const VT& >;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   using LT = IfTrue_< evaluateMatrix, const MRT, MCT >;
+   using LT = If_t< evaluateMatrix, const MRT, MCT >;
 
    //! Type for the assignment of the right-hand side dense vector operand.
-   using RT = IfTrue_< evaluateVector, const VRT, VCT >;
+   using RT = If_t< evaluateVector, const VRT, VCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -543,7 +543,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectDefaultAssignKernel( y, A, x );
@@ -568,7 +568,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -745,7 +745,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectDefaultAssignKernel( y, A, x );
@@ -770,7 +770,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -919,7 +919,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseBlasKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseBlasKernel<VT1,MT1,VT2>::value >
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectLargeAssignKernel( y, A, x );
@@ -945,7 +945,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseBlasKernel<VT1,MT1,VT2>::value >
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ET = ElementType_t<VT1>;
@@ -1126,7 +1126,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectDefaultAddAssignKernel( y, A, x );
@@ -1151,7 +1151,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -1341,7 +1341,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectDefaultAddAssignKernel( y, A, x );
@@ -1366,7 +1366,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -1513,7 +1513,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseBlasKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseBlasKernel<VT1,MT1,VT2>::value >
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectLargeAddAssignKernel( y, A, x );
@@ -1539,7 +1539,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseBlasKernel<VT1,MT1,VT2>::value >
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ET = ElementType_t<VT1>;
@@ -1695,7 +1695,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectDefaultSubAssignKernel( y, A, x );
@@ -1721,7 +1721,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -1911,7 +1911,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectDefaultSubAssignKernel( y, A, x );
@@ -1937,7 +1937,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2>::value >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -2084,7 +2084,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline DisableIf_< UseBlasKernel<VT1,MT1,VT2> >
+   static inline DisableIf_t< UseBlasKernel<VT1,MT1,VT2>::value >
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       selectLargeSubAssignKernel( y, A, x );
@@ -2110,7 +2110,7 @@ class TDMatDVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2> >
+   static inline EnableIf_t< UseBlasKernel<VT1,MT1,VT2>::value >
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ET = ElementType_t<VT1>;
@@ -2216,7 +2216,7 @@ class TDMatDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAssign( DenseVector<VT1,false>& lhs, const TDMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2260,7 +2260,7 @@ class TDMatDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAssign( SparseVector<VT1,false>& lhs, const TDMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2293,7 +2293,7 @@ class TDMatDVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAddAssign( DenseVector<VT1,false>& lhs, const TDMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2337,7 +2337,7 @@ class TDMatDVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpSubAssign( DenseVector<VT1,false>& lhs, const TDMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2381,7 +2381,7 @@ class TDMatDVecMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpMultAssign( DenseVector<VT1,false>& lhs, const TDMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2418,7 +2418,7 @@ class TDMatDVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpDivAssign( DenseVector<VT1,false>& lhs, const TDMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2567,10 +2567,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    using RightOperand = ST;
 
    //! Type for the assignment of the dense matrix operand of the left-hand side expression.
-   using LT = IfTrue_< evaluateMatrix, const MRT, MCT >;
+   using LT = If_t< evaluateMatrix, const MRT, MCT >;
 
    //! Type for the assignment of the dense vector operand of the left-hand side expression.
-   using RT = IfTrue_< evaluateVector, const VRT, VCT >;
+   using RT = If_t< evaluateVector, const VRT, VCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -2882,7 +2882,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectDefaultAssignKernel( y, A, x, scalar );
@@ -2907,7 +2907,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectSmallAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -3087,7 +3087,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectDefaultAssignKernel( y, A, x, scalar );
@@ -3112,7 +3112,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectLargeAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -3263,7 +3263,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseBlasKernel<VT1,MT1,VT2,ST2>::value >
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectLargeAssignKernel( y, A, x, scalar );
@@ -3289,7 +3289,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseBlasKernel<VT1,MT1,VT2,ST2>::value >
       selectBlasAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       using ET = ElementType_t<VT1>;
@@ -3439,7 +3439,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectDefaultAddAssignKernel( y, A, x, scalar );
@@ -3465,7 +3465,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectSmallAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -3644,7 +3644,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectDefaultAddAssignKernel( y, A, x, scalar );
@@ -3670,7 +3670,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectLargeAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -3819,7 +3819,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseBlasKernel<VT1,MT1,VT2,ST2>::value >
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectLargeAddAssignKernel( y, A, x, scalar );
@@ -3845,7 +3845,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseBlasKernel<VT1,MT1,VT2,ST2>::value >
       selectBlasAddAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       using ET = ElementType_t<VT1>;
@@ -3972,7 +3972,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectDefaultSubAssignKernel( y, A, x, scalar );
@@ -3998,7 +3998,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectSmallSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -4177,7 +4177,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectDefaultSubAssignKernel( y, A, x, scalar );
@@ -4203,7 +4203,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<VT1,MT1,VT2,ST2>::value >
       selectLargeSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
@@ -4352,7 +4352,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
+   static inline DisableIf_t< UseBlasKernel<VT1,MT1,VT2,ST2>::value >
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       selectLargeSubAssignKernel( y, A, x, scalar );
@@ -4378,7 +4378,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseBlasKernel<VT1,MT1,VT2,ST2> >
+   static inline EnableIf_t< UseBlasKernel<VT1,MT1,VT2,ST2>::value >
       selectBlasSubAssignKernel( VT1& y, const MT1& A, const VT2& x, ST2 scalar )
    {
       using ET = ElementType_t<VT1>;
@@ -4478,7 +4478,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4523,7 +4523,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAssign( SparseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4554,7 +4554,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAddAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4599,7 +4599,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpSubAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4645,7 +4645,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpMultAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4680,7 +4680,7 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpDivAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4803,7 +4803,7 @@ struct Size< TDMatDVecMultExpr<MT,VT>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename VT >
 struct IsAligned< TDMatDVecMultExpr<MT,VT> >
-   : public And< IsAligned<MT>, IsAligned<VT> >
+   : public BoolConstant< IsAligned_v<MT> && IsAligned_v<VT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

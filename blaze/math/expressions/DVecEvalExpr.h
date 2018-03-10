@@ -90,7 +90,7 @@ class DVecEvalExpr
    using CompositeType = const ResultType;
 
    //! Composite data type of the dense vector expression.
-   using Operand = If_< IsExpression<VT>, const VT, const VT& >;
+   using Operand = If_t< IsExpression_v<VT>, const VT, const VT& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

@@ -65,9 +65,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -147,10 +145,10 @@ class SVecMapExpr
    using ReturnType = decltype( std::declval<OP>()( std::declval<RN>() ) );
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const SVecMapExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const SVecMapExpr& >;
 
    //! Composite data type of the sparse vector expression.
-   using Operand = If_< IsExpression<VT>, const VT, const VT& >;
+   using Operand = If_t< IsExpression_v<VT>, const VT, const VT& >;
 
    //! Data type of the custom unary operation.
    using Operation = OP;
@@ -482,7 +480,7 @@ class SVecMapExpr
    // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       assign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -515,8 +513,8 @@ class SVecMapExpr
    // target vector are identical.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< And< UseAssign<VT2>
-                               , IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > >
+   friend inline EnableIf_t< UseAssign<VT2>::value &&
+                             IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
       assign( SparseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -551,8 +549,8 @@ class SVecMapExpr
    // target vector differ.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< And< UseAssign<VT2>
-                               , Not< IsSame< UnderlyingNumeric<VT>, UnderlyingNumeric<VT2> > > > >
+   friend inline EnableIf_t< UseAssign<VT2>::value &&
+                             !IsSame_v< UnderlyingNumeric_t<VT>, UnderlyingNumeric_t<VT2> > >
       assign( SparseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -585,7 +583,7 @@ class SVecMapExpr
    // intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       addAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -621,7 +619,7 @@ class SVecMapExpr
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       subAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -657,7 +655,7 @@ class SVecMapExpr
    // an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       multAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -693,7 +691,7 @@ class SVecMapExpr
    // evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -729,7 +727,7 @@ class SVecMapExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -765,7 +763,7 @@ class SVecMapExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -801,7 +799,7 @@ class SVecMapExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecMapExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1352,7 +1350,7 @@ inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const
 template< typename VT  // Type of the sparse vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the scalar exponent
-        , typename = EnableIf_< IsNumeric<ST> > >
+        , typename = EnableIf_t< IsNumeric_v<ST> > >
 inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;

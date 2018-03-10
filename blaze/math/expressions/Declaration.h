@@ -68,11 +68,11 @@ namespace blaze {
 */
 template< typename T >
 struct Declaration
-   : private If_< IsComputation<T>
-                , Computation
-                , If_< IsTransformation<T>
-                     , Transformation
-                     , EmptyType > >
+   : private If_t< IsComputation_v<T>
+                 , Computation
+                 , If_t< IsTransformation_v<T>
+                       , Transformation
+                       , EmptyType > >
 {};
 //*************************************************************************************************
 

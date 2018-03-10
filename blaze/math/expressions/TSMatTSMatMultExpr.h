@@ -80,9 +80,8 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/SmallVector.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -170,10 +169,10 @@ class TSMatTSMatMultExpr
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse matrix expression.
-   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
+   using LeftOperand = If_t< IsExpression_v<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
+   using RightOperand = If_t< IsExpression_v<MT2>, const MT2, const MT2& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -380,7 +379,7 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -459,7 +458,7 @@ class TSMatTSMatMultExpr
    // transpose sparse matrix multiplication expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -618,7 +617,7 @@ class TSMatTSMatMultExpr
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -648,7 +647,7 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       addAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -722,7 +721,7 @@ class TSMatTSMatMultExpr
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       addAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -756,7 +755,7 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       subAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -831,7 +830,7 @@ class TSMatTSMatMultExpr
    // can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       subAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -912,7 +911,7 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target matrix
            , bool SO >    // Storage order of the target matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAssign( Matrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -951,7 +950,7 @@ class TSMatTSMatMultExpr
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -984,7 +983,7 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1024,7 +1023,7 @@ class TSMatTSMatMultExpr
    // exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpAddAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1061,7 +1060,7 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1101,7 +1100,7 @@ class TSMatTSMatMultExpr
    // exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpSubAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1264,7 +1263,7 @@ struct Size< TSMatTSMatMultExpr<MT1,MT2>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsLower< TSMatTSMatMultExpr<MT1,MT2> >
-   : public And< IsLower<MT1>, IsLower<MT2> >
+   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1282,7 +1281,7 @@ struct IsLower< TSMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniLower< TSMatTSMatMultExpr<MT1,MT2> >
-   : public And< IsUniLower<MT1>, IsUniLower<MT2> >
+   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1300,8 +1299,8 @@ struct IsUniLower< TSMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyLower< TSMatTSMatMultExpr<MT1,MT2> >
-   : public Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
-              , And< IsStrictlyLower<MT2>, IsLower<MT1> > >
+   : public BoolConstant< ( IsStrictlyLower_v<MT1> && IsLower_v<MT2> ) ||
+                          ( IsStrictlyLower_v<MT2> && IsLower_v<MT1> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1319,7 +1318,7 @@ struct IsStrictlyLower< TSMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUpper< TSMatTSMatMultExpr<MT1,MT2> >
-   : public And< IsUpper<MT1>, IsUpper<MT2> >
+   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1337,7 +1336,7 @@ struct IsUpper< TSMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniUpper< TSMatTSMatMultExpr<MT1,MT2> >
-   : public And< IsUniUpper<MT1>, IsUniUpper<MT2> >
+   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1355,8 +1354,8 @@ struct IsUniUpper< TSMatTSMatMultExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyUpper< TSMatTSMatMultExpr<MT1,MT2> >
-   : public Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
-              , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > >
+   : public BoolConstant< ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
+                          ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************

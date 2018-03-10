@@ -142,16 +142,16 @@ class SVecDVecMultExpr
    using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
+   using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const SVecDVecMultExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const SVecDVecMultExpr& >;
 
    //! Composite type of the left-hand side sparse vector expression.
-   using LeftOperand = If_< IsExpression<VT1>, const VT1, const VT1& >;
+   using LeftOperand = If_t< IsExpression_v<VT1>, const VT1, const VT1& >;
 
    //! Composite type of the right-hand side dense vector expression.
-   using RightOperand = If_< IsExpression<VT2>, const VT2, const VT2& >;
+   using RightOperand = If_t< IsExpression_v<VT2>, const VT2, const VT2& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -469,7 +469,7 @@ class SVecDVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT> >
+   friend inline EnableIf_t< UseAssign<VT>::value >
       assign( DenseVector<VT,TF>& lhs, const SVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -506,7 +506,7 @@ class SVecDVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_< UseAssign<VT> >
+   friend inline EnableIf_t< UseAssign<VT>::value >
       assign( SparseVector<VT,TF>& lhs, const SVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -547,7 +547,7 @@ class SVecDVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT> >
+   friend inline EnableIf_t< UseAssign<VT>::value >
       addAssign( DenseVector<VT,TF>& lhs, const SVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -588,7 +588,7 @@ class SVecDVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT> >
+   friend inline EnableIf_t< UseAssign<VT>::value >
       subAssign( DenseVector<VT,TF>& lhs, const SVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -629,7 +629,7 @@ class SVecDVecMultExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT> >
+   friend inline EnableIf_t< UseAssign<VT>::value >
       multAssign( DenseVector<VT,TF>& lhs, const SVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

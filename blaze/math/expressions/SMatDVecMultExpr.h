@@ -154,19 +154,19 @@ class SMatDVecMultExpr
    using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const SMatDVecMultExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const SMatDVecMultExpr& >;
 
    //! Composite type of the left-hand side sparse matrix expression.
-   using LeftOperand = If_< IsExpression<MT>, const MT, const MT& >;
+   using LeftOperand = If_t< IsExpression_v<MT>, const MT, const MT& >;
 
    //! Composite type of the right-hand side dense vector expression.
-   using RightOperand = If_< IsExpression<VT>, const VT, const VT& >;
+   using RightOperand = If_t< IsExpression_v<VT>, const VT, const VT& >;
 
    //! Type for the assignment of the left-hand side sparse matrix operand.
-   using LT = IfTrue_< evaluateMatrix, const MRT, MCT >;
+   using LT = If_t< evaluateMatrix, const MRT, MCT >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   using RT = IfTrue_< evaluateVector, const VRT, VCT >;
+   using RT = If_t< evaluateVector, const VRT, VCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -316,7 +316,7 @@ class SMatDVecMultExpr
    // side vector operand is a compound expression.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT1> >
+   friend inline EnableIf_t< UseAssign<VT1>::value >
       assign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -358,7 +358,7 @@ class SMatDVecMultExpr
    // side vector operand is a compound expression.
    */
    template< typename VT1 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseAssign<VT1> >
+   friend inline EnableIf_t< UseAssign<VT1>::value >
       assign( SparseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -392,7 +392,7 @@ class SMatDVecMultExpr
    // side vector operand is a compound expression.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT1> >
+   friend inline EnableIf_t< UseAssign<VT1>::value >
       addAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -437,7 +437,7 @@ class SMatDVecMultExpr
    // side vector operand is a compound expression.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT1> >
+   friend inline EnableIf_t< UseAssign<VT1>::value >
       subAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -482,7 +482,7 @@ class SMatDVecMultExpr
    // the right-hand side vector operand is a compound expression.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT1> >
+   friend inline EnableIf_t< UseAssign<VT1>::value >
       multAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -520,7 +520,7 @@ class SMatDVecMultExpr
    // side vector operand is a compound expression.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT1> >
+   friend inline EnableIf_t< UseAssign<VT1>::value >
       divAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -557,7 +557,7 @@ class SMatDVecMultExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -598,7 +598,7 @@ class SMatDVecMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAssign( SparseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -631,7 +631,7 @@ class SMatDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpAddAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -675,7 +675,7 @@ class SMatDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpSubAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -719,7 +719,7 @@ class SMatDVecMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpMultAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -756,7 +756,7 @@ class SMatDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT1> >
+   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
       smpDivAssign( DenseVector<VT1,false>& lhs, const SMatDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

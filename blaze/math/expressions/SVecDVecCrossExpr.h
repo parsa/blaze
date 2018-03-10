@@ -122,22 +122,22 @@ class SVecDVecCrossExpr
    using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
+   using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;
 
    //! Composite type of the left-hand side sparse vector expression.
-   using LeftOperand = If_< IsExpression<VT1>, const VT1, const VT1& >;
+   using LeftOperand = If_t< IsExpression_v<VT1>, const VT1, const VT1& >;
 
    //! Composite type of the right-hand side dense vector expression.
-   using RightOperand = If_< IsExpression<VT2>, const VT2, const VT2& >;
+   using RightOperand = If_t< IsExpression_v<VT2>, const VT2, const VT2& >;
 
    //! Composite type of the left-hand side sparse vector expression.
    using LT = const StaticVector<ET1,3UL,TF>;
 
    //! Composite type of the right-hand side dense vector expression.
-   using RT = If_< IsComputation<VT2>, const StaticVector<ET2,3UL,TF>, CT2 >;
+   using RT = If_t< IsComputation_v<VT2>, const StaticVector<ET2,3UL,TF>, CT2 >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

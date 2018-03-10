@@ -74,10 +74,9 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
@@ -151,16 +150,16 @@ class SMatSMatSchurExpr
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
+   using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
    using CompositeType = const ResultType;
 
    //! Composite type of the left-hand side sparse matrix expression.
-   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
+   using LeftOperand = If_t< IsExpression_v<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
+   using RightOperand = If_t< IsExpression_v<MT2>, const MT2, const MT2& >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -321,7 +320,7 @@ class SMatSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       assign( DenseMatrix<MT,SO>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -437,7 +436,7 @@ class SMatSMatSchurExpr
    // product expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       assign( SparseMatrix<MT,true>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -524,7 +523,7 @@ class SMatSMatSchurExpr
    // matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       assign( Matrix<MT,true>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -553,7 +552,7 @@ class SMatSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       addAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -609,7 +608,7 @@ class SMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       addAssign( Matrix<MT,true>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -643,7 +642,7 @@ class SMatSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       subAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -699,7 +698,7 @@ class SMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       subAssign( Matrix<MT,true>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -733,7 +732,7 @@ class SMatSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       schurAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -797,7 +796,7 @@ class SMatSMatSchurExpr
    // matrix-sparse matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< UseSymmetricKernel<MT,MT1,MT2> >
+   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
       schurAssign( Matrix<MT,true>& lhs, const SMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -924,8 +923,8 @@ class SMatSMatSchurExpr
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                                   , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+        , typename = DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                                  ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
 inline const SMatSMatSchurExpr<MT1,MT2>
    smatsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
@@ -955,8 +954,8 @@ inline const SMatSMatSchurExpr<MT1,MT2>
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = EnableIf_< Or< And< IsUniLower<MT1>, IsUniUpper<MT2> >
-                                  , And< IsUniUpper<MT1>, IsUniLower<MT2> > > > >
+        , typename = EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                                 ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
 inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
    smatsmatschur( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
@@ -1050,7 +1049,7 @@ struct Size< SMatSMatSchurExpr<MT1,MT2>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsSymmetric< SMatSMatSchurExpr<MT1,MT2> >
-   : public And< IsSymmetric<MT1>, IsSymmetric<MT2> >
+   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1068,7 +1067,7 @@ struct IsSymmetric< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsHermitian< SMatSMatSchurExpr<MT1,MT2> >
-   : public And< IsHermitian<MT1>, IsHermitian<MT2> >
+   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1086,7 +1085,7 @@ struct IsHermitian< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsLower< SMatSMatSchurExpr<MT1,MT2> >
-   : public Or< IsLower<MT1>, IsLower<MT2> >
+   : public BoolConstant< IsLower_v<MT1> || IsLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1104,7 +1103,7 @@ struct IsLower< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniLower< SMatSMatSchurExpr<MT1,MT2> >
-   : public And< IsUniLower<MT1>, IsUniLower<MT2> >
+   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1122,7 +1121,7 @@ struct IsUniLower< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyLower< SMatSMatSchurExpr<MT1,MT2> >
-   : public Or< IsStrictlyLower<MT1>, IsStrictlyLower<MT2> >
+   : public BoolConstant< IsStrictlyLower_v<MT1> || IsStrictlyLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1140,7 +1139,7 @@ struct IsStrictlyLower< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUpper< SMatSMatSchurExpr<MT1,MT2> >
-   : public Or< IsUpper<MT1>, IsUpper<MT2> >
+   : public BoolConstant< IsUpper_v<MT1> || IsUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1158,7 +1157,7 @@ struct IsUpper< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsUniUpper< SMatSMatSchurExpr<MT1,MT2> >
-   : public And< IsUniUpper<MT1>, IsUniUpper<MT2> >
+   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1176,7 +1175,7 @@ struct IsUniUpper< SMatSMatSchurExpr<MT1,MT2> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct IsStrictlyUpper< SMatSMatSchurExpr<MT1,MT2> >
-   : public Or< IsStrictlyUpper<MT1>, IsStrictlyUpper<MT2> >
+   : public BoolConstant< IsStrictlyUpper_v<MT1> || IsStrictlyUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

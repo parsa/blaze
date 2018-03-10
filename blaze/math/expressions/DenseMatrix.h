@@ -119,7 +119,7 @@ BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE DisableIf_< HasMutableDataAccess<MT>, typename MT::ElementType* >
+BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
    data_backend( DenseMatrix<MT,SO>& dm ) noexcept
 {
    UNUSED_PARAMETER( dm );
@@ -142,7 +142,7 @@ BLAZE_ALWAYS_INLINE DisableIf_< HasMutableDataAccess<MT>, typename MT::ElementTy
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE EnableIf_< HasMutableDataAccess<MT>, typename MT::ElementType* >
+BLAZE_ALWAYS_INLINE EnableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
    data_backend( DenseMatrix<MT,SO>& dm ) noexcept
 {
    return (~dm).data();
@@ -186,7 +186,7 @@ BLAZE_ALWAYS_INLINE typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noe
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE DisableIf_< HasConstDataAccess<MT>, typename MT::ElementType* >
+BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
    data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
 {
    UNUSED_PARAMETER( dm );
@@ -209,7 +209,7 @@ BLAZE_ALWAYS_INLINE DisableIf_< HasConstDataAccess<MT>, typename MT::ElementType
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE EnableIf_< HasConstDataAccess<MT>, typename MT::ElementType* >
+BLAZE_ALWAYS_INLINE EnableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
    data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
 {
    return (~dm).data();
@@ -268,7 +268,7 @@ BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,false>& dm )
+inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,false>& dm )
 {
    const size_t m( (~dm).rows()    );
    const size_t n( (~dm).columns() );
@@ -296,7 +296,7 @@ inline DisableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,false>& dm )
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,true>& dm )
+inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,true>& dm )
 {
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
@@ -324,7 +324,7 @@ inline DisableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,true>& dm )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline EnableIf_< IsUpper<MT> > resetLower_backend( DenseMatrix<MT,SO>& dm )
+inline EnableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,SO>& dm )
 {
    UNUSED_PARAMETER( dm );
 }
@@ -364,7 +364,7 @@ inline void resetLower( DenseMatrix<MT,SO>& dm )
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,false>& dm )
+inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,false>& dm )
 {
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
@@ -392,7 +392,7 @@ inline DisableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,false>& dm )
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,true>& dm )
+inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,true>& dm )
 {
    const size_t m( (~dm).rows()    );
    const size_t n( (~dm).columns() );
@@ -420,7 +420,7 @@ inline DisableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,true>& dm )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline EnableIf_< IsLower<MT> > resetUpper_backend( DenseMatrix<MT,SO>& dm )
+inline EnableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,SO>& dm )
 {
    UNUSED_PARAMETER( dm );
 }

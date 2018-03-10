@@ -202,16 +202,16 @@ class TSVecDMatMultExpr
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side sparse vector expression.
-   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
+   using LeftOperand = If_t< IsExpression_v<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   using RightOperand = If_< IsExpression<MT>, const MT, const MT& >;
+   using RightOperand = If_t< IsExpression_v<MT>, const MT, const MT& >;
 
    //! Type for the assignment of the left-hand side sparse vector operand.
-   using LT = IfTrue_< evaluateVector, const VRT, VCT >;
+   using LT = If_t< evaluateVector, const VRT, VCT >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   using RT = IfTrue_< evaluateMatrix, const MRT, MCT >;
+   using RT = If_t< evaluateMatrix, const MRT, MCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -432,7 +432,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseDefaultKernel<VT1,VT2,MT1>::value >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -510,7 +510,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseOptimizedKernel<VT1,VT2,MT1>::value >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -624,7 +624,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseVectorizedKernel<VT1,VT2,MT1>::value >
       selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -853,7 +853,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseDefaultKernel<VT1,VT2,MT1>::value >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -909,7 +909,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseOptimizedKernel<VT1,VT2,MT1>::value >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -991,7 +991,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseVectorizedKernel<VT1,VT2,MT1>::value >
       selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -1139,7 +1139,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseDefaultKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseDefaultKernel<VT1,VT2,MT1>::value >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -1195,7 +1195,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseOptimizedKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseOptimizedKernel<VT1,VT2,MT1>::value >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -1277,7 +1277,7 @@ class TSVecDMatMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename VT2    // Type of the left-hand side vector operand
            , typename MT1 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedKernel<VT1,VT2,MT1> >
+   static inline EnableIf_t< UseVectorizedKernel<VT1,VT2,MT1>::value >
       selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
@@ -1451,7 +1451,7 @@ class TSVecDMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1496,7 +1496,7 @@ class TSVecDMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( SparseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1528,7 +1528,7 @@ class TSVecDMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAddAssign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1572,7 +1572,7 @@ class TSVecDMatMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpSubAssign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1616,7 +1616,7 @@ class TSVecDMatMultExpr
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpMultAssign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1651,7 +1651,7 @@ class TSVecDMatMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpDivAssign( DenseVector<VT2,true>& lhs, const TSVecDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

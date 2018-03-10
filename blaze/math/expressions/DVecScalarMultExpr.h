@@ -76,9 +76,7 @@
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -168,13 +166,13 @@ class DVecScalarMultExpr
    using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   using ReturnType = const IfTrue_< returnExpr, ExprReturnType, ElementType >;
+   using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const DVecScalarMultExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const DVecScalarMultExpr& >;
 
    //! Composite type of the left-hand side dense vector expression.
-   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
+   using LeftOperand = If_t< IsExpression_v<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side scalar value.
    using RightOperand = ST;
@@ -606,7 +604,7 @@ class DVecScalarMultExpr
    // operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       assign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -634,7 +632,7 @@ class DVecScalarMultExpr
    // operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       assign( SparseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -662,7 +660,7 @@ class DVecScalarMultExpr
    // vector operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       addAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -698,7 +696,7 @@ class DVecScalarMultExpr
    // operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       subAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -734,7 +732,7 @@ class DVecScalarMultExpr
    // vector operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       multAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -770,7 +768,7 @@ class DVecScalarMultExpr
    // vector operand is a computation expression and requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       divAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -806,7 +804,7 @@ class DVecScalarMultExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -834,7 +832,7 @@ class DVecScalarMultExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( SparseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -862,7 +860,7 @@ class DVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -898,7 +896,7 @@ class DVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -934,7 +932,7 @@ class DVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -970,7 +968,7 @@ class DVecScalarMultExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1074,7 +1072,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& dv )
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
-        , typename = EnableIf_< IsNumeric<ST> > >
+        , typename = EnableIf_t< IsNumeric_v<ST> > >
 inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1111,7 +1109,7 @@ inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side dense vector
         , bool TF      // Transpose flag
-        , typename = EnableIf_< IsNumeric<ST> > >
+        , typename = EnableIf_t< IsNumeric_v<ST> > >
 inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1225,7 +1223,7 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , typename ST1  // Type of the scalar of the left-hand side expression
         , bool TF       // Transpose flag of the dense vector
         , typename ST2  // Type of the right-hand side scalar
-        , typename = EnableIf_< IsNumeric<ST2> > >
+        , typename = EnableIf_t< IsNumeric_v<ST2> > >
 inline decltype(auto) operator*( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1253,7 +1251,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the dense vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool TF       // Transpose flag of the dense vector
-        , typename = EnableIf_< IsNumeric<ST1> > >
+        , typename = EnableIf_t< IsNumeric_v<ST1> > >
 inline decltype(auto) operator*( ST1 scalar, const DVecScalarMultExpr<VT,ST2,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1281,7 +1279,7 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , typename ST1  // Type of the scalar of the left-hand side expression
         , bool TF       // Transpose flag of the dense vector
         , typename ST2  // Type of the right-hand side scalar
-        , typename = EnableIf_< And< IsNumeric<ST2>, Or< IsInvertible<ST1>, IsInvertible<ST2> > > > >
+        , typename = EnableIf_t< ( IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) ) > >
 inline decltype(auto) operator/( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;

@@ -162,19 +162,19 @@ class TSVecTDMatMultExpr
    using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   using CompositeType = IfTrue_< useAssign, const ResultType, const TSVecTDMatMultExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const TSVecTDMatMultExpr& >;
 
    //! Composite type of the left-hand side sparse vector expression.
-   using LeftOperand = If_< IsExpression<VT>, const VT, const VT& >;
+   using LeftOperand = If_t< IsExpression_v<VT>, const VT, const VT& >;
 
    //! Composite type of the right-hand side sparse matrix expression.
-   using RightOperand = If_< IsExpression<MT>, const MT, const MT& >;
+   using RightOperand = If_t< IsExpression_v<MT>, const MT, const MT& >;
 
    //! Type for the assignment of the left-hand side sparse vector operand.
-   using LT = IfTrue_< evaluateVector, const VRT, VCT >;
+   using LT = If_t< evaluateVector, const VRT, VCT >;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   using RT = IfTrue_< evaluateMatrix, const MRT, MCT >;
+   using RT = If_t< evaluateMatrix, const MRT, MCT >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -345,7 +345,7 @@ class TSVecTDMatMultExpr
    // the right-hand side vector operand is a compound expression.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       assign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -391,7 +391,7 @@ class TSVecTDMatMultExpr
    // the right-hand side vector operand is a compound expression.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       assign( SparseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -424,7 +424,7 @@ class TSVecTDMatMultExpr
    // evaluation or the right-hand side vector operand is a compound expression.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       addAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -469,7 +469,7 @@ class TSVecTDMatMultExpr
    // evaluation or the right-hand side vector operand is a compound expression.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       subAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -514,7 +514,7 @@ class TSVecTDMatMultExpr
    // evaluation or the right-hand side vector operand is a compound expression.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       multAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -550,7 +550,7 @@ class TSVecTDMatMultExpr
    // evaluation or the right-hand side vector operand is a compound expression.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseAssign<VT2> >
+   friend inline EnableIf_t< UseAssign<VT2>::value >
       divAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -586,7 +586,7 @@ class TSVecTDMatMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -631,7 +631,7 @@ class TSVecTDMatMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAssign( SparseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -663,7 +663,7 @@ class TSVecTDMatMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpAddAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -707,7 +707,7 @@ class TSVecTDMatMultExpr
    // by the the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpSubAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -752,7 +752,7 @@ class TSVecTDMatMultExpr
    // is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpMultAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -787,7 +787,7 @@ class TSVecTDMatMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_< UseSMPAssign<VT2> >
+   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
       smpDivAssign( DenseVector<VT2,true>& lhs, const TSVecTDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -845,7 +845,7 @@ class TSVecTDMatMultExpr
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side dense matrix
-        , typename = DisableIf_< IsSymmetric<MT> > >
+        , typename = DisableIf_t< IsSymmetric_v<MT> > >
 inline const TSVecTDMatMultExpr<VT,MT>
    tsvectdmatmult( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
 {
@@ -875,7 +875,7 @@ inline const TSVecTDMatMultExpr<VT,MT>
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side dense matrix
-        , typename = EnableIf_< IsSymmetric<MT> > >
+        , typename = EnableIf_t< IsSymmetric_v<MT> > >
 inline decltype(auto)
    tsvectdmatmult( const SparseVector<VT,true>& vec, const DenseMatrix<MT,true>& mat )
 {

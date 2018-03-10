@@ -109,11 +109,8 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Not.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -258,17 +255,17 @@ class DMatDMatMultExpr
    //! Type of the functor for forwarding an expression to another assign kernel.
    /*! In case a temporary matrix needs to be created, this functor is used to forward the
        resulting expression to another assign kernel. */
-   using ForwardFunctor = IfTrue_< HERM
-                                 , DeclHerm
-                                 , IfTrue_< SYM
-                                          , DeclSym
-                                          , IfTrue_< LOW
-                                                   , IfTrue_< UPP
-                                                            , DeclDiag
-                                                            , DeclLow >
-                                                   , IfTrue_< UPP
-                                                            , DeclUpp
-                                                            , Noop > > > >;
+   using ForwardFunctor = If_t< HERM
+                              , DeclHerm
+                              , If_t< SYM
+                                    , DeclSym
+                                    , If_t< LOW
+                                          , If_t< UPP
+                                                , DeclDiag
+                                                , DeclLow >
+                                          , If_t< UPP
+                                                , DeclUpp
+                                                , Noop > > > >;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -286,16 +283,16 @@ class DMatDMatMultExpr
    using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
-   using LeftOperand = If_< IsExpression<MT1>, const MT1, const MT1& >;
+   using LeftOperand = If_t< IsExpression_v<MT1>, const MT1, const MT1& >;
 
    //! Composite type of the right-hand side dense matrix expression.
-   using RightOperand = If_< IsExpression<MT2>, const MT2, const MT2& >;
+   using RightOperand = If_t< IsExpression_v<MT2>, const MT2, const MT2& >;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   using LT = IfTrue_< evaluateLeft, const RT1, CT1 >;
+   using LT = If_t< evaluateLeft, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   using RT = IfTrue_< evaluateRight, const RT2, CT2 >;
+   using RT = If_t< evaluateRight, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -506,7 +503,7 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( DenseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -580,7 +577,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
@@ -692,7 +689,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -745,7 +742,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -798,7 +795,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -828,7 +825,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAssignKernel( C, A, B );
@@ -854,7 +851,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -1535,7 +1532,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
@@ -1581,7 +1578,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAssignKernel( C, A, B );
@@ -1606,7 +1603,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( SYM )
@@ -1639,7 +1636,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseBlasKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAssignKernel( C, A, B );
@@ -1664,7 +1661,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseBlasKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       using ET = ElementType_t<MT3>;
@@ -1700,12 +1697,12 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( SparseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
+      using TmpType = If_t< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -1741,7 +1738,7 @@ class DMatDMatMultExpr
    // in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( Matrix<MT,true>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1778,7 +1775,7 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       addAssign( DenseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1848,7 +1845,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
@@ -1916,7 +1913,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -1966,7 +1963,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -2016,7 +2013,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -2045,7 +2042,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAddAssignKernel( C, A, B );
@@ -2071,7 +2068,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -2785,7 +2782,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
@@ -2832,7 +2829,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAddAssignKernel( C, A, B );
@@ -2858,7 +2855,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( LOW )
@@ -2888,7 +2885,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseBlasKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAddAssignKernel( C, A, B );
@@ -2914,7 +2911,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseBlasKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       using ET = ElementType_t<MT3>;
@@ -2953,7 +2950,7 @@ class DMatDMatMultExpr
    // in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       addAssign( Matrix<MT,true>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -2994,7 +2991,7 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       subAssign( DenseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -3064,7 +3061,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       const size_t M( A.rows()    );
@@ -3132,7 +3129,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -3182,7 +3179,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -3232,7 +3229,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -3261,7 +3258,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultSubAssignKernel( C, A, B );
@@ -3287,7 +3284,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -4001,7 +3998,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
@@ -4048,7 +4045,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultSubAssignKernel( C, A, B );
@@ -4074,7 +4071,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( LOW )
@@ -4104,7 +4101,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_< UseBlasKernel<MT3,MT4,MT5> >
+   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeSubAssignKernel( C, A, B );
@@ -4130,7 +4127,7 @@ class DMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_< UseBlasKernel<MT3,MT4,MT5> >
+   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       using ET = ElementType_t<MT3>;
@@ -4169,7 +4166,7 @@ class DMatDMatMultExpr
    // case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       subAssign( Matrix<MT,true>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4256,7 +4253,7 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAssign( DenseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4304,12 +4301,12 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAssign( SparseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
+      using TmpType = If_t< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -4345,7 +4342,7 @@ class DMatDMatMultExpr
    // case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpAssign( Matrix<MT,true>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4385,7 +4382,7 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4428,7 +4425,7 @@ class DMatDMatMultExpr
    // case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpAddAssign( Matrix<MT,true>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4472,7 +4469,7 @@ class DMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4515,7 +4512,7 @@ class DMatDMatMultExpr
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpSubAssign( Matrix<MT,true>& lhs, const DMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -4729,17 +4726,17 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    //! Type of the functor for forwarding an expression to another assign kernel.
    /*! In case a temporary matrix needs to be created, this functor is used to forward the
        resulting expression to another assign kernel. */
-   using ForwardFunctor = IfTrue_< HERM
-                                 , DeclHerm
-                                 , IfTrue_< SYM
-                                          , DeclSym
-                                          , IfTrue_< LOW
-                                                   , IfTrue_< UPP
-                                                            , DeclDiag
-                                                            , DeclLow >
-                                                   , IfTrue_< UPP
-                                                            , DeclUpp
-                                                            , Noop > > > >;
+   using ForwardFunctor = If_t< HERM
+                              , DeclHerm
+                              , If_t< SYM
+                                    , DeclSym
+                                    , If_t< LOW
+                                          , If_t< UPP
+                                                , DeclDiag
+                                                , DeclLow >
+                                          , If_t< UPP
+                                                , DeclUpp
+                                                , Noop > > > >;
    //**********************************************************************************************
 
  public:
@@ -4762,10 +4759,10 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    using RightOperand = ST;
 
    //! Type for the assignment of the left-hand side dense matrix operand.
-   using LT = IfTrue_< evaluateLeft, const RT1, CT1 >;
+   using LT = If_t< evaluateLeft, const RT1, CT1 >;
 
    //! Type for the assignment of the right-hand side dense matrix operand.
-   using RT = IfTrue_< evaluateRight, const RT2, CT2 >;
+   using RT = If_t< evaluateRight, const RT2, CT2 >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -4939,7 +4936,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -5016,7 +5013,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const size_t M( A.rows()    );
@@ -5144,7 +5141,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -5197,7 +5194,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -5250,7 +5247,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -5281,7 +5278,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAssignKernel( C, A, B, scalar );
@@ -5307,7 +5304,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -5990,7 +5987,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
@@ -6037,7 +6034,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAssignKernel( C, A, B, scalar );
@@ -6063,7 +6060,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( SYM )
@@ -6097,7 +6094,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseBlasKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAssignKernel( C, A, B, scalar );
@@ -6123,7 +6120,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseBlasKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       using ET = ElementType_t<MT3>;
@@ -6157,12 +6154,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
+      using TmpType = If_t< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -6196,7 +6193,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    // case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       assign( Matrix<MT,true>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -6234,7 +6231,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       addAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -6307,7 +6304,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const ResultType tmp( serial( A * B * scalar ) );
@@ -6333,7 +6330,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -6383,7 +6380,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -6433,7 +6430,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -6462,7 +6459,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
@@ -6488,7 +6485,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -7139,7 +7136,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
@@ -7186,7 +7183,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
@@ -7212,7 +7209,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( LOW )
@@ -7242,7 +7239,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseBlasKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAddAssignKernel( C, A, B, scalar );
@@ -7268,7 +7265,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseBlasKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       using ET = ElementType_t<MT3>;
@@ -7305,7 +7302,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       addAssign( Matrix<MT,true>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -7347,7 +7344,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline DisableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       subAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -7420,7 +7417,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       const ResultType tmp( serial( A * B * scalar ) );
@@ -7446,7 +7443,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< Not< IsDiagonal<MT4> >, IsDiagonal<MT5> > >
+   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -7496,7 +7493,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< IsDiagonal<MT4>, Not< IsDiagonal<MT5> > > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -7546,7 +7543,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< And< IsDiagonal<MT4>, IsDiagonal<MT5> > >
+   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
       selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT3 );
@@ -7575,7 +7572,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
@@ -7601,7 +7598,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -8251,7 +8248,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
@@ -8298,7 +8295,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
@@ -8324,7 +8321,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( LOW )
@@ -8354,7 +8351,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_< UseBlasKernel<MT3,MT4,MT5,ST2> >
+   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeSubAssignKernel( C, A, B, scalar );
@@ -8380,7 +8377,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_< UseBlasKernel<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       using ET = ElementType_t<MT3>;
@@ -8417,7 +8414,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       subAssign( Matrix<MT,true>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -8504,7 +8501,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -8554,12 +8551,12 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
-      using TmpType = IfTrue_< SO, OppositeType, ResultType >;
+      using TmpType = If_t< SO, OppositeType, ResultType >;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OppositeType );
@@ -8593,7 +8590,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpAssign( Matrix<MT,true>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -8634,7 +8631,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -8678,7 +8675,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpAddAssign( Matrix<MT,true>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -8723,7 +8720,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_< IsEvaluationRequired<MT,MT1,MT2> >
+   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -8767,7 +8764,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_< CanExploitSymmetry<MT,MT1,MT2> >
+   friend inline EnableIf_t< CanExploitSymmetry<MT,MT1,MT2>::value >
       smpSubAssign( Matrix<MT,true>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -9167,7 +9164,7 @@ struct Size< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsAligned< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public And< IsAligned<MT1>, IsAligned<MT2> >
+   : public BoolConstant< IsAligned_v<MT1> && IsAligned_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9185,10 +9182,9 @@ struct IsAligned< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsSymmetric< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Or< Bool<SF>
-              , And< Bool<HF>
-                   , IsBuiltin< ElementType_t< DMatDMatMultExpr<MT1,MT2,false,true,false,false> > > >
-              , And< Bool<LF>, Bool<UF> > >
+   : public BoolConstant< SF ||
+                          ( HF && IsBuiltin_v< ElementType_t< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > > ) ||
+                          ( LF && UF ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9224,10 +9220,9 @@ struct IsHermitian< DMatDMatMultExpr<MT1,MT2,SF,true,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsLower< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Or< Bool<LF>
-              , And< IsLower<MT1>, IsLower<MT2> >
-              , And< Or< Bool<SF>, Bool<HF> >
-                   , IsUpper<MT1>, IsUpper<MT2> > >
+   : public BoolConstant< LF ||
+                          ( IsLower_v<MT1> && IsLower_v<MT2> ) ||
+                          ( ( SF || HF ) && IsUpper_v<MT1> && IsUpper_v<MT2> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9245,9 +9240,8 @@ struct IsLower< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniLower< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Or< And< IsUniLower<MT1>, IsUniLower<MT2> >
-              , And< Or< Bool<SF>, Bool<HF> >
-                   , IsUniUpper<MT1>, IsUniUpper<MT2> > >
+   : public BoolConstant< ( IsUniLower_v<MT1> && IsUniLower_v<MT2> ) ||
+                          ( ( SF || HF ) && IsUniUpper_v<MT1> && IsUniUpper_v<MT2> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9265,11 +9259,11 @@ struct IsUniLower< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyLower< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
-              , And< IsStrictlyLower<MT2>, IsLower<MT1> >
-              , And< Or< Bool<SF>, Bool<HF> >
-                   , Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
-                       , And< IsStrictlyUpper<MT2>, IsUpper<MT1> > > > >
+   : public BoolConstant< ( IsStrictlyLower_v<MT1> && IsLower_v<MT2> ) ||
+                          ( IsStrictlyLower_v<MT2> && IsLower_v<MT1> ) ||
+                          ( ( SF || HF ) &&
+                            ( ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
+                              ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) ) ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9287,10 +9281,9 @@ struct IsStrictlyLower< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUpper< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Or< Bool<UF>
-              , And< IsUpper<MT1>, IsUpper<MT2> >
-              , And< Or< Bool<SF>, Bool<HF> >
-                   , IsLower<MT1>, IsLower<MT2> > >
+   : public BoolConstant< UF ||
+                          ( IsUpper_v<MT1> && IsUpper_v<MT2> ) ||
+                          ( ( SF || HF ) && IsLower_v<MT1> && IsLower_v<MT2> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9308,9 +9301,8 @@ struct IsUpper< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniUpper< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Or< And< IsUniUpper<MT1>, IsUniUpper<MT2> >
-              , And< Or< Bool<SF>, Bool<HF> >
-                   , IsUniLower<MT1>, IsUniLower<MT2> > >
+   : public BoolConstant< ( IsUniUpper_v<MT1> && IsUniUpper_v<MT2> ) ||
+                          ( ( SF || HF ) && IsUniLower_v<MT1> && IsUniLower_v<MT2> ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9328,11 +9320,11 @@ struct IsUniUpper< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyUpper< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public Or< And< IsStrictlyUpper<MT1>, IsUpper<MT2> >
-              , And< IsStrictlyUpper<MT2>, IsUpper<MT1> >
-              , And< Or< Bool<SF>, Bool<HF> >
-                   , Or< And< IsStrictlyLower<MT1>, IsLower<MT2> >
-                       , And< IsStrictlyLower<MT2>, IsLower<MT1> > > > >
+   : public BoolConstant< ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
+                          ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) ||
+                          ( ( SF || HF ) &&
+                            ( ( IsStrictlyLower_v<MT1> && IsLower_v<MT2> ) ||
+                              ( IsStrictlyLower_v<MT2> && IsLower_v<MT1> ) ) ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
