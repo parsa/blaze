@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/util/Assert.h>
@@ -60,19 +59,19 @@ namespace blaze {
 /*!\name Sparse vector SMP functions */
 //@{
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpAddAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpSubAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpMultAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs );
 //@}
 //*************************************************************************************************
@@ -96,7 +95,7 @@ template< typename VT1  // Type of the left-hand side sparse vector
         , bool TF1      // Transpose flag of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -125,7 +124,7 @@ template< typename VT1  // Type of the left-hand side sparse vector
         , bool TF1      // Transpose flag of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpAddAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -155,7 +154,7 @@ template< typename VT1  // Type of the left-hand side sparse vector
         , bool TF1      // Transpose flag of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpSubAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -185,7 +184,7 @@ template< typename VT1  // Type of the left-hand side sparse vector
         , bool TF1      // Transpose flag of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side vector
         , bool TF2 >    // Transpose flag of the right-hand side vector
-inline EnableIf_< IsSparseVector<VT1> >
+inline EnableIf_t< IsSparseVector_v<VT1> >
    smpMultAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
