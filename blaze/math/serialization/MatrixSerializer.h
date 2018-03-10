@@ -249,45 +249,45 @@ class MatrixSerializer
    void deserializeHeader( Archive& archive, const MT& mat );
 
    template< typename MT, bool SO >
-   DisableIf_< IsResizable<MT> > prepareMatrix( DenseMatrix<MT,SO>& mat );
+   DisableIf_t< IsResizable_v<MT> > prepareMatrix( DenseMatrix<MT,SO>& mat );
 
    template< typename MT, bool SO >
-   DisableIf_< IsResizable<MT> > prepareMatrix( SparseMatrix<MT,SO>& mat );
+   DisableIf_t< IsResizable_v<MT> > prepareMatrix( SparseMatrix<MT,SO>& mat );
 
    template< typename MT >
-   EnableIf_< IsResizable<MT> > prepareMatrix( MT& mat );
+   EnableIf_t< IsResizable_v<MT> > prepareMatrix( MT& mat );
 
    template< typename Archive, typename MT >
    void deserializeMatrix( Archive& archive, MT& mat );
 
    template< typename Archive, typename MT >
-   EnableIfTrue_< MT::simdEnabled >
+   EnableIf_t< MT::simdEnabled >
       deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,rowMajor>& mat );
 
    template< typename Archive, typename MT, bool SO >
    void deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   DisableIf_< IsNumeric< ElementType_t<MT> > >
+   DisableIf_t< IsNumeric_v< ElementType_t<MT> > >
       deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   EnableIf_< IsNumeric< ElementType_t<MT> > >
+   EnableIf_t< IsNumeric_v< ElementType_t<MT> > >
       deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT >
-   EnableIfTrue_< MT::simdEnabled>
+   EnableIf_t< MT::simdEnabled>
       deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat );
 
    template< typename Archive, typename MT, bool SO >
    void deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   DisableIf_< IsNumeric< ElementType_t<MT> > >
+   DisableIf_t< IsNumeric_v< ElementType_t<MT> > >
       deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
-   EnableIf_< IsNumeric< ElementType_t<MT> > >
+   EnableIf_t< IsNumeric_v< ElementType_t<MT> > >
       deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat );
 
    template< typename Archive, typename MT, bool SO >
@@ -562,7 +562,7 @@ void MatrixSerializer::deserializeHeader( Archive& archive, const MT& mat )
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
-DisableIf_< IsResizable<MT> > MatrixSerializer::prepareMatrix( DenseMatrix<MT,SO>& mat )
+DisableIf_t< IsResizable_v<MT> > MatrixSerializer::prepareMatrix( DenseMatrix<MT,SO>& mat )
 {
    reset( ~mat );
 }
@@ -577,7 +577,7 @@ DisableIf_< IsResizable<MT> > MatrixSerializer::prepareMatrix( DenseMatrix<MT,SO
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
-DisableIf_< IsResizable<MT> > MatrixSerializer::prepareMatrix( SparseMatrix<MT,SO>& mat )
+DisableIf_t< IsResizable_v<MT> > MatrixSerializer::prepareMatrix( SparseMatrix<MT,SO>& mat )
 {
    (~mat).reserve( number_ );
    reset( ~mat );
@@ -592,7 +592,7 @@ DisableIf_< IsResizable<MT> > MatrixSerializer::prepareMatrix( SparseMatrix<MT,S
 // \return void
 */
 template< typename MT >  // Type of the matrix
-EnableIf_< IsResizable<MT> > MatrixSerializer::prepareMatrix( MT& mat )
+EnableIf_t< IsResizable_v<MT> > MatrixSerializer::prepareMatrix( MT& mat )
 {
    mat.resize ( rows_, columns_, false );
    mat.reserve( number_ );
@@ -649,7 +649,7 @@ void MatrixSerializer::deserializeMatrix( Archive& archive, MT& mat )
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
-EnableIfTrue_< MT::simdEnabled >
+EnableIf_t< MT::simdEnabled >
    MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<MT,rowMajor>& mat )
 {
    if( columns_ == 0UL ) return;
@@ -716,7 +716,7 @@ void MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, DenseMatrix<
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-EnableIf_< IsNumeric< ElementType_t<MT> > >
+EnableIf_t< IsNumeric_v< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
    DynamicMatrix< ElementType_t<MT>, rowMajor > tmp( rows_, columns_ );
@@ -745,7 +745,7 @@ EnableIf_< IsNumeric< ElementType_t<MT> > >
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-DisableIf_< IsNumeric< ElementType_t<MT> > >
+DisableIf_t< IsNumeric_v< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseRowMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
    using ET = ElementType_t<MT>;
@@ -788,7 +788,7 @@ DisableIf_< IsNumeric< ElementType_t<MT> > >
 */
 template< typename Archive  // Type of the archive
         , typename MT >     // Type of the matrix
-EnableIfTrue_< MT::simdEnabled >
+EnableIf_t< MT::simdEnabled >
    MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatrix<MT,columnMajor>& mat )
 {
    if( rows_ == 0UL ) return;
@@ -855,7 +855,7 @@ void MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, DenseMatr
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-EnableIf_< IsNumeric< ElementType_t<MT> > >
+EnableIf_t< IsNumeric_v< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
    DynamicMatrix< ElementType_t<MT>, columnMajor > tmp( rows_, columns_ );
@@ -884,7 +884,7 @@ EnableIf_< IsNumeric< ElementType_t<MT> > >
 template< typename Archive  // Type of the archive
         , typename MT       // Type of the matrix
         , bool SO >         // Storage order
-DisableIf_< IsNumeric< ElementType_t<MT> > >
+DisableIf_t< IsNumeric_v< ElementType_t<MT> > >
    MatrixSerializer::deserializeDenseColumnMatrix( Archive& archive, SparseMatrix<MT,SO>& mat )
 {
    using ET = ElementType_t<MT>;
