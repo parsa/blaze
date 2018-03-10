@@ -77,17 +77,17 @@ struct HasSIMDDivHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-struct HasSIMDDivHelper< T1, T2, EnableIfTrue_< IsNumeric_v<T1> && IsIntegral_v<T1> &&
-                                                IsSigned_v<T1> && IsNumeric_v<T2> &&
-                                                IsIntegral_v<T2> && IsSigned_v<T2> &&
-                                                sizeof(T1) == sizeof(T2) > >
+struct HasSIMDDivHelper< T1, T2, EnableIf_t< IsNumeric_v<T1> && IsIntegral_v<T1> &&
+                                             IsSigned_v<T1> && IsNumeric_v<T2> &&
+                                             IsIntegral_v<T2> && IsSigned_v<T2> &&
+                                             sizeof(T1) == sizeof(T2) > >
    : public BoolConstant< ( bool( BLAZE_MIC_MODE      ) && sizeof(T1) >= 4UL ) ||
                           ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T1) <= 2UL ) ||
                           ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T1) >= 4UL ) >
 {};
 
 template< typename T >
-struct HasSIMDDivHelper< complex<T>, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && IsSigned_v<T> > >
+struct HasSIMDDivHelper< complex<T>, T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && IsSigned_v<T> > >
    : public BoolConstant< ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
                           ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
                           ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) >

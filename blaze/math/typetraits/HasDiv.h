@@ -45,7 +45,6 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Void.h>
 
@@ -116,7 +115,7 @@ struct HasDiv
 // \ingroup math_type_traits
 */
 template< typename T1, typename T2 >
-struct HasDiv< T1, T2, EnableIf_< And< IsVector<T1>, IsDenseVector<T2> > > >
+struct HasDiv< T1, T2, EnableIf_t< IsVector_v<T1> && IsDenseVector_v<T2> > >
    : public HasDiv< typename T1::ElementType, typename T2::ElementType >
 {};
 /*! \endcond */

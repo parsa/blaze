@@ -76,7 +76,7 @@ struct HasSIMDMaxHelper
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-struct HasSIMDMaxHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && Has1Byte_v<T> > >
+struct HasSIMDMaxHelper< T, T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has1Byte_v<T> > >
    : public BoolConstant< ( bool( BLAZE_SSE2_MODE ) && IsUnsigned_v<T> ) ||
                           ( bool( BLAZE_SSE4_MODE ) && IsSigned_v<T>   ) ||
                           bool( BLAZE_AVX2_MODE     ) ||
@@ -89,7 +89,7 @@ struct HasSIMDMaxHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-struct HasSIMDMaxHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && Has2Bytes_v<T> > >
+struct HasSIMDMaxHelper< T, T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has2Bytes_v<T> > >
    : public BoolConstant< ( bool( BLAZE_SSE2_MODE ) && IsSigned_v<T>   ) ||
                           ( bool( BLAZE_SSE4_MODE ) && IsUnsigned_v<T> ) ||
                           bool( BLAZE_AVX2_MODE     ) ||
@@ -102,7 +102,7 @@ struct HasSIMDMaxHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T >
-struct HasSIMDMaxHelper< T, T, EnableIfTrue_< IsNumeric_v<T> && IsIntegral_v<T> && Has4Bytes_v<T> > >
+struct HasSIMDMaxHelper< T, T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has4Bytes_v<T> > >
    : public BoolConstant< bool( BLAZE_SSE4_MODE    ) ||
                           bool( BLAZE_AVX2_MODE    ) ||
                           bool( BLAZE_MIC_MODE     ) ||

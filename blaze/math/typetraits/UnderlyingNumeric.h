@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
 
@@ -98,10 +97,9 @@ struct UnderlyingNumeric
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsBuiltin<T>, IsComplex<T> >
-                            , BuiltinOrComplex<T>
-                            , Other<T>
-                            >::Type;
+   using Type = typename If_t< IsBuiltin_v<T> || IsComplex_v<T>
+                             , BuiltinOrComplex<T>
+                             , Other<T> >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

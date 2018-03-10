@@ -45,7 +45,6 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Void.h>
 
@@ -117,7 +116,7 @@ struct HasMult
 // \ingroup math_type_traits
 */
 template< typename T1, typename T2 >
-struct HasMult< T1, T2, EnableIf_< And< IsVector<T1>, IsVector<T2> > > >
+struct HasMult< T1, T2, EnableIf_t< IsVector_v<T1> && IsVector_v<T2> > >
    : public HasMult< typename T1::ElementType, typename T2::ElementType >
 {};
 /*! \endcond */
@@ -130,7 +129,7 @@ struct HasMult< T1, T2, EnableIf_< And< IsVector<T1>, IsVector<T2> > > >
 // \ingroup math_type_traits
 */
 template< typename T1, typename T2 >
-struct HasMult< T1, T2, EnableIf_< And< IsMatrix<T1>, IsVector<T2> > > >
+struct HasMult< T1, T2, EnableIf_t< IsMatrix_v<T1> && IsVector_v<T2> > >
    : public HasMult< typename T1::ElementType, typename T2::ElementType >
 {};
 /*! \endcond */
@@ -143,7 +142,7 @@ struct HasMult< T1, T2, EnableIf_< And< IsMatrix<T1>, IsVector<T2> > > >
 // \ingroup math_type_traits
 */
 template< typename T1, typename T2 >
-struct HasMult< T1, T2, EnableIf_< And< IsVector<T1>, IsMatrix<T2> > > >
+struct HasMult< T1, T2, EnableIf_t< IsVector_v<T1> && IsMatrix_v<T2> > >
    : public HasMult< typename T1::ElementType, typename T2::ElementType >
 {};
 /*! \endcond */
@@ -156,7 +155,7 @@ struct HasMult< T1, T2, EnableIf_< And< IsVector<T1>, IsMatrix<T2> > > >
 // \ingroup math_type_traits
 */
 template< typename T1, typename T2 >
-struct HasMult< T1, T2, EnableIf_< And< IsMatrix<T1>, IsMatrix<T2> > > >
+struct HasMult< T1, T2, EnableIf_t< IsMatrix_v<T1> && IsMatrix_v<T2> > >
    : public HasMult< typename T1::ElementType, typename T2::ElementType >
 {};
 /*! \endcond */

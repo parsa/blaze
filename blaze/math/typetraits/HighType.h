@@ -44,7 +44,6 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
@@ -150,10 +149,10 @@ struct HighType
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< Or< IsConst<T1>, IsVolatile<T1>, IsReference<T1>
-                                , IsConst<T2>, IsVolatile<T2>, IsReference<T2> >
-                            , Helper
-                            , Failure >::Type;
+   using Type = typename If_t< IsConst_v<T1> || IsVolatile_v<T1> || IsReference_v<T1> ||
+                               IsConst_v<T2> || IsVolatile_v<T2> || IsReference_v<T2>
+                             , Helper
+                             , Failure >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

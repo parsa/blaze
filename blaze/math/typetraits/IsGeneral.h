@@ -43,8 +43,7 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
-#include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Not.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -87,7 +86,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsGeneral
-   : public And< Not< IsSymmetric<T> >, Not< IsHermitian<T> >, Not< IsTriangular<T> > >
+   : public BoolConstant< !IsSymmetric_v<T> && !IsHermitian_v<T> && !IsTriangular_v<T> >
 {};
 //*************************************************************************************************
 

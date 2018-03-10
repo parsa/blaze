@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/Or.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
 #include <blaze/util/typetraits/IsDouble.h>
@@ -77,7 +77,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsBLASCompatible
-   : public Or< IsFloat<T>, IsDouble<T>, IsComplexFloat<T>, IsComplexDouble<T> >
+   : public BoolConstant< IsFloat_v<T> || IsDouble_v<T> || IsComplexFloat_v<T> || IsComplexDouble_v<T> >
 {};
 //*************************************************************************************************
 

@@ -103,12 +103,12 @@ struct UnderlyingElement
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_< IsBuiltin<T>
-                            , Builtin<T>
-                            , If_< IsComplex<T>
-                                 , Complex<T>
-                                 , Other<T> >
-                            >::Type;
+   using Type = typename If_t< IsBuiltin_v<T>
+                             , Builtin<T>
+                             , If_t< IsComplex_v<T>
+                                   , Complex<T>
+                                   , Other<T> >
+                             >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };

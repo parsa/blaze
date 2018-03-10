@@ -44,7 +44,6 @@
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 
 
 namespace blaze {
@@ -76,10 +75,10 @@ struct IsSMPAssignableHelper
 
  public:
    //**********************************************************************************************
-   enum : bool { value = If_< Or< IsVector<T>, IsMatrix<T> >
-                            , UseNestedMember<T>
-                            , NotSMPAssignable<T>
-                            >::value };
+   enum : bool { value = If_t< IsVector_v<T> || IsMatrix_v<T>
+                             , UseNestedMember<T>
+                             , NotSMPAssignable<T>
+                             >::value };
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -42,7 +42,7 @@
 
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
-#include <blaze/util/mpl/And.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
 
@@ -83,7 +83,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsNumericMatrix
-   : public And< IsMatrix<T>, IsNumeric< UnderlyingElement_t<T> > >
+   : public BoolConstant< IsMatrix_v<T> && IsNumeric_v< UnderlyingElement_t<T> > >
 {};
 //*************************************************************************************************
 

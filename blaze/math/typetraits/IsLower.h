@@ -42,7 +42,7 @@
 
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsUniLower.h>
-#include <blaze/util/mpl/Or.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -85,7 +85,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsLower
-   : public Or< IsUniLower<T>, IsStrictlyLower<T> >
+   : public BoolConstant< IsUniLower_v<T> || IsStrictlyLower_v<T> >
 {};
 //*************************************************************************************************
 
