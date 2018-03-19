@@ -45,7 +45,6 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SchurExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
-#include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -69,6 +68,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -78,6 +78,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
@@ -120,7 +121,7 @@ class TSMatSMatSchurExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
+   static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -128,17 +129,14 @@ class TSMatSMatSchurExpr
 
    //**Serial evaluation strategy******************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSymmetricKernel struct is a helper struct for the selection of the serial
-       evaluation strategy. In case the two given matrix types have a different storage
-       order and in case the second matrix type is symmetric, \a value is set to 1 and
-       an optimized evaluation strategy is selected. Otherwise \a value is set to 0 and
-       the default strategy is chosen. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the serial evaluation strategy. In case
+       the two given matrix types have a different storage order and in case the second matrix
+       type is symmetric, \a value is set to 1 and an optimized evaluation strategy is selected.
+       Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2 >
-   struct UseSymmetricKernel {
-      BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( T1, T2 );
-      enum : bool { value = IsSymmetric_v<T2> };
-   };
+   static constexpr bool UseSymmetricKernel_v =
+      ( IsVoid_v< EnableIf_t< StorageOrder_v<T1> != StorageOrder_v<T2> > > && IsSymmetric_v<T2> );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -165,7 +163,7 @@ class TSMatSMatSchurExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = false };
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -321,7 +319,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a row-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1> >
       assign( DenseMatrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -361,7 +359,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT2> >
       assign( DenseMatrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -403,7 +401,7 @@ class TSMatSMatSchurExpr
    // Schur product expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1> >
       assign( SparseMatrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -443,7 +441,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT2> >
       assign( SparseMatrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -485,7 +483,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1> >
       assign( Matrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -512,7 +510,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT2> >
       assign( Matrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -541,7 +539,7 @@ class TSMatSMatSchurExpr
    // sparse matrix-sparse matrix Schur product expression to a row-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1> >
       addAssign( DenseMatrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -581,7 +579,7 @@ class TSMatSMatSchurExpr
    // sparse matrix-sparse matrix Schur product expression to a column-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT2> >
       addAssign( DenseMatrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -623,7 +621,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1> >
       addAssign( Matrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -650,7 +648,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT2> >
       addAssign( Matrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -683,7 +681,7 @@ class TSMatSMatSchurExpr
    // sparse matrix-sparse matrix Schur product expression to a row-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1> >
       subAssign( DenseMatrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -723,7 +721,7 @@ class TSMatSMatSchurExpr
    // sparse matrix-sparse matrix Schur product expression to a column-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT2> >
       subAssign( DenseMatrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -765,7 +763,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1> >
       subAssign( Matrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -792,7 +790,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT2> >
       subAssign( Matrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -825,7 +823,7 @@ class TSMatSMatSchurExpr
    // sparse matrix-sparse matrix Schur product expression to a row-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1> >
       schurAssign( DenseMatrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -865,7 +863,7 @@ class TSMatSMatSchurExpr
    // sparse matrix-sparse matrix Schur product expression to a column-major dense matrix.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT2> >
       schurAssign( DenseMatrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -907,7 +905,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1> >
       schurAssign( Matrix<MT,false>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -934,7 +932,7 @@ class TSMatSMatSchurExpr
    // sparse matrix Schur product expression to a column-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT2>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT2> >
       schurAssign( Matrix<MT,true>& lhs, const TSMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

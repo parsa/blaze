@@ -118,7 +118,7 @@ class DMatSMatSchurExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
+   static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -132,14 +132,12 @@ class DMatSMatSchurExpr
        to \a true and the Schur product expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to \a false and the expression will be
        evaluated via the function call operator. */
-   enum : bool { useAssign = ( RequiresEvaluation_v<MT1> || RequiresEvaluation_v<MT2> ) };
+   static constexpr bool useAssign = ( RequiresEvaluation_v<MT1> || RequiresEvaluation_v<MT2> );
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   template< typename VT >
-   struct UseAssign {
-      enum : bool { value = useAssign };
-   };
+   //! Helper template for the explicit application of the SFINAE principle.
+   template< typename MT >
+   static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -300,7 +298,7 @@ class DMatSMatSchurExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = false };
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -517,7 +515,7 @@ class DMatSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       assign( DenseMatrix<MT,SO2>& lhs, const DMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -558,7 +556,7 @@ class DMatSMatSchurExpr
    // matrix Schur product expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       assign( SparseMatrix<MT,false>& lhs, const DMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -605,7 +603,7 @@ class DMatSMatSchurExpr
    // matrix Schur product expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       assign( SparseMatrix<MT,true>& lhs, const DMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -665,7 +663,7 @@ class DMatSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       addAssign( DenseMatrix<MT,SO2>& lhs, const DMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -711,7 +709,7 @@ class DMatSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       subAssign( DenseMatrix<MT,SO2>& lhs, const DMatSMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

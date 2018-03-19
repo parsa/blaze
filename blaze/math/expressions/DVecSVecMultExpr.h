@@ -111,7 +111,7 @@ class DVecSVecMultExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
+   static constexpr bool returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2>;
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -125,14 +125,12 @@ class DVecSVecMultExpr
        to \a true and the multiplication expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to \a false and the expression will be
        evaluated via the subscript operator. */
-   enum : bool { useAssign = ( RequiresEvaluation_v<VT1> || RequiresEvaluation_v<VT2> ) };
+   static constexpr bool useAssign = ( RequiresEvaluation_v<VT1> || RequiresEvaluation_v<VT2> );
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct UseAssign {
-      enum : bool { value = useAssign };
-   };
+   static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -158,7 +156,7 @@ class DVecSVecMultExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = false };
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -474,7 +472,7 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT>::value >
+   friend inline EnableIf_t< UseAssign_v<VT> >
       assign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -511,7 +509,7 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign<VT>::value >
+   friend inline EnableIf_t< UseAssign_v<VT> >
       assign( SparseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -552,7 +550,7 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT>::value >
+   friend inline EnableIf_t< UseAssign_v<VT> >
       addAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -593,7 +591,7 @@ class DVecSVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT>::value >
+   friend inline EnableIf_t< UseAssign_v<VT> >
       subAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -634,7 +632,7 @@ class DVecSVecMultExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT>::value >
+   friend inline EnableIf_t< UseAssign_v<VT> >
       multAssign( DenseVector<VT,TF>& lhs, const DVecSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

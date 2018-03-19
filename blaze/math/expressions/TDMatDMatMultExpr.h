@@ -155,76 +155,69 @@ class TDMatDMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateLeft = IsComputation_v<MT1> || RequiresEvaluation_v<MT1> };
+   static constexpr bool evaluateLeft = ( IsComputation_v<MT1> || RequiresEvaluation_v<MT1> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateRight = IsComputation_v<MT2> || RequiresEvaluation_v<MT2> };
+   static constexpr bool evaluateRight = ( IsComputation_v<MT2> || RequiresEvaluation_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Compilation switches for the kernel generation.
-   enum : bool {
-      SYM  = ( SF && !( HF || LF || UF )    ),  //!< Flag for symmetric matrices.
-      HERM = ( HF && !( LF || UF )          ),  //!< Flag for Hermitian matrices.
-      LOW  = ( LF || ( ( SF || HF ) && UF ) ),  //!< Flag for lower matrices.
-      UPP  = ( UF || ( ( SF || HF ) && LF ) )   //!< Flag for upper matrices.
-   };
+   static constexpr bool SYM  = ( SF && !( HF || LF || UF )    );  //!< Flag for symmetric matrices.
+   static constexpr bool HERM = ( HF && !( LF || UF )          );  //!< Flag for Hermitian matrices.
+   static constexpr bool LOW  = ( LF || ( ( SF || HF ) && UF ) );  //!< Flag for lower matrices.
+   static constexpr bool UPP  = ( UF || ( ( SF || HF ) && LF ) );  //!< Flag for upper matrices.
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
-       evaluation strategy. In case either of the two matrix operands requires an intermediate
-       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
+       either of the two matrix operands requires an intermediate evaluation, the nested \a value
+       will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct IsEvaluationRequired {
-      enum : bool { value = ( evaluateLeft || evaluateRight ) };
-   };
+   static constexpr bool IsEvaluationRequired_v = ( evaluateLeft || evaluateRight );
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    /*! In case the types of all three involved matrices are suited for a BLAS kernel, the nested
        \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
-                            !SYM && !HERM && !LOW && !UPP &&
-                            IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
-                            IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
-                            IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
-                            !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible_v< ElementType_t<T1> > &&
-                            IsBLASCompatible_v< ElementType_t<T2> > &&
-                            IsBLASCompatible_v< ElementType_t<T3> > &&
-                            IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
-                            IsSame_v< ElementType_t<T1>, ElementType_t<T3> > };
-   };
+   static constexpr bool UseBlasKernel_v =
+      ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
+        !SYM && !HERM && !LOW && !UPP &&
+        IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
+        IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
+        IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
+        !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
+        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+        IsBLASCompatible_v< ElementType_t<T1> > &&
+        IsBLASCompatible_v< ElementType_t<T2> > &&
+        IsBLASCompatible_v< ElementType_t<T3> > &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T3> > );
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
-       matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
+       matrix multiplication, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseVectorizedDefaultKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType_t<T1>
-                                              , ElementType_t<T2>
-                                              , ElementType_t<T3> > &&
-                            HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
-                            HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > };
-   };
+   static constexpr bool UseVectorizedDefaultKernel_v =
+      ( useOptimizedKernels &&
+        !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
+        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+        IsSIMDCombinable_v< ElementType_t<T1>
+                          , ElementType_t<T2>
+                          , ElementType_t<T3> > &&
+        HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
+        HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -275,19 +268,20 @@ class TDMatDMatMultExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = !( IsDiagonal_v<MT1> && IsDiagonal_v<MT2> ) &&
-                               MT1::simdEnabled && MT2::simdEnabled &&
-                               HasSIMDAdd_v<ET1,ET2> &&
-                               HasSIMDMult_v<ET1,ET2> };
+   static constexpr bool simdEnabled =
+      ( !( IsDiagonal_v<MT1> && IsDiagonal_v<MT2> ) &&
+        MT1::simdEnabled && MT2::simdEnabled &&
+        HasSIMDAdd_v<ET1,ET2> &&
+        HasSIMDMult_v<ET1,ET2> );
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
-                                 !evaluateRight && MT2::smpAssignable };
+   static constexpr bool smpAssignable =
+      ( !evaluateLeft  && MT1::smpAssignable && !evaluateRight && MT2::smpAssignable );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -1026,7 +1020,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAssignKernel( ~C, A, B );
@@ -1052,7 +1046,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -1733,7 +1727,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
@@ -2413,7 +2407,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAssignKernel( C, A, B );
@@ -2439,7 +2433,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( SYM )
@@ -2473,7 +2467,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAssignKernel( C, A, B );
@@ -2499,7 +2493,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       using ET = ElementType_t<MT3>;
@@ -2999,7 +2993,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAddAssignKernel( C, A, B );
@@ -3025,7 +3019,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -3739,7 +3733,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
@@ -4452,7 +4446,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAddAssignKernel( C, A, B );
@@ -4478,7 +4472,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( LOW )
@@ -4508,7 +4502,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAddAssignKernel( C, A, B );
@@ -4534,7 +4528,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       using ET = ElementType_t<MT3>;
@@ -5001,7 +4995,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultSubAssignKernel( C, A, B );
@@ -5027,7 +5021,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -5741,7 +5735,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
@@ -6454,7 +6448,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultSubAssignKernel( C, A, B );
@@ -6480,7 +6474,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       if( LOW )
@@ -6510,7 +6504,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
+   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeSubAssignKernel( C, A, B );
@@ -6536,7 +6530,7 @@ class TDMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5>::value >
+   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       using ET = ElementType_t<MT3>;
@@ -6625,7 +6619,7 @@ class TDMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpAssign( DenseMatrix<MT,SO>& lhs, const TDMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -6674,7 +6668,7 @@ class TDMatDMatMultExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpAssign( SparseMatrix<MT,SO>& lhs, const TDMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -6717,7 +6711,7 @@ class TDMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const TDMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -6766,7 +6760,7 @@ class TDMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const TDMatDMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -6897,75 +6891,68 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateLeft = IsComputation_v<MT1> || RequiresEvaluation_v<MT1> };
+   static constexpr bool evaluateLeft = ( IsComputation_v<MT1> || RequiresEvaluation_v<MT1> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense matrix expression.
-   enum : bool { evaluateRight = IsComputation_v<MT2> || RequiresEvaluation_v<MT2> };
+   static constexpr bool evaluateRight = ( IsComputation_v<MT2> || RequiresEvaluation_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Compilation switches for the kernel generation.
-   enum : bool {
-      SYM  = ( SF && !( HF || LF || UF )    ),  //!< Flag for symmetric matrices.
-      HERM = ( HF && !( LF || UF )          ),  //!< Flag for Hermitian matrices.
-      LOW  = ( LF || ( ( SF || HF ) && UF ) ),  //!< Flag for lower matrices.
-      UPP  = ( UF || ( ( SF || HF ) && LF ) )   //!< Flag for upper matrices.
-   };
+   static constexpr bool SYM  = ( SF && !( HF || LF || UF )    );  //!< Flag for symmetric matrices.
+   static constexpr bool HERM = ( HF && !( LF || UF )          );  //!< Flag for Hermitian matrices.
+   static constexpr bool LOW  = ( LF || ( ( SF || HF ) && UF ) );  //!< Flag for lower matrices.
+   static constexpr bool UPP  = ( UF || ( ( SF || HF ) && LF ) );  //!< Flag for upper matrices.
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The IsEvaluationRequired struct is a helper struct for the selection of the parallel
-       evaluation strategy. In case either of the two matrix operands requires an intermediate
-       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
+       either of the two matrix operands requires an intermediate evaluation, the nested \a value
+       will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct IsEvaluationRequired {
-      enum : bool { value = ( evaluateLeft || evaluateRight ) };
-   };
+   static constexpr bool IsEvaluationRequired_v = ( evaluateLeft || evaluateRight );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    /*! In case the types of all three involved matrices and the scalar type are suited for a BLAS
        kernel, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseBlasKernel {
-      enum : bool { value = BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
-                            !SYM && !HERM && !LOW && !UPP &&
-                            IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
-                            IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
-                            IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
-                            !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsBLASCompatible_v< ElementType_t<T1> > &&
-                            IsBLASCompatible_v< ElementType_t<T2> > &&
-                            IsBLASCompatible_v< ElementType_t<T3> > &&
-                            IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
-                            IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
-                            !( IsBuiltin_v< ElementType_t<T1> > && IsComplex_v<T4> ) };
-   };
+   static constexpr bool UseBlasKernel_v =
+      ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
+        !SYM && !HERM && !LOW && !UPP &&
+        IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
+        IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
+        IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
+        !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
+        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+        IsBLASCompatible_v< ElementType_t<T1> > &&
+        IsBLASCompatible_v< ElementType_t<T2> > &&
+        IsBLASCompatible_v< ElementType_t<T3> > &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
+        !( IsBuiltin_v< ElementType_t<T1> > && IsComplex_v<T4> ) );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    /*! In case all four involved data types are suited for a vectorized computation of the
-       matrix multiplication, the nested \value will be set to 1, otherwise it will be 0. */
+       matrix multiplication, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   struct UseVectorizedDefaultKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !( IsDiagonal_v<T2> && IsDiagonal_v<T3> ) &&
-                            !( IsDiagonal_v<T2> && IsColumnMajorMatrix_v<T1> ) &&
-                            !( IsDiagonal_v<T3> && IsRowMajorMatrix_v<T1> ) &&
-                            T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType_t<T1>
-                                              , ElementType_t<T2>
-                                              , ElementType_t<T3>
-                                              , T4 > &&
-                            HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
-                            HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > };
-   };
+   static constexpr bool UseVectorizedDefaultKernel_v =
+      ( useOptimizedKernels &&
+        !( IsDiagonal_v<T2> && IsDiagonal_v<T3> ) &&
+        !( IsDiagonal_v<T2> && IsColumnMajorMatrix_v<T1> ) &&
+        !( IsDiagonal_v<T3> && IsRowMajorMatrix_v<T1> ) &&
+        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+        IsSIMDCombinable_v< ElementType_t<T1>
+                          , ElementType_t<T2>
+                          , ElementType_t<T3>
+                          , T4 > &&
+        HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
+        HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -7011,20 +6998,21 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = !( IsDiagonal_v<MT1> && IsDiagonal_v<MT2> ) &&
-                               MT1::simdEnabled && MT2::simdEnabled &&
-                               IsSIMDCombinable_v<ET1,ET2,ST> &&
-                               HasSIMDAdd_v<ET1,ET2> &&
-                               HasSIMDMult_v<ET1,ET2> };
+   static constexpr bool simdEnabled =
+      ( !( IsDiagonal_v<MT1> && IsDiagonal_v<MT2> ) &&
+        MT1::simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v<ET1,ET2,ST> &&
+        HasSIMDAdd_v<ET1,ET2> &&
+        HasSIMDMult_v<ET1,ET2> );
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = !evaluateLeft  && MT1::smpAssignable &&
-                                 !evaluateRight && MT2::smpAssignable };
+   static constexpr bool smpAssignable =
+      ( !evaluateLeft  && MT1::smpAssignable && !evaluateRight && MT2::smpAssignable );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -7760,7 +7748,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAssignKernel( C, A, B, scalar );
@@ -7786,7 +7774,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -8469,7 +8457,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
@@ -9151,7 +9139,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAssignKernel( C, A, B, scalar );
@@ -9177,7 +9165,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( SYM )
@@ -9211,7 +9199,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAssignKernel( C, A, B, scalar );
@@ -9237,7 +9225,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       using ET = ElementType_t<MT3>;
@@ -9626,7 +9614,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
@@ -9652,7 +9640,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -10303,7 +10291,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
@@ -10953,7 +10941,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
@@ -10979,7 +10967,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( LOW )
@@ -11009,7 +10997,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAddAssignKernel( C, A, B, scalar );
@@ -11035,7 +11023,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       using ET = ElementType_t<MT3>;
@@ -11393,7 +11381,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
@@ -11419,7 +11407,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
@@ -12070,7 +12058,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
@@ -12720,7 +12708,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
@@ -12746,7 +12734,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       if( LOW )
@@ -12776,7 +12764,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
+   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeSubAssignKernel( C, A, B, scalar );
@@ -12802,7 +12790,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel<MT3,MT4,MT5,ST2>::value >
+   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       using ET = ElementType_t<MT3>;
@@ -12887,7 +12875,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -12937,7 +12925,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -12978,7 +12966,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -13028,7 +13016,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

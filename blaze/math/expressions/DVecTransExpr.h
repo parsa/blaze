@@ -70,7 +70,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/GetMemberType.h>
 
 
 namespace blaze {
@@ -97,6 +97,9 @@ class DVecTransExpr
  private:
    //**Type definitions****************************************************************************
    using CT = CompositeType_t<VT>;  //!< Composite type of the dense vector expression.
+
+   //! Definition of the GetConstIterator type trait.
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -107,44 +110,24 @@ class DVecTransExpr
        be set to 1 and the transposition expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated via
        the subscript operator. */
-   enum : bool { useAssign = RequiresEvaluation_v<VT> };
+   static constexpr bool useAssign = RequiresEvaluation_v<VT>;
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT2 >
-   struct UseAssign {
-      enum : bool { value = useAssign };
-   };
+   static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target vector is SMP assignable and the dense vector operand requires
-       an intermediate evaluation, \a value is set to 1 and the expression specific evaluation
-       strategy is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
+       the target vector is SMP assignable and the dense vector operand requires an intermediate
+       evaluation, \a value is set to 1 and the expression specific evaluation strategy is
+       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename VT2 >
-   struct UseSMPAssign {
-      enum : bool { value = VT2::smpAssignable && useAssign };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure to acquire the type of constant iterators of the given vector type.
-   /*! The GetConstIterator struct helps to acquire the constant iterator type of the given
-       vector type. In case the given vector has a nested \a ConstIterator type, the nested
-       type definition \a Type is set to that type. Otherwise \a Type is set to INVALID_TYPE. */
-   template< typename VT2 >
-   struct GetConstIterator {
-      BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasConstIterator, ConstIterator );
-      struct Success { using Type = typename VT2::ConstIterator; };
-      struct Failure { using Type = INVALID_TYPE; };
-      using Type = typename If_t< HasConstIterator_v<VT2>, Success, Failure >::Type;
-   };
+   static constexpr bool UseSMPAssign_v = ( VT2::smpAssignable && useAssign );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -160,7 +143,7 @@ class DVecTransExpr
    using CompositeType = If_t< useAssign, const ResultType, const DVecTransExpr& >;
 
    //! Iterator over the elements of the dense vector.
-   using ConstIterator = typename GetConstIterator<VT>::Type;
+   using ConstIterator = GetConstIterator_t<VT>;
 
    //! Composite data type of the dense vector expression.
    using Operand = If_t< IsExpression_v<VT>, const VT, const VT& >;
@@ -168,15 +151,15 @@ class DVecTransExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = VT::simdEnabled };
+   static constexpr bool simdEnabled = VT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = VT::smpAssignable };
+   static constexpr bool smpAssignable = VT::smpAssignable;
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -343,7 +326,7 @@ class DVecTransExpr
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       assign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -371,7 +354,7 @@ class DVecTransExpr
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       assign( SparseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -399,7 +382,7 @@ class DVecTransExpr
    // the operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       addAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -431,7 +414,7 @@ class DVecTransExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       subAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -463,7 +446,7 @@ class DVecTransExpr
    // requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       multAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -495,7 +478,7 @@ class DVecTransExpr
    // an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       divAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -527,7 +510,7 @@ class DVecTransExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -555,7 +538,7 @@ class DVecTransExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpAssign( SparseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -583,7 +566,7 @@ class DVecTransExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpAddAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -615,7 +598,7 @@ class DVecTransExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpSubAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -647,7 +630,7 @@ class DVecTransExpr
    // specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpMultAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -679,7 +662,7 @@ class DVecTransExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpDivAssign( DenseVector<VT2,TF>& lhs, const DVecTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

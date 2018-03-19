@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
-#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
@@ -56,6 +55,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubTrait.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -77,6 +77,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -118,7 +119,7 @@ class SMatSMatSubExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
+   static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = SubExprTrait_t<RN1,RN2>;
@@ -126,30 +127,27 @@ class SMatSMatSubExpr
 
    //**Serial evaluation strategy******************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSymmetricKernel struct is a helper struct for the selection of the serial
-       evaluation strategy. In case the target matrix is column-major and both matrix
-       operands are symmetric, \a value is set to 1 and an optimized evaluation strategy
-       is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the serial evaluation strategy. In case the
+       target matrix is column-major and both matrix operands are symmetric, \a value is set to 1
+       and an optimized evaluation strategy is selected. Otherwise \a value is set to 0 and the
+       default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
-   struct UseSymmetricKernel {
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( T1 );
-      enum : bool { value = IsSymmetric_v<T2> && IsSymmetric_v<T3> };
-   };
+   static constexpr bool UseSymmetricKernel_v =
+      ( IsVoid_v< EnableIf_t< IsColumnMajorMatrix_v<T1> > > &&
+        IsSymmetric_v<T2> && IsSymmetric_v<T3> );
    /*! \endcond */
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable, \a value is set to 1 and the
-       expression specific evaluation strategy is selected. Otherwise \a value is set to 0
-       and the default strategy is chosen. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
+       the target matrix is SMP assignable, \a value is set to 1 and the expression specific
+       evaluation strategy is selected. Otherwise \a value is set to 0 and the default strategy
+       is chosen. */
    template< typename MT >
-   struct UseSMPAssign {
-      enum : bool { value = MT::smpAssignable };
-   };
+   static constexpr bool UseSMPAssign_v = MT::smpAssignable;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -176,7 +174,7 @@ class SMatSMatSubExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = false };
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -460,7 +458,7 @@ class SMatSMatSubExpr
    // expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
+   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
       assign( SparseMatrix<MT,true>& lhs, const SMatSMatSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -582,7 +580,7 @@ class SMatSMatSubExpr
    // matrix subtraction expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_t< UseSymmetricKernel<MT,MT1,MT2>::value >
+   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
       assign( SparseMatrix<MT,true>& lhs, const SMatSMatSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -727,7 +725,7 @@ class SMatSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign<MT>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT> >
       smpAddAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -762,7 +760,7 @@ class SMatSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign<MT>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT> >
       smpSubAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -797,7 +795,7 @@ class SMatSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign<MT>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT> >
       smpSchurAssign( DenseMatrix<MT,SO>& lhs, const SMatSMatSubExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

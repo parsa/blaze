@@ -99,13 +99,13 @@ class DVecTransposer
    /*! The \a simdEnabled compilation flag indicates whether expressions the vector is involved
        in can be optimized via SIMD operations. In case the dense vector operand is vectorizable,
        the \a simdEnabled compilation flag is set to \a true, otherwise it is set to \a false. */
-   enum : bool { simdEnabled = VT::simdEnabled };
+   static constexpr bool simdEnabled = VT::simdEnabled;
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the vector can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = VT::smpAssignable };
+   static constexpr bool smpAssignable = VT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

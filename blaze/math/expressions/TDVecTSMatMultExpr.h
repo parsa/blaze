@@ -103,12 +103,12 @@ class TDVecTSMatMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense vector expression.
-   enum : bool { evaluateVector = IsComputation_v<VT> || RequiresEvaluation_v<VT> };
+   static constexpr bool evaluateVector = ( IsComputation_v<VT> || RequiresEvaluation_v<VT> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side sparse matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation_v<MT> };
+   static constexpr bool evaluateMatrix = RequiresEvaluation_v<MT>;
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -119,29 +119,25 @@ class TDVecTSMatMultExpr
        is a compound expression, \a useAssign will be set to \a true and the multiplication
        expression will be evaluated via the \a assign function family. Otherwise \a useAssign
        will be set to \a false and the expression will be evaluated via the subscript operator. */
-   enum : bool { useAssign = ( evaluateVector || evaluateMatrix ) };
+   static constexpr bool useAssign = ( evaluateVector || evaluateMatrix );
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT2 >
-   struct UseAssign {
-      enum : bool { value = useAssign };
-   };
+   static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case either the vector or the matrix operand requires an intermediate
-       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
+       either the vector or the matrix operand requires an intermediate evaluation, the nested
+       \a value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
-   struct UseSMPAssign {
-      enum : bool { value = useAssign };
-   };
+   static constexpr bool UseSMPAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -171,11 +167,11 @@ class TDVecTSMatMultExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = false };
+   static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = !evaluateVector && VT::smpAssignable &&
-                                 !evaluateMatrix && MT::smpAssignable };
+   static constexpr bool smpAssignable =
+      ( !evaluateVector && VT::smpAssignable && !evaluateMatrix && MT::smpAssignable );
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -312,7 +308,7 @@ class TDVecTSMatMultExpr
    // side matrix operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       assign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -352,7 +348,7 @@ class TDVecTSMatMultExpr
    // side matrix operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       assign( SparseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -384,7 +380,7 @@ class TDVecTSMatMultExpr
    // or the right-hand side matrix operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       addAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -427,7 +423,7 @@ class TDVecTSMatMultExpr
    // or the right-hand side matrix operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       subAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -470,7 +466,7 @@ class TDVecTSMatMultExpr
    // right-hand side matrix operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       multAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -506,7 +502,7 @@ class TDVecTSMatMultExpr
    // or the right-hand side matrix operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign<VT2>::value >
+   friend inline EnableIf_t< UseAssign_v<VT2> >
       divAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -541,7 +537,7 @@ class TDVecTSMatMultExpr
    // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -580,7 +576,7 @@ class TDVecTSMatMultExpr
    // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpAssign( SparseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -611,7 +607,7 @@ class TDVecTSMatMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpAddAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -653,7 +649,7 @@ class TDVecTSMatMultExpr
    // compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpSubAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -695,7 +691,7 @@ class TDVecTSMatMultExpr
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpMultAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -730,7 +726,7 @@ class TDVecTSMatMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
       smpDivAssign( DenseVector<VT2,true>& lhs, const TDVecTSMatMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

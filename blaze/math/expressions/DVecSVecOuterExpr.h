@@ -119,7 +119,7 @@ class DVecSVecOuterExpr
        or matrix, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   enum : bool { returnExpr = !IsTemporary_v<RN1> && !IsTemporary_v<RN2> };
+   static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = MultExprTrait_t<RN1,RN2>;
@@ -134,43 +134,38 @@ class DVecSVecOuterExpr
        multiplication expression will be evaluated via the \a assign function family. Otherwise
        \a useAssign will be set to \a false and the expression will be evaluated via the
        subscript operator. */
-   enum : bool { useAssign = ( IsComputation_v<VT1> || !IsNumeric_v<ET1> ||
-                               IsComputation_v<VT2> || !IsNumeric_v<ET2> ) };
+   static constexpr bool useAssign =
+      ( IsComputation_v<VT1> || !IsNumeric_v<ET1> || IsComputation_v<VT2> || !IsNumeric_v<ET2> );
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct UseAssign {
-      enum : bool { value = useAssign };
-   };
+   static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
-       outer product, the nested \value will be set to 1, otherwise it will be 0. */
+       outer product, the nested \a value will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseVectorizedKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            T1::simdEnabled && T2::simdEnabled &&
-                            IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
-                            IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
-                            HasSIMDMult_v< ElementType_t<T1>, ElementType_t<T1> > };
-   };
+   static constexpr bool UseVectorizedKernel_v =
+      ( useOptimizedKernels &&
+        T1::simdEnabled && T2::simdEnabled &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
+        HasSIMDMult_v< ElementType_t<T1>, ElementType_t<T1> > );
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case no vectorized computation is possible, the nested \value will be set to 1,
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! In case no vectorized computation is possible, the nested \a value will be set to 1,
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseDefaultKernel {
-      enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value };
-   };
+   static constexpr bool UseDefaultKernel_v = !UseVectorizedKernel_v<T1,T2,T3>;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -334,12 +329,12 @@ class DVecSVecOuterExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = false };
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -557,7 +552,7 @@ class DVecSVecOuterExpr
    // data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       assign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -640,7 +635,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -674,7 +669,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -722,7 +717,7 @@ class DVecSVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       assign( SparseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -842,7 +837,7 @@ class DVecSVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       addAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -927,7 +922,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -963,7 +958,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1018,7 +1013,7 @@ class DVecSVecOuterExpr
    // types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       subAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1103,7 +1098,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1139,7 +1134,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1194,7 +1189,7 @@ class DVecSVecOuterExpr
    // element types is non-numeric data type.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT>::value >
+   friend inline EnableIf_t< UseAssign_v<MT> >
       schurAssign( DenseMatrix<MT,false>& lhs, const DVecSVecOuterExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1285,7 +1280,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1335,7 +1330,7 @@ class DVecSVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel<MT,VT3,VT4>::value >
+   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;

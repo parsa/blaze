@@ -84,12 +84,13 @@ struct DVecDVecInnerExprHelper
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum : bool { value = useOptimizedKernels &&
-                         CT1::simdEnabled &&
-                         CT2::simdEnabled &&
-                         IsSame_v< ElementType_t<CT1>, ElementType_t<CT2> > &&
-                         HasSIMDAdd_v< ElementType_t<CT1>, ElementType_t<CT1> > &&
-                         HasSIMDMult_v< ElementType_t<CT1>, ElementType_t<CT1> > };
+   static constexpr bool value =
+      ( useOptimizedKernels &&
+        CT1::simdEnabled &&
+        CT2::simdEnabled &&
+        IsSame_v< ElementType_t<CT1>, ElementType_t<CT2> > &&
+        HasSIMDAdd_v< ElementType_t<CT1>, ElementType_t<CT1> > &&
+        HasSIMDMult_v< ElementType_t<CT1>, ElementType_t<CT1> > );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -188,7 +189,7 @@ inline EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<MultType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<MultType>::size;
 
    if( (~lhs).size() == 0UL ) return MultType();
 

@@ -114,17 +114,18 @@ struct DVecNormHelper
 
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      enum : bool { value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<VT> >() };
+      static constexpr bool value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<VT> >();
    };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum : bool { value = useOptimizedKernels &&
-                         CT::simdEnabled &&
-                         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
-                             , UseSIMDEnabledFlag
-                             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
-                         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > };
+   static constexpr bool value =
+      ( useOptimizedKernels &&
+        CT::simdEnabled &&
+        If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
+            , UseSIMDEnabledFlag
+            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
+        HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -217,7 +218,7 @@ inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power
    using ET = ElementType_t<VT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
    if( (~dv).size() == 0UL ) return RT();
 

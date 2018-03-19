@@ -71,7 +71,7 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/HasMember.h>
+#include <blaze/util/typetraits/GetMemberType.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -100,6 +100,9 @@ class SMatTransExpr
    //**Type definitions****************************************************************************
    using RT = ResultType_t<MT>;     //!< Result type of the sparse matrix expression.
    using CT = CompositeType_t<MT>;  //!< Composite type of the sparse matrix expression.
+
+   //! Definition of the GetConstIterator type trait.
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -110,44 +113,24 @@ class SMatTransExpr
        set to 1 and the transposition expression will be evaluated via the \a assign function
        family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated via
        the subscript operator. */
-   enum : bool { useAssign = RequiresEvaluation_v<MT> };
+   static constexpr bool useAssign = RequiresEvaluation_v<MT>;
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct UseAssign {
-      enum : bool { value = useAssign };
-   };
+   static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case the target matrix is SMP assignable and the sparse matrix operand requires
-       an intermediate evaluation, \a value is set to 1 and the expression specific evaluation
-       strategy is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
+       the target matrix is SMP assignable and the sparse matrix operand requires an intermediate
+       evaluation, \a value is set to 1 and the expression specific evaluation strategy is
+       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
    template< typename MT2 >
-   struct UseSMPAssign {
-      enum : bool { value = MT2::smpAssignable && useAssign };
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure to acquire the type of constant iterators of the given matrix type.
-   /*! The GetConstIterator struct helps to acquire the constant iterator type of the given
-       matrix type. In case the given matrix has a nested \a ConstIterator type, the nested
-       type definition \a Type is set to that type. Otherwise \a Type is set to INVALID_TYPE. */
-   template< typename MT2 >
-   struct GetConstIterator {
-      BLAZE_CREATE_HAS_TYPE_MEMBER_TYPE_TRAIT( HasConstIterator, ConstIterator );
-      struct Success { using Type = typename MT2::ConstIterator; };
-      struct Failure { using Type = INVALID_TYPE; };
-      using Type = typename If_t< HasConstIterator_v<MT2>, Success, Failure >::Type;
-   };
+    static constexpr bool UseSMPAssign_v = ( MT2::smpAssignable && useAssign );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -164,7 +147,7 @@ class SMatTransExpr
    using CompositeType = If_t< useAssign, const ResultType, const SMatTransExpr& >;
 
    //! Iterator over the elements of the dense matrix.
-   using ConstIterator = typename GetConstIterator<MT>::Type;
+   using ConstIterator = GetConstIterator_t<MT>;
 
    //! Composite data type of the sparse matrix expression.
    using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
@@ -172,7 +155,7 @@ class SMatTransExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -385,7 +368,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT2>::value >
+   friend inline EnableIf_t< UseAssign_v<MT2> >
       assign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -415,7 +398,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign<MT2>::value >
+   friend inline EnableIf_t< UseAssign_v<MT2> >
       assign( SparseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -445,7 +428,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT2>::value >
+   friend inline EnableIf_t< UseAssign_v<MT2> >
       addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -479,7 +462,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT2>::value >
+   friend inline EnableIf_t< UseAssign_v<MT2> >
       subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -513,7 +496,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign<MT2>::value >
+   friend inline EnableIf_t< UseAssign_v<MT2> >
       schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -555,7 +538,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
       smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -585,7 +568,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
       smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -615,7 +598,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
       smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -650,7 +633,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
       smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -685,7 +668,7 @@ class SMatTransExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign<MT2>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
       smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

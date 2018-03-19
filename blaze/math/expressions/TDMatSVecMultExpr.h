@@ -120,73 +120,67 @@ class TDMatSVecMultExpr
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the left-hand side dense matrix expression.
-   enum : bool { evaluateMatrix = RequiresEvaluation_v<MT> };
+   static constexpr bool evaluateMatrix = RequiresEvaluation_v<MT>;
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Compilation switch for the composite type of the right-hand side dense vector expression.
-   enum : bool { evaluateVector = IsComputation_v<VT> || RequiresEvaluation_v<VT> };
+   static constexpr bool evaluateVector = ( IsComputation_v<VT> || RequiresEvaluation_v<VT> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! The UseSMPAssign struct is a helper struct for the selection of the parallel evaluation
-       strategy. In case either the matrix or the vector operand requires an intermediate
-       evaluation, the nested \value will be set to 1, otherwise it will be 0. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
+       either the matrix or the vector operand requires an intermediate evaluation, the nested
+       \a value will be set to 1, otherwise it will be 0. */
    template< typename T1 >
-   struct UseSMPAssign {
-      enum : bool { value = ( evaluateMatrix || evaluateVector ) };
-   };
+   static constexpr bool UseSMPAssign_v = ( evaluateMatrix || evaluateVector );
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    /*! In case the matrix type and the two involved vector types are suited for a vectorized
-       computation of the matrix/vector multiplication, the nested \value will be set to 1,
+       computation of the matrix/vector multiplication, the nested \a value will be set to 1,
        otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseVectorizedKernel {
-      enum : bool { value = useOptimizedKernels &&
-                            !IsDiagonal_v<T2> &&
-                            T1::simdEnabled && T2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType_t<T1>
-                                              , ElementType_t<T2>
-                                              , ElementType_t<T3> > &&
-                            HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
-                            HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > };
-   };
+   static constexpr bool UseVectorizedKernel_v =
+      ( useOptimizedKernels &&
+        !IsDiagonal_v<T2> &&
+        T1::simdEnabled && T2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType_t<T1>
+                          , ElementType_t<T2>
+                          , ElementType_t<T3> > &&
+        HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
+        HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > );
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    /*! In case a vectorized computation of the matrix/vector multiplication is not possible, but
-       a loop-unrolled computation is feasible, the nested \value will be set to 1, otherwise it
-       will be 0. */
+       a loop-unrolled computation is feasible, the nested \a value will be set to 1, otherwise
+       it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseOptimizedKernel {
-      enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value &&
-                            !IsDiagonal_v<T2> &&
-                            !IsResizable_v< ElementType_t<T1> > &&
-                            !IsResizable_v<VET> };
-   };
+   static constexpr bool UseOptimizedKernel_v =
+      ( !UseVectorizedKernel_v<T1,T2,T3> &&
+        !IsDiagonal_v<T2> &&
+        !IsResizable_v< ElementType_t<T1> > &&
+        !IsResizable_v<VET> );
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
-   /*! In case neither a vectorized nor optimized computation is possible, the nested \value will
-       be set to 1, otherwise it will be 0. */
+   //! Helper template for the explicit application of the SFINAE principle.
+   /*! In case neither a vectorized nor optimized computation is possible, the nested \a value
+       will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   struct UseDefaultKernel {
-      enum : bool { value = !UseVectorizedKernel<T1,T2,T3>::value &&
-                            !UseOptimizedKernel<T1,T2,T3>::value };
-   };
+   static constexpr bool UseDefaultKernel_v =
+      ( !UseVectorizedKernel_v<T1,T2,T3> && !UseOptimizedKernel_v<T1,T2,T3> );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -215,19 +209,20 @@ class TDMatSVecMultExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = !IsDiagonal_v<MT> &&
-                               MT::simdEnabled &&
-                               HasSIMDAdd_v<MET,VET> &&
-                               HasSIMDMult_v<MET,VET> };
+   static constexpr bool simdEnabled =
+      ( !IsDiagonal_v<MT> &&
+        MT::simdEnabled &&
+        HasSIMDAdd_v<MET,VET> &&
+        HasSIMDMult_v<MET,VET> );
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = !evaluateMatrix && MT::smpAssignable &&
-                                 !evaluateVector && VT::smpAssignable };
+   static constexpr bool smpAssignable =
+      ( !evaluateMatrix && MT::smpAssignable && !evaluateVector && VT::smpAssignable );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -431,7 +426,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -509,7 +504,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseOptimizedKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -623,7 +618,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -855,7 +850,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -911,7 +906,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseOptimizedKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -993,7 +988,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1143,7 +1138,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1199,7 +1194,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseOptimizedKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1281,7 +1276,7 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel<VT1,MT1,VT2>::value >
+   static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
       using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
@@ -1459,7 +1454,7 @@ class TDMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
       smpAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1504,7 +1499,7 @@ class TDMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
       smpAssign( SparseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1537,7 +1532,7 @@ class TDMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
       smpAddAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1583,7 +1578,7 @@ class TDMatSVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
       smpSubAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1629,7 +1624,7 @@ class TDMatSVecMultExpr
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
       smpMultAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -1666,7 +1661,7 @@ class TDMatSVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign<VT1>::value >
+   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
       smpDivAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;

@@ -113,17 +113,18 @@ struct DMatNormHelper
 
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      enum : bool { value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<MT> >() };
+      static constexpr bool value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<MT> >();
    };
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum : bool { value = useOptimizedKernels &&
-                         CT::simdEnabled &&
-                         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
-                             , UseSIMDEnabledFlag
-                             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
-                         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > };
+   static constexpr bool value =
+      ( useOptimizedKernels &&
+        CT::simdEnabled &&
+        If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
+            , UseSIMDEnabledFlag
+            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
+        HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -305,7 +306,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,false>& dm, Abs abs, Po
    using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
    if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
 
@@ -377,7 +378,7 @@ inline decltype(auto) norm_backend( const DenseMatrix<MT,true>& dm, Abs abs, Pow
    using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
    if( (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
 

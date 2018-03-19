@@ -100,13 +100,13 @@ class DMatTransposer
    /*! The \a simdEnabled compilation flag indicates whether expressions the matrix is involved
        in can be optimized via SIMD operations. In case the dense matrix operand is vectorizable,
        the \a simdEnabled compilation flag is set to \a true, otherwise it is set to \a false. */
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
