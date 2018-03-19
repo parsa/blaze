@@ -106,7 +106,7 @@ class NonNumericProxy
  private:
    //**Enumerations********************************************************************************
    //! Compile time flag indicating whether the given matrix type is a row-major matrix.
-   enum : bool { rmm = IsRowMajorMatrix_v<MT> };
+   static constexpr bool rmm = IsRowMajorMatrix_v<MT>;
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************

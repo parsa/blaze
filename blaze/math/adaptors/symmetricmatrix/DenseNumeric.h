@@ -720,10 +720,10 @@ class SymmetricMatrix<MT,SO,true,true>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -888,7 +888,7 @@ class SymmetricMatrix<MT,SO,true,true>
  private:
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ET>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
    //**********************************************************************************************
 
    //**Member variables****************************************************************************

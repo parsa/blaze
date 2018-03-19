@@ -461,10 +461,10 @@ class SymmetricMatrix<MT,SO,true,false>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = false };
+   static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable && !IsSMPAssignable_v<ET> };
+   static constexpr bool smpAssignable = ( MT::smpAssignable && !IsSMPAssignable_v<ET> );
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
