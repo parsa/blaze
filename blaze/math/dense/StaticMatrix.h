@@ -116,7 +116,6 @@
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -268,13 +267,13 @@ class StaticMatrix
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable_v<Type> };
+   static constexpr bool simdEnabled = IsVectorizable_v<Type>;
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = false };
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -384,12 +383,11 @@ class StaticMatrix
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            IsRowMajorMatrix_v<MT> };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        IsRowMajorMatrix_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -397,14 +395,13 @@ class StaticMatrix
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
-                            IsRowMajorMatrix_v<MT> &&
-                            !IsDiagonal_v<MT> };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+        IsRowMajorMatrix_v<MT> &&
+        !IsDiagonal_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -412,14 +409,13 @@ class StaticMatrix
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
-                            IsRowMajorMatrix_v<MT> &&
-                            !IsDiagonal_v<MT> };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        HasSIMDSub_v< Type, ElementType_t<MT> > &&
+        IsRowMajorMatrix_v<MT> &&
+        !IsDiagonal_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -427,19 +423,18 @@ class StaticMatrix
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            HasSIMDMult_v< Type, ElementType_t<MT> > &&
-                            IsRowMajorMatrix_v<MT> };
-   };
+   static constexpr bool VectorizedSchurAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        HasSIMDMult_v< Type, ElementType_t<MT> > &&
+        IsRowMajorMatrix_v<MT> );
    /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -468,37 +463,37 @@ class StaticMatrix
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT, bool SO2 >
-   inline DisableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto assign( const DenseMatrix<MT,SO2>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT, bool SO2 >
-   inline EnableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto assign( const DenseMatrix<MT,SO2>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT > inline void assign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT, bool SO2 >
-   inline DisableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto addAssign( const DenseMatrix<MT,SO2>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT, bool SO2 >
-   inline EnableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto addAssign( const DenseMatrix<MT,SO2>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT > inline void addAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT, bool SO2 >
-   inline DisableIf_t< VectorizedSubAssign<MT>::value > subAssign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto subAssign( const DenseMatrix<MT,SO2>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT, bool SO2 >
-   inline EnableIf_t< VectorizedSubAssign<MT>::value > subAssign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto subAssign( const DenseMatrix<MT,SO2>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT > inline void subAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,!SO>& rhs );
 
    template< typename MT, bool SO2 >
-   inline DisableIf_t< VectorizedSchurAssign<MT>::value > schurAssign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT,SO2>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT> >;
 
    template< typename MT, bool SO2 >
-   inline EnableIf_t< VectorizedSchurAssign<MT>::value > schurAssign( const DenseMatrix<MT,SO2>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT,SO2>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
 
    template< typename MT > inline void schurAssign( const SparseMatrix<MT,SO>&  rhs );
    template< typename MT > inline void schurAssign( const SparseMatrix<MT,!SO>& rhs );
@@ -517,7 +512,7 @@ class StaticMatrix
 
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { NN = ( usePadding )?( nextMultiple( N, SIMDSIZE ) ):( N ) };
+   static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -2508,8 +2503,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -2539,8 +2534,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -2639,8 +2634,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -2686,8 +2681,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::addAssign( const DenseMatrix<MT,SO2>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -2795,8 +2790,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -2842,8 +2837,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::subAssign( const DenseMatrix<MT,SO2>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -2951,8 +2946,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+   -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -2982,8 +2977,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO2 >     // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,SO>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
-   StaticMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+inline auto StaticMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& rhs )
+   -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -3145,13 +3140,13 @@ class StaticMatrix<Type,M,N,true>
        in can be optimized via SIMD operations. In case the element type of the matrix is a
        vectorizable data type, the \a simdEnabled compilation flag is set to \a true, otherwise
        it is set to \a false. */
-   enum : bool { simdEnabled = IsVectorizable_v<Type> };
+   static constexpr bool simdEnabled = IsVectorizable_v<Type>;
 
    //! Compilation flag for SMP assignments.
    /*! The \a smpAssignable compilation flag indicates whether the matrix can be used in SMP
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
-   enum : bool { smpAssignable = false };
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3260,55 +3255,51 @@ class StaticMatrix<Type,M,N,true>
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            IsColumnMajorMatrix_v<MT> };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        IsColumnMajorMatrix_v<MT> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            HasSIMDAdd_v< Type, ElementType_t<MT> > &&
-                            IsColumnMajorMatrix_v<MT> &&
-                            !IsDiagonal_v<MT> };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        HasSIMDAdd_v< Type, ElementType_t<MT> > &&
+        IsColumnMajorMatrix_v<MT> &&
+        !IsDiagonal_v<MT> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            HasSIMDSub_v< Type, ElementType_t<MT> > &&
-                            IsColumnMajorMatrix_v<MT> &&
-                            !IsDiagonal_v<MT> };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        HasSIMDSub_v< Type, ElementType_t<MT> > &&
+        IsColumnMajorMatrix_v<MT> &&
+        !IsDiagonal_v<MT> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! Helper structure for the explicit application of the SFINAE principle.
    template< typename MT >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT::simdEnabled &&
-                            IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-                            HasSIMDMult_v< Type, ElementType_t<MT> > &&
-                            IsColumnMajorMatrix_v<MT> };
-   };
+   static constexpr bool VectorizedSchurAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT::simdEnabled &&
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        HasSIMDMult_v< Type, ElementType_t<MT> > &&
+        IsColumnMajorMatrix_v<MT> );
    //**********************************************************************************************
 
    //**********************************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -3337,37 +3328,37 @@ class StaticMatrix<Type,M,N,true>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT, bool SO >
-   inline DisableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,SO>& rhs );
+   inline auto assign( const DenseMatrix<MT,SO>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT, bool SO >
-   inline EnableIf_t< VectorizedAssign<MT>::value > assign( const DenseMatrix<MT,SO>& rhs );
+   inline auto assign( const DenseMatrix<MT,SO>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT > inline void assign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void assign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT, bool SO >
-   inline DisableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,SO>& rhs );
+   inline auto addAssign( const DenseMatrix<MT,SO>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT, bool SO >
-   inline EnableIf_t< VectorizedAddAssign<MT>::value > addAssign( const DenseMatrix<MT,SO>& rhs );
+   inline auto addAssign( const DenseMatrix<MT,SO>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT > inline void addAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void addAssign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT, bool SO >
-   inline DisableIf_t< VectorizedSubAssign<MT>::value > subAssign( const DenseMatrix<MT,SO>& rhs );
+   inline auto subAssign( const DenseMatrix<MT,SO>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT, bool SO >
-   inline EnableIf_t< VectorizedSubAssign<MT>::value > subAssign( const DenseMatrix<MT,SO>& rhs );
+   inline auto subAssign( const DenseMatrix<MT,SO>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT > inline void subAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void subAssign( const SparseMatrix<MT,false>& rhs );
 
    template< typename MT, bool SO >
-   inline DisableIf_t< VectorizedSchurAssign<MT>::value > schurAssign( const DenseMatrix<MT,SO>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT,SO>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT> >;
 
    template< typename MT, bool SO >
-   inline EnableIf_t< VectorizedSchurAssign<MT>::value > schurAssign( const DenseMatrix<MT,SO>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT,SO>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
 
    template< typename MT > inline void schurAssign( const SparseMatrix<MT,true>&  rhs );
    template< typename MT > inline void schurAssign( const SparseMatrix<MT,false>& rhs );
@@ -3384,7 +3375,7 @@ class StaticMatrix<Type,M,N,true>
 
    //**********************************************************************************************
    //! Alignment adjustment.
-   enum : size_t { MM = ( usePadding )?( nextMultiple( M, SIMDSIZE ) ):( M ) };
+   static constexpr size_t MM = ( usePadding ? nextMultiple( M, SIMDSIZE ) : M );
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -5402,8 +5393,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -5434,8 +5425,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -5537,8 +5528,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -5585,8 +5576,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedAddAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::addAssign( const DenseMatrix<MT,SO>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -5697,8 +5688,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -5745,8 +5736,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSubAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::subAssign( const DenseMatrix<MT,SO>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_MATRIX_TYPE( MT );
@@ -5857,8 +5848,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline DisableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+   -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
@@ -5889,8 +5880,8 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 template< typename MT    // Type of the right-hand side dense matrix
         , bool SO >      // Storage order of the right-hand side dense matrix
-inline EnableIf_t< StaticMatrix<Type,M,N,true>::BLAZE_TEMPLATE VectorizedSchurAssign<MT>::value >
-   StaticMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto StaticMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+   -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -6718,14 +6709,14 @@ struct ColumnsTrait< StaticMatrix<T,M,N,SO> >
 template< typename T, size_t M, size_t N, bool SO >
 struct BandTrait< StaticMatrix<T,M,N,SO> >
 {
-   enum : size_t { Min = min( M, N ) };
+   static constexpr size_t Min = min( M, N );
    using Type = HybridVector<T,Min,defaultTransposeFlag>;
 };
 
 template< typename T, size_t M, size_t N, bool SO, ptrdiff_t I >
 struct BandTrait< StaticMatrix<T,M,N,SO>, I >
 {
-   enum : size_t { Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I  : 0UL ) ) };
+   static constexpr size_t Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I : 0UL ) );
    using Type = StaticVector<T,Min,defaultTransposeFlag>;
 };
 /*! \endcond */

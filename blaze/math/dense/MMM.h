@@ -124,7 +124,7 @@ void mmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST be
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+   constexpr size_t SIMDSIZE( SIMDTrait<ET1>::size );
 
    constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
@@ -624,7 +624,7 @@ void mmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST bet
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+   constexpr size_t SIMDSIZE( SIMDTrait<ET1>::size );
 
    constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
@@ -1152,7 +1152,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+   constexpr size_t SIMDSIZE( SIMDTrait<ET1>::size );
 
    constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
@@ -1678,7 +1678,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+   constexpr size_t SIMDSIZE( SIMDTrait<ET1>::size );
 
    constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
@@ -2222,7 +2222,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+   constexpr size_t SIMDSIZE( SIMDTrait<ET1>::size );
 
    constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
@@ -2740,7 +2740,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET2 );
    BLAZE_CONSTRAINT_MUST_BE_SIMD_COMBINABLE_TYPES( ET1, ET3 );
 
-   enum : size_t { SIMDSIZE = SIMDTrait<ET1>::size };
+   constexpr size_t SIMDSIZE( SIMDTrait<ET1>::size );
 
    constexpr bool remainder( !IsPadded_v<MT2> || !IsPadded_v<MT3> );
 
