@@ -65,20 +65,20 @@ struct IsSIMDEnabledHelper
  private:
    //**struct HasNestedMember**********************************************************************
    template< typename T2 >
-   struct UseNestedMember { enum : bool { value = T2::simdEnabled }; };
+   struct UseNestedMember { static constexpr bool value = T2::simdEnabled; };
    //**********************************************************************************************
 
    //**struct NotSIMDEnabled***********************************************************************
    template< typename T2 >
-   struct NotSIMDEnabled { enum : bool { value = false }; };
+   struct NotSIMDEnabled { static constexpr bool value = false; };
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   enum : bool { value = If_t< IsVector_v<T> || IsMatrix_v<T>
-                             , UseNestedMember<T>
-                             , NotSIMDEnabled<T>
-                             >::value };
+   static constexpr bool value =
+      If_t< IsVector_v<T> || IsMatrix_v<T>
+          , UseNestedMember<T>
+          , NotSIMDEnabled<T> >::value;
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -62,10 +62,9 @@ template< typename T1
         , typename T2
         , typename... Ts >
 struct IsSIMDCombinableHelper
-{
-   enum : bool { value = IsSIMDCombinableHelper<T1,T2>::value &&
-                         IsSIMDCombinableHelper<T2,Ts...>::value };
-};
+   : public BoolConstant< IsSIMDCombinableHelper<T1,T2>::value &&
+                          IsSIMDCombinableHelper<T2,Ts...>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -75,9 +74,8 @@ struct IsSIMDCombinableHelper
 //! Specialization of the IsSIMDCombinableHelper class template for two matching types.
 template< typename T >
 struct IsSIMDCombinableHelper<T,T>
-{
-   enum : bool { value = IsNumeric_v<T> };
-};
+   : public BoolConstant< IsNumeric_v<T> >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -87,11 +85,10 @@ struct IsSIMDCombinableHelper<T,T>
 //! Specialization of the IsSIMDCombinableHelper class template for two different types.
 template< typename T1, typename T2 >
 struct IsSIMDCombinableHelper<T1,T2>
-{
-   enum : bool { value = IsNumeric_v<T1> && IsIntegral_v<T1> &&
-                         IsNumeric_v<T2> && IsIntegral_v<T2> &&
-                         sizeof(T1) == sizeof(T2) };
-};
+   : public BoolConstant< IsNumeric_v<T1> && IsIntegral_v<T1> &&
+                          IsNumeric_v<T2> && IsIntegral_v<T2> &&
+                          sizeof(T1) == sizeof(T2) >
+{};
 /*! \endcond */
 //*************************************************************************************************
 

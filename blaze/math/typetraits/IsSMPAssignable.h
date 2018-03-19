@@ -65,20 +65,19 @@ struct IsSMPAssignableHelper
  private:
    //**struct HasNestedMember**********************************************************************
    template< typename T2 >
-   struct UseNestedMember { enum : bool { value = T2::smpAssignable }; };
+   struct UseNestedMember { static constexpr bool value = T2::smpAssignable; };
    //**********************************************************************************************
 
    //**struct NoNestedMember***********************************************************************
    template< typename T2 >
-   struct NotSMPAssignable { enum : bool { value = false }; };
+   struct NotSMPAssignable { static constexpr bool value = false; };
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   enum : bool { value = If_t< IsVector_v<T> || IsMatrix_v<T>
-                             , UseNestedMember<T>
-                             , NotSMPAssignable<T>
-                             >::value };
+   static constexpr bool value = If_t< IsVector_v<T> || IsMatrix_v<T>
+                                     , UseNestedMember<T>
+                                     , NotSMPAssignable<T> >::value;
    //**********************************************************************************************
 };
 /*! \endcond */
