@@ -91,7 +91,7 @@ class SparseMatrixProxy
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SMP assignments.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

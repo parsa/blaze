@@ -93,10 +93,10 @@ class DenseVectorProxy
 
    //**Compilation flags***************************************************************************
    //! Compilation flag for SIMD optimization.
-   enum : bool { simdEnabled = VT::simdEnabled };
+   static constexpr bool simdEnabled = VT::simdEnabled;
 
    //! Compilation flag for SMP assignments.
-   enum : bool { smpAssignable = VT::smpAssignable };
+   static constexpr bool smpAssignable = VT::smpAssignable;
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
