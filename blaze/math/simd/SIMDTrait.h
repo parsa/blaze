@@ -72,7 +72,7 @@ template< typename T
 struct SIMDTraitBase
 {
    using Type = T;
-   enum : size_t { size = 1UL };
+   static constexpr size_t size = 1UL;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -87,7 +87,7 @@ template< typename T >
 struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has1Byte_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDint8, SIMDuint8 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -102,7 +102,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has1Byte_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };
@@ -119,7 +119,7 @@ template< typename T >
 struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has2Bytes_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDint16, SIMDuint16 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -134,7 +134,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has2Bytes_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };
@@ -151,7 +151,7 @@ template< typename T >
 struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has4Bytes_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDint32, SIMDuint32 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -166,7 +166,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has4Bytes_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };
@@ -183,7 +183,7 @@ template< typename T >
 struct SIMDTraitBase< T, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has8Bytes_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDint64, SIMDuint64 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -198,7 +198,7 @@ template< typename T >
 struct SIMDTraitBase< complex<T>, EnableIf_t< IsNumeric_v<T> && IsIntegral_v<T> && Has8Bytes_v<T> > >
 {
    using Type = If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 >;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 
    BLAZE_STATIC_ASSERT( sizeof( complex<T> ) == 2UL*sizeof( T ) );
 };
@@ -215,7 +215,7 @@ template<>
 struct SIMDTraitBase<float>
 {
    using Type = SIMDfloat;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -230,7 +230,7 @@ template<>
 struct SIMDTraitBase< complex<float> >
 {
    using Type = SIMDcfloat;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 };
@@ -247,7 +247,7 @@ template<>
 struct SIMDTraitBase<double>
 {
    using Type = SIMDdouble;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -262,7 +262,7 @@ template<>
 struct SIMDTraitBase< complex<double> >
 {
    using Type = SIMDcdouble;
-   enum : size_t { size = Type::size };
+   static constexpr size_t size = Type::size;
 
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 };
