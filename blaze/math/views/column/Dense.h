@@ -95,7 +95,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -168,10 +167,10 @@ class Column<MT,true,true,SF,CCAs...>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -246,62 +245,57 @@ class Column<MT,true,true,SF,CCAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDAdd_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDAdd_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDSub_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDSub_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedMultAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDMult_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedMultAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDMult_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedDivAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDDiv_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedDivAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDDiv_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -333,42 +327,42 @@ class Column<MT,true,true,SF,CCAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT >
-   inline DisableIf_t< VectorizedAssign<VT>::value > assign( const DenseVector<VT,false>& rhs );
+   inline auto assign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedAssign<VT>::value > assign( const DenseVector<VT,false>& rhs );
+   inline auto assign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedAssign_v<VT> >;
 
    template< typename VT > inline void assign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedAddAssign<VT>::value > addAssign( const DenseVector<VT,false>& rhs );
+   inline auto addAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedAddAssign<VT>::value > addAssign( const DenseVector<VT,false>& rhs );
+   inline auto addAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<VT> >;
 
    template< typename VT > inline void addAssign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedSubAssign<VT>::value > subAssign( const DenseVector<VT,false>& rhs );
+   inline auto subAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedSubAssign<VT>::value > subAssign( const DenseVector<VT,false>& rhs );
+   inline auto subAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<VT> >;
 
    template< typename VT > inline void subAssign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedMultAssign<VT>::value > multAssign( const DenseVector<VT,false>& rhs );
+   inline auto multAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedMultAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedMultAssign<VT>::value > multAssign( const DenseVector<VT,false>& rhs );
+   inline auto multAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedMultAssign_v<VT> >;
 
    template< typename VT > inline void multAssign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedDivAssign<VT>::value > divAssign( const DenseVector<VT,false>& rhs );
+   inline auto divAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedDivAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedDivAssign<VT>::value > divAssign( const DenseVector<VT,false>& rhs );
+   inline auto divAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedDivAssign_v<VT> >;
    //@}
    //**********************************************************************************************
 
@@ -1694,8 +1688,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1727,8 +1721,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1817,8 +1811,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1850,8 +1844,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1928,8 +1922,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -1961,8 +1955,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2039,8 +2033,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2072,8 +2066,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2163,8 +2157,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -2196,8 +2190,8 @@ template< typename MT       // Type of the dense matrix
         , bool SF           // Symmetry flag
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,true,true,SF,CCAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT>::value >
-   Column<MT,true,true,SF,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,true,true,SF,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2624,10 +2618,10 @@ class Column<MT,false,true,false,CCAs...>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = false };
+   static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -4185,10 +4179,10 @@ class Column<MT,false,true,true,CCAs...>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -4263,62 +4257,57 @@ class Column<MT,false,true,true,CCAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDAdd_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDAdd_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDSub_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDSub_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedMultAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDMult_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedMultAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDMult_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename VT >
-   struct VectorizedDivAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && VT::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-                            HasSIMDDiv_v< ElementType, ElementType_t<VT> > };
-   };
+   static constexpr bool VectorizedDivAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
+        HasSIMDDiv_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -4350,42 +4339,42 @@ class Column<MT,false,true,true,CCAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t index, const SIMDType& value ) noexcept;
 
    template< typename VT >
-   inline DisableIf_t< VectorizedAssign<VT>::value > assign( const DenseVector<VT,false>& rhs );
+   inline auto assign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedAssign<VT>::value > assign( const DenseVector<VT,false>& rhs );
+   inline auto assign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedAssign_v<VT> >;
 
    template< typename VT > inline void assign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedAddAssign<VT>::value > addAssign( const DenseVector<VT,false>& rhs );
+   inline auto addAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedAddAssign<VT>::value > addAssign( const DenseVector<VT,false>& rhs );
+   inline auto addAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<VT> >;
 
    template< typename VT > inline void addAssign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedSubAssign<VT>::value > subAssign( const DenseVector<VT,false>& rhs );
+   inline auto subAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedSubAssign<VT>::value > subAssign( const DenseVector<VT,false>& rhs );
+   inline auto subAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<VT> >;
 
    template< typename VT > inline void subAssign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedMultAssign<VT>::value > multAssign( const DenseVector<VT,false>& rhs );
+   inline auto multAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedMultAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedMultAssign<VT>::value > multAssign( const DenseVector<VT,false>& rhs );
+   inline auto multAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedMultAssign_v<VT> >;
 
    template< typename VT > inline void multAssign( const SparseVector<VT,false>& rhs );
 
    template< typename VT >
-   inline DisableIf_t< VectorizedDivAssign<VT>::value > divAssign( const DenseVector<VT,false>& rhs );
+   inline auto divAssign( const DenseVector<VT,false>& rhs ) -> DisableIf_t< VectorizedDivAssign_v<VT> >;
 
    template< typename VT >
-   inline EnableIf_t< VectorizedDivAssign<VT>::value > divAssign( const DenseVector<VT,false>& rhs );
+   inline auto divAssign( const DenseVector<VT,false>& rhs ) -> EnableIf_t< VectorizedDivAssign_v<VT> >;
    //@}
    //**********************************************************************************************
 
@@ -5664,8 +5653,8 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5696,8 +5685,8 @@ inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE Vectorize
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::assign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5784,8 +5773,8 @@ inline void Column<MT,false,true,true,CCAs...>::assign( const SparseVector<VT,fa
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5816,8 +5805,8 @@ inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE Vectorize
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedAddAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::addAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -5892,8 +5881,8 @@ inline void Column<MT,false,true,true,CCAs...>::addAssign( const SparseVector<VT
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -5924,8 +5913,8 @@ inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE Vectorize
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedSubAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::subAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6000,8 +5989,8 @@ inline void Column<MT,false,true,true,CCAs...>::subAssign( const SparseVector<VT
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -6032,8 +6021,8 @@ inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE Vectorize
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedMultAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::multAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedMultAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6121,8 +6110,8 @@ inline void Column<MT,false,true,true,CCAs...>::multAssign( const SparseVector<V
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+   -> DisableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -6153,8 +6142,8 @@ inline DisableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE Vectorize
 template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename VT >     // Type of the right-hand side dense vector
-inline EnableIf_t< Column<MT,false,true,true,CCAs...>::BLAZE_TEMPLATE VectorizedDivAssign<VT>::value >
-   Column<MT,false,true,true,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+inline auto Column<MT,false,true,true,CCAs...>::divAssign( const DenseVector<VT,false>& rhs )
+   -> EnableIf_t< VectorizedDivAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 

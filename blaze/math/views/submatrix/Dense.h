@@ -105,7 +105,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -587,10 +586,10 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -695,53 +694,49 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedSchurAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -773,40 +768,40 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
+   inline auto assign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
+   inline auto assign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>&  rhs );
@@ -2581,8 +2576,8 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2619,8 +2614,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE V
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2788,8 +2783,8 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::assign( const SparseMatr
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2832,8 +2827,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE V
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2988,8 +2983,8 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::addAssign( const SparseM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -3032,8 +3027,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE V
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3188,8 +3183,8 @@ inline void Submatrix<MT,unaligned,false,true,CSAs...>::subAssign( const SparseM
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -3226,8 +3221,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE V
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,unaligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -3867,10 +3862,10 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3975,53 +3970,49 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedSchurAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -4053,40 +4044,40 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
+   inline auto assign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
+   inline auto assign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>&  rhs );
@@ -5817,8 +5808,8 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -5855,8 +5846,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE Ve
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6024,8 +6015,8 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::assign( const SparseMatri
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6068,8 +6059,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE Ve
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6224,8 +6215,8 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::addAssign( const SparseMa
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6268,8 +6259,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE Ve
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6424,8 +6415,8 @@ inline void Submatrix<MT,unaligned,true,true,CSAs...>::subAssign( const SparseMa
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -6463,8 +6454,8 @@ inline DisableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE Ve
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,unaligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,unaligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -6692,10 +6683,10 @@ class Submatrix<MT,aligned,false,true,CSAs...>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -6800,53 +6791,49 @@ class Submatrix<MT,aligned,false,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedSchurAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -6878,40 +6865,40 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
+   inline auto assign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,false>& rhs );
+   inline auto assign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,false>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,false>&  rhs );
@@ -8676,8 +8663,8 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -8714,8 +8701,8 @@ inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE Vec
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -8883,8 +8870,8 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::assign( const SparseMatrix
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -8927,8 +8914,8 @@ inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE Vec
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9083,8 +9070,8 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::addAssign( const SparseMat
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9127,8 +9114,8 @@ inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE Vec
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9283,8 +9270,8 @@ inline void Submatrix<MT,aligned,false,true,CSAs...>::subAssign( const SparseMat
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -9321,8 +9308,8 @@ inline DisableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE Vec
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,false,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto Submatrix<MT,aligned,false,true,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -9550,10 +9537,10 @@ class Submatrix<MT,aligned,true,true,CSAs...>
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   enum : bool { simdEnabled = MT::simdEnabled };
+   static constexpr bool simdEnabled = MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   enum : bool { smpAssignable = MT::smpAssignable };
+   static constexpr bool smpAssignable = MT::smpAssignable;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -9658,53 +9645,49 @@ class Submatrix<MT,aligned,true,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedAddAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedAddAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDAdd_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSubAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
-                            !IsDiagonal_v<MT2> };
-   };
+   static constexpr bool VectorizedSubAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDSub_v< ElementType, ElementType_t<MT2> > &&
+        !IsDiagonal_v<MT2> );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper template for the explicit application of the SFINAE principle.
    template< typename MT2 >
-   struct VectorizedSchurAssign {
-      enum : bool { value = useOptimizedKernels &&
-                            simdEnabled && MT2::simdEnabled &&
-                            IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
-                            HasSIMDMult_v< ElementType, ElementType_t<MT2> > };
-   };
+   static constexpr bool VectorizedSchurAssign_v =
+      ( useOptimizedKernels &&
+        simdEnabled && MT2::simdEnabled &&
+        IsSIMDCombinable_v< ElementType, ElementType_t<MT2> > &&
+        HasSIMDMult_v< ElementType, ElementType_t<MT2> > );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   enum : size_t { SIMDSIZE = SIMDTrait<ElementType>::size };
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
  public:
@@ -9736,40 +9719,40 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
+   inline auto assign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAssign<MT2>::value > assign( const DenseMatrix<MT2,true>& rhs );
+   inline auto assign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void assign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedAddAssign<MT2>::value > addAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto addAssign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void addAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSubAssign<MT2>::value > subAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto subAssign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,true>&  rhs );
    template< typename MT2 > inline void subAssign( const SparseMatrix<MT2,false>& rhs );
 
    template< typename MT2 >
-   inline DisableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,true>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline EnableIf_t< VectorizedSchurAssign<MT2>::value > schurAssign( const DenseMatrix<MT2,true>& rhs );
+   inline auto schurAssign( const DenseMatrix<MT2,true>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 > inline void schurAssign( const DenseMatrix<MT2,false>&  rhs );
    template< typename MT2 > inline void schurAssign( const SparseMatrix<MT2,true>&  rhs );
@@ -11490,8 +11473,8 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >   // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -11528,8 +11511,8 @@ inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE Vect
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11697,8 +11680,8 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::assign( const SparseMatrix<
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -11741,8 +11724,8 @@ inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE Vect
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedAddAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedAddAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -11897,8 +11880,8 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::addAssign( const SparseMatr
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -11941,8 +11924,8 @@ inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE Vect
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSubAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedSubAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -12097,8 +12080,8 @@ inline void Submatrix<MT,aligned,true,true,CSAs...>::subAssign( const SparseMatr
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -12136,8 +12119,8 @@ inline DisableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE Vect
 template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline EnableIf_t< Submatrix<MT,aligned,true,true,CSAs...>::BLAZE_TEMPLATE VectorizedSchurAssign<MT2>::value >
-   Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+inline auto Submatrix<MT,aligned,true,true,CSAs...>::schurAssign( const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
