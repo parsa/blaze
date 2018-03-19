@@ -160,9 +160,9 @@ class OperationTest : private blaze::NonCopyable
    //**********************************************************************************************
 
    //**********************************************************************************************
-   enum : size_t { SIMDSIZE = SIMD::size };  //!< Number of elements in a single SIMD vector.
-   enum : size_t { N = 256UL };              //!< Number of numeric values to be worked on.
-   enum : size_t { NN = N + SIMDSIZE };      //!< Total number of numeric values in each array.
+   static constexpr size_t SIMDSIZE = SIMD::size;  //!< Number of elements in a single SIMD vector.
+   static constexpr size_t N = 256UL;              //!< Number of numeric values to be worked on.
+   static constexpr size_t NN = N + SIMDSIZE;      //!< Total number of numeric values in each array.
    //**********************************************************************************************
 
  public:

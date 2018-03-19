@@ -74,7 +74,7 @@ struct RemoveIdentity
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
    using ET = blaze::ElementType_t<T>;
-   enum : bool { SO = blaze::IsColumnMajorMatrix<T>::value };
+   static constexpr bool SO = blaze::IsColumnMajorMatrix_v<T>;
    /*! \endcond */
    //**********************************************************************************************
 
