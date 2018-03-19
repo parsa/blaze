@@ -122,7 +122,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
    static Yes& test( ... );                                                                  \
                                                                                              \
  public:                                                                                     \
-   enum : bool { value = ( sizeof( test<Derived>( nullptr ) ) == sizeof( Yes ) ) };          \
+   static constexpr bool value = ( sizeof( test<Derived>( nullptr ) ) == sizeof( Yes ) );    \
 };                                                                                           \
                                                                                              \
 template< typename TYPE1230 >                                                                \
@@ -207,7 +207,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
    static Yes& test( U* );                                                                 \
                                                                                            \
  public:                                                                                   \
-   enum : bool { value = ( sizeof( test<Derived>( nullptr ) ) == sizeof( Yes ) ) };        \
+   static constexpr bool value = ( sizeof( test<Derived>( nullptr ) ) == sizeof( Yes ) );  \
 };                                                                                         \
                                                                                            \
 template< typename TYPE1231 >                                                              \

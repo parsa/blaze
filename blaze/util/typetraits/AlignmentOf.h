@@ -69,19 +69,18 @@ struct AlignmentOfHelper
 
  public:
    //**********************************************************************************************
-   enum : size_t {
+   static constexpr size_t value =
 #if BLAZE_AVX512BW_MODE
-      value = ( IsVectorizable_v<T> )?( 64UL ):( defaultAlignment )
+      ( IsVectorizable_v<T> )?( 64UL ):( defaultAlignment );
 #elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      value = ( IsVectorizable_v<T> )?( sizeof(T) >= 4UL ? 64UL : 32UL ):( defaultAlignment )
+      ( IsVectorizable_v<T> )?( sizeof(T) >= 4UL ? 64UL : 32UL ):( defaultAlignment );
 #elif BLAZE_AVX2_MODE
-      value = ( IsVectorizable_v<T> )?( 32UL ):( defaultAlignment )
+      ( IsVectorizable_v<T> )?( 32UL ):( defaultAlignment );
 #elif BLAZE_SSE2_MODE
-      value = ( IsVectorizable_v<T> )?( 16UL ):( defaultAlignment )
+      ( IsVectorizable_v<T> )?( 16UL ):( defaultAlignment );
 #else
-      value = defaultAlignment
+      defaultAlignment;
 #endif
-   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,17 +97,16 @@ struct AlignmentOfHelper<float>
 {
  public:
    //**********************************************************************************************
-   enum : size_t {
+   static constexpr size_t value =
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      value = 64UL
+      64UL;
 #elif BLAZE_AVX_MODE
-      value = 32UL
+      32UL;
 #elif BLAZE_SSE_MODE
-      value = 16UL
+      16UL;
 #else
-      value = std::alignment_of<float>::value
+      std::alignment_of<float>::value;
 #endif
-   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -125,17 +123,16 @@ struct AlignmentOfHelper<double>
 {
  public:
    //**********************************************************************************************
-   enum : size_t {
+   static constexpr size_t value =
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      value = 64UL
+      64UL;
 #elif BLAZE_AVX_MODE
-      value = 32UL
+      32UL;
 #elif BLAZE_SSE2_MODE
-      value = 16UL
+      16UL;
 #else
-      value = std::alignment_of<double>::value
+      std::alignment_of<double>::value;
 #endif
-   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -152,17 +149,16 @@ struct AlignmentOfHelper< complex<float> >
 {
  public:
    //**********************************************************************************************
-   enum : size_t {
+   static constexpr size_t value =
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      value = 64UL
+      64UL;
 #elif BLAZE_AVX_MODE
-      value = 32UL
+      32UL;
 #elif BLAZE_SSE_MODE
-      value = 16UL
+      16UL;
 #else
-      value = std::alignment_of< complex<float> >::value
+      std::alignment_of< complex<float> >::value;
 #endif
-   };
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -179,17 +175,16 @@ struct AlignmentOfHelper< complex<double> >
 {
  public:
    //**********************************************************************************************
-   enum : size_t {
+   static constexpr size_t value =
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      value = 64UL
+      64UL;
 #elif BLAZE_AVX_MODE
-      value = 32UL
+      32UL;
 #elif BLAZE_SSE2_MODE
-      value = 16UL
+      16UL;
 #else
-      value = std::alignment_of< complex<double> >::value
+      std::alignment_of< complex<double> >::value;
 #endif
-   };
    //**********************************************************************************************
 };
 /*! \endcond */

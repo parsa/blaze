@@ -43,9 +43,11 @@
 #include <memory>
 #include <mutex>
 #include <blaze/util/constraints/DerivedFrom.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/NullType.h>
 #include <blaze/util/Suffix.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 
 
@@ -97,7 +99,7 @@ template< typename TL   // Type list of checked lifetime dependencies
         , size_t   N >  // Length of the dependency type list
 struct HasCyclicDependencyHelper<TL,NullType,N>
 {
-   enum : bool { value = 0 };
+   static constexpr bool value = false;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -117,7 +119,7 @@ struct HasCyclicDependencyHelper<TL,D,1>
 {
    using D1 = TypeAt_t<D,0>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value };
+   static constexpr bool value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -138,8 +140,8 @@ struct HasCyclicDependencyHelper<TL,D,2>
    using D1 = TypeAt_t<D,0>;
    using D2 = TypeAt_t<D,1>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
-                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value };
+   static constexpr bool value = ( HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                                   HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -161,9 +163,9 @@ struct HasCyclicDependencyHelper<TL,D,3>
    using D2 = TypeAt_t<D,1>;
    using D3 = TypeAt_t<D,2>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
-                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
-                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value };
+   static constexpr bool value = ( HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                                   HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                                   HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -186,10 +188,10 @@ struct HasCyclicDependencyHelper<TL,D,4>
    using D3 = TypeAt_t<D,2>;
    using D4 = TypeAt_t<D,3>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
-                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
-                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
-                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value };
+   static constexpr bool value = ( HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                                   HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                                   HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                                   HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -213,11 +215,11 @@ struct HasCyclicDependencyHelper<TL,D,5>
    using D4 = TypeAt_t<D,3>;
    using D5 = TypeAt_t<D,4>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
-                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
-                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
-                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
-                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value };
+   static constexpr bool value = ( HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                                   HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                                   HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                                   HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                                   HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -242,12 +244,12 @@ struct HasCyclicDependencyHelper<TL,D,6>
    using D5 = TypeAt_t<D,4>;
    using D6 = TypeAt_t<D,5>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
-                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
-                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
-                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
-                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
-                         HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value };
+   static constexpr bool value = ( HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                                   HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                                   HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                                   HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                                   HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
+                                   HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -273,13 +275,13 @@ struct HasCyclicDependencyHelper<TL,D,7>
    using D6 = TypeAt_t<D,5>;
    using D7 = TypeAt_t<D,6>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
-                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
-                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
-                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
-                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
-                         HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value ||
-                         HasCyclicDependency<D7,TL,Contains_v<TL,D7>>::value };
+   static constexpr bool value = ( HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                                   HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                                   HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                                   HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                                   HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
+                                   HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value ||
+                                   HasCyclicDependency<D7,TL,Contains_v<TL,D7>>::value );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -306,14 +308,14 @@ struct HasCyclicDependencyHelper<TL,D,8>
    using D7 = TypeAt_t<D,6>;
    using D8 = TypeAt_t<D,7>;
 
-   enum : bool { value = HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
-                         HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
-                         HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
-                         HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
-                         HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
-                         HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value ||
-                         HasCyclicDependency<D7,TL,Contains_v<TL,D7>>::value ||
-                         HasCyclicDependency<D8,TL,Contains_v<TL,D8>>::value };
+   static constexpr bool value = ( HasCyclicDependency<D1,TL,Contains_v<TL,D1>>::value ||
+                                   HasCyclicDependency<D2,TL,Contains_v<TL,D2>>::value ||
+                                   HasCyclicDependency<D3,TL,Contains_v<TL,D3>>::value ||
+                                   HasCyclicDependency<D4,TL,Contains_v<TL,D4>>::value ||
+                                   HasCyclicDependency<D5,TL,Contains_v<TL,D5>>::value ||
+                                   HasCyclicDependency<D6,TL,Contains_v<TL,D6>>::value ||
+                                   HasCyclicDependency<D7,TL,Contains_v<TL,D7>>::value ||
+                                   HasCyclicDependency<D8,TL,Contains_v<TL,D8>>::value );
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -336,13 +338,12 @@ struct HasCyclicDependencyHelper<TL,D,8>
 // cyclic lifetime dependency is detected, the \a value member enumeration is set to 1. Otherwise
 // it is set to 0.
 */
-template< typename T                 // The type to be checked for cyclic lifetime dependencies
-        , typename TL                // Type list of checked lifetime dependencies
-        , bool C=Contains_v<TL,T> >  // Flag to indicate whether T is contained in TL
+template< typename T                   // The type to be checked for cyclic lifetime dependencies
+        , typename TL                  // Type list of checked lifetime dependencies
+        , bool C = Contains_v<TL,T> >  // Flag to indicate whether T is contained in TL
 struct HasCyclicDependency
-{
-   enum : bool { value = HasCyclicDependencyHelper<Append_t<TL,T>,typename T::Dependencies>::value };
-};
+   : public BoolConstant< HasCyclicDependencyHelper<Append_t<TL,T>,typename T::Dependencies>::value >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
@@ -359,9 +360,8 @@ struct HasCyclicDependency
 template< typename T     // The type to be checked for cyclic lifetime dependencies
         , typename TL >  // Type list of checked lifetime dependencies
 struct HasCyclicDependency<T,TL,true>
-{
-   enum : bool { value = 1 };
-};
+   : public TrueType
+{};
 /*! \endcond */
 //*************************************************************************************************
 
