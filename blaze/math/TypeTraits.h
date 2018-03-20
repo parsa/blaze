@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/HasSIMDCos.h>
 #include <blaze/math/typetraits/HasSIMDCosh.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
+#include <blaze/math/typetraits/HasSIMDEqual.h>
 #include <blaze/math/typetraits/HasSIMDErf.h>
 #include <blaze/math/typetraits/HasSIMDErfc.h>
 #include <blaze/math/typetraits/HasSIMDExp.h>
