@@ -1217,16 +1217,14 @@ struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, UnaryPow<ET> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
-struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2>, Min >
+template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2, typename OP >
+struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2>, OP >
 {
-   using Type = SymmetricMatrix< BinaryMapTrait_t<MT1,MT2,Min> >;
-};
+   using TL = TypeList< Min, Max >;
 
-template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
-struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2>, Max >
-{
-   using Type = SymmetricMatrix< BinaryMapTrait_t<MT1,MT2,Max> >;
+   using Type = If_t< Contains_v<TL,OP>
+                    , SymmetricMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
+                    , BinaryMapTrait_t<MT1,MT2,OP> >;
 };
 /*! \endcond */
 //*************************************************************************************************

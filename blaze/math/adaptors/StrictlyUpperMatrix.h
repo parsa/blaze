@@ -2208,64 +2208,54 @@ struct UnaryMapTrait< StrictlyUpperMatrix<MT,SO,DF>, UnaryPow<ET> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2>, Min >
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
+struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2>, OP >
 {
-   using Type = UpperMatrix< BinaryMapTrait_t<MT1,MT2,Min> >;
+   using TL = TypeList< Min, Max >;
+
+   using Type = If_t< Contains_v<TL,OP>
+                    , UpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
+                    , BinaryMapTrait_t<MT1,MT2,OP> >;
 };
 
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2>, Max >
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
+struct BinaryMapTrait< UpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, OP >
 {
-   using Type = UpperMatrix< BinaryMapTrait_t<MT1,MT2,Max> >;
+   using TL = TypeList< Min, Max >;
+
+   using Type = If_t< Contains_v<TL,OP>
+                    , UpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
+                    , BinaryMapTrait_t<MT1,MT2,OP> >;
 };
 
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< UpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Min >
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
+struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>, OP >
 {
-   using Type = UpperMatrix< BinaryMapTrait_t<MT1,MT2,Min> >;
+   using TL = TypeList< Min, Max >;
+
+   using Type = If_t< Contains_v<TL,OP>
+                    , StrictlyUpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
+                    , BinaryMapTrait_t<MT1,MT2,OP> >;
 };
 
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< UpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Max >
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
+struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, OP >
 {
-   using Type = UpperMatrix< BinaryMapTrait_t<MT1,MT2,Max> >;
+   using TL = TypeList< Min, Max >;
+
+   using Type = If_t< Contains_v<TL,OP>
+                    , StrictlyUpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
+                    , BinaryMapTrait_t<MT1,MT2,OP> >;
 };
 
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>, Min >
+template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
+struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, OP >
 {
-   using Type = StrictlyUpperMatrix< BinaryMapTrait_t<MT1,MT2,Min> >;
-};
+   using TL = TypeList< Min, Max >;
 
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>, Max >
-{
-   using Type = UniUpperMatrix< BinaryMapTrait_t<MT1,MT2,Max> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Min >
-{
-   using Type = StrictlyUpperMatrix< BinaryMapTrait_t<MT1,MT2,Min> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Max >
-{
-   using Type = UniUpperMatrix< BinaryMapTrait_t<MT1,MT2,Max> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Min >
-{
-   using Type = StrictlyUpperMatrix< BinaryMapTrait_t<MT1,MT2,Min> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct BinaryMapTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2>, Max >
-{
-   using Type = StrictlyUpperMatrix< BinaryMapTrait_t<MT1,MT2,Max> >;
+   using Type = If_t< Contains_v<TL,OP>
+                    , StrictlyUpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
+                    , BinaryMapTrait_t<MT1,MT2,OP> >;
 };
 /*! \endcond */
 //*************************************************************************************************
