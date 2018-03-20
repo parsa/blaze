@@ -40,19 +40,15 @@
 // Includes
 //*************************************************************************************************
 
-#include <cmath>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsNaN.h>
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/TransposeFlag.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/util/algorithms/Max.h>
@@ -77,29 +73,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name DenseVector operators */
 //@{
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator==( const DenseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
-
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator==( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs );
-
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator==( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
-
 template< typename T1, typename T2, bool TF >
 inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseVector<T1,TF>& vec, T2 scalar );
 
 template< typename T1, typename T2, bool TF >
 inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec );
-
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator!=( const DenseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
-
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator!=( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs );
-
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator!=( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs );
 
 template< typename T1, typename T2, bool TF >
 inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseVector<T1,TF>& vec, T2 scalar );
@@ -119,102 +97,6 @@ inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( DenseVector<VT,TF>& vec, S
 template< typename VT, bool TF, typename ST >
 inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( DenseVector<VT,TF>&& vec, ST scalar );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of two dense vectors.
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side dense vector for the comparison.
-// \param rhs The right-hand side dense vector for the comparison.
-// \return \a true if the two vectors are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side dense vector
-        , bool TF1     // Transpose flag of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side dense vector
-        , bool TF2 >   // Transpose flag of the right-hand side dense vector
-inline bool operator==( const DenseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-
-   // Early exit in case the vector sizes don't match
-   if( (~lhs).size() != (~rhs).size() ) return false;
-
-   // Evaluation of the two dense vector operands
-   CT1 a( ~lhs );
-   CT2 b( ~rhs );
-
-   // In order to compare the two vectors, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   for( size_t i=0; i<a.size(); ++i )
-      if( !equal( a[i], b[i] ) ) return false;
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of a dense vector and a sparse vector.
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side dense vector for the comparison.
-// \param rhs The right-hand side sparse vector for the comparison.
-// \return \a true if the two vectors are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side dense vector
-        , bool TF1     // Transpose flag of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side sparse vector
-        , bool TF2 >   // Transpose flag of the right-hand side sparse vector
-inline bool operator==( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
-   // Early exit in case the vector sizes don't match
-   if( (~lhs).size() != (~rhs).size() ) return false;
-
-   // Evaluation of the dense vector and sparse vector operand
-   CT1 a( ~lhs );
-   CT2 b( ~rhs );
-
-   // In order to compare the two vectors, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   size_t i( 0 );
-
-   for( ConstIterator element=b.begin(); element!=b.end(); ++element, ++i ) {
-      for( ; i<element->index(); ++i ) {
-         if( !isDefault( a[i] ) ) return false;
-      }
-      if( !equal( element->value(), a[i] ) ) return false;
-   }
-   for( ; i<a.size(); ++i ) {
-      if( !isDefault( a[i] ) ) return false;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of a sparse vector and a dense vector.
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side sparse vector for the comparison.
-// \param rhs The right-hand side dense vector for the comparison.
-// \return \a true if the two vectors are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side sparse vector
-        , bool TF1     // Transpose flag of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side dense vector
-        , bool TF2 >   // Transpose flag of the right-hand side dense vector
-inline bool operator==( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs )
-{
-   return ( rhs == lhs );
-}
 //*************************************************************************************************
 
 
@@ -267,63 +149,6 @@ template< typename T1  // Type of the left-hand side scalar
 inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseVector<T2,TF>& vec )
 {
    return ( vec == scalar );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality operator for the comparison of two dense vectors.
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side dense vector for the comparison.
-// \param rhs The right-hand side dense vector for the comparison.
-// \return \a true if the two vectors are not equal, \a false if they are equal.
-*/
-template< typename T1  // Type of the left-hand side dense vector
-        , bool TF1     // Transpose flag of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side dense vector
-        , bool TF2 >   // Transpose flag of the right-hand side dense vector
-inline bool operator!=( const DenseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs )
-{
-   return !( lhs == rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality operator for the comparison of a dense vector and a sparse vector.
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side dense vector for the comparison.
-// \param rhs The right-hand side sparse vector for the comparison.
-// \return \a true if the two vectors are not equal, \a false if they are equal.
-*/
-template< typename T1  // Type of the left-hand side dense vector
-        , bool TF1     // Transpose flag of the left-hand side dense vector
-        , typename T2  // Type of the right-hand side sparse vector
-        , bool TF2 >   // Transpose flag of the right-hand side sparse vector
-inline bool operator!=( const DenseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
-{
-   return !( lhs == rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality operator for the comparison of a sparse vector and a dense vector.
-// \ingroup dense_vector
-//
-// \param lhs The left-hand side sparse vector for the comparison.
-// \param rhs The right-hand side dense vector for the comparison.
-// \return \a true if the two vectors are not equal, \a false if they are equal.
-*/
-template< typename T1  // Type of the left-hand side sparse vector
-        , bool TF1     // Transpose flag of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side dense vector
-        , bool TF2 >   // Transpose flag of the right-hand side dense vector
-inline bool operator!=( const SparseVector<T1,TF1>& lhs, const DenseVector<T2,TF2>& rhs )
-{
-   return !( rhs == lhs );
 }
 //*************************************************************************************************
 

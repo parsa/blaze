@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <cmath>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -50,7 +49,6 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/TransposeFlag.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -63,9 +61,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DecltypeAuto.h>
-#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Or.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsComplex.h>
@@ -84,12 +80,6 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name SparseVector operators */
 //@{
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs );
-
-template< typename T1, bool TF1, typename T2, bool TF2 >
-inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs );
-
 template< typename VT, bool TF, typename ST >
 inline EnableIf_t< IsNumeric_v<ST>, VT& > operator*=( SparseVector<VT,TF>& vec, ST scalar );
 
@@ -102,90 +92,6 @@ inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( SparseVector<VT,TF>& vec, 
 template< typename VT, bool TF, typename ST >
 inline EnableIf_t< IsNumeric_v<ST>, VT& > operator/=( SparseVector<VT,TF>&& vec, ST scalar );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of two sparse vectors.
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side sparse vector for the comparison.
-// \param rhs The right-hand side sparse vector for the comparison.
-// \return \a true if the two sparse vectors are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side sparse vector
-        , bool TF1     // Transpose flag of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side sparse vector
-        , bool TF2 >   // Transpose flag of the right-hand side sparse vector
-inline bool operator==( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-   using LhsConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-   using RhsConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
-   // Early exit in case the vector sizes don't match
-   if( (~lhs).size() != (~rhs).size() ) return false;
-
-   // Evaluation of the two sparse vector operands
-   CT1 a( ~lhs );
-   CT2 b( ~rhs );
-
-   // In order to compare the two vectors, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   const LhsConstIterator lend( a.end() );
-   const RhsConstIterator rend( b.end() );
-
-   LhsConstIterator lelem( a.begin() );
-   RhsConstIterator relem( b.begin() );
-
-   while( lelem != lend && relem != rend )
-   {
-      if( isDefault( lelem->value() ) ) { ++lelem; continue; }
-      if( isDefault( relem->value() ) ) { ++relem; continue; }
-
-      if( lelem->index() != relem->index() || !equal( lelem->value(), relem->value() ) ) {
-         return false;
-      }
-      else {
-         ++lelem;
-         ++relem;
-      }
-   }
-
-   while( lelem != lend ) {
-      if( !isDefault( lelem->value() ) )
-         return false;
-      ++lelem;
-   }
-
-   while( relem != rend ) {
-      if( !isDefault( relem->value() ) )
-         return false;
-      ++relem;
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality operator for the comparison of two sparse vectors.
-// \ingroup sparse_vector
-//
-// \param lhs The left-hand side sparse vector for the comparison.
-// \param rhs The right-hand side sparse vector for the comparison.
-// \return \a true if the two vectors are not equal, \a false if they are equal.
-*/
-template< typename T1  // Type of the left-hand side sparse vector
-        , bool TF1     // Transpose flag of the left-hand side sparse vector
-        , typename T2  // Type of the right-hand side sparse vector
-        , bool TF2 >   // Transpose flag of the right-hand side sparse vector
-inline bool operator!=( const SparseVector<T1,TF1>& lhs, const SparseVector<T2,TF2>& rhs )
-{
-   return !( lhs == rhs );
-}
 //*************************************************************************************************
 
 

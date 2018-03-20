@@ -45,6 +45,7 @@
 #include <blaze/math/expressions/DVecDVecAddExpr.h>
 #include <blaze/math/expressions/DVecDVecCrossExpr.h>
 #include <blaze/math/expressions/DVecDVecDivExpr.h>
+#include <blaze/math/expressions/DVecDVecEqualExpr.h>
 #include <blaze/math/expressions/DVecDVecInnerExpr.h>
 #include <blaze/math/expressions/DVecDVecMapExpr.h>
 #include <blaze/math/expressions/DVecDVecMultExpr.h>

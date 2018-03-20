@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/DVecSVecEqualExpr.h>
 #include <blaze/math/expressions/DVecSVecInnerExpr.h>
 #include <blaze/math/expressions/DVecSVecMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -54,6 +55,7 @@
 #include <blaze/math/expressions/SVecScalarMultExpr.h>
 #include <blaze/math/expressions/SVecSerialExpr.h>
 #include <blaze/math/expressions/SVecSVecAddExpr.h>
+#include <blaze/math/expressions/SVecSVecEqualExpr.h>
 #include <blaze/math/expressions/SVecSVecInnerExpr.h>
 #include <blaze/math/expressions/SVecSVecMultExpr.h>
 #include <blaze/math/expressions/SVecSVecSubExpr.h>
