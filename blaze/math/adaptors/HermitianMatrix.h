@@ -91,6 +91,8 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/typelist/Contains.h>
+#include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
@@ -1812,186 +1814,23 @@ struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Abs >
+template< typename MT, bool SO, bool DF, typename OP >
+struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, OP >
 {
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Abs> >;
-};
+   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, InvSqrt
+                      , Cbrt, InvCbrt, Pow2, Pow3, Pow4, Exp, Exp2, Exp10, Log, Log2, Log10
+                      , Sin, Asin, Sinh, Asinh, Cos, Acos, Cosh, Acosh, Tan, Atan, Tanh, Atanh
+                      , Erf, Erfc >;
 
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Floor >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Floor> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Ceil >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Ceil> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Trunc >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Trunc> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Round >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Round> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Conj >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Conj> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Real >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Real> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Imag >
-{
-   using Type = If_t< IsBuiltin_v< ElementType_t<MT> >
-                    , HermitianMatrix< UnaryMapTrait_t<MT,Imag> >
-                    , UnaryMapTrait_t<MT,Imag> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Sqrt >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Sqrt> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, InvSqrt >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,InvSqrt> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Cbrt >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Cbrt> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, InvCbrt >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,InvCbrt> >;
+   using Type = If_t< Contains_v<TL,OP>
+                    , HermitianMatrix< UnaryMapTrait_t<MT,OP> >
+                    , UnaryMapTrait_t<MT,OP> >;
 };
 
 template< typename MT, bool SO, bool DF, typename ET >
 struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, UnaryPow<ET> >
 {
    using Type = HermitianMatrix< UnaryMapTrait_t< MT, UnaryPow<ET> > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Exp >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Exp > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Log >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Log > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Log10 >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Log10 > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Sin >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Sin > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Asin >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Asin > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Sinh >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Sinh > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Asinh >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Asinh > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Cos >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Cos > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Acos >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Acos > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Cosh >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Cosh > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Acosh >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Acosh > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Tan >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Tan > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Atan >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Atan > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Tanh >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Tanh > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Atanh >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t< MT, Atanh > >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Erf >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Erf> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, Erfc >
-{
-   using Type = HermitianMatrix< UnaryMapTrait_t<MT,Erfc> >;
 };
 /*! \endcond */
 //*************************************************************************************************

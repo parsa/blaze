@@ -90,7 +90,10 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/typelist/Contains.h>
+#include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
@@ -3002,58 +3005,14 @@ struct DivTrait< UniLowerMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Abs >
+template< typename MT, bool SO, bool DF, typename OP >
+struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, OP >
 {
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Abs> >;
-};
+   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Sqrt, Cbrt, Pow2, Pow3, Pow4 >;
 
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Floor >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Floor> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Ceil >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Ceil> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Trunc >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Trunc> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Round >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Round> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Conj >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Conj> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Real >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Real> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Sqrt >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Sqrt> >;
-};
-
-template< typename MT, bool SO, bool DF >
-struct UnaryMapTrait< UniLowerMatrix<MT,SO,DF>, Cbrt >
-{
-   using Type = UniLowerMatrix< UnaryMapTrait_t<MT,Cbrt> >;
+   using Type = If_t< Contains_v<TL,OP>
+                    , UniLowerMatrix< UnaryMapTrait_t<MT,OP> >
+                    , UnaryMapTrait_t<MT,OP> >;
 };
 
 template< typename MT, bool SO, bool DF, typename ET >

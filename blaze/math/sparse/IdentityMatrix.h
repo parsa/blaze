@@ -92,6 +92,8 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typelist/Contains.h>
+#include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
@@ -2391,61 +2393,11 @@ struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 template< typename T, bool SO, typename OP >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, OP >
 {
-   using Type = CompressedMatrix< UnaryMapTrait_t<T,OP>, SO >;
-};
+   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Sqrt, Cbrt, Pow2, Pow3, Pow4 >;
 
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Abs >
-{
-   using Type = IdentityMatrix< UnaryMapTrait_t<T,Abs>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Floor >
-{
-   using Type = IdentityMatrix< UnaryMapTrait_t<T,Floor>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Ceil >
-{
-   using Type = IdentityMatrix< UnaryMapTrait_t<T,Ceil>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Trunc >
-{
-   using Type = IdentityMatrix< UnaryMapTrait_t<T,Trunc>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Round >
-{
-   using Type = IdentityMatrix< UnaryMapTrait_t<T,Round>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Conj >
-{
-   using Type = IdentityMatrix< UnaryMapTrait_t<T,Conj>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Real >
-{
-   using Type = IdentityMatrix< UnaryMapTrait_t<T,Real>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Sqrt >
-{
-   using Type = IdentityMatrix< UnaryMapTrait<T,Sqrt>, SO >;
-};
-
-template< typename T, bool SO >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, Cbrt >
-{
-   using Type = IdentityMatrix< UnaryMapTrait<T,Cbrt>, SO >;
+   using Type = If_t< Contains_v< TL, OP >
+                    , IdentityMatrix< UnaryMapTrait_t<T,OP>, SO >
+                    , CompressedMatrix< UnaryMapTrait_t<T,OP>, SO > >;
 };
 
 template< typename T, bool SO, typename ET >
