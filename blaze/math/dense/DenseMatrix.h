@@ -45,7 +45,6 @@
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -80,7 +79,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -95,24 +93,6 @@ namespace blaze {
 /*!\name DenseMatrix operators */
 //@{
 template< typename T1, typename T2 >
-inline bool operator==( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,false>& rhs );
-
-template< typename T1, typename T2 >
-inline bool operator==( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,true>& rhs );
-
-template< typename T1, typename T2, bool SO >
-inline bool operator==( const DenseMatrix<T1,SO>& lhs, const DenseMatrix<T2,!SO>& rhs );
-
-template< typename T1, typename T2, bool SO >
-inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,false>& rhs );
-
-template< typename T1, typename T2, bool SO >
-inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,true>& rhs );
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-inline bool operator==( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
-
-template< typename T1, typename T2 >
 inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar );
 
 template< typename T1, typename T2 >
@@ -120,15 +100,6 @@ inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,true
 
 template< typename T1, typename T2, bool SO >
 inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat );
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-inline bool operator!=( const DenseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-inline bool operator!=( const DenseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,SO2>& rhs );
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs );
 
 template< typename T1, typename T2, bool SO >
 inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar );
@@ -148,238 +119,6 @@ inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, S
 template< typename MT, bool SO, typename ST >
 inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, ST scalar );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of two rwo-major dense matrices.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side matrix for the comparison.
-// \param rhs The right-hand side matrix for the comparison.
-// \return \a true if the two matrices are equal, \a false if not.
-*/
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline bool operator==( const DenseMatrix<T1,false>& lhs, const DenseMatrix<T2,false>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-
-   // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      return false;
-
-   // Evaluation of the two dense matrix operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
-
-   // In order to compare the two matrices, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   for( size_t i=0; i<A.rows(); ++i ) {
-      for( size_t j=0; j<A.columns(); ++j ) {
-         if( !equal( A(i,j), B(i,j) ) ) return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of two column-major dense matrices.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side matrix for the comparison.
-// \param rhs The right-hand side matrix for the comparison.
-// \return \a true if the two matrices are equal, \a false if not.
-*/
-template< typename T1    // Type of the left-hand side dense matrix
-        , typename T2 >  // Type of the right-hand side dense matrix
-inline bool operator==( const DenseMatrix<T1,true>& lhs, const DenseMatrix<T2,true>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-
-   // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      return false;
-
-   // Evaluation of the two dense matrix operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
-
-   // In order to compare the two matrices, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   for( size_t j=0; j<A.columns(); ++j ) {
-      for( size_t i=0; i<A.rows(); ++i ) {
-         if( !equal( A(i,j), B(i,j) ) ) return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of two dense matrices with different storage order.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side matrix for the comparison.
-// \param rhs The right-hand side matrix for the comparison.
-// \return \a true if the two matrices are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side dense matrix
-        , typename T2  // Type of the right-hand side dense matrix
-        , bool SO >    // Storage order
-inline bool operator==( const DenseMatrix<T1,SO>& lhs, const DenseMatrix<T2,!SO>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-
-   // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      return false;
-
-   // Evaluation of the two dense matrix operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
-
-   // In order to compare the two matrices, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   const size_t rows   ( A.rows() );
-   const size_t columns( A.columns() );
-   const size_t block  ( 16 );
-
-   for( size_t ii=0; ii<rows; ii+=block ) {
-      const size_t iend( ( rows < ii+block )?( rows ):( ii+block ) );
-      for( size_t jj=0; jj<columns; jj+=block ) {
-         const size_t jend( ( columns < jj+block )?( columns ):( jj+block ) );
-         for( size_t i=ii; i<iend; ++i ) {
-            for( size_t j=jj; j<jend; ++j ) {
-               if( !equal( A(i,j), B(i,j) ) ) return false;
-            }
-         }
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of a dense matrix and a row-major sparse matrix.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix for the comparison.
-// \param rhs The right-hand side row-major sparse matrix for the comparison.
-// \return \a true if the two matrices are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side dense matrix
-        , typename T2  // Type of the right-hand side sparse matrix
-        , bool SO >    // Storage order of the left-hand side dense matrix
-inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,false>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
-   // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      return false;
-
-   // Evaluation of the dense matrix and sparse matrix operand
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
-
-   // In order to compare the two matrices, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   size_t j( 0 );
-
-   for( size_t i=0; i<B.rows(); ++i ) {
-      j = 0;
-      for( ConstIterator element=B.begin(i); element!=B.end(i); ++element, ++j ) {
-         for( ; j<element->index(); ++j ) {
-            if( !isDefault( A(i,j) ) ) return false;
-         }
-         if( !equal( element->value(), A(i,j) ) ) return false;
-      }
-      for( ; j<A.columns(); ++j ) {
-         if( !isDefault( A(i,j) ) ) return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of a dense matrix and a column-major sparse matrix.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix for the comparison.
-// \param rhs The right-hand side column-major sparse matrix for the comparison.
-// \return \a true if the two matrices are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side dense matrix
-        , typename T2  // Type of the right-hand side sparse matrix
-        , bool SO >    // Storage order of the left-hand side dense matrix
-inline bool operator==( const DenseMatrix<T1,SO>& lhs, const SparseMatrix<T2,true>& rhs )
-{
-   using CT1 = CompositeType_t<T1>;
-   using CT2 = CompositeType_t<T2>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
-   // Early exit in case the matrix sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
-      return false;
-
-   // Evaluation of the dense matrix and sparse matrix operand
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
-
-   // In order to compare the two matrices, the data values of the lower-order data
-   // type are converted to the higher-order data type within the equal function.
-   size_t i( 0 );
-
-   for( size_t j=0; j<B.columns(); ++j ) {
-      i = 0;
-      for( ConstIterator element=B.begin(j); element!=B.end(j); ++element, ++i ) {
-         for( ; i<element->index(); ++i ) {
-            if( !isDefault( A(i,j) ) ) return false;
-         }
-         if( !equal( element->value(), A(i,j) ) ) return false;
-      }
-      for( ; i<A.rows(); ++i ) {
-         if( !isDefault( A(i,j) ) ) return false;
-      }
-   }
-
-   return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Equality operator for the comparison of a sparse matrix and a dense matrix.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side sparse matrix for the comparison.
-// \param rhs The right-hand side dense matrix for the comparison.
-// \return \a true if the two matrices are equal, \a false if not.
-*/
-template< typename T1  // Type of the left-hand side sparse matrix
-        , bool SO1     // Storage order of the left-hand side sparse matrix
-        , typename T2  // Type of the right-hand side dense matrix
-        , bool SO2 >   // Storage order of the right-hand side sparse matrix
-inline bool operator==( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs )
-{
-   return ( rhs == lhs );
-}
 //*************************************************************************************************
 
 
@@ -469,63 +208,6 @@ template< typename T1  // Type of the left-hand side scalar
 inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
 {
    return ( mat == scalar );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality operator for the comparison of two dense matrices.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix for the comparison.
-// \param rhs The right-hand side dense matrix for the comparison.
-// \return \a true if the two matrices are not equal, \a false if they are equal.
-*/
-template< typename T1  // Type of the left-hand side dense matrix
-        , bool SO1     // Storage order of the left-hand side dense matrix
-        , typename T2  // Type of the right-hand side dense matrix
-        , bool SO2 >   // Storage order of the right-hand side dense matrix
-inline bool operator!=( const DenseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs )
-{
-   return !( lhs == rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality operator for the comparison of a dense matrix and a sparse matrix.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side dense matrix for the comparison.
-// \param rhs The right-hand side sparse matrix for the comparison.
-// \return \a true if the two matrices are not equal, \a false if they are equal.
-*/
-template< typename T1  // Type of the left-hand side dense matrix
-        , bool SO1     // Storage order of the left-hand side dense matrix
-        , typename T2  // Type of the right-hand side sparse matrix
-        , bool SO2 >   // Storage order of the right-hand side sparse matrix
-inline bool operator!=( const DenseMatrix<T1,SO1>& lhs, const SparseMatrix<T2,SO2>& rhs )
-{
-   return !( lhs == rhs );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Inequality operator for the comparison of a sparse matrix and a dense matrix.
-// \ingroup dense_matrix
-//
-// \param lhs The left-hand side sparse matrix for the comparison.
-// \param rhs The right-hand side dense matrix for the comparison.
-// \return \a true if the two matrices are not equal, \a false if they are equal.
-*/
-template< typename T1  // Type of the left-hand side sparse matrix
-        , bool SO1     // Storage order of the left-hand side sparse matrix
-        , typename T2  // Type of the right-hand side dense matrix
-        , bool SO2 >   // Storage order right-hand side dense matrix
-inline bool operator!=( const SparseMatrix<T1,SO1>& lhs, const DenseMatrix<T2,SO2>& rhs )
-{
-   return !( rhs == lhs );
 }
 //*************************************************************************************************
 

@@ -46,6 +46,7 @@
 #include <blaze/math/adaptors/SymmetricMatrix.h>
 #include <blaze/math/adaptors/UpperMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/DMatSMatEqualExpr.h>
 #include <blaze/math/expressions/DMatSMatSchurExpr.h>
 #include <blaze/math/expressions/DMatTSMatSchurExpr.h>
 #include <blaze/math/expressions/DVecSVecOuterExpr.h>
@@ -63,6 +64,7 @@
 #include <blaze/math/expressions/SMatScalarMultExpr.h>
 #include <blaze/math/expressions/SMatSerialExpr.h>
 #include <blaze/math/expressions/SMatSMatAddExpr.h>
+#include <blaze/math/expressions/SMatSMatEqualExpr.h>
 #include <blaze/math/expressions/SMatSMatMultExpr.h>
 #include <blaze/math/expressions/SMatSMatSchurExpr.h>
 #include <blaze/math/expressions/SMatSMatSubExpr.h>
