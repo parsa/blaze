@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <blaze/math/Accuracy.h>
 #include <blaze/math/shims/Abs.h>
 #include <blaze/math/shims/Acos.h>
 #include <blaze/math/shims/Acosh.h>
@@ -73,6 +74,7 @@
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Pow3.h>
+#include <blaze/math/shims/Pow4.h>
 #include <blaze/math/shims/Round.h>
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
@@ -96,6 +98,7 @@
 #include <blaze/math/typetraits/HasSIMDCos.h>
 #include <blaze/math/typetraits/HasSIMDCosh.h>
 #include <blaze/math/typetraits/HasSIMDDiv.h>
+#include <blaze/math/typetraits/HasSIMDEqual.h>
 #include <blaze/math/typetraits/HasSIMDErf.h>
 #include <blaze/math/typetraits/HasSIMDErfc.h>
 #include <blaze/math/typetraits/HasSIMDExp.h>
@@ -188,6 +191,15 @@ class OperationTest : private blaze::NonCopyable
    void testStream        ();
    void testStoreu        ( size_t offset );
 
+   void testEquality      ( blaze::TrueType , blaze::TrueType  );
+   void testEquality      ( blaze::TrueType , blaze::FalseType );
+   void testEquality      ( blaze::FalseType, blaze::TrueType  );
+   void testEquality      ( blaze::FalseType, blaze::FalseType );
+   void testInequality    ( blaze::TrueType , blaze::TrueType  );
+   void testInequality    ( blaze::TrueType , blaze::FalseType );
+   void testInequality    ( blaze::FalseType, blaze::TrueType  );
+   void testInequality    ( blaze::FalseType, blaze::FalseType );
+
    void testAddition      ( blaze::TrueType  );
    void testAddition      ( blaze::FalseType );
    void testSubtraction   ( blaze::TrueType  );
@@ -226,6 +238,8 @@ class OperationTest : private blaze::NonCopyable
    void testPow2          ( blaze::FalseType );
    void testPow3          ( blaze::TrueType  );
    void testPow3          ( blaze::FalseType );
+   void testPow4          ( blaze::TrueType  );
+   void testPow4          ( blaze::FalseType );
 
    void testFloor         ( blaze::TrueType  );
    void testFloor         ( blaze::FalseType );
@@ -353,15 +367,18 @@ OperationTest<T>::OperationTest()
       testStoreu( offset );
    }
 
-   testAddition      ( blaze::HasSIMDAdd    <T,T>() );
-   testSubtraction   ( blaze::HasSIMDSub    <T,T>() );
-   testMultiplication( blaze::HasSIMDMult   <T,T>() );
-   testFmadd         ( blaze::HasSIMDMult   <T,T>() );
-   testFmsub         ( blaze::HasSIMDMult   <T,T>() );
-   testDivision      ( blaze::HasSIMDDiv    <T,T>() );
+   testEquality      ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
+   testInequality    ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
 
-   testMin           ( blaze::HasSIMDMin    <T,T>() );
-   testMax           ( blaze::HasSIMDMax    <T,T>() );
+   testAddition      ( blaze::HasSIMDAdd <T,T>() );
+   testSubtraction   ( blaze::HasSIMDSub <T,T>() );
+   testMultiplication( blaze::HasSIMDMult<T,T>() );
+   testFmadd         ( blaze::HasSIMDMult<T,T>() );
+   testFmsub         ( blaze::HasSIMDMult<T,T>() );
+   testDivision      ( blaze::HasSIMDDiv <T,T>() );
+
+   testMin           ( blaze::HasSIMDMin<T,T>() );
+   testMax           ( blaze::HasSIMDMax<T,T>() );
 
    testAbs           ( blaze::HasSIMDAbs    < T >() );
    testConj          ( blaze::HasSIMDConj   < T >() );
@@ -373,37 +390,38 @@ OperationTest<T>::OperationTest()
    testPow           ( blaze::HasSIMDPow    <T,T>() );
    testPow2          ( blaze::HasSIMDMult   <T,T>() );
    testPow3          ( blaze::HasSIMDMult   <T,T>() );
+   testPow4          ( blaze::HasSIMDMult   <T,T>() );
 
-   testFloor         ( blaze::HasSIMDFloor  < T >() );
-   testCeil          ( blaze::HasSIMDCeil   < T >() );
-   testTrunc         ( blaze::HasSIMDTrunc  < T >() );
-   testRound         ( blaze::HasSIMDRound  < T >() );
+   testFloor         ( blaze::HasSIMDFloor< T >() );
+   testCeil          ( blaze::HasSIMDCeil < T >() );
+   testTrunc         ( blaze::HasSIMDTrunc< T >() );
+   testRound         ( blaze::HasSIMDRound< T >() );
 
-   testExp           ( blaze::HasSIMDExp    < T >() );
-   testExp2          ( blaze::HasSIMDExp2   < T >() );
-   testExp10         ( blaze::HasSIMDExp10  < T >() );
-   testLog           ( blaze::HasSIMDLog    < T >() );
-   testLog2          ( blaze::HasSIMDLog2   < T >() );
-   testLog10         ( blaze::HasSIMDLog10  < T >() );
+   testExp           ( blaze::HasSIMDExp  < T >() );
+   testExp2          ( blaze::HasSIMDExp2 < T >() );
+   testExp10         ( blaze::HasSIMDExp10< T >() );
+   testLog           ( blaze::HasSIMDLog  < T >() );
+   testLog2          ( blaze::HasSIMDLog2 < T >() );
+   testLog10         ( blaze::HasSIMDLog10< T >() );
 
-   testSin           ( blaze::HasSIMDSin    < T >() );
-   testAsin          ( blaze::HasSIMDAsin   < T >() );
-   testSinh          ( blaze::HasSIMDSinh   < T >() );
-   testAsinh         ( blaze::HasSIMDAsinh  < T >() );
+   testSin           ( blaze::HasSIMDSin  < T >() );
+   testAsin          ( blaze::HasSIMDAsin < T >() );
+   testSinh          ( blaze::HasSIMDSinh < T >() );
+   testAsinh         ( blaze::HasSIMDAsinh< T >() );
 
-   testCos           ( blaze::HasSIMDCos    < T >() );
-   testAcos          ( blaze::HasSIMDAcos   < T >() );
-   testCosh          ( blaze::HasSIMDCosh   < T >() );
-   testAcosh         ( blaze::HasSIMDAcosh  < T >() );
+   testCos           ( blaze::HasSIMDCos  < T >() );
+   testAcos          ( blaze::HasSIMDAcos < T >() );
+   testCosh          ( blaze::HasSIMDCosh < T >() );
+   testAcosh         ( blaze::HasSIMDAcosh< T >() );
 
-   testTan           ( blaze::HasSIMDTan    < T >() );
-   testAtan          ( blaze::HasSIMDAtan   < T >() );
-   testTanh          ( blaze::HasSIMDTanh   < T >() );
-   testAtanh         ( blaze::HasSIMDAtanh  < T >() );
-   testAtan2         ( blaze::HasSIMDAtan2  <T,T>() );
+   testTan           ( blaze::HasSIMDTan  < T >() );
+   testAtan          ( blaze::HasSIMDAtan < T >() );
+   testTanh          ( blaze::HasSIMDTanh < T >() );
+   testAtanh         ( blaze::HasSIMDAtanh< T >() );
+   testAtan2         ( blaze::HasSIMDAtan2<T,T>() );
 
-   testErf           ( blaze::HasSIMDErf    < T >() );
-   testErfc          ( blaze::HasSIMDErfc   < T >() );
+   testErf           ( blaze::HasSIMDErf < T >() );
+   testErfc          ( blaze::HasSIMDErfc< T >() );
 
    testReduction     ();
 }
@@ -523,6 +541,367 @@ void OperationTest<T>::testStoreu( size_t offset )
 
    compare( a_+offset, b_+offset );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the equality comparison.
+//
+// \return void
+// \exception std::runtime_error Comparison error detected.
+//
+// This function tests the equality comparison for the given floating point data type \a T. In
+// case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testEquality( blaze::TrueType, blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Equality comparison";
+
+   {
+      initialize();
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( !( loada( a_+i ) == loada( a_+i ) ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << a_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( loada( a_+i ) == loada( b_+i ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << b_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( !equal( loada( a_+i ), loada( a_+i ) ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << a_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( equal( loada( a_+i ), loada( b_+i ) ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << b_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      const T accu( blaze::accuracy );
+      const T half( 0.5 );
+
+      initialize( -half*accu, half*accu );
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( !( loada( a_+i ) == loada( a_+i ) ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << a_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( loada( a_+i ) == loada( b_+i ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << b_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( !equal( loada( a_+i ), loada( a_+i ) ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << a_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+         if( !equal( loada( a_+i ), loada( b_+i ) ) ) {
+            std::ostringstream oss;
+            oss.precision( 20 );
+            oss << " Test : " << test_ << "\n"
+                << " Error: Equality comparison failed at index " << i << "\n"
+                << " Details:\n"
+                << "   a[" << i << "] = " << a_[i] << "\n"
+                << "   b[" << i << "] = " << b_[i] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the equality comparison.
+//
+// \return void
+// \exception std::runtime_error Comparison error detected.
+//
+// This function tests the equality comparison for the given integral data type \a T. In case
+// any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testEquality( blaze::TrueType, blaze::FalseType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Equality comparison";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( !( loada( a_+i ) == loada( a_+i ) ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Equality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << a_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( loada( a_+i ) == loada( b_+i ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Equality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << b_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( !( equal( loada( a_+i ), loada( a_+i ) ) ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Equality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << a_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( equal( loada( a_+i ), loada( b_+i ) ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Equality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << b_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the equality comparison.
+//
+// \return void
+//
+// This function is called in case the equality comparison is not available for the given
+// floating point data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testEquality( blaze::FalseType, blaze::TrueType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the equality comparison.
+//
+// \return void
+//
+// This function is called in case the equality comparison is not available for the given
+// integral data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testEquality( blaze::FalseType, blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the inequality comparison.
+//
+// \return void
+// \exception std::runtime_error Comparison error detected.
+//
+// This function tests the inequality comparison for the given floating point data type \a T. In
+// case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testInequality( blaze::TrueType, blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Inequality comparison";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( loada( a_+i ) != loada( a_+i ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Inequality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << a_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( !( loada( a_+i ) != loada( b_+i ) ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Inequality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << b_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the inequality comparison.
+//
+// \return void
+// \exception std::runtime_error Comparison error detected.
+//
+// This function tests the inequality comparison for the given integral data type \a T. In case
+// any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testInequality( blaze::TrueType, blaze::FalseType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Inequality comparison";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( loada( a_+i ) != loada( a_+i ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Inequality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << a_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      if( !( loada( a_+i ) != loada( b_+i ) ) ) {
+         std::ostringstream oss;
+         oss.precision( 20 );
+         oss << " Test : " << test_ << "\n"
+             << " Error: Inequality comparison failed at index " << i << "\n"
+             << " Details:\n"
+             << "   a[" << i << "] = " << a_[i] << "\n"
+             << "   b[" << i << "] = " << b_[i] << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the inequality comparison.
+//
+// \return void
+//
+// This function is called in case the inequality comparison is not available for the given
+// floating point data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testInequality( blaze::FalseType, blaze::TrueType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the inequality comparison.
+//
+// \return void
+//
+// This function is called in case the inequality comparison is not available for the given
+// integral data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testInequality( blaze::FalseType, blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
@@ -1382,6 +1761,54 @@ void OperationTest<T>::testPow3( blaze::FalseType )
 
 
 //*************************************************************************************************
+/*!\brief Testing the pow4 operation.
+//
+// \return void
+// \exception std::runtime_error Error in pow4 computation detected.
+//
+// This function tests the pow4 operation by comparing the results of a vectorized and a
+// scalar pow4 operation. In case any error is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testPow4( blaze::TrueType )
+{
+   using blaze::pow4;
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Pow4 operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = pow4( a_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, pow4( loada( a_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the pow4 operation.
+//
+// \return void
+//
+// This function is called in case the pow4 operation is not available for the given data type
+// \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testPow4( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the floor operation.
 //
 // \return void
@@ -2019,7 +2446,7 @@ void OperationTest<T>::testAsinh( blaze::TrueType )
 
    test_ = "Inverse hyperbolic sine operation";
 
-   initialize(  );
+   initialize();
 
    for( size_t i=0UL; i<N; ++i ) {
       c_[i] = asinh( a_[i] );
