@@ -54,7 +54,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Componentwise minimum of two vectors of 8-bit integral SIMD values of the same type.
+/*!\brief Componentwise minimum of two vectors of 8-bit signed integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -83,7 +83,7 @@ BLAZE_ALWAYS_INLINE const SIMDint8 min( const SIMDint8& a, const SIMDint8& b ) n
 
 
 //*************************************************************************************************
-/*!\brief Componentwise minimum of two vectors of 8-bit integral SIMD values of different type.
+/*!\brief Componentwise minimum of two vectors of 8-bit unsigned integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -120,7 +120,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint8 min( const SIMDuint8& a, const SIMDuint8& b 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Componentwise minimum of two vectors of 16-bit integral SIMD values of the same type.
+/*!\brief Componentwise minimum of two vectors of 16-bit signed integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -149,7 +149,7 @@ BLAZE_ALWAYS_INLINE const SIMDint16 min( const SIMDint16& a, const SIMDint16& b 
 
 
 //*************************************************************************************************
-/*!\brief Componentwise minimum of two vectors of 16-bit integral SIMD values of different type.
+/*!\brief Componentwise minimum of two vectors of 16-bit unsigned integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -186,7 +186,7 @@ BLAZE_ALWAYS_INLINE const SIMDuint16 min( const SIMDuint16& a, const SIMDuint16&
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Componentwise minimum of two vectors of 32-bit integral SIMD values of the same type.
+/*!\brief Componentwise minimum of two vectors of 32-bit signed integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.
@@ -215,7 +215,7 @@ BLAZE_ALWAYS_INLINE const SIMDint32 min( const SIMDint32& a, const SIMDint32& b 
 
 
 //*************************************************************************************************
-/*!\brief Componentwise minimum of two vectors of 32-bit integral SIMD values of different type.
+/*!\brief Componentwise minimum of two vectors of 32-bit unsigned integral SIMD values.
 // \ingroup simd
 //
 // \param a The left-hand side SIMD operand.

@@ -69,6 +69,8 @@ BLAZE_ALWAYS_INLINE const SIMDfloat ceil( const SIMDf32<T>& a ) noexcept
 {
    return _mm512_ceil_ps( (~a).eval().value );
 }
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_ceil_ps( (~a).eval().value );
@@ -107,6 +109,8 @@ BLAZE_ALWAYS_INLINE const SIMDdouble ceil( const SIMDf64<T>& a ) noexcept
 {
    return _mm512_ceil_pd( (~a).eval().value );
 }
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+= delete;
 #elif BLAZE_AVX_MODE
 {
    return _mm256_ceil_pd( (~a).eval().value );
