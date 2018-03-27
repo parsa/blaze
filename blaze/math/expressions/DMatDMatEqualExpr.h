@@ -44,11 +44,55 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
+#include <blaze/math/SIMD.h>
+#include <blaze/math/typetraits/HasSIMDEqual.h>
+#include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Blocking.h>
+#include <blaze/system/Optimizations.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the dense matrix/dense matrix equality comparison.
+// \ingroup dense_matrix
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+struct DMatDMatEqualExprHelper
+{
+   //**Type definitions****************************************************************************
+   //! Composite type of the left-hand side dense matrix expression.
+   using CT1 = RemoveReference_t< CompositeType_t<MT1> >;
+
+   //! Composite type of the right-hand side dense matrix expression.
+   using CT2 = RemoveReference_t< CompositeType_t<MT2> >;
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   static constexpr bool value =
+      ( useOptimizedKernels &&
+        CT1::simdEnabled &&
+        CT2::simdEnabled &&
+        HasSIMDEqual_v< ElementType_t<CT1>, ElementType_t<CT2> > );
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
@@ -58,7 +102,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Equality check of two row-major dense matrices.
+/*!\brief Default equality check of two row-major dense matrices.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the comparison.
@@ -72,7 +116,8 @@ namespace blaze {
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline bool equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
+   equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
@@ -101,7 +146,7 @@ inline bool equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Equality check of two column-major dense matrices.
+/*!\brief SIMD optimized equality check of two row-major dense matrices.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the comparison.
@@ -115,7 +160,75 @@ inline bool equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline bool equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
+   equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
+{
+   using CT1 = CompositeType_t<MT1>;
+   using CT2 = CompositeType_t<MT2>;
+
+   // Early exit in case the matrix sizes don't match
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+      return false;
+
+   // Evaluation of the two dense matrix operands
+   CT1 A( ~lhs );
+   CT2 B( ~rhs );
+
+   constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT1> || !IsPadded_v<MT2> );
+
+   const size_t M( A.rows()    );
+   const size_t N( A.columns() );
+
+   const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
+
+   for( size_t i=0UL; i<M; ++i )
+   {
+      size_t j( 0UL );
+
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         if( !equal( A.load(i,j             ), B.load(i,j             ) ) ) return false;
+         if( !equal( A.load(i,j+SIMDSIZE    ), B.load(i,j+SIMDSIZE    ) ) ) return false;
+         if( !equal( A.load(i,j+SIMDSIZE*2UL), B.load(i,j+SIMDSIZE*2UL) ) ) return false;
+         if( !equal( A.load(i,j+SIMDSIZE*3UL), B.load(i,j+SIMDSIZE*3UL) ) ) return false;
+      }
+      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
+         if( !equal( A.load(i,j         ), B.load(i,j         ) ) ) return false;
+         if( !equal( A.load(i,j+SIMDSIZE), B.load(i,j+SIMDSIZE) ) ) return false;
+      }
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         if( !equal( A.load(i,j), B.load(i,j) ) ) return false;
+      }
+      for( ; remainder && j<A.columns(); ++j ) {
+         if( !equal( A(i,j), B(i,j) ) ) return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default equality check of two column-major dense matrices.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the comparison.
+// \param rhs The right-hand side dense matrix for the comparison.
+// \return \a true if the two matrices are equal, \a false if not.
+//
+// Equal function for the comparison of two dense matrices. Due to the limited machine accuracy,
+// a direct comparison of two floating point numbers should be avoided. This function offers the
+// possibility to compare two floating-point matrices with a certain accuracy margin.
+*/
+template< bool RF         // Relaxation flag
+        , typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
+   equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
@@ -132,6 +245,73 @@ inline bool equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>
    // type are converted to the higher-order data type within the equal function.
    for( size_t j=0UL; j<A.columns(); ++j ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
+         if( !equal( A(i,j), B(i,j) ) ) return false;
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief SIMD optimized equality check of two column-major dense matrices.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the comparison.
+// \param rhs The right-hand side dense matrix for the comparison.
+// \return \a true if the two matrices are equal, \a false if not.
+//
+// Equal function for the comparison of two dense matrices. Due to the limited machine accuracy,
+// a direct comparison of two floating point numbers should be avoided. This function offers the
+// possibility to compare two floating-point matrices with a certain accuracy margin.
+*/
+template< bool RF         // Relaxation flag
+        , typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
+   equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+{
+   using CT1 = CompositeType_t<MT1>;
+   using CT2 = CompositeType_t<MT2>;
+
+   // Early exit in case the matrix sizes don't match
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
+      return false;
+
+   // Evaluation of the two dense matrix operands
+   CT1 A( ~lhs );
+   CT2 B( ~rhs );
+
+   constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
+   constexpr bool remainder( !usePadding || !IsPadded_v<MT1> || !IsPadded_v<MT2> );
+
+   const size_t M( A.rows()    );
+   const size_t N( A.columns() );
+
+   const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
+
+   for( size_t j=0UL; j<N; ++j )
+   {
+      size_t i( 0UL );
+
+      for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
+         if( !equal( A.load(i             ,j), B.load(i             ,j) ) ) return false;
+         if( !equal( A.load(i+SIMDSIZE    ,j), B.load(i+SIMDSIZE    ,j) ) ) return false;
+         if( !equal( A.load(i+SIMDSIZE*2UL,j), B.load(i+SIMDSIZE*2UL,j) ) ) return false;
+         if( !equal( A.load(i+SIMDSIZE*3UL,j), B.load(i+SIMDSIZE*3UL,j) ) ) return false;
+      }
+      for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
+         if( !equal( A.load(i         ,j), B.load(i         ,j) ) ) return false;
+         if( !equal( A.load(i+SIMDSIZE,j), B.load(i+SIMDSIZE,j) ) ) return false;
+      }
+      for( ; i<ipos; i+=SIMDSIZE ) {
+         if( !equal( A.load(i,j), B.load(i,j) ) ) return false;
+      }
+      for( ; remainder && i<M; ++i ) {
          if( !equal( A(i,j), B(i,j) ) ) return false;
       }
    }
