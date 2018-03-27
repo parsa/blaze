@@ -48,13 +48,13 @@
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -88,7 +88,7 @@ struct DVecDVecInnerExprHelper
       ( useOptimizedKernels &&
         CT1::simdEnabled &&
         CT2::simdEnabled &&
-        IsSame_v< ElementType_t<CT1>, ElementType_t<CT2> > &&
+        IsSIMDCombinable_v< ElementType_t<CT1>, ElementType_t<CT2> > &&
         HasSIMDAdd_v< ElementType_t<CT1>, ElementType_t<CT1> > &&
         HasSIMDMult_v< ElementType_t<CT1>, ElementType_t<CT1> > );
    //**********************************************************************************************
@@ -189,16 +189,15 @@ inline EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   static constexpr size_t SIMDSIZE = SIMDTrait<MultType>::size;
-
    if( (~lhs).size() == 0UL ) return MultType();
 
    Lhs left ( ~lhs );
    Rhs right( ~rhs );
 
-   const size_t N( left.size() );
-
+   constexpr size_t SIMDSIZE = SIMDTrait<MultType>::size;
    constexpr bool remainder( !usePadding || !IsPadded_v<VT1> || !IsPadded_v<VT2> );
+
+   const size_t N( left.size() );
 
    const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
