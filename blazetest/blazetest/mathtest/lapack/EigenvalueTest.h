@@ -1119,7 +1119,7 @@ void EigenvalueTest::testHeevx()
 // \param A The corresponding dense matrix.
 // \param w The corresponding eigenvalue.
 // \return void
-// \exception std::runtime_error Invalid left eigenvector detected.
+// \exception std::runtime_error Invalid right eigenvector detected.
 //
 // This function checks the given right eigenvector \f$v[j]\f$ by testing if it satisfies
 
