@@ -145,6 +145,7 @@
 //    <li> \ref lapack_functions </li>
 //    <li> \ref block_vectors_and_matrices </li>
 //    <li> \ref intra_statement_optimization </li>
+//    <li> \ref blaze_references </li>
 // </ul>
 */
 //*************************************************************************************************
@@ -14200,6 +14201,44 @@
    \endcode
 
 // \n Previous: \ref block_vectors_and_matrices
+*/
+//*************************************************************************************************
+
+
+//**Blaze References*******************************************************************************
+/*!\page blaze_references Blaze References
+//
+// In case you need references to the \b Blaze library (for papers or other publications), please
+// feel free to use one of the following references:
+
+   \code
+   @misc{blazelib,
+      author       = "Klaus {Iglberger}",
+      title        = "Blaze C++ Linear Algebra Library",
+      howpublished = "https://bitbucket.org/blaze-lib",
+      year         = 2012
+   }
+   \endcode
+
+   \code
+   @article{iglberger2012_1,
+      author  = "Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{\"u}de}",
+      title   = "Expression Templates Revisited: A Performance Analysis of Current Methodologies",
+      journal = "SIAM Journal on Scientific Computing",
+      year    = 2012,
+      volume  = 34(2),
+      pages   = C42--C69
+   }
+   \endcode
+
+   \code
+   @inproceedings{iglberger2012_2,
+      author    = "Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{\"u}de}",
+      title     = "High Performance Smart Expression Template Math Libraries",
+      booktitle = "Proceedings of the 2nd International Workshop on New Algorithms and Programming Models for the Manycore Era (APMM 2012) at HPCS 2012",
+      year      = 2012
+   }
+   \endcode
 */
 //*************************************************************************************************
 
