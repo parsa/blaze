@@ -53,6 +53,7 @@
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/Ceil.h>
 #include <blaze/math/functors/Clamp.h>
+#include <blaze/math/functors/Clear.h>
 #include <blaze/math/functors/Conj.h>
 #include <blaze/math/functors/Cos.h>
 #include <blaze/math/functors/Cosh.h>
