@@ -45,6 +45,9 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsSigned.h>
+#include <blaze/util/typetraits/IsUnsigned.h>
 
 
 namespace blaze {
@@ -56,7 +59,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic equality check.
+/*!\brief Generic equality comparison.
 // \ingroup math_shims
 //
 // \param a First value/object.
@@ -64,15 +67,16 @@ namespace blaze {
 // \return \a true if the two values/objects are equal, \a false if not.
 //
 // The equal shim represents an abstract interface for testing two values/objects for equality.
-// In case the two values/objects are equal, the function returns \a true, otherwise it returns
-// \a false. Per default, the comparison of the two values/objects uses the equality operator
-// operator==(). For built-in floating point data types the function either uses the equality
-// comparison (strict semantics) or a special comparison is selected that takes the limited
-// machine accuracy into account (relaxed semantics).
+// Based on the setting of the relaxation flag \a RF, the function either performs a comparison
+// via the equality operator (\a blaze::strict) or or a special comparison is selected that takes
+// the limited machine accuracy into account (\a blaze::relaxed). In case the two values/objects
+// are equal, the function returns \a true, otherwise it returns \a false.
 */
-template< bool RF        // Relaxation flag
-        , typename T1    // Type of the left-hand side value/object
-        , typename T2 >  // Type of the right-hand side value/object
+template< bool RF      // Relaxation flag
+        , typename T1  // Type of the left-hand side value/object
+        , typename T2  // Type of the right-hand side value/object
+        , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
+                                 ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
 inline constexpr bool equal( const T1& a, const T2& b )
 {
    return a == b;
