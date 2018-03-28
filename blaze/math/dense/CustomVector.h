@@ -2938,6 +2938,8 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
    , capacity_( nn )   // The maximum capacity of the vector
    , v_       ( ptr )  // The custom array of elements
 {
+   using blaze::clear;
+
    if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
@@ -2952,7 +2954,7 @@ inline CustomVector<Type,AF,padded,TF>::CustomVector( Type* ptr, size_t n, size_
 
    if( IsVectorizable_v<Type> ) {
       for( size_t i=size_; i<capacity_; ++i )
-         v_[i] = Type();
+         clear( v_[i] );
    }
 }
 /*! \endcond */

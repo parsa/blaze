@@ -52,6 +52,8 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/Functions.h>
+#include <blaze/math/functors/Noop.h>
+#include <blaze/math/functors/Clear.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/PaddingFlag.h>
 #include <blaze/math/shims/Clear.h>
@@ -105,6 +107,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Misalignment.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -810,6 +813,10 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    , nn_( nn )   // The number of elements between two rows
    , v_ ( ptr )  // The custom array of elements
 {
+   using blaze::clear;
+
+   using ClearFunctor = If_t< PF || !IsConst_v<Type>, Clear, Noop >;
+
    if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
@@ -823,9 +830,10 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
    }
 
    if( PF && IsVectorizable_v<Type> ) {
+      ClearFunctor clear;
       for( size_t i=0UL; i<m_; ++i ) {
          for( size_t j=n_; j<nn_; ++j )
-            v_[i*nn_+j] = Type();
+            clear( v_[i*nn_+j] );
       }
    }
 }
@@ -3595,6 +3603,10 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    , n_ ( n )    // The current number of columns of the matrix
    , v_ ( ptr )  // The custom array of elements
 {
+   using blaze::clear;
+
+   using ClearFunctor = If_t< PF || !IsConst_v<Type>, Clear, Noop >;
+
    if( ptr == nullptr ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array of elements" );
    }
@@ -3608,9 +3620,10 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
    }
 
    if( PF && IsVectorizable_v<Type> ) {
+      ClearFunctor clear;
       for( size_t j=0UL; j<n_; ++j )
          for( size_t i=m_; i<mm_; ++i ) {
-            v_[i+j*mm_] = Type();
+            clear( v_[i+j*mm_] );
       }
    }
 }
@@ -4061,6 +4074,8 @@ template< typename Type  // Data type of the matrix
 inline CustomMatrix<Type,AF,PF,true>&
    CustomMatrix<Type,AF,PF,true>::operator=( initializer_list< initializer_list<Type> > list )
 {
+   using blaze::clear;
+
    if( list.size() != m_ || determineColumns( list ) > n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom matrix" );
    }
@@ -4074,7 +4089,7 @@ inline CustomMatrix<Type,AF,PF,true>&
          ++j;
       }
       for( ; j<n_; ++j ) {
-         v_[i+j*mm_] = Type();
+         clear( v_[i+j*mm_] );
       }
       ++i;
    }
