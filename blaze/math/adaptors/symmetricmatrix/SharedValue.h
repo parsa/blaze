@@ -286,6 +286,9 @@ inline bool operator!=( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs )
 //@{
 template< bool RF, typename Type >
 inline bool isDefault( const SharedValue<Type>& value );
+
+template< bool RF, typename T1, typename T2 >
+inline bool equal( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -306,6 +309,26 @@ inline bool isDefault( const SharedValue<Type>& value )
    using blaze::isDefault;
 
    return isDefault<RF>( *value );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Equality check for a two shared values.
+// \ingroup symmetric_matrix
+//
+// \param a The left-hand side shared value.
+// \param b The right-hand side shared value.
+// \return \a true if the two shared values are equal, \a false if not.
+//
+// This function checks whether the two given shared values are equal, taking the limited
+// machine accuracy into account. In case the two values are equal, the function returns
+// \a true, otherwise it returns \a false.
+*/
+template< bool RF, typename T1, typename T2 >
+inline bool equal( const SharedValue<T1>& a, const SharedValue<T2>& b )
+{
+   return equal<RF>( *a, *b );
 }
 //*************************************************************************************************
 
