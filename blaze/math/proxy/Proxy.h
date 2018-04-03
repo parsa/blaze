@@ -1185,7 +1185,7 @@ inline decltype(auto) hypot( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rh
 // the function returns an expression representing the hypotenous of the elements of the
 // vectors/matrices.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    using blaze::hypot;
@@ -1208,7 +1208,7 @@ inline decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs )
 // the function returns an expression representing the hypotenous of the elements of the
 // vectors/matrices.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    using blaze::hypot;
