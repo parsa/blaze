@@ -132,6 +132,13 @@ class Columns<MT,true,true,SF,CCAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Helper template for the explicit application of the SFINAE principle.
+   template< typename MT1, typename MT2 >
+   static constexpr bool EnforceEvaluation_v =
+      ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Columns instance.
@@ -220,28 +227,28 @@ class Columns<MT,true,true,SF,CCAs...>
    inline Columns& operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
    //@}
    //**********************************************************************************************
 
@@ -1038,8 +1045,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
-   Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -1102,8 +1109,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
-   Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -1162,8 +1169,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
-   Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -1226,8 +1233,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
-   Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -1286,8 +1293,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
-   Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -1351,8 +1358,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,true,true,SF,CCAs...>& >
-   Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -3104,6 +3111,13 @@ class Columns<MT,false,true,false,CCAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**********************************************************************************************
+   //! Helper template for the explicit application of the SFINAE principle.
+   template< typename MT1, typename MT2 >
+   static constexpr bool EnforceEvaluation_v =
+      ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Columns instance.
@@ -3520,28 +3534,28 @@ class Columns<MT,false,true,false,CCAs...>
    inline Columns& operator=( const Matrix<MT2,SO2>& rhs );
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns& >
-      operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >;
    //@}
    //**********************************************************************************************
 
@@ -4241,8 +4255,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
-   Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -4304,8 +4318,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
-   Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -4363,8 +4377,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
-   Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -4426,8 +4440,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
-   Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -4485,8 +4499,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline DisableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
-   Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
@@ -4549,8 +4563,8 @@ template< typename MT       // Type of the dense matrix
         , size_t... CCAs >  // Compile time column arguments
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
-inline EnableIf_t< IsRestricted_v<MT> && RequiresEvaluation_v<MT2>, Columns<MT,false,true,false,CCAs...>& >
-   Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< EnforceEvaluation_v<MT,MT2>, Columns& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
