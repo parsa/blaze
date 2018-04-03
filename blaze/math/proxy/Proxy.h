@@ -80,11 +80,13 @@
 #include <blaze/math/shims/Pow3.h>
 #include <blaze/math/shims/Pow4.h>
 #include <blaze/math/shims/Real.h>
+#include <blaze/math/shims/Round.h>
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/shims/Tan.h>
 #include <blaze/math/shims/Tanh.h>
+#include <blaze/math/shims/Trunc.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
@@ -799,11 +801,26 @@ inline decltype(auto) cbrt( const Proxy<PT,RT>& proxy );
 template< typename PT, typename RT >
 inline decltype(auto) invcbrt( const Proxy<PT,RT>& proxy );
 
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline decltype(auto) hypot( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+
+template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
+inline decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs );
+
+template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
+inline decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs );
+
 template< typename PT, typename RT >
 inline decltype(auto) floor( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 inline decltype(auto) ceil( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) trunc( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) round( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT, typename ET >
 inline decltype(auto) pow( const Proxy<PT,RT>& proxy, const ET& exp );
@@ -1134,6 +1151,74 @@ inline decltype(auto) invcbrt( const Proxy<PT,RT>& proxy )
 
 
 //*************************************************************************************************
+/*!\brief Computes the hypotenous of the two Proxy objects.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side Proxy object.
+// \return The hypotenous of the given objects.
+//
+// This function computes the hypotenous of the elements represented by the two proxies \a lhs
+// and \a rhs. In case the objects represent vector- or matrix-like data structures the function
+// returns an expression representing the hypotenous of the elements of the vectors/matrices.
+*/
+template< typename PT1, typename RT1, typename PT2, typename RT2 >
+inline decltype(auto) hypot( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs )
+{
+   using blaze::hypot;
+
+   return hypot( (~lhs).get(), (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the hypotenous of a Proxy object and an object of different type.
+// \ingroup math
+//
+// \param lhs The left-hand side Proxy object.
+// \param rhs The right-hand side object of other type.
+// \return The hypotenous of the given objects.
+//
+// This function computes the hypotenous of the element represented by the proxy \a lhs and
+// the object \a rhs. In case the objects represent vector- or matrix-like data structures
+// the function returns an expression representing the hypotenous of the elements of the
+// vectors/matrices.
+*/
+template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
+inline decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs )
+{
+   using blaze::hypot;
+
+   return hypot( (~lhs).get(), rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the hypotenous of an object of different type and a Proxy object.
+// \ingroup math
+//
+// \param lhs The left-hand side object of other type.
+// \param rhs The right-hand side Proxy object.
+// \return The hypotenous of the given objects.
+//
+// This function computes the hypotenous of the element represented by the object \a lhs and
+// the proxy \a rhs. In case the objects represent vector- or matrix-like data structures
+// the function returns an expression representing the hypotenous of the elements of the
+// vectors/matrices.
+*/
+template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
+inline decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs )
+{
+   using blaze::hypot;
+
+   return hypot( lhs, (~rhs).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the largest integral value that is not greater than the represented element.
 // \ingroup math
 //
@@ -1171,6 +1256,48 @@ inline decltype(auto) ceil( const Proxy<PT,RT>& proxy )
    using blaze::ceil;
 
    return ceil( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the nearest integral value that is not greater than the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The nearest integral value that is not greater than the represented element.
+//
+// This function computes the nearest integral value that is not greater than the element
+// represented by the proxy. In case the proxy represents a vector- or matrix-like data
+// structure the function returns an expression representing the operation.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) trunc( const Proxy<PT,RT>& proxy )
+{
+   using blaze::trunc;
+
+   return trunc( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the nearest integral value to the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The nearest integral value to the represented element.
+//
+// This function computes the nearest integral value to the element represented by the proxy.
+// In case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the operation.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) round( const Proxy<PT,RT>& proxy )
+{
+   using blaze::round;
+
+   return round( (~proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1567,7 +1694,7 @@ inline decltype(auto) atan2( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rh
 // structures the function returns an expression representing the multi-valued inverse tangent of
 // the elements of the vectors/matrices.
 */
-template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
+template< typename PT, typename RT, typename T, typename >
 inline decltype(auto) atan2( const Proxy<PT,RT>& lhs, const T& rhs )
 {
    return atan2( (~lhs).get(), rhs );
@@ -1588,7 +1715,7 @@ inline decltype(auto) atan2( const Proxy<PT,RT>& lhs, const T& rhs )
 // structures the function returns an expression representing the multi-valued inverse tangent of
 // the elements of the vectors/matrices.
 */
-template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
+template< typename T, typename PT, typename RT, typename >
 inline decltype(auto) atan2( const T& lhs, const Proxy<PT,RT>& rhs )
 {
    return atan2( lhs, (~rhs).get() );
