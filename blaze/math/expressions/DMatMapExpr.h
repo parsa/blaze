@@ -1180,6 +1180,35 @@ inline decltype(auto) abs( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a sign() function to each single element of the dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix.
+// \return The resulting dense matrix.
+//
+// This function applies the \a sign() function to each element of the input matrix \a dm. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sign() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = sign( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) sign( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const DMatMapExpr<MT,Sign,SO>;
+   return ReturnType( ~dm, Sign() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Applies the \a floor() function to each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
@@ -2226,7 +2255,7 @@ inline decltype(auto) erfc( const DenseMatrix<MT,SO>& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Absolute value function for absolute value dense matrix expressions.
+/*!\brief Absolute value function for dense matrix absolute value expressions.
 // \ingroup dense_matrix
 //
 // \param dm The absolute value dense matrix expression.
@@ -2238,6 +2267,29 @@ inline decltype(auto) erfc( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline decltype(auto) abs( const DMatMapExpr<MT,Abs,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a sign() function for dense matrix \a sign() expressions.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix \a sign() expression.
+// \return The sign of each single element of \a dm.
+//
+// This function implements a performance optimized treatment of the \a sign() operation on a
+// dense matrix \a sign() expression.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) sign( const DMatMapExpr<MT,Sign,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2498,6 +2550,11 @@ struct IsSymmetric< DMatMapExpr<MT,Abs,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsSymmetric< DMatMapExpr<MT,Sign,SO> >
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT, bool SO >
 struct IsSymmetric< DMatMapExpr<MT,Floor,SO> >
    : public IsSymmetric<MT>
 {};
@@ -2672,6 +2729,11 @@ struct IsSymmetric< DMatMapExpr<MT,Erfc,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< DMatMapExpr<MT,Abs,SO> >
+   : public IsHermitian<MT>
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< DMatMapExpr<MT,Sign,SO> >
    : public IsHermitian<MT>
 {};
 
@@ -2854,6 +2916,11 @@ struct IsLower< DMatMapExpr<MT,Abs,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsLower< DMatMapExpr<MT,Sign,SO> >
+   : public IsLower<MT>
+{};
+
+template< typename MT, bool SO >
 struct IsLower< DMatMapExpr<MT,Floor,SO> >
    : public IsLower<MT>
 {};
@@ -2962,6 +3029,11 @@ struct IsUniLower< DMatMapExpr<MT,Abs,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsUniLower< DMatMapExpr<MT,Sign,SO> >
+   : public IsUniLower<MT>
+{};
+
+template< typename MT, bool SO >
 struct IsUniLower< DMatMapExpr<MT,Floor,SO> >
    : public IsUniLower<MT>
 {};
@@ -3021,6 +3093,11 @@ struct IsUniLower< DMatMapExpr<MT,UnaryPow<ET>,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyLower< DMatMapExpr<MT,Abs,SO> >
+   : public IsStrictlyLower<MT>
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyLower< DMatMapExpr<MT,Sign,SO> >
    : public IsStrictlyLower<MT>
 {};
 
@@ -3119,6 +3196,11 @@ struct IsStrictlyLower< DMatMapExpr<MT,Erf,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUpper< DMatMapExpr<MT,Abs,SO> >
+   : public IsUpper<MT>
+{};
+
+template< typename MT, bool SO >
+struct IsUpper< DMatMapExpr<MT,Sign,SO> >
    : public IsUpper<MT>
 {};
 
@@ -3231,6 +3313,11 @@ struct IsUniUpper< DMatMapExpr<MT,Abs,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsUniUpper< DMatMapExpr<MT,Sign,SO> >
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT, bool SO >
 struct IsUniUpper< DMatMapExpr<MT,Floor,SO> >
    : public IsUniUpper<MT>
 {};
@@ -3290,6 +3377,11 @@ struct IsUniUpper< DMatMapExpr<MT,UnaryPow<ET>,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsStrictlyUpper< DMatMapExpr<MT,Abs,SO> >
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT, bool SO >
+struct IsStrictlyUpper< DMatMapExpr<MT,Sign,SO> >
    : public IsStrictlyUpper<MT>
 {};
 
