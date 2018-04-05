@@ -927,6 +927,35 @@ inline decltype(auto) abs( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a sign() function to each non-zero element of the sparse vector \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The resulting sparse vector.
+//
+// This function applies the \a sign() function to each non-zero element of the input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sign() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = sign( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) sign( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const SVecMapExpr<VT,Sign,TF>;
+   return ReturnType( ~sv, Sign() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Applies the \a floor() function to each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
@@ -1996,10 +2025,33 @@ inline decltype(auto) abs( const SVecMapExpr<VT,Abs,TF>& sv )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a sign() function to a sparse vector \a sign() expressions.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector \a sign() expression.
+// \return The resulting sparse vector.
+//
+// This function implements a performance optimized treatment of the \a sign() operation on
+// a sparse vector \a sign() expression.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) sign( const SVecMapExpr<VT,Sign,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Applies the \a floor() function to a sparse vector \a floor() expressions.
 // \ingroup sparse_vector
 //
-// \param sv The sparse vector \a floor expression.
+// \param sv The sparse vector \a floor() expression.
 // \return The resulting sparse vector.
 //
 // This function implements a performance optimized treatment of the \a floor() operation on
@@ -2022,7 +2074,7 @@ inline decltype(auto) floor( const SVecMapExpr<VT,Floor,TF>& sv )
 /*!\brief Applies the \a ceil() function to a sparse vector \a ceil() expressions.
 // \ingroup sparse_vector
 //
-// \param sv The sparse vector \a ceil expression.
+// \param sv The sparse vector \a ceil() expression.
 // \return The resulting sparse vector.
 //
 // This function implements a performance optimized treatment of the \a ceil() operation on
@@ -2045,7 +2097,7 @@ inline decltype(auto) ceil( const SVecMapExpr<VT,Ceil,TF>& sv )
 /*!\brief Applies the \a trunc() function to a sparse vector \a trunc() expressions.
 // \ingroup sparse_vector
 //
-// \param sv The sparse vector \a trunc expression.
+// \param sv The sparse vector \a trunc() expression.
 // \return The resulting sparse vector.
 //
 // This function implements a performance optimized treatment of the \a trunc() operation on
@@ -2068,7 +2120,7 @@ inline decltype(auto) trunc( const SVecMapExpr<VT,Trunc,TF>& sv )
 /*!\brief Applies the \a round() function to a sparse vector \a round() expressions.
 // \ingroup sparse_vector
 //
-// \param sv The sparse vector \a round expression.
+// \param sv The sparse vector \a round() expression.
 // \return The resulting sparse vector.
 //
 // This function implements a performance optimized treatment of the \a round() operation on
