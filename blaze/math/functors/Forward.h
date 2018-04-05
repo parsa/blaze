@@ -110,6 +110,7 @@ struct Reset;
 struct Round;
 struct SchurAssign;
 struct Serial;
+struct Sign;
 struct Sin;
 struct Sinh;
 struct Sqrt;

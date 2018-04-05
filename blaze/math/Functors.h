@@ -99,6 +99,7 @@
 #include <blaze/math/functors/Round.h>
 #include <blaze/math/functors/SchurAssign.h>
 #include <blaze/math/functors/Serial.h>
+#include <blaze/math/functors/Sign.h>
 #include <blaze/math/functors/Sin.h>
 #include <blaze/math/functors/Sinh.h>
 #include <blaze/math/functors/Sqrt.h>
