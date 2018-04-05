@@ -501,7 +501,7 @@ class SMatMapExpr
 
  private:
    //**Member variables****************************************************************************
-   Operand   sm_;  //!< Sparse matrix of the absolute value expression.
+   Operand   sm_;  //!< Sparse matrix of the map expression.
    Operation op_;  //!< The custom unary operation.
    //**********************************************************************************************
 
@@ -1045,6 +1045,35 @@ inline decltype(auto) abs( const SparseMatrix<MT,SO>& sm )
 
    using ReturnType = const SMatMapExpr<MT,Abs,SO>;
    return ReturnType( ~sm, Abs() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Applies the \a sign() function to each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The resulting sparse matrix.
+//
+// This function applies the sign() function to each non-zero element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sign() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = sign( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) sign( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const SMatMapExpr<MT,Sign,SO>;
+   return ReturnType( ~sm, Sign() );
 }
 //*************************************************************************************************
 
@@ -2120,6 +2149,29 @@ inline decltype(auto) abs( const SMatMapExpr<MT,Abs,SO>& sm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a sign() function to a sparse matrix \a sign() expressions.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix \a sign() expression.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the \a sign() operation on
+// a sparse matrix \a sign() expression.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) sign( const SMatMapExpr<MT,Sign,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return sm;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Applies the \a floor() function to a sparse matrix \a floor() expressions.
 // \ingroup sparse_matrix
 //
@@ -2356,6 +2408,11 @@ struct IsSymmetric< SMatMapExpr<MT,Abs,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsSymmetric< SMatMapExpr<MT,Sign,SO> >
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT, bool SO >
 struct IsSymmetric< SMatMapExpr<MT,Floor,SO> >
    : public IsSymmetric<MT>
 {};
@@ -2530,6 +2587,11 @@ struct IsSymmetric< SMatMapExpr<MT,Erfc,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsHermitian< SMatMapExpr<MT,Abs,SO> >
+   : public IsHermitian<MT>
+{};
+
+template< typename MT, bool SO >
+struct IsHermitian< SMatMapExpr<MT,Sign,SO> >
    : public IsHermitian<MT>
 {};
 
@@ -2730,6 +2792,11 @@ struct IsUniLower< SMatMapExpr<MT,Abs,SO> >
 {};
 
 template< typename MT, bool SO >
+struct IsUniLower< SMatMapExpr<MT,Sign,SO> >
+   : public IsUniLower<MT>
+{};
+
+template< typename MT, bool SO >
 struct IsUniLower< SMatMapExpr<MT,Floor,SO> >
    : public IsUniLower<MT>
 {};
@@ -2825,6 +2892,11 @@ struct IsUpper< SMatMapExpr<MT,OP,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO >
 struct IsUniUpper< SMatMapExpr<MT,Abs,SO> >
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT, bool SO >
+struct IsUniUpper< SMatMapExpr<MT,Sign,SO> >
    : public IsUniUpper<MT>
 {};
 
