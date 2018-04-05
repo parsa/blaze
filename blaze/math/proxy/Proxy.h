@@ -81,6 +81,7 @@
 #include <blaze/math/shims/Pow4.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/shims/Round.h>
+#include <blaze/math/shims/Sign.h>
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/shims/Sqrt.h>
@@ -781,6 +782,9 @@ template< typename PT, typename RT >
 inline decltype(auto) abs( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
+inline decltype(auto) sign( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
 inline decltype(auto) conj( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
@@ -999,6 +1003,27 @@ inline decltype(auto) abs( const Proxy<PT,RT>& proxy )
    using blaze::abs;
 
    return abs( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Evaluating the sign of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return 1 if the value is greater than zero, 0 if it is zero, and -1 if it is less than zero.
+//
+// This function evaluates the sign of the element represented by the proxy. In case the proxy
+// represents a vector- or matrix-like data structure the function returns an expression
+// representing the operation.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) sign( const Proxy<PT,RT>& proxy )
+{
+   using blaze::sign;
+
+   return sign( (~proxy).get() );
 }
 //*************************************************************************************************
 
