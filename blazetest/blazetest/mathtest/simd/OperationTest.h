@@ -76,6 +76,7 @@
 #include <blaze/math/shims/Pow3.h>
 #include <blaze/math/shims/Pow4.h>
 #include <blaze/math/shims/Round.h>
+#include <blaze/math/shims/Sign.h>
 #include <blaze/math/shims/Sin.h>
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/shims/Sqrt.h>
@@ -116,6 +117,7 @@
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
 #include <blaze/math/typetraits/HasSIMDRound.h>
+#include <blaze/math/typetraits/HasSIMDSign.h>
 #include <blaze/math/typetraits/HasSIMDSin.h>
 #include <blaze/math/typetraits/HasSIMDSinh.h>
 #include <blaze/math/typetraits/HasSIMDSqrt.h>
@@ -220,6 +222,8 @@ class OperationTest : private blaze::NonCopyable
 
    void testAbs           ( blaze::TrueType  );
    void testAbs           ( blaze::FalseType );
+   void testSign          ( blaze::TrueType  );
+   void testSign          ( blaze::FalseType );
    void testConj          ( blaze::TrueType  );
    void testConj          ( blaze::FalseType );
    void testSqrt          ( blaze::TrueType  );
@@ -381,6 +385,7 @@ OperationTest<T>::OperationTest()
    testMax           ( blaze::HasSIMDMax<T,T>() );
 
    testAbs           ( blaze::HasSIMDAbs    < T >() );
+   testSign          ( blaze::HasSIMDSign   < T >() );
    testConj          ( blaze::HasSIMDConj   < T >() );
    testSqrt          ( blaze::HasSIMDSqrt   < T >() );
    testInvSqrt       ( blaze::HasSIMDInvSqrt< T >() );
@@ -1324,6 +1329,53 @@ void OperationTest<T>::testAbs( blaze::TrueType )
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testAbs( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the sign operation.
+//
+// \return void
+// \exception std::runtime_error Error in sign computation detected.
+//
+// This function tests the sign operation by comparing the results of a vectorized and a scalar
+// sign operation. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testSign( blaze::TrueType )
+{
+   using blaze::sign;
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Sign operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = sign( a_[i] );
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, sign( loada( a_+i ) ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the sign operation.
+//
+// \return void
+//
+// This function is called in case the sign operation is not available for the given data type
+// \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testSign( blaze::FalseType )
 {}
 //*************************************************************************************************
 
