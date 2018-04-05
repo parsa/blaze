@@ -1171,6 +1171,35 @@ inline decltype(auto) abs( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Applies the \a sign() function to each single element of the dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The resulting dense vector.
+//
+// This function applies the \a sign() function to each element of the input vector \a dv. The
+// function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a sign() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = sign( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) sign( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const DVecMapExpr<VT,Sign,TF>;
+   return ReturnType( ~dv, Sign() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Applies the \a floor() function to each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
@@ -2240,10 +2269,33 @@ inline decltype(auto) abs( const DVecMapExpr<VT,Abs,TF>& dv )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Applies the \a sign() function for dense vector \a sign() expressions.
+// \ingroup dense_vector
+//
+// \param dv The dense vector \a sign() expression.
+// \return The resulting dense vector.
+//
+// This function implements a performance optimized treatment of the \a sign() operation on a
+// dense vector \a sign() expression.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) sign( const DVecMapExpr<VT,Sign,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return dv;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Applies the \a floor() function to a dense vector \a floor() expressions.
 // \ingroup dense_vector
 //
-// \param dv The dense vector \a floor expression.
+// \param dv The dense vector \a floor() expression.
 // \return The resulting dense vector.
 //
 // This function implements a performance optimized treatment of the \a floor() operation on
@@ -2266,7 +2318,7 @@ inline decltype(auto) floor( const DVecMapExpr<VT,Floor,TF>& dv )
 /*!\brief Applies the \a ceil() function to a dense vector \a ceil() expressions.
 // \ingroup dense_vector
 //
-// \param dv The dense vector \a ceil expression.
+// \param dv The dense vector \a ceil() expression.
 // \return The resulting dense vector.
 //
 // This function implements a performance optimized treatment of the \a ceil() operation on
@@ -2289,7 +2341,7 @@ inline decltype(auto) ceil( const DVecMapExpr<VT,Ceil,TF>& dv )
 /*!\brief Applies the \a trunc() function to a dense vector \a trunc() expressions.
 // \ingroup dense_vector
 //
-// \param dv The dense vector \a trunc expression.
+// \param dv The dense vector \a trunc() expression.
 // \return The resulting dense vector.
 //
 // This function implements a performance optimized treatment of the \a trunc() operation on
@@ -2312,7 +2364,7 @@ inline decltype(auto) trunc( const DVecMapExpr<VT,Trunc,TF>& dv )
 /*!\brief Applies the \a round() function to a dense vector \a round() expressions.
 // \ingroup dense_vector
 //
-// \param dv The dense vector \a round expression.
+// \param dv The dense vector \a round() expression.
 // \return The resulting dense vector.
 //
 // This function implements a performance optimized treatment of the \a round() operation on
