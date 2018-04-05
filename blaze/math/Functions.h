@@ -42,13 +42,10 @@
 
 #include <cmath>
 #include <blaze/system/Inline.h>
-#include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsFloatingPoint.h>
-#include <blaze/util/typetraits/IsSigned.h>
 
 
 namespace blaze {
@@ -63,9 +60,6 @@ namespace blaze {
 /*!\name Mathematical utility functions */
 //@{
 template< typename T >
-inline constexpr int sign( T a ) noexcept;
-
-template< typename T >
 inline size_t digits( T a ) noexcept;
 
 template< typename T1, typename T2 >
@@ -79,28 +73,6 @@ template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr bool greater( const T1& a, const T2& b )
    noexcept( IsBuiltin_v< CommonType_t<T1,T2> > );
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Sign function.
-// \ingroup math
-//
-// \param a The given value.
-// \return 1 if the value is greater than zero, 0 if it is zero, and -1 if it is less than zero.
-//
-// The sign function only works for built-in data types. The attempt to use any user-defined class
-// type will result in a compile time error.
-*/
-template< typename T >
-inline constexpr int sign( T a ) noexcept
-{
-   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( T );
-
-   return ( IsSigned_v<T> || IsFloatingPoint_v<T> )
-          ?( T(0) < a ) - ( a < T(0) )
-          :( T(0) < a );
-}
 //*************************************************************************************************
 
 
