@@ -1985,7 +1985,7 @@ struct DivTrait< LowerMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 template< typename MT, bool SO, bool DF, typename OP >
 struct UnaryMapTrait< LowerMatrix<MT,SO,DF>, OP >
 {
-   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, Cbrt
+   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, Cbrt
                       , Pow2, Pow3, Pow4, Sin, Asin, Sinh, Asinh, Tan, Atan, Tanh, Atanh, Erf >;
 
    using Type = If_t< Contains_v<TL,OP>

@@ -1188,7 +1188,7 @@ struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_t< IsNumeric_v<T> > >
 template< typename MT, bool SO, bool DF, bool NF, typename OP >
 struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, OP >
 {
-   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, InvSqrt
+   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, InvSqrt
                       , Cbrt, InvCbrt, Pow2, Pow3, Pow4, Exp, Exp2, Exp10, Log, Log2, Log10
                       , Sin, Asin, Sinh, Asinh, Cos, Acos, Cosh, Acosh, Tan, Atan, Tanh, Atanh
                       , Erf, Erfc >;

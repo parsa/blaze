@@ -1817,7 +1817,7 @@ struct DivTrait< HermitianMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 template< typename MT, bool SO, bool DF, typename OP >
 struct UnaryMapTrait< HermitianMatrix<MT,SO,DF>, OP >
 {
-   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, InvSqrt
+   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, InvSqrt
                       , Cbrt, InvCbrt, Pow2, Pow3, Pow4, Exp, Exp2, Exp10, Log, Log2, Log10
                       , Sin, Asin, Sinh, Asinh, Cos, Acos, Cosh, Acosh, Tan, Atan, Tanh, Atanh
                       , Erf, Erfc >;

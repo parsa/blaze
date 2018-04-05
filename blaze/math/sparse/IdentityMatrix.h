@@ -2393,7 +2393,8 @@ struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 template< typename T, bool SO, typename OP >
 struct UnaryMapTrait< IdentityMatrix<T,SO>, OP >
 {
-   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Sqrt, Cbrt, Pow2, Pow3, Pow4 >;
+   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round
+                      , Conj, Real, Sqrt, Cbrt, Pow2, Pow3, Pow4 >;
 
    using Type = If_t< Contains_v< TL, OP >
                     , IdentityMatrix< UnaryMapTrait_t<T,OP>, SO >

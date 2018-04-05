@@ -3153,7 +3153,8 @@ struct DivTrait< UniUpperMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 template< typename MT, bool SO, bool DF, typename OP >
 struct UnaryMapTrait< UniUpperMatrix<MT,SO,DF>, OP >
 {
-   using TL = TypeList< Abs, Floor, Ceil, Trunc, Round, Conj, Real, Sqrt, Cbrt, Pow2, Pow3, Pow4 >;
+   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round
+                      , Conj, Real, Sqrt, Cbrt, Pow2, Pow3, Pow4 >;
 
    using Type = If_t< Contains_v<TL,OP>
                     , UniUpperMatrix< UnaryMapTrait_t<MT,OP> >
