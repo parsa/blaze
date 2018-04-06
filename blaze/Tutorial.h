@@ -1873,6 +1873,26 @@
                           3 \\
                           \end{array}\right)\f$
 
+// \n \subsection vector_operators_sign sign()
+//
+// The \c sign() function can be used to evaluate the sign of each element of a vector \a v. For
+// each element \c i the corresponding result is 1 if \a a[i] is greater than zero, 0 if \a a[i]
+// is zero, and -1 if \a a[i] is less than zero. For instance, the following use of the \c sign()
+// function
+
+   \code
+   blaze::StaticVector<int,3UL,rowVector> a{ -1, 2, 0 };
+   blaze::StaticVector<int,3UL,rowVector> b( sign( a ) );
+   \endcode
+
+// results in the vector
+
+                          \f$ b = \left(\begin{array}{*{1}{c}}
+                          -1 \\
+                           1 \\
+                           0 \\
+                          \end{array}\right)\f$
+
 // \n \subsection vector_operations_rounding_functions floor() / ceil() / trunc() / round()
 //
 // The \c floor(), \c ceil(), \c trunc(), and \c round() functions can be used to round down/up
@@ -3999,6 +4019,26 @@
                           \f$ B = \left(\begin{array}{*{3}{c}}
                           1 & 2 & 3 \\
                           4 & 5 & 6 \\
+                          \end{array}\right)\f$
+
+// \n \subsection matrix_operators_sign sign()
+//
+// The \c sign() function can be used to evaluate the sign of each element of a matrix \a A. For
+// each element \c (i,j) the corresponding result is 1 if \a A(i,j) is greater than zero, 0 if
+// \a A(i,j) is zero, and -1 if \a A(i,j) is less than zero. For instance, the following use of
+// the \c sign() function
+
+   \code
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -1,  2,  0 },
+                                                {  4,  0, -6 } };
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( sign( A ) );
+   \endcode
+
+// results in the matrix
+
+                          \f$ B = \left(\begin{array}{*{3}{c}}
+                          -1 & 1 &  0 \\
+                           1 & 0 & -1 \\
                           \end{array}\right)\f$
 
 // \n \subsection matrix_operators_rounding_functions floor() / ceil() / trunc() / round()
