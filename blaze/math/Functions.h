@@ -43,8 +43,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Integral.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/CommonType.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
 
 
 namespace blaze {
@@ -63,10 +61,6 @@ inline size_t digits( T a ) noexcept;
 
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept;
-
-template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr bool greater( const T1& a, const T2& b )
-   noexcept( IsBuiltin_v< CommonType_t<T1,T2> > );
 //@}
 //*************************************************************************************************
 
@@ -123,114 +117,6 @@ template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept
 {
    return ( value + ( factor - ( value % factor ) ) % factor );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Default greater-than comparison for any data type.
-// \ingroup math
-//
-// \param a First value.
-// \param b Second value.
-// \return \a true if the first value is greater than the second, \a false if not.
-//
-// Default implementation of a greater-than comparison of two data values.
-*/
-template< typename T >
-BLAZE_ALWAYS_INLINE constexpr bool greater_backend( const T& a, const T& b )
-   noexcept( IsBuiltin_v<T> )
-{
-   return a > b;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Greater-than comparison for single precision floating point values.
-// \ingroup math
-//
-// \param a First value.
-// \param b Second value.
-// \return \a true if the first value is greater than the second, \a false if not.
-//
-// Greater-than function for the comparison of two single precision floating point numbers. Due
-// to the limited machine accuracy, a direct comparison of two floating point numbers should
-// be avoided. This functions offers the possibility to compare two floating-point values with
-// a certain accuracy margin.
-*/
-BLAZE_ALWAYS_INLINE constexpr bool greater_backend( float a, float b ) noexcept
-{
-   return ( b - a ) > 1E-8F;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Greater-than comparison for double precision floating point values.
-// \ingroup math
-//
-// \param a First value.
-// \param b Second value.
-// \return \a true if the first value is greater than the second, \a false if not.
-//
-// Greater-than function for the comparison of two double precision floating point numbers. Due
-// to the limited machine accuracy, a direct comparison of two floating point numbers should
-// be avoided. This functions offers the possibility to compare two floating-point values with
-// a certain accuracy margin.
-*/
-BLAZE_ALWAYS_INLINE constexpr bool greater_backend( double a, double b ) noexcept
-{
-   return ( b - a ) > 1E-8;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Greater-than comparison for long double precision floating point values.
-// \ingroup math
-//
-// \param a First value.
-// \param b Second value.
-// \return \a true if the first value is greater than the second, \a false if not.
-//
-// Greater-than function for the comparison of two long double precision floating point numbers.
-// Due to the limited machine accuracy, a direct comparison of two floating point numbers should
-// be avoided. This functions offers the possibility to compare two floating-point values with a
-// certain accuracy margin.
-*/
-BLAZE_ALWAYS_INLINE constexpr bool greater_backend( long double a, long double b ) noexcept
-{
-   return ( b - a ) > 1E-10;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Generic greater-than comparison.
-// \ingroup math
-//
-// \param a First value.
-// \param b Second value.
-// \return \a true if the first value is greater than the second, \a false if not.
-//
-// Generic greater-than comparison between to numeric values. Depending on the types of the
-// two arguments, a special comparison for floating point values is selected that takes
-// the limited machine accuracy into account.
-*/
-template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr bool greater( const T1& a, const T2& b )
-   noexcept( IsBuiltin_v< CommonType_t<T1,T2> > )
-{
-   return greater_backend< CommonType_t<T1,T2> >( a, b );
 }
 //*************************************************************************************************
 
