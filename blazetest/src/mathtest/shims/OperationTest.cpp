@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/functions/OperationTest.cpp
-//  \brief Source file for the mathematical functions operation test
+//  \file src/mathtest/shims/OperationTest.cpp
+//  \brief Source file for the mathematical shims operation test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -41,14 +41,14 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <blazetest/mathtest/functions/OperationTest.h>
+#include <blazetest/mathtest/shims/OperationTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace functions {
+namespace shims {
 
 //=================================================================================================
 //
@@ -77,19 +77,19 @@ OperationTest::OperationTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the mathematical 'sign' function.
+/*!\brief Test of the mathematical 'sign' shim.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the mathematical 'sign' function. In case an error is
-// detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the mathematical 'sign' shim. In case an error is detected,
+// a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testSign()
 {
    using blaze::sign;
 
-   test_ = "sign() function";
+   test_ = "sign() shim";
 
    // 'int'
    if( sign( 1 ) != 1 || sign( 0 ) != 0 || sign( -1 ) != -1 ) {
@@ -175,7 +175,7 @@ void OperationTest::testSign()
 }
 //*************************************************************************************************
 
-} // namespace functions
+} // namespace shims
 
 } // namespace mathtest
 
@@ -193,14 +193,14 @@ void OperationTest::testSign()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running mathematical functions operation test..." << std::endl;
+   std::cout << "   Running mathematical shims operation test..." << std::endl;
 
    try
    {
-      RUN_FUNCTIONS_OPERATION_TEST;
+      RUN_SHIMS_OPERATION_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during mathematical functions operation test:\n"
+      std::cerr << "\n\n ERROR DETECTED during mathematical shims operation test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

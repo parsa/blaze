@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: functions simd blas lapack typetraits \
+all: shims simd blas lapack typetraits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector initializervector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -66,7 +66,7 @@ essential: all
 
 single: all
 
-noop: functions simd blas lapack typetraits \
+noop: shims simd blas lapack typetraits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector initializervector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -80,10 +80,10 @@ noop: functions simd blas lapack typetraits \
 
 
 # Internal rules
-functions:
+shims:
 	@echo
-	@echo "Building the mathematical functions operation tests..."
-	@$(MAKE) --no-print-directory -C ./functions $(MAKECMDGOALS)
+	@echo "Building the mathematical shims operation tests..."
+	@$(MAKE) --no-print-directory -C ./shims $(MAKECMDGOALS)
 
 simd:
 	@echo
@@ -608,7 +608,7 @@ matrixserializer:
 
 # Cleanup
 reset:
-	@$(MAKE) --no-print-directory -C ./functions reset
+	@$(MAKE) --no-print-directory -C ./shims reset
 	@$(MAKE) --no-print-directory -C ./simd reset
 	@$(MAKE) --no-print-directory -C ./blas reset
 	@$(MAKE) --no-print-directory -C ./lapack reset
@@ -715,7 +715,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./matrixserializer reset
 
 clean:
-	@$(MAKE) --no-print-directory -C ./functions clean
+	@$(MAKE) --no-print-directory -C ./shims clean
 	@$(MAKE) --no-print-directory -C ./simd clean
 	@$(MAKE) --no-print-directory -C ./blas clean
 	@$(MAKE) --no-print-directory -C ./lapack clean
@@ -824,7 +824,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single noop reset clean \
-        functions simd blas lapack typetraits \
+        shims simd blas lapack typetraits \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector initializervector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \

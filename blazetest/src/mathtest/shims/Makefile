@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the mathematical functions module of the Blaze test suite
+#  Makefile for the mathematical shims module of the Blaze test suite
 #
 #  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/functions/OperationTest.h
-//  \brief Header file for the mathematical functions operation test
+//  \file blazetest/mathtest/shims/OperationTest.h
+//  \brief Header file for the shims operation test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_FUNCTIONS_OPERATIONTEST_H_
-#define _BLAZETEST_MATHTEST_FUNCTIONS_OPERATIONTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SHIMS_OPERATIONTEST_H_
+#define _BLAZETEST_MATHTEST_SHIMS_OPERATIONTEST_H_
 
 
 //*************************************************************************************************
@@ -41,14 +41,14 @@
 //*************************************************************************************************
 
 #include <string>
-#include <blaze/math/Functions.h>
+#include <blaze/math/shims/Sign.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace functions {
+namespace shims {
 
 //=================================================================================================
 //
@@ -57,10 +57,10 @@ namespace functions {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the mathematical functions.
+/*!\brief Auxiliary class for all tests of the mathematical shims.
 //
-// This class represents a test suite for the mathematical functions contained in the
-// <em><blaze/math/Functions.h></em> header file.
+// This class represents a test suite for mathematical shims contained in the
+// <em>blaze/math/shims/</em> directory.
 */
 class OperationTest
 {
@@ -104,7 +104,7 @@ class OperationTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the mathematical functions.
+/*!\brief Testing the mathematical shims.
 //
 // \return void
 */
@@ -125,14 +125,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the functions operation test.
+/*!\brief Macro for the execution of the shims operation test.
 */
-#define RUN_FUNCTIONS_OPERATION_TEST \
-   blazetest::mathtest::functions::runTest()
+#define RUN_SHIMS_OPERATION_TEST \
+   blazetest::mathtest::shims::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace functions
+} // namespace shims
 
 } // namespace mathtest
 

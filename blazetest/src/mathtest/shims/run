@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the mathematical functions module of the Blaze test suite
+#  Run script for the mathematical shims module of the Blaze test suite
 #
 #  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 #
@@ -33,8 +33,8 @@
 #==================================================================================================
 
 
-PATH_FUNCTIONS=$( dirname "${BASH_SOURCE[0]}" )
+PATH_SHIMS=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running mathematical functions tests..."
+echo " Running mathematical shims tests..."
 
-EXE=$PATH_FUNCTIONS/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SHIMS/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
