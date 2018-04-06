@@ -80,6 +80,7 @@
 #include <blaze/math/shims/Log.h>
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/shims/Log10.h>
+#include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Pow3.h>

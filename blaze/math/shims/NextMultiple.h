@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/Functions.h
-//  \brief Header file for mathematical functions
+//  \file blaze/math/shims/NextMultiple.h
+//  \brief Header file for the nextMultiple shim
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTIONS_H_
-#define _BLAZE_MATH_FUNCTIONS_H_
+#ifndef _BLAZE_MATH_SHIMS_NEXTMULTIPLE_H_
+#define _BLAZE_MATH_SHIMS_NEXTMULTIPLE_H_
 
 
 //*************************************************************************************************
@@ -47,18 +47,9 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MATHEMATICAL UTILITY FUNCTIONS
+//  NEXTMULTIPLE SHIM
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\name Mathematical utility functions */
-//@{
-template< typename T1, typename T2 >
-BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept;
-//@}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Rounds up an integral value to the next multiple of a given factor.

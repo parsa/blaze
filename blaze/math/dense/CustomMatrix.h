@@ -51,7 +51,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
-#include <blaze/math/Functions.h>
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/functors/Clear.h>
 #include <blaze/math/InitializerList.h>
@@ -59,6 +58,8 @@
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/NextMultiple.h>
+#include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
