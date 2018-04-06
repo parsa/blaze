@@ -40,10 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/IsVector.h>
+#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/If.h>
+#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
@@ -59,28 +58,20 @@ namespace blaze {
 /*!\brief Auxiliary helper struct for the IsSIMDEnabled type trait.
 // \ingroup math_type_traits
 */
-template< typename T >
+template< typename T, typename = void >
 struct IsSIMDEnabledHelper
-{
- private:
-   //**struct HasNestedMember**********************************************************************
-   template< typename T2 >
-   struct UseNestedMember { static constexpr bool value = T2::simdEnabled; };
-   //**********************************************************************************************
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
 
-   //**struct NotSIMDEnabled***********************************************************************
-   template< typename T2 >
-   struct NotSIMDEnabled { static constexpr bool value = false; };
-   //**********************************************************************************************
 
- public:
-   //**********************************************************************************************
-   static constexpr bool value =
-      If_t< IsVector_v<T> || IsMatrix_v<T>
-          , UseNestedMember<T>
-          , NotSIMDEnabled<T> >::value;
-   //**********************************************************************************************
-};
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct IsSIMDEnabledHelper< T, Void_t< decltype( T::simdEnabled ) > >
+   : public BoolConstant< T::simdEnabled >
+{};
 /*! \endcond */
 //*************************************************************************************************
 
