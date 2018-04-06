@@ -41,8 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/system/Inline.h>
-#include <blaze/util/constraints/Integral.h>
-#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -56,47 +54,9 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name Mathematical utility functions */
 //@{
-template< typename T >
-inline size_t digits( T a ) noexcept;
-
 template< typename T1, typename T2 >
 BLAZE_ALWAYS_INLINE constexpr auto nextMultiple( T1 value, T2 factor ) noexcept;
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the number of valid digits of an integral value.
-// \ingroup math
-//
-// \param a The integral value.
-// \return The number of valid digits.
-//
-// This function counts the number of valid digits in the given integral value.
-
-   \code
-   digits( 100   );  // Returns 3
-   digits( 12345 );  // Returns 5
-   digits( 0     );  // Returns 0
-   \endcode
-
-// The digits function only works for integral built-in data types. The attempt to use any
-// other type will result in a compile time error.
-*/
-template< typename T >
-inline size_t digits( T a ) noexcept
-{
-   BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
-
-   size_t count( 0 );
-
-   while( a != 0 ) {
-      a /= 10;
-      ++count;
-   }
-
-   return count;
-}
 //*************************************************************************************************
 
 
