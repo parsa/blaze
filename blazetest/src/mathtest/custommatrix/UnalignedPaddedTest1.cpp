@@ -44,6 +44,7 @@
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/LowerMatrix.h>
+#include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Memory.h>
