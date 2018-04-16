@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
+#include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -2513,59 +2514,9 @@ struct IsUpper< SMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Abs,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Sign,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Floor,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Ceil,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Trunc,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Round,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Conj,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Real,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Sqrt,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,Cbrt,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, typename ET, bool SO >
-struct IsUniUpper< SMatMapExpr<MT,UnaryPow<ET>,SO> >
-   : public IsUniUpper<MT>
+template< typename MT, typename OP, bool SO >
+struct IsUniUpper< SMatMapExpr<MT,OP,SO> >
+   : public YieldsUniUpper<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

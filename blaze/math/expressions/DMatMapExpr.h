@@ -76,6 +76,7 @@
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
+#include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -3309,6 +3310,74 @@ struct YieldsUpper<Erf,MT>
 
 //=================================================================================================
 //
+//  YIELDSUNIUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsUniUpper<Abs,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Sign,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Floor,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Ceil,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Trunc,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Round,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Conj,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Real,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Sqrt,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUniUpper<Cbrt,MT>
+   : public IsUniUpper<MT>
+{};
+
+template< typename ET, typename MT >
+struct YieldsUniUpper<UnaryPow<ET>,MT>
+   : public IsUniUpper<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -3423,59 +3492,9 @@ struct IsUpper< DMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Abs,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Sign,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Floor,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Ceil,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Trunc,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Round,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Conj,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Real,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Sqrt,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,Cbrt,SO> >
-   : public IsUniUpper<MT>
-{};
-
-template< typename MT, typename ET, bool SO >
-struct IsUniUpper< DMatMapExpr<MT,UnaryPow<ET>,SO> >
-   : public IsUniUpper<MT>
+template< typename MT, typename OP, bool SO >
+struct IsUniUpper< DMatMapExpr<MT,OP,SO> >
+   : public YieldsUniUpper<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
