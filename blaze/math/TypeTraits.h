@@ -203,5 +203,6 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 
 #endif
