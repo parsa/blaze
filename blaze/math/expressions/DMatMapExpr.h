@@ -74,6 +74,7 @@
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -3022,6 +3023,74 @@ struct YieldsLower<Erf,MT>
 
 //=================================================================================================
 //
+//  YIELDSUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsUniLower<Abs,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Sign,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Floor,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Ceil,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Trunc,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Round,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Conj,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Real,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Sqrt,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename MT >
+struct YieldsUniLower<Cbrt,MT>
+   : public IsUniLower<MT>
+{};
+
+template< typename ET, typename MT >
+struct YieldsUniLower<UnaryPow<ET>,MT>
+   : public IsUniLower<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -3082,59 +3151,9 @@ struct IsLower< DMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Abs,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Sign,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Floor,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Ceil,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Trunc,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Round,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Conj,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Real,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Sqrt,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< DMatMapExpr<MT,Cbrt,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, typename ET, bool SO >
-struct IsUniLower< DMatMapExpr<MT,UnaryPow<ET>,SO> >
-   : public IsUniLower<MT>
+template< typename MT, typename OP, bool SO >
+struct IsUniLower< DMatMapExpr<MT,OP,SO> >
+   : public YieldsUniLower<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

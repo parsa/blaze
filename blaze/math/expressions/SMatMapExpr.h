@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -2458,59 +2459,9 @@ struct IsLower< SMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Abs,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Sign,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Floor,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Ceil,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Trunc,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Round,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Conj,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Real,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Sqrt,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUniLower< SMatMapExpr<MT,Cbrt,SO> >
-   : public IsUniLower<MT>
-{};
-
-template< typename MT, typename ET, bool SO >
-struct IsUniLower< SMatMapExpr<MT,UnaryPow<ET>,SO> >
-   : public IsUniLower<MT>
+template< typename MT, typename OP, bool SO >
+struct IsUniLower< SMatMapExpr<MT,OP,SO> >
+   : public YieldsUniLower<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
