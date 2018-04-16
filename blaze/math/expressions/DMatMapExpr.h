@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -2540,180 +2541,198 @@ struct IsPadded< DMatMapExpr<MT,OP,SO> >
 
 //=================================================================================================
 //
+//  YIELDSSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsSymmetric<Abs,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Sign,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Floor,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Ceil,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Trunc,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Round,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Conj,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Real,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Imag,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Sqrt,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<InvSqrt,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Cbrt,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<InvCbrt,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename ET, typename MT >
+struct YieldsSymmetric<UnaryPow<ET>,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Exp,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Exp2,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Exp10,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Log,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Log2,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Log10,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Sin,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Asin,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Sinh,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Asinh,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Cos,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Acos,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Cosh,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Acosh,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Tan,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Atan,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Tanh,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Atanh,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Erf,MT>
+   : public IsSymmetric<MT>
+{};
+
+template< typename MT >
+struct YieldsSymmetric<Erfc,MT>
+   : public IsSymmetric<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Abs,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Sign,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Floor,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Ceil,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Trunc,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Round,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Conj,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Real,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Imag,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Sqrt,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,InvSqrt,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Cbrt,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,InvCbrt,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, typename ET, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,UnaryPow<ET>,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Exp,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Exp2,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Exp10,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Log,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Log2,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Log10,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Sin,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Asin,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Sinh,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Asinh,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Cos,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Acos,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Cosh,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Acosh,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Tan,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Atan,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Tanh,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Atanh,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Erf,SO> >
-   : public IsSymmetric<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsSymmetric< DMatMapExpr<MT,Erfc,SO> >
-   : public IsSymmetric<MT>
+template< typename MT, typename OP, bool SO >
+struct IsSymmetric< DMatMapExpr<MT,OP,SO> >
+   : public YieldsSymmetric<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
