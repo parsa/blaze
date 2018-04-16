@@ -74,6 +74,7 @@
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
+#include <blaze/math/typetraits/YieldsStrictlyUpper.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
@@ -3378,6 +3379,119 @@ struct YieldsUniUpper<UnaryPow<ET>,MT>
 
 //=================================================================================================
 //
+//  YIELDSSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsStrictlyUpper<Abs,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Sign,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Floor,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Ceil,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Trunc,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Round,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Conj,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Real,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Imag,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Sqrt,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Cbrt,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Sin,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Asin,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Sinh,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Asinh,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Tan,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Atan,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Tanh,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Atanh,MT>
+   : public IsStrictlyUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsStrictlyUpper<Erf,MT>
+   : public IsStrictlyUpper<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -3510,104 +3624,9 @@ struct IsUniUpper< DMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Abs,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Sign,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Floor,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Ceil,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Trunc,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Round,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Conj,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Real,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Imag,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Sqrt,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Cbrt,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Sin,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Asin,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Sinh,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Asinh,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Tan,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Atan,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Tanh,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Atanh,SO> >
-   : public IsStrictlyUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatMapExpr<MT,Erf,SO> >
-   : public IsStrictlyUpper<MT>
+template< typename MT, typename OP, bool SO >
+struct IsStrictlyUpper< DMatMapExpr<MT,OP,SO> >
+   : public YieldsStrictlyUpper<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
