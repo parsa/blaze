@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
+#include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -2908,6 +2909,119 @@ struct YieldsHermitian<Erfc,MT>
 
 //=================================================================================================
 //
+//  YIELDSLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsLower<Abs,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Sign,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Floor,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Ceil,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Trunc,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Round,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Conj,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Real,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Imag,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Sqrt,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Cbrt,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Sin,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Asin,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Sinh,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Asinh,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Tan,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Atan,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Tanh,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Atanh,MT>
+   : public IsLower<MT>
+{};
+
+template< typename MT >
+struct YieldsLower<Erf,MT>
+   : public IsLower<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2950,104 +3064,9 @@ struct IsHermitian< DMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Abs,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Sign,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Floor,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Ceil,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Trunc,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Round,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Conj,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Real,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Imag,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Sqrt,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Cbrt,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Sin,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Asin,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Sinh,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Asinh,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Tan,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Atan,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Tanh,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Atanh,SO> >
-   : public IsLower<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsLower< DMatMapExpr<MT,Erf,SO> >
-   : public IsLower<MT>
+template< typename MT, typename OP, bool SO >
+struct IsLower< DMatMapExpr<MT,OP,SO> >
+   : public YieldsLower<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
