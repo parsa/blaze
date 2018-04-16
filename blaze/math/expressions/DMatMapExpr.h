@@ -76,6 +76,7 @@
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
+#include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -3195,6 +3196,119 @@ struct YieldsStrictlyLower<Erf,MT>
 
 //=================================================================================================
 //
+//  YIELDSUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsUpper<Abs,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Sign,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Floor,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Ceil,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Trunc,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Round,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Conj,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Real,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Imag,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Sqrt,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Cbrt,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Sin,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Asin,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Sinh,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Asinh,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Tan,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Atan,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Tanh,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Atanh,MT>
+   : public IsUpper<MT>
+{};
+
+template< typename MT >
+struct YieldsUpper<Erf,MT>
+   : public IsUpper<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -3291,104 +3405,9 @@ struct IsStrictlyLower< DMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Abs,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Sign,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Floor,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Ceil,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Trunc,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Round,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Conj,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Real,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Imag,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Sqrt,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Cbrt,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Sin,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Asin,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Sinh,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Asinh,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Tan,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Atan,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Tanh,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Atanh,SO> >
-   : public IsUpper<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsUpper< DMatMapExpr<MT,Erf,SO> >
-   : public IsUpper<MT>
+template< typename MT, typename OP, bool SO >
+struct IsUpper< DMatMapExpr<MT,OP,SO> >
+   : public YieldsUpper<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
