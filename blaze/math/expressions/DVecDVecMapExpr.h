@@ -153,7 +153,9 @@ class DVecDVecMapExpr
    /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      static constexpr bool value = OP::BLAZE_TEMPLATE simdEnabled<ET1,ET2>();
+      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
+      static constexpr bool test( bool b ) { return b; }
+      static constexpr bool value = test( OP::BLAZE_TEMPLATE simdEnabled<ET1,ET2> );
    };
    /*! \endcond */
    //**********************************************************************************************
