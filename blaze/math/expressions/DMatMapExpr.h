@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -2724,6 +2725,189 @@ struct YieldsSymmetric<Erfc,MT>
 
 //=================================================================================================
 //
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsHermitian<Abs,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Sign,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Floor,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Ceil,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Trunc,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Round,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Conj,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Real,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Imag,MT>
+   : public IsBuiltin< ElementType_t<MT> >
+{};
+
+template< typename MT >
+struct YieldsHermitian<Sqrt,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<InvSqrt,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Cbrt,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<InvCbrt,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename ET, typename MT >
+struct YieldsHermitian<UnaryPow<ET>,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Exp,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Exp2,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Exp10,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Log,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Log2,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Log10,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Sin,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Asin,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Sinh,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Asinh,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Cos,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Acos,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Cosh,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Acosh,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Tan,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Atan,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Tanh,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Atanh,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Erf,MT>
+   : public IsHermitian<MT>
+{};
+
+template< typename MT >
+struct YieldsHermitian<Erfc,MT>
+   : public IsHermitian<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2748,174 +2932,9 @@ struct IsSymmetric< DMatMapExpr<MT,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Abs,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Sign,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Floor,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Ceil,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Trunc,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Round,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Conj,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Real,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Imag,SO> >
-   : public IsBuiltin< ElementType_t<MT> >
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Sqrt,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,InvSqrt,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Cbrt,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,InvCbrt,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, typename ET, bool SO >
-struct IsHermitian< DMatMapExpr<MT,UnaryPow<ET>,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Exp,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Exp2,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Exp10,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Log,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Log2,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Log10,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Sin,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Asin,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Sinh,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Asinh,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Cos,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Acos,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Cosh,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Acosh,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Tan,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Atan,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Tanh,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Atanh,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Erf,SO> >
-   : public IsHermitian<MT>
-{};
-
-template< typename MT, bool SO >
-struct IsHermitian< DMatMapExpr<MT,Erfc,SO> >
-   : public IsHermitian<MT>
+template< typename MT, typename OP, bool SO >
+struct IsHermitian< DMatMapExpr<MT,OP,SO> >
+   : public YieldsHermitian<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
