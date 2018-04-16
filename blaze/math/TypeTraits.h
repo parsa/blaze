@@ -205,6 +205,7 @@
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
+#include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 
