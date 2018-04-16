@@ -106,9 +106,11 @@ struct UnaryMapTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<T> || IsVolatile_v<T> || IsReference_v<T> || IsAdaptor_v<T>
-                             , UnaryMapTrait< RemoveAdaptor_t< Decay_t<T> >, OP >
-                             , MappedType >::Type;
+   using Type = typename If_t< IsConst_v<T> || IsVolatile_v<T> || IsReference_v<T>
+                             , UnaryMapTrait< Decay_t<T>, OP >
+                             , If_t< IsAdaptor_v<T>
+                                   , UnaryMapTrait< RemoveAdaptor_t<T>, OP >
+                                   , MappedType > >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
