@@ -44,7 +44,9 @@
 #include <blaze/math/shims/Cosh.h>
 #include <blaze/math/simd/Cosh.h>
 #include <blaze/math/typetraits/HasSIMDCosh.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -122,6 +124,24 @@ struct Cosh
 template< typename MT >
 struct YieldsSymmetric<Cosh,MT>
    : public IsSymmetric<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsHermitian<Cosh,MT>
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

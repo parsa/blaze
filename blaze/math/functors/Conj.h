@@ -44,7 +44,9 @@
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/simd/Conj.h>
 #include <blaze/math/typetraits/HasSIMDConj.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -122,6 +124,24 @@ struct Conj
 template< typename MT >
 struct YieldsSymmetric<Conj,MT>
    : public IsSymmetric<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsHermitian<Conj,MT>
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

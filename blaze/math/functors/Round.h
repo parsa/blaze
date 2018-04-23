@@ -44,7 +44,9 @@
 #include <blaze/math/shims/Round.h>
 #include <blaze/math/simd/Round.h>
 #include <blaze/math/typetraits/HasSIMDRound.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -122,6 +124,24 @@ struct Round
 template< typename MT >
 struct YieldsSymmetric<Round,MT>
    : public IsSymmetric<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsHermitian<Round,MT>
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

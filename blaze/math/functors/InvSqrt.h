@@ -44,7 +44,9 @@
 #include <blaze/math/shims/InvSqrt.h>
 #include <blaze/math/simd/InvSqrt.h>
 #include <blaze/math/typetraits/HasSIMDInvSqrt.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -122,6 +124,24 @@ struct InvSqrt
 template< typename MT >
 struct YieldsSymmetric<InvSqrt,MT>
    : public IsSymmetric<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsHermitian<InvSqrt,MT>
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

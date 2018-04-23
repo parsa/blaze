@@ -46,7 +46,9 @@
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -147,6 +149,24 @@ struct UnaryPow
 template< typename ET, typename MT >
 struct YieldsSymmetric<UnaryPow<ET>,MT>
    : public IsSymmetric<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename ET, typename MT >
+struct YieldsHermitian<UnaryPow<ET>,MT>
+   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
