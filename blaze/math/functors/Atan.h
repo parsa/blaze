@@ -44,6 +44,8 @@
 #include <blaze/math/shims/Atan.h>
 #include <blaze/math/simd/Atan.h>
 #include <blaze/math/typetraits/HasSIMDAtan.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
 
@@ -104,6 +106,24 @@ struct Atan
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsSymmetric<Atan,MT>
+   : public IsSymmetric<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

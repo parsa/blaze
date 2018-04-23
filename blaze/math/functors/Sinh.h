@@ -44,6 +44,8 @@
 #include <blaze/math/shims/Sinh.h>
 #include <blaze/math/simd/Sinh.h>
 #include <blaze/math/typetraits/HasSIMDSinh.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
 
@@ -104,6 +106,24 @@ struct Sinh
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsSymmetric<Sinh,MT>
+   : public IsSymmetric<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

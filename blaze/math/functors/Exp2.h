@@ -44,6 +44,8 @@
 #include <blaze/math/shims/Exp2.h>
 #include <blaze/math/simd/Exp2.h>
 #include <blaze/math/typetraits/HasSIMDExp2.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
 
@@ -104,6 +106,24 @@ struct Exp2
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsSymmetric<Exp2,MT>
+   : public IsSymmetric<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

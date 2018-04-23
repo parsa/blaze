@@ -44,6 +44,8 @@
 #include <blaze/math/shims/Round.h>
 #include <blaze/math/simd/Round.h>
 #include <blaze/math/typetraits/HasSIMDRound.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
 
@@ -104,6 +106,24 @@ struct Round
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsSymmetric<Round,MT>
+   : public IsSymmetric<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
