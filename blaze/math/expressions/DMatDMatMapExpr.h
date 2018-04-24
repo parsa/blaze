@@ -74,6 +74,7 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
+#include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/system/Inline.h>
@@ -1450,14 +1451,9 @@ struct IsUniLower< DMatDMatMapExpr<MT1,MT2,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsStrictlyLower< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
-{};
-
-template< typename MT1, typename MT2, bool SO >
-struct IsStrictlyLower< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
+template< typename MT1, typename MT2, typename OP, bool SO >
+struct IsStrictlyLower< DMatDMatMapExpr<MT1,MT2,OP,SO> >
+   : public YieldsStrictlyLower<OP,MT1,MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************
