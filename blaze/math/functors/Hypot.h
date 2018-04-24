@@ -44,6 +44,8 @@
 #include <blaze/math/shims/Hypot.h>
 #include <blaze/math/simd/Hypot.h>
 #include <blaze/math/typetraits/HasSIMDHypot.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
 
@@ -107,6 +109,24 @@ struct Hypot
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct YieldsSymmetric<Hypot,MT1,MT2>
+   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
