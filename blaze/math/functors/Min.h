@@ -44,8 +44,10 @@
 #include <blaze/math/simd/Min.h>
 #include <blaze/math/typetraits/HasSIMDMin.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
+#include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/system/Inline.h>
@@ -145,6 +147,24 @@ struct YieldsSymmetric<Min,MT1,MT2>
 template< typename MT1, typename MT2 >
 struct YieldsHermitian<Min,MT1,MT2>
    : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct YieldsLower<Min,MT1,MT2>
+   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
