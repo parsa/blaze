@@ -88,6 +88,10 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/YieldsDiagonal.h>
+#include <blaze/math/typetraits/YieldsStrictlyUpper.h>
+#include <blaze/math/typetraits/YieldsUniUpper.h>
+#include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -2126,21 +2130,14 @@ struct DivTrait< UpperMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, typename OP >
-struct UnaryMapTrait< UpperMatrix<MT,SO,DF>, OP >
+template< typename MT, typename OP >
+struct UnaryMapTrait< MT, OP
+                    , EnableIf_t< YieldsUpper_v<OP,MT> &&
+                                  !YieldsUniUpper_v<OP,MT> &&
+                                  !YieldsStrictlyUpper_v<OP,MT> &&
+                                  !YieldsDiagonal_v<OP,MT> > >
 {
-   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, Cbrt
-                      , Pow2, Pow3, Pow4, Sin, Asin, Sinh, Asinh, Tan, Atan, Tanh, Atanh, Erf >;
-
-   using Type = If_t< Contains_v<TL,OP>
-                    , UpperMatrix< UnaryMapTrait_t<MT,OP> >
-                    , UnaryMapTrait_t<MT,OP> >;
-};
-
-template< typename MT, bool SO, bool DF, typename ET >
-struct UnaryMapTrait< UpperMatrix<MT,SO,DF>, UnaryPow<ET> >
-{
-   using Type = UpperMatrix< UnaryMapTrait_t< MT, UnaryPow<ET> > >;
+   using Type = UpperMatrix< UnaryMapTrait_t< RemoveAdaptor_t<MT>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************

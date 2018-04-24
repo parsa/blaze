@@ -86,6 +86,8 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/YieldsDiagonal.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -1185,23 +1187,12 @@ struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_t< IsNumeric_v<T> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF, typename OP >
-struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, OP >
+template< typename MT, typename OP >
+struct UnaryMapTrait< MT, OP
+                    , EnableIf_t< YieldsSymmetric_v<OP,MT> &&
+                                  !YieldsDiagonal_v<OP,MT> > >
 {
-   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round, Conj, Real, Imag, Sqrt, InvSqrt
-                      , Cbrt, InvCbrt, Pow2, Pow3, Pow4, Exp, Exp2, Exp10, Log, Log2, Log10
-                      , Sin, Asin, Sinh, Asinh, Cos, Acos, Cosh, Acosh, Tan, Atan, Tanh, Atanh
-                      , Erf, Erfc >;
-
-   using Type = If_t< Contains_v<TL,OP>
-                    , SymmetricMatrix< UnaryMapTrait_t<MT,OP> >
-                    , UnaryMapTrait_t<MT,OP> >;
-};
-
-template< typename MT, bool SO, bool DF, bool NF, typename ET >
-struct UnaryMapTrait< SymmetricMatrix<MT,SO,DF,NF>, UnaryPow<ET> >
-{
-   using Type = SymmetricMatrix< UnaryMapTrait_t< MT, UnaryPow<ET> > >;
+   using Type = SymmetricMatrix< UnaryMapTrait_t< RemoveAdaptor_t<MT>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
