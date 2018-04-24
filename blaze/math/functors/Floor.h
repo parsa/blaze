@@ -45,8 +45,10 @@
 #include <blaze/math/simd/Floor.h>
 #include <blaze/math/typetraits/HasSIMDFloor.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
+#include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -142,6 +144,24 @@ struct YieldsSymmetric<Floor,MT>
 template< typename MT >
 struct YieldsHermitian<Floor,MT>
    : public IsHermitian<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsLower<Floor,MT>
+   : public IsLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

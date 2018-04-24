@@ -42,8 +42,10 @@
 
 #include <blaze/math/shims/Imaginary.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
+#include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -116,6 +118,24 @@ struct YieldsSymmetric<Imag,MT>
 template< typename MT >
 struct YieldsHermitian<Imag,MT>
    : public IsBuiltin< ElementType_t<MT> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsLower<Imag,MT>
+   : public IsLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
