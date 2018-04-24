@@ -48,10 +48,12 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
 
 
@@ -185,6 +187,24 @@ struct YieldsLower<Atan2,MT1,MT2>
 template< typename MT1, typename MT2 >
 struct YieldsStrictlyLower<Atan2,MT1,MT2>
    : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct YieldsUpper<Atan2,MT1,MT2>
+   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
