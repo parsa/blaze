@@ -48,8 +48,10 @@
 #include <blaze/math/typetraits/HasSIMDPow.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/constraints/Numeric.h>
 
@@ -167,6 +169,24 @@ struct YieldsSymmetric<UnaryPow<ET>,MT>
 template< typename ET, typename MT >
 struct YieldsHermitian<UnaryPow<ET>,MT>
    : public IsHermitian<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename ET, typename MT >
+struct YieldsUniLower<UnaryPow<ET>,MT>
+   : public IsUniLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -2548,69 +2548,6 @@ struct IsPadded< DMatMapExpr<MT,OP,SO> >
 
 //=================================================================================================
 //
-//  YIELDSUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct YieldsUniLower<Sign,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Floor,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Ceil,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Trunc,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Round,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Conj,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Real,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Sqrt,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename MT >
-struct YieldsUniLower<Cbrt,MT>
-   : public IsUniLower<MT>
-{};
-
-template< typename ET, typename MT >
-struct YieldsUniLower<UnaryPow<ET>,MT>
-   : public IsUniLower<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  YIELDSSTRICTLYLOWER SPECIALIZATIONS
 //
 //=================================================================================================
