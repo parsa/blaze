@@ -48,12 +48,14 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
+#include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/system/Inline.h>
@@ -225,6 +227,24 @@ struct YieldsStrictlyLower<Min,MT1,MT2>
 template< typename MT1, typename MT2 >
 struct YieldsUpper<Min,MT1,MT2>
    : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct YieldsUniUpper<Min,MT1,MT2>
+   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
