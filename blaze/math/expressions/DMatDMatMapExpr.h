@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -1393,14 +1394,9 @@ struct IsSymmetric< DMatDMatMapExpr<MT1,MT2,OP,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsHermitian< DMatDMatMapExpr<MT1,MT2,Min,SO> >
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
-{};
-
-template< typename MT1, typename MT2, bool SO >
-struct IsHermitian< DMatDMatMapExpr<MT1,MT2,Max,SO> >
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
+template< typename MT1, typename MT2, typename OP, bool SO >
+struct IsHermitian< DMatDMatMapExpr<MT1,MT2,OP,SO> >
+   : public YieldsHermitian<OP,MT1,MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************

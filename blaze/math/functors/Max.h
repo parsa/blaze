@@ -43,7 +43,9 @@
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/simd/Max.h>
 #include <blaze/math/typetraits/HasSIMDMax.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/system/Inline.h>
@@ -125,6 +127,24 @@ struct Max
 template< typename MT1, typename MT2 >
 struct YieldsSymmetric<Max,MT1,MT2>
    : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT1, typename MT2 >
+struct YieldsHermitian<Max,MT1,MT2>
+   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************
