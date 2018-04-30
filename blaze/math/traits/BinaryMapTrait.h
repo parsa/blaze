@@ -90,9 +90,10 @@ namespace blaze {
    };
    \endcode
 */
-template< typename T1    // Type of the left-hand side operand
-        , typename T2    // Type of the right-hand side operand
-        , typename OP >  // Type of the custom operation
+template< typename T1        // Type of the left-hand side operand
+        , typename T2        // Type of the right-hand side operand
+        , typename OP        // Type of the custom operation
+        , typename = void >  // Restricting condition
 struct BinaryMapTrait
 {
  private:
