@@ -54,6 +54,7 @@ namespace blaze {
 struct Abs;
 struct Acos;
 struct Acosh;
+struct Add;
 struct AddAssign;
 struct Asin;
 struct Asinh;
