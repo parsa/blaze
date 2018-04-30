@@ -104,6 +104,7 @@
 #include <blaze/math/functors/Sin.h>
 #include <blaze/math/functors/Sinh.h>
 #include <blaze/math/functors/Sqrt.h>
+#include <blaze/math/functors/Sub.h>
 #include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/functors/Tan.h>
 #include <blaze/math/functors/Tanh.h>

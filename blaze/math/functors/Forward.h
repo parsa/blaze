@@ -115,6 +115,7 @@ struct Sign;
 struct Sin;
 struct Sinh;
 struct Sqrt;
+struct Sub;
 struct SubAssign;
 struct Tan;
 struct Tanh;
