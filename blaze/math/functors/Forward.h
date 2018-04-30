@@ -99,6 +99,7 @@ struct Log10;
 template< size_t... > struct LpNorm;
 struct Max;
 struct Min;
+struct Mult;
 struct MultAssign;
 struct Noop;
 struct Pow;
