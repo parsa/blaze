@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/SIMDPack.h>
-#include <blaze/math/shims/Pow.h>
+#include <blaze/math/shims/Exp10.h>
 #include <blaze/math/simd/Exp10.h>
 #include <blaze/math/typetraits/HasSIMDExp10.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -81,7 +81,7 @@ struct Exp10
    template< typename T >
    BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
    {
-      return pow( T(10), a );
+      return exp10( a );
    }
    //**********************************************************************************************
 
