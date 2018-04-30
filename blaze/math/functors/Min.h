@@ -210,7 +210,8 @@ struct YieldsUniLower<Min,MT1,MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct YieldsStrictlyLower<Min,MT1,MT2>
-   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
+   : public BoolConstant< ( IsStrictlyLower_v<MT1> && ( IsStrictlyLower_v<MT2> || IsUniLower_v<MT2> ) ) ||
+                          ( IsStrictlyLower_v<MT2> && ( IsStrictlyLower_v<MT1> || IsUniLower_v<MT1> ) ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -264,7 +265,8 @@ struct YieldsUniUpper<Min,MT1,MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct YieldsStrictlyUpper<Min,MT1,MT2>
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
+   : public BoolConstant< ( IsStrictlyUpper_v<MT1> && ( IsStrictlyUpper_v<MT2> || IsUniUpper_v<MT2> ) ) ||
+                          ( IsStrictlyUpper_v<MT2> && ( IsStrictlyUpper_v<MT1> || IsUniUpper_v<MT1> ) ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
