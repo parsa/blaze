@@ -76,6 +76,7 @@ struct DeclId;
 struct DeclLow;
 struct DeclSym;
 struct DeclUpp;
+struct Div;
 struct DivAssign;
 struct Erf;
 struct Erfc;
