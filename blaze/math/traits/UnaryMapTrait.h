@@ -89,8 +89,9 @@ namespace blaze {
    };
    \endcode
 */
-template< typename T     // Type of the operand
-        , typename OP >  // Type of the custom operation
+template< typename T         // Type of the operand
+        , typename OP        // Type of the custom operation
+        , typename = void >  // Restricting condition
 struct UnaryMapTrait
 {
  private:
