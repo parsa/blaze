@@ -93,8 +93,6 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typelist/Contains.h>
-#include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
@@ -1208,14 +1206,12 @@ struct UnaryMapTrait< MT, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2, typename OP >
-struct BinaryMapTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2>, OP >
+template< typename MT1, typename MT2, typename OP >
+struct BinaryMapTrait< MT1, MT2, OP
+                     , EnableIf_t< YieldsSymmetric_v<OP,MT1,MT2> &&
+                                   !YieldsDiagonal_v<OP,MT1,MT2> > >
 {
-   using TL = TypeList< Min, Max >;
-
-   using Type = If_t< Contains_v<TL,OP>
-                    , SymmetricMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
-                    , BinaryMapTrait_t<MT1,MT2,OP> >;
+   using Type = SymmetricMatrix< BinaryMapTrait_t< RemoveAdaptor_t<MT1>, RemoveAdaptor_t<MT2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************

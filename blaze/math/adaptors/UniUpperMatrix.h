@@ -91,10 +91,7 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typelist/Contains.h>
-#include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
@@ -3170,34 +3167,10 @@ struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsUniUpper_v<OP,MT> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
-struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2>, OP >
+template< typename MT1, typename MT2, typename OP >
+struct BinaryMapTrait< MT1, MT2, OP, EnableIf_t< YieldsUniUpper_v<OP,MT1,MT2> > >
 {
-   using TL = TypeList< Min, Max >;
-
-   using Type = If_t< Contains_v<TL,OP>
-                    , UpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
-                    , BinaryMapTrait_t<MT1,MT2,OP> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
-struct BinaryMapTrait< UpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>, OP >
-{
-   using TL = TypeList< Min, Max >;
-
-   using Type = If_t< Contains_v<TL,OP>
-                    , UpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
-                    , BinaryMapTrait_t<MT1,MT2,OP> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, typename OP >
-struct BinaryMapTrait< UniUpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2>, OP >
-{
-   using TL = TypeList< Min, Max >;
-
-   using Type = If_t< Contains_v<TL,OP>
-                    , UpperMatrix< BinaryMapTrait_t<MT1,MT2,OP> >
-                    , BinaryMapTrait_t<MT1,MT2,OP> >;
+   using Type = UniUpperMatrix< BinaryMapTrait_t< RemoveAdaptor_t<MT1>, RemoveAdaptor_t<MT2>, OP > >;
 };
 /*! \endcond */
 //*************************************************************************************************
