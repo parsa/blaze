@@ -66,6 +66,8 @@
 #include <blaze/math/shims/Erf.h>
 #include <blaze/math/shims/Erfc.h>
 #include <blaze/math/shims/Exp.h>
+#include <blaze/math/shims/Exp2.h>
+#include <blaze/math/shims/Exp10.h>
 #include <blaze/math/shims/Floor.h>
 #include <blaze/math/shims/Imaginary.h>
 #include <blaze/math/shims/InvCbrt.h>
@@ -75,6 +77,9 @@
 #include <blaze/math/shims/IsOne.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/shims/IsZero.h>
+#include <blaze/math/shims/Log.h>
+#include <blaze/math/shims/Log2.h>
+#include <blaze/math/shims/Log10.h>
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Pow3.h>
@@ -773,19 +778,31 @@ inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy )
 /*!\name Proxy global functions */
 //@{
 template< typename PT, typename RT >
-inline decltype(auto) trans( const Proxy<PT,RT>& proxy );
-
-template< typename PT, typename RT >
-inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy );
-
-template< typename PT, typename RT >
 inline decltype(auto) abs( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 inline decltype(auto) sign( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
+inline decltype(auto) floor( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) ceil( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) trunc( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) round( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
 inline decltype(auto) conj( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) trans( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 inline decltype(auto) real( const Proxy<PT,RT>& proxy );
@@ -814,18 +831,6 @@ inline decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs );
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
 inline decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs );
 
-template< typename PT, typename RT >
-inline decltype(auto) floor( const Proxy<PT,RT>& proxy );
-
-template< typename PT, typename RT >
-inline decltype(auto) ceil( const Proxy<PT,RT>& proxy );
-
-template< typename PT, typename RT >
-inline decltype(auto) trunc( const Proxy<PT,RT>& proxy );
-
-template< typename PT, typename RT >
-inline decltype(auto) round( const Proxy<PT,RT>& proxy );
-
 template< typename PT, typename RT, typename ET >
 inline decltype(auto) pow( const Proxy<PT,RT>& proxy, const ET& exp );
 
@@ -840,6 +845,21 @@ inline decltype(auto) pow4( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 inline decltype(auto) exp( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) exp2( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) exp10( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) log( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) log2( const Proxy<PT,RT>& proxy );
+
+template< typename PT, typename RT >
+inline decltype(auto) log10( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
 inline decltype(auto) sin( const Proxy<PT,RT>& proxy );
@@ -947,46 +967,6 @@ inline bool equal( const T& lhs, const Proxy<PT,RT>& rhs );
 
 
 //*************************************************************************************************
-/*!\brief Computing the transpose of the represented element.
-// \ingroup math
-//
-// \param proxy The given proxy instance.
-// \return The transpose of the represented element.
-//
-// This function returns an expression representing the transpose of the element represented by
-// the proxy.
-*/
-template< typename PT, typename RT >
-inline decltype(auto) trans( const Proxy<PT,RT>& proxy )
-{
-   using blaze::trans;
-
-   return trans( (~proxy).get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computing the conjugate transpose of the represented element.
-// \ingroup math
-//
-// \param proxy The given proxy instance.
-// \return The conjugate transpose of the represented element.
-//
-// This function returns an expression representing the conjugate transpose of the element
-// represented by the proxy.
-*/
-template< typename PT, typename RT >
-inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy )
-{
-   using blaze::ctrans;
-
-   return ctrans( (~proxy).get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Computing the absolute value of the represented element.
 // \ingroup math
 //
@@ -1029,6 +1009,90 @@ inline decltype(auto) sign( const Proxy<PT,RT>& proxy )
 
 
 //*************************************************************************************************
+/*!\brief Computes the largest integral value that is not greater than the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The largest integral value that is not greater than the represented element.
+//
+// This function computes the largest integral value that is not greater than the element
+// represented by the proxy. In case the proxy represents a vector- or matrix-like data
+// structure the function returns an expression representing the operation.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) floor( const Proxy<PT,RT>& proxy )
+{
+   using blaze::floor;
+
+   return floor( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the smallest integral value that is not less than the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The smallest integral value that is not less than the represented element.
+//
+// This function computes the smallest integral value that is not less than the element
+// represented by the proxy. In case the proxy represents a vector- or matrix-like data
+// structure the function returns an expression representing the operation.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) ceil( const Proxy<PT,RT>& proxy )
+{
+   using blaze::ceil;
+
+   return ceil( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the nearest integral value that is not greater than the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The nearest integral value that is not greater than the represented element.
+//
+// This function computes the nearest integral value that is not greater than the element
+// represented by the proxy. In case the proxy represents a vector- or matrix-like data
+// structure the function returns an expression representing the operation.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) trunc( const Proxy<PT,RT>& proxy )
+{
+   using blaze::trunc;
+
+   return trunc( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the nearest integral value to the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The nearest integral value to the represented element.
+//
+// This function computes the nearest integral value to the element represented by the proxy.
+// In case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the operation.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) round( const Proxy<PT,RT>& proxy )
+{
+   using blaze::round;
+
+   return round( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computing the complex conjugate of the represented element.
 // \ingroup math
 //
@@ -1045,6 +1109,46 @@ inline decltype(auto) conj( const Proxy<PT,RT>& proxy )
    using blaze::conj;
 
    return conj( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the transpose of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The transpose of the represented element.
+//
+// This function returns an expression representing the transpose of the element represented by
+// the proxy.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) trans( const Proxy<PT,RT>& proxy )
+{
+   using blaze::trans;
+
+   return trans( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the conjugate transpose of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The conjugate transpose of the represented element.
+//
+// This function returns an expression representing the conjugate transpose of the element
+// represented by the proxy.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy )
+{
+   using blaze::ctrans;
+
+   return ctrans( (~proxy).get() );
 }
 //*************************************************************************************************
 
@@ -1244,90 +1348,6 @@ inline decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs )
 
 
 //*************************************************************************************************
-/*!\brief Computes the largest integral value that is not greater than the represented element.
-// \ingroup math
-//
-// \param proxy The given proxy instance.
-// \return The largest integral value that is not greater than the represented element.
-//
-// This function computes the largest integral value that is not greater than the element
-// represented by the proxy. In case the proxy represents a vector- or matrix-like data
-// structure the function returns an expression representing the operation.
-*/
-template< typename PT, typename RT >
-inline decltype(auto) floor( const Proxy<PT,RT>& proxy )
-{
-   using blaze::floor;
-
-   return floor( (~proxy).get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computes the smallest integral value that is not less than the represented element.
-// \ingroup math
-//
-// \param proxy The given proxy instance.
-// \return The smallest integral value that is not less than the represented element.
-//
-// This function computes the smallest integral value that is not less than the element
-// represented by the proxy. In case the proxy represents a vector- or matrix-like data
-// structure the function returns an expression representing the operation.
-*/
-template< typename PT, typename RT >
-inline decltype(auto) ceil( const Proxy<PT,RT>& proxy )
-{
-   using blaze::ceil;
-
-   return ceil( (~proxy).get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computes the nearest integral value that is not greater than the represented element.
-// \ingroup math
-//
-// \param proxy The given proxy instance.
-// \return The nearest integral value that is not greater than the represented element.
-//
-// This function computes the nearest integral value that is not greater than the element
-// represented by the proxy. In case the proxy represents a vector- or matrix-like data
-// structure the function returns an expression representing the operation.
-*/
-template< typename PT, typename RT >
-inline decltype(auto) trunc( const Proxy<PT,RT>& proxy )
-{
-   using blaze::trunc;
-
-   return trunc( (~proxy).get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computes the nearest integral value to the represented element.
-// \ingroup math
-//
-// \param proxy The given proxy instance.
-// \return The nearest integral value to the represented element.
-//
-// This function computes the nearest integral value to the element represented by the proxy.
-// In case the proxy represents a vector- or matrix-like data structure the function returns
-// an expression representing the operation.
-*/
-template< typename PT, typename RT >
-inline decltype(auto) round( const Proxy<PT,RT>& proxy )
-{
-   using blaze::round;
-
-   return round( (~proxy).get() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Computing the exponential value of the represented element.
 // \ingroup math
 //
@@ -1429,6 +1449,111 @@ inline decltype(auto) exp( const Proxy<PT,RT>& proxy )
    using blaze::exp;
 
    return exp( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the base-2 exponential of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The base-2 exponential of the represented element.
+//
+// This function computes the base-2 exponential of the element represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the base-2 exponentials of the elements of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) exp2( const Proxy<PT,RT>& proxy )
+{
+   using blaze::exp2;
+
+   return exp2( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the base-10 exponential of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The base-10 exponential of the represented element.
+//
+// This function computes the base-10 exponential of the element represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the base-10 exponentials of the elements of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) exp10( const Proxy<PT,RT>& proxy )
+{
+   using blaze::exp10;
+
+   return exp10( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the natural logarithm of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The natural logarithm of the represented element.
+//
+// This function computes the natural logarithm of the element represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the natural logarithm of the elements of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) log( const Proxy<PT,RT>& proxy )
+{
+   using blaze::log;
+
+   return log( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the binary logarithm of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The binary logarithm of the represented element.
+//
+// This function computes the binary logarithm of the element represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the binary logarithm of the elements of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) log2( const Proxy<PT,RT>& proxy )
+{
+   using blaze::log2;
+
+   return log2( (~proxy).get() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computing the common logarithm of the represented element.
+// \ingroup math
+//
+// \param proxy The given proxy instance.
+// \return The common logarithm of the represented element.
+//
+// This function computes the common logarithm of the element represented by the proxy. In
+// case the proxy represents a vector- or matrix-like data structure the function returns
+// an expression representing the common logarithm of the elements of the vector/matrix.
+*/
+template< typename PT, typename RT >
+inline decltype(auto) log10( const Proxy<PT,RT>& proxy )
+{
+   using blaze::log10;
+
+   return log10( (~proxy).get() );
 }
 //*************************************************************************************************
 
