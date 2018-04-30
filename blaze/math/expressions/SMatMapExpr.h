@@ -1641,39 +1641,7 @@ inline decltype(auto) log( const SparseMatrix<MT,SO>& sm )
 // \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
 // \return The binary logarithm of each non-zero element of \a sm.
 //
-// The \a log10() function computes the binary logarithm for each non-zero element of the input
-// matrix \a sm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a log10() function:
-
-   \code
-   blaze::CompressedMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = log10( A );
-   \endcode
-
-// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
-// checks are performed to assert this precondition!
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline decltype(auto) log10( const SparseMatrix<MT,SO>& sm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using ReturnType = const SMatMapExpr<MT,Log10,SO>;
-   return ReturnType( ~sm, Log10() );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Computes the common logarithm for each non-zero element of the sparse matrix \a sm.
-// \ingroup sparse_matrix
-//
-// \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
-// \return The common logarithm of each non-zero element of \a sm.
-//
-// The \a log2() function computes the common logarithm for each non-zero element of the input
+// The \a log2() function computes the binary logarithm for each non-zero element of the input
 // matrix \a sm. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a log2() function:
 
@@ -1694,6 +1662,38 @@ inline decltype(auto) log2( const SparseMatrix<MT,SO>& sm )
 
    using ReturnType = const SMatMapExpr<MT,Log2,SO>;
    return ReturnType( ~sm, Log2() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the common logarithm for each non-zero element of the sparse matrix \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix; all non-zero elements must be in the range \f$[0..\infty)\f$.
+// \return The common logarithm of each non-zero element of \a sm.
+//
+// The \a log10() function computes the common logarithm for each non-zero element of the input
+// matrix \a sm. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a log10() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = log10( A );
+   \endcode
+
+// \note All non-zero elements are expected to be in the range \f$[0..\infty)\f$. No runtime
+// checks are performed to assert this precondition!
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) log10( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const SMatMapExpr<MT,Log10,SO>;
+   return ReturnType( ~sm, Log10() );
 }
 //*************************************************************************************************
 
