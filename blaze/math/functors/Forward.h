@@ -110,6 +110,7 @@ struct Qdrt;
 struct Real;
 struct Reset;
 struct Round;
+struct Schur;
 struct SchurAssign;
 struct Serial;
 struct Sign;
