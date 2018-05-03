@@ -87,6 +87,8 @@
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/YieldsDiagonal.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
+#include <blaze/math/typetraits/YieldsIdentity.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -1186,9 +1188,10 @@ struct DivTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_t< IsNumeric_v<T> > >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP >
-struct UnaryMapTrait< MT, OP
-                    , EnableIf_t< YieldsSymmetric_v<OP,MT> &&
-                                  !YieldsDiagonal_v<OP,MT> > >
+struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsSymmetric_v<OP,MT> &&
+                                          !YieldsHermitian_v<OP,MT> &&
+                                          !YieldsDiagonal_v<OP,MT> &&
+                                          !YieldsIdentity_v<OP,MT> > >
 {
    using Type = SymmetricMatrix< UnaryMapTrait_t< RemoveAdaptor_t<MT>, OP > >;
 };
@@ -1207,9 +1210,10 @@ struct UnaryMapTrait< MT, OP
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename OP >
-struct BinaryMapTrait< MT1, MT2, OP
-                     , EnableIf_t< YieldsSymmetric_v<OP,MT1,MT2> &&
-                                   !YieldsDiagonal_v<OP,MT1,MT2> > >
+struct BinaryMapTrait< MT1, MT2, OP, EnableIf_t< YieldsSymmetric_v<OP,MT1,MT2> &&
+                                                 !YieldsHermitian_v<OP,MT1,MT2> &&
+                                                 !YieldsDiagonal_v<OP,MT1,MT2> &&
+                                                 !YieldsIdentity_v<OP,MT1,MT2> > >
 {
    using Type = SymmetricMatrix< BinaryMapTrait_t< RemoveAdaptor_t<MT1>, RemoveAdaptor_t<MT2>, OP > >;
 };

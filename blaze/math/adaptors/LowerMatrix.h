@@ -1984,11 +1984,10 @@ struct DivTrait< LowerMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP >
-struct UnaryMapTrait< MT, OP
-                    , EnableIf_t< YieldsLower_v<OP,MT> &&
-                                  !YieldsUniLower_v<OP,MT> &&
-                                  !YieldsStrictlyLower_v<OP,MT> &&
-                                  !YieldsDiagonal_v<OP,MT> > >
+struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsLower_v<OP,MT> &&
+                                          !YieldsUniLower_v<OP,MT> &&
+                                          !YieldsStrictlyLower_v<OP,MT> &&
+                                          !YieldsDiagonal_v<OP,MT> > >
 {
    using Type = LowerMatrix< UnaryMapTrait_t< RemoveAdaptor_t<MT>, OP > >;
 };
@@ -2007,11 +2006,10 @@ struct UnaryMapTrait< MT, OP
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename OP >
-struct BinaryMapTrait< MT1, MT2, OP
-                     , EnableIf_t< YieldsLower_v<OP,MT1,MT2> &&
-                                   !YieldsUniLower_v<OP,MT1,MT2> &&
-                                   !YieldsStrictlyLower_v<OP,MT1,MT2> &&
-                                   !YieldsDiagonal_v<OP,MT1,MT2> > >
+struct BinaryMapTrait< MT1, MT2, OP, EnableIf_t< YieldsLower_v<OP,MT1,MT2> &&
+                                                 !YieldsUniLower_v<OP,MT1,MT2> &&
+                                                 !YieldsStrictlyLower_v<OP,MT1,MT2> &&
+                                                 !YieldsDiagonal_v<OP,MT1,MT2> > >
 {
    using Type = LowerMatrix< BinaryMapTrait_t< RemoveAdaptor_t<MT1>, RemoveAdaptor_t<MT2>, OP > >;
 };

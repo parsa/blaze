@@ -79,6 +79,8 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/typetraits/YieldsIdentity.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
@@ -89,11 +91,8 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typelist/Contains.h>
-#include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
@@ -2390,21 +2389,10 @@ struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename OP >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, OP >
+template< typename MT, typename OP >
+struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsIdentity_v<OP,MT> > >
 {
-   using TL = TypeList< Abs, Sign, Floor, Ceil, Trunc, Round
-                      , Conj, Real, Sqrt, Cbrt, Pow2, Pow3, Pow4 >;
-
-   using Type = If_t< Contains_v< TL, OP >
-                    , IdentityMatrix< UnaryMapTrait_t<T,OP>, SO >
-                    , CompressedMatrix< UnaryMapTrait_t<T,OP>, SO > >;
-};
-
-template< typename T, bool SO, typename ET >
-struct UnaryMapTrait< IdentityMatrix<T,SO>, UnaryPow<ET> >
-{
-   using Type = IdentityMatrix< UnaryMapTrait< T, UnaryPow<ET> >, SO >;
+   using Type = IdentityMatrix< UnaryMapTrait_t< ElementType_t<MT>, OP >, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

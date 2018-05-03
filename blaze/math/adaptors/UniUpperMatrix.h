@@ -87,6 +87,7 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/YieldsIdentity.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -3149,7 +3150,8 @@ struct DivTrait< UniUpperMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP >
-struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsUniUpper_v<OP,MT> > >
+struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsUniUpper_v<OP,MT> &&
+                                          !YieldsIdentity_v<OP,MT> > >
 {
    using Type = UniUpperMatrix< UnaryMapTrait_t< RemoveAdaptor_t<MT>, OP > >;
 };
@@ -3168,7 +3170,8 @@ struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsUniUpper_v<OP,MT> > >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, typename OP >
-struct BinaryMapTrait< MT1, MT2, OP, EnableIf_t< YieldsUniUpper_v<OP,MT1,MT2> > >
+struct BinaryMapTrait< MT1, MT2, OP, EnableIf_t< YieldsUniUpper_v<OP,MT1,MT2> &&
+                                                 !YieldsIdentity_v<OP,MT1,MT2> > >
 {
    using Type = UniUpperMatrix< BinaryMapTrait_t< RemoveAdaptor_t<MT1>, RemoveAdaptor_t<MT2>, OP > >;
 };
