@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {

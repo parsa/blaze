@@ -52,7 +52,6 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
@@ -61,6 +60,7 @@
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -135,25 +135,7 @@ struct Abs
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
 struct YieldsSymmetric<Abs,MT>
-   : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct YieldsHermitian<Abs,MT>
-   : public IsHermitian<MT>
+   : public BoolConstant< IsSymmetric_v<MT> || IsHermitian_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

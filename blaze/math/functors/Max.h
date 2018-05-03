@@ -43,7 +43,6 @@
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/simd/Max.h>
 #include <blaze/math/typetraits/HasSIMDMax.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -51,7 +50,6 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
@@ -61,6 +59,7 @@
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -139,24 +138,6 @@ struct Max
 template< typename MT1, typename MT2 >
 struct YieldsSymmetric<Max,MT1,MT2>
    : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct YieldsHermitian<Max,MT1,MT2>
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

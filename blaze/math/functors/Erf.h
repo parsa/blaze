@@ -44,13 +44,11 @@
 #include <blaze/math/shims/Erf.h>
 #include <blaze/math/simd/Erf.h>
 #include <blaze/math/typetraits/HasSIMDErf.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
@@ -132,24 +130,6 @@ struct Erf
 template< typename MT >
 struct YieldsSymmetric<Erf,MT>
    : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct YieldsHermitian<Erf,MT>
-   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

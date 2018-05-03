@@ -44,19 +44,18 @@
 #include <blaze/math/shims/Hypot.h>
 #include <blaze/math/simd/Hypot.h>
 #include <blaze/math/typetraits/HasSIMDHypot.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {
@@ -135,24 +134,6 @@ struct Hypot
 template< typename MT1, typename MT2 >
 struct YieldsSymmetric<Hypot,MT1,MT2>
    : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct YieldsHermitian<Hypot,MT1,MT2>
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

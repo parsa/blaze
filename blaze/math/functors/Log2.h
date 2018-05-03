@@ -44,9 +44,7 @@
 #include <blaze/math/shims/Log2.h>
 #include <blaze/math/simd/Log2.h>
 #include <blaze/math/typetraits/HasSIMDLog2.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -124,24 +122,6 @@ struct Log2
 template< typename MT >
 struct YieldsSymmetric<Log2,MT>
    : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct YieldsHermitian<Log2,MT>
-   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

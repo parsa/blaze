@@ -44,9 +44,7 @@
 #include <blaze/math/shims/Exp2.h>
 #include <blaze/math/simd/Exp2.h>
 #include <blaze/math/typetraits/HasSIMDExp2.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -124,24 +122,6 @@ struct Exp2
 template< typename MT >
 struct YieldsSymmetric<Exp2,MT>
    : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct YieldsHermitian<Exp2,MT>
-   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

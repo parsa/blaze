@@ -44,9 +44,7 @@
 #include <blaze/math/shims/Erfc.h>
 #include <blaze/math/simd/Erfc.h>
 #include <blaze/math/typetraits/HasSIMDErfc.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/system/Inline.h>
 
@@ -124,24 +122,6 @@ struct Erfc
 template< typename MT >
 struct YieldsSymmetric<Erfc,MT>
    : public IsSymmetric<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct YieldsHermitian<Erfc,MT>
-   : public IsHermitian<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
