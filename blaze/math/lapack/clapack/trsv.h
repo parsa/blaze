@@ -52,6 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !defined(BLAS_H)
 extern "C" {
 
 void strsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, float*  x, int* incX );
@@ -60,6 +61,7 @@ void ctrsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, f
 void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda, double* x, int* incX );
 
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
