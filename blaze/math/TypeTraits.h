@@ -115,6 +115,7 @@
 #include <blaze/math/typetraits/HasSqrt.h>
 #include <blaze/math/typetraits/HasSub.h>
 #include <blaze/math/typetraits/HasTan.h>
+#include <blaze/math/typetraits/HasTanh.h>
 #include <blaze/math/typetraits/HasTrunc.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAdaptor.h>
