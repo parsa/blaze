@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/HasInvSqrt.h>
 #include <blaze/math/typetraits/HasLog.h>
 #include <blaze/math/typetraits/HasLog2.h>
+#include <blaze/math/typetraits/HasLog10.h>
 #include <blaze/math/typetraits/HasMax.h>
 #include <blaze/math/typetraits/HasMin.h>
 #include <blaze/math/typetraits/HasMult.h>
