@@ -55,6 +55,7 @@
 #include <blaze/math/typetraits/HasCos.h>
 #include <blaze/math/typetraits/HasCosh.h>
 #include <blaze/math/typetraits/HasDiv.h>
+#include <blaze/math/typetraits/HasErf.h>
 #include <blaze/math/typetraits/HasExp.h>
 #include <blaze/math/typetraits/HasExp2.h>
 #include <blaze/math/typetraits/HasExp10.h>
