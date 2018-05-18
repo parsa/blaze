@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/HasAbs.h>
 #include <blaze/math/typetraits/HasAdd.h>
 #include <blaze/math/typetraits/HasAsin.h>
+#include <blaze/math/typetraits/HasAsinh.h>
 #include <blaze/math/typetraits/HasCbrt.h>
 #include <blaze/math/typetraits/HasCeil.h>
 #include <blaze/math/typetraits/HasConj.h>
