@@ -42,6 +42,7 @@
 
 #include <blaze/math/typetraits/HasAbs.h>
 #include <blaze/math/typetraits/HasAdd.h>
+#include <blaze/math/typetraits/HasCeil.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasDiv.h>
 #include <blaze/math/typetraits/HasFloor.h>
