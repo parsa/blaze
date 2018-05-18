@@ -50,6 +50,7 @@
 #include <blaze/math/typetraits/HasMin.h>
 #include <blaze/math/typetraits/HasMult.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasRound.h>
 #include <blaze/math/typetraits/HasSign.h>
 #include <blaze/math/typetraits/HasSIMDAbs.h>
 #include <blaze/math/typetraits/HasSIMDAcos.h>
