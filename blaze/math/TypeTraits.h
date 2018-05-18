@@ -94,6 +94,7 @@
 #include <blaze/math/typetraits/HasSIMDTan.h>
 #include <blaze/math/typetraits/HasSIMDTanh.h>
 #include <blaze/math/typetraits/HasSIMDTrunc.h>
+#include <blaze/math/typetraits/HasSqrt.h>
 #include <blaze/math/typetraits/HasSub.h>
 #include <blaze/math/typetraits/HasTrunc.h>
 #include <blaze/math/typetraits/HighType.h>
