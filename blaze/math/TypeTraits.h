@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/HasAbs.h>
+#include <blaze/math/typetraits/HasAcos.h>
 #include <blaze/math/typetraits/HasAdd.h>
 #include <blaze/math/typetraits/HasAsin.h>
 #include <blaze/math/typetraits/HasAsinh.h>
