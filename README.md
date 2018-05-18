@@ -220,3 +220,5 @@ Marcin Copik -- CMake fixes
 Hartmut Kaiser -- HPX backend
 
 Patrick Diehl -- Integration of HPX to the Blazemark
+
+Mario Emmenlauer -- Blazemark extensions
