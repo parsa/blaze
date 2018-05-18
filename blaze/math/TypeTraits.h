@@ -48,6 +48,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasDiv.h>
 #include <blaze/math/typetraits/HasFloor.h>
+#include <blaze/math/typetraits/HasInvCbrt.h>
 #include <blaze/math/typetraits/HasInvSqrt.h>
 #include <blaze/math/typetraits/HasMax.h>
 #include <blaze/math/typetraits/HasMin.h>
