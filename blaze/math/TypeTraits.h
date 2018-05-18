@@ -50,6 +50,7 @@
 #include <blaze/math/typetraits/HasConj.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasCos.h>
+#include <blaze/math/typetraits/HasCosh.h>
 #include <blaze/math/typetraits/HasDiv.h>
 #include <blaze/math/typetraits/HasExp.h>
 #include <blaze/math/typetraits/HasExp2.h>
