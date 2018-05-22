@@ -33,6 +33,18 @@
 
 cmake_minimum_required(VERSION 3.5)
 
+file(READ blaze/system/Version.h BLAZE_VERSION_FILE)
+
+string(REGEX MATCH "#define BLAZE_MAJOR_VERSION ([0-9]*)" _BLAZE_MAJOR_VERSION ${BLAZE_VERSION_FILE})
+set(BLAZE_MAJOR_VERSION ${CMAKE_MATCH_1})
+
+string(REGEX MATCH "#define BLAZE_MINOR_VERSION ([0-9]*)" _BLAZE_MINOR_VERSION ${BLAZE_VERSION_FILE})
+set(BLAZE_MINOR_VERSION ${CMAKE_MATCH_1})
+
+project(blaze LANGUAGES CXX VERSION "${BLAZE_MAJOR_VERSION}.${BLAZE_MINOR_VERSION}")
+
+message(STATUS "Configuring blaze version ${PROJECT_VERSION}")
+
 add_library(blaze INTERFACE)
 target_include_directories(blaze INTERFACE
    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
@@ -359,6 +371,14 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Inline.h.in"
 # Installation
 #==================================================================================================
 
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+   "${CMAKE_CURRENT_BINARY_DIR}/cmake/blaze-config-version.cmake"
+   VERSION ${PROJECT_VERSION}
+   COMPATIBILITY SameMajorVersion
+   )
+
 install(DIRECTORY blaze DESTINATION include)
 install(TARGETS blaze EXPORT blazeTargets)
 
@@ -382,6 +402,7 @@ install(EXPORT blazeTargets
    )
 
 install(
-   FILES cmake/blaze-config.cmake
+   FILES "${CMAKE_CURRENT_BINARY_DIR}/cmake/blaze-config.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/cmake/blaze-config-version.cmake"
    DESTINATION share/blaze/cmake
    )
