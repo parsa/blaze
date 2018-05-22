@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/HasExp10.h>
 #include <blaze/math/typetraits/HasFloor.h>
 #include <blaze/math/typetraits/HasHypot.h>
+#include <blaze/math/typetraits/HasImag.h>
 #include <blaze/math/typetraits/HasInvCbrt.h>
 #include <blaze/math/typetraits/HasInvSqrt.h>
 #include <blaze/math/typetraits/HasLog.h>
