@@ -51,6 +51,7 @@
 #include <blaze/math/typetraits/HasAtanh.h>
 #include <blaze/math/typetraits/HasCbrt.h>
 #include <blaze/math/typetraits/HasCeil.h>
+#include <blaze/math/typetraits/HasClamp.h>
 #include <blaze/math/typetraits/HasConj.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasCos.h>
