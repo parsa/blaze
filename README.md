@@ -222,3 +222,6 @@ Hartmut Kaiser -- HPX backend
 Patrick Diehl -- Integration of HPX to the Blazemark
 
 Mario Emmenlauer -- Blazemark extensions
+
+Jeff Pollock -- CMake extensions
+
