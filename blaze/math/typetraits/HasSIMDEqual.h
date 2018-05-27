@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Compiler.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
@@ -100,6 +101,7 @@ struct HasSIMDEqualHelper< complex<T>, complex<T>, EnableIf_t< IsNumeric_v<T> &&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if !( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) || !BLAZE_GNU_COMPILER
 template<>
 struct HasSIMDEqualHelper< float, float >
    : public BoolConstant< bool( BLAZE_SSE_MODE     ) ||
@@ -115,12 +117,7 @@ struct HasSIMDEqualHelper< complex<float>, complex<float> >
                           bool( BLAZE_MIC_MODE     ) ||
                           bool( BLAZE_AVX512F_MODE ) >
 {};
-/*! \endcond */
-//*************************************************************************************************
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 template<>
 struct HasSIMDEqualHelper< double, double >
    : public BoolConstant< bool( BLAZE_SSE2_MODE    ) ||
@@ -136,6 +133,7 @@ struct HasSIMDEqualHelper< complex<double>, complex<double> >
                           bool( BLAZE_MIC_MODE     ) ||
                           bool( BLAZE_AVX512F_MODE ) >
 {};
+#endif
 /*! \endcond */
 //*************************************************************************************************
 

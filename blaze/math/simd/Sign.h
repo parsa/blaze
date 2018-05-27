@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/simd/BasicTypes.h>
+#include <blaze/system/Compiler.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -230,7 +231,9 @@ BLAZE_ALWAYS_INLINE SIMDint64 sign( const SIMDint64& a ) noexcept
 // is only available for SSE4, AVX, MIC, and AVX-512F.
 */
 BLAZE_ALWAYS_INLINE SIMDfloat sign( const SIMDfloat& a ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    const __m512    zero ( _mm512_setzero_ps() );
    const __mmask16 mask1( _mm512_cmplt_ps_mask( zero, a.value ) );
@@ -281,7 +284,9 @@ BLAZE_ALWAYS_INLINE SIMDfloat sign( const SIMDfloat& a ) noexcept
 // is only available for SSE4, AVX, MIC, and AVX-512F.
 */
 BLAZE_ALWAYS_INLINE SIMDdouble sign( const SIMDdouble& a ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    const __m512d  zero ( _mm512_setzero_pd() );
    const __mmask8 mask1( _mm512_cmplt_pd_mask( zero, a.value ) );

@@ -43,6 +43,7 @@
 #include <blaze/math/Accuracy.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/simd/BasicTypes.h>
+#include <blaze/system/Compiler.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -513,7 +514,9 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDci64<T>& a, const SIMDci64<T>& b 
 */
 template< bool RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDfloat& a, const SIMDfloat& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    if( RF == relaxed ) {
       const __m512 accu( _mm512_set1_ps( static_cast<float>( accuracy ) ) );
@@ -579,7 +582,9 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDfloat& a, const SIMDfloat& b ) noexcep
 */
 template< bool RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDcfloat& a, const SIMDcfloat& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    if( RF == relaxed ) {
       const __m512 accu( _mm512_set1_ps( static_cast<float>( accuracy ) ) );
@@ -640,7 +645,9 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDcfloat& a, const SIMDcfloat& b ) noexc
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDf32<T1>& a, const SIMDf32<T2>& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_cmpeq_ps_mask( (~a).eval().value, (~b).eval().value ) == 0xffff;
 }
@@ -669,7 +676,9 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDf32<T1>& a, const SIMDf32<T2>& b 
 // This operation is only available for SSE, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDcfloat& a, const SIMDcfloat& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_cmpeq_ps_mask( a.value, b.value ) == 0xffff;
 }
@@ -713,7 +722,9 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDcfloat& a, const SIMDcfloat& b ) 
 */
 template< bool RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDdouble& a, const SIMDdouble& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    if( RF == relaxed ) {
       const __m512 accu( _mm512_set1_pd( static_cast<double>( accuracy ) ) );
@@ -780,7 +791,9 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDdouble& a, const SIMDdouble& b ) noexc
 */
 template< bool RF >  // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDcdouble& a, const SIMDcdouble& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    if( RF == relaxed ) {
       const __m512 accu( _mm512_set1_pd( static_cast<double>( accuracy ) ) );
@@ -842,7 +855,9 @@ BLAZE_ALWAYS_INLINE bool equal( const SIMDcdouble& a, const SIMDcdouble& b ) noe
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDf64<T1>& a, const SIMDf64<T2>& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_cmpeq_pd_mask( (~a).eval().value, (~b).eval().value ) == 0xff;
 }
@@ -871,7 +886,9 @@ BLAZE_ALWAYS_INLINE bool operator==( const SIMDf64<T1>& a, const SIMDf64<T2>& b 
 // This operation is only available for SSE2, AVX, MIC, and AVX-512.
 */
 BLAZE_ALWAYS_INLINE bool operator==( const SIMDcdouble& a, const SIMDcdouble& b ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_cmpeq_pd_mask( a.value, b.value ) == 0xff;
 }
