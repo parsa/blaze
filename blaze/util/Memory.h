@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR) || defined(__MINGW32__)
+#if BLAZE_WIN64_PLATFORM || BLAZE_MINGW64_PLATFORM || BLAZE_MINGW32_PLATFORM
 #  include <malloc.h>
 #endif
 #include <cstdlib>
@@ -80,10 +80,10 @@ inline byte_t* allocate_backend( size_t size, size_t alignment )
 {
    void* raw( nullptr );
 
-#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR)
+#if BLAZE_WIN64_PLATFORM || BLAZE_MINGW64_PLATFORM
    raw = _aligned_malloc( size, alignment );
    if( raw == nullptr ) {
-#elif defined(__MINGW32__)
+#elif BLAZE_MINGW32_PLATFORM
    raw = __mingw_aligned_malloc( size, alignment );
    if( raw == nullptr ) {
 #else
@@ -111,9 +111,9 @@ inline byte_t* allocate_backend( size_t size, size_t alignment )
 */
 inline void deallocate_backend( const void* address ) noexcept
 {
-#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR)
+#if BLAZE_WIN64_PLATFORM || BLAZE_MINGW64_PLATFORM
    _aligned_free( const_cast<void*>( address ) );
-#elif defined(__MINGW32__)
+#elif BLAZE_MINGW32_PLATFORM
    __mingw_aligned_free( const_cast<void*>( address ) );
 #else
    free( const_cast<void*>( address ) );

@@ -37,6 +37,13 @@
 
 
 //*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Compiler.h>
+
+
+//*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Compiler specific patch for nested template disambiguation.
 // \ingroup util
@@ -69,7 +76,7 @@
    typedef AI::BLAZE_TEMPLATE rebind<double>::other  Other;  // No compilation errors
    \endcode
 */
-#if defined(_MSC_VER) && !defined(__clang__)
+#if BLAZE_MSC_COMPILER
 #  define BLAZE_TEMPLATE
 #else
 #  define BLAZE_TEMPLATE template

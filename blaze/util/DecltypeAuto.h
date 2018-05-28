@@ -37,6 +37,13 @@
 
 
 //*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/system/Compiler.h>
+
+
+//*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Compiler specific patch for decltype(auto) variable definitions.
 // \ingroup util
@@ -54,7 +61,7 @@
    BLAZE_DECLTYPE_AUTO( var, expr );
    \endcode
 */
-#if defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC)
+#if BLAZE_INTEL_COMPILER
 #  define BLAZE_DECLTYPE_AUTO(VAR,EXPR) decltype( EXPR ) VAR( EXPR )
 #else
 #  define BLAZE_DECLTYPE_AUTO(VAR,EXPR) decltype(auto) VAR( EXPR )

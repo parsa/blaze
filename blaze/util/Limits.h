@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <limits>
+#include <blaze/system/Platform.h>
 #include <blaze/util/Types.h>
 
 
@@ -301,7 +302,7 @@ struct Limits<long>
 
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Limits<size_t> specialization.
 // \ingroup util
@@ -319,7 +320,7 @@ struct Limits<size_t>
 
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Limits<ptrdiff_t> specialization.
 // \ingroup util
