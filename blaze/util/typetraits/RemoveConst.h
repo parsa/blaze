@@ -88,8 +88,8 @@ struct RemoveConst
 // definitions are identical:
 
    \code
-   using Type1 = typename RemoveConst<T>::Type;
-   using Type2 = RemoveConst_t<T>;
+   using Type1 = typename blaze::RemoveConst<T>::Type;
+   using Type2 = blaze::RemoveConst_t<T>;
    \endcode
 */
 template< typename T >

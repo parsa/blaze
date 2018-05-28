@@ -87,8 +87,8 @@ struct RemoveReference
 // two type definitions are identical:
 
    \code
-   using Type1 = typename RemoveReference<T>::Type;
-   using Type2 = RemoveReference_t<T>;
+   using Type1 = typename blaze::RemoveReference<T>::Type;
+   using Type2 = blaze::RemoveReference_t<T>;
    \endcode
 */
 template< typename T >

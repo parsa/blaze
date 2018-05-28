@@ -176,8 +176,8 @@ struct IsShort<const volatile unsigned short>
 // are identical:
 
    \code
-   constexpr bool value1 = IsShort<T>::value;
-   constexpr bool value2 = IsShort_v<T>;
+   constexpr bool value1 = blaze::IsShort<T>::value;
+   constexpr bool value2 = blaze::IsShort_v<T>;
    \endcode
 */
 template< typename T >

@@ -180,8 +180,8 @@ struct IsInteger<const volatile unsigned int>
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsInteger<T>::value;
-   constexpr bool value2 = IsInteger_v<T>;
+   constexpr bool value1 = blaze::IsInteger<T>::value;
+   constexpr bool value2 = blaze::IsInteger_v<T>;
    \endcode
 */
 template< typename T >

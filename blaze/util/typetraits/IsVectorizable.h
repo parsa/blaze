@@ -147,8 +147,8 @@ struct IsVectorizable
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsVectorizable<T>::value;
-   constexpr bool value2 = IsVectorizable_v<T>;
+   constexpr bool value1 = blaze::IsVectorizable<T>::value;
+   constexpr bool value2 = blaze::IsVectorizable_v<T>;
    \endcode
 */
 template< typename T >

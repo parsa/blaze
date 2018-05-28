@@ -89,8 +89,8 @@ struct IsUnsigned
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsUnsigned<T>::value;
-   constexpr bool value2 = IsUnsigned_v<T>;
+   constexpr bool value1 = blaze::IsUnsigned<T>::value;
+   constexpr bool value2 = blaze::IsUnsigned_v<T>;
    \endcode
 */
 template< typename T >

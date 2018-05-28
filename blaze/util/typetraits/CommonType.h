@@ -87,8 +87,8 @@ struct CommonType
 // two type definitions are identical:
 
    \code
-   using Type1 = typename CommonType<T1,T2>::Type;
-   using Type2 = CommonType_t<T1,T2>;
+   using Type1 = typename blaze::CommonType<T1,T2>::Type;
+   using Type2 = blaze::CommonType_t<T1,T2>;
    \endcode
 */
 template< typename... T >

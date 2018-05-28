@@ -92,8 +92,8 @@ class IsBaseOf
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsBaseOf<T1,T2>::value;
-   constexpr bool value2 = IsBaseOf_v<T1,T2>;
+   constexpr bool value1 = blaze::IsBaseOf<T1,T2>::value;
+   constexpr bool value2 = blaze::IsBaseOf_v<T1,T2>;
    \endcode
 */
 template< typename Base, typename Derived >

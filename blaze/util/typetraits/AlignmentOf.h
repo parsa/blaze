@@ -265,8 +265,8 @@ struct AlignmentOf< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr size_t value1 = AlignmentOf<T>::value;
-   constexpr size_t value2 = AlignmentOf_v<T>;
+   constexpr size_t value1 = blaze::AlignmentOf<T>::value;
+   constexpr size_t value2 = blaze::AlignmentOf_v<T>;
    \endcode
 */
 template< typename T >

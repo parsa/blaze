@@ -87,8 +87,8 @@ struct IsConst
 // are identical:
 
    \code
-   constexpr bool value1 = IsConst<T>::value;
-   constexpr bool value2 = IsConst_v<T>;
+   constexpr bool value1 = blaze::IsConst<T>::value;
+   constexpr bool value2 = blaze::IsConst_v<T>;
    \endcode
 */
 template< typename T >

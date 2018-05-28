@@ -90,8 +90,8 @@ struct Decay
 // are identical:
 
    \code
-   using Type1 = typename Decay<T>::Type;
-   using Type2 = Decay_t<T>;
+   using Type1 = typename blaze::Decay<T>::Type;
+   using Type2 = blaze::Decay_t<T>;
    \endcode
 */
 template< typename T >

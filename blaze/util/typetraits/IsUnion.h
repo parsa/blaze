@@ -90,8 +90,8 @@ struct IsUnion
 // are identical:
 
    \code
-   constexpr bool value1 = IsUnion<T>::value;
-   constexpr bool value2 = IsUnion_v<T>;
+   constexpr bool value1 = blaze::IsUnion<T>::value;
+   constexpr bool value2 = blaze::IsUnion_v<T>;
    \endcode
 */
 template< typename T >

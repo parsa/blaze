@@ -89,8 +89,8 @@ struct RemoveVolatile
 // two type definitions are identical:
 
    \code
-   using Type1 = typename RemoveVolatile<T>::Type;
-   using Type2 = RemoveVolatile_t<T>;
+   using Type1 = typename blaze::RemoveVolatile<T>::Type;
+   using Type2 = blaze::RemoveVolatile_t<T>;
    \endcode
 */
 template< typename T >

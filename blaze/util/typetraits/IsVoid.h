@@ -87,8 +87,8 @@ struct IsVoid
 // are identical:
 
    \code
-   constexpr bool value1 = IsVoid<T>::value;
-   constexpr bool value2 = IsVoid_v<T>;
+   constexpr bool value1 = blaze::IsVoid<T>::value;
+   constexpr bool value2 = blaze::IsVoid_v<T>;
    \endcode
 */
 template< typename T >

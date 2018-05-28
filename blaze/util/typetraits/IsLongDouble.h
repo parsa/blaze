@@ -131,8 +131,8 @@ struct IsLongDouble<const volatile long double>
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsLongDouble<T>::value;
-   constexpr bool value2 = IsLongDouble_v<T>;
+   constexpr bool value1 = blaze::IsLongDouble<T>::value;
+   constexpr bool value2 = blaze::IsLongDouble_v<T>;
    \endcode
 */
 template< typename T >

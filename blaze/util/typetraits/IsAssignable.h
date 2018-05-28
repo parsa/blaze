@@ -83,8 +83,8 @@ struct IsAssignable
 // the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsAssignable<T,U>::value;
-   constexpr bool value2 = IsAssignable_v<T,U>;
+   constexpr bool value1 = blaze::IsAssignable<T,U>::value;
+   constexpr bool value2 = blaze::IsAssignable_v<T,U>;
    \endcode
 */
 template< typename T, typename U >
@@ -132,8 +132,8 @@ struct IsNothrowAssignable
 // \a T and \a U the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowAssignable<T,U>::value;
-   constexpr bool value2 = IsNothrowAssignable_v<T,U>;
+   constexpr bool value1 = blaze::IsNothrowAssignable<T,U>::value;
+   constexpr bool value2 = blaze::IsNothrowAssignable_v<T,U>;
    \endcode
 */
 template< typename T, typename U >
@@ -180,8 +180,8 @@ struct IsCopyAssignable
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsCopyAssignable<T>::value;
-   constexpr bool value2 = IsCopyAssignable_v<T>;
+   constexpr bool value1 = blaze::IsCopyAssignable<T>::value;
+   constexpr bool value2 = blaze::IsCopyAssignable_v<T>;
    \endcode
 */
 template< typename T >
@@ -229,8 +229,8 @@ struct IsNothrowCopyAssignable
 // \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowCopyAssignable<T>::value;
-   constexpr bool value2 = IsNothrowCopyAssignable_v<T>;
+   constexpr bool value1 = blaze::IsNothrowCopyAssignable<T>::value;
+   constexpr bool value2 = blaze::IsNothrowCopyAssignable_v<T>;
    \endcode
 */
 template< typename T >
@@ -277,8 +277,8 @@ struct IsMoveAssignable
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsMoveAssignable<T>::value;
-   constexpr bool value2 = IsMoveAssignable_v<T>;
+   constexpr bool value1 = blaze::IsMoveAssignable<T>::value;
+   constexpr bool value2 = blaze::IsMoveAssignable_v<T>;
    \endcode
 */
 template< typename T >
@@ -326,8 +326,8 @@ struct IsNothrowMoveAssignable
 // \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowMoveAssignable<T>::value;
-   constexpr bool value2 = IsNothrowMoveAssignable_v<T>;
+   constexpr bool value1 = blaze::IsNothrowMoveAssignable<T>::value;
+   constexpr bool value2 = blaze::IsNothrowMoveAssignable_v<T>;
    \endcode
 */
 template< typename T >

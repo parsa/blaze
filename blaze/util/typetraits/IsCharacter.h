@@ -165,8 +165,8 @@ struct IsCharacter<const volatile T>
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsCharacter<T>::value;
-   constexpr bool value2 = IsCharacter_v<T>;
+   constexpr bool value1 = blaze::IsCharacter<T>::value;
+   constexpr bool value2 = blaze::IsCharacter_v<T>;
    \endcode
 */
 template< typename T >

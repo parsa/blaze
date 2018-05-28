@@ -87,8 +87,8 @@ struct IsPointer
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsPointer<T>::value;
-   constexpr bool value2 = IsPointer_v<T>;
+   constexpr bool value1 = blaze::IsPointer<T>::value;
+   constexpr bool value2 = blaze::IsPointer_v<T>;
    \endcode
 */
 template< typename T >

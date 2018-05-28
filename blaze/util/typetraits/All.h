@@ -95,8 +95,8 @@ struct All
 // types \a T1 and \a T2 the following two statements are identical:
 
    \code
-   constexpr bool value1 = All<TypeTrait,T1,T2>::value;
-   constexpr bool value2 = All_v<TypeTrait,T1,T2>;
+   constexpr bool value1 = blaze::All<TypeTrait,T1,T2>::value;
+   constexpr bool value2 = blaze::All_v<TypeTrait,T1,T2>;
    \endcode
 */
 template< template< typename > class TypeTrait  // Type trait to be evaluated on all operands

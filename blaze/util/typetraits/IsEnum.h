@@ -92,8 +92,8 @@ struct IsEnum
 // are identical:
 
    \code
-   constexpr bool value1 = IsEnum<T>::value;
-   constexpr bool value2 = IsEnum_v<T>;
+   constexpr bool value1 = blaze::IsEnum<T>::value;
+   constexpr bool value2 = blaze::IsEnum_v<T>;
    \endcode
 */
 template< typename T >

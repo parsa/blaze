@@ -106,8 +106,8 @@ struct Rank<T[N]>
 // identical:
 
    \code
-   constexpr size_t value1 = Rank<T>::value;
-   constexpr size_t value2 = Rank_v<T>;
+   constexpr size_t value1 = blaze::Rank<T>::value;
+   constexpr size_t value2 = blaze::Rank_v<T>;
    \endcode
 */
 template< typename T >

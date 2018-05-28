@@ -87,8 +87,8 @@ struct AddPointer
 // definitions are identical:
 
    \code
-   using Type1 = typename AddPointer<T>::Type;
-   using Type2 = AddPointer_t<T>;
+   using Type1 = typename blaze::AddPointer<T>::Type;
+   using Type2 = blaze::AddPointer_t<T>;
    \endcode
 */
 template< typename T >

@@ -88,8 +88,8 @@ struct IsObject
 // are identical:
 
    \code
-   constexpr bool value1 = IsObject<T>::value;
-   constexpr bool value2 = IsObject_v<T>;
+   constexpr bool value1 = blaze::IsObject<T>::value;
+   constexpr bool value2 = blaze::IsObject_v<T>;
    \endcode
 */
 template< typename T >

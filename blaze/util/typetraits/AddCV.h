@@ -8,7 +8,7 @@
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
 //  forms, with or without modification, are permitted provided that the following conditions
-//  are met:
+//  are met:g
 //
 //  1. Redistributions of source code must retain the above copyright notice, this list of
 //     conditions and the following disclaimer.
@@ -88,8 +88,8 @@ struct AddCV
 // definitions are identical:
 
    \code
-   using Type1 = typename AddCV<T>::Type;
-   using Type2 = AddCV_t<T>;
+   using Type1 = typename blaze::AddCV<T>::Type;
+   using Type2 = blaze::AddCV_t<T>;
    \endcode
 */
 template< typename T >

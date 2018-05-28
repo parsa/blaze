@@ -83,8 +83,8 @@ struct IsConstructible
 // and \a T3 the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsConstructible<T1,T2,T3>::value;
-   constexpr bool value2 = IsConstructible_v<T1,T2,T3>;
+   constexpr bool value1 = blaze::IsConstructible<T1,T2,T3>::value;
+   constexpr bool value2 = blaze::IsConstructible_v<T1,T2,T3>;
    \endcode
 */
 template< typename T, typename... Args >
@@ -131,8 +131,8 @@ struct IsNothrowConstructible
 // \a T1, \a T2 and \a T3 the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowConstructible<T1,T2,T3>::value;
-   constexpr bool value2 = IsNothrowConstructible_v<T1,T2,T3>;
+   constexpr bool value1 = blaze::IsNothrowConstructible<T1,T2,T3>::value;
+   constexpr bool value2 = blaze::IsNothrowConstructible_v<T1,T2,T3>;
    \endcode
 */
 template< typename T, typename... Args >
@@ -179,8 +179,8 @@ struct IsDefaultConstructible
 // \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsDefaultConstructible<T>::value;
-   constexpr bool value2 = IsDefaultConstructible_v<T>;
+   constexpr bool value1 = blaze::IsDefaultConstructible<T>::value;
+   constexpr bool value2 = blaze::IsDefaultConstructible_v<T>;
    \endcode
 */
 template< typename T >
@@ -227,8 +227,8 @@ struct IsNothrowDefaultConstructible
 // the type \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowDefaultConstructible<T>::value;
-   constexpr bool value2 = IsNothrowDefaultConstructible_v<T>;
+   constexpr bool value1 = blaze::IsNothrowDefaultConstructible<T>::value;
+   constexpr bool value2 = blaze::IsNothrowDefaultConstructible_v<T>;
    \endcode
 */
 template< typename T >
@@ -275,8 +275,8 @@ struct IsCopyConstructible
 // \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsCopyConstructible<T>::value;
-   constexpr bool value2 = IsCopyConstructible_v<T>;
+   constexpr bool value1 = blaze::IsCopyConstructible<T>::value;
+   constexpr bool value2 = blaze::IsCopyConstructible_v<T>;
    \endcode
 */
 template< typename T >
@@ -323,8 +323,8 @@ struct IsNothrowCopyConstructible
 // the type \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowCopyConstructible<T>::value;
-   constexpr bool value2 = IsNothrowCopyConstructible_v<T>;
+   constexpr bool value1 = blaze::IsNothrowCopyConstructible<T>::value;
+   constexpr bool value2 = blaze::IsNothrowCopyConstructible_v<T>;
    \endcode
 */
 template< typename T >
@@ -371,8 +371,8 @@ struct IsMoveConstructible
 // \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsMoveConstructible<T>::value;
-   constexpr bool value2 = IsMoveConstructible_v<T>;
+   constexpr bool value1 = blaze::IsMoveConstructible<T>::value;
+   constexpr bool value2 = blaze::IsMoveConstructible_v<T>;
    \endcode
 */
 template< typename T >
@@ -419,8 +419,8 @@ struct IsNothrowMoveConstructible
 // the type \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowMoveConstructible<T>::value;
-   constexpr bool value2 = IsNothrowMoveConstructible_v<T>;
+   constexpr bool value1 = blaze::IsNothrowMoveConstructible<T>::value;
+   constexpr bool value2 = blaze::IsNothrowMoveConstructible_v<T>;
    \endcode
 */
 template< typename T >

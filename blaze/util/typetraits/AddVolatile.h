@@ -87,8 +87,8 @@ struct AddVolatile
 // definitions are identical:
 
    \code
-   using Type1 = typename AddVolatile<T>::Type;
-   using Type2 = AddVolatile_t<T>;
+   using Type1 = typename blaze::AddVolatile<T>::Type;
+   using Type2 = blaze::AddVolatile_t<T>;
    \endcode
 */
 template< typename T >

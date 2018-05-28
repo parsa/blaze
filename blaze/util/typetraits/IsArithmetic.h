@@ -90,8 +90,8 @@ struct IsArithmetic
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsArithmetic<T>::value;
-   constexpr bool value2 = IsArithmetic_v<T>;
+   constexpr bool value1 = blaze::IsArithmetic<T>::value;
+   constexpr bool value2 = blaze::IsArithmetic_v<T>;
    \endcode
 */
 template< typename T >

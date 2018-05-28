@@ -87,8 +87,8 @@ struct IsArray
 // are identical:
 
    \code
-   constexpr bool value1 = IsArray<T>::value;
-   constexpr bool value2 = IsArray_v<T>;
+   constexpr bool value1 = blaze::IsArray<T>::value;
+   constexpr bool value2 = blaze::IsArray_v<T>;
    \endcode
 */
 template< typename T >

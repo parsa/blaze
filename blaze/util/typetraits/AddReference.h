@@ -87,8 +87,8 @@ struct AddReference
 // definitions are identical:
 
    \code
-   using Type1 = typename AddReference<T>::Type;
-   using Type2 = AddReference_t<T>;
+   using Type1 = typename blaze::AddReference<T>::Type;
+   using Type2 = blaze::AddReference_t<T>;
    \endcode
 */
 template< typename T >

@@ -132,8 +132,8 @@ struct IsValid<const volatile INVALID_TYPE>
 // are identical:
 
    \code
-   constexpr bool value1 = IsValid<T>::value;
-   constexpr bool value2 = IsValid_v<T>;
+   constexpr bool value1 = blaze::IsValid<T>::value;
+   constexpr bool value2 = blaze::IsValid_v<T>;
    \endcode
 */
 template< typename T >

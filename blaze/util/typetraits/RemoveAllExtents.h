@@ -88,8 +88,8 @@ struct RemoveAllExtents
 // two type definitions are identical:
 
    \code
-   using Type1 = typename RemoveAllExtents<T>::Type;
-   using Type2 = RemoveAllExtents_t<T>;
+   using Type1 = typename blaze::RemoveAllExtents<T>::Type;
+   using Type2 = blaze::RemoveAllExtents_t<T>;
    \endcode
 */
 template< typename T >

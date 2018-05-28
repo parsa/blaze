@@ -132,8 +132,8 @@ struct IsComplexFloat< const volatile complex<float> >
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsComplexFloat<T>::value;
-   constexpr bool value2 = IsComplexFloat_v<T>;
+   constexpr bool value1 = blaze::IsComplexFloat<T>::value;
+   constexpr bool value2 = blaze::IsComplexFloat_v<T>;
    \endcode
 */
 template< typename T >

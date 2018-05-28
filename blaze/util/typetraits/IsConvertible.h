@@ -99,8 +99,8 @@ struct IsConvertible
 // the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsConvertible<T1,T2>::value;
-   constexpr bool value2 = IsConvertible_v<T1,T2>;
+   constexpr bool value1 = blaze::IsConvertible<T1,T2>::value;
+   constexpr bool value2 = blaze::IsConvertible_v<T1,T2>;
    \endcode
 */
 template< typename From, typename To >

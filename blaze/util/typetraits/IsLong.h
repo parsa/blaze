@@ -176,8 +176,8 @@ struct IsLong<const volatile unsigned long>
 // are identical:
 
    \code
-   constexpr bool value1 = IsLong<T>::value;
-   constexpr bool value2 = IsLong_v<T>;
+   constexpr bool value1 = blaze::IsLong<T>::value;
+   constexpr bool value2 = blaze::IsLong_v<T>;
    \endcode
 */
 template< typename T >

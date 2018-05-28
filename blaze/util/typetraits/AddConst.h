@@ -87,8 +87,8 @@ struct AddConst
 // definitions are identical:
 
    \code
-   using Type1 = typename AddConst<T>::Type;
-   using Type2 = AddConst_t<T>;
+   using Type1 = typename blaze::AddConst<T>::Type;
+   using Type2 = blaze::AddConst_t<T>;
    \endcode
 */
 template< typename T >

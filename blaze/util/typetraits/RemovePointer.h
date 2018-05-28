@@ -87,8 +87,8 @@ struct RemovePointer
 // two type definitions are identical:
 
    \code
-   using Type1 = typename RemovePointer<T>::Type;
-   using Type2 = RemovePointer_t<T>;
+   using Type1 = typename blaze::RemovePointer<T>::Type;
+   using Type2 = blaze::RemovePointer_t<T>;
    \endcode
 */
 template< typename T >

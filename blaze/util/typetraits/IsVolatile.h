@@ -87,8 +87,8 @@ struct IsVolatile
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsVolatile<T>::value;
-   constexpr bool value2 = IsVolatile_v<T>;
+   constexpr bool value1 = blaze::IsVolatile<T>::value;
+   constexpr bool value2 = blaze::IsVolatile_v<T>;
    \endcode
 */
 template< typename T >

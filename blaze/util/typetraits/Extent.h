@@ -133,8 +133,8 @@ struct Extent<T[E],0UL>
 // \a N the following two statements are identical:
 
    \code
-   constexpr size_t value1 = Extent<T,N>::value;
-   constexpr size_t value2 = Extent_v<T,N>;
+   constexpr size_t value1 = blaze::Extent<T,N>::value;
+   constexpr size_t value2 = blaze::Extent_v<T,N>;
    \endcode
 */
 template< typename T, size_t N >

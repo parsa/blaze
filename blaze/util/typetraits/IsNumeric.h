@@ -135,8 +135,8 @@ struct IsNumeric< const volatile complex<T> >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsNumeric<T>::value;
-   constexpr bool value2 = IsNumeric_v<T>;
+   constexpr bool value1 = blaze::IsNumeric<T>::value;
+   constexpr bool value2 = blaze::IsNumeric_v<T>;
    \endcode
 */
 template< typename T >

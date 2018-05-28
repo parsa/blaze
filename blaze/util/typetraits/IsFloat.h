@@ -131,8 +131,8 @@ struct IsFloat<const volatile float>
 // are identical:
 
    \code
-   constexpr bool value1 = IsFloat<T>::value;
-   constexpr bool value2 = IsFloat_v<T>;
+   constexpr bool value1 = blaze::IsFloat<T>::value;
+   constexpr bool value2 = blaze::IsFloat_v<T>;
    \endcode
 */
 template< typename T >

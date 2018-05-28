@@ -100,8 +100,8 @@ struct IsStrictlySame<T,T>
 // the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsStrictlySame<T1,T2>::value;
-   constexpr bool value2 = IsStrictlySame_v<T1,T2>;
+   constexpr bool value1 = blaze::IsStrictlySame<T1,T2>::value;
+   constexpr bool value2 = blaze::IsStrictlySame_v<T1,T2>;
    \endcode
 */
 template< typename A, typename B >
@@ -153,8 +153,8 @@ struct IsSame
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsSame<T1,T2>::value;
-   constexpr bool value2 = IsSame_v<T1,T2>;
+   constexpr bool value1 = blaze::IsSame<T1,T2>::value;
+   constexpr bool value2 = blaze::IsSame_v<T1,T2>;
    \endcode
 */
 template< typename A, typename B >

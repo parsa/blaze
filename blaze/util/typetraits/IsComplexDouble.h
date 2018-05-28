@@ -132,8 +132,8 @@ struct IsComplexDouble< const volatile complex<double> >
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsComplexDouble<T>::value;
-   constexpr bool value2 = IsComplexDouble_v<T>;
+   constexpr bool value1 = blaze::IsComplexDouble<T>::value;
+   constexpr bool value2 = blaze::IsComplexDouble_v<T>;
    \endcode
 */
 template< typename T >

@@ -84,8 +84,8 @@ struct IsDestructible
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsDestructible<T>::value;
-   constexpr bool value2 = IsDestructible_v<T>;
+   constexpr bool value1 = blaze::IsDestructible<T>::value;
+   constexpr bool value2 = blaze::IsDestructible_v<T>;
    \endcode
 */
 template< typename T >
@@ -133,8 +133,8 @@ struct IsNothrowDestructible
 // \a T the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsNothrowDestructible<T>::value;
-   constexpr bool value2 = IsNothrowDestructible_v<T>;
+   constexpr bool value1 = blaze::IsNothrowDestructible<T>::value;
+   constexpr bool value2 = blaze::IsNothrowDestructible_v<T>;
    \endcode
 */
 template< typename T >

@@ -88,8 +88,8 @@ struct IsLValueReference
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsLValueReference<T>::value;
-   constexpr bool value2 = IsLValueReference_v<T>;
+   constexpr bool value1 = blaze::IsLValueReference<T>::value;
+   constexpr bool value2 = blaze::IsLValueReference_v<T>;
    \endcode
 */
 template< typename T >

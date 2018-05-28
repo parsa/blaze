@@ -159,8 +159,8 @@ class HaveSameSize<void,void>
 // the following two statements are identical:
 
    \code
-   constexpr bool value1 = HaveSameSize<T1,T2>::value;
-   constexpr bool value2 = HaveSameSize_v<T1,T2>;
+   constexpr bool value1 = blaze::HaveSameSize<T1,T2>::value;
+   constexpr bool value2 = blaze::HaveSameSize_v<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >

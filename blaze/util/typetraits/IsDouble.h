@@ -131,8 +131,8 @@ struct IsDouble<const volatile double>
 // are identical:
 
    \code
-   constexpr bool value1 = IsDouble<T>::value;
-   constexpr bool value2 = IsDouble_v<T>;
+   constexpr bool value1 = blaze::IsDouble<T>::value;
+   constexpr bool value2 = blaze::IsDouble_v<T>;
    \endcode
 */
 template< typename T >

@@ -95,8 +95,8 @@ struct Any
 // types \a T1 and \a T2 the following two statements are identical:
 
    \code
-   constexpr bool value1 = Any<TypeTrait,T1,T2>::value;
-   constexpr bool value2 = Any_v<TypeTrait,T1,T2>;
+   constexpr bool value1 = blaze::Any<TypeTrait,T1,T2>::value;
+   constexpr bool value2 = blaze::Any_v<TypeTrait,T1,T2>;
    \endcode
 */
 template< template< typename > class TypeTrait  // Type trait to be evaluated on all operands

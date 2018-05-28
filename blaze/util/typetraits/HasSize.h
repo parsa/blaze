@@ -163,8 +163,8 @@ struct HasSize<const volatile void,Size>
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSize<T,8UL>::value;
-   constexpr bool value2 = HasSize_v<T,8UL>;
+   constexpr bool value1 = blaze::HasSize<T,8UL>::value;
+   constexpr bool value2 = blaze::HasSize_v<T,8UL>;
    \endcode
 */
 template< typename T, size_t Size >
@@ -215,8 +215,8 @@ struct Has1Byte
 // two statements are identical:
 
    \code
-   constexpr bool value1 = Has1Byte<T>::value;
-   constexpr bool value2 = Has1Byte_v<T>;
+   constexpr bool value1 = blaze::Has1Byte<T>::value;
+   constexpr bool value2 = blaze::Has1Byte_v<T>;
    \endcode
 */
 template< typename T >
@@ -267,8 +267,8 @@ struct Has2Bytes
 // two statements are identical:
 
    \code
-   constexpr bool value1 = Has2Bytes<T>::value;
-   constexpr bool value2 = Has2Bytes_v<T>;
+   constexpr bool value1 = blaze::Has2Bytes<T>::value;
+   constexpr bool value2 = blaze::Has2Bytes_v<T>;
    \endcode
 */
 template< typename T >
@@ -319,8 +319,8 @@ struct Has4Bytes
 // two statements are identical:
 
    \code
-   constexpr bool value1 = Has4Bytes<T>::value;
-   constexpr bool value2 = Has4Bytes_v<T>;
+   constexpr bool value1 = blaze::Has4Bytes<T>::value;
+   constexpr bool value2 = blaze::Has4Bytes_v<T>;
    \endcode
 */
 template< typename T >
@@ -371,8 +371,8 @@ struct Has8Bytes
 // two statements are identical:
 
    \code
-   constexpr bool value1 = Has8Bytes<T>::value;
-   constexpr bool value2 = Has8Bytes_v<T>;
+   constexpr bool value1 = blaze::Has8Bytes<T>::value;
+   constexpr bool value2 = blaze::Has8Bytes_v<T>;
    \endcode
 */
 template< typename T >

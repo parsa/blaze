@@ -91,8 +91,8 @@ struct MakeSigned
 // definitions are identical:
 
    \code
-   using Type1 = typename MakeSigned<T>::Type;
-   using Type2 = MakeSigned_t<T>;
+   using Type1 = typename blaze::MakeSigned<T>::Type;
+   using Type2 = blaze::MakeSigned_t<T>;
    \endcode
 */
 template< typename T >

@@ -89,8 +89,8 @@ struct IsSigned
 // are identical:
 
    \code
-   constexpr bool value1 = IsSigned<T>::value;
-   constexpr bool value2 = IsSigned_v<T>;
+   constexpr bool value1 = blaze::IsSigned<T>::value;
+   constexpr bool value2 = blaze::IsSigned_v<T>;
    \endcode
 */
 template< typename T >

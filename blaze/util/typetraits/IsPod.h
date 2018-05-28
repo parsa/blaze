@@ -99,8 +99,8 @@ struct IsPod
 // identical:
 
    \code
-   constexpr bool value1 = IsPod<T>::value;
-   constexpr bool value2 = IsPod_v<T>;
+   constexpr bool value1 = blaze::IsPod<T>::value;
+   constexpr bool value2 = blaze::IsPod_v<T>;
    \endcode
 */
 template< typename T >

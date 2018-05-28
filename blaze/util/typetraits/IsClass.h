@@ -89,8 +89,8 @@ struct IsClass
 // are identical:
 
    \code
-   constexpr bool value1 = IsClass<T>::value;
-   constexpr bool value2 = IsClass_v<T>;
+   constexpr bool value1 = blaze::IsClass<T>::value;
+   constexpr bool value2 = blaze::IsClass_v<T>;
    \endcode
 */
 template< typename T >

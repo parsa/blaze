@@ -89,8 +89,8 @@ struct RemoveCV
 // definitions are identical:
 
    \code
-   using Type1 = typename RemoveCV<T>::Type;
-   using Type2 = RemoveCV_t<T>;
+   using Type1 = typename blaze::RemoveCV<T>::Type;
+   using Type2 = blaze::RemoveCV_t<T>;
    \endcode
 */
 template< typename T >

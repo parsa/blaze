@@ -91,8 +91,8 @@ struct MakeUnsigned
 // definitions are identical:
 
    \code
-   using Type1 = typename MakeUnsigned<T>::Type;
-   using Type2 = MakeUnsigned_t<T>;
+   using Type1 = typename blaze::MakeUnsigned<T>::Type;
+   using Type2 = blaze::MakeUnsigned_t<T>;
    \endcode
 */
 template< typename T >

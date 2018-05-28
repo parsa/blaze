@@ -87,8 +87,8 @@ struct IsIntegral
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsIntegral<T>::value;
-   constexpr bool value2 = IsIntegral_v<T>;
+   constexpr bool value1 = blaze::IsIntegral<T>::value;
+   constexpr bool value2 = blaze::IsIntegral_v<T>;
    \endcode
 */
 template< typename T >

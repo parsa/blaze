@@ -90,8 +90,8 @@ struct IsEmpty
 // are identical:
 
    \code
-   constexpr bool value1 = IsEmpty<T>::value;
-   constexpr bool value2 = IsEmpty_v<T>;
+   constexpr bool value1 = blaze::IsEmpty<T>::value;
+   constexpr bool value2 = blaze::IsEmpty_v<T>;
    \endcode
 */
 template< typename T >

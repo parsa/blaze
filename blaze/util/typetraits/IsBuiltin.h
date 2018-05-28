@@ -87,8 +87,8 @@ struct IsBuiltin
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsBuiltin<T>::value;
-   constexpr bool value2 = IsBuiltin_v<T>;
+   constexpr bool value1 = blaze::IsBuiltin<T>::value;
+   constexpr bool value2 = blaze::IsBuiltin_v<T>;
    \endcode
 */
 template< typename T >
