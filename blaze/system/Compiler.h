@@ -75,7 +75,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(__clang__)
 #  define BLAZE_MSC_COMPILER 1
 #else
 #  define BLAZE_MSC_COMPILER 0
