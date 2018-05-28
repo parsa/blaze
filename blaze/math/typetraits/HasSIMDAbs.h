@@ -104,7 +104,7 @@ using HasSIMDAbsHelper =
    blaze::HasSIMDAbs< short >::Type          // Results in TrueType
    blaze::HasSIMDAbs< int >                  // Is derived from TrueType
    blaze::HasSIMDAbs< unsigned int >::value  // Evaluates to 0
-   blaze::HasSIMDAbs< double >::Type         // Results in FalseType
+   blaze::HasSIMDAbs< long double >::Type    // Results in FalseType
    blaze::HasSIMDAbs< complex<int> >         // Is derived from FalseType
    \endcode
 */
