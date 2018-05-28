@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cstddef>
+#include <blaze/system/Platform.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -245,7 +246,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned char , unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned char , int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned char , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned char , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned char , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned char , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -277,7 +278,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( char          , unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( char          , int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( char          , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( char          , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( char          , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( char          , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -309,7 +310,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( signed char   , unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( signed char   , int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( signed char   , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( signed char   , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( signed char   , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( signed char   , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -341,7 +342,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( wchar_t       , unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( wchar_t       , int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( wchar_t       , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( wchar_t       , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( wchar_t       , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( wchar_t       , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -373,7 +374,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned short, unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned short, int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned short, unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned short, long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned short, std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned short, std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -405,7 +406,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( short         , unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( short         , int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( short         , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( short         , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( short         , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( short         , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -437,7 +438,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned int  , unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned int  , int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned int  , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned int  , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned int  , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned int  , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -469,7 +470,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( int           , unsigned int  , in
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( int           , int           , int            );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( int           , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( int           , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( int           , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( int           , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -501,7 +502,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned long , unsigned int  , un
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned long , int           , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned long , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned long , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned long , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( unsigned long , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -533,7 +534,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long          , unsigned int  , lo
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long          , int           , long           );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long          , unsigned long , long           );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long          , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long          , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long          , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -553,7 +554,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long          , long double   , lo
 //=================================================================================================
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 //                                            Type 1          Type 2          High type
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( std::size_t   , unsigned char , std::size_t    );
@@ -585,7 +586,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( std::size_t   , long double   , lo
 //=================================================================================================
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 //                                            Type 1          Type 2          High type
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( std::ptrdiff_t, unsigned char , std::ptrdiff_t );
@@ -629,7 +630,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( float         , unsigned int  , fl
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( float         , int           , float          );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( float         , unsigned long , float          );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( float         , long          , float          );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( float         , std::size_t   , float          );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( float         , std::ptrdiff_t, float          );
 #endif
@@ -661,7 +662,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( double        , unsigned int  , do
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( double        , int           , double         );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( double        , unsigned long , double         );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( double        , long          , double         );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( double        , std::size_t   , double         );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( double        , std::ptrdiff_t, double         );
 #endif
@@ -693,7 +694,7 @@ BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long double   , unsigned int  , lo
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long double   , int           , long double    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long double   , unsigned long , long double    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long double   , long          , long double    );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long double   , std::size_t   , long double    );
 BLAZE_CREATE_BUILTIN_HIGHTYPE_SPECIALIZATION( long double   , std::ptrdiff_t, long double    );
 #endif
@@ -724,7 +725,7 @@ BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( unsigned int   );
 BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( int            );
 BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( unsigned long  );
 BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( std::size_t    );
 BLAZE_CREATE_COMPLEX_HIGHTYPE_SPECIALIZATION( std::ptrdiff_t );
 #endif

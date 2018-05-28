@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <cstddef>
+#include <blaze/system/Platform.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
@@ -245,7 +246,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned char , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned char , int           , unsigned char  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned char , unsigned long , unsigned char  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned char , long          , unsigned char  );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned char , std::size_t   , unsigned char  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned char , std::ptrdiff_t, unsigned char  );
 #endif
@@ -277,7 +278,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( char          , unsigned int  , cha
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( char          , int           , char           );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( char          , unsigned long , char           );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( char          , long          , char           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( char          , std::size_t   , char           );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( char          , std::ptrdiff_t, char           );
 #endif
@@ -309,7 +310,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( signed char   , unsigned int  , sig
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( signed char   , int           , signed char    );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( signed char   , unsigned long , signed char    );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( signed char   , long          , signed char    );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( signed char   , std::size_t   , signed char    );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( signed char   , std::ptrdiff_t, signed char    );
 #endif
@@ -341,7 +342,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( wchar_t       , unsigned int  , wch
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( wchar_t       , int           , wchar_t        );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( wchar_t       , unsigned long , wchar_t        );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( wchar_t       , long          , wchar_t        );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( wchar_t       , std::size_t   , wchar_t        );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( wchar_t       , std::ptrdiff_t, wchar_t        );
 #endif
@@ -373,7 +374,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned short, unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned short, int           , unsigned short );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned short, unsigned long , unsigned short );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned short, long          , unsigned short );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned short, std::size_t   , unsigned short );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned short, std::ptrdiff_t, unsigned short );
 #endif
@@ -405,7 +406,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( short         , unsigned int  , sho
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( short         , int           , short          );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( short         , unsigned long , short          );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( short         , long          , short          );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( short         , std::size_t   , short          );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( short         , std::ptrdiff_t, short          );
 #endif
@@ -437,7 +438,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned int  , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned int  , int           , unsigned int   );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned int  , unsigned long , unsigned int   );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned int  , long          , unsigned int   );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned int  , std::size_t   , unsigned int   );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned int  , std::ptrdiff_t, unsigned int   );
 #endif
@@ -469,7 +470,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( int           , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( int           , int           , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( int           , unsigned long , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( int           , long          , int            );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( int           , std::size_t   , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( int           , std::ptrdiff_t, int            );
 #endif
@@ -501,7 +502,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned long , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned long , int           , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned long , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned long , long          , unsigned long  );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned long , std::size_t   , unsigned long  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( unsigned long , std::ptrdiff_t, unsigned long  );
 #endif
@@ -533,7 +534,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long          , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long          , int           , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long          , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long          , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long          , std::size_t   , long           );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long          , std::ptrdiff_t, long           );
 #endif
@@ -553,7 +554,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long          , long double   , lon
 //=================================================================================================
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 //                                           Type 1          Type 2          Low type
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( std::size_t   , unsigned char , unsigned char  );
@@ -585,7 +586,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( std::size_t   , long double   , std
 //=================================================================================================
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 //                                           Type 1          Type 2          Low type
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( std::ptrdiff_t, unsigned char , unsigned char  );
@@ -629,7 +630,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( float         , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( float         , int           , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( float         , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( float         , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( float         , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( float         , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -661,7 +662,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( double        , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( double        , int           , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( double        , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( double        , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( double        , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( double        , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -693,7 +694,7 @@ BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long double   , unsigned int  , uns
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long double   , int           , int            );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long double   , unsigned long , unsigned long  );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long double   , long          , long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long double   , std::size_t   , std::size_t    );
 BLAZE_CREATE_BUILTIN_LOWTYPE_SPECIALIZATION( long double   , std::ptrdiff_t, std::ptrdiff_t );
 #endif
@@ -724,7 +725,7 @@ BLAZE_CREATE_COMPLEX_LOWTYPE_SPECIALIZATION( unsigned int   );
 BLAZE_CREATE_COMPLEX_LOWTYPE_SPECIALIZATION( int            );
 BLAZE_CREATE_COMPLEX_LOWTYPE_SPECIALIZATION( unsigned long  );
 BLAZE_CREATE_COMPLEX_LOWTYPE_SPECIALIZATION( long           );
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 BLAZE_CREATE_COMPLEX_LOWTYPE_SPECIALIZATION( std::size_t    );
 BLAZE_CREATE_COMPLEX_LOWTYPE_SPECIALIZATION( std::ptrdiff_t );
 #endif

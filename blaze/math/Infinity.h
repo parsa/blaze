@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Platform.h>
 #include <blaze/util/constraints/Builtin.h>
 #include <blaze/util/Limits.h>
 #include <blaze/util/Types.h>
@@ -114,7 +115,7 @@ class NegativeInfinity
    inline constexpr operator short()       const;
    inline constexpr operator int()         const;
    inline constexpr operator long()        const;
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
    inline constexpr operator ptrdiff_t()   const;
 #endif
    inline constexpr operator float()       const;
@@ -253,7 +254,7 @@ inline constexpr NegativeInfinity<I>::operator long() const
 
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*!\brief Conversion operator to the ptrdiff_t built-in type.
 //
 // The conversion operator returns the smallest possible ptrdiff_t value.
@@ -552,7 +553,7 @@ class Infinity
    inline constexpr operator int()            const;
    inline constexpr operator unsigned long()  const;
    inline constexpr operator long()           const;
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
    inline constexpr operator size_t()         const;
    inline constexpr operator ptrdiff_t()      const;
 #endif
@@ -735,7 +736,7 @@ inline constexpr Infinity::operator long() const
 
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*!\brief Conversion operator to the size_t built-in type.
 //
 // The conversion operator returns the largest possible size_t value.
@@ -749,7 +750,7 @@ inline constexpr Infinity::operator size_t() const
 
 
 //*************************************************************************************************
-#if defined(_WIN64)
+#if BLAZE_WIN64_PLATFORM
 /*!\brief Conversion operator to the ptrdiff_t built-in type.
 //
 // The conversion operator returns the largest possible ptrdiff_t value.
