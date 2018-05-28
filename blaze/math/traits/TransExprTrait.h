@@ -103,8 +103,8 @@ struct TransExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename TransExprTrait<T>::Type;
-   using Type2 = TransExprTrait_t<T>;
+   using Type1 = typename blaze::TransExprTrait<T>::Type;
+   using Type2 = blaze::TransExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the transpose operand

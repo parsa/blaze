@@ -112,8 +112,8 @@ struct BandExprTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename BandExprTrait<MT>::Type;
-   using Type2 = BandExprTrait_t<MT>;
+   using Type1 = typename blaze::BandExprTrait<MT>::Type;
+   using Type2 = blaze::BandExprTrait_t<MT>;
    \endcode
 */
 template< typename MT          // Type of the matrix operand
@@ -145,8 +145,8 @@ using DiagonalExprTrait = BandExprTrait<MT,0L>;
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename DiagonalExprTrait<MT>::Type;
-   using Type2 = DiagonalExprTrait_t<MT>;
+   using Type1 = typename blaze::DiagonalExprTrait<MT>::Type;
+   using Type2 = blaze::DiagonalExprTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix operand

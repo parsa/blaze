@@ -103,8 +103,8 @@ struct EvalExprTrait
 // definitions are identical:
 
    \code
-   using Type1 = typename EvalExprTrait<T>::Type;
-   using Type2 = EvalExprTrait_t<T>;
+   using Type1 = typename blaze::EvalExprTrait<T>::Type;
+   using Type2 = blaze::EvalExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the evaluation operand

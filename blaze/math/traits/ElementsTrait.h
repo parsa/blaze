@@ -134,8 +134,8 @@ struct ElementsTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename ElementsTrait<VT>::Type;
-   using Type2 = ElementsTrait_t<VT>;
+   using Type1 = typename blaze::ElementsTrait<VT>::Type;
+   using Type2 = blaze::ElementsTrait_t<VT>;
    \endcode
 */
 template< typename VT       // Type of the vector

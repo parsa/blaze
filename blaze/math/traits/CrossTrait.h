@@ -198,8 +198,8 @@ struct CrossTrait< T1, T2
 // two type definitions are identical:
 
    \code
-   using Type1 = typename CrossTrait<T1,T2>::Type;
-   using Type2 = CrossTrait_t<T1,T2>;
+   using Type1 = typename blaze::CrossTrait<T1,T2>::Type;
+   using Type2 = blaze::CrossTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >

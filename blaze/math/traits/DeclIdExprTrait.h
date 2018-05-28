@@ -102,8 +102,8 @@ struct DeclIdExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename DeclIdExprTrait<T>::Type;
-   using Type2 = DeclIdExprTrait_t<T>;
+   using Type1 = typename blaze::DeclIdExprTrait<T>::Type;
+   using Type2 = blaze::DeclIdExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the declid operand

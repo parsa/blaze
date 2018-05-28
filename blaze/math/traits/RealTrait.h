@@ -143,8 +143,8 @@ struct RealTrait
 // definitions are identical:
 
    \code
-   using Type1 = typename RealTrait<T>::Type;
-   using Type2 = RealTrait_t<T>;
+   using Type1 = typename blaze::RealTrait<T>::Type;
+   using Type2 = blaze::RealTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

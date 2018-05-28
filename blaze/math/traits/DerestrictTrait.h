@@ -104,8 +104,8 @@ struct DerestrictTrait
 // the following two type definitions are identical:
 
    \code
-   using Type1 = typename DerestrictTrait<T>::Type;
-   using Type2 = DerestrictTrait_t<T>;
+   using Type1 = typename blaze::DerestrictTrait<T>::Type;
+   using Type2 = blaze::DerestrictTrait_t<T>;
    \endcode
 */
 template< typename T >

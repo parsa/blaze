@@ -112,8 +112,8 @@ struct ColumnsExprTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename ColumnsExprTrait<MT>::Type;
-   using Type2 = ColumnsExprTrait_t<MT>;
+   using Type1 = typename blaze::ColumnsExprTrait<MT>::Type;
+   using Type2 = blaze::ColumnsExprTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix operand

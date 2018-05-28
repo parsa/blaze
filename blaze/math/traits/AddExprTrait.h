@@ -103,8 +103,8 @@ struct AddExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename AddExprTrait<T1,T2>::Type;
-   using Type2 = AddExprTrait_t<T1,T2>;
+   using Type1 = typename blaze::AddExprTrait<T1,T2>::Type;
+   using Type2 = blaze::AddExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side addition operand

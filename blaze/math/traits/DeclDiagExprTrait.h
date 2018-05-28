@@ -102,8 +102,8 @@ struct DeclDiagExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename DeclDiagExprTrait<T>::Type;
-   using Type2 = DeclDiagExprTrait_t<T>;
+   using Type1 = typename blaze::DeclDiagExprTrait<T>::Type;
+   using Type2 = blaze::DeclDiagExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the decldiag operand

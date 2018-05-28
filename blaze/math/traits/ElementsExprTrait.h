@@ -112,8 +112,8 @@ struct ElementsExprTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename ElementsExprTrait<VT>::Type;
-   using Type2 = ElementsExprTrait_t<VT>;
+   using Type1 = typename blaze::ElementsExprTrait<VT>::Type;
+   using Type2 = blaze::ElementsExprTrait_t<VT>;
    \endcode
 */
 template< typename VT       // Type of the vector operand

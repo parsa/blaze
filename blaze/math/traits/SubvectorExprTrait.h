@@ -115,8 +115,8 @@ struct SubvectorExprTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename SubvectorExprTrait<VT,AF>::Type;
-   using Type2 = SubvectorExprTrait_t<VT,AF>;
+   using Type1 = typename blaze::SubvectorExprTrait<VT,AF>::Type;
+   using Type2 = blaze::SubvectorExprTrait_t<VT,AF>;
    \endcode
 */
 template< typename VT                   // Type of the vector operand

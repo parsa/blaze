@@ -103,8 +103,8 @@ struct DivExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename DivExprTrait<T1,T2>::Type;
-   using Type2 = DivExprTrait_t<T1,T2>;
+   using Type1 = typename blaze::DivExprTrait<T1,T2>::Type;
+   using Type2 = blaze::DivExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side division operand

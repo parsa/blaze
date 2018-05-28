@@ -135,8 +135,8 @@ struct ColumnsTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename ColumnsTrait<MT>::Type;
-   using Type2 = ColumnsTrait_t<MT>;
+   using Type1 = typename blaze::ColumnsTrait<MT>::Type;
+   using Type2 = blaze::ColumnsTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix

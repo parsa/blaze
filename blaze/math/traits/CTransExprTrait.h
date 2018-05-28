@@ -103,8 +103,8 @@ struct CTransExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename CTransExprTrait<T>::Type;
-   using Type2 = CTransExprTrait_t<T>;
+   using Type1 = typename blaze::CTransExprTrait<T>::Type;
+   using Type2 = blaze::CTransExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the conjugate transpose operand

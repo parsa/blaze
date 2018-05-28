@@ -103,8 +103,8 @@ struct SerialExprTrait
 // definitions are identical:
 
    \code
-   using Type1 = typename SerialExprTrait<T>::Type;
-   using Type2 = SerialExprTrait_t<T>;
+   using Type1 = typename blaze::SerialExprTrait<T>::Type;
+   using Type2 = blaze::SerialExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the serial evaluation operand

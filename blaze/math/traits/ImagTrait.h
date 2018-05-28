@@ -143,8 +143,8 @@ struct ImagTrait
 // definitions are identical:
 
    \code
-   using Type1 = typename ImagTrait<T>::Type;
-   using Type2 = ImagTrait_t<T>;
+   using Type1 = typename blaze::ImagTrait<T>::Type;
+   using Type2 = blaze::ImagTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

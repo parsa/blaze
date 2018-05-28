@@ -107,8 +107,8 @@ struct CrossExprTrait
 // the following two type definitions are identical:
 
    \code
-   using Type1 = typename CrossExprTrait<T1,T2>::Type;
-   using Type2 = CrossExprTrait_t<T1,T2>;
+   using Type1 = typename blaze::CrossExprTrait<T1,T2>::Type;
+   using Type2 = blaze::CrossExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side cross product operand

@@ -135,8 +135,8 @@ struct SubmatrixTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename SubmatrixTrait<MT>::Type;
-   using Type2 = SubmatrixTrait_t<MT>;
+   using Type1 = typename blaze::SubmatrixTrait<MT>::Type;
+   using Type2 = blaze::SubmatrixTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix

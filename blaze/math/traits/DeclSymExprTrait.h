@@ -102,8 +102,8 @@ struct DeclSymExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename DeclSymExprTrait<T>::Type;
-   using Type2 = DeclSymExprTrait_t<T>;
+   using Type1 = typename blaze::DeclSymExprTrait<T>::Type;
+   using Type2 = blaze::DeclSymExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the declsym operand

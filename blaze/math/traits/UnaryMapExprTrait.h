@@ -103,8 +103,8 @@ struct UnaryMapExprTrait
 // custom operation type \a OP the following two type definitions are identical:
 
    \code
-   using Type1 = typename UnaryMapExprTrait<T,OP>::Type;
-   using Type2 = UnaryMapExprTrait_t<T,OP>;
+   using Type1 = typename blaze::UnaryMapExprTrait<T,OP>::Type;
+   using Type2 = blaze::UnaryMapExprTrait_t<T,OP>;
    \endcode
 */
 template< typename T     // Type of the unary map operand

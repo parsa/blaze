@@ -127,8 +127,8 @@ struct UnaryMapTrait
 // type \a OP the following two type definitions are identical:
 
    \code
-   using Type1 = typename UnaryMapTrait<T,OP>::Type;
-   using Type2 = UnaryMapTrait_t<T,OP>;
+   using Type1 = typename blaze::UnaryMapTrait<T,OP>::Type;
+   using Type2 = blaze::UnaryMapTrait_t<T,OP>;
    \endcode
 */
 template< typename T     // Type of the operand

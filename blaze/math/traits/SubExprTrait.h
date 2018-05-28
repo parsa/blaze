@@ -103,8 +103,8 @@ struct SubExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename SubExprTrait<T1,T2>::Type;
-   using Type2 = SubExprTrait_t<T1,T2>;
+   using Type1 = typename blaze::SubExprTrait<T1,T2>::Type;
+   using Type2 = blaze::SubExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side subtraction operand

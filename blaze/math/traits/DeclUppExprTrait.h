@@ -102,8 +102,8 @@ struct DeclUppExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename DeclUppExprTrait<T>::Type;
-   using Type2 = DeclUppExprTrait_t<T>;
+   using Type1 = typename blaze::DeclUppExprTrait<T>::Type;
+   using Type2 = blaze::DeclUppExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the declupp operand

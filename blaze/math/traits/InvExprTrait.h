@@ -113,8 +113,8 @@ struct InvExprTrait
 // definitions are identical:
 
    \code
-   using Type1 = typename InvExprTrait<T>::Type;
-   using Type2 = InvExprTrait_t<T>;
+   using Type1 = typename blaze::InvExprTrait<T>::Type;
+   using Type2 = blaze::InvExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the inversion operand

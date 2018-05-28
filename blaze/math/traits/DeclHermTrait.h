@@ -147,8 +147,8 @@ struct DeclHermTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename DeclHermTrait<MT>::Type;
-   using Type2 = DeclHermTrait_t<MT>;
+   using Type1 = typename blaze::DeclHermTrait<MT>::Type;
+   using Type2 = blaze::DeclHermTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix

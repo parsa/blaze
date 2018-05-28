@@ -117,8 +117,8 @@ struct SubmatrixExprTrait
 // and the alignment flag \a AF the following two type definitions are identical:
 
    \code
-   using Type1 = typename SubmatrixExprTrait<MT,AF>::Type;
-   using Type2 = SubmatrixExprTrait_t<MT,AF>;
+   using Type1 = typename blaze::SubmatrixExprTrait<MT,AF>::Type;
+   using Type2 = blaze::SubmatrixExprTrait_t<MT,AF>;
    \endcode
 */
 template< typename MT                   // Type of the matrix operand

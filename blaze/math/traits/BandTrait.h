@@ -135,8 +135,8 @@ struct BandTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename BandTrait<MT>::Type;
-   using Type2 = BandTrait_t<MT>;
+   using Type1 = typename blaze::BandTrait<MT>::Type;
+   using Type2 = blaze::BandTrait_t<MT>;
    \endcode
 */
 template< typename MT          // Type of the matrix

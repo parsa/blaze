@@ -147,8 +147,8 @@ struct DeclDiagTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename DeclDiagTrait<MT>::Type;
-   using Type2 = DeclDiagTrait_t<MT>;
+   using Type1 = typename blaze::DeclDiagTrait<MT>::Type;
+   using Type2 = blaze::DeclDiagTrait_t<MT>;
    \endcode
 */
 template< typename MT >  // Type of the matrix

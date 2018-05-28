@@ -135,8 +135,8 @@ struct SubvectorTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename SubvectorTrait<VT>::Type;
-   using Type2 = SubvectorTrait_t<VT>;
+   using Type1 = typename blaze::SubvectorTrait<VT>::Type;
+   using Type2 = blaze::SubvectorTrait_t<VT>;
    \endcode
 */
 template< typename VT       // Type of the vector

@@ -102,8 +102,8 @@ struct DeclHermExprTrait
 // \a T the following two type definitions are identical:
 
    \code
-   using Type1 = typename DeclHermExprTrait<T>::Type;
-   using Type2 = DeclHermExprTrait_t<T>;
+   using Type1 = typename blaze::DeclHermExprTrait<T>::Type;
+   using Type2 = blaze::DeclHermExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the declherm operand

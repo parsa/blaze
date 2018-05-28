@@ -103,8 +103,8 @@ struct MultExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename MultExprTrait<T1,T2>::Type;
-   using Type2 = MultExprTrait_t<T1,T2>;
+   using Type1 = typename blaze::MultExprTrait<T1,T2>::Type;
+   using Type2 = blaze::MultExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side multiplication operand

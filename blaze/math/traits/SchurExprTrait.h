@@ -103,8 +103,8 @@ struct SchurExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename SchurExprTrait<T1,T2>::Type;
-   using Type2 = SchurExprTrait_t<T1,T2>;
+   using Type1 = typename blaze::SchurExprTrait<T1,T2>::Type;
+   using Type2 = blaze::SchurExprTrait_t<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side Schur product operand

@@ -102,8 +102,8 @@ struct DeclLowExprTrait
 // two type definitions are identical:
 
    \code
-   using Type1 = typename DeclLowExprTrait<T>::Type;
-   using Type2 = DeclLowExprTrait_t<T>;
+   using Type1 = typename blaze::DeclLowExprTrait<T>::Type;
+   using Type2 = blaze::DeclLowExprTrait_t<T>;
    \endcode
 */
 template< typename T >  // Type of the decllow operand

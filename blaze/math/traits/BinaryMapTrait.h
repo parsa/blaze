@@ -130,8 +130,8 @@ struct BinaryMapTrait
 // and the custom operation type \a OP the following two type definitions are identical:
 
    \code
-   using Type1 = typename BinaryMapTrait<T1,T2,OP>::Type;
-   using Type2 = BinaryMapTrait_t<T1,T2,OP>;
+   using Type1 = typename blaze::BinaryMapTrait<T1,T2,OP>::Type;
+   using Type2 = blaze::BinaryMapTrait_t<T1,T2,OP>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand

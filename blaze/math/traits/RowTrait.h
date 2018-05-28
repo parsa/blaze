@@ -135,8 +135,8 @@ struct RowTrait
 // following two type definitions are identical:
 
    \code
-   using Type1 = typename RowTrait<MT>::Type;
-   using Type2 = RowTrait_t<MT>;
+   using Type1 = typename blaze::RowTrait<MT>::Type;
+   using Type2 = blaze::RowTrait_t<MT>;
    \endcode
 */
 template< typename MT       // Type of the matrix
