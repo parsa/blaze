@@ -138,8 +138,8 @@ struct IsAligned< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsAligned<T>::value;
-   constexpr bool value2 = IsAligned_v<T>;
+   constexpr bool value1 = blaze::IsAligned<T>::value;
+   constexpr bool value2 = blaze::IsAligned_v<T>;
    \endcode
 */
 template< typename T >

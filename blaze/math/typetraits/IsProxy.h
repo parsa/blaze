@@ -120,8 +120,8 @@ struct IsProxy
 // are identical:
 
    \code
-   constexpr bool value1 = IsProxy<T>::value;
-   constexpr bool value2 = IsProxy_v<T>;
+   constexpr bool value1 = blaze::IsProxy<T>::value;
+   constexpr bool value2 = blaze::IsProxy_v<T>;
    \endcode
 */
 template< typename T >

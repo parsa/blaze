@@ -145,8 +145,8 @@ struct RemoveAdaptor< const volatile T >
 // two type definitions are identical:
 
    \code
-   using Type1 = typename RemoveAdaptor<T>::Type;
-   using Type2 = RemoveAdaptor_t<T>;
+   using Type1 = typename blaze::RemoveAdaptor<T>::Type;
+   using Type2 = blaze::RemoveAdaptor_t<T>;
    \endcode
 */
 template< typename T >

@@ -146,8 +146,8 @@ struct HasClamp< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasClamp<T>::value;
-   constexpr bool value2 = HasClamp_v<T>;
+   constexpr bool value1 = blaze::HasClamp<T>::value;
+   constexpr bool value2 = blaze::HasClamp_v<T>;
    \endcode
 */
 template< typename T >

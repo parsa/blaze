@@ -118,8 +118,8 @@ struct IsUniform< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsUniform<T>::value;
-   constexpr bool value2 = IsUniform_v<T>;
+   constexpr bool value1 = blaze::IsUniform<T>::value;
+   constexpr bool value2 = blaze::IsUniform_v<T>;
    \endcode
 */
 template< typename T >

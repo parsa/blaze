@@ -96,8 +96,8 @@ struct IsInvertible
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsInvertible<T>::value;
-   constexpr bool value2 = IsInvertible_v<T>;
+   constexpr bool value1 = blaze::IsInvertible<T>::value;
+   constexpr bool value2 = blaze::IsInvertible_v<T>;
    \endcode
 */
 template< typename T >

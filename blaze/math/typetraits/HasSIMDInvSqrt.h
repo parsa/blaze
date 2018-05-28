@@ -109,8 +109,8 @@ struct HasSIMDInvSqrt
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDInvSqrt<T>::value;
-   constexpr bool value2 = HasSIMDInvSqrt_v<T>;
+   constexpr bool value1 = blaze::HasSIMDInvSqrt<T>::value;
+   constexpr bool value2 = blaze::HasSIMDInvSqrt_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

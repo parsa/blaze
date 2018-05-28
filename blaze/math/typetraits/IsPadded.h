@@ -127,8 +127,8 @@ struct IsPadded< const volatile T >
 // are identical:
 
    \code
-   constexpr bool value1 = IsPadded<T>::value;
-   constexpr bool value2 = IsPadded_v<T>;
+   constexpr bool value1 = blaze::IsPadded<T>::value;
+   constexpr bool value2 = blaze::IsPadded_v<T>;
    \endcode
 */
 template< typename T >

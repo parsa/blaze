@@ -146,8 +146,8 @@ struct HasSign< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasSign<T>::value;
-   constexpr bool value2 = HasSign_v<T>;
+   constexpr bool value1 = blaze::HasSign<T>::value;
+   constexpr bool value2 = blaze::HasSign_v<T>;
    \endcode
 */
 template< typename T >

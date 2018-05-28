@@ -137,8 +137,8 @@ struct IsStrictlyUpper< const volatile T >
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsStrictlyUpper<T>::value;
-   constexpr bool value2 = IsStrictlyUpper_v<T>;
+   constexpr bool value1 = blaze::IsStrictlyUpper<T>::value;
+   constexpr bool value2 = blaze::IsStrictlyUpper_v<T>;
    \endcode
 */
 template< typename T >

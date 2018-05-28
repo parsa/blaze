@@ -110,8 +110,8 @@ struct IsMatVecMultExpr
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsMatVecMultExpr<T>::value;
-   constexpr bool value2 = IsMatVecMultExpr_v<T>;
+   constexpr bool value1 = blaze::IsMatVecMultExpr<T>::value;
+   constexpr bool value2 = blaze::IsMatVecMultExpr_v<T>;
    \endcode
 */
 template< typename T >

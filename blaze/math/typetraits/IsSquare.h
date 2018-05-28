@@ -139,8 +139,8 @@ struct IsSquare< const volatile T >
 // are identical:
 
    \code
-   constexpr bool value1 = IsSquare<T>::value;
-   constexpr bool value2 = IsSquare_v<T>;
+   constexpr bool value1 = blaze::IsSquare<T>::value;
+   constexpr bool value2 = blaze::IsSquare_v<T>;
    \endcode
 */
 template< typename T >

@@ -108,8 +108,8 @@ struct HasSIMDCeil
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDCeil<T>::value;
-   constexpr bool value2 = HasSIMDCeil_v<T>;
+   constexpr bool value1 = blaze::HasSIMDCeil<T>::value;
+   constexpr bool value2 = blaze::HasSIMDCeil_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

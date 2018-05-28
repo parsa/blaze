@@ -110,8 +110,8 @@ struct HasSIMDErfc
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDErfc<T>::value;
-   constexpr bool value2 = HasSIMDErfc_v<T>;
+   constexpr bool value1 = blaze::HasSIMDErfc<T>::value;
+   constexpr bool value2 = blaze::HasSIMDErfc_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

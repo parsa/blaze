@@ -145,8 +145,8 @@ struct HasMax< T1, T2, EnableIf_t< IsVector_v<T1> && IsVector_v<T2> > >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasMax<T1,T2>::value;
-   constexpr bool value2 = HasMax_v<T1,T2>;
+   constexpr bool value1 = blaze::HasMax<T1,T2>::value;
+   constexpr bool value2 = blaze::HasMax_v<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >

@@ -107,8 +107,8 @@ struct IsDeclaration
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsDeclaration<T>::value;
-   constexpr bool value2 = IsDeclaration_v<T>;
+   constexpr bool value1 = blaze::IsDeclaration<T>::value;
+   constexpr bool value2 = blaze::IsDeclaration_v<T>;
    \endcode
 */
 template< typename T >

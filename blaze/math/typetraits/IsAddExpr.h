@@ -108,8 +108,8 @@ struct IsAddExpr
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsAddExpr<T>::value;
-   constexpr bool value2 = IsAddExpr_v<T>;
+   constexpr bool value1 = blaze::IsAddExpr<T>::value;
+   constexpr bool value2 = blaze::IsAddExpr_v<T>;
    \endcode
 */
 template< typename T >

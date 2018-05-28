@@ -109,8 +109,8 @@ struct IsMatMatMultExpr
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsMatMatMultExpr<T>::value;
-   constexpr bool value2 = IsMatMatMultExpr_v<T>;
+   constexpr bool value1 = blaze::IsMatMatMultExpr<T>::value;
+   constexpr bool value2 = blaze::IsMatMatMultExpr_v<T>;
    \endcode
 */
 template< typename T >

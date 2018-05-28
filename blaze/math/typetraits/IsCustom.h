@@ -138,8 +138,8 @@ struct IsCustom< const volatile T >
 // are identical:
 
    \code
-   constexpr bool value1 = IsCustom<T>::value;
-   constexpr bool value2 = IsCustom_v<T>;
+   constexpr bool value1 = blaze::IsCustom<T>::value;
+   constexpr bool value2 = blaze::IsCustom_v<T>;
    \endcode
 */
 template< typename T >

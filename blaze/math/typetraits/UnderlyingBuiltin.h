@@ -125,8 +125,8 @@ struct UnderlyingBuiltin
 // the following two type definitions are identical:
 
    \code
-   using Type1 = typename UnderlyingBuiltin<T>::Type;
-   using Type2 = UnderlyingBuiltin_t<T>;
+   using Type1 = typename blaze::UnderlyingBuiltin<T>::Type;
+   using Type2 = blaze::UnderlyingBuiltin_t<T>;
    \endcode
 */
 template< typename T >

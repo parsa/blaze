@@ -119,8 +119,8 @@ struct YieldsUniTriangular< const volatile OP, MT, MTs... >
 // the matrix type \a MT the following two statements are identical:
 
    \code
-   constexpr bool value1 = YieldsUniTriangular<OP,MT>::value;
-   constexpr bool value2 = YieldsUniTriangular_v<OP,MT>;
+   constexpr bool value1 = blaze::YieldsUniTriangular<OP,MT>::value;
+   constexpr bool value2 = blaze::YieldsUniTriangular_v<OP,MT>;
    \endcode
 */
 template< typename OP, typename MT, typename... MTs >

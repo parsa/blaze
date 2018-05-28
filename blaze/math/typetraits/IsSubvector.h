@@ -154,8 +154,8 @@ struct IsSubvector< const volatile Subvector<VT,AF,TF,DF,CSAs...> >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsSubvector<T>::value;
-   constexpr bool value2 = IsSubvector_v<T>;
+   constexpr bool value1 = blaze::IsSubvector<T>::value;
+   constexpr bool value2 = blaze::IsSubvector_v<T>;
    \endcode
 */
 template< typename T >

@@ -147,8 +147,8 @@ struct HasInvSqrt< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasInvSqrt<T>::value;
-   constexpr bool value2 = HasInvSqrt_v<T>;
+   constexpr bool value1 = blaze::HasInvSqrt<T>::value;
+   constexpr bool value2 = blaze::HasInvSqrt_v<T>;
    \endcode
 */
 template< typename T >

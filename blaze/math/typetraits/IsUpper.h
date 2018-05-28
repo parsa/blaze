@@ -138,8 +138,8 @@ struct IsUpper< const volatile T >
 // are identical:
 
    \code
-   constexpr bool value1 = IsUpper<T>::value;
-   constexpr bool value2 = IsUpper_v<T>;
+   constexpr bool value1 = blaze::IsUpper<T>::value;
+   constexpr bool value2 = blaze::IsUpper_v<T>;
    \endcode
 */
 template< typename T >

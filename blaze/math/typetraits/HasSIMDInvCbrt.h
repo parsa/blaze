@@ -108,8 +108,8 @@ struct HasSIMDInvCbrt
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDInvCbrt<T>::value;
-   constexpr bool value2 = HasSIMDInvCbrt_v<T>;
+   constexpr bool value1 = blaze::HasSIMDInvCbrt<T>::value;
+   constexpr bool value2 = blaze::HasSIMDInvCbrt_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

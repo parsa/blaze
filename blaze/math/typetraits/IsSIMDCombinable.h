@@ -129,8 +129,8 @@ struct IsSIMDCombinable
 // \a T2 the following two statements are identical:
 
    \code
-   constexpr bool value1 = IsSIMDCombinable<T1,T2>::value;
-   constexpr bool value2 = IsSIMDCombinable_v<T1,T2>;
+   constexpr bool value1 = blaze::IsSIMDCombinable<T1,T2>::value;
+   constexpr bool value2 = blaze::IsSIMDCombinable_v<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2, typename... Ts >

@@ -140,8 +140,8 @@ struct IsIdentity< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsIdentity<T>::value;
-   constexpr bool value2 = IsIdentity_v<T>;
+   constexpr bool value1 = blaze::IsIdentity<T>::value;
+   constexpr bool value2 = blaze::IsIdentity_v<T>;
    \endcode
 */
 template< typename T >

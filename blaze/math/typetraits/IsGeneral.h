@@ -139,8 +139,8 @@ struct IsGeneral< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsGeneral<T>::value;
-   constexpr bool value2 = IsGeneral_v<T>;
+   constexpr bool value1 = blaze::IsGeneral<T>::value;
+   constexpr bool value2 = blaze::IsGeneral_v<T>;
    \endcode
 */
 template< typename T >

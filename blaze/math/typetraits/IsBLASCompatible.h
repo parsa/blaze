@@ -91,8 +91,8 @@ struct IsBLASCompatible
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsBLASCompatible<T>::value;
-   constexpr bool value2 = IsBLASCompatible_v<T>;
+   constexpr bool value1 = blaze::IsBLASCompatible<T>::value;
+   constexpr bool value2 = blaze::IsBLASCompatible_v<T>;
    \endcode
 */
 template< typename T >

@@ -108,8 +108,8 @@ struct IsSubExpr
 // are identical:
 
    \code
-   constexpr bool value1 = IsSubExpr<T>::value;
-   constexpr bool value2 = IsSubExpr_v<T>;
+   constexpr bool value1 = blaze::IsSubExpr<T>::value;
+   constexpr bool value2 = blaze::IsSubExpr_v<T>;
    \endcode
 */
 template< typename T >

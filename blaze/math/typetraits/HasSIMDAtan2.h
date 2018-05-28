@@ -114,8 +114,8 @@ struct HasSIMDAtan2
 // the following two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDAtan2<T1,T2>::value;
-   constexpr bool value2 = HasSIMDAtan2_v<T1,T2>;
+   constexpr bool value1 = blaze::HasSIMDAtan2<T1,T2>::value;
+   constexpr bool value2 = blaze::HasSIMDAtan2_v<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand

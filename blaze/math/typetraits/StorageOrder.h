@@ -111,8 +111,8 @@ struct StorageOrder
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = StorageOrder<T>::value;
-   constexpr bool value2 = StorageOrder_v<T>;
+   constexpr bool value1 = blaze::StorageOrder<T>::value;
+   constexpr bool value2 = blaze::StorageOrder_v<T>;
    \endcode
 */
 template< typename T >

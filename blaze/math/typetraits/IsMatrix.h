@@ -115,8 +115,8 @@ struct IsMatrix
 // are identical:
 
    \code
-   constexpr bool value1 = IsMatrix<T>::value;
-   constexpr bool value2 = IsMatrix_v<T>;
+   constexpr bool value1 = blaze::IsMatrix<T>::value;
+   constexpr bool value2 = blaze::IsMatrix_v<T>;
    \endcode
 */
 template< typename T >

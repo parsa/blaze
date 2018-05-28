@@ -116,8 +116,8 @@ struct IsVector
 // are identical:
 
    \code
-   constexpr bool value1 = IsVector<T>::value;
-   constexpr bool value2 = IsVector_v<T>;
+   constexpr bool value1 = blaze::IsVector<T>::value;
+   constexpr bool value2 = blaze::IsVector_v<T>;
    \endcode
 */
 template< typename T >

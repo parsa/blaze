@@ -80,8 +80,8 @@ struct IsTemporary
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsTemporary<T>::value;
-   constexpr bool value2 = IsTemporary_v<T>;
+   constexpr bool value1 = blaze::IsTemporary<T>::value;
+   constexpr bool value2 = blaze::IsTemporary_v<T>;
    \endcode
 */
 template< typename T >

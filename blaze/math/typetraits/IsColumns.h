@@ -154,8 +154,8 @@ struct IsColumns< const volatile Columns<MT,SO,DF,SF,CRAs...> >
 // are identical:
 
    \code
-   constexpr bool value1 = IsColumns<T>::value;
-   constexpr bool value2 = IsColumns_v<T>;
+   constexpr bool value1 = blaze::IsColumns<T>::value;
+   constexpr bool value2 = blaze::IsColumns_v<T>;
    \endcode
 */
 template< typename T >

@@ -140,8 +140,8 @@ struct IsDiagonal< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsDiagonal<T>::value;
-   constexpr bool value2 = IsDiagonal_v<T>;
+   constexpr bool value1 = blaze::IsDiagonal<T>::value;
+   constexpr bool value2 = blaze::IsDiagonal_v<T>;
    \endcode
 */
 template< typename T >

@@ -119,8 +119,8 @@ struct IsRowVector
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsRowVector<T>::value;
-   constexpr bool value2 = IsRowVector_v<T>;
+   constexpr bool value1 = blaze::IsRowVector<T>::value;
+   constexpr bool value2 = blaze::IsRowVector_v<T>;
    \endcode
 */
 template< typename T >

@@ -137,8 +137,8 @@ struct IsContiguous< const volatile T >
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsContiguous<T>::value;
-   constexpr bool value2 = IsContiguous_v<T>;
+   constexpr bool value1 = blaze::IsContiguous<T>::value;
+   constexpr bool value2 = blaze::IsContiguous_v<T>;
    \endcode
 */
 template< typename T >

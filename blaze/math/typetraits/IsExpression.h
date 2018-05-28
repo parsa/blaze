@@ -107,8 +107,8 @@ struct IsExpression
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsExpression<T>::value;
-   constexpr bool value2 = IsExpression_v<T>;
+   constexpr bool value1 = blaze::IsExpression<T>::value;
+   constexpr bool value2 = blaze::IsExpression_v<T>;
    \endcode
 */
 template< typename T >

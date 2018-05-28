@@ -146,8 +146,8 @@ struct HasConj< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasConj<T>::value;
-   constexpr bool value2 = HasConj_v<T>;
+   constexpr bool value1 = blaze::HasConj<T>::value;
+   constexpr bool value2 = blaze::HasConj_v<T>;
    \endcode
 */
 template< typename T >

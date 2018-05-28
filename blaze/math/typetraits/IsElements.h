@@ -152,8 +152,8 @@ struct IsElements< const volatile Elements<VT,TF,DF,CEAs...> >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsElements<T>::value;
-   constexpr bool value2 = IsElements_v<T>;
+   constexpr bool value1 = blaze::IsElements<T>::value;
+   constexpr bool value2 = blaze::IsElements_v<T>;
    \endcode
 */
 template< typename T >

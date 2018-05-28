@@ -98,8 +98,8 @@ struct IsTriangular
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsTriangular<T>::value;
-   constexpr bool value2 = IsTriangular_v<T>;
+   constexpr bool value1 = blaze::IsTriangular<T>::value;
+   constexpr bool value2 = blaze::IsTriangular_v<T>;
    \endcode
 */
 template< typename T >

@@ -109,8 +109,8 @@ struct HasSIMDCos
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDCos<T>::value;
-   constexpr bool value2 = HasSIMDCos_v<T>;
+   constexpr bool value1 = blaze::HasSIMDCos<T>::value;
+   constexpr bool value2 = blaze::HasSIMDCos_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

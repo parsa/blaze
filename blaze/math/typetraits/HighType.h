@@ -169,8 +169,8 @@ struct HighType
 // type definitions are identical:
 
    \code
-   using Type1 = typename HighType<T1,T2>::Type;
-   using Type2 = HighType_t<T1,T2>;
+   using Type1 = typename blaze::HighType<T1,T2>::Type;
+   using Type2 = blaze::HighType_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >

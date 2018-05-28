@@ -107,8 +107,8 @@ struct IsUnaryMapExpr
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsUnaryMapExpr<T>::value;
-   constexpr bool value2 = IsUnaryMapExpr_v<T>;
+   constexpr bool value1 = blaze::IsUnaryMapExpr<T>::value;
+   constexpr bool value2 = blaze::IsUnaryMapExpr_v<T>;
    \endcode
 */
 template< typename T >

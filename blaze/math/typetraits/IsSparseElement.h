@@ -81,8 +81,8 @@ struct IsSparseElement
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsSparseElement<T>::value;
-   constexpr bool value2 = IsSparseElement_v<T>;
+   constexpr bool value1 = blaze::IsSparseElement<T>::value;
+   constexpr bool value2 = blaze::IsSparseElement_v<T>;
    \endcode
 */
 template< typename T >

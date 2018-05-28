@@ -146,8 +146,8 @@ struct HasTrunc< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasTrunc<T>::value;
-   constexpr bool value2 = HasTrunc_v<T>;
+   constexpr bool value1 = blaze::HasTrunc<T>::value;
+   constexpr bool value2 = blaze::HasTrunc_v<T>;
    \endcode
 */
 template< typename T >

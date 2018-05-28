@@ -126,8 +126,8 @@ struct HasMutableDataAccess< const volatile T >
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = HasMutableDataAccess<T>::value;
-   constexpr bool value2 = HasMutableDataAccess_v<T>;
+   constexpr bool value1 = blaze::HasMutableDataAccess<T>::value;
+   constexpr bool value2 = blaze::HasMutableDataAccess_v<T>;
    \endcode
 */
 template< typename T >

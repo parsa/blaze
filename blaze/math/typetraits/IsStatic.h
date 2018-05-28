@@ -136,8 +136,8 @@ struct IsStatic< const volatile T >
 // are identical:
 
    \code
-   constexpr bool value1 = IsStatic<T>::value;
-   constexpr bool value2 = IsStatic_v<T>;
+   constexpr bool value1 = blaze::IsStatic<T>::value;
+   constexpr bool value2 = blaze::IsStatic_v<T>;
    \endcode
 */
 template< typename T >

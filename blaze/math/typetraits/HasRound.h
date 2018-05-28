@@ -146,8 +146,8 @@ struct HasRound< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasRound<T>::value;
-   constexpr bool value2 = HasRound_v<T>;
+   constexpr bool value1 = blaze::HasRound<T>::value;
+   constexpr bool value2 = blaze::HasRound_v<T>;
    \endcode
 */
 template< typename T >

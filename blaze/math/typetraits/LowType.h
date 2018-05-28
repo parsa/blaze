@@ -169,8 +169,8 @@ struct LowType
 // type definitions are identical:
 
    \code
-   using Type1 = typename LowType<T1,T2>::Type;
-   using Type2 = LowType_t<T1,T2>;
+   using Type1 = typename blaze::LowType<T1,T2>::Type;
+   using Type2 = blaze::LowType_t<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >

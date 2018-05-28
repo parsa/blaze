@@ -107,8 +107,8 @@ struct IsBinaryMapExpr
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsBinaryMapExpr<T>::value;
-   constexpr bool value2 = IsBinaryMapExpr_v<T>;
+   constexpr bool value1 = blaze::IsBinaryMapExpr<T>::value;
+   constexpr bool value2 = blaze::IsBinaryMapExpr_v<T>;
    \endcode
 */
 template< typename T >

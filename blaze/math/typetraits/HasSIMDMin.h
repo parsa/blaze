@@ -177,8 +177,8 @@ struct HasSIMDMin
 // the following two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDMin<T1,T2>::value;
-   constexpr bool value2 = HasSIMDMin_v<T1,T2>;
+   constexpr bool value1 = blaze::HasSIMDMin<T1,T2>::value;
+   constexpr bool value2 = blaze::HasSIMDMin_v<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand

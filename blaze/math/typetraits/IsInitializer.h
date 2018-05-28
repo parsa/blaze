@@ -133,8 +133,8 @@ struct IsInitializer< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsInitializer<T>::value;
-   constexpr bool value2 = IsInitializer_v<T>;
+   constexpr bool value1 = blaze::IsInitializer<T>::value;
+   constexpr bool value2 = blaze::IsInitializer_v<T>;
    \endcode
 */
 template< typename T >

@@ -109,8 +109,8 @@ struct IsDivExpr
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsDivExpr<T>::value;
-   constexpr bool value2 = IsDivExpr_v<T>;
+   constexpr bool value1 = blaze::IsDivExpr<T>::value;
+   constexpr bool value2 = blaze::IsDivExpr_v<T>;
    \endcode
 */
 template< typename T >

@@ -119,8 +119,8 @@ struct HasSIMDConj
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDConj<T>::value;
-   constexpr bool value2 = HasSIMDConj_v<T>;
+   constexpr bool value1 = blaze::HasSIMDConj<T>::value;
+   constexpr bool value2 = blaze::HasSIMDConj_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

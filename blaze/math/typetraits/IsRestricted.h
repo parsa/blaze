@@ -133,8 +133,8 @@ struct IsRestricted< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsRestricted<T>::value;
-   constexpr bool value2 = IsRestricted_v<T>;
+   constexpr bool value1 = blaze::IsRestricted<T>::value;
+   constexpr bool value2 = blaze::IsRestricted_v<T>;
    \endcode
 */
 template< typename T >

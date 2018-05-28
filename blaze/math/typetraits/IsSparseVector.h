@@ -115,8 +115,8 @@ struct IsSparseVector
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsSparseVector<T>::value;
-   constexpr bool value2 = IsSparseVector_v<T>;
+   constexpr bool value1 = blaze::IsSparseVector<T>::value;
+   constexpr bool value2 = blaze::IsSparseVector_v<T>;
    \endcode
 */
 template< typename T >

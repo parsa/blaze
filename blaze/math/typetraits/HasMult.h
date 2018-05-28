@@ -171,8 +171,8 @@ struct HasMult< T1, T2, EnableIf_t< IsMatrix_v<T1> && IsMatrix_v<T2> > >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasMult<T1,T2>::value;
-   constexpr bool value2 = HasMult_v<T1,T2>;
+   constexpr bool value1 = blaze::HasMult<T1,T2>::value;
+   constexpr bool value2 = blaze::HasMult_v<T1,T2>;
    \endcode
 */
 template< typename T1, typename T2 >

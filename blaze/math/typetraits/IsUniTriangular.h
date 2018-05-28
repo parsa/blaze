@@ -98,8 +98,8 @@ struct IsUniTriangular
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsUniTriangular<T>::value;
-   constexpr bool value2 = IsUniTriangular_v<T>;
+   constexpr bool value1 = blaze::IsUniTriangular<T>::value;
+   constexpr bool value2 = blaze::IsUniTriangular_v<T>;
    \endcode
 */
 template< typename T >

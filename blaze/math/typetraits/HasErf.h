@@ -146,8 +146,8 @@ struct HasErf< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasErf<T>::value;
-   constexpr bool value2 = HasErf_v<T>;
+   constexpr bool value1 = blaze::HasErf<T>::value;
+   constexpr bool value2 = blaze::HasErf_v<T>;
    \endcode
 */
 template< typename T >

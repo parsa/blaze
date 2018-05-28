@@ -115,8 +115,8 @@ struct IsDenseMatrix
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsDenseMatrix<T>::value;
-   constexpr bool value2 = IsDenseMatrix_v<T>;
+   constexpr bool value1 = blaze::IsDenseMatrix<T>::value;
+   constexpr bool value2 = blaze::IsDenseMatrix_v<T>;
    \endcode
 */
 template< typename T >

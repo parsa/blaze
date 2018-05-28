@@ -139,8 +139,8 @@ struct IsAdaptor< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsAdaptor<T>::value;
-   constexpr bool value2 = IsAdaptor_v<T>;
+   constexpr bool value1 = blaze::IsAdaptor<T>::value;
+   constexpr bool value2 = blaze::IsAdaptor_v<T>;
    \endcode
 */
 template< typename T >

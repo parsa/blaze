@@ -108,8 +108,8 @@ struct IsVecTransExpr
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsVecTransExpr<T>::value;
-   constexpr bool value2 = IsVecTransExpr_v<T>;
+   constexpr bool value1 = blaze::IsVecTransExpr<T>::value;
+   constexpr bool value2 = blaze::IsVecTransExpr_v<T>;
    \endcode
 */
 template< typename T >

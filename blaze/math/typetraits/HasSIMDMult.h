@@ -180,8 +180,8 @@ struct HasSIMDMult
 // the following two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDMult<T1,T2>::value;
-   constexpr bool value2 = HasSIMDMult_v<T1,T2>;
+   constexpr bool value1 = blaze::HasSIMDMult<T1,T2>::value;
+   constexpr bool value2 = blaze::HasSIMDMult_v<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the left-hand side operand

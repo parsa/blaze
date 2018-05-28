@@ -146,8 +146,8 @@ struct HasAcos< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasAcos<T>::value;
-   constexpr bool value2 = HasAcos_v<T>;
+   constexpr bool value1 = blaze::HasAcos<T>::value;
+   constexpr bool value2 = blaze::HasAcos_v<T>;
    \endcode
 */
 template< typename T >

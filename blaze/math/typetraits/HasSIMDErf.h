@@ -109,8 +109,8 @@ struct HasSIMDErf
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDErf<T>::value;
-   constexpr bool value2 = HasSIMDErf_v<T>;
+   constexpr bool value1 = blaze::HasSIMDErf<T>::value;
+   constexpr bool value2 = blaze::HasSIMDErf_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

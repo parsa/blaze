@@ -138,8 +138,8 @@ struct IsLower< const volatile T >
 // are identical:
 
    \code
-   constexpr bool value1 = IsLower<T>::value;
-   constexpr bool value2 = IsLower_v<T>;
+   constexpr bool value1 = blaze::IsLower<T>::value;
+   constexpr bool value2 = blaze::IsLower_v<T>;
    \endcode
 */
 template< typename T >

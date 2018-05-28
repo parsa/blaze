@@ -150,8 +150,8 @@ struct IsSIMDPack
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsSIMDPack<T>::value;
-   constexpr bool value2 = IsSIMDPack_v<T>;
+   constexpr bool value1 = blaze::IsSIMDPack<T>::value;
+   constexpr bool value2 = blaze::IsSIMDPack_v<T>;
    \endcode
 */
 template< typename T >

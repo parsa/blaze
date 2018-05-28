@@ -108,8 +108,8 @@ struct IsVecMapExpr
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsVecMapExpr<T>::value;
-   constexpr bool value2 = IsVecMapExpr_v<T>;
+   constexpr bool value1 = blaze::IsVecMapExpr<T>::value;
+   constexpr bool value2 = blaze::IsVecMapExpr_v<T>;
    \endcode
 */
 template< typename T >

@@ -146,8 +146,8 @@ struct HasImag< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasImag<T>::value;
-   constexpr bool value2 = HasImag_v<T>;
+   constexpr bool value1 = blaze::HasImag<T>::value;
+   constexpr bool value2 = blaze::HasImag_v<T>;
    \endcode
 */
 template< typename T >

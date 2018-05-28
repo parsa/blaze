@@ -136,8 +136,8 @@ struct IsHermitian< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsHermitian<T>::value;
-   constexpr bool value2 = IsHermitian_v<T>;
+   constexpr bool value1 = blaze::IsHermitian<T>::value;
+   constexpr bool value2 = blaze::IsHermitian_v<T>;
    \endcode
 */
 template< typename T >

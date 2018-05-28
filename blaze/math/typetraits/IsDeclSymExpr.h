@@ -107,8 +107,8 @@ struct IsDeclSymExpr
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsDeclSymExpr<T>::value;
-   constexpr bool value2 = IsDeclSymExpr_v<T>;
+   constexpr bool value1 = blaze::IsDeclSymExpr<T>::value;
+   constexpr bool value2 = blaze::IsDeclSymExpr_v<T>;
    \endcode
 */
 template< typename T >

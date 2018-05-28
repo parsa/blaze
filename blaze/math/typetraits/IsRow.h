@@ -154,8 +154,8 @@ struct IsRow< const volatile Row<MT,SO,DF,SF,CRAs...> >
 // are identical:
 
    \code
-   constexpr bool value1 = IsRow<T>::value;
-   constexpr bool value2 = IsRow_v<T>;
+   constexpr bool value1 = blaze::IsRow<T>::value;
+   constexpr bool value2 = blaze::IsRow_v<T>;
    \endcode
 */
 template< typename T >

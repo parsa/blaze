@@ -126,8 +126,8 @@ struct IsShrinkable< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsShrinkable<T>::value;
-   constexpr bool value2 = IsShrinkable_v<T>;
+   constexpr bool value1 = blaze::IsShrinkable<T>::value;
+   constexpr bool value2 = blaze::IsShrinkable_v<T>;
    \endcode
 */
 template< typename T >

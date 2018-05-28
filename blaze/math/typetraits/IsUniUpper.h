@@ -137,8 +137,8 @@ struct IsUniUpper< const volatile T >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsUniUpper<T>::value;
-   constexpr bool value2 = IsUniUpper_v<T>;
+   constexpr bool value1 = blaze::IsUniUpper<T>::value;
+   constexpr bool value2 = blaze::IsUniUpper_v<T>;
    \endcode
 */
 template< typename T >

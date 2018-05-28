@@ -111,8 +111,8 @@ struct HasSIMDRound
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDRound<T>::value;
-   constexpr bool value2 = HasSIMDRound_v<T>;
+   constexpr bool value1 = blaze::HasSIMDRound<T>::value;
+   constexpr bool value2 = blaze::HasSIMDRound_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

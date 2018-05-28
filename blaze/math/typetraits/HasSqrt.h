@@ -146,8 +146,8 @@ struct HasSqrt< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasSqrt<T>::value;
-   constexpr bool value2 = HasSqrt_v<T>;
+   constexpr bool value1 = blaze::HasSqrt<T>::value;
+   constexpr bool value2 = blaze::HasSqrt_v<T>;
    \endcode
 */
 template< typename T >

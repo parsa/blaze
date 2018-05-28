@@ -146,8 +146,8 @@ struct HasLog< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasLog<T>::value;
-   constexpr bool value2 = HasLog_v<T>;
+   constexpr bool value1 = blaze::HasLog<T>::value;
+   constexpr bool value2 = blaze::HasLog_v<T>;
    \endcode
 */
 template< typename T >

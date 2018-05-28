@@ -127,8 +127,8 @@ struct IsView
 // are identical:
 
    \code
-   constexpr bool value1 = IsView<T>::value;
-   constexpr bool value2 = IsView_v<T>;
+   constexpr bool value1 = blaze::IsView<T>::value;
+   constexpr bool value2 = blaze::IsView_v<T>;
    \endcode
 */
 template< typename T >

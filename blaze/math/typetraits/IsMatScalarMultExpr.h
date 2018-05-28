@@ -110,8 +110,8 @@ struct IsMatScalarMultExpr
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsMatScalarMultExpr<T>::value;
-   constexpr bool value2 = IsMatScalarMultExpr_v<T>;
+   constexpr bool value1 = blaze::IsMatScalarMultExpr<T>::value;
+   constexpr bool value2 = blaze::IsMatScalarMultExpr_v<T>;
    \endcode
 */
 template< typename T >

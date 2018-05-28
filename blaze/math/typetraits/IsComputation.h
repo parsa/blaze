@@ -82,8 +82,8 @@ struct IsComputation
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsComputation<T>::value;
-   constexpr bool value2 = IsComputation_v<T>;
+   constexpr bool value1 = blaze::IsComputation<T>::value;
+   constexpr bool value2 = blaze::IsComputation_v<T>;
    \endcode
 */
 template< typename T >

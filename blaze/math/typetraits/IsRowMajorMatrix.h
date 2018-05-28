@@ -122,8 +122,8 @@ struct IsRowMajorMatrix
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsRowMajorMatrix<T>::value;
-   constexpr bool value2 = IsRowMajorMatrix_v<T>;
+   constexpr bool value1 = blaze::IsRowMajorMatrix<T>::value;
+   constexpr bool value2 = blaze::IsRowMajorMatrix_v<T>;
    \endcode
 */
 template< typename T >

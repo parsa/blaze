@@ -131,8 +131,8 @@ struct Size< const volatile T, N >
 // following two statements are identical:
 
    \code
-   constexpr size_t value1 = Size<T,N>::value;
-   constexpr size_t value2 = Size_v<T,N>;
+   constexpr size_t value1 = blaze::Size<T,N>::value;
+   constexpr size_t value2 = blaze::Size_v<T,N>;
    \endcode
 */
 template< typename T, size_t N >

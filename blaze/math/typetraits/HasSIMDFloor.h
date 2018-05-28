@@ -108,8 +108,8 @@ struct HasSIMDFloor
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDFloor<T>::value;
-   constexpr bool value2 = HasSIMDFloor_v<T>;
+   constexpr bool value1 = blaze::HasSIMDFloor<T>::value;
+   constexpr bool value2 = blaze::HasSIMDFloor_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand

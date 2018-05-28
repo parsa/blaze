@@ -115,8 +115,8 @@ struct UnderlyingNumeric
 // the following two type definitions are identical:
 
    \code
-   using Type1 = typename UnderlyingNumeric<T>::Type;
-   using Type2 = UnderlyingNumeric_t<T>;
+   using Type1 = typename blaze::UnderlyingNumeric<T>::Type;
+   using Type2 = blaze::UnderlyingNumeric_t<T>;
    \endcode
 */
 template< typename T >

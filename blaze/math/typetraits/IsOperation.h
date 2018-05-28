@@ -81,8 +81,8 @@ struct IsOperation
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsOperation<T>::value;
-   constexpr bool value2 = IsOperation_v<T>;
+   constexpr bool value1 = blaze::IsOperation<T>::value;
+   constexpr bool value2 = blaze::IsOperation_v<T>;
    \endcode
 */
 template< typename T >

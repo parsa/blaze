@@ -146,8 +146,8 @@ struct HasAsinh< T, EnableIf_t< IsMatrix_v<T> > >
 // are identical:
 
    \code
-   constexpr bool value1 = HasAsinh<T>::value;
-   constexpr bool value2 = HasAsinh_v<T>;
+   constexpr bool value1 = blaze::HasAsinh<T>::value;
+   constexpr bool value2 = blaze::HasAsinh_v<T>;
    \endcode
 */
 template< typename T >

@@ -154,8 +154,8 @@ struct IsSubmatrix< const volatile Submatrix<MT,AF,SO,DF,CSAs...> >
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsSubmatrix<T>::value;
-   constexpr bool value2 = IsSubmatrix_v<T>;
+   constexpr bool value1 = blaze::IsSubmatrix<T>::value;
+   constexpr bool value2 = blaze::IsSubmatrix_v<T>;
    \endcode
 */
 template< typename T >

@@ -115,8 +115,8 @@ struct IsSparseMatrix
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = IsSparseMatrix<T>::value;
-   constexpr bool value2 = IsSparseMatrix_v<T>;
+   constexpr bool value1 = blaze::IsSparseMatrix<T>::value;
+   constexpr bool value2 = blaze::IsSparseMatrix_v<T>;
    \endcode
 */
 template< typename T >

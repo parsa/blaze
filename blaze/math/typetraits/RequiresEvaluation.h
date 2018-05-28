@@ -83,8 +83,8 @@ struct RequiresEvaluation
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = RequiresEvaluation<T>::value;
-   constexpr bool value2 = RequiresEvaluation_v<T>;
+   constexpr bool value1 = blaze::RequiresEvaluation<T>::value;
+   constexpr bool value2 = blaze::RequiresEvaluation_v<T>;
    \endcode
 */
 template< typename T >

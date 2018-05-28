@@ -124,8 +124,8 @@ struct UnderlyingElement
 // the following two type definitions are identical:
 
    \code
-   using Type1 = typename UnderlyingElement<T>::Type;
-   using Type2 = UnderlyingElement_t<T>;
+   using Type1 = typename blaze::UnderlyingElement<T>::Type;
+   using Type2 = blaze::UnderlyingElement_t<T>;
    \endcode
 */
 template< typename T >

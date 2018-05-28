@@ -108,8 +108,8 @@ struct IsSerialExpr
 // two statements are identical:
 
    \code
-   constexpr bool value1 = IsSerialExpr<T>::value;
-   constexpr bool value2 = IsSerialExpr_v<T>;
+   constexpr bool value1 = blaze::IsSerialExpr<T>::value;
+   constexpr bool value2 = blaze::IsSerialExpr_v<T>;
    \endcode
 */
 template< typename T >

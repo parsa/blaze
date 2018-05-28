@@ -118,8 +118,8 @@ struct YieldsDiagonal< const volatile OP, MT, MTs... >
 // the matrix type \a MT the following two statements are identical:
 
    \code
-   constexpr bool value1 = YieldsDiagonal<OP,MT>::value;
-   constexpr bool value2 = YieldsDiagonal_v<OP,MT>;
+   constexpr bool value1 = blaze::YieldsDiagonal<OP,MT>::value;
+   constexpr bool value2 = blaze::YieldsDiagonal_v<OP,MT>;
    \endcode
 */
 template< typename OP, typename MT, typename... MTs >

@@ -155,8 +155,8 @@ struct IsBand< const volatile Band<MT,TF,DF,MF,CBAs...> >
 // are identical:
 
    \code
-   constexpr bool value1 = IsBand<T>::value;
-   constexpr bool value2 = IsBand_v<T>;
+   constexpr bool value1 = blaze::IsBand<T>::value;
+   constexpr bool value2 = blaze::IsBand_v<T>;
    \endcode
 */
 template< typename T >

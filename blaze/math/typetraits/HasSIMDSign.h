@@ -118,8 +118,8 @@ struct HasSIMDSign
 // two statements are identical:
 
    \code
-   constexpr bool value1 = HasSIMDSign<T>::value;
-   constexpr bool value2 = HasSIMDSign_v<T>;
+   constexpr bool value1 = blaze::HasSIMDSign<T>::value;
+   constexpr bool value2 = blaze::HasSIMDSign_v<T>;
    \endcode
 */
 template< typename T >  // Type of the operand
