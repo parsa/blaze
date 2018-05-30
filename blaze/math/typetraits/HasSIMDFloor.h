@@ -63,10 +63,10 @@ namespace blaze {
 template< typename T >  // Type of the operand
 using HasSIMDFloorHelper =
    BoolConstant< ( IsFloat_v<T> || IsDouble_v<T> ) &&
-                    ( ( bool( BLAZE_SSE4_MODE    ) ) ||
-                      ( bool( BLAZE_AVX_MODE     ) ) ||
-                      ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_MIC_MODE     ) ) ||
-                      ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_AVX512F_MODE ) ) ) >;
+                 ( ( !bool( BLAZE_MIC_MODE ) && !bool( BLAZE_AVX512F_MODE ) &&
+                     ( bool( BLAZE_SSE4_MODE ) || bool( BLAZE_AVX_MODE ) ) ) ||
+                   ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_MIC_MODE     ) ) ||
+                   ( bool( BLAZE_SVML_MODE ) && bool( BLAZE_AVX512F_MODE ) ) ) >;
 /*! \endcond */
 //*************************************************************************************************
 
