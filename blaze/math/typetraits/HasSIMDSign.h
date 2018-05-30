@@ -64,15 +64,6 @@ namespace blaze {
 /*!\brief Auxiliary alias declaration for the HasSIMDSign type trait.
 // \ingroup math_type_traits
 */
-#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
-template< typename T >  // Type of the operand
-using HasSIMDSignHelper =
-   BoolConstant< ( ( IsNumeric_v<T> && IsIntegral_v<T> && IsSigned_v<T> ) &&
-                   ( ( bool( BLAZE_SSSE3_MODE    ) && sizeof(T) <= 4UL ) ||
-                     ( bool( BLAZE_AVX2_MODE     ) && sizeof(T) <= 4UL ) ||
-                     ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
-                     ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) ) >;
-#else
 template< typename T >  // Type of the operand
 using HasSIMDSignHelper =
    BoolConstant< ( ( IsNumeric_v<T> && IsIntegral_v<T> && IsSigned_v<T> ) &&
@@ -81,11 +72,11 @@ using HasSIMDSignHelper =
                      ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
                      ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) ) ||
                  ( ( IsFloat_v<T> || IsDouble_v<T> ) &&
+                   !( bool( BLAZE_GNU_COMPILER ) && ( bool( BLAZE_MIC_MODE ) || bool( BLAZE_AVX512F_MODE ) ) ) &&
                    ( bool( BLAZE_SSE4_MODE    ) ||
                      bool( BLAZE_AVX_MODE     ) ||
                      bool( BLAZE_MIC_MODE     ) ||
                      bool( BLAZE_AVX512F_MODE ) ) ) >;
-#endif
 /*! \endcond */
 //*************************************************************************************************
 

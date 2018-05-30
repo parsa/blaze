@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/simd/BasicTypes.h>
+#include <blaze/system/Compiler.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 
@@ -239,7 +240,9 @@ BLAZE_ALWAYS_INLINE const SIMDfloat abs( const SIMDf32<T>& a ) noexcept
 */
 template< typename T >  // Type of the operand
 BLAZE_ALWAYS_INLINE const SIMDdouble abs( const SIMDf64<T>& a ) noexcept
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
+#if ( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE ) && BLAZE_GNU_COMPILER
+= delete;
+#elif BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
    return _mm512_abs_pd( (~a).eval().value );
 }

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Compiler.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typetraits/Decay.h>
@@ -71,7 +72,13 @@ using HasSIMDAbsHelper =
                      ( bool( BLAZE_MIC_MODE      ) && sizeof(T) >= 4UL ) ||
                      ( bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
                      ( bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) ) ||
-                 ( ( IsFloat_v<T> || IsDouble_v<T> ) &&
+                 ( IsFloat_v<T> &&
+                   ( bool( BLAZE_SSE2_MODE    ) ||
+                     bool( BLAZE_AVX_MODE     ) ||
+                     bool( BLAZE_MIC_MODE     ) ||
+                     bool( BLAZE_AVX512F_MODE ) ) ) ||
+                 ( IsDouble_v<T> &&
+                   !( bool( BLAZE_GNU_COMPILER ) && ( bool( BLAZE_MIC_MODE ) || bool( BLAZE_AVX512F_MODE ) ) ) &&
                    ( bool( BLAZE_SSE2_MODE    ) ||
                      bool( BLAZE_AVX_MODE     ) ||
                      bool( BLAZE_MIC_MODE     ) ||
