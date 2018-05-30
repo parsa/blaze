@@ -291,7 +291,7 @@ template< bool RF       // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi32<T>& a, const SIMDi32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cmpeq_epi32_mask( (~a).eval().value, (~b).eval().value ) == 0xffff;
+   return _mm512_cmpeq_epi32_mask( (~a).value, (~b).value ) == 0xffff;
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -324,7 +324,7 @@ template< bool RF       // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
 {
-   return _mm512_cmpeq_epi32_mask( (~a).eval().value, (~b).eval().value ) == 0xffff;
+   return _mm512_cmpeq_epi32_mask( (~a).value, (~b).value ) == 0xffff;
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -402,7 +402,7 @@ template< bool RF       // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDi64<T>& a, const SIMDi64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_cmpeq_epi64_mask( (~a).eval().value, (~b).eval().value ) == 0xff;
+   return _mm512_cmpeq_epi64_mask( (~a).value, (~b).value ) == 0xff;
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -435,7 +435,7 @@ template< bool RF       // Relaxation flag
 BLAZE_ALWAYS_INLINE bool equal( const SIMDci64<T>& a, const SIMDci64<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_cmpeq_epi64_mask( (~a).eval().value, (~b).eval().value ) == 0xff;
+   return _mm512_cmpeq_epi64_mask( (~a).value, (~b).value ) == 0xff;
 }
 #elif BLAZE_AVX2_MODE
 {
