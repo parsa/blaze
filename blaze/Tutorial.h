@@ -225,7 +225,8 @@
    \endcode
 
 // The tool automatically downloads the latest \b Blaze release and copies the header files to
-// the common include directory.
+// the common include directory. Please note that since \b Blaze is a header-only library the
+// attempt to install any static or dynamic library will fail!
 //
 // \n \subsection step_1_installation_unix Manual Installation on Linux/macOS
 //
