@@ -432,7 +432,7 @@
 
    C =
    ( -1 -1 )
-   (  0  4 )
+   (  0 -4 )
    \endcode
 
 // \n \section getting_started_complex_example A Complex Example
