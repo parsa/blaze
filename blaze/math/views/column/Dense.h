@@ -245,7 +245,7 @@ class Column<MT,true,true,SF,CCAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -254,7 +254,7 @@ class Column<MT,true,true,SF,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -264,7 +264,7 @@ class Column<MT,true,true,SF,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -274,7 +274,7 @@ class Column<MT,true,true,SF,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedMultAssign_v =
       ( useOptimizedKernels &&
@@ -284,7 +284,7 @@ class Column<MT,true,true,SF,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedDivAssign_v =
       ( useOptimizedKernels &&
@@ -4257,7 +4257,7 @@ class Column<MT,false,true,true,CCAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -4266,7 +4266,7 @@ class Column<MT,false,true,true,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -4276,7 +4276,7 @@ class Column<MT,false,true,true,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -4286,7 +4286,7 @@ class Column<MT,false,true,true,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedMultAssign_v =
       ( useOptimizedKernels &&
@@ -4296,7 +4296,7 @@ class Column<MT,false,true,true,CCAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedDivAssign_v =
       ( useOptimizedKernels &&

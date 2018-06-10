@@ -150,11 +150,11 @@ class SMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the optimal evaluation strategy. In case the
-       right-hand side dense matrix operand is symmetric, \a value is set to 1 and an optimized
-       evaluation strategy is selected. Otherwise \a value is set to 0 and the default strategy
-       is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the optimal evaluation strategy.
+       In case the right-hand side dense matrix operand is symmetric, the variable is set to 1
+       and an optimized evaluation strategy is selected. Otherwise the variable is set to 0 and
+       the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool CanExploitSymmetry_v = IsSymmetric_v<T3>;
    /*! \endcond */
@@ -162,9 +162,9 @@ class SMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either of the two matrix operands requires an intermediate evaluation, the nested \a value
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either of the two matrix operands requires an intermediate evaluation, the variable
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool IsEvaluationRequired_v =
@@ -174,9 +174,9 @@ class SMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case the left-hand side matrix is not a diagonal and a loop-unrolled computation is
-       feasible, the nested \a value will be set to 1, otherwise it will be 0. */
+       feasible, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseOptimizedKernel_v =
       ( useOptimizedKernels &&

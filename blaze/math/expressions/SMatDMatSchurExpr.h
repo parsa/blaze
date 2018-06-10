@@ -135,7 +135,7 @@ class SMatDMatSchurExpr
    static constexpr bool useAssign = ( RequiresEvaluation_v<MT1> || RequiresEvaluation_v<MT2> );
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */

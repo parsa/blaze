@@ -112,12 +112,13 @@ class SMatTSMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the optimal evaluation strategy. In case
-       the target matrix is row-major and the right-hand side matrix operand of type \a T3 is
-       symmetric or in case the target matrix is column-major and the left-hand side matrix
-       operands of type \a T2 is symmetric, \a value is set to 1 and an optimized evaluation
-       strategy is selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the optimal evaluation strategy.
+       In case the target matrix is row-major and the right-hand side matrix operand of type
+       \a T3 is symmetric or in case the target matrix is column-major and the left-hand side
+       matrix operands of type \a T2 is symmetric, the variable is set to 1 and an optimized
+       evaluation strategy is selected. Otherwise the variable is set to 0 and the default
+       strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool CanExploitSymmetry_v =
       ( ( IsRowMajorMatrix_v<T1>    && IsSymmetric_v<T3> ) ||

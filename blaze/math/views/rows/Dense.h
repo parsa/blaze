@@ -133,7 +133,7 @@ class Rows<MT,true,true,SF,CRAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
    static constexpr bool EnforceEvaluation_v =
       ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );
@@ -285,7 +285,7 @@ class Rows<MT,true,true,SF,CRAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -294,7 +294,7 @@ class Rows<MT,true,true,SF,CRAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -305,7 +305,7 @@ class Rows<MT,true,true,SF,CRAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -316,7 +316,7 @@ class Rows<MT,true,true,SF,CRAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&
@@ -3109,7 +3109,7 @@ class Rows<MT,false,true,false,CRAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
    static constexpr bool EnforceEvaluation_v =
       ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );

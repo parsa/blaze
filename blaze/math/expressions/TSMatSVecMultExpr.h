@@ -120,10 +120,10 @@ class TSMatSVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either the matrix or the vector operand requires an intermediate evaluation, the nested
-       \a value will be set to 1, otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either the matrix or the vector operand requires an intermediate evaluation, the
+       variable will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    static constexpr bool UseSMPAssign_v = ( evaluateMatrix || evaluateVector );
    /*! \endcond */

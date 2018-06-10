@@ -129,11 +129,11 @@ class SMatSMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the optimal evaluation strategy. In case the
-       target matrix is column-major and both matrix operands are symmetric, \a value is set to 1
-       and an optimized evaluation strategy is selected. Otherwise \a value is set to 0 and the
-       default strategy is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the optimal evaluation strategy.
+       In case the target matrix is column-major and both matrix operands are symmetric, the
+       variable is set to 1 and an optimized evaluation strategy is selected. Otherwise the
+       variable is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool CanExploitSymmetry_v =
       ( IsColumnMajorMatrix_v<T1> && IsSymmetric_v<T2> && IsSymmetric_v<T3> );
@@ -142,10 +142,10 @@ class SMatSMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either of the two matrix operands requires an intermediate evaluation and in case no
-       symmetry can be exploited, the nested \a value will be set to 1, otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either of the two matrix operands requires an intermediate evaluation and in case
+       no symmetry can be exploited, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool IsEvaluationRequired_v =
       ( ( evaluateLeft || evaluateRight ) && !CanExploitSymmetry_v<T1,T2,T3> );

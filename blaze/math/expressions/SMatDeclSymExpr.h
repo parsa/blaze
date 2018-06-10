@@ -117,7 +117,7 @@ class SMatDeclSymExpr
    static constexpr bool useAssign = RequiresEvaluation_v<MT>;
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
@@ -125,11 +125,12 @@ class SMatDeclSymExpr
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       the target matrix is SMP assignable and the sparse matrix operand requires an intermediate
-       evaluation, \a value is set to 1 and the expression specific evaluation strategy is
-       selected. Otherwise \a value is set to 0 and the default strategy is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case the target matrix is SMP assignable and the sparse matrix operand requires an
+       intermediate evaluation, the variable is set to 1 and the expression specific evaluation
+       strategy is selected. Otherwise the variable is set to 0 and the default strategy is
+       chosen. */
    template< typename MT2 >
    static constexpr bool UseSMPAssign_v = ( MT2::smpAssignable && useAssign );
    /*! \endcond */

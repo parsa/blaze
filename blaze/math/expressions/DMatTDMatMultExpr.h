@@ -170,9 +170,9 @@ class DMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either of the two matrix operands requires an intermediate evaluation, the nested \a value
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either of the two matrix operands requires an intermediate evaluation, the variable
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool IsEvaluationRequired_v = ( evaluateLeft || evaluateRight );
@@ -181,9 +181,9 @@ class DMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! In case the types of all three involved matrices are suited for a BLAS kernel, the nested
-       \a value will be set to 1, otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! In case the types of all three involved matrices are suited for a BLAS kernel, the variable
+       will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseBlasKernel_v =
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
@@ -203,9 +203,9 @@ class DMatTDMatMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
-       matrix multiplication, the nested \a value will be set to 1, otherwise it will be 0. */
+       matrix multiplication, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseVectorizedDefaultKernel_v =
       ( useOptimizedKernels &&
@@ -4354,18 +4354,18 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either of the two matrix operands requires an intermediate evaluation, the nested \a value
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either of the two matrix operands requires an intermediate evaluation, the variable
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool IsEvaluationRequired_v = ( evaluateLeft || evaluateRight );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case the types of all three involved matrices and the scalar type are suited for a BLAS
-       kernel, the nested \a value will be set to 1, otherwise it will be 0. */
+       kernel, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    static constexpr bool UseBlasKernel_v =
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
@@ -4384,9 +4384,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case all four involved data types are suited for a vectorized computation of the
-       matrix multiplication, the nested \a value will be set to 1, otherwise it will be 0. */
+       matrix multiplication, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    static constexpr bool UseVectorizedDefaultKernel_v =
       ( useOptimizedKernels &&

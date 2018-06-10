@@ -149,7 +149,7 @@ class DVecDVecOuterExpr
    static constexpr bool useAssign = ( evaluateLeft || evaluateRight );
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
@@ -157,9 +157,9 @@ class DVecDVecOuterExpr
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       the right-hand side vector operand requires an intermediate evaluation, the nested \a value
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case the right-hand side vector operand requires an intermediate evaluation, the variable
        will be set to 1, otherwise it will be 0. */
    template< typename VT >
    static constexpr bool UseSMPAssign_v = evaluateRight;
@@ -168,9 +168,9 @@ class DVecDVecOuterExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case all three involved data types are suited for a vectorized computation of the
-       outer product, the nested \a value will be set to 1, otherwise it will be 0. */
+       outer product, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseVectorizedKernel_v =
       ( useOptimizedKernels &&
@@ -184,9 +184,9 @@ class DVecDVecOuterExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! In case no vectorized computation is possible, the nested \a value will be set to 1,
-       otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! In case no vectorized computation is possible, the variable will be set to 1, otherwise
+       it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseDefaultKernel_v = !UseVectorizedKernel_v<T1,T2,T3>;
    /*! \endcond */

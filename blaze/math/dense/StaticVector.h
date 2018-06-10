@@ -338,7 +338,7 @@ class StaticVector
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -349,7 +349,7 @@ class StaticVector
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -361,7 +361,7 @@ class StaticVector
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -373,7 +373,7 @@ class StaticVector
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedMultAssign_v =
       ( useOptimizedKernels &&
@@ -385,7 +385,7 @@ class StaticVector
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool VectorizedDivAssign_v =
       ( useOptimizedKernels &&

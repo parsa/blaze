@@ -126,7 +126,7 @@ class SVecDVecMultExpr
    static constexpr bool useAssign = ( RequiresEvaluation_v<VT1> || RequiresEvaluation_v<VT2> );
 
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */

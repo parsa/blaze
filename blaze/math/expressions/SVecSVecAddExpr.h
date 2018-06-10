@@ -117,11 +117,11 @@ class SVecSVecAddExpr
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       the target vector is SMP assignable, \a value is set to 1 and the expression specific
-       evaluation strategy is selected. Otherwise \a value is set to 0 and the default strategy
-       is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case the target vector is SMP assignable, the variable is set to 1 and the expression
+       specific evaluation strategy is selected. Otherwise the variable is set to 0 and the
+       default strategy is chosen. */
    template< typename VT >
    static constexpr bool UseSMPAssign_v = VT::smpAssignable;
    /*! \endcond */

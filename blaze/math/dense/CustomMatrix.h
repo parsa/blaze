@@ -571,7 +571,7 @@ class CustomMatrix
  private:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -582,7 +582,7 @@ class CustomMatrix
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -595,7 +595,7 @@ class CustomMatrix
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -608,7 +608,7 @@ class CustomMatrix
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&
@@ -3374,7 +3374,7 @@ class CustomMatrix<Type,AF,PF,true>
 
  private:
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -3383,7 +3383,7 @@ class CustomMatrix<Type,AF,PF,true>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -3394,7 +3394,7 @@ class CustomMatrix<Type,AF,PF,true>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -3405,7 +3405,7 @@ class CustomMatrix<Type,AF,PF,true>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper structure for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT >
    static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&

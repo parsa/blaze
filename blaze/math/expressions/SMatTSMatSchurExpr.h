@@ -129,11 +129,11 @@ class SMatTSMatSchurExpr
 
    //**Serial evaluation strategy******************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the serial evaluation strategy. In case the
-       two given matrix types have a different storage order and in case the second matrix type
-       is symmetric, \a value is set to 1 and an optimized evaluation strategy is selected.
-       Otherwise \a value is set to 0 and the default strategy is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the serial evaluation strategy.
+       In case the two given matrix types have a different storage order and in case the second
+       matrix type is symmetric, the variable is set to 1 and an optimized evaluation strategy
+       is selected. Otherwise the variable is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2 >
    static constexpr bool UseSymmetricKernel_v =
       ( IsVoid_v< EnableIf_t< StorageOrder_v<T1> != StorageOrder_v<T2> > > && IsSymmetric_v<T2> );

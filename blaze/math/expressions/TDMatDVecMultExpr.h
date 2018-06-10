@@ -148,10 +148,10 @@ class TDMatDVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either the matrix or the vector operand requires an intermediate evaluation, the nested
-       \a value will be set to 1, otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either the matrix or the vector operand requires an intermediate evaluation, the
+       variable will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    static constexpr bool UseSMPAssign_v = ( evaluateMatrix || evaluateVector );
    /*! \endcond */
@@ -159,9 +159,9 @@ class TDMatDVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case the matrix type and the two involved vector types are suited for a BLAS kernel,
-       the nested \a value will be set to 1, otherwise it will be 0. */
+       the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseBlasKernel_v =
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
@@ -180,10 +180,10 @@ class TDMatDVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case the matrix type and the two involved vector types are suited for a vectorized
-       computation of the matrix/vector multiplication, the nested \a value will be set to 1,
-       otherwise it will be 0. */
+       computation of the matrix/vector multiplication, the variable will be set to 1, otherwise
+       it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseVectorizedDefaultKernel_v =
       ( useOptimizedKernels &&
@@ -2499,18 +2499,18 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either the matrix or the vector operand requires an intermediate evaluation, the nested
-       \a value will be set to 1, otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either the matrix or the vector operand requires an intermediate evaluation, the
+       variable will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    static constexpr bool UseSMPAssign_v = ( evaluateMatrix || evaluateVector );
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case the matrix type, the two involved vector types, and the scalar type are suited
-       for a BLAS kernel, the nested \a value will be set to 1, otherwise it will be 0. */
+       for a BLAS kernel, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    static constexpr bool UseBlasKernel_v =
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
@@ -2528,10 +2528,10 @@ class DVecScalarMultExpr< TDMatDVecMultExpr<MT,VT>, ST, false >
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case the two involved vector types, the matrix type, and the scalar type are suited
-       for a vectorized computation of the scaled vector/matrix multiplication, the nested
-       \a value will be set to 1, otherwise it will be 0. */
+       for a vectorized computation of the scaled vector/matrix multiplication, the variable
+       will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
    static constexpr bool UseVectorizedDefaultKernel_v =
       ( useOptimizedKernels &&

@@ -141,7 +141,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
    static constexpr bool EnforceEvaluation_v =
       ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );
@@ -701,7 +701,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -710,7 +710,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -721,7 +721,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -732,7 +732,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&
@@ -3416,7 +3416,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
    static constexpr bool EnforceEvaluation_v =
       ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );
@@ -3978,7 +3978,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -3987,7 +3987,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -3998,7 +3998,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -4009,7 +4009,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&
@@ -6650,7 +6650,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
    static constexpr bool EnforceEvaluation_v =
       ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );
@@ -6800,7 +6800,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -6809,7 +6809,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -6820,7 +6820,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -6831,7 +6831,7 @@ class Submatrix<MT,aligned,false,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&
@@ -9505,7 +9505,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
    static constexpr bool EnforceEvaluation_v =
       ( IsRestricted_v<MT1> && RequiresEvaluation_v<MT2> );
@@ -9655,7 +9655,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
 
  private:
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
@@ -9664,7 +9664,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedAddAssign_v =
       ( useOptimizedKernels &&
@@ -9675,7 +9675,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSubAssign_v =
       ( useOptimizedKernels &&
@@ -9686,7 +9686,7 @@ class Submatrix<MT,aligned,true,true,CSAs...>
    //**********************************************************************************************
 
    //**********************************************************************************************
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT2 >
    static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&

@@ -146,9 +146,9 @@ class DVecDVecAddExpr
    //! Helper variable template for the explicit application of the SFINAE principle.
    /*! This variable template is a helper for the selection of the parallel evaluation strategy.
        In case at least one of the two dense vector operands is not SMP assignable and at least
-       one of the two operands requires an intermediate evaluation, \a value is set to 1 and the
-       expression specific evaluation strategy is selected. Otherwise \a value is set to 0 and
-       the default strategy is chosen. */
+       one of the two operands requires an intermediate evaluation, the variable is set to 1 and
+       the expression specific evaluation strategy is selected. Otherwise the variable is set to
+       0 and the default strategy is chosen. */
    template< typename VT >
    static constexpr bool UseSMPAssign_v =
       ( ( !VT1::smpAssignable || !VT2::smpAssignable ) && useAssign );

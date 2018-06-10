@@ -127,11 +127,11 @@ class TSMatTSMatAddExpr
 
    //**Serial evaluation strategy******************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the serial evaluation strategy. In case
-       the target matrix is column-major and both matrix operands are symmetric, \a value is
-       set to 1 and an optimized evaluation strategy is selected. Otherwise \a value is set
-       to 0 and the default strategy is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the serial evaluation strategy.
+       In case the target matrix is column-major and both matrix operands are symmetric, the
+       variable is set to 1 and an optimized evaluation strategy is selected. Otherwise the
+       variable is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseSymmetricKernel_v =
       ( IsVoid_v< EnableIf_t< IsRowMajorMatrix_v<T1> > > &&
@@ -141,11 +141,11 @@ class TSMatTSMatAddExpr
 
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       the target matrix is SMP assignable, \a value is set to 1 and the expression specific
-       evaluation strategy is selected. Otherwise \a value is set to 0 and the default strategy
-       is chosen. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case the target matrix is SMP assignable, the variable is set to 1 and the expression
+       specific evaluation strategy is selected. Otherwise the variable is set to 0 and the
+       default strategy is chosen. */
    template< typename MT >
    static constexpr bool UseSMPAssign_v = MT::smpAssignable;
    /*! \endcond */

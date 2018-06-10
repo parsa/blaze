@@ -130,10 +130,10 @@ class TDMatSVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! This template is a helper for the selection of the parallel evaluation strategy. In case
-       either the matrix or the vector operand requires an intermediate evaluation, the nested
-       \a value will be set to 1, otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either the matrix or the vector operand requires an intermediate evaluation, the
+       variable will be set to 1, otherwise it will be 0. */
    template< typename T1 >
    static constexpr bool UseSMPAssign_v = ( evaluateMatrix || evaluateVector );
    /*! \endcond */
@@ -141,10 +141,10 @@ class TDMatSVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case the matrix type and the two involved vector types are suited for a vectorized
-       computation of the matrix/vector multiplication, the nested \a value will be set to 1,
-       otherwise it will be 0. */
+       computation of the matrix/vector multiplication, the variable will be set to 1, otherwise
+       it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseVectorizedKernel_v =
       ( useOptimizedKernels &&
@@ -160,10 +160,10 @@ class TDMatSVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
+   //! Helper variable template for the explicit application of the SFINAE principle.
    /*! In case a vectorized computation of the matrix/vector multiplication is not possible, but
-       a loop-unrolled computation is feasible, the nested \a value will be set to 1, otherwise
-       it will be 0. */
+       a loop-unrolled computation is feasible, the variable will be set to 1, otherwise it will
+       be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseOptimizedKernel_v =
       ( !UseVectorizedKernel_v<T1,T2,T3> &&
@@ -175,9 +175,9 @@ class TDMatSVecMultExpr
 
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   //! Helper template for the explicit application of the SFINAE principle.
-   /*! In case neither a vectorized nor optimized computation is possible, the nested \a value
-       will be set to 1, otherwise it will be 0. */
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! In case neither a vectorized nor optimized computation is possible, the variable will be
+       set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseDefaultKernel_v =
       ( !UseVectorizedKernel_v<T1,T2,T3> && !UseOptimizedKernel_v<T1,T2,T3> );
