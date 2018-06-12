@@ -2511,18 +2511,6 @@ struct AddTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
    using Type = DynamicVector< AddTrait_t<T1,T2>, TF >;
 };
 
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct AddTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = DynamicVector< AddTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct AddTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
-{
-   using Type = DynamicVector< AddTrait_t<T1,T2>, TF >;
-};
-
 template< typename T1, bool TF, typename T2 >
 struct AddTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
@@ -2574,18 +2562,6 @@ struct SubTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
 
 template< typename T1, bool TF, typename T2 >
 struct SubTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = DynamicVector< SubTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct SubTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = DynamicVector< SubTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct SubTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
 {
    using Type = DynamicVector< SubTrait_t<T1,T2>, TF >;
 };
@@ -2729,42 +2705,6 @@ struct MultTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
    using Type = MultTrait_t<T1,T2>;
 };
 
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct MultTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, typename T2, bool AF, bool PF >
-struct MultTrait< CompressedVector<T1,false>, CustomVector<T2,AF,PF,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, true >;
-};
-
-template< typename T1, typename T2, bool AF, bool PF >
-struct MultTrait< CompressedVector<T1,true>, CustomVector<T2,AF,PF,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct MultTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF, bool PF, typename T2 >
-struct MultTrait< CustomVector<T1,AF,PF,false>, CompressedVector<T2,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, bool AF, bool PF, typename T2 >
-struct MultTrait< CustomVector<T1,AF,PF,true>, CompressedVector<T2,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
 template< typename T1, bool TF, typename T2 >
 struct MultTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 {
@@ -2834,18 +2774,6 @@ struct DivTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
 
 template< typename T1, bool TF, typename T2 >
 struct DivTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< DivTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, bool AF, bool PF >
-struct DivTrait< CompressedVector<T1,TF>, CustomVector<T2,AF,PF,TF> >
-{
-   using Type = CompressedVector< DivTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool AF, bool PF, bool TF, typename T2 >
-struct DivTrait< CustomVector<T1,AF,PF,TF>, CompressedVector<T2,TF> >
 {
    using Type = CompressedVector< DivTrait_t<T1,T2>, TF >;
 };
