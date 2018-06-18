@@ -79,6 +79,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/Forward.h>
@@ -90,6 +91,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallVector.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -3323,6 +3325,29 @@ struct Size< Rows<MT,SO,DF,SF,I,Is...>, 0UL >
 template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
 struct Size< Rows<MT,SO,DF,SF,CRAs...>, 1UL >
    : public Size<MT,1UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is >
+struct MaxSize< Rows<MT,SO,DF,SF,I,Is...>, 0UL >
+   : public PtrdiffT<1UL+sizeof...(Is)>
+{};
+
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct MaxSize< Rows<MT,SO,DF,SF,CRAs...>, 1UL >
+   : public MaxSize<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
