@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/subvector/BaseTemplate.h>
@@ -74,6 +75,7 @@
 #include <blaze/math/views/subvector/Sparse.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallVector.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
@@ -2668,6 +2670,24 @@ inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t I, size_t N >
 struct Size< Subvector<VT,AF,TF,DF,I,N>, 0UL >
+   : public PtrdiffT<N>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t I, size_t N >
+struct MaxSize< Subvector<VT,AF,TF,DF,I,N>, 0UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */
