@@ -69,6 +69,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/elements/BaseTemplate.h>
@@ -76,6 +77,7 @@
 #include <blaze/math/views/elements/Sparse.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallVector.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
@@ -2293,6 +2295,24 @@ inline decltype(auto) derestrict( Elements<VT,TF,DF>&& e )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF, bool DF, size_t I, size_t... Is >
 struct Size< Elements<VT,TF,DF,I,Is...>, 0UL >
+   : public PtrdiffT<1UL+sizeof...(Is)>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF, bool DF, size_t I, size_t... Is >
+struct MaxSize< Elements<VT,TF,DF,I,Is...>, 0UL >
    : public PtrdiffT<1UL+sizeof...(Is)>
 {};
 /*! \endcond */
