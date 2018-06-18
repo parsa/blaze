@@ -81,6 +81,7 @@
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStatic.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -2623,6 +2624,24 @@ inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexc
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
 struct Size< StaticVector<T,N,TF>, 0UL >
+   : public PtrdiffT<N>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool TF >
+struct MaxSize< StaticVector<T,N,TF>, 0UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */
