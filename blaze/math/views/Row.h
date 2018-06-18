@@ -66,6 +66,7 @@
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/row/BaseTemplate.h>
@@ -1473,6 +1474,24 @@ inline decltype(auto) derestrict( Row<MT,SO,DF,SF>&& r )
 template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
 struct Size< Row<MT,SO,DF,SF,CRAs...>, 0UL >
    : public Size<MT,1UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+struct MaxSize< Row<MT,SO,DF,SF,CRAs...>, 0UL >
+   : public MaxSize<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
