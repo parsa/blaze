@@ -95,6 +95,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -6185,6 +6186,29 @@ struct Size< StaticMatrix<T,M,N,SO>, 0UL >
 
 template< typename T, size_t M, size_t N, bool SO >
 struct Size< StaticMatrix<T,M,N,SO>, 1UL >
+   : public PtrdiffT<N>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t M, size_t N, bool SO >
+struct MaxSize< StaticMatrix<T,M,N,SO>, 0UL >
+   : public PtrdiffT<M>
+{};
+
+template< typename T, size_t M, size_t N, bool SO >
+struct MaxSize< StaticMatrix<T,M,N,SO>, 1UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */
