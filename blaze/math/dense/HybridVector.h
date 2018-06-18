@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/TransposeFlag.h>
@@ -88,6 +89,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -2684,6 +2686,24 @@ inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexc
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, size_t N, bool TF >
+struct MaxSize< HybridVector<T,N,TF>, 0UL >
+   : public PtrdiffT<N>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 
