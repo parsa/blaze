@@ -84,6 +84,7 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/YieldsDiagonal.h>
@@ -500,6 +501,29 @@ struct Size< SymmetricMatrix<MT,SO,DF,NF>, 0UL >
 template< typename MT, bool SO, bool DF, bool NF >
 struct Size< SymmetricMatrix<MT,SO,DF,NF>, 1UL >
    : public Size<MT,1UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool NF >
+struct MaxSize< SymmetricMatrix<MT,SO,DF,NF>, 0UL >
+   : public MaxSize<MT,0UL>
+{};
+
+template< typename MT, bool SO, bool DF, bool NF >
+struct MaxSize< SymmetricMatrix<MT,SO,DF,NF>, 1UL >
+   : public MaxSize<MT,1UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
