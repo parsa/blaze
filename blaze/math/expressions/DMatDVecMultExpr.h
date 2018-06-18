@@ -79,7 +79,6 @@
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/BLAS.h>
 #include <blaze/system/Optimizations.h>
@@ -5387,24 +5386,6 @@ inline decltype(auto)
 
    return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT >
-struct Size< DMatDVecMultExpr<MT,VT>, 0UL >
-   : public Size<MT,0UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

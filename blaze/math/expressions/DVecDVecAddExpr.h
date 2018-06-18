@@ -62,7 +62,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -72,7 +71,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 
 
@@ -1063,24 +1061,6 @@ inline decltype(auto)
    using ReturnType = const DVecDVecAddExpr<VT1,VT2,TF>;
    return ReturnType( ~lhs, ~rhs );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF >
-struct Size< DVecDVecAddExpr<VT1,VT2,TF>, 0UL >
-   : public Maximum< Size<VT1,0UL>, Size<VT2,0UL> >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

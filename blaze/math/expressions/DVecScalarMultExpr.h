@@ -65,7 +65,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/system/Inline.h>
@@ -1807,24 +1806,6 @@ inline decltype(auto)
 
    return ( vec.leftOperand() * (~mat) ) * vec.rightOperand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST, bool TF >
-struct Size< DVecScalarMultExpr<VT,ST,TF>, 0UL >
-   : public Size<VT,0UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

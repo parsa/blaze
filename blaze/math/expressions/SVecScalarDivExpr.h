@@ -61,7 +61,6 @@
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
@@ -948,24 +947,6 @@ inline decltype(auto) operator/( const SVecScalarDivExpr<VT,ST1,TF>& vec, ST2 sc
       return ReturnType( vec.leftOperand(), vec.rightOperand() * scalar );
    }
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename ST, bool TF >
-struct Size< SVecScalarDivExpr<VT,ST,TF>, 0UL >
-   : public Size<VT,0UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

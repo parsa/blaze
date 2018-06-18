@@ -73,7 +73,6 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
@@ -1751,24 +1750,6 @@ inline decltype(auto)
    using ReturnType = const TDMatSVecMultExpr<MT,VT>;
    return ReturnType( ~mat, ~vec );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT >
-struct Size< TDMatSVecMultExpr<MT,VT>, 0UL >
-   : public Size<MT,0UL>
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

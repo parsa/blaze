@@ -67,7 +67,6 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -75,7 +74,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
@@ -1009,29 +1007,6 @@ inline decltype(auto)
 
    return tsmattsmatschur( ~lhs, ~rhs );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct Size< TSMatTSMatSchurExpr<MT1,MT2>, 0UL >
-   : public Maximum< Size<MT1,0UL>, Size<MT2,0UL> >
-{};
-
-template< typename MT1, typename MT2 >
-struct Size< TSMatTSMatSchurExpr<MT1,MT2>, 1UL >
-   : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

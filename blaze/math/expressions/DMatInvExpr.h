@@ -58,7 +58,6 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -470,29 +469,6 @@ inline decltype(auto) inv( const DMatInvExpr<MT,SO>& dm )
 
    return dm.operand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct Size< DMatInvExpr<MT,SO>, 0UL >
-   : public Size<MT,0UL>
-{};
-
-template< typename MT, bool SO >
-struct Size< DMatInvExpr<MT,SO>, 1UL >
-   : public Size<MT,1UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

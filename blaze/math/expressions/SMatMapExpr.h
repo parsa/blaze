@@ -67,7 +67,6 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
@@ -2369,29 +2368,6 @@ inline decltype(auto) imag( const SMatMapExpr<MT,Imag,SO>& sm )
 
    return sm;
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP, bool SO >
-struct Size< SMatMapExpr<MT,OP,SO>, 0UL >
-   : public Size<MT,0UL>
-{};
-
-template< typename MT, typename OP, bool SO >
-struct Size< SMatMapExpr<MT,OP,SO>, 1UL >
-   : public Size<MT,1UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

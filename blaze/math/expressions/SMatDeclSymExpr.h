@@ -65,7 +65,6 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -1027,29 +1026,6 @@ inline decltype(auto) declsym( const SMatScalarMultExpr<MT,ST,SO>& sm )
 
    return declsym( sm.leftOperand() ) * sm.rightOperand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  Size SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct Size< SMatDeclSymExpr<MT,SO>,0UL >
-   : public Size<MT,0UL>
-{};
-
-template< typename MT, bool SO >
-struct Size< SMatDeclSymExpr<MT,SO>, 1UL >
-   : public Size<MT,1UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -58,11 +58,9 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/Types.h>
 
 
@@ -546,24 +544,6 @@ inline decltype(auto) cross( const DenseVector<VT1,TF>& lhs, const DenseVector<V
 {
    return lhs % rhs;
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT1, typename VT2, bool TF >
-struct Size< DVecDVecCrossExpr<VT1,VT2,TF>, 0UL >
-   : public PtrdiffT<3L>
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

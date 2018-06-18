@@ -54,7 +54,6 @@
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
@@ -784,24 +783,6 @@ inline decltype(auto) trans( const SVecScalarMultExpr<VT,ST,TF>& sv )
 
    return trans( sv.leftOperand() ) * sv.rightOperand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct Size< SVecTransExpr<VT,TF>, 0UL >
-   : public Size<VT,0UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

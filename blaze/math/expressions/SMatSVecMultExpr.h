@@ -62,7 +62,6 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -1014,24 +1013,6 @@ inline decltype(auto)
 
    return smatsvecmult( ~mat, ~vec );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename VT >
-struct Size< SMatSVecMultExpr<MT,VT>, 0UL >
-   : public Size<MT,0UL>
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

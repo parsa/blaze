@@ -70,7 +70,6 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -78,7 +77,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 
 
@@ -1060,29 +1058,6 @@ inline decltype(auto)
    using ReturnType = const DMatDMatSubExpr<MT1,MT2,SO>;
    return ReturnType( ~lhs, ~rhs );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct Size< DMatDMatSubExpr<MT1,MT2,SO>, 0UL >
-   : public Maximum< Size<MT1,0UL>, Size<MT2,0UL> >
-{};
-
-template< typename MT1, typename MT2, bool SO >
-struct Size< DMatDMatSubExpr<MT1,MT2,SO>, 1UL >
-   : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

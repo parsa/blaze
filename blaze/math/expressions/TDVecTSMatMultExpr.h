@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -814,24 +813,6 @@ inline decltype(auto)
    using ReturnType = const TDVecTSMatMultExpr<VT,MT>;
    return ReturnType( ~vec, ~mat );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename MT >
-struct Size< TDVecTSMatMultExpr<VT,MT>, 0UL >
-   : public Size<MT,1UL>
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

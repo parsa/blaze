@@ -65,7 +65,6 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -1455,29 +1454,6 @@ inline decltype(auto)
 
    return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct Size< SMatScalarMultExpr<MT,ST,SO>, 0UL >
-   : public Size<MT,0UL>
-{};
-
-template< typename MT, typename ST, bool SO >
-struct Size< SMatScalarMultExpr<MT,ST,SO>, 1UL >
-   : public Size<MT,1UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -67,7 +67,6 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
@@ -1013,29 +1012,6 @@ inline decltype(auto) operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 sc
       return ReturnType( mat.leftOperand(), mat.rightOperand() * scalar );
    }
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct Size< SMatScalarDivExpr<MT,ST,SO>, 0UL >
-   : public Size<MT,0UL>
-{};
-
-template< typename MT, typename ST, bool SO >
-struct Size< SMatScalarDivExpr<MT,ST,SO>, 1UL >
-   : public Size<MT,1UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -59,7 +59,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
-#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
@@ -2218,24 +2217,6 @@ inline decltype(auto) real( const SVecMapExpr<VT,Real,TF>& sv )
 
    return sv;
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SIZE SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, typename OP, bool TF >
-struct Size< SVecMapExpr<VT,OP,TF>, 0UL >
-   : public Size<VT,0UL>
-{};
 /*! \endcond */
 //*************************************************************************************************
 
