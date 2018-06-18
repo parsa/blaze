@@ -42,9 +42,46 @@
 
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+template< typename, size_t, typename = void > struct SizeHelper1;
+template< typename, size_t, typename > struct SizeHelper2;
+
+
+
+
+//=================================================================================================
+//
+//  TYPE DEFINITIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Default size of the Size type trait.
+// \ingroup math_type_traits
+*/
+constexpr ptrdiff_t DefaultSize_v = -1L;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Type representation of the default size of the Size type trait.
+// \ingroup math_type_traits
+*/
+using DefaultSize = PtrdiffT<DefaultSize_v>;
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
@@ -78,7 +115,7 @@ namespace blaze {
 */
 template< typename T, size_t N >
 struct Size
-   : public PtrdiffT<-1L>
+   : public SizeHelper1<T,N>
 {};
 //*************************************************************************************************
 
@@ -137,6 +174,42 @@ struct Size< const volatile T, N >
 */
 template< typename T, size_t N >
 constexpr ptrdiff_t Size_v = Size<T,N>::value;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the Size type trait.
+// \ingroup math_type_traits
+*/
+template< typename T, size_t N, typename >
+struct SizeHelper1
+   : public DefaultSize
+{};
+
+template< typename T, size_t N >
+struct SizeHelper1< T, N, Void_t< typename T::ResultType > >
+   : public SizeHelper2<T,N,typename T::ResultType>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the Size type trait.
+// \ingroup math_type_traits
+*/
+template< typename T, size_t N, typename U >
+struct SizeHelper2
+   : public Size<U,N>
+{};
+
+template< typename T, size_t N >
+struct SizeHelper2<T,N,T>
+   : public DefaultSize
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
