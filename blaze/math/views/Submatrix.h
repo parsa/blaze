@@ -97,6 +97,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
@@ -4971,6 +4972,29 @@ struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 0UL >
 
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 1UL >
+   : public PtrdiffT<N>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct MaxSize< Submatrix<MT,AF,SO,DF,I,J,M,N>, 0UL >
+   : public PtrdiffT<M>
+{};
+
+template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
+struct MaxSize< Submatrix<MT,AF,SO,DF,I,J,M,N>, 1UL >
    : public PtrdiffT<N>
 {};
 /*! \endcond */
