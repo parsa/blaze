@@ -81,10 +81,11 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
@@ -97,10 +98,12 @@
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/TransposeFlag.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignmentCheck.h>
@@ -6351,16 +6354,22 @@ struct IsPadded< StaticMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct AddTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
+template< typename T1, typename T2 >
+struct AddTraitEval2< T1, T2
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( Size_v<T1,0UL> != DefaultSize_v ||
+                                    Size_v<T2,0UL> != DefaultSize_v ) &&
+                                  ( Size_v<T1,1UL> != DefaultSize_v ||
+                                    Size_v<T2,1UL> != DefaultSize_v ) > >
 {
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct AddTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2> >
-{
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, false >;
+   static constexpr size_t M = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
+   static constexpr size_t N = max( Size_v<T1,1UL>, Size_v<T2,1UL> );
+
+   using Type = StaticMatrix< AddTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

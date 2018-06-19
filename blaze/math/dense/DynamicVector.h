@@ -76,13 +76,18 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/system/CacheSize.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
@@ -2724,34 +2729,20 @@ struct IsShrinkable< DynamicVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2, size_t N >
-struct AddTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
+template< typename T1, typename T2 >
+struct AddTraitEval2< T1, T2
+                    , EnableIf_t< IsVector_v<T1> &&
+                                  IsVector_v<T2> &&
+                                  ( IsDenseVector_v<T1> || IsDenseVector_v<T2> ) &&
+                                  ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                  ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                  ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
+                                  ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t N, bool TF, typename T2 >
-struct AddTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
-{
-   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct AddTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< AddTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct AddTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
-{
-   using Type = HybridVector< AddTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct AddTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   using Type = DynamicVector< AddTrait_t<T1,T2>, TF >;
+   using Type = DynamicVector< AddTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

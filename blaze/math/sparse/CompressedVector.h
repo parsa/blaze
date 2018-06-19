@@ -68,7 +68,9 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/algorithms/Max.h>
@@ -2475,46 +2477,14 @@ struct IsShrinkable< CompressedVector<T,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2, size_t N >
-struct AddTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
+template< typename T1, typename T2 >
+struct AddTraitEval2< T1, T2
+                    , EnableIf_t< IsSparseVector_v<T1> && IsSparseVector_v<T2> > >
 {
-   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t N, bool TF, typename T2 >
-struct AddTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct AddTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< AddTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct AddTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = HybridVector< AddTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct AddTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   using Type = DynamicVector< AddTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct AddTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = DynamicVector< AddTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct AddTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< AddTrait_t<T1,T2>, TF >;
+   using Type = CompressedVector< AddTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

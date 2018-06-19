@@ -71,12 +71,16 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
@@ -2825,22 +2829,21 @@ struct IsResizable< HybridVector<T,N,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, bool TF, typename T2, size_t N >
-struct AddTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF> >
+template< typename T1, typename T2 >
+struct AddTraitEval2< T1, T2
+                    , EnableIf_t< IsVector_v<T1> &&
+                                  IsVector_v<T2> &&
+                                  ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                  ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                  ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
+                                    MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using Type = StaticVector< AddTrait_t<T1,T2>, N, TF >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M, bool TF, typename T2, size_t N >
-struct AddTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = StaticVector< AddTrait_t<T1,T2>, M, TF >;
-};
+   static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
 
-template< typename T1, size_t M, bool TF, typename T2, size_t N >
-struct AddTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< AddTrait_t<T1,T2>, ( M < N )?( M ):( N ), TF >;
+   using Type = HybridVector< AddTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

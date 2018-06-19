@@ -81,10 +81,11 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -95,6 +96,8 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/StorageOrder.h>
@@ -6655,40 +6658,26 @@ struct IsResizable< HybridMatrix<T,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
-struct AddTrait< HybridMatrix<T1,M1,N1,SO>, StaticMatrix<T2,M2,N2,SO> >
+template< typename T1, typename T2 >
+struct AddTraitEval2< T1, T2
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                  ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                  ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                  ( Size_v<T2,1UL> == DefaultSize_v ) &&
+                                  ( MaxSize_v<T1,0UL> != DefaultSize_v ||
+                                    MaxSize_v<T2,0UL> != DefaultSize_v ) &&
+                                  ( MaxSize_v<T1,1UL> != DefaultSize_v ||
+                                    MaxSize_v<T2,1UL> != DefaultSize_v ) > >
 {
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M2, N2, SO >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
-struct AddTrait< HybridMatrix<T1,M1,N1,SO1>, StaticMatrix<T2,M2,N2,SO2> >
-{
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M2, N2, false >;
-};
+   static constexpr size_t M = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
+   static constexpr size_t N = min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) );
 
-template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
-struct AddTrait< StaticMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
-{
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M2, N2, SO >;
-};
-
-template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
-struct AddTrait< StaticMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
-{
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M2, N2, false >;
-};
-
-template< typename T1, size_t M1, size_t N1, bool SO, typename T2, size_t M2, size_t N2 >
-struct AddTrait< HybridMatrix<T1,M1,N1,SO>, HybridMatrix<T2,M2,N2,SO> >
-{
-   using Type = HybridMatrix< AddTrait_t<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), SO >;
-};
-
-template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
-struct AddTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
-{
-   using Type = HybridMatrix< AddTrait_t<T1,T2>, ( M1 < M2 )?( M1 ):( M2 ), ( N1 < N2 )?( N1 ):( N2 ), false >;
+   using Type = HybridMatrix< AddTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

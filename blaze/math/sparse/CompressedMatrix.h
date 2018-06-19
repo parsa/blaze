@@ -72,10 +72,12 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
@@ -5958,88 +5960,14 @@ struct IsShrinkable< CompressedMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2, size_t M, size_t N >
-struct AddTrait< CompressedMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
+template< typename T1, typename T2 >
+struct AddTraitEval2< T1, T2
+                    , EnableIf_t< IsSparseMatrix_v<T1> && IsSparseMatrix_v<T2> > >
 {
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct AddTrait< CompressedMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
-{
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO2 >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct AddTrait< StaticMatrix<T1,M,N,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct AddTrait< StaticMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = StaticMatrix< AddTrait_t<T1,T2>, M, N, SO1 >;
-};
-
-template< typename T1, bool SO, typename T2, size_t M, size_t N >
-struct AddTrait< CompressedMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct AddTrait< CompressedMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
-{
-   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO2 >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct AddTrait< HybridMatrix<T1,M,N,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct AddTrait< HybridMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = HybridMatrix< AddTrait_t<T1,T2>, M, N, SO1 >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct AddTrait< CompressedMatrix<T1,SO>, DynamicMatrix<T2,SO> >
-{
-   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct AddTrait< CompressedMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
-{
-   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO2 >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct AddTrait< DynamicMatrix<T1,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct AddTrait< DynamicMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = DynamicMatrix< AddTrait_t<T1,T2>, SO1 >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct AddTrait< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = CompressedMatrix< AddTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct AddTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< AddTrait_t<T1,T2>, false >;
+   using Type = CompressedMatrix< AddTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************
