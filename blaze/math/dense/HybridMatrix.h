@@ -82,6 +82,7 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -90,6 +91,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -6772,94 +6774,78 @@ struct SchurTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< HybridMatrix<T1,M,N,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                   ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
+                                   ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ) > >
 {
-   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, SO >;
+   using ET1 = ElementType_t<T1>;
+
+   static constexpr size_t M = MaxSize_v<T1,0UL>;
+   static constexpr size_t N = MaxSize_v<T1,1UL>;
+
+   using Type = HybridMatrix< MultTrait_t<ET1,T2>, M, N, StorageOrder_v<T1> >;
 };
 
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< T1, HybridMatrix<T2,M,N,SO>, EnableIf_t< IsNumeric_v<T1> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                   ( Size_v<T2,1UL> == DefaultSize_v ) &&
+                                   ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) &&
+                                   ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ) > >
 {
-   using Type = HybridMatrix< MultTrait_t<T1,T2>, M, N, SO >;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t M = MaxSize_v<T2,0UL>;
+   static constexpr size_t N = MaxSize_v<T2,1UL>;
+
+   using Type = HybridMatrix< MultTrait_t<T1,ET2>, M, N, StorageOrder_v<T2> >;
 };
 
-template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t K >
-struct MultTrait< HybridMatrix<T1,M,N,SO>, StaticVector<T2,K,false> >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsColumnVector_v<T1> &&
+                                   IsRowVector_v<T2> &&
+                                   ( ( Size_v<T1,0UL> == DefaultSize_v ) ||
+                                     ( Size_v<T2,0UL> == DefaultSize_v ) ) &&
+                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
+                                   ( MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using Type = HybridVector< MultTrait_t<T1,T2>, M, false >;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t M = MaxSize_v<T1,0UL>;
+   static constexpr size_t N = MaxSize_v<T2,0UL>;
+
+   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, false >;
 };
 
-template< typename T1, size_t K, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< StaticVector<T1,K,true>, HybridMatrix<T2,M,N,SO> >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( ( Size_v<T1,0UL> == DefaultSize_v &&
+                                       ( !IsSquare_v<T1> || Size_v<T2,0UL> == DefaultSize_v ) ) ||
+                                     ( Size_v<T2,1UL> == DefaultSize_v &&
+                                       ( !IsSquare_v<T2> || Size_v<T1,1UL> == DefaultSize_v ) ) ) &&
+                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
+                                     ( IsSquare_v<T1> && MaxSize_v<T2,0UL> != DefaultMaxSize_v ) ) &&
+                                   ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ||
+                                     ( IsSquare_v<T2> && MaxSize_v<T1,1UL> != DefaultMaxSize_v ) ) > >
 {
-   using Type = HybridVector< MultTrait_t<T1,T2>, N, true >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t K >
-struct MultTrait< HybridMatrix<T1,M,N,SO>, HybridVector<T2,K,false> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, M, false >;
-};
+   static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
+   static constexpr size_t N = ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ? MaxSize_v<T2,1UL> : MaxSize_v<T1,1UL> );
 
-template< typename T1, size_t K, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< HybridVector<T1,K,true>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< HybridMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, M, false >;
-};
-
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< DynamicVector<T1,true>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
-struct MultTrait< HybridMatrix<T1,M,N,SO>, CustomVector<T2,AF,PF,false> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, M, false >;
-};
-
-template< typename T1, bool AF, bool PF, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< CustomVector<T1,AF,PF,true>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< HybridMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, M, false >;
-};
-
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< CompressedVector<T1,true>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
-struct MultTrait< HybridMatrix<T1,M1,N1,SO1>, StaticMatrix<T2,M2,N2,SO2> >
-{
-   using Type = HybridMatrix< MultTrait_t<T1,T2>, M1, N2, SO1 >;
-};
-
-template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
-struct MultTrait< StaticMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
-{
-   using Type = HybridMatrix< MultTrait_t<T1,T2>, M1, N2, SO1 >;
-};
-
-template< typename T1, size_t M1, size_t N1, bool SO1, typename T2, size_t M2, size_t N2, bool SO2 >
-struct MultTrait< HybridMatrix<T1,M1,N1,SO1>, HybridMatrix<T2,M2,N2,SO2> >
-{
-   using Type = HybridMatrix< MultTrait_t<T1,T2>, M1, N2, SO1 >;
+   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

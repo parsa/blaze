@@ -75,10 +75,14 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -2787,106 +2791,77 @@ struct SubTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct MultTrait< DynamicVector<T1,TF>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsDenseVector_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< MultTrait_t<T1,T2>, TF >;
-};
+   using ET1 = ElementType_t<T1>;
 
-template< typename T1, typename T2, bool TF >
-struct MultTrait< T1, DynamicVector<T2,TF>, EnableIf_t< IsNumeric_v<T1> > >
-{
-   using Type = DynamicVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct MultTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< DynamicVector<T1,false>, StaticVector<T2,N,true> >
-{
-   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< DynamicVector<T1,true>, StaticVector<T2,N,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< StaticVector<T1,N,false>, DynamicVector<T2,true> >
-{
-   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< StaticVector<T1,N,true>, DynamicVector<T2,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct MultTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< DynamicVector<T1,false>, HybridVector<T2,N,true> >
-{
-   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< DynamicVector<T1,true>, HybridVector<T2,N,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
-{
-   using Type = HybridVector< MultTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< HybridVector<T1,N,false>, DynamicVector<T2,true> >
-{
-   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< HybridVector<T1,N,true>, DynamicVector<T2,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct MultTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   using Type = DynamicVector< MultTrait_t<T1,T2>, TF >;
+   using Type = DynamicVector< MultTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
 };
 
 template< typename T1, typename T2 >
-struct MultTrait< DynamicVector<T1,false>, DynamicVector<T2,true> >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsDenseVector_v<T2> &&
+                                   ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< MultTrait_t<T1,T2>, false >;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = DynamicVector< MultTrait_t<T1,ET2>, TransposeFlag_v<T2> >;
 };
 
 template< typename T1, typename T2 >
-struct MultTrait< DynamicVector<T1,true>, DynamicVector<T2,false> >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< ( ( IsRowVector_v<T1> && IsRowVector_v<T2> ) ||
+                                     ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
+                                   IsDenseVector_v<T1> &&
+                                   IsDenseVector_v<T2> &&
+                                   ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                   ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
+                                   ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = MultTrait_t<T1,T2>;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = DynamicVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsColumnVector_v<T2> &&
+                                   ( IsDenseMatrix_v<T1> || IsDenseVector_v<T2> ) &&
+                                   ( Size_v<T1,0UL> == DefaultSize_v &&
+                                     ( !IsSquare_v<T1> || Size_v<T2,0UL> == DefaultSize_v ) ) &&
+                                   ( MaxSize_v<T1,0UL> == DefaultMaxSize_v &&
+                                     ( !IsSquare_v<T1> || MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = DynamicVector< MultTrait_t<ET1,ET2>, false >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsRowVector_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsDenseVector_v<T1> || IsDenseMatrix_v<T2> ) &&
+                                   ( Size_v<T2,1UL> == DefaultSize_v &&
+                                     ( !IsSquare_v<T2> || Size_v<T1,0UL> == DefaultSize_v ) ) &&
+                                   ( MaxSize_v<T2,1UL> == DefaultMaxSize_v &&
+                                     ( !IsSquare_v<T2> || MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = DynamicVector< MultTrait_t<ET1,ET2>, true >;
 };
 /*! \endcond */
 //*************************************************************************************************

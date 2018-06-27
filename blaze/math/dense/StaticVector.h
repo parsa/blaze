@@ -75,8 +75,12 @@
 #include <blaze/math/typetraits/HasSIMDSub.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsDenseVector.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsStatic.h>
@@ -2825,34 +2829,72 @@ struct SubTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< StaticVector<T1,N,TF>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsVector_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v ) > >
 {
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
+   using ET1 = ElementType_t<T1>;
+
+   using Type = StaticVector< MultTrait_t<ET1,T2>, Size_v<T1,0UL>, TransposeFlag_v<T1> >;
 };
 
-template< typename T1, typename T2, size_t N, bool TF >
-struct MultTrait< T1, StaticVector<T2,N,TF>, EnableIf_t< IsNumeric_v<T1> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsVector_v<T2> &&
+                                   ( Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = StaticVector< MultTrait_t<T1,ET2>, Size_v<T2,0UL>, TransposeFlag_v<T2> >;
 };
 
-template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< ( ( IsRowVector_v<T1> && IsRowVector_v<T2> ) ||
+                                     ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
+                                   IsDenseVector_v<T1> &&
+                                   IsDenseVector_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v || Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, TF >;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
+
+   using Type = StaticVector< MultTrait_t<ET1,ET2>, N, TransposeFlag_v<T1> >;
 };
 
-template< typename T1, size_t M, typename T2, size_t N >
-struct MultTrait< StaticVector<T1,M,false>, StaticVector<T2,N,true> >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsColumnVector_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v ||
+                                     ( IsSquare_v<T1> && Size_v<T2,0UL> != DefaultSize_v ) ) > >
 {
-   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, false >;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t N = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
+
+   using Type = StaticVector< MultTrait_t<ET1,ET2>, N, false >;
 };
 
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< StaticVector<T1,N,true>, StaticVector<T2,N,false> >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsRowVector_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( Size_v<T2,1UL> != DefaultSize_v ||
+                                     ( IsSquare_v<T2> && Size_v<T1,0UL> != DefaultSize_v ) ) > >
 {
-   using Type = MultTrait_t<T1,T2>;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t N = ( Size_v<T2,1UL> != DefaultSize_v ? Size_v<T2,1UL> : Size_v<T1,0UL> );
+
+   using Type = StaticVector< MultTrait_t<ET1,ET2>, N, true >;
 };
 /*! \endcond */
 //*************************************************************************************************

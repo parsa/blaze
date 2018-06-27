@@ -65,9 +65,12 @@
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
@@ -85,7 +88,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Memory.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsIntegral.h>
@@ -2523,142 +2525,58 @@ struct SubTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct MultTrait< CompressedVector<T1,TF>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsSparseVector_v<T1> && IsNumeric_v<T2> > >
 {
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
+   using ET1 = ElementType_t<T1>;
 
-template< typename T1, typename T2, bool TF >
-struct MultTrait< T1, CompressedVector<T2,TF>, EnableIf_t< IsNumeric_v<T1> > >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct MultTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< CompressedVector<T1,false>, StaticVector<T2,N,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, true >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< CompressedVector<T1,true>, StaticVector<T2,N,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< StaticVector<T1,N,false>, CompressedVector<T2,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< StaticVector<T1,N,true>, CompressedVector<T2,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct MultTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< CompressedVector<T1,false>, HybridVector<T2,N,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, true >;
-};
-
-template< typename T1, typename T2, size_t N >
-struct MultTrait< CompressedVector<T1,true>, HybridVector<T2,N,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct MultTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< HybridVector<T1,N,false>, CompressedVector<T2,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, size_t N, typename T2 >
-struct MultTrait< HybridVector<T1,N,true>, CompressedVector<T2,false> >
-{
-   using Type = MultTrait_t<T1,T2>;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct MultTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
+   using Type = CompressedVector< MultTrait_t<ET1,T2>, TransposeFlag_v<T1> >;
 };
 
 template< typename T1, typename T2 >
-struct MultTrait< CompressedVector<T1,false>, DynamicVector<T2,true> >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> && IsSparseVector_v<T2> > >
 {
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, true >;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = CompressedVector< MultTrait_t<T1,ET2>, TransposeFlag_v<T2> >;
 };
 
 template< typename T1, typename T2 >
-struct MultTrait< CompressedVector<T1,true>, DynamicVector<T2,false> >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< ( ( IsRowVector_v<T1> && IsRowVector_v<T2> ) ||
+                                     ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
+                                   ( IsSparseVector_v<T1> || IsSparseVector_v<T2> ) > >
 {
-   using Type = MultTrait_t<T1,T2>;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, bool TF, typename T2 >
-struct MultTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, typename T2 >
-struct MultTrait< DynamicVector<T1,false>, CompressedVector<T2,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
+   using Type = CompressedVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
 };
 
 template< typename T1, typename T2 >
-struct MultTrait< DynamicVector<T1,true>, CompressedVector<T2,false> >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsSparseMatrix_v<T1> &&
+                                   IsSparseVector_v<T2> &&
+                                   IsColumnVector_v<T2> > >
 {
-   using Type = MultTrait_t<T1,T2>;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, bool TF, typename T2 >
-struct MultTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< MultTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, typename T2 >
-struct MultTrait< CompressedVector<T1,false>, CompressedVector<T2,true> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
+   using Type = CompressedVector< MultTrait_t<ET1,ET2>, false >;
 };
 
 template< typename T1, typename T2 >
-struct MultTrait< CompressedVector<T1,true>, CompressedVector<T2,false> >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsSparseVector_v<T1> &&
+                                   IsRowVector_v<T1> &&
+                                   IsSparseMatrix_v<T2> > >
 {
-   using Type = MultTrait_t<T1,T2>;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = CompressedVector< MultTrait_t<ET1,ET2>, true >;
 };
 /*! \endcond */
 //*************************************************************************************************

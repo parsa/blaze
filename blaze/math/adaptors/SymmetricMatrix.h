@@ -78,6 +78,7 @@
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -823,154 +824,14 @@ struct SchurTraitEval1< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, T, EnableIf_t< IsNumeric_v<T> > >
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< ( IsSymmetric_v<T1> && !IsDiagonal_v<T1> && IsNumeric_v<T2> ) ||
+                                   ( IsNumeric_v<T1> && IsSymmetric_v<T2> && !IsDiagonal_v<T2> ) ||
+                                   ( IsSymmetric_v<T1> && !IsDiagonal_v<T1> && IsIdentity_v<T2> ) ||
+                                   ( IsIdentity_v<T1> && IsSymmetric_v<T2> && !IsDiagonal_v<T2> ) > >
 {
-   using Type = SymmetricMatrix< MultTrait_t<MT,T> >;
-};
-
-template< typename T, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< T, SymmetricMatrix<MT,SO,DF,NF>, EnableIf_t< IsNumeric_v<T> > >
-{
-   using Type = SymmetricMatrix< MultTrait_t<T,MT> >;
-};
-
-template< typename MT, bool SO, bool DF, bool NF, typename T, size_t N >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, StaticVector<T,N,false> >
-{
-   using Type = MultTrait_t< MT, StaticVector<T,N,false> >;
-};
-
-template< typename T, size_t N, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< StaticVector<T,N,true>, SymmetricMatrix<MT,SO,DF,NF> >
-{
-   using Type = MultTrait_t< StaticVector<T,N,true>, MT >;
-};
-
-template< typename MT, bool SO, bool DF, bool NF, typename T, size_t N >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, HybridVector<T,N,false> >
-{
-   using Type = MultTrait_t< MT, HybridVector<T,N,false> >;
-};
-
-template< typename T, size_t N, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< HybridVector<T,N,true>, SymmetricMatrix<MT,SO,DF,NF> >
-{
-   using Type = MultTrait_t< HybridVector<T,N,true>, MT >;
-};
-
-template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, DynamicVector<T,false> >
-{
-   using Type = MultTrait_t< MT, DynamicVector<T,false> >;
-};
-
-template< typename T, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< DynamicVector<T,true>, SymmetricMatrix<MT,SO,DF,NF> >
-{
-   using Type = MultTrait_t< DynamicVector<T,true>, MT >;
-};
-
-template< typename MT, bool SO, bool DF, bool NF, typename T, bool AF, bool PF >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, CustomVector<T,AF,PF,false> >
-{
-   using Type = MultTrait_t< MT, CustomVector<T,AF,PF,false> >;
-};
-
-template< typename T, bool AF, bool PF, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< CustomVector<T,AF,PF,true>, SymmetricMatrix<MT,SO,DF,NF> >
-{
-   using Type = MultTrait_t< CustomVector<T,AF,PF,true>, MT >;
-};
-
-template< typename MT, bool SO, bool DF, bool NF, typename T >
-struct MultTrait< SymmetricMatrix<MT,SO,DF,NF>, CompressedVector<T,false> >
-{
-   using Type = MultTrait_t< MT, CompressedVector<T,false> >;
-};
-
-template< typename T, typename MT, bool SO, bool DF, bool NF >
-struct MultTrait< CompressedVector<T,true>, SymmetricMatrix<MT,SO,DF,NF> >
-{
-   using Type = MultTrait_t< CompressedVector<T,true>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
-struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
-{
-   using Type = MultTrait_t< MT, StaticMatrix<T,M,N,SO2> >;
-};
-
-template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct MultTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = MultTrait_t< StaticMatrix<T,M,N,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
-struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
-{
-   using Type = MultTrait_t< MT, HybridMatrix<T,M,N,SO2> >;
-};
-
-template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct MultTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = MultTrait_t< HybridMatrix<T,M,N,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
-struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
-{
-   using Type = MultTrait_t< MT, DynamicMatrix<T,SO2> >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct MultTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = MultTrait_t< DynamicMatrix<T,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
-struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
-{
-   using Type = MultTrait_t< MT, CustomMatrix<T,AF,PF,SO2> >;
-};
-
-template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct MultTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = MultTrait_t< DynamicMatrix<T,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
-struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
-{
-   using Type = MultTrait_t< MT, CompressedMatrix<T,SO2> >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct MultTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = MultTrait_t< CompressedMatrix<T,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
-struct MultTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
-{
-   using Type = SymmetricMatrix< MultTrait_t< MT, IdentityMatrix<T,SO2> > >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct MultTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = SymmetricMatrix< MultTrait_t< IdentityMatrix<T,SO1>, MT > >;
-};
-
-template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
-struct MultTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
-{
-   using Type = MultTrait_t<MT1,MT2>;
+   using Type = SymmetricMatrix< typename MultTraitEval2<T1,T2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -82,6 +82,7 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -89,6 +90,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -6456,82 +6458,68 @@ struct SchurTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v ) &&
+                                   ( Size_v<T1,1UL> != DefaultSize_v ) > >
 {
-   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
+   using ET1 = ElementType_t<T1>;
+
+   static constexpr size_t M = Size_v<T1,0UL>;
+   static constexpr size_t N = Size_v<T1,1UL>;
+
+   using Type = StaticMatrix< MultTrait_t<ET1,T2>, M, N, StorageOrder_v<T1> >;
 };
 
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< T1, StaticMatrix<T2,M,N,SO>, EnableIf_t< IsNumeric_v<T1> > >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( Size_v<T2,0UL> != DefaultSize_v ) &&
+                                   ( Size_v<T2,1UL> != DefaultSize_v ) > >
 {
-   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO >;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t M = Size_v<T2,0UL>;
+   static constexpr size_t N = Size_v<T2,1UL>;
+
+   using Type = StaticMatrix< MultTrait_t<T1,ET2>, M, N, StorageOrder_v<T2> >;
 };
 
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< StaticMatrix<T1,M,N,SO>, StaticVector<T2,N,false> >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsColumnVector_v<T1> &&
+                                   IsRowVector_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v ) &&
+                                   ( Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t M = Size_v<T1,0UL>;
+   static constexpr size_t N = Size_v<T2,0UL>;
+
+   using Type = StaticMatrix< MultTrait_t<ET1,ET2>, M, N, false >;
 };
 
-template< typename T1, size_t M, typename T2, size_t N, bool SO >
-struct MultTrait< StaticVector<T1,M,true>, StaticMatrix<T2,M,N,SO> >
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v ||
+                                     ( IsSquare_v<T1> && Size_v<T2,0UL> != DefaultSize_v ) ) &&
+                                   ( Size_v<T2,1UL> != DefaultSize_v ||
+                                     ( IsSquare_v<T2> && Size_v<T1,1UL> != DefaultSize_v ) ) > >
 {
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M, size_t N, bool SO, typename T2, size_t L >
-struct MultTrait< StaticMatrix<T1,M,N,SO>, HybridVector<T2,L,false> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
-};
+   static constexpr size_t M = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
+   static constexpr size_t N = ( Size_v<T2,1UL> != DefaultSize_v ? Size_v<T2,1UL> : Size_v<T1,1UL> );
 
-template< typename T1, size_t L, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< HybridVector<T1,L,true>, StaticMatrix<T2,M,N,SO> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< StaticMatrix<T1,M,N,SO>, DynamicVector<T2,false> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
-};
-
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< DynamicVector<T1,true>, StaticMatrix<T2,M,N,SO> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2, bool AF, bool PF >
-struct MultTrait< StaticMatrix<T1,M,N,SO>, CustomVector<T2,AF,PF,false> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
-};
-
-template< typename T1, bool AF, bool PF, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< CustomVector<T1,AF,PF,true>, StaticMatrix<T2,M,N,SO> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct MultTrait< StaticMatrix<T1,M,N,SO>, CompressedVector<T2,false> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, M, false >;
-};
-
-template< typename T1, typename T2, size_t M, size_t N, bool SO >
-struct MultTrait< CompressedVector<T1,true>, StaticMatrix<T2,M,N,SO> >
-{
-   using Type = StaticVector< MultTrait_t<T1,T2>, N, true >;
-};
-
-template< typename T1, size_t M, size_t K, bool SO1, typename T2, size_t N, bool SO2 >
-struct MultTrait< StaticMatrix<T1,M,K,SO1>, StaticMatrix<T2,K,N,SO2> >
-{
-   using Type = StaticMatrix< MultTrait_t<T1,T2>, M, N, SO1 >;
+   using Type = StaticMatrix< MultTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************
