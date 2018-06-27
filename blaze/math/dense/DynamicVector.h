@@ -2920,69 +2920,6 @@ struct DivTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 
 //=================================================================================================
 //
-//  CROSSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2 >
-struct CrossTrait< DynamicVector<T1,TF>, StaticVector<T2,3UL,TF> >
-{
- private:
-   using T = MultTrait_t<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct CrossTrait< StaticVector<T1,3UL,TF>, DynamicVector<T2,TF> >
-{
- private:
-   using T = MultTrait_t<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct CrossTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF> >
-{
- private:
-   using T = MultTrait_t<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct CrossTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF> >
-{
- private:
-   using T = MultTrait_t<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct CrossTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
-{
- private:
-   using T = MultTrait_t<T1,T2>;
-
- public:
-   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  UNARYMAPTRAIT SPECIALIZATIONS
 //
 //=================================================================================================

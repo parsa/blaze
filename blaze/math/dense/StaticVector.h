@@ -2935,14 +2935,13 @@ struct DivTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2, bool TF >
-struct CrossTrait< StaticVector<T1,3UL,TF>, StaticVector<T2,3UL,TF> >
+template< typename T1, typename T2 >
+struct CrossTraitEval2< T1, T2
+                      , EnableIf_t< IsVector_v<T1> && IsVector_v<T2> > >
 {
- private:
-   using T = MultTrait_t<T1,T2>;
+   using Tmp = MultTrait_t< ElementType_t<T1>, ElementType_t<T2> >;
 
- public:
-   using Type = StaticVector< SubTrait_t<T,T>, 3UL, TF >;
+   using Type = StaticVector< SubTrait_t<Tmp,Tmp>, 3UL, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************
