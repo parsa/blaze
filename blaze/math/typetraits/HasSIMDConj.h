@@ -59,6 +59,9 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the HasSIMDConj type trait.
+// \ingroup math_type_traits
+*/
 template< typename T         // Type of the operand
         , typename = void >  // Restricting condition
 struct HasSIMDConjHelper

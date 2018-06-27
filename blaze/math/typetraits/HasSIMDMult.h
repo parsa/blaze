@@ -60,7 +60,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the HasSIMDMult type trait.
+/*!\brief Auxiliary helper struct for the HasSIMDMult type trait.
 // \ingroup math_type_traits
 */
 template< typename T1        // Type of the left-hand side operand
