@@ -6861,10 +6861,21 @@ struct MultTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct DivTrait< HybridMatrix<T1,M,N,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct DivTraitEval2< T1, T2
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsNumeric_v<T2> &&
+                                  ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                  ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                  ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ) &&
+                                  ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ) > >
 {
-   using Type = HybridMatrix< DivTrait_t<T1,T2>, M, N, SO >;
+   using ET1 = ElementType_t<T1>;
+
+   static constexpr size_t M = MaxSize_v<T1,0UL>;
+   static constexpr size_t N = MaxSize_v<T1,1UL>;
+
+   using Type = HybridMatrix< DivTrait_t<ET1,T2>, M, N, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

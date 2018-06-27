@@ -59,7 +59,6 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
-#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1874,25 +1873,6 @@ struct MultTraitEval2< T1, T2
    using ET2 = ElementType_t<T2>;
 
    using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct DivTrait< IdentityMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
-{
-   using Type = CompressedMatrix< DivTrait_t<T1,T2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

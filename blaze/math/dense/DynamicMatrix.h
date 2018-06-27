@@ -6640,10 +6640,18 @@ struct MultTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2 >
-struct DivTrait< DynamicMatrix<T1,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct DivTraitEval2< T1, T2
+                    , EnableIf_t< IsDenseMatrix_v<T1> &&
+                                  IsNumeric_v<T2> &&
+                                  ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                  ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                  ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
+                                  ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< DivTrait_t<T1,T2>, SO >;
+   using ET1 = ElementType_t<T1>;
+
+   using Type = DynamicMatrix< DivTrait_t<ET1,T2>, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

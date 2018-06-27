@@ -1500,10 +1500,11 @@ struct MultTraitEval1< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< StrictlyUpperMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
+template< typename T1, typename T2 >
+struct DivTraitEval1< T1, T2
+                    , EnableIf_t< IsStrictlyUpper_v<T1> && IsNumeric_v<T2> > >
 {
-   using Type = StrictlyUpperMatrix< DivTrait_t<MT,T> >;
+   using Type = StrictlyUpperMatrix< typename DivTraitEval2<T1,T2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

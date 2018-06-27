@@ -6535,10 +6535,19 @@ struct MultTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct DivTrait< StaticMatrix<T1,M,N,SO>, T2, EnableIf_t< IsNumeric_v<T2> > >
+template< typename T1, typename T2 >
+struct DivTraitEval2< T1, T2
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsNumeric_v<T2> &&
+                                  ( Size_v<T1,0UL> != DefaultSize_v ) &&
+                                  ( Size_v<T1,1UL> != DefaultSize_v ) > >
 {
-   using Type = StaticMatrix< DivTrait_t<T1,T2>, M, N, SO >;
+   using ET1 = ElementType_t<T1>;
+
+   static constexpr size_t M = Size_v<T1,0UL>;
+   static constexpr size_t N = Size_v<T1,1UL>;
+
+   using Type = StaticMatrix< DivTrait_t<ET1,T2>, M, N, StorageOrder_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -65,7 +65,6 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
-#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -2500,25 +2499,6 @@ struct MultTraitEval1< T1, T2
                                    !( IsIdentity_v<T1> && IsIdentity_v<T2> ) > >
 {
    using Type = UniUpperMatrix< typename MultTraitEval2<T1,T2>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DIVTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, typename T >
-struct DivTrait< UniUpperMatrix<MT,SO,DF>, T, EnableIf_t< IsNumeric_v<T> > >
-{
-   using Type = UpperMatrix< DivTrait_t<MT,T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
