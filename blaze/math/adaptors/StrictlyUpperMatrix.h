@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -1452,166 +1453,12 @@ struct SubTraitEval1< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO1, bool DF, typename T, size_t M, size_t N, bool SO2 >
-struct SchurTrait< StrictlyUpperMatrix<MT,SO1,DF>, StaticMatrix<T,M,N,SO2> >
+template< typename T1, typename T2 >
+struct SchurTraitEval1< T1, T2
+                      , EnableIf_t< ( IsStrictlyUpper_v<T1> && !IsLower_v<T2> ) ||
+                                    ( !IsLower_v<T1> && IsStrictlyUpper_v<T2> ) > >
 {
-   using Type = StrictlyUpperMatrix< SchurTrait_t< MT, StaticMatrix<T,M,N,SO2> > >;
-};
-
-template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF >
-struct SchurTrait< StaticMatrix<T,M,N,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< StaticMatrix<T,M,N,SO1>, MT > >;
-};
-
-template< typename MT, bool SO1, bool DF, typename T, size_t M, size_t N, bool SO2 >
-struct SchurTrait< StrictlyUpperMatrix<MT,SO1,DF>, HybridMatrix<T,M,N,SO2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< MT, HybridMatrix<T,M,N,SO2> > >;
-};
-
-template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF >
-struct SchurTrait< HybridMatrix<T,M,N,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< HybridMatrix<T,M,N,SO1>, MT > >;
-};
-
-template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
-struct SchurTrait< StrictlyUpperMatrix<MT,SO1,DF>, DynamicMatrix<T,SO2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< MT, DynamicMatrix<T,SO2> > >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF >
-struct SchurTrait< DynamicMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< DynamicMatrix<T,SO1>, MT > >;
-};
-
-template< typename MT, bool SO1, bool DF, typename T, bool AF, bool PF, bool SO2 >
-struct SchurTrait< StrictlyUpperMatrix<MT,SO1,DF>, CustomMatrix<T,AF,PF,SO2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< MT, CustomMatrix<T,AF,PF,SO2> > >;
-};
-
-template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF >
-struct SchurTrait< CustomMatrix<T,AF,PF,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< CustomMatrix<T,AF,PF,SO1>, MT > >;
-};
-
-template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
-struct SchurTrait< StrictlyUpperMatrix<MT,SO1,DF>, CompressedMatrix<T,SO2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< MT, CompressedMatrix<T,SO2> > >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF >
-struct SchurTrait< CompressedMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t< CompressedMatrix<T,SO1>, MT > >;
-};
-
-template< typename MT, bool SO1, bool DF, typename T, bool SO2 >
-struct SchurTrait< StrictlyUpperMatrix<MT,SO1,DF>, IdentityMatrix<T,SO2> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t< MT, IdentityMatrix<T,SO2> > >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF >
-struct SchurTrait< IdentityMatrix<T,SO1>, StrictlyUpperMatrix<MT,SO2,DF> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t< IdentityMatrix<T,SO1>, MT > >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2, bool NF >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, SymmetricMatrix<MT2,SO2,DF2,NF> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, bool NF, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< SymmetricMatrix<MT1,SO1,DF1,NF>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, HermitianMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< HermitianMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, LowerMatrix<MT2,SO2,DF2> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< LowerMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UniLowerMatrix<MT2,SO2,DF2> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< UniLowerMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF2> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyLowerMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = DiagonalMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< UpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< UniUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
-};
-
-template< typename MT1, bool SO1, bool DF1, typename MT2, bool SO2, bool DF2 >
-struct SchurTrait< StrictlyUpperMatrix<MT1,SO1,DF1>, StrictlyUpperMatrix<MT2,SO2,DF2> >
-{
-   using Type = StrictlyUpperMatrix< SchurTrait_t<MT1,MT2> >;
+   using Type = StrictlyUpperMatrix< typename SchurTraitEval2<T1,T2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

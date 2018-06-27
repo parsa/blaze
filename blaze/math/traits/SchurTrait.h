@@ -40,16 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsCustom.h>
-#include <blaze/math/typetraits/IsInitializer.h>
-#include <blaze/math/typetraits/IsView.h>
+#include <utility>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -59,6 +54,40 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename, typename, typename = void > struct SchurTrait;
+template< typename, typename, typename = void > struct SchurTraitEval1;
+template< typename, typename, typename = void > struct SchurTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+auto evalSchurTrait( T1&, T2& )
+   -> typename SchurTraitEval1<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSchurTrait( const T1&, const T2& )
+   -> typename SchurTrait<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSchurTrait( const volatile T1&, const T2& )
+   -> typename SchurTrait<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSchurTrait( const T1&, const volatile T2& )
+   -> typename SchurTrait<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSchurTrait( const volatile T1&, const volatile T2& )
+   -> typename SchurTrait<T1,T2>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the SchurTrait class.
@@ -103,88 +132,18 @@ namespace blaze {
    }                                     //
    \endcode
 */
-template< typename T1        // Type of the left-hand side operand
-        , typename T2        // Type of the right-hand side operand
-        , typename = void >  // Restricting condition
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
 struct SchurTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<T1> || IsVolatile_v<T1> || IsReference_v<T1> ||
-                               IsConst_v<T2> || IsVolatile_v<T2> || IsReference_v<T2>
-                             , SchurTrait< Decay_t<T1>, Decay_t<T2> >
-                             , Failure >::Type;
+   using Type = decltype( evalSchurTrait( std::declval<T1&>(), std::declval<T2&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SchurTrait class template for the left operand being a custom or
-//        view type.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct SchurTrait< T1, T2
-                 , EnableIf_t<  ( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
-                               !( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SchurTrait< typename T1::ResultType, T2 >::Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SchurTrait class template for the right operand being a custom or
-//        view type.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct SchurTrait< T1, T2
-                 , EnableIf_t< !( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
-                                ( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SchurTrait< T1, typename T2::ResultType >::Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SchurTrait class template for the both operands being custom or
-//        view types.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct SchurTrait< T1, T2
-                 , EnableIf_t< ( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
-                               ( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SchurTrait< typename T1::ResultType, typename T2::ResultType >::Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -203,6 +162,44 @@ struct SchurTrait< T1, T2
 */
 template< typename T1, typename T2 >
 using SchurTrait_t = typename SchurTrait<T1,T2>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the SchurTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
+struct SchurTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename SchurTraitEval2<T1,T2>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the SchurTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
+struct SchurTraitEval2
+{
+ public:
+   //**********************************************************************************************
+   using Type = INVALID_TYPE;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

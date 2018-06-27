@@ -1836,82 +1836,20 @@ struct IsResizable< IdentityMatrix<T,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct SchurTrait< IdentityMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
+template< typename T1, typename T2 >
+struct SchurTraitEval1< T1, T2
+                      , EnableIf_t< ( IsIdentity_v<T1> && IsIdentity_v<T2> ) ||
+                                    ( IsIdentity_v<T1> && IsUniTriangular_v<T2> ) ||
+                                    ( IsUniTriangular_v<T1> && IsIdentity_v<T2> ) ||
+                                    ( IsUniLower_v<T1> && IsUniUpper_v<T2> ) ||
+                                    ( IsUniUpper_v<T1> && IsUniLower_v<T2> ) > >
 {
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< StaticMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
-};
+   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
 
-template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct SchurTrait< IdentityMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< HybridMatrix<T1,M,N,SO1>, IdentityMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< IdentityMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< DynamicMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
-};
-
-template< typename T1, bool SO1, typename T2, bool AF, bool PF, bool SO2 >
-struct SchurTrait< IdentityMatrix<T1,SO1>, CustomMatrix<T2,AF,PF,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO1 >;
-};
-
-template< typename T1, bool AF, bool PF, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< CustomMatrix<T1,AF,PF,SO1>, IdentityMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO2 >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct SchurTrait< IdentityMatrix<T1,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< IdentityMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct SchurTrait< CompressedMatrix<T1,SO>, IdentityMatrix<T2,SO> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< CompressedMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< MultTrait_t<T1,T2>, false >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SchurTrait< IdentityMatrix<T1,SO1>, IdentityMatrix<T2,SO2> >
-{
-   using Type = IdentityMatrix< MultTrait_t<T1,T2>, SO1 >;
+   using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

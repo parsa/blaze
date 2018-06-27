@@ -1029,7 +1029,7 @@ inline decltype(auto)
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
 inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
-   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs,
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
                    EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
                                ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
 {
@@ -1204,8 +1204,8 @@ inline decltype(auto)
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >
-   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs,
+inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
                    EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
                                ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
 {
@@ -1216,7 +1216,7 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
