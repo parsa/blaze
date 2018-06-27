@@ -2500,46 +2500,14 @@ struct AddTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2, size_t N >
-struct SubTrait< CompressedVector<T1,TF>, StaticVector<T2,N,TF> >
+template< typename T1, typename T2 >
+struct SubTraitEval2< T1, T2
+                    , EnableIf_t< IsSparseVector_v<T1> && IsSparseVector_v<T2> > >
 {
-   using Type = StaticVector< SubTrait_t<T1,T2>, N, TF >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t N, bool TF, typename T2 >
-struct SubTrait< StaticVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = StaticVector< SubTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N >
-struct SubTrait< CompressedVector<T1,TF>, HybridVector<T2,N,TF> >
-{
-   using Type = HybridVector< SubTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2 >
-struct SubTrait< HybridVector<T1,N,TF>, CompressedVector<T2,TF> >
-{
-   using Type = HybridVector< SubTrait_t<T1,T2>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct SubTrait< CompressedVector<T1,TF>, DynamicVector<T2,TF> >
-{
-   using Type = DynamicVector< SubTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct SubTrait< DynamicVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = DynamicVector< SubTrait_t<T1,T2>, TF >;
-};
-
-template< typename T1, bool TF, typename T2 >
-struct SubTrait< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
-{
-   using Type = CompressedVector< SubTrait_t<T1,T2>, TF >;
+   using Type = CompressedVector< SubTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -5983,88 +5983,16 @@ struct AddTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool SO, typename T2, size_t M, size_t N >
-struct SubTrait< CompressedMatrix<T1,SO>, StaticMatrix<T2,M,N,SO> >
+template< typename T1, typename T2 >
+struct SubTraitEval2< T1, T2
+                    , EnableIf_t< IsSparseMatrix_v<T1> && IsSparseMatrix_v<T2> > >
 {
-   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct SubTrait< CompressedMatrix<T1,SO1>, StaticMatrix<T2,M,N,SO2> >
-{
-   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO2 >;
-};
+   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
 
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct SubTrait< StaticMatrix<T1,M,N,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct SubTrait< StaticMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = StaticMatrix< SubTrait_t<T1,T2>, M, N, SO1 >;
-};
-
-template< typename T1, bool SO, typename T2, size_t M, size_t N >
-struct SubTrait< CompressedMatrix<T1,SO>, HybridMatrix<T2,M,N,SO> >
-{
-   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, size_t M, size_t N, bool SO2 >
-struct SubTrait< CompressedMatrix<T1,SO1>, HybridMatrix<T2,M,N,SO2> >
-{
-   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO2 >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO, typename T2 >
-struct SubTrait< HybridMatrix<T1,M,N,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO >;
-};
-
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2 >
-struct SubTrait< HybridMatrix<T1,M,N,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = HybridMatrix< SubTrait_t<T1,T2>, M, N, SO1 >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct SubTrait< CompressedMatrix<T1,SO>, DynamicMatrix<T2,SO> >
-{
-   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SubTrait< CompressedMatrix<T1,SO1>, DynamicMatrix<T2,SO2> >
-{
-   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO2 >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct SubTrait< DynamicMatrix<T1,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SubTrait< DynamicMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = DynamicMatrix< SubTrait_t<T1,T2>, SO1 >;
-};
-
-template< typename T1, bool SO, typename T2 >
-struct SubTrait< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
-{
-   using Type = CompressedMatrix< SubTrait_t<T1,T2>, SO >;
-};
-
-template< typename T1, bool SO1, typename T2, bool SO2 >
-struct SubTrait< CompressedMatrix<T1,SO1>, CompressedMatrix<T2,SO2> >
-{
-   using Type = CompressedMatrix< SubTrait_t<T1,T2>, false >;
+   using Type = CompressedMatrix< SubTrait_t<ET1,ET2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

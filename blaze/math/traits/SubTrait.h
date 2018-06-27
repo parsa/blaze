@@ -42,9 +42,6 @@
 
 #include <utility>
 #include <blaze/math/typetraits/HasSub.h>
-#include <blaze/math/typetraits/IsCustom.h>
-#include <blaze/math/typetraits/IsInitializer.h>
-#include <blaze/math/typetraits/IsView.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
@@ -52,9 +49,6 @@
 #include <blaze/util/typetraits/CommonType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -64,6 +58,40 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename, typename, typename = void > struct SubTrait;
+template< typename, typename, typename = void > struct SubTraitEval1;
+template< typename, typename, typename = void > struct SubTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+auto evalSubTrait( T1&, T2& )
+   -> typename SubTraitEval1<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSubTrait( const T1&, const T2& )
+   -> typename SubTrait<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSubTrait( const volatile T1&, const T2& )
+   -> typename SubTrait<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSubTrait( const T1&, const volatile T2& )
+   -> typename SubTrait<T1,T2>::Type;
+
+template< typename T1, typename T2 >
+auto evalSubTrait( const volatile T1&, const volatile T2& )
+   -> typename SubTrait<T1,T2>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the SubTrait class.
@@ -110,33 +138,15 @@ namespace blaze {
    }                                     //
    \endcode
 */
-template< typename T1        // Type of the left-hand side operand
-        , typename T2        // Type of the right-hand side operand
-        , typename = void >  // Restricting condition
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
 struct SubTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct SubType { using Type = decltype( std::declval<T1>() - std::declval<T2>() ); };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<T1> || IsVolatile_v<T1> || IsReference_v<T1> ||
-                               IsConst_v<T2> || IsVolatile_v<T2> || IsReference_v<T2>
-                             , SubTrait< Decay_t<T1>, Decay_t<T2> >
-                             , If_t< HasSub_v<T1,T2>
-                                   , SubType
-                                   , Failure > >::Type;
+   using Type = decltype( evalSubTrait( std::declval<T1&>(), std::declval<T2&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -145,7 +155,7 @@ struct SubTrait
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SubTrait class template for two identical data types.
+/*!\brief Specialization of the SubTrait class template for two identical builtin types.
 // \ingroup math_traits
 */
 template< typename T >
@@ -212,66 +222,6 @@ struct SubTrait< complex<T1>, complex<T2> >
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SubTrait class template for the left operand being a custom or
-//        view type.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct SubTrait< T1, T2
-               , EnableIf_t<  ( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
-                             !( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SubTrait< typename T1::ResultType, T2 >::Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SubTrait class template for the right operand being a custom or
-//        view type.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct SubTrait< T1, T2
-               , EnableIf_t< !( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
-                              ( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SubTrait< T1, typename T2::ResultType >::Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SubTrait class template for the both operands being custom or
-//        view types.
-// \ingroup math_traits
-*/
-template< typename T1, typename T2 >
-struct SubTrait< T1, T2
-               , EnableIf_t< ( IsCustom_v<T1> || IsInitializer_v<T1> || IsView_v<T1> ) &&
-                             ( IsCustom_v<T2> || IsInitializer_v<T2> || IsView_v<T2> ) > >
-{
- public:
-   //**********************************************************************************************
-   using Type = typename SubTrait< typename T1::ResultType, typename T2::ResultType >::Type;
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the SubTrait class template.
 // \ingroup math_traits
 //
@@ -286,6 +236,50 @@ struct SubTrait< T1, T2
 */
 template< typename T1, typename T2 >
 using SubTrait_t = typename SubTrait<T1,T2>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the SubTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
+struct SubTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename SubTraitEval2<T1,T2>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the SubTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename >   // Restricting condition
+struct SubTraitEval2
+{
+ private:
+   //**********************************************************************************************
+   struct SubType { using Type = decltype( std::declval<T1>() - std::declval<T2>() ); };
+   struct Failure { using Type = INVALID_TYPE; };
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = typename If_t< HasSub_v<T1,T2>, SubType, Failure >::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

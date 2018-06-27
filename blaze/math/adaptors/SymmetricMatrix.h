@@ -95,7 +95,6 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -780,82 +779,14 @@ struct AddTraitEval1< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
-struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, StaticMatrix<T,M,N,SO2> >
+template< typename T1, typename T2 >
+struct SubTraitEval1< T1, T2
+                    , EnableIf_t< ( ( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) ||
+                                    ( IsSymmetric_v<T1> && IsDiagonal_v<T2> ) ||
+                                    ( IsDiagonal_v<T1> && IsSymmetric_v<T2> ) ) &&
+                                  !( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) > >
 {
-   using Type = SubTrait_t< MT, StaticMatrix<T,M,N,SO2> >;
-};
-
-template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct SubTrait< StaticMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = SubTrait_t< StaticMatrix<T,M,N,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, size_t M, size_t N, bool SO2 >
-struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, HybridMatrix<T,M,N,SO2> >
-{
-   using Type = SubTrait_t< MT, HybridMatrix<T,M,N,SO2> >;
-};
-
-template< typename T, size_t M, size_t N, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct SubTrait< HybridMatrix<T,M,N,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = SubTrait_t< HybridMatrix<T,M,N,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
-struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, DynamicMatrix<T,SO2> >
-{
-   using Type = SubTrait_t< MT, DynamicMatrix<T,SO2> >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct SubTrait< DynamicMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = SubTrait_t< DynamicMatrix<T,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool AF, bool PF, bool SO2 >
-struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, CustomMatrix<T,AF,PF,SO2> >
-{
-   using Type = SubTrait_t< MT, CustomMatrix<T,AF,PF,SO2> >;
-};
-
-template< typename T, bool AF, bool PF, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct SubTrait< CustomMatrix<T,AF,PF,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = SubTrait_t< CustomMatrix<T,AF,PF,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
-struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, CompressedMatrix<T,SO2> >
-{
-   using Type = SubTrait_t< MT, CompressedMatrix<T,SO2> >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct SubTrait< CompressedMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = SubTrait_t< CompressedMatrix<T,SO1>, MT >;
-};
-
-template< typename MT, bool SO1, bool DF, bool NF, typename T, bool SO2 >
-struct SubTrait< SymmetricMatrix<MT,SO1,DF,NF>, IdentityMatrix<T,SO2> >
-{
-   using Type = SymmetricMatrix< SubTrait_t< MT, IdentityMatrix<T,SO2> > >;
-};
-
-template< typename T, bool SO1, typename MT, bool SO2, bool DF, bool NF >
-struct SubTrait< IdentityMatrix<T,SO1>, SymmetricMatrix<MT,SO2,DF,NF> >
-{
-   using Type = SymmetricMatrix< SubTrait_t< IdentityMatrix<T,SO1>, MT > >;
-};
-
-template< typename MT1, bool SO1, bool DF1, bool NF1, typename MT2, bool SO2, bool DF2, bool NF2 >
-struct SubTrait< SymmetricMatrix<MT1,SO1,DF1,NF1>, SymmetricMatrix<MT2,SO2,DF2,NF2> >
-{
-   using Type = SymmetricMatrix< SubTrait_t<MT1,MT2> >;
+   using Type = SymmetricMatrix< typename SubTraitEval2<T1,T2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************
