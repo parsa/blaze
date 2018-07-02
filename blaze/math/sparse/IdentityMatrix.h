@@ -1888,10 +1888,14 @@ struct MultTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP >
-struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsIdentity_v<OP,MT> > >
+template< typename T, typename OP >
+struct UnaryMapTraitEval1< T, OP
+                         , EnableIf_t< IsMatrix_v<T> &&
+                                       YieldsIdentity_v<OP,T> > >
 {
-   using Type = IdentityMatrix< UnaryMapTrait_t< ElementType_t<MT>, OP >, StorageOrder_v<MT> >;
+   using ET = ElementType_t<T>;
+
+   using Type = IdentityMatrix< UnaryMapTrait_t<ET,OP>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

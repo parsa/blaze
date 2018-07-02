@@ -6891,10 +6891,17 @@ struct DivTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, typename OP >
-struct UnaryMapTrait< HybridMatrix<T,M,N,SO>, OP >
+template< typename T, typename OP >
+struct UnaryMapTraitEval2< T, OP
+                         , EnableIf_t< IsMatrix_v<T> &&
+                                       ( Size_v<T,0UL> == DefaultSize_v ||
+                                         Size_v<T,1UL> == DefaultSize_v ) &&
+                                       MaxSize_v<T,0UL> != DefaultMaxSize_v &&
+                                       MaxSize_v<T,1UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridMatrix< UnaryMapTrait_t<T,OP>, M, N, SO >;
+   using ET = ElementType_t<T>;
+
+   using Type = HybridMatrix< UnaryMapTrait_t<ET,OP>, MaxSize_v<T,0UL>, MaxSize_v<T,1UL>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

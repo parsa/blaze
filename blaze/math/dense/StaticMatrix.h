@@ -6563,10 +6563,15 @@ struct DivTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, typename OP >
-struct UnaryMapTrait< StaticMatrix<T,M,N,SO>, OP >
+template< typename T, typename OP >
+struct UnaryMapTraitEval2< T, OP
+                         , EnableIf_t< IsMatrix_v<T> &&
+                                       Size_v<T,0UL> != DefaultSize_v &&
+                                       Size_v<T,1UL> != DefaultSize_v > >
 {
-   using Type = StaticMatrix< UnaryMapTrait_t<T,OP>, M, N, SO >;
+   using ET = ElementType_t<T>;
+
+   using Type = StaticMatrix< UnaryMapTrait_t<ET,OP>, Size_v<T,0UL>, Size_v<T,1UL>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

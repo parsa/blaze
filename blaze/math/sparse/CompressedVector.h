@@ -2624,10 +2624,13 @@ struct DivTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename OP >
-struct UnaryMapTrait< CompressedVector<T,TF>, OP >
+template< typename T, typename OP >
+struct UnaryMapTraitEval2< T, OP
+                         , EnableIf_t< IsSparseVector_v<T> > >
 {
-   using Type = CompressedVector< UnaryMapTrait_t<T,OP>, TF >;
+   using ET = ElementType_t<T>;
+
+   using Type = CompressedVector< UnaryMapTrait_t<ET,OP>, TransposeFlag_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

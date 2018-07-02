@@ -93,6 +93,7 @@
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/YieldsDiagonal.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
@@ -1585,13 +1586,14 @@ struct DivTraitEval1< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP >
-struct UnaryMapTrait< MT, OP, EnableIf_t< YieldsLower_v<OP,MT> &&
-                                          !YieldsUniLower_v<OP,MT> &&
-                                          !YieldsStrictlyLower_v<OP,MT> &&
-                                          !YieldsDiagonal_v<OP,MT> > >
+template< typename T, typename OP >
+struct UnaryMapTraitEval1< T, OP
+                         , EnableIf_t< YieldsLower_v<OP,T> &&
+                                       !YieldsUniLower_v<OP,T> &&
+                                       !YieldsStrictlyLower_v<OP,T> &&
+                                       !YieldsDiagonal_v<OP,T> > >
 {
-   using Type = LowerMatrix< UnaryMapTrait_t< RemoveAdaptor_t<MT>, OP > >;
+   using Type = LowerMatrix< typename UnaryMapTraitEval2<T,OP>::Type, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

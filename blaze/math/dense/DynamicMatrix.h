@@ -6667,10 +6667,17 @@ struct DivTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename OP >
-struct UnaryMapTrait< DynamicMatrix<T,SO>, OP >
+template< typename T, typename OP >
+struct UnaryMapTraitEval2< T, OP
+                         , EnableIf_t< IsDenseMatrix_v<T> &&
+                                       ( Size_v<T,0UL> == DefaultSize_v ||
+                                         Size_v<T,1UL> == DefaultSize_v ) &&
+                                       ( MaxSize_v<T,0UL> == DefaultMaxSize_v ||
+                                         MaxSize_v<T,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< UnaryMapTrait_t<T,OP>, SO >;
+   using ET = ElementType_t<T>;
+
+   using Type = DynamicMatrix< UnaryMapTrait_t<ET,OP>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

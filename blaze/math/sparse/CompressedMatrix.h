@@ -6122,10 +6122,13 @@ struct DivTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, typename OP >
-struct UnaryMapTrait< CompressedMatrix<T,SO>, OP >
+template< typename T, typename OP >
+struct UnaryMapTraitEval2< T, OP
+                         , EnableIf_t< IsSparseMatrix_v<T> > >
 {
-   using Type = CompressedMatrix< UnaryMapTrait_t<T,OP>, SO >;
+   using ET = ElementType_t<T>;
+
+   using Type = CompressedMatrix< UnaryMapTrait_t<ET,OP>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -41,14 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/Aliases.h>
-#include <blaze/math/typetraits/IsAdaptor.h>
-#include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -58,6 +51,32 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename, typename, typename = void > struct UnaryMapTrait;
+template< typename, typename, typename = void > struct UnaryMapTraitEval1;
+template< typename, typename, typename = void > struct UnaryMapTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename OP >
+auto evalUnaryMapTrait( T&, OP )
+   -> typename UnaryMapTraitEval1<T,OP>::Type;
+
+template< typename T, typename OP >
+auto evalUnaryMapTrait( const T&, OP )
+   -> typename UnaryMapTrait<T,OP>::Type;
+
+template< typename T, typename OP >
+auto evalUnaryMapTrait( const volatile T&, OP )
+   -> typename UnaryMapTrait<T,OP>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the UnaryMapTrait class.
@@ -89,29 +108,15 @@ namespace blaze {
    };
    \endcode
 */
-template< typename T         // Type of the operand
-        , typename OP        // Type of the custom operation
-        , typename = void >  // Restricting condition
+template< typename T   // Type of the operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
 struct UnaryMapTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct MappedType
-   {
-      using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<T> || IsVolatile_v<T> || IsReference_v<T>
-                             , UnaryMapTrait< Decay_t<T>, OP >
-                             , If_t< IsAdaptor_v<T>
-                                   , UnaryMapTrait< RemoveAdaptor_t<T>, OP >
-                                   , MappedType > >::Type;
+   using Type = decltype( evalUnaryMapTrait( std::declval<T&>(), std::declval<OP&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -134,6 +139,44 @@ struct UnaryMapTrait
 template< typename T     // Type of the operand
         , typename OP >  // Type of the custom operation
 using UnaryMapTrait_t = typename UnaryMapTrait<T,OP>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the UnaryMapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T   // Type of the operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct UnaryMapTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename UnaryMapTraitEval2<T,OP>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the UnaryMapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T   // Type of the operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct UnaryMapTraitEval2
+{
+ public:
+   //**********************************************************************************************
+   using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

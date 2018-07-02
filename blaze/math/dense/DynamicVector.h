@@ -2917,10 +2917,15 @@ struct DivTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, typename OP >
-struct UnaryMapTrait< DynamicVector<T,TF>, OP >
+template< typename T, typename OP >
+struct UnaryMapTraitEval2< T, OP
+                         , EnableIf_t< IsDenseVector_v<T> &&
+                                       Size_v<T,0UL> == DefaultSize_v &&
+                                       MaxSize_v<T,0UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< UnaryMapTrait_t<T,OP>, TF >;
+   using ET = ElementType_t<T>;
+
+   using Type = DynamicVector< UnaryMapTrait_t<ET,OP>, TransposeFlag_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

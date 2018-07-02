@@ -71,7 +71,6 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -6312,25 +6311,6 @@ template< typename T, bool AF, bool SO >
 struct IsPadded< CustomMatrix<T,AF,padded,SO> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  UNARYMAPTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO, typename OP >
-struct UnaryMapTrait< CustomMatrix<T,AF,PF,SO>, OP >
-{
-   using Type = DynamicMatrix< UnaryMapTrait_t<T,OP>, SO >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

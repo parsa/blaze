@@ -2977,10 +2977,14 @@ struct CrossTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N, bool TF, typename OP >
-struct UnaryMapTrait< StaticVector<T,N,TF>, OP >
+template< typename T, typename OP >
+struct UnaryMapTraitEval2< T, OP
+                         , EnableIf_t< IsVector_v<T> &&
+                                       Size_v<T,0UL> != DefaultSize_v > >
 {
-   using Type = StaticVector< UnaryMapTrait_t<T,OP>, N, TF >;
+   using ET = ElementType_t<T>;
+
+   using Type = StaticVector< UnaryMapTrait_t<ET,OP>, Size_v<T,0UL>, TransposeFlag_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
