@@ -6587,16 +6587,24 @@ struct UnaryMapTraitEval2< T, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, size_t N, bool SO, typename T2, typename OP >
-struct BinaryMapTrait< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO>, OP >
+template< typename T1, typename T2, typename OP >
+struct BinaryMapTraitEval2< T1, T2, OP
+                          , EnableIf_t< IsMatrix_v<T1> &&
+                                        IsMatrix_v<T2> &&
+                                        ( Size_v<T1,0UL> != DefaultSize_v ||
+                                          Size_v<T2,0UL> != DefaultSize_v ) &&
+                                        ( Size_v<T1,1UL> != DefaultSize_v ||
+                                          Size_v<T2,1UL> != DefaultSize_v ) > >
 {
-   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, SO >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M, size_t N, bool SO1, typename T2, bool SO2, typename OP >
-struct BinaryMapTrait< StaticMatrix<T1,M,N,SO1>, StaticMatrix<T2,M,N,SO2>, OP >
-{
-   using Type = StaticMatrix< BinaryMapTrait_t<T1,T2,OP>, M, N, false >;
+   static constexpr size_t M = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
+   static constexpr size_t N = max( Size_v<T1,1UL>, Size_v<T2,1UL> );
+
+   static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
+
+   using Type = StaticMatrix< BinaryMapTrait_t<ET1,ET2,OP>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

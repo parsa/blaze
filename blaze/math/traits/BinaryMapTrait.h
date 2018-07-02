@@ -41,14 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/math/Aliases.h>
-#include <blaze/math/typetraits/IsAdaptor.h>
-#include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -58,6 +51,40 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename, typename, typename, typename = void > struct BinaryMapTrait;
+template< typename, typename, typename, typename = void > struct BinaryMapTraitEval1;
+template< typename, typename, typename, typename = void > struct BinaryMapTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2, typename OP >
+auto evalBinaryMapTrait( T1&, T2&, OP )
+   -> typename BinaryMapTraitEval1<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalBinaryMapTrait( const T1&, const T2&, OP )
+   -> typename BinaryMapTrait<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalBinaryMapTrait( const T1&, volatile const T2&, OP )
+   -> typename BinaryMapTrait<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalBinaryMapTrait( volatile const T1&, const T2&, OP )
+   -> typename BinaryMapTrait<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalBinaryMapTrait( volatile const T1&, volatile const T2&, OP )
+   -> typename BinaryMapTrait<T1,T2,OP>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the BinaryMapTrait class.
@@ -90,31 +117,16 @@ namespace blaze {
    };
    \endcode
 */
-template< typename T1        // Type of the left-hand side operand
-        , typename T2        // Type of the right-hand side operand
-        , typename OP        // Type of the custom operation
-        , typename = void >  // Restricting condition
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
 struct BinaryMapTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct MappedType
-   {
-      using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
-   };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<T1> || IsVolatile_v<T1> || IsReference_v<T1> ||
-                               IsConst_v<T2> || IsVolatile_v<T2> || IsReference_v<T2>
-                             , BinaryMapTrait< Decay_t<T1>, Decay_t<T2>, OP >
-                             , If_t< IsAdaptor_v<T1> || IsAdaptor_v<T2>
-                                   , BinaryMapTrait< RemoveAdaptor_t<T1>, RemoveAdaptor_t<T2>, OP >
-                                   , MappedType > >::Type;
+   using Type = decltype( evalBinaryMapTrait( std::declval<T1&>(), std::declval<T2&>(), std::declval<OP&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -138,6 +150,46 @@ template< typename T1    // Type of the left-hand side operand
         , typename T2    // Type of the right-hand side operand
         , typename OP >  // Type of the custom operation
 using BinaryMapTrait_t = typename BinaryMapTrait<T1,T2,OP>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the BinaryMapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct BinaryMapTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename BinaryMapTraitEval2<T1,T2,OP>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the BinaryMapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct BinaryMapTraitEval2
+{
+ public:
+   //**********************************************************************************************
+   using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

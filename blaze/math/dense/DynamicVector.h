@@ -2941,34 +2941,19 @@ struct UnaryMapTraitEval2< T, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, bool TF, typename T2, size_t N, typename OP >
-struct BinaryMapTrait< DynamicVector<T1,TF>, StaticVector<T2,N,TF>, OP >
+template< typename T1, typename T2, typename OP >
+struct BinaryMapTraitEval2< T1, T2, OP
+                          , EnableIf_t< IsVector_v<T1> &&
+                                        IsVector_v<T2> &&
+                                        Size_v<T1,0UL> == DefaultSize_v &&
+                                        Size_v<T2,0UL> == DefaultSize_v &&
+                                        MaxSize_v<T1,0UL> == DefaultMaxSize_v &&
+                                        MaxSize_v<T2,0UL> == DefaultMaxSize_v > >
 {
-   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t N, bool TF, typename T2, typename OP >
-struct BinaryMapTrait< StaticVector<T1,N,TF>, DynamicVector<T2,TF>, OP >
-{
-   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2, size_t N, typename OP >
-struct BinaryMapTrait< DynamicVector<T1,TF>, HybridVector<T2,N,TF>, OP >
-{
-   using Type = HybridVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
-};
-
-template< typename T1, size_t N, bool TF, typename T2, typename OP >
-struct BinaryMapTrait< HybridVector<T1,N,TF>, DynamicVector<T2,TF>, OP >
-{
-   using Type = HybridVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
-};
-
-template< typename T1, bool TF, typename T2, typename OP >
-struct BinaryMapTrait< DynamicVector<T1,TF>, DynamicVector<T2,TF>, OP >
-{
-   using Type = DynamicVector< BinaryMapTrait_t<T1,T2,OP>, TF >;
+   using Type = DynamicVector< BinaryMapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

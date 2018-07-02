@@ -1905,6 +1905,33 @@ struct UnaryMapTraitEval1< T, OP
 
 //=================================================================================================
 //
+//  BINARYMAPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2, typename OP >
+struct BinaryMapTraitEval1< T1, T2, OP
+                          , EnableIf_t< IsMatrix_v<T1> &&
+                                        IsMatrix_v<T2> &&
+                                        YieldsIdentity_v<OP,T1,T2> > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
+
+   using Type = IdentityMatrix< BinaryMapTrait_t<ET1,ET2,OP>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  DECLSYMTRAIT SPECIALIZATIONS
 //
 //=================================================================================================

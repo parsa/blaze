@@ -3055,22 +3055,21 @@ struct UnaryMapTraitEval2< T, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t M, bool TF, typename T2, size_t N, typename OP >
-struct BinaryMapTrait< HybridVector<T1,M,TF>, StaticVector<T2,N,TF>, OP >
+template< typename T1, typename T2, typename OP >
+struct BinaryMapTraitEval2< T1, T2, OP
+                          , EnableIf_t< IsVector_v<T1> &&
+                                        IsVector_v<T2> &&
+                                        Size_v<T1,0UL> == DefaultSize_v &&
+                                        Size_v<T2,0UL> == DefaultSize_v &&
+                                        ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
+                                          MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
 {
-   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
-};
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
 
-template< typename T1, size_t M, bool TF, typename T2, size_t N, typename OP >
-struct BinaryMapTrait< StaticVector<T1,M,TF>, HybridVector<T2,N,TF>, OP >
-{
-   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, M, TF >;
-};
+   static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
 
-template< typename T1, size_t M, bool TF, typename T2, size_t N, typename OP >
-struct BinaryMapTrait< HybridVector<T1,M,TF>, HybridVector<T2,N,TF>, OP >
-{
-   using Type = HybridVector< BinaryMapTrait_t<T1,T2,OP>, ( M < N )?( M ):( N ), TF >;
+   using Type = HybridVector< BinaryMapTrait_t<ET1,ET2,OP>, N, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

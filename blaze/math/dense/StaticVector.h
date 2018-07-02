@@ -3000,10 +3000,19 @@ struct UnaryMapTraitEval2< T, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T1, size_t N, bool TF, typename T2, typename OP >
-struct BinaryMapTrait< StaticVector<T1,N,TF>, StaticVector<T2,N,TF>, OP >
+template< typename T1, typename T2, typename OP >
+struct BinaryMapTraitEval2< T1, T2, OP
+                          , EnableIf_t< IsVector_v<T1> &&
+                                        IsVector_v<T2> &&
+                                        ( Size_v<T1,0UL> != DefaultSize_v ||
+                                          Size_v<T2,0UL> != DefaultSize_v ) > >
 {
-   using Type = StaticVector< BinaryMapTrait_t<T1,T2,OP>, N, TF >;
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
+
+   using Type = StaticVector< BinaryMapTrait_t<ET1,ET2,OP>, N, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

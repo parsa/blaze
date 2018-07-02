@@ -1460,12 +1460,13 @@ struct UnaryMapTraitEval1< T, OP
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename OP >
-struct BinaryMapTrait< MT1, MT2, OP, EnableIf_t< YieldsHermitian_v<OP,MT1,MT2> &&
-                                                 !YieldsSymmetric_v<OP,MT1,MT2> &&
-                                                 !YieldsIdentity_v<OP,MT1,MT2> > >
+template< typename T1, typename T2, typename OP >
+struct BinaryMapTraitEval1< T1, T2, OP
+                          , EnableIf_t< YieldsHermitian_v<OP,T1,T2> &&
+                                        !YieldsSymmetric_v<OP,T1,T2> &&
+                                        !YieldsIdentity_v<OP,T1,T2> > >
 {
-   using Type = HermitianMatrix< BinaryMapTrait_t< RemoveAdaptor_t<MT1>, RemoveAdaptor_t<MT2>, OP > >;
+   using Type = HermitianMatrix< typename BinaryMapTraitEval2<T1,T2,OP>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************
