@@ -6221,10 +6221,11 @@ struct RowsTraitEval2< MT, M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CCAs >
-struct ColumnsTrait< CompressedMatrix<T,SO>, CCAs... >
+template< typename MT, size_t N >
+struct ColumnsTraitEval2< MT, N
+                        , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix<T,true>;
+   using Type = CompressedMatrix< ElementType_t<MT>, true >;
 };
 /*! \endcond */
 //*************************************************************************************************

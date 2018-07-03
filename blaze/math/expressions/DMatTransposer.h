@@ -46,7 +46,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/simd/SIMDTrait.h>
-#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -776,25 +775,6 @@ template< typename MT, bool SO >
 struct IsPadded< DMatTransposer<MT,SO> >
    : public IsPadded<MT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, size_t... CCAs >
-struct ColumnsTrait< DMatTransposer<MT,SO>, CCAs... >
-{
-   using Type = ColumnsTrait_t< ResultType_t< DMatTransposer<MT,SO> >, CCAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

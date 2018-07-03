@@ -48,7 +48,6 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/traits/BandTrait.h>
-#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsInitializer.h>
@@ -869,25 +868,6 @@ template< typename T1, typename T2 >
 struct LowType< InitializerMatrix<T1>, InitializerMatrix<T2> >
 {
    using Type = InitializerMatrix< typename LowType<T1,T2>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t... CCAs >
-struct ColumnsTrait< InitializerMatrix<T>, CCAs... >
-{
-   using Type = DynamicMatrix<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************

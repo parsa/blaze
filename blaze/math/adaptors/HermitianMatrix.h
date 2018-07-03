@@ -56,7 +56,6 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
-#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
@@ -1618,25 +1617,6 @@ struct SubmatrixTraitEval1< MT, I, I, N, N
                                         !IsSymmetric_v<MT> > >
 {
    using Type = HermitianMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CCAs >
-struct ColumnsTrait< HermitianMatrix<MT,SO,DF>, CCAs... >
-{
-   using Type = ColumnsTrait_t<MT,CCAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

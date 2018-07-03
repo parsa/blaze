@@ -6700,16 +6700,13 @@ struct RowsTraitEval2< MT, M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... CCAs >
-struct ColumnsTrait< StaticMatrix<T,M,N,SO>, CCAs... >
+template< typename MT, size_t N >
+struct ColumnsTraitEval2< MT, N
+                        , EnableIf_t< N != 0UL &&
+                                      IsDenseMatrix_v<MT> &&
+                                      Size_v<MT,0UL> != DefaultSize_v > >
 {
-   using Type = StaticMatrix<T,M,sizeof...(CCAs),true>;
-};
-
-template< typename T, size_t M, size_t N, bool SO >
-struct ColumnsTrait< StaticMatrix<T,M,N,SO> >
-{
-   using Type = HybridMatrix<T,M,N,true>;
+   using Type = StaticMatrix< ElementType_t<MT>, Size_v<MT,0UL>, N, true >;
 };
 /*! \endcond */
 //*************************************************************************************************

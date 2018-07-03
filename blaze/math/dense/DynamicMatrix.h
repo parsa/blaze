@@ -6810,10 +6810,13 @@ struct RowsTraitEval2< MT, M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CCAs >
-struct ColumnsTrait< DynamicMatrix<T,SO>, CCAs... >
+template< typename MT, size_t N >
+struct ColumnsTraitEval2< MT, N
+                        , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                      ( N == 0UL || Size_v<MT,0UL> == DefaultSize_v ) &&
+                                      ( N == 0UL || MaxSize_v<MT,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix<T,true>;
+   using Type = DynamicMatrix< ElementType_t<MT>, true >;
 };
 /*! \endcond */
 //*************************************************************************************************

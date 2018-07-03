@@ -52,7 +52,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/BandTrait.h>
-#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
@@ -2052,25 +2051,6 @@ template< typename T1, bool SO, typename T2 >
 struct LowType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
    using Type = IdentityMatrix< typename LowType<T1,T2>::Type, SO >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CCAs >
-struct ColumnsTrait< IdentityMatrix<T,SO>, CCAs... >
-{
-   using Type = CompressedMatrix<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
