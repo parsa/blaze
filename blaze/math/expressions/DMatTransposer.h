@@ -53,6 +53,8 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
@@ -658,6 +660,52 @@ inline bool isIntact( const DMatTransposer<MT,SO>& m ) noexcept
 {
    return m.isIntact();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct Size< DMatTransposer<MT,SO>, 0UL >
+   : public Size<MT,0UL>
+{};
+
+template< typename MT, bool SO >
+struct Size< DMatTransposer<MT,SO>, 1UL >
+   : public Size<MT,1UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct MaxSize< DMatTransposer<MT,SO>, 0UL >
+   : public MaxSize<MT,0UL>
+{};
+
+template< typename MT, bool SO >
+struct MaxSize< DMatTransposer<MT,SO>, 1UL >
+   : public MaxSize<MT,1UL>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
