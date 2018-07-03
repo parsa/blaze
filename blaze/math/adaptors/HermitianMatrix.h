@@ -66,7 +66,6 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
-#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -1621,25 +1620,6 @@ struct SubmatrixTraitEval1< MT, I, I, N, N
                                         !IsSymmetric_v<MT> > >
 {
    using Type = HermitianMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CRAs >
-struct RowTrait< HermitianMatrix<MT,SO,DF>, CRAs... >
-{
-   using Type = RowTrait_t<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

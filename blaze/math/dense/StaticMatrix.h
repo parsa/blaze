@@ -68,7 +68,6 @@
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
-#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -6665,25 +6664,6 @@ struct SubmatrixTraitEval2< MT, I, J, M, N
                                         IsDenseMatrix_v<MT> > >
 {
    using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... CRAs >
-struct RowTrait< StaticMatrix<T,M,N,SO>, CRAs... >
-{
-   using Type = StaticVector<T,N,true>;
 };
 /*! \endcond */
 //*************************************************************************************************

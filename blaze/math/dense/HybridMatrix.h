@@ -68,7 +68,6 @@
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
-#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -7005,25 +7004,6 @@ struct SubmatrixTraitEval2< MT, -1UL, -1UL, -1UL, -1UL
    static constexpr size_t N = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
 
    using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... CRAs >
-struct RowTrait< HybridMatrix<T,M,N,SO>, CRAs... >
-{
-   using Type = HybridVector<T,N,true>;
 };
 /*! \endcond */
 //*************************************************************************************************

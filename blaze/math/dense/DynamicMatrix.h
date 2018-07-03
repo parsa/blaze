@@ -68,7 +68,6 @@
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
-#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -6775,25 +6774,6 @@ struct SubmatrixTraitEval2< MT, -1UL, -1UL, -1UL, -1UL
                                           MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CRAs >
-struct RowTrait< DynamicMatrix<T,SO>, CRAs... >
-{
-   using Type = DynamicVector<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************

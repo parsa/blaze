@@ -66,7 +66,6 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
-#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -1053,25 +1052,6 @@ struct SubmatrixTraitEval1< MT, I, I, N, N
                                         !IsDiagonal_v<MT> > >
 {
    using Type = SymmetricMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool NF, size_t... CRAs >
-struct RowTrait< SymmetricMatrix<MT,SO,DF,NF>, CRAs... >
-{
-   using Type = RowTrait_t<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

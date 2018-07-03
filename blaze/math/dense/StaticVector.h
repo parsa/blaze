@@ -64,6 +64,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
@@ -3094,6 +3095,27 @@ struct ElementsTraitEval2< VT, N
                                        IsDenseVector_v<VT> > >
 {
    using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t I >
+struct RowTraitEval2< MT, I
+                    , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                  Size_v<MT,1UL> != DefaultSize_v > >
+{
+   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >, Size_v<MT,1UL>, true >;
 };
 /*! \endcond */
 //*************************************************************************************************

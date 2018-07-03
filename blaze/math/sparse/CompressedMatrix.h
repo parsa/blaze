@@ -62,7 +62,6 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
-#include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -6188,25 +6187,6 @@ struct SubmatrixTraitEval2< MT, I, J, M, N
                           , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
    using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CRAs >
-struct RowTrait< CompressedMatrix<T,SO>, CRAs... >
-{
-   using Type = CompressedVector<T,true>;
 };
 /*! \endcond */
 //*************************************************************************************************
