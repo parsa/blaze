@@ -60,6 +60,7 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
+#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
@@ -3060,6 +3061,28 @@ struct RowTraitEval2< MT, I
                                   MaxSize_v<MT,1UL> == DefaultMaxSize_v > >
 {
    using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >, true >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t I >
+struct ColumnTraitEval2< MT, I
+                       , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                     Size_v<MT,0UL> == DefaultSize_v &&
+                                     MaxSize_v<MT,0UL> == DefaultMaxSize_v > >
+{
+   using Type = DynamicVector< ElementType_t<MT>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -63,7 +63,6 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
@@ -6307,25 +6306,6 @@ template< typename T, bool AF, bool SO >
 struct IsPadded< CustomMatrix<T,AF,padded,SO> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO, size_t... CCAs >
-struct ColumnTrait< CustomMatrix<T,AF,PF,SO>, CCAs... >
-{
-   using Type = DynamicVector<RemoveConst_t<T>,false>;
-};
 /*! \endcond */
 //*************************************************************************************************
 

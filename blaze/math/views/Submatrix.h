@@ -65,7 +65,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -5232,25 +5231,6 @@ struct IsStrictlyUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
    : public BoolConstant< ( IsUpper_v<MT> && I > J && M == N ) ||
                           ( IsStrictlyUpper_v<MT> && I == J && M == N ) >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, size_t... CCAs >
-struct ColumnTrait< Submatrix<MT,AF,SO,DF,CSAs...>, CCAs... >
-{
-   using Type = ColumnTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs...> >, CCAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

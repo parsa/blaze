@@ -58,7 +58,6 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
@@ -6207,25 +6206,6 @@ struct RowsTraitEval2< MT, M
                      , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
    using Type = CompressedMatrix< ElementType_t<MT>, false >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CCAs >
-struct ColumnTrait< CompressedMatrix<T,SO>, CCAs... >
-{
-   using Type = CompressedVector<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

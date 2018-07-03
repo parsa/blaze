@@ -62,7 +62,6 @@
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
@@ -6796,25 +6795,6 @@ struct RowsTraitEval2< MT, M
                                    ( M == 0UL || MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
    using Type = DynamicMatrix< ElementType_t<MT>, false >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CCAs >
-struct ColumnTrait< DynamicMatrix<T,SO>, CCAs... >
-{
-   using Type = DynamicVector<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

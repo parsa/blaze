@@ -59,7 +59,6 @@
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
@@ -2694,25 +2693,6 @@ struct SubmatrixTraitEval1< MT, I, I, N, N
                                         !IsIdentity_v<MT> > >
 {
    using Type = UniUpperMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CCAs >
-struct ColumnTrait< UniUpperMatrix<MT,SO,DF>, CCAs... >
-{
-   using Type = ColumnTrait_t<MT,CCAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

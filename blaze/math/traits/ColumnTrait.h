@@ -40,12 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -55,6 +52,36 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t... CCAs > struct ColumnTrait;
+template< typename MT, size_t I, typename = void > struct ColumnTraitEval1;
+template< typename MT, size_t I, typename = void > struct ColumnTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< size_t I, typename T >
+auto evalColumnTrait( T& )
+   -> typename ColumnTraitEval1<T,I>::Type;
+
+template< typename T >
+auto evalColumnTrait( T& )
+   -> typename ColumnTraitEval2<T,-1UL>::Type;
+
+template< size_t... CCAs, typename T >
+auto evalColumnTrait( const T& )
+   -> typename ColumnTrait<T,CCAs...>::Type;
+
+template< size_t... CCAs, typename T >
+auto evalColumnTrait( volatile const T& )
+   -> typename ColumnTrait<T,CCAs...>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the ColumnTrait class.
@@ -106,19 +133,10 @@ template< typename MT       // Type of the matrix
         , size_t... CCAs >  // Compile time column arguments
 struct ColumnTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
-                             , ColumnTrait< Decay_t<MT>, CCAs... >
-                             , Failure >::Type;
+   using Type = decltype( evalColumnTrait<CCAs...>( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -141,6 +159,38 @@ struct ColumnTrait
 template< typename MT       // Type of the matrix
         , size_t... CCAs >  // Compile time column arguments
 using ColumnTrait_t = typename ColumnTrait<MT,CCAs...>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the ColumnTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , size_t I     // Compile time column index
+        , typename >   // Restricting condition
+struct ColumnTraitEval1
+{
+   using Type = typename ColumnTraitEval2<MT,I>::Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the ColumnTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , size_t I     // Compile time column index
+        , typename >   // Restricting condition
+struct ColumnTraitEval2
+{
+   using Type = INVALID_TYPE;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

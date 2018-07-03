@@ -70,7 +70,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/traits/BandTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -3423,25 +3422,6 @@ template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct IsAligned< Columns<MT,SO,true,SF,CCAs...> >
    : public IsAligned<MT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs1, size_t... CCAs2 >
-struct ColumnTrait< Columns<MT,SO,DF,SF,CCAs1...>, CCAs2... >
-{
-   using Type = ColumnTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs1...> >, CCAs2... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

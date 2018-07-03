@@ -62,7 +62,6 @@
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
@@ -7027,25 +7026,6 @@ struct RowsTraitEval2< MT, M
                                    MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
 {
    using Type = HybridMatrix< ElementType_t<MT>, M, MaxSize_v<MT,1UL>, false >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  COLUMNTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... CCAs >
-struct ColumnTrait< HybridMatrix<T,M,N,SO>, CCAs... >
-{
-   using Type = HybridVector<T,M,false>;
 };
 /*! \endcond */
 //*************************************************************************************************
