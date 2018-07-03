@@ -48,6 +48,8 @@
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
+#include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Types.h>
 
@@ -529,6 +531,52 @@ inline bool isIntact( const SMatTransposer<MT,SO>& m ) noexcept
 {
    return m.isIntact();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct Size< SMatTransposer<MT,SO>, 0UL >
+   : public Size<MT,0UL>
+{};
+
+template< typename MT, bool SO >
+struct Size< SMatTransposer<MT,SO>, 1UL >
+   : public Size<MT,1UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct MaxSize< SMatTransposer<MT,SO>, 0UL >
+   : public MaxSize<MT,0UL>
+{};
+
+template< typename MT, bool SO >
+struct MaxSize< SMatTransposer<MT,SO>, 1UL >
+   : public MaxSize<MT,1UL>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
