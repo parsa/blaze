@@ -1695,10 +1695,11 @@ struct LowType< StrictlyLowerMatrix<MT1,SO1,DF1>, StrictlyLowerMatrix<MT2,SO2,DF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CSAs >
-struct SubmatrixTrait< StrictlyLowerMatrix<MT,SO,DF>, CSAs... >
+template< typename MT, size_t I, size_t N >
+struct SubmatrixTraitEval1< MT, I, I, N, N
+                          , EnableIf_t< IsStrictlyLower_v<MT> > >
 {
-   using Type = SubmatrixTrait_t<MT,CSAs...>;
+   using Type = StrictlyLowerMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

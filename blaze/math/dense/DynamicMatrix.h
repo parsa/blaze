@@ -129,6 +129,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
 
 
@@ -6765,16 +6766,15 @@ struct LowType< DynamicMatrix<T1,SO>, DynamicMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t I, size_t J, size_t M, size_t N >
-struct SubmatrixTrait< DynamicMatrix<T,SO>, I, J, M, N >
+template< typename MT >
+struct SubmatrixTraitEval2< MT, -1UL, -1UL, -1UL, -1UL
+                          , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                        ( Size_v<MT,0UL> == DefaultSize_v ||
+                                          Size_v<MT,1UL> == DefaultSize_v ) &&
+                                        ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
+                                          MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = StaticMatrix<T,M,N,SO>;
-};
-
-template< typename T, bool SO >
-struct SubmatrixTrait< DynamicMatrix<T,SO> >
-{
-   using Type = DynamicMatrix<T,SO>;
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

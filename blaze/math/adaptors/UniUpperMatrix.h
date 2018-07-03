@@ -2690,10 +2690,12 @@ struct LowType< UniUpperMatrix<MT1,SO1,DF1>, UniUpperMatrix<MT2,SO2,DF2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CSAs >
-struct SubmatrixTrait< UniUpperMatrix<MT,SO,DF>, CSAs... >
+template< typename MT, size_t I, size_t N >
+struct SubmatrixTraitEval1< MT, I, I, N, N
+                          , EnableIf_t< IsUniUpper_v<MT> &&
+                                        !IsIdentity_v<MT> > >
 {
-   using Type = SubmatrixTrait_t<MT,CSAs...>;
+   using Type = UniUpperMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

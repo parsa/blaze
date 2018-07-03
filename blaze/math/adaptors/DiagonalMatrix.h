@@ -1755,10 +1755,12 @@ struct LowType< DiagonalMatrix<MT1,SO1,DF1>, DiagonalMatrix<MT2,SO2,DF2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CSAs >
-struct SubmatrixTrait< DiagonalMatrix<MT,SO,DF>, CSAs... >
+template< typename MT, size_t I, size_t N >
+struct SubmatrixTraitEval1< MT, I, I, N, N
+                          , EnableIf_t< IsDiagonal_v<MT> &&
+                                        !IsIdentity_v<MT> > >
 {
-   using Type = SubmatrixTrait_t<MT,CSAs...>;
+   using Type = DiagonalMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -47,7 +47,6 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
-#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
@@ -577,25 +576,6 @@ template< typename MT, bool SO >
 struct MaxSize< SMatTransposer<MT,SO>, 1UL >
    : public MaxSize<MT,1UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, size_t... CSAs >
-struct SubmatrixTrait< SMatTransposer<MT,SO>, CSAs... >
-{
-   using Type = SubmatrixTrait_t< ResultType_t< SMatTransposer<MT,SO> >, CSAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

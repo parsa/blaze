@@ -68,7 +68,6 @@
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
-#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -6310,31 +6309,6 @@ template< typename T, bool AF, bool SO >
 struct IsPadded< CustomMatrix<T,AF,padded,SO> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO, size_t I, size_t J, size_t M, size_t N >
-struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO>, I, J, M, N >
-{
-   using Type = StaticMatrix<RemoveConst_t<T>,M,N,SO>;
-};
-
-template< typename T, bool AF, bool PF, bool SO >
-struct SubmatrixTrait< CustomMatrix<T,AF,PF,SO> >
-{
-   using Type = DynamicMatrix<RemoveConst_t<T>,SO>;
-};
 /*! \endcond */
 //*************************************************************************************************
 

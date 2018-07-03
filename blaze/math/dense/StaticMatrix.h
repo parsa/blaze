@@ -129,6 +129,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
 
 
@@ -6658,16 +6659,12 @@ struct LowType< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M1, size_t N1, bool SO, size_t I, size_t J, size_t M2, size_t N2 >
-struct SubmatrixTrait< StaticMatrix<T,M1,N1,SO>, I, J, M2, N2 >
+template< typename MT, size_t I, size_t J, size_t M, size_t N >
+struct SubmatrixTraitEval2< MT, I, J, M, N
+                          , EnableIf_t< I != -1UL && J != -1UL && M != -1UL && N != -1UL &&
+                                        IsDenseMatrix_v<MT> > >
 {
-   using Type = StaticMatrix<T,M2,N2,SO>;
-};
-
-template< typename T, size_t M, size_t N, bool SO >
-struct SubmatrixTrait< StaticMatrix<T,M,N,SO> >
-{
-   using Type = HybridMatrix<T,M,N,SO>;
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

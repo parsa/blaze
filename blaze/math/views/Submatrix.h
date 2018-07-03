@@ -68,7 +68,6 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
-#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -5235,25 +5234,6 @@ struct IsStrictlyUpper< Submatrix<MT,AF,SO,DF,I,J,M,N> >
    : public BoolConstant< ( IsUpper_v<MT> && I > J && M == N ) ||
                           ( IsStrictlyUpper_v<MT> && I == J && M == N ) >
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs1, size_t... CSAs2 >
-struct SubmatrixTrait< Submatrix<MT,AF,SO,DF,CSAs1...>, CSAs2... >
-{
-   using Type = SubmatrixTrait_t< ResultType_t< Submatrix<MT,AF,SO,DF,CSAs1...> >, CSAs2... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

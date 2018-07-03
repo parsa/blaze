@@ -127,6 +127,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
 
 
@@ -6992,16 +6993,18 @@ struct LowType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M1, size_t N1, bool SO, size_t I, size_t J, size_t M2, size_t N2 >
-struct SubmatrixTrait< HybridMatrix<T,M1,N1,SO>, I, J, M2, N2 >
+template< typename MT >
+struct SubmatrixTraitEval2< MT, -1UL, -1UL, -1UL, -1UL
+                          , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                        ( ( Size_v<MT,0UL> != DefaultSize_v &&
+                                            Size_v<MT,1UL> != DefaultSize_v ) ||
+                                          ( MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
+                                            MaxSize_v<MT,1UL> != DefaultMaxSize_v ) ) > >
 {
-   using Type = StaticMatrix<T,M2,N2,SO>;
-};
+   static constexpr size_t M = max( Size_v<MT,0UL>, MaxSize_v<MT,0UL> );
+   static constexpr size_t N = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
 
-template< typename T, size_t M, size_t N, bool SO >
-struct SubmatrixTrait< HybridMatrix<T,M,N,SO> >
-{
-   using Type = HybridMatrix<T,M,N,SO>;
+   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -52,7 +52,6 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
-#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsInitializer.h>
@@ -873,31 +872,6 @@ template< typename T1, typename T2 >
 struct LowType< InitializerMatrix<T1>, InitializerMatrix<T2> >
 {
    using Type = InitializerMatrix< typename LowType<T1,T2>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t I, size_t J, size_t M, size_t N >
-struct SubmatrixTrait< InitializerMatrix<T>, I, J, M, N >
-{
-   using Type = StaticMatrix<T,M,N,false>;
-};
-
-template< typename T >
-struct SubmatrixTrait< InitializerMatrix<T> >
-{
-   using Type = DynamicMatrix<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -63,7 +63,6 @@
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
-#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -2056,31 +2055,6 @@ template< typename T1, bool SO, typename T2 >
 struct LowType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
    using Type = IdentityMatrix< typename LowType<T1,T2>::Type, SO >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t I, size_t J, size_t M, size_t N >
-struct SubmatrixTrait< IdentityMatrix<T,SO>, I, J, M, N >
-{
-   using Type = StaticMatrix<T,M,N,SO>;
-};
-
-template< typename T, bool SO >
-struct SubmatrixTrait< IdentityMatrix<T,SO> >
-{
-   using Type = CompressedMatrix<T,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************

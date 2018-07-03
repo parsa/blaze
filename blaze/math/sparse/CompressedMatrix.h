@@ -100,6 +100,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 
 
 namespace blaze {
@@ -6182,10 +6183,11 @@ struct LowType< CompressedMatrix<T1,SO>, CompressedMatrix<T2,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CSAs >
-struct SubmatrixTrait< CompressedMatrix<T,SO>, CSAs... >
+template< typename MT, size_t I, size_t J, size_t M, size_t N >
+struct SubmatrixTraitEval2< MT, I, J, M, N
+                          , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix<T,SO>;
+   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
