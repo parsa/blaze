@@ -47,7 +47,6 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -777,25 +776,6 @@ template< typename MT, bool SO >
 struct IsPadded< DMatTransposer<MT,SO> >
    : public IsPadded<MT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, size_t... CRAs >
-struct RowsTrait< DMatTransposer<MT,SO>, CRAs... >
-{
-   using Type = RowsTrait_t< ResultType_t< DMatTransposer<MT,SO> >, CRAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

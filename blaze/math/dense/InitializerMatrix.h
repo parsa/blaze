@@ -50,7 +50,6 @@
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
-#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsInitializer.h>
@@ -871,25 +870,6 @@ template< typename T1, typename T2 >
 struct LowType< InitializerMatrix<T1>, InitializerMatrix<T2> >
 {
    using Type = InitializerMatrix< typename LowType<T1,T2>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t... CRAs >
-struct RowsTrait< InitializerMatrix<T>, CRAs... >
-{
-   using Type = DynamicMatrix<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

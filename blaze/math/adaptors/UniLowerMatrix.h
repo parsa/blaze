@@ -66,7 +66,6 @@
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -2695,25 +2694,6 @@ struct SubmatrixTraitEval1< MT, I, I, N, N
                                         !IsIdentity_v<MT> > >
 {
    using Type = UniLowerMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, size_t... CRAs >
-struct RowsTrait< UniLowerMatrix<MT,SO,DF>, CRAs... >
-{
-   using Type = RowsTrait_t<MT,CRAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

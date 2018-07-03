@@ -7019,16 +7019,14 @@ struct SubmatrixTraitEval2< MT, -1UL, -1UL, -1UL, -1UL
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO, size_t... CRAs >
-struct RowsTrait< HybridMatrix<T,M,N,SO>, CRAs... >
+template< typename MT, size_t M >
+struct RowsTraitEval2< MT, M
+                     , EnableIf_t< M != 0UL &&
+                                   IsDenseMatrix_v<MT> &&
+                                   Size_v<MT,1UL> == DefaultSize_v &&
+                                   MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridMatrix<T,sizeof...(CRAs),N,false>;
-};
-
-template< typename T, size_t M, size_t N, bool SO >
-struct RowsTrait< HybridMatrix<T,M,N,SO> >
-{
-   using Type = HybridMatrix<T,M,N,false>;
+   using Type = HybridMatrix< ElementType_t<MT>, M, MaxSize_v<MT,1UL>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************

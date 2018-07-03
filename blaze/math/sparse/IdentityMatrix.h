@@ -60,7 +60,6 @@
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
@@ -2054,25 +2053,6 @@ template< typename T1, bool SO, typename T2 >
 struct LowType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
    using Type = IdentityMatrix< typename LowType<T1,T2>::Type, SO >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CRAs >
-struct RowsTrait< IdentityMatrix<T,SO>, CRAs... >
-{
-   using Type = CompressedMatrix<T,false>;
 };
 /*! \endcond */
 //*************************************************************************************************

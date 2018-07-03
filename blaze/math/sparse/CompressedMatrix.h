@@ -6202,10 +6202,11 @@ struct SubmatrixTraitEval2< MT, I, J, M, N
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, size_t... CRAs >
-struct RowsTrait< CompressedMatrix<T,SO>, CRAs... >
+template< typename MT, size_t M >
+struct RowsTraitEval2< MT, M
+                     , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix<T,false>;
+   using Type = CompressedMatrix< ElementType_t<MT>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************

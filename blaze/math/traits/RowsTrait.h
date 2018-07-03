@@ -40,13 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -56,6 +52,36 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t... CRAs > struct RowsTrait;
+template< typename MT, size_t N, typename = void > struct RowsTraitEval1;
+template< typename MT, size_t N, typename = void > struct RowsTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< size_t N, typename T >
+auto evalRowsTrait( T& )
+   -> typename RowsTraitEval1<T,N>::Type;
+
+template< typename T >
+auto evalRowsTrait( T& )
+   -> typename RowsTraitEval2<T,-1UL>::Type;
+
+template< size_t... CRAs, typename T >
+auto evalRowsTrait( const T& )
+   -> typename RowsTrait<T,CRAs...>::Type;
+
+template< size_t... CRAs, typename T >
+auto evalRowsTrait( volatile const T& )
+   -> typename RowsTrait<T,CRAs...>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the RowsTrait class.
@@ -107,19 +133,10 @@ template< typename MT       // Type of the matrix
         , size_t... CRAs >  // Compile time row arguments
 struct RowsTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
-                             , RowsTrait< Decay_t<MT>, CRAs... >
-                             , Failure >::Type;
+   using Type = decltype( evalRowsTrait<sizeof...(CRAs)>( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -142,6 +159,44 @@ struct RowsTrait
 template< typename MT       // Type of the matrix
         , size_t... CRAs >  // Compile time row arguments
 using RowsTrait_t = typename RowsTrait<MT,CRAs...>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the RowsTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , size_t M     // Number of rows
+        , typename >   // Restricting condition
+struct RowsTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename RowsTraitEval2<MT,M>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the RowsTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , size_t M     // Number of rows
+        , typename >   // Restricting condition
+struct RowsTraitEval2
+{
+ public:
+   //**********************************************************************************************
+   using Type = INVALID_TYPE;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

@@ -72,7 +72,6 @@
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -3424,25 +3423,6 @@ template< typename MT, bool SO, bool SF, size_t... CCAs >
 struct IsAligned< Columns<MT,SO,true,SF,CCAs...> >
    : public IsAligned<MT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ROWSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CRAs >
-struct RowsTrait< Columns<MT,SO,DF,SF,CCAs...>, CRAs... >
-{
-   using Type = RowsTrait_t< ResultType_t< Columns<MT,SO,DF,SF,CCAs...> >, CRAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 
