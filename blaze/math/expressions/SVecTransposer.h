@@ -49,6 +49,8 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
+#include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -460,6 +462,42 @@ inline bool isIntact( const SVecTransposer<VT,TF>& v ) noexcept
 {
    return v.isIntact();
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct Size< SVecTransposer<VT,TF>, 0UL >
+   : public Size<VT,0UL>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MAXSIZE SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct MaxSize< SVecTransposer<VT,TF>, 0UL >
+   : public MaxSize<VT,0UL>
+{};
 /*! \endcond */
 //*************************************************************************************************
 
