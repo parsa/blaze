@@ -3088,16 +3088,12 @@ struct SubvectorTraitEval2< VT, I, N
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N1, bool TF, size_t... CEAs >
-struct ElementsTrait< StaticVector<T,N1,TF>, CEAs... >
+template< typename VT, size_t N >
+struct ElementsTraitEval2< VT, N
+                         , EnableIf_t< N != 0UL &&
+                                       IsDenseVector_v<VT> > >
 {
-   using Type = StaticVector<T,sizeof...(CEAs),TF>;
-};
-
-template< typename T, size_t N, bool TF >
-struct ElementsTrait< StaticVector<T,N,TF> >
-{
-   using Type = HybridVector<T,N,TF>;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

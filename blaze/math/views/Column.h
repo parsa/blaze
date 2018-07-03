@@ -56,8 +56,6 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/ColumnTrait.h>
-#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -1621,25 +1619,6 @@ template< typename MT, bool DF, size_t... CCAs >
 struct IsOpposedView< Column<MT,false,DF,false,CCAs...> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ELEMENTSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs, size_t... CEAs >
-struct ElementsTrait< Column<MT,SO,DF,SF,CCAs...>, CEAs... >
-{
-   using Type = ElementsTrait_t< ResultType_t< Column<MT,SO,DF,SF,CCAs...> >, CEAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

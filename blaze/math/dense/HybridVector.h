@@ -3148,16 +3148,15 @@ struct SubvectorTraitEval2< VT, -1UL, -1UL
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N1, bool TF, size_t... CEAs >
-struct ElementsTrait< HybridVector<T,N1,TF>, CEAs... >
+template< typename VT >
+struct ElementsTraitEval2< VT, 0UL
+                         , EnableIf_t< IsDenseVector_v<VT> &&
+                                       ( Size_v<VT,0UL> != DefaultSize_v ||
+                                         MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
 {
-   using Type = StaticVector<T,sizeof...(CEAs),TF>;
-};
+   static constexpr size_t N = max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> );
 
-template< typename T, size_t N, bool TF >
-struct ElementsTrait< HybridVector<T,N,TF> >
-{
-   using Type = HybridVector<T,N,TF>;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

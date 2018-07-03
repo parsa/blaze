@@ -2687,9 +2687,7 @@ struct LowType< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, size_t I, size_t N >
 struct SubvectorTraitEval2< VT, I, N
-                          , EnableIf_t< IsSparseVector_v<VT> &&
-                                        Size_v<VT,0UL> == DefaultSize_v &&
-                                        MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
+                          , EnableIf_t< IsSparseVector_v<VT> > >
 {
    using Type = CompressedVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
 };
@@ -2707,10 +2705,11 @@ struct SubvectorTraitEval2< VT, I, N
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, size_t... CEAs >
-struct ElementsTrait< CompressedVector<T,TF>, CEAs... >
+template< typename VT, size_t N >
+struct ElementsTraitEval2< VT, N
+                         , EnableIf_t< IsSparseVector_v<VT> > >
 {
-   using Type = CompressedVector<T,TF>;
+   using Type = CompressedVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

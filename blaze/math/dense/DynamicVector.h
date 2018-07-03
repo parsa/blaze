@@ -3030,16 +3030,13 @@ struct SubvectorTraitEval2< VT, -1UL, -1UL
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, size_t... CEAs >
-struct ElementsTrait< DynamicVector<T,TF>, CEAs... >
+template< typename VT >
+struct ElementsTraitEval2< VT, 0UL
+                         , EnableIf_t< IsDenseVector_v<VT> &&
+                                       Size_v<VT,0UL> == DefaultSize_v &&
+                                       MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = StaticVector<T,sizeof...(CEAs),TF>;
-};
-
-template< typename T, bool TF >
-struct ElementsTrait< DynamicVector<T,TF> >
-{
-   using Type = DynamicVector<T,TF>;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

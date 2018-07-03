@@ -60,7 +60,6 @@
 #include <blaze/math/IntegerSequence.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -2779,25 +2778,6 @@ template< typename VT, AlignmentFlag AF, bool TF, size_t... CSAs >
 struct IsContiguous< Subvector<VT,AF,TF,true,CSAs...> >
    : public IsContiguous<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ELEMENTSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs, size_t... CEAs >
-struct ElementsTrait< Subvector<VT,AF,TF,DF,CSAs...>, CEAs... >
-{
-   using Type = ElementsTrait_t< ResultType_t< Subvector<VT,AF,TF,DF,CSAs...> >, CEAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

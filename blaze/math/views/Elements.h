@@ -64,7 +64,6 @@
 #include <blaze/math/IntegerSequence.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -2368,25 +2367,6 @@ template< typename VT, bool TF, size_t... CEAs >
 struct HasMutableDataAccess< Elements<VT,TF,true,CEAs...> >
    : public HasMutableDataAccess<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ELEMENTSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool DF, size_t... CEAs1, size_t... CEAs2 >
-struct ElementsTrait< Elements<VT,TF,DF,CEAs1...>, CEAs2... >
-{
-   using Type = ElementsTrait_t< ResultType_t< Elements<VT,TF,DF,CEAs1...> >, CEAs2... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

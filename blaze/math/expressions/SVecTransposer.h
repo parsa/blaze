@@ -47,7 +47,6 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/algorithms/Max.h>
@@ -497,25 +496,6 @@ template< typename VT, bool TF >
 struct MaxSize< SVecTransposer<VT,TF>, 0UL >
    : public MaxSize<VT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ELEMENTSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, size_t... CEAs >
-struct ElementsTrait< SVecTransposer<VT,TF>, CEAs... >
-{
-   using Type = ElementsTrait_t< ResultType_t< SVecTransposer<VT,TF> >, CEAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

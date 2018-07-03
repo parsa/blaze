@@ -55,8 +55,6 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/BandTrait.h>
-#include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
@@ -1994,25 +1992,6 @@ template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs >
 struct IsOpposedView< Band<MT,TF,DF,MF,CBAs...> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ELEMENTSTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t... CBAs, size_t... CEAs >
-struct ElementsTrait< Band<MT,TF,DF,MF,CBAs...>, CEAs... >
-{
-   using Type = ElementsTrait_t< ResultType_t< Band<MT,TF,DF,MF,CBAs...> >, CEAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

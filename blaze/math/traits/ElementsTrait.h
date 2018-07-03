@@ -40,12 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -55,6 +52,36 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, size_t... CEAs > struct ElementsTrait;
+template< typename VT, size_t N, typename = void > struct ElementsTraitEval1;
+template< typename VT, size_t N, typename = void > struct ElementsTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< size_t N, typename T >
+auto evalElementsTrait( T& )
+   -> typename ElementsTraitEval1<T,N>::Type;
+
+template< typename T >
+auto evalElementsTrait( T& )
+   -> typename ElementsTraitEval2<T,0UL>::Type;
+
+template< size_t... CEAs, typename T >
+auto evalElementsTrait( const T& )
+   -> typename ElementsTrait<T,CEAs...>::Type;
+
+template< size_t... CEAs, typename T >
+auto evalElementsTrait( volatile const T& )
+   -> typename ElementsTrait<T,CEAs...>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the ElementsTrait class.
@@ -106,19 +133,10 @@ template< typename VT       // Type of the vector
         , size_t... CEAs >  // Compile time element arguments
 struct ElementsTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<VT> || IsVolatile_v<VT> || IsReference_v<VT>
-                             , ElementsTrait< Decay_t<VT>, CEAs... >
-                             , Failure >::Type;
+   using Type = decltype( evalElementsTrait<sizeof...(CEAs)>( std::declval<VT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -141,6 +159,44 @@ struct ElementsTrait
 template< typename VT       // Type of the vector
         , size_t... CEAs >  // Compile time element arguments
 using ElementsTrait_t = typename ElementsTrait<VT,CEAs...>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the ElementsTrait type trait.
+// \ingroup math_traits
+*/
+template< typename VT  // Type of the vector
+        , size_t N     // Number of elements
+        , typename >   // Restricting condition
+struct ElementsTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename ElementsTraitEval2<VT,N>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the ElementsTrait type trait.
+// \ingroup math_traits
+*/
+template< typename VT  // Type of the vector
+        , size_t N     // Number of elements
+        , typename >   // Restricting condition
+struct ElementsTraitEval2
+{
+ public:
+   //**********************************************************************************************
+   using Type = INVALID_TYPE;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
