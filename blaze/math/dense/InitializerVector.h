@@ -49,7 +49,6 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/ElementsTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsInitializer.h>
@@ -776,31 +775,6 @@ template< typename T1, bool TF, typename T2 >
 struct LowType< InitializerVector<T1,TF>, InitializerVector<T2,TF> >
 {
    using Type = InitializerVector< typename LowType<T1,T2>::Type, TF >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, size_t I, size_t N >
-struct SubvectorTrait< InitializerVector<T,TF>, I, N >
-{
-   using Type = StaticVector<T,N,TF>;
-};
-
-template< typename T, bool TF >
-struct SubvectorTrait< InitializerVector<T,TF> >
-{
-   using Type = DynamicVector<T,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************

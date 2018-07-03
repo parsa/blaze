@@ -114,6 +114,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 
 
 namespace blaze {
@@ -3007,16 +3008,13 @@ struct LowType< DynamicVector<T1,TF>, DynamicVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, size_t I, size_t N >
-struct SubvectorTrait< DynamicVector<T,TF>, I, N >
+template< typename VT >
+struct SubvectorTraitEval2< VT, -1UL, -1UL
+                          , EnableIf_t< IsDenseVector_v<VT> &&
+                                        Size_v<VT,0UL> == DefaultSize_v &&
+                                        MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = StaticVector<T,N,TF>;
-};
-
-template< typename T, bool TF >
-struct SubvectorTrait< DynamicVector<T,TF> >
-{
-   using Type = DynamicVector<T,TF>;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

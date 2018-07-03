@@ -92,6 +92,7 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 
 
 namespace blaze {
@@ -2684,10 +2685,13 @@ struct LowType< CompressedVector<T1,TF>, CompressedVector<T2,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool TF, size_t... CSAs >
-struct SubvectorTrait< CompressedVector<T,TF>, CSAs... >
+template< typename VT, size_t I, size_t N >
+struct SubvectorTraitEval2< VT, I, N
+                          , EnableIf_t< IsSparseVector_v<VT> &&
+                                        Size_v<VT,0UL> == DefaultSize_v &&
+                                        MaxSize_v<VT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = CompressedVector<T,TF>;
+   using Type = CompressedVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

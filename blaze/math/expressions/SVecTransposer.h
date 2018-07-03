@@ -48,7 +48,6 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/traits/ElementsTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/algorithms/Max.h>
@@ -498,25 +497,6 @@ template< typename VT, bool TF >
 struct MaxSize< SVecTransposer<VT,TF>, 0UL >
    : public MaxSize<VT,0UL>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, size_t... CSAs >
-struct SubvectorTrait< SVecTransposer<VT,TF>, CSAs... >
-{
-   using Type = SubvectorTrait_t< ResultType_t< SVecTransposer<VT,TF> >, CSAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

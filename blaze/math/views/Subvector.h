@@ -61,7 +61,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ElementsTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -2780,25 +2779,6 @@ template< typename VT, AlignmentFlag AF, bool TF, size_t... CSAs >
 struct IsContiguous< Subvector<VT,AF,TF,true,CSAs...> >
    : public IsContiguous<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs1, size_t... CSAs2 >
-struct SubvectorTrait< Subvector<VT,AF,TF,DF,CSAs1...>, CSAs2... >
-{
-   using Type = SubvectorTrait_t< ResultType_t< Subvector<VT,AF,TF,DF,CSAs1...> >, CSAs2... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

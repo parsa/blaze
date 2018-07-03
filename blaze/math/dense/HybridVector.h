@@ -103,6 +103,7 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
 
 
@@ -3123,16 +3124,15 @@ struct LowType< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, size_t N1, bool TF, size_t I, size_t N2 >
-struct SubvectorTrait< HybridVector<T,N1,TF>, I, N2 >
+template< typename VT >
+struct SubvectorTraitEval2< VT, -1UL, -1UL
+                          , EnableIf_t< IsDenseVector_v<VT> &&
+                                        ( Size_v<VT,0UL> != DefaultSize_v ||
+                                          MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
 {
-   using Type = StaticVector<T,N2,TF>;
-};
+   static constexpr size_t N = max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> );
 
-template< typename T, size_t N, bool TF >
-struct SubvectorTrait< HybridVector<T,N,TF> >
-{
-   using Type = HybridVector<T,N,TF>;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

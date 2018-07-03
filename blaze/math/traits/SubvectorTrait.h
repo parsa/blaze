@@ -40,12 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -55,6 +51,36 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, size_t... CSAs > struct SubvectorTrait;
+template< typename VT, size_t I, size_t N, typename = void > struct SubvectorTraitEval1;
+template< typename VT, size_t I, size_t N, typename = void > struct SubvectorTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< size_t I, size_t N, typename T >
+auto evalSubvectorTrait( T& )
+   -> typename SubvectorTraitEval1<T,I,N>::Type;
+
+template< typename T >
+auto evalSubvectorTrait( T& )
+   -> typename SubvectorTraitEval1<T,-1UL,-1UL>::Type;
+
+template< size_t... CSAs, typename T >
+auto evalSubvectorTrait( const T& )
+   -> typename SubvectorTrait<T,CSAs...>::Type;
+
+template< size_t... CSAs, typename T >
+auto evalSubvectorTrait( volatile const T& )
+   -> typename SubvectorTrait<T,CSAs...>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the SubvectorTrait class.
@@ -107,19 +133,10 @@ template< typename VT       // Type of the vector
         , size_t... CSAs >  // Compile time subvector arguments
 struct SubvectorTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<VT> || IsVolatile_v<VT> || IsReference_v<VT>
-                             , SubvectorTrait< Decay_t<VT>, CSAs... >
-                             , Failure >::Type;
+   using Type = decltype( evalSubvectorTrait<CSAs...>( std::declval<VT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -142,6 +159,46 @@ struct SubvectorTrait
 template< typename VT       // Type of the vector
         , size_t... CSAs >  // Compile time subvector arguments
 using SubvectorTrait_t = typename SubvectorTrait<VT,CSAs...>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the SubvectorTrait type trait.
+// \ingroup math_traits
+*/
+template< typename VT  // Type of the vector
+        , size_t I     // Index of the first element
+        , size_t N     // Number of elements
+        , typename >   // Restricting condition
+struct SubvectorTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename SubvectorTraitEval2<VT,I,N>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the SubvectorTrait type trait.
+// \ingroup math_traits
+*/
+template< typename VT  // Type of the vector
+        , size_t I     // Index of the first element
+        , size_t N     // Number of elements
+        , typename >   // Restricting condition
+struct SubvectorTraitEval2
+{
+ public:
+   //**********************************************************************************************
+   using Type = INVALID_TYPE;
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

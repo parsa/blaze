@@ -64,7 +64,6 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -5070,31 +5069,6 @@ template< typename T, bool AF, bool TF >
 struct IsPadded< CustomVector<T,AF,padded,TF> >
    : public TrueType
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool TF, size_t I, size_t N >
-struct SubvectorTrait< CustomVector<T,AF,PF,TF>, I, N >
-{
-   using Type = StaticVector<RemoveConst_t<T>,N,TF>;
-};
-
-template< typename T, bool AF, bool PF, bool TF >
-struct SubvectorTrait< CustomVector<T,AF,PF,TF> >
-{
-   using Type = DynamicVector<RemoveConst_t<T>,TF>;
-};
 /*! \endcond */
 //*************************************************************************************************
 

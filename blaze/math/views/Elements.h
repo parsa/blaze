@@ -65,7 +65,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ElementsTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsRestricted.h>
@@ -2369,25 +2368,6 @@ template< typename VT, bool TF, size_t... CEAs >
 struct HasMutableDataAccess< Elements<VT,TF,true,CEAs...> >
    : public HasMutableDataAccess<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool DF, size_t... CEAs, size_t... CSAs >
-struct SubvectorTrait< Elements<VT,TF,DF,CEAs...>, CSAs... >
-{
-   using Type = SubvectorTrait_t< ResultType_t< Elements<VT,TF,DF,CEAs...> >, CSAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

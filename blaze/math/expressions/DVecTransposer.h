@@ -48,7 +48,6 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
-#include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -714,25 +713,6 @@ template< typename VT, bool TF >
 struct IsPadded< DVecTransposer<VT,TF> >
    : public IsPadded<VT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  SUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, size_t... CSAs >
-struct SubvectorTrait< DVecTransposer<VT,TF>, CSAs... >
-{
-   using Type = SubvectorTrait_t< ResultType_t< DVecTransposer<VT,TF> >, CSAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 
