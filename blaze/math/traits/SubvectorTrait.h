@@ -41,7 +41,9 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/Infinity.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -69,15 +71,23 @@ auto evalSubvectorTrait( T& )
 
 template< typename T >
 auto evalSubvectorTrait( T& )
-   -> typename SubvectorTraitEval1<T,-1UL,-1UL>::Type;
+   -> typename SubvectorTraitEval1<T,inf,inf>::Type;
 
-template< size_t... CSAs, typename T >
+template< size_t I, size_t N, typename T >
 auto evalSubvectorTrait( const T& )
-   -> typename SubvectorTrait<T,CSAs...>::Type;
+   -> typename SubvectorTrait<T,I,N>::Type;
 
-template< size_t... CSAs, typename T >
+template< typename T >
+auto evalSubvectorTrait( const T& )
+   -> typename SubvectorTrait<T>::Type;
+
+template< size_t I, size_t N, typename T >
 auto evalSubvectorTrait( volatile const T& )
-   -> typename SubvectorTrait<T,CSAs...>::Type;
+   -> typename SubvectorTrait<T,I,N>::Type;
+
+template< typename T >
+auto evalSubvectorTrait( volatile const T& )
+   -> typename SubvectorTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
 

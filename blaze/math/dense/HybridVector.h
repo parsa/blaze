@@ -3129,7 +3129,7 @@ struct LowType< HybridVector<T1,N,TF>, HybridVector<T2,N,TF> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename VT >
-struct SubvectorTraitEval2< VT, -1UL, -1UL
+struct SubvectorTraitEval2< VT, inf, inf
                           , EnableIf_t< IsDenseVector_v<VT> &&
                                         ( Size_v<VT,0UL> != DefaultSize_v ||
                                           MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >

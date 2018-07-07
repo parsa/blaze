@@ -3072,7 +3072,7 @@ struct LowType< StaticVector<T1,N,TF>, StaticVector<T2,N,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, size_t I, size_t N >
 struct SubvectorTraitEval2< VT, I, N
-                          , EnableIf_t< I != -1UL && N != -1UL &&
+                          , EnableIf_t< I != inf && N != inf &&
                                         IsDenseVector_v<VT> > >
 {
    using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
