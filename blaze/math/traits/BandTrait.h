@@ -40,13 +40,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
+#include <blaze/math/Infinity.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -56,6 +53,36 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, ptrdiff_t... CBAs > struct BandTrait;
+template< typename MT, ptrdiff_t I, typename = void > struct BandTraitEval1;
+template< typename MT, ptrdiff_t I, typename = void > struct BandTraitEval2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< ptrdiff_t I, typename T >
+auto evalBandTrait( T& )
+   -> typename BandTraitEval1<T,I>::Type;
+
+template< typename T >
+auto evalBandTrait( T& )
+   -> typename BandTraitEval2<T,inf>::Type;
+
+template< ptrdiff_t... CBAs, typename T >
+auto evalBandTrait( const T& )
+   -> typename BandTrait<T,CBAs...>::Type;
+
+template< ptrdiff_t... CBAs, typename T >
+auto evalBandTrait( volatile const T& )
+   -> typename BandTrait<T,CBAs...>::Type;
+   /*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the BandTrait class.
@@ -107,19 +134,10 @@ template< typename MT          // Type of the matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 struct BandTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
-                             , BandTrait< Decay_t<MT>, CBAs... >
-                             , Failure >::Type;
+   using Type = decltype( evalBandTrait<CBAs...>( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -142,6 +160,38 @@ struct BandTrait
 template< typename MT          // Type of the matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 using BandTrait_t = typename BandTrait<MT,CBAs...>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the BandTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , ptrdiff_t I  // Compile time band index
+        , typename >   // Restricting condition
+struct BandTraitEval1
+{
+   using Type = typename BandTraitEval2<MT,I>::Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the BandTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , ptrdiff_t I  // Compile time band index
+        , typename >   // Restricting condition
+struct BandTraitEval2
+{
+   using Type = INVALID_TYPE;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

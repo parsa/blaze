@@ -59,7 +59,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/CTransExprTrait.h>
@@ -7049,33 +7048,6 @@ struct ColumnsTraitEval2< MT, N
                                       MaxSize_v<MT,0UL> != DefaultMaxSize_v > >
 {
    using Type = HybridMatrix< ElementType_t<MT>, MaxSize_v<MT,0UL>, N, true >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  BANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, size_t M, size_t N, bool SO >
-struct BandTrait< HybridMatrix<T,M,N,SO> >
-{
-   static constexpr size_t Min = min( M, N );
-   using Type = HybridVector<T,Min,defaultTransposeFlag>;
-};
-
-template< typename T, size_t M, size_t N, bool SO, ptrdiff_t I >
-struct BandTrait< HybridMatrix<T,M,N,SO>, I >
-{
-   static constexpr size_t Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I : 0UL ) );
-   using Type = HybridVector<T,Min,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************

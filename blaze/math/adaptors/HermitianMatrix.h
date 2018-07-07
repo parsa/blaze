@@ -54,7 +54,6 @@
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/IsReal.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
@@ -1617,25 +1616,6 @@ struct SubmatrixTraitEval1< MT, I, I, N, N
                                         !IsSymmetric_v<MT> > >
 {
    using Type = HermitianMatrix< typename SubmatrixTraitEval2<MT,I,I,N,N>::Type >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  BANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, ptrdiff_t... CBAs >
-struct BandTrait< HermitianMatrix<MT,SO,DF>, CBAs... >
-{
-   using Type = BandTrait_t<MT,CBAs...>;
 };
 /*! \endcond */
 //*************************************************************************************************

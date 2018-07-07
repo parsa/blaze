@@ -56,7 +56,6 @@
 #include <blaze/math/sparse/MatrixAccessProxy.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -6226,25 +6225,6 @@ struct ColumnsTraitEval2< MT, N
                         , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
    using Type = CompressedMatrix< ElementType_t<MT>, true >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  BANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, ptrdiff_t... CBAs >
-struct BandTrait< CompressedMatrix<T,SO>, CBAs... >
-{
-   using Type = CompressedVector<T,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************

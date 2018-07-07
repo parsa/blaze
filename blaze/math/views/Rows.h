@@ -69,7 +69,6 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
@@ -3416,25 +3415,6 @@ template< typename MT, bool SO, bool SF, size_t... CRAs >
 struct IsAligned< Rows<MT,SO,true,SF,CRAs...> >
    : public IsAligned<MT>
 {};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  BANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs, ptrdiff_t... CBAs >
-struct BandTrait< Rows<MT,SO,DF,SF,CRAs...>, CBAs... >
-{
-   using Type = BandTrait_t< ResultType_t< Rows<MT,SO,DF,SF,CRAs...> >, CBAs... >;
-};
 /*! \endcond */
 //*************************************************************************************************
 

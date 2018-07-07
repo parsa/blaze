@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/Infinity.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -50,6 +51,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -3203,6 +3205,58 @@ struct ColumnTraitEval2< MT, I
                                      MaxSize_v<MT,0UL> != DefaultMaxSize_v > >
 {
    using Type = HybridVector< ElementType_t<MT>, MaxSize_v<MT,0UL>, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, ptrdiff_t I >
+struct BandTraitEval2< MT, I
+                     , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                   ( Size_v<MT,0UL> == DefaultSize_v ||
+                                     Size_v<MT,1UL> == DefaultSize_v ) &&
+                                   MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
+                                   MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
+{
+   static constexpr size_t M   = MaxSize_v<MT,0UL>;
+   static constexpr size_t N   = MaxSize_v<MT,1UL>;
+   static constexpr size_t Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I : 0UL ) );
+
+   using Type = HybridVector< ElementType_t<MT>, Min, defaultTransposeFlag >;
+};
+
+template< typename MT >
+struct BandTraitEval2< MT, inf
+                     , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                   Size_v<MT,0UL> != DefaultSize_v &&
+                                   Size_v<MT,1UL> != DefaultSize_v > >
+{
+   static constexpr size_t Min = min( Size_v<MT,0UL>, Size_v<MT,1UL> );
+
+   using Type = HybridVector< ElementType_t<MT>, Min, defaultTransposeFlag >;
+};
+
+template< typename MT >
+struct BandTraitEval2< MT, inf
+                     , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                   ( Size_v<MT,0UL> == DefaultSize_v ||
+                                     Size_v<MT,1UL> == DefaultSize_v ) &&
+                                   MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
+                                   MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
+{
+   static constexpr size_t Min = min( MaxSize_v<MT,0UL>, MaxSize_v<MT,1UL> );
+
+   using Type = HybridVector< ElementType_t<MT>, Min, defaultTransposeFlag >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -59,6 +59,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
@@ -3083,6 +3084,30 @@ struct ColumnTraitEval2< MT, I
                                      MaxSize_v<MT,0UL> == DefaultMaxSize_v > >
 {
    using Type = DynamicVector< ElementType_t<MT>, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  BANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, ptrdiff_t I >
+struct BandTraitEval2< MT, I
+                     , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                   ( Size_v<MT,0UL> == DefaultSize_v ||
+                                     Size_v<MT,1UL> == DefaultSize_v ) &&
+                                   ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
+                                     MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
+{
+   using Type = DynamicVector< ElementType_t<MT>, defaultTransposeFlag >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -51,7 +51,7 @@
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
-#include <blaze/math/traits/BandTrait.h>
+#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
@@ -2051,31 +2051,6 @@ template< typename T1, bool SO, typename T2 >
 struct LowType< IdentityMatrix<T1,SO>, IdentityMatrix<T2,SO> >
 {
    using Type = IdentityMatrix< typename LowType<T1,T2>::Type, SO >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  BANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO, ptrdiff_t... CBAs >
-struct BandTrait< IdentityMatrix<T,SO>, CBAs... >
-{
-   using Type = CompressedVector<T,defaultTransposeFlag>;
-};
-
-template< typename T, bool SO >
-struct BandTrait< IdentityMatrix<T,SO>, 0L >
-{
-   using Type = DynamicVector<T,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
