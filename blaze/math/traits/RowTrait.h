@@ -41,7 +41,9 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/Infinity.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -69,15 +71,23 @@ auto evalRowTrait( T& )
 
 template< typename T >
 auto evalRowTrait( T& )
-   -> typename RowTraitEval2<T,-1UL>::Type;
+   -> typename RowTraitEval2<T,inf>::Type;
 
-template< size_t... CRAs, typename T >
+template< size_t I, typename T >
 auto evalRowTrait( const T& )
-   -> typename RowTrait<T,CRAs...>::Type;
+   -> typename RowTrait<T,I>::Type;
 
-template< size_t... CRAs, typename T >
+template< typename T >
+auto evalRowTrait( const T& )
+   -> typename RowTrait<T>::Type;
+
+template< size_t I, typename T >
 auto evalRowTrait( volatile const T& )
-   -> typename RowTrait<T,CRAs...>::Type;
+   -> typename RowTrait<T,I>::Type;
+
+template< typename T >
+auto evalRowTrait( volatile const T& )
+   -> typename RowTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
