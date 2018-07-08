@@ -86,7 +86,6 @@
 #include <blaze/math/expressions/DMatTDMatSchurExpr.h>
 #include <blaze/math/expressions/DMatTDMatSubExpr.h>
 #include <blaze/math/expressions/DMatTransExpr.h>
-#include <blaze/math/expressions/DMatTransposer.h>
 #include <blaze/math/expressions/DMatTSMatAddExpr.h>
 #include <blaze/math/expressions/DMatTSMatMultExpr.h>
 #include <blaze/math/expressions/DMatTSMatSubExpr.h>
