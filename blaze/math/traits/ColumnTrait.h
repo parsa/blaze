@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/Infinity.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
 
@@ -70,15 +71,23 @@ auto evalColumnTrait( T& )
 
 template< typename T >
 auto evalColumnTrait( T& )
-   -> typename ColumnTraitEval2<T,-1UL>::Type;
+   -> typename ColumnTraitEval2<T,inf>::Type;
 
-template< size_t... CCAs, typename T >
+template< size_t I, typename T >
 auto evalColumnTrait( const T& )
-   -> typename ColumnTrait<T,CCAs...>::Type;
+   -> typename ColumnTrait<T,I>::Type;
 
-template< size_t... CCAs, typename T >
+template< typename T >
+auto evalColumnTrait( const T& )
+   -> typename ColumnTrait<T>::Type;
+
+template< size_t I, typename T >
 auto evalColumnTrait( volatile const T& )
-   -> typename ColumnTrait<T,CCAs...>::Type;
+   -> typename ColumnTrait<T,I>::Type;
+
+template< typename T >
+auto evalColumnTrait( volatile const T& )
+   -> typename ColumnTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
