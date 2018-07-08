@@ -41,7 +41,9 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/math/Infinity.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -69,15 +71,23 @@ auto evalSubmatrixTrait( T& )
 
 template< typename T >
 auto evalSubmatrixTrait( T& )
-   -> typename SubmatrixTraitEval2<T,-1UL,-1UL,-1UL,-1UL>::Type;
+   -> typename SubmatrixTraitEval2<T,inf,inf,inf,inf>::Type;
 
-template< size_t... CSAs, typename T >
+template< size_t I, size_t J, size_t M, size_t N, typename T >
 auto evalSubmatrixTrait( const T& )
-   -> typename SubmatrixTrait<T,CSAs...>::Type;
+   -> typename SubmatrixTrait<T,I,J,M,N>::Type;
 
-template< size_t... CSAs, typename T >
+template< typename T >
+auto evalSubmatrixTrait( const T& )
+   -> typename SubmatrixTrait<T>::Type;
+
+template< size_t I, size_t J, size_t M, size_t N, typename T >
 auto evalSubmatrixTrait( volatile const T& )
-   -> typename SubmatrixTrait<T,CSAs...>::Type;
+   -> typename SubmatrixTrait<T,I,J,M,N>::Type;
+
+template< typename T >
+auto evalSubmatrixTrait( volatile const T& )
+   -> typename SubmatrixTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
 

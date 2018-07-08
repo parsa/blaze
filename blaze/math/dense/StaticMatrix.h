@@ -6658,7 +6658,7 @@ struct LowType< StaticMatrix<T1,M,N,SO>, StaticMatrix<T2,M,N,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t J, size_t M, size_t N >
 struct SubmatrixTraitEval2< MT, I, J, M, N
-                          , EnableIf_t< I != -1UL && J != -1UL && M != -1UL && N != -1UL &&
+                          , EnableIf_t< I != inf && J != inf && M != inf && N != inf &&
                                         IsDenseMatrix_v<MT> > >
 {
    using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;

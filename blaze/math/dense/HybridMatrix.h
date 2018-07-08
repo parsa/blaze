@@ -6991,7 +6991,7 @@ struct LowType< HybridMatrix<T1,M,N,SO>, HybridMatrix<T2,M,N,SO> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT >
-struct SubmatrixTraitEval2< MT, -1UL, -1UL, -1UL, -1UL
+struct SubmatrixTraitEval2< MT, inf, inf, inf, inf
                           , EnableIf_t< IsDenseMatrix_v<MT> &&
                                         ( ( Size_v<MT,0UL> != DefaultSize_v &&
                                             Size_v<MT,1UL> != DefaultSize_v ) ||
