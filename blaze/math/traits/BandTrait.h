@@ -56,9 +56,9 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, ptrdiff_t... CBAs > struct BandTrait;
-template< typename MT, ptrdiff_t I, typename = void > struct BandTraitEval1;
-template< typename MT, ptrdiff_t I, typename = void > struct BandTraitEval2;
+template< typename, ptrdiff_t... > struct BandTrait;
+template< typename, ptrdiff_t, typename = void > struct BandTraitEval1;
+template< typename, ptrdiff_t, typename = void > struct BandTraitEval2;
 /*! \endcond */
 //*************************************************************************************************
 

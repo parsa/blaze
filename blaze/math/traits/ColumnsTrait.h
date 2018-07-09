@@ -55,9 +55,9 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t... CCAs > struct ColumnsTrait;
-template< typename MT, size_t N, typename = void > struct ColumnsTraitEval1;
-template< typename MT, size_t N, typename = void > struct ColumnsTraitEval2;
+template< typename, size_t... > struct ColumnsTrait;
+template< typename, size_t, typename = void > struct ColumnsTraitEval1;
+template< typename, size_t, typename = void > struct ColumnsTraitEval2;
 /*! \endcond */
 //*************************************************************************************************
 
