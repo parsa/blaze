@@ -40,14 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/adaptors/hermitianmatrix/BaseTemplate.h>
 #include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -57,6 +54,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename > struct DeclHermTrait;
+template< typename, typename = void > struct DeclHermTraitEval;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+auto evalDeclHermTrait( T& )
+   -> typename DeclHermTraitEval<T>::Type;
+
+template< typename T >
+auto evalDeclHermTrait( const T& )
+   -> typename DeclHermTrait<T>::Type;
+
+template< typename T >
+auto evalDeclHermTrait( volatile const T& )
+   -> typename DeclHermTrait<T>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the DeclHermTrait class.
@@ -111,27 +133,10 @@ namespace blaze {
 template< typename MT >  // Type of the matrix
 struct DeclHermTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = HermitianMatrix<MT>; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
-                             , DeclHermTrait< Decay_t<MT> >
-                             , If_t< IsMatrix_v<MT>
-                                   , Result
-                                   , Failure > >::Type;
+   using Type = decltype( evalDeclHermTrait( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -153,6 +158,39 @@ struct DeclHermTrait
 */
 template< typename MT >  // Type of the matrix
 using DeclHermTrait_t = typename DeclHermTrait<MT>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the DeclHermTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , typename >   // Restricting condition
+struct DeclHermTraitEval
+{
+   using Type = INVALID_TYPE;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the DeclHermTraitEval class template for square matrix types.
+// \ingroup math_traits
+*/
+template< typename MT >  // Type of the matrix
+struct DeclHermTraitEval< MT
+                        , EnableIf_t< IsMatrix_v<MT> &&
+                                      ( Size_v<MT,0UL> == DefaultSize_v ||
+                                        Size_v<MT,1UL> == DefaultSize_v ||
+                                        Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
+{
+   using Type = HermitianMatrix<MT>;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
