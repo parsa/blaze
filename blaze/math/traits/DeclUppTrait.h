@@ -40,14 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/adaptors/uppermatrix/BaseTemplate.h>
 #include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -57,6 +54,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename > struct DeclUppTrait;
+template< typename, typename = void > struct DeclUppTraitEval;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+auto evalDeclUppTrait( T& )
+   -> typename DeclUppTraitEval<T>::Type;
+
+template< typename T >
+auto evalDeclUppTrait( const T& )
+   -> typename DeclUppTrait<T>::Type;
+
+template< typename T >
+auto evalDeclUppTrait( volatile const T& )
+   -> typename DeclUppTrait<T>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the DeclUppTrait class.
@@ -111,27 +133,10 @@ namespace blaze {
 template< typename MT >  // Type of the matrix
 struct DeclUppTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = UpperMatrix<MT>; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
-                             , DeclUppTrait< Decay_t<MT> >
-                             , If_t< IsMatrix_v<MT>
-                                   , Result
-                                   , Failure > >::Type;
+   using Type = decltype( evalDeclUppTrait( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -153,6 +158,39 @@ struct DeclUppTrait
 */
 template< typename MT >  // Type of the matrix
 using DeclUppTrait_t = typename DeclUppTrait<MT>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the DeclUppTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , typename >   // Restricting condition
+struct DeclUppTraitEval
+{
+   using Type = INVALID_TYPE;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the DeclUppTraitEval class template for square matrix types.
+// \ingroup math_traits
+*/
+template< typename MT >  // Type of the matrix
+struct DeclUppTraitEval< MT
+                       , EnableIf_t< IsMatrix_v<MT> &&
+                                     ( Size_v<MT,0UL> == DefaultSize_v ||
+                                       Size_v<MT,1UL> == DefaultSize_v ||
+                                       Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
+{
+   using Type = UpperMatrix<MT>;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
