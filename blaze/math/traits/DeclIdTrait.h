@@ -40,16 +40,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Aliases.h>
+#include <utility>
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/Decay.h>
-#include <blaze/util/typetraits/IsConst.h>
-#include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/typetraits/IsVolatile.h>
 
 
 namespace blaze {
@@ -59,6 +55,31 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename > struct DeclIdTrait;
+template< typename, typename = void > struct DeclIdTraitEval;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+auto evalDeclIdTrait( T& )
+   -> typename DeclIdTraitEval<T>::Type;
+
+template< typename T >
+auto evalDeclIdTrait( const T& )
+   -> typename DeclIdTrait<T>::Type;
+
+template< typename T >
+auto evalDeclIdTrait( volatile const T& )
+   -> typename DeclIdTrait<T>::Type;
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Base template for the DeclIdTrait class.
@@ -113,27 +134,10 @@ namespace blaze {
 template< typename MT >  // Type of the matrix
 struct DeclIdTrait
 {
- private:
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Failure { using Type = INVALID_TYPE; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   struct Result { using Type = IdentityMatrix< ElementType_t<MT>, StorageOrder_v<MT> >; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsConst_v<MT> || IsVolatile_v<MT> || IsReference_v<MT>
-                             , DeclIdTrait< Decay_t<MT> >
-                             , If_t< IsMatrix_v<MT>
-                                   , Result
-                                   , Failure > >::Type;
+   using Type = decltype( evalDeclIdTrait( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -155,6 +159,39 @@ struct DeclIdTrait
 */
 template< typename MT >  // Type of the matrix
 using DeclIdTrait_t = typename DeclIdTrait<MT>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the DeclIdTrait type trait.
+// \ingroup math_traits
+*/
+template< typename MT  // Type of the matrix
+        , typename >   // Restricting condition
+struct DeclIdTraitEval
+{
+   using Type = INVALID_TYPE;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the DeclIdTraitEval class template for square matrix types.
+// \ingroup math_traits
+*/
+template< typename MT >  // Type of the matrix
+struct DeclIdTraitEval< MT
+                      , EnableIf_t< IsMatrix_v<MT> &&
+                                    ( Size_v<MT,0UL> == DefaultSize_v ||
+                                      Size_v<MT,1UL> == DefaultSize_v ||
+                                      Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
+{
+   using Type = IdentityMatrix< typename MT::ElementType, StorageOrder_v<MT> >;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
