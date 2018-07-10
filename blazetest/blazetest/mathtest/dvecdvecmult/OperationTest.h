@@ -64,6 +64,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -121,6 +122,12 @@ class OperationTest
    using TRT1 = blaze::TransposeType_t<RT1>;    //!< Transpose reference type 1
    using TRT2 = blaze::TransposeType_t<RT2>;    //!< Transpose reference type 2
    using TRRE = blaze::MultTrait_t<TRT1,TRT2>;  //!< Reference result type
+
+   //! Type of the vector/vector multiplication expression
+   using VecVecMultExprType = blaze::Decay_t< decltype( std::declval<VT1>() * std::declval<VT2>() ) >;
+
+   //! Type of the transpose vector/transpose vector multiplication expression
+   using TVecTVecMultExprType = blaze::Decay_t< decltype( std::declval<TVT1>() * std::declval<TVT2>() ) >;
    //**********************************************************************************************
 
  public:
@@ -244,6 +251,12 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT2, blaze::TransposeType_t<TVT2> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT1, blaze::TransposeType_t<TRT1> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( RT2, blaze::TransposeType_t<TRT2> );
+
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( VecVecMultExprType, blaze::ResultType_t<VecVecMultExprType>    );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( VecVecMultExprType, blaze::TransposeType_t<VecVecMultExprType> );
+
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( TVecTVecMultExprType, blaze::ResultType_t<TVecTVecMultExprType>    );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( TVecTVecMultExprType, blaze::TransposeType_t<TVecTVecMultExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

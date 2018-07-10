@@ -56,6 +56,7 @@
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/StaticVector.h>
@@ -71,6 +72,7 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -128,6 +130,9 @@ class OperationTest
    using RT1 = blaze::DynamicVector<ET1,false>;  //!< Reference type 1
    using RT2 = blaze::DynamicVector<ET2,true>;   //!< Reference type 2
    using RRE = blaze::MultTrait_t<RT1,RT2>;      //!< Reference result type
+
+   //! Type of the outer product expression
+   using OuterExprType = blaze::Decay_t< decltype( std::declval<VT1>() * std::declval<TVT2>() ) >;
    //**********************************************************************************************
 
  public:
@@ -273,6 +278,10 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_t<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_t<OSRE>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_t<TSRE> );
+
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( OuterExprType, blaze::ResultType_t<OuterExprType>    );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( OuterExprType, blaze::OppositeType_t<OuterExprType>  );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( OuterExprType, blaze::TransposeType_t<OuterExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

@@ -52,6 +52,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
@@ -78,6 +79,7 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/MathTest.h>
@@ -142,6 +144,18 @@ class OperationTest
 
    //! Reference result type
    using RT = MatchSymmetry_t< DRE, blaze::DynamicMatrix<blaze::ElementType_t<DRE>,false> >;
+
+   //! Type of the matrix/matrix maximum expression
+   using MatMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<MT1>(), std::declval<MT2>() ) ) >;
+
+   //! Type of the matrix/transpose matrix maximum expression
+   using MatTMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<MT1>(), std::declval<OMT2>() ) ) >;
+
+   //! Type of the transpose matrix/matrix maximum expression
+   using TMatMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<OMT1>(), std::declval<MT2>() ) ) >;
+
+   //! Type of the transpose matrix/transpose matrix maximum expression
+   using TMatTMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<OMT1>(), std::declval<OMT2>() ) ) >;
    //**********************************************************************************************
 
  public:
@@ -300,6 +314,22 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_t<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::OppositeType_t<OSRE>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_t<TSRE> );
+
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( MatMatMaxExprType, blaze::ResultType_t<MatMatMaxExprType>    );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( MatMatMaxExprType, blaze::OppositeType_t<MatMatMaxExprType>  );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( MatMatMaxExprType, blaze::TransposeType_t<MatMatMaxExprType> );
+
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( MatTMatMaxExprType, blaze::ResultType_t<MatTMatMaxExprType>    );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( MatTMatMaxExprType, blaze::OppositeType_t<MatTMatMaxExprType>  );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( MatTMatMaxExprType, blaze::TransposeType_t<MatTMatMaxExprType> );
+
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( TMatMatMaxExprType, blaze::ResultType_t<TMatMatMaxExprType>    );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatMatMaxExprType, blaze::OppositeType_t<TMatMatMaxExprType>  );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatMatMaxExprType, blaze::TransposeType_t<TMatMatMaxExprType> );
+
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER     ( TMatTMatMaxExprType, blaze::ResultType_t<TMatTMatMaxExprType>    );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatTMatMaxExprType, blaze::OppositeType_t<TMatTMatMaxExprType>  );
+   BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_DIFFERENT_STORAGE_ORDER( TMatTMatMaxExprType, blaze::TransposeType_t<TMatTMatMaxExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };

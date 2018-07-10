@@ -56,6 +56,7 @@
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
+#include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
@@ -69,6 +70,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -125,6 +127,12 @@ class OperationTest
    using VRT  = blaze::CompressedVector<VET,false>;  //!< Vector reference type
    using RRE  = blaze::MultTrait_t<MRT,VRT>;         //!< Reference result type
    using TRRE = blaze::TransposeType_t<RRE>;         //!< Transpose reference result type
+
+   //! Type of the matrix/vector multiplication expression
+   using MatVecMultExprType = blaze::Decay_t< decltype( std::declval<MT>() * std::declval<VT>() ) >;
+
+   //! Type of the transpose matrix/vector multiplication expression
+   using TMatVecMultExprType = blaze::Decay_t< decltype( std::declval<OMT>() * std::declval<VT>() ) >;
    //**********************************************************************************************
 
  public:
@@ -245,6 +253,12 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( VT , blaze::TransposeType_t<TVT>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DRE, blaze::TransposeType_t<TDRE> );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SRE, blaze::TransposeType_t<TSRE> );
+
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( MatVecMultExprType, blaze::ResultType_t<MatVecMultExprType>    );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( MatVecMultExprType, blaze::TransposeType_t<MatVecMultExprType> );
+
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_SAME_TRANSPOSE_FLAG     ( TMatVecMultExprType, blaze::ResultType_t<TMatVecMultExprType>    );
+   BLAZE_CONSTRAINT_VECTORS_MUST_HAVE_DIFFERENT_TRANSPOSE_FLAG( TMatVecMultExprType, blaze::TransposeType_t<TMatVecMultExprType> );
    /*! \endcond */
    //**********************************************************************************************
 };
