@@ -69,7 +69,6 @@
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1482,7 +1481,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 {
    using blaze::assign;
 
-   using TT = TransExprTrait_t<This>;
+   using TT = decltype( trans( *this ) );
    using CT = CTransExprTrait_t<This>;
    using IT = InvExprTrait_t<This>;
 
@@ -4531,7 +4530,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 {
    using blaze::assign;
 
-   using TT = TransExprTrait_t<This>;
+   using TT = decltype( trans( *this ) );
    using CT = CTransExprTrait_t<This>;
    using IT = InvExprTrait_t<This>;
 

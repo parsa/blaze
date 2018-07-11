@@ -66,7 +66,6 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/sparse/SparseMatrix.h>
-#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSquare.h>
@@ -493,10 +492,10 @@ class HermitianMatrix<MT,SO,false>
    /*!\name Construction functions */
    //@{
    template< typename MT2, bool SO2, typename T >
-   inline const MT2& construct( const Matrix<MT2,SO2>& m, T );
+   inline decltype(auto) construct( const Matrix<MT2,SO2>& m, T );
 
    template< typename MT2 >
-   inline TransExprTrait_t<MT2> construct( const Matrix<MT2,!SO>& m, TrueType );
+   inline decltype(auto) construct( const Matrix<MT2,!SO>& m, TrueType );
    //@}
    //**********************************************************************************************
 
@@ -2696,7 +2695,7 @@ template< typename MT   // Type of the adapted dense matrix
 template< typename MT2  // Type of the foreign matrix
         , bool SO2      // Storage order of the foreign matrix
         , typename T >  // Type of the third argument
-inline const MT2& HermitianMatrix<MT,SO,false>::construct( const Matrix<MT2,SO2>& m, T )
+inline decltype(auto) HermitianMatrix<MT,SO,false>::construct( const Matrix<MT2,SO2>& m, T )
 {
    return ~m;
 }
@@ -2709,8 +2708,7 @@ inline const MT2& HermitianMatrix<MT,SO,false>::construct( const Matrix<MT2,SO2>
 template< typename MT     // Type of the adapted dense matrix
         , bool SO >       // Storage order of the adapted dense matrix
 template< typename MT2 >  // Type of the foreign matrix
-inline TransExprTrait_t<MT2>
-   HermitianMatrix<MT,SO,false>::construct( const Matrix<MT2,!SO>& m, TrueType )
+inline decltype(auto) HermitianMatrix<MT,SO,false>::construct( const Matrix<MT2,!SO>& m, TrueType )
 {
    return trans( ~m );
 }

@@ -69,7 +69,6 @@
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/TransExprTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1320,7 +1319,7 @@ template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
-   using TT = TransExprTrait_t<This>;
+   using TT = decltype( trans( *this ) );
    using CT = CTransExprTrait_t<This>;
    using IT = InvExprTrait_t<This>;
 
@@ -4276,7 +4275,7 @@ template< typename MT      // Type of the right-hand side matrix
         , bool SO >        // Storage order of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matrix<MT,SO>& rhs )
 {
-   using TT = TransExprTrait_t<This>;
+   using TT = decltype( trans( *this ) );
    using CT = CTransExprTrait_t<This>;
    using IT = InvExprTrait_t<This>;
 
