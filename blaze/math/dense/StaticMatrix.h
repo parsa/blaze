@@ -61,7 +61,6 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -1395,7 +1394,7 @@ inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const Ma
    using blaze::assign;
 
    using TT = decltype( trans( *this ) );
-   using CT = CTransExprTrait_t<This>;
+   using CT = decltype( ctrans( *this ) );
    using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {
@@ -4271,7 +4270,7 @@ inline StaticMatrix<Type,M,N,true>& StaticMatrix<Type,M,N,true>::operator=( cons
    using blaze::assign;
 
    using TT = decltype( trans( *this ) );
-   using CT = CTransExprTrait_t<This>;
+   using CT = decltype( ctrans( *this ) );
    using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != M || (~rhs).columns() != N ) {

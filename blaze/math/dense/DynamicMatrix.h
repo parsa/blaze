@@ -61,7 +61,6 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -1320,7 +1319,7 @@ template< typename MT    // Type of the right-hand side matrix
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
    using TT = decltype( trans( *this ) );
-   using CT = CTransExprTrait_t<This>;
+   using CT = decltype( ctrans( *this ) );
    using IT = InvExprTrait_t<This>;
 
    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
@@ -4276,7 +4275,7 @@ template< typename MT      // Type of the right-hand side matrix
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matrix<MT,SO>& rhs )
 {
    using TT = decltype( trans( *this ) );
-   using CT = CTransExprTrait_t<This>;
+   using CT = decltype( ctrans( *this ) );
    using IT = InvExprTrait_t<This>;
 
    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {

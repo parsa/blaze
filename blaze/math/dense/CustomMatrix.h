@@ -61,7 +61,6 @@
 #include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -1433,7 +1432,7 @@ template< typename MT    // Type of the right-hand side matrix
 inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Matrix<MT,SO2>& rhs )
 {
    using TT = decltype( trans( *this ) );
-   using CT = CTransExprTrait_t<This>;
+   using CT = decltype( ctrans( *this ) );
    using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
@@ -4225,7 +4224,7 @@ inline CustomMatrix<Type,AF,PF,true>&
    CustomMatrix<Type,AF,PF,true>::operator=( const Matrix<MT,SO>& rhs )
 {
    using TT = decltype( trans( *this ) );
-   using CT = CTransExprTrait_t<This>;
+   using CT = decltype( ctrans( *this ) );
    using IT = InvExprTrait_t<This>;
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
