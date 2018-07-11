@@ -53,7 +53,6 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DeclDiagExprTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
-#include <blaze/math/traits/DeclHermExprTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclIdExprTrait.h>
 #include <blaze/math/traits/DeclIdTrait.h>
