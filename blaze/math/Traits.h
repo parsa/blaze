@@ -52,7 +52,6 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossExprTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/CTransExprTrait.h>
 #include <blaze/math/traits/DeclDiagExprTrait.h>
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermExprTrait.h>
@@ -72,7 +71,6 @@
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/EvalExprTrait.h>
 #include <blaze/math/traits/ImagTrait.h>
-#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RealTrait.h>

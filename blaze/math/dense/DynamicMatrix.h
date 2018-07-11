@@ -62,7 +62,6 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
@@ -1320,7 +1319,7 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Matrix<M
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
-   using IT = InvExprTrait_t<This>;
+   using IT = decltype( inv( *this ) );
 
    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();
@@ -4276,7 +4275,7 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Matr
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
-   using IT = InvExprTrait_t<This>;
+   using IT = decltype( inv( *this ) );
 
    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
       transpose();

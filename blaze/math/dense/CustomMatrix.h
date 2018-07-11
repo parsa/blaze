@@ -61,7 +61,6 @@
 #include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -1433,7 +1432,7 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
-   using IT = InvExprTrait_t<This>;
+   using IT = decltype( inv( *this ) );
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4225,7 +4224,7 @@ inline CustomMatrix<Type,AF,PF,true>&
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
-   using IT = InvExprTrait_t<This>;
+   using IT = decltype( inv( *this ) );
 
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );

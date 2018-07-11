@@ -62,7 +62,6 @@
 #include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/InvExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
@@ -1482,7 +1481,7 @@ inline HybridMatrix<Type,M,N,SO>& HybridMatrix<Type,M,N,SO>::operator=( const Ma
 
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
-   using IT = InvExprTrait_t<This>;
+   using IT = decltype( inv( *this ) );
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
@@ -4531,7 +4530,7 @@ inline HybridMatrix<Type,M,N,true>& HybridMatrix<Type,M,N,true>::operator=( cons
 
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
-   using IT = InvExprTrait_t<This>;
+   using IT = decltype( inv( *this ) );
 
    if( (~rhs).rows() > M || (~rhs).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid matrix" );
