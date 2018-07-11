@@ -79,7 +79,6 @@
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SchurExprTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
-#include <blaze/math/traits/SerialExprTrait.h>
 #include <blaze/math/traits/SubExprTrait.h>
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
