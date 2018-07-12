@@ -76,7 +76,6 @@
 #include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/SubvectorExprTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/traits/UnaryMapTrait.h>
 

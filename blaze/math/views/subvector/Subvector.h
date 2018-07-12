@@ -81,14 +81,12 @@
 
 // The \c subvector() function returns an expression representing the subvector view. The type of
 // this expression depends on the given subvector arguments, primarily the type of the vector and
-// the compile time arguments. If the type is required, it can be determined via \c decltype or
-// via the \c SubvectorExprTrait class template:
+// the compile time arguments. If the type is required, it can be determined via \c decltype
+// specifier:
 
    \code
    using VectorType = blaze::DynamicVector<int>;
-
-   using SubvectorType1 = decltype( blaze::subvector<4UL,12UL>( std::declval<VectorType>() ) );
-   using SubvectorType2 = blaze::SubvectorExprTrait<VectorType,4UL,12UL>::Type;
+   using SubvectorType = decltype( blaze::subvector<4UL,12UL>( std::declval<VectorType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse vector, i.e. it can be assigned
