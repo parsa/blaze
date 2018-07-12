@@ -7483,14 +7483,12 @@
 
 // The \c subvector() function returns an expression representing the subvector view. The type of
 // this expression depends on the given subvector arguments, primarily the type of the vector and
-// the compile time arguments. If the type is required, it can be determined via \c decltype or
-// via the \c SubvectorExprTrait class template:
+// the compile time arguments. If the type is required, it can be determined via \c decltype
+// specifier:
 
    \code
    using VectorType = blaze::DynamicVector<int>;
-
-   using SubvectorType1 = decltype( blaze::subvector<4UL,12UL>( std::declval<VectorType>() ) );
-   using SubvectorType2 = blaze::SubvectorExprTrait<VectorType,4UL,12UL>::Type;
+   using SubvectorType = decltype( blaze::subvector<4UL,12UL>( std::declval<VectorType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse vector, i.e. it can be assigned
@@ -7852,14 +7850,11 @@
 // that it is possible to use the same index multiple times. The \c elements() function returns an
 // expression representing the view on the selected elements. The type of this expression depends
 // on the given arguments, primarily the type of the vector and the compile time arguments. If the
-// type is required, it can be determined via \c decltype or via the \c ElementsExprTrait class
-// template:
+// type is required, it can be determined via \c decltype specifier:
 
    \code
    using VectorType = blaze::DynamicVector<int>;
-
-   using ElementsType1 = decltype( blaze::elements<4UL,12UL>( std::declval<VectorType>() ) );
-   using ElementsType2 = blaze::ElementsExprTrait<VectorType,4UL,12UL>::Type;
+   using ElementsType = decltype( blaze::elements<4UL,12UL>( std::declval<VectorType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse vector, i.e. it can be assigned
@@ -8139,14 +8134,12 @@
 
 // The \c submatrix() function returns an expression representing the submatrix view. The type of
 // this expression depends on the given submatrix arguments, primarily the type of the matrix and
-// the compile time arguments. If the type is required, it can be determined via \c decltype or
-// via the \c SubmatrixExprTrait class template:
+// the compile time arguments. If the type is required, it can be determined via \c decltype
+// specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using SubmatrixType1 = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
-   using SubmatrixType2 = blaze::SubmatrixExprTrait<MatrixType,3UL,0UL,4UL,8UL>::Type;
+   using SubmatrixType = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
@@ -8544,14 +8537,11 @@
 
 // The \c row() function returns an expression representing the row view. The type of this
 // expression depends on the given row arguments, primarily the type of the matrix and the compile
-// time arguments. If the type is required, it can be determined via \c decltype or via the
-// \c RowExprTrait class template:
+// time arguments. If the type is required, it can be determined via \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using RowType1 = decltype( blaze::row<1UL>( std::declval<MatrixType>() ) );
-   using RowType2 = blaze::RowExprTrait<MatrixType,1UL>::Type;
+   using RowType = decltype( blaze::row<1UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other row vector, i.e. it can be assigned to, it can
@@ -8867,14 +8857,11 @@
 // that it is possible to use the same index multiple times. The \c rows() function returns an
 // expression representing the view on the selected rows. The type of this expression depends
 // on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via \c decltype or via the \c RowsExprTrait class
-// template:
+// the type is required, it can be determined via \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using RowsType1 = decltype( blaze::rows<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
-   using RowsType2 = blaze::RowsExprTrait<MatrixType,3UL,0UL,4UL,8UL>::Type;
+   using RowsType = decltype( blaze::rows<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
@@ -9177,14 +9164,11 @@
 
 // The \c column() function returns an expression representing the column view. The type of this
 // expression depends on the given column arguments, primarily the type of the matrix and the
-// compile time arguments. If the type is required, it can be determined via \c decltype or via
-// the \c ColumnExprTrait class template:
+// compile time arguments. If the type is required, it can be determined via \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using ColumnType1 = decltype( blaze::column<1UL>( std::declval<MatrixType>() ) );
-   using ColumnType2 = blaze::ColumnExprTrait<MatrixType,1UL>::Type;
+   using ColumnType = decltype( blaze::column<1UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other column vector, i.e. it can be assigned to, it
@@ -9500,14 +9484,11 @@
 // that it is possible to use the same index multiple times. The \c columns() function returns an
 // expression representing the view on the selected columns. The type of this expression depends
 // on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via \c decltype or via the \c ColumnsExprTrait
-// class template:
+// the type is required, it can be determined via \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using ColumnsType1 = decltype( blaze::columns<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
-   using ColumnsType2 = blaze::ColumnsExprTrait<MatrixType,3UL,0UL,4UL,8UL>::Type;
+   using ColumnsType = decltype( blaze::columns<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
@@ -9829,16 +9810,12 @@
 // Both the \c band() and the \c diagonal() function return an expression representing the band
 // view. The type of this expression depends on the given arguments, primarily the type of the
 // matrix and the compile time arguments. If the type is required, it can be determined via
-// \c decltype or via the \c BandExprTrait and \c DiagonalExprTrait class templates, respectively:
+// \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using BandType1 = decltype( blaze::band<1L>( std::declval<MatrixType>() ) );
-   using BandType2 = blaze::BandExprTrait<MatrixType,1L>::Type;
-
-   using DiagonalType1 = decltype( blaze::diagonal( std::declval<MatrixType>() ) );
-   using DiagonalType2 = blaze::DiagonalExprTrait<MatrixType>::Type;
+   using BandType = decltype( blaze::band<1L>( std::declval<MatrixType>() ) );
+   using DiagonalType = decltype( blaze::diagonal( std::declval<MatrixType>() ) );
    \endcode
 
 // This resulting view can be treated as any other vector, i.e. it can be assigned to, it can
