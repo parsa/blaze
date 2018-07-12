@@ -95,14 +95,11 @@
 // that it is possible to use the same index multiple times. The \c rows() function returns an
 // expression representing the view on the selected rows. The type of this expression depends
 // on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via \c decltype or via the \c RowsExprTrait class
-// template:
+// the type is required, it can be determined via \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using RowsType1 = decltype( blaze::rows<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
-   using RowsType2 = blaze::RowsExprTrait<MatrixType,3UL,0UL,4UL,8UL>::Type;
+   using RowsType = decltype( blaze::rows<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
