@@ -45,7 +45,6 @@
 #include <blaze/math/traits/BandExprTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
-#include <blaze/math/traits/ColumnsExprTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossExprTrait.h>

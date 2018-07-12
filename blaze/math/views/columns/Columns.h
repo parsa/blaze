@@ -95,8 +95,7 @@
 // that it is possible to use the same index multiple times. The \c columns() function returns an
 // expression representing the view on the selected columns. The type of this expression depends
 // on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via \c decltype or via the \c ColumnsExprTrait
-// class template:
+// the type is required, it can be determined via \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
