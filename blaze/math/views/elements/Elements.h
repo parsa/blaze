@@ -95,14 +95,11 @@
 // that it is possible to use the same index multiple times. The \c elements() function returns an
 // expression representing the view on the selected elements. The type of this expression depends
 // on the given arguments, primarily the type of the vector and the compile time arguments. If the
-// type is required, it can be determined via \c decltype or via the \c ElementsExprTrait class
-// template:
+// type is required, it can be determined via \c decltype specifier:
 
    \code
    using VectorType = blaze::DynamicVector<int>;
-
-   using ElementsType1 = decltype( blaze::elements<4UL,12UL>( std::declval<VectorType>() ) );
-   using ElementsType2 = blaze::ElementsExprTrait<VectorType,4UL,12UL>::Type;
+   using ElementsType = decltype( blaze::elements<4UL,12UL>( std::declval<VectorType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse vector, i.e. it can be assigned

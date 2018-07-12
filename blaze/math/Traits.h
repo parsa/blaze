@@ -60,7 +60,6 @@
 #include <blaze/math/traits/DerestrictTrait.h>
 #include <blaze/math/traits/DivExprTrait.h>
 #include <blaze/math/traits/DivTrait.h>
-#include <blaze/math/traits/ElementsExprTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/ImagTrait.h>
 #include <blaze/math/traits/MultExprTrait.h>

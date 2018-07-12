@@ -72,7 +72,7 @@ namespace blaze {
 
    using RowType1     = blaze::RowExprTrait< RowMajorMatrix >;
    using RowType2     = blaze::RowExprTrait< ColumnMajorMatrix >;
-   using ElementsType = blaze::ElementsExprTrait< StaticVector<int,3UL> >::Type;
+   using ElementsType = decltype( elements( std::declval< StaticVector<int,3UL> >() ) );
 
    blaze::IsContiguous< StaticVector<int,3UL> >::value       // Evaluates to 1
    blaze::IsContiguous< const DynamicMatrix<double> >::Type  // Results in TrueType
