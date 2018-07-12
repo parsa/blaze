@@ -82,14 +82,11 @@
 
 // The \c column() function returns an expression representing the column view. The type of this
 // expression depends on the given column arguments, primarily the type of the matrix and the
-// compile time arguments. If the type is required, it can be determined via \c decltype or via
-// the \c ColumnExprTrait class template:
+// compile time arguments. If the type is required, it can be determined via \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using ColumnType1 = decltype( blaze::column<1UL>( std::declval<MatrixType>() ) );
-   using ColumnType2 = blaze::ColumnExprTrait<MatrixType,1UL>::Type;
+   using ColumnType = decltype( blaze::column<1UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other column vector, i.e. it can be assigned to, it
