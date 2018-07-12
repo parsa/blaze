@@ -82,14 +82,12 @@
 
 // The \c submatrix() function returns an expression representing the submatrix view. The type of
 // this expression depends on the given submatrix arguments, primarily the type of the matrix and
-// the compile time arguments. If the type is required, it can be determined via \c decltype or
-// via the \c SubmatrixExprTrait class template:
+// the compile time arguments. If the type is required, it can be determined via \c decltype
+// specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using SubmatrixType1 = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
-   using SubmatrixType2 = blaze::SubmatrixExprTrait<MatrixType,3UL,0UL,4UL,8UL>::Type;
+   using SubmatrixType = decltype( blaze::submatrix<3UL,0UL,4UL,8UL>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other dense or sparse matrix, i.e. it can be assigned
