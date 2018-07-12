@@ -84,14 +84,12 @@
 
 // The \c band() function returns an expression representing the band view. The type of this
 // expression depends on the given band arguments, primarily the type of the matrix and the
-// compile time arguments. If the type is required, it can be determined via \c decltype or
-// via the \c BandExprTrait class template:
+// compile time arguments. If the type is required, it can be determined via \c decltype
+// specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
-
-   using BandType1 = decltype( blaze::band<1L>( std::declval<MatrixType>() ) );
-   using BandType2 = blaze::BandExprTrait<MatrixType,1L>::Type;
+   using BandType = decltype( blaze::band<1L>( std::declval<MatrixType>() ) );
    \endcode
 
 // The resulting view can be treated as any other vector, i.e. it can be assigned to, it can be
