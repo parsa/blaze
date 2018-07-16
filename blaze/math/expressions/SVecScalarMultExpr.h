@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -52,7 +53,6 @@
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
-#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -111,7 +111,7 @@ class SVecScalarMultExpr
    static constexpr bool returnExpr = !IsTemporary_v<RN>;
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_t<RN,ST>;
+   using ExprReturnType = decltype( std::declval<RN>() * std::declval<ST>() );
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************

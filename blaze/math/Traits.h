@@ -58,7 +58,6 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/ImagTrait.h>
-#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RealTrait.h>
 #include <blaze/math/traits/RowsTrait.h>

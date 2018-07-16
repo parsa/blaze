@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <iterator>
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -54,7 +55,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/sparse/Forward.h>
-#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
@@ -128,7 +128,7 @@ class DMatDMatSchurExpr
    static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_t<RN1,RN2>;
+   using ExprReturnType = decltype( std::declval<RN1>() * std::declval<RN2>() );
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************

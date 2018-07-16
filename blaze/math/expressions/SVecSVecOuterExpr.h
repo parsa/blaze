@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/RowVector.h>
@@ -54,7 +55,6 @@
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/MultExprTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -107,7 +107,7 @@ class SVecSVecOuterExpr
    static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = MultExprTrait_t<RN1,RN2>;
+   using ExprReturnType = decltype( std::declval<RN1>() * std::declval<RN2>() );
    //**********************************************************************************************
 
  public:
